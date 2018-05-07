@@ -12,7 +12,7 @@
 - Julian Tischner
 
 # Game concept:
- Singularity is a 2.5D real time strategy game inspired by Achikaps.
+ Singularity is a 2.5D real time strategy game inspired by [Achikaps](https://play.google.com/store/apps/details?id=yio.tro.achikaps&hl=en "Achikaps Play Store Link").
  You are an AI that has just landed on a foreign planet with no idea what to expect.
  You are tasked with creating a base of operations and to mine the resources in this new unexplored area and create a new home for yourself.
  
@@ -24,3 +24,5 @@
 
 This game is being created as a part of the practical software course at the University of Freiburg.
 Look forward to the launch of this exciting new game!
+
+More information can be found in the [Software Praktikum Wiki](https://sopra.informatik.uni-freiburg.de).
