@@ -3,13 +3,13 @@
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/SoPra18-07/Singularity.svg?columns=all)](https://waffle.io/SoPra18-07/Singularity)
 
 ## Team members:
-Norbert Balazs
-Anselm Ellwanger
-Leonard Fichtner,
-Felix Karg
-Nina Pant
-Yvan Satyawan
-Julian Tischner
+- Norbert Balazs
+- Anselm Ellwanger
+- Leonard Fichtner
+- Felix Karg
+- Nina Pant
+- Yvan Satyawan
+- Julian Tischner
 
 # Game concept:
  Singularity is a 2.5D real time strategy game inspired by Achikaps.
