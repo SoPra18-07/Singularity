@@ -1,6 +1,7 @@
 # Singularity
-
+https://travis-ci.com/SoPra18-07/Singularity.svg?branch=master
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/SoPra18-07/Singularity.svg?columns=all)](https://waffle.io/SoPra18-07/Singularity)
+
 
 ## Team members:
 - Norbert Balazs
