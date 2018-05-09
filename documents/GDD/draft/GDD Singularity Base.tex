@@ -1,0 +1,173 @@
+\documentclass[12pt]{article}
+
+% Resemble a4wide style
+\usepackage{geometry}
+\geometry{
+	a4paper
+}
+
+\usepackage[german]{babel} % Document in English language
+\usepackage{graphicx}% More options when including graphics
+\usepackage[utf8]{inputenc}% Correct font encoding for special characters
+\usepackage[T1]{fontenc}% Correct separation for special characters
+\usepackage{lmodern}% Modern font type
+
+\usepackage{array}% More table options
+\usepackage[table]{xcolor}% Table color options
+\usepackage{ragged2e}% More table options
+\usepackage{multirow}% Makes it possible to create table entries over multiple rows
+\usepackage{verbatim}% New environment, also for comments
+\usepackage{hhline}% Provides access to more hline options
+
+\usepackage{fancyhdr}% Can create headers and footers
+\usepackage{amssymb}% Provides usage of special characters and symbols
+\usepackage{amsthm}% Offers theorem environment
+\usepackage{amsmath}% Provides mathematical symbols
+\usepackage{stmaryrd}% More mathematical symbols
+\usepackage{bm}% Bold in math mode
+\usepackage[ruled,vlined,linesnumbered,resetcount]{algorithm2e}% Algorithms
+\usepackage{color}% Colored text
+
+\usepackage{subcaption}% Makes it possible to create sub captions in tables
+\usepackage{setspace}% Makes it possible to change spacing
+\usepackage{textcomp}% Font that provides more special characters
+\usepackage{lscape}% Modifies margins
+\usepackage{wasysym}% More symbols
+
+\usepackage{hyperref}% Appearance of links do not get changed
+
+\bibliographystyle{plain}% Reference literature by number
+\pagestyle{fancy}% Fancy style, also adds header and footer
+
+%Custom colors
+\definecolor{purple}{RGB}{206,0,206}
+
+% Link color setup
+\hypersetup{
+	colorlinks,
+	citecolor=purple,
+	linkcolor=black,
+	urlcolor=blue
+}
+
+% Custom commands
+\newcommand{\zz}{$\mathrm{Z\kern-.4em\raise-0.5ex\hbox{Z}}$}% Zu zeigen
+\newcommand{\tp}{$\mathrm{T\kern-.4em\raise-0.5ex\hbox{P}}$}% To prove
+\newcommand{\pto}{\mathrel{\ooalign{\hfil$\mapstochar$\hfil\cr$\to$\cr}}}% Partial mapping
+\newcommand{\ito}{\xrightarrow{\,\smash{\raisebox{-0.45ex}{\ensuremath{\scriptstyle\sim}}}\,}}% Injective mapping
+\newcommand\restr[2]{{\left.\kern-\nulldelimiterspace#1\vphantom{\big|}\right|_{#2}}}% Restrict sth. to sth.
+\newcommand{\changefont}[4]{{\fontfamily{#1}\fontsize{#2}{#3}\selectfont #4}} % Changes the font only for the given text
+\DeclareMathOperator{\lift}{lift}% Lift-operator
+\DeclareMathOperator{\res}{res}% Res-operator
+\DeclareMathOperator{\ord}{ord}% Ord-operator
+\newcommand{\emptyccell}{\multicolumn{1}{c}{--}}% Empty cell in a table
+\newcommand{\emptyccellrightended}{\multicolumn{1}{c|}{--}}% Empty cell in a table which is at the right end
+\newcommand{\figref}[1]{\textbf{Fig.~\ref{#1}}}% Figure reference
+\newcommand{\tableref}[1]{\textbf{Table~\ref{#1}}}% Table reference
+\newcommand{\lemmaref}[1]{\textbf{Lemma~\ref{#1}}}% Lemma reference
+\newcommand{\theoremref}[1]{\textbf{Theorem~\ref{#1}}}% Theorem reference
+\newcommand{\corollaryref}[1]{\textbf{Corollary~\ref{#1}}}% Corollary reference
+\newcommand{\claimref}[1]{\textbf{Claim~\ref{#1}}}% Claim reference
+\newcommand{\propositionref}[1]{\textbf{Proposition~\ref{#1}}}% Proposition reference
+\newcommand{\sectionref}[1]{\textbf{Section~\ref{#1}}}% Section reference
+\newcommand{\algoref}[1]{\textbf{Algorithm~\ref{#1}}}% Algorithm reference
+\newcommand{\defref}[1]{\textbf{Definition~\ref{#1}}}% Definition reference
+\newcommand{\libref}[1]{\textbf{\cite{#1}}}% Library reference
+\newtheorem{mydef}{Definition}% Definition environment
+\newtheorem{mylemma}{Lemma}% Lemma environment
+\newtheorem{mytheorem}{Theorem}% Theorem environment
+\newtheorem{mycorollary}{Colorally}% Corollary environment
+\newtheorem{myproposition}{Proposition}% Proposition environment
+\newtheorem{myclaim}{Claim}% Claim environment
+
+% Custom header
+\renewcommand{\headrulewidth}{0pt}
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+
+\begin{document}
+% Command renews that need to be inside the document
+\renewcommand{\figurename}{Fig.}% Fig. instead of Figure. when linking figures
+\renewcommand{\arraystretch}{1.4}% More vertical spacing for arrays
+% End of template
+
+% Creation of title page
+\begin{titlepage}
+	\begin{center}	
+		\changefont{pbk}{32}{35}{Singularity}\\\vspace{3em}
+		\includegraphics[width=0.4\textwidth]{res/SingularityLogo2.png}\\\vspace{5em}
+		\changefont{cmr}{32}{35}{Game Design Document}
+	\end{center}
+	\vspace{7em}
+
+	% The lower left side of the title page
+	\begin{minipage}[t]{.5\textwidth}
+		\begin{center}
+			\textbf{Teammitglieder:}\\
+			\vspace{.5em}
+			Norbert Balazs, Anselm Ellwanger,\\
+			Leonard Fichtner, Felix Karg, Nina\\
+			Pant, Yvan Satyawan, Julian Tischner\\
+			\vspace{2em}
+			\textbf{Datum:}\\
+			\vspace{.5em}
+			$6.5.2018$
+		\end{center}
+	\end{minipage}
+	% The lower right side of the title page
+	\begin{minipage}[t]{.5\textwidth}
+		\begin{center}
+			\textbf{Tutor:}\\
+			\vspace{.5em}
+			Samuel Roth\\
+			\quad\\
+			\quad\\
+			\vspace{2em}
+			\textbf{Gruppennummer:}\\
+			\vspace{.5em}
+			$07$
+		\end{center}
+	\end{minipage}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Spielkonzept}
+
+\subsection{Zusammenfassung des Spiels}
+
+\subsection{Alleinstellungsmerkmal}
+
+
+\section{Benutzeroberfläche}
+
+\subsection{Spieler-Interface}
+
+\subsection{Menüstruktur}
+
+
+\section{Technische Merkmale}
+
+\subsection{Verwendete Technologien}
+
+\subsection{Mindestvoraussetzungen}
+
+
+\section{Spiellogik}
+
+\subsection{Optionen \& Aktionen}
+
+\subsection{Spielobjekte}
+
+\subsection{Spielstruktur}
+
+\subsection{Statistiken}
+
+\subsection{Achievements}
+
+
+\section{Screenplay}
+
+
+\end{document}
