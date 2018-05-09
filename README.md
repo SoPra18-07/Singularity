@@ -5,13 +5,13 @@
 
 
 ## Team members:
-- Norbert Balazs
-- Anselm Ellwanger ([eciaF](github.com/eciaF))
-- Leonard Fichtner ([Confectio](github.com/Confectio))
-- Felix Karg ([fkarg](github.com/fkarg))
-- Nina Pant ([hufflepuff79](github.com/hufflepuff79))
-- Yvan Satyawan ([yvan674](github.com/yvan674))
-- Julian Tischner ([Ativelox](github.com/ativelox))
+- Norbert Balazs ([balazn](https://github.com/Akai-Ryu))
+- Anselm Ellwanger ([eciaF](https://github.com/eciaF))
+- Leonard Fichtner ([Confectio](https://github.com/Confectio))
+- Felix Karg ([fkarg](https://github.com/fkarg))
+- Nina Pant ([hufflepuff79](https://github.com/hufflepuff79))
+- Yvan Satyawan ([yvan674](https://github.com/yvan674))
+- Julian Tischner ([Ativelox](https://github.com/ativelox))
 
 # Game concept:
  Singularity is a 2.5D real time strategy game inspired by [Achikaps](https://play.google.com/store/apps/details?id=yio.tro.achikaps&hl=en "Achikaps Play Store Link").
