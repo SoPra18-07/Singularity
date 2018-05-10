@@ -1,0 +1,665 @@
+<Project>
+  <Name>Singularity</Name>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Map</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Class">
+        <Name>Map</Name>
+        <Access>Public</Access>
+        <Location left="157" top="234" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">TerrainMap terrain</Member>
+        <Member type="Field">CollisionMap collisions</Member>
+        <Member type="Field">ResoureMap resources</Member>
+        <Member type="Field">int height</Member>
+        <Member type="Field">int width</Member>
+        <Member type="Method">public void Draw()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>TerrainMap</Name>
+        <Access>Public</Access>
+        <Location left="444" top="67" />
+        <Size width="235" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">Texture texture</Member>
+        <Member type="Field">array&lt;Tile&gt; terrain</Member>
+        <Member type="Method">public void Draw()</Member>
+        <Member type="Method">public void DeriveTexture()</Member>
+        <Member type="Method">public void GenerateNewTerrain()</Member>
+        <Member type="Method">public ResourceMap getResourceMap()</Member>
+        <Member type="Method">public CollisionMap getCollisionMap()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>CollisionMap</Name>
+        <Access>Public</Access>
+        <Location left="444" top="393" />
+        <Size width="320" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">array&lt;optional&lt;int&gt;&gt; map</Member>
+        <Member type="Method">public optional&lt;int&gt; getTile(coordinate c)</Member>
+        <Member type="Method">public bool setCollider(coordinate c, optional&lt;id&gt; n)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>ResourceMap</Name>
+        <Access>Public</Access>
+        <Location left="825" top="235" />
+        <Size width="270" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">array&lt;location, type, amount&gt; resources</Member>
+        <Member type="Method">public optional&lt;Resource, value&gt; getResources(coordinate c)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Tile</Name>
+        <Access>Public</Access>
+        <Location left="767" top="67" />
+        <Size width="251" height="118" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">TerrainAttribute attr</Member>
+        <Member type="Method">public TerrainAttribute getTerrainAttribute()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Association" first="4" second="1">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Aggregation</AssociationType>
+      </Relationship>
+      <Relationship type="Association" first="1" second="0">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+      </Relationship>
+      <Relationship type="Association" first="3" second="0">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+      </Relationship>
+      <Relationship type="Association" first="2" second="0">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Units</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Interface">
+        <Name>IUnit</Name>
+        <Access>Public</Access>
+        <Location left="555" top="56" />
+        <Size width="197" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void move()</Member>
+        <Member type="Property">int id { get; }</Member>
+        <Member type="Property">coordinate position { get; }</Member>
+        <Member type="Method">position getPosition()</Member>
+        <Member type="Method">void Draw()</Member>
+        <Member type="Method">void Update()</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>GeneralUnit</Name>
+        <Access>Public</Access>
+        <Location left="292" top="226" />
+        <Size width="206" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">optional&lt;resource&gt; carrying</Member>
+        <Member type="Field">platform goalPosition</Member>
+        <Member type="Field">id position</Member>
+        <Member type="Method">public void goTo(platform p)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>MilitaryUnit</Name>
+        <Access>Public</Access>
+        <Location left="807" top="226" />
+        <Size width="183" height="247" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">int health</Member>
+        <Member type="Method">public int getHealth()</Member>
+        <Member type="Method">public void goTo(coordinate c)</Member>
+        <Member type="Method">public void makeDamage()</Member>
+        <Member type="Method">public void move()</Member>
+        <Member type="Property">public int id { get; }</Member>
+        <Member type="Property">public coordinate position { get; }</Member>
+        <Member type="Method">public position getPosition()</Member>
+        <Member type="Method">public void Draw()</Member>
+        <Member type="Method">public void Update()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>The (second) position of the GeneralUnit is the ID of an Platform or an Road - it is basically only relevant for the inter-Graph stuff</Text>
+        <Location left="76" top="288" />
+        <Size width="160" height="87" />
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Comment" first="3" second="1">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="2" second="0">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="1" second="0">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Platforms</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Class">
+        <Name>PlatformBlank</Name>
+        <Access>Public</Access>
+        <Location left="382" top="106" />
+        <Size width="244" height="298" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">int ID</Member>
+        <Member type="Field">coordinates position</Member>
+        <Member type="Field">Texture texture</Member>
+        <Member type="Field">int health</Member>
+        <Member type="Field">array&lt;UnitID&gt; assigned</Member>
+        <Member type="Field">array&lt;Resources&gt; onPlatform</Member>
+        <Member type="Field">array&lt;Resources&gt; request</Member>
+        <Member type="Field">PlatformActions actionsAvailable</Member>
+        <Member type="Method">public void Draw()</Member>
+        <Member type="Method">public void Update()</Member>
+        <Member type="Method">public array&lt;Resource&gt; getRequried()</Member>
+        <Member type="Method">public array&lt;PlatformActions&gt; getActions()</Member>
+        <Member type="Property">public bool active { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PQuarry</Name>
+        <Access>Public</Access>
+        <Location left="755" top="106" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>ProductionPlatform</Name>
+        <Access>Public</Access>
+        <Location left="1360" top="163" />
+        <Size width="226" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">Optional&lt;Resource&gt; Produce()</Member>
+      </Entity>
+      <Entity type="Comment">
+        <Text>onPlatform are Resources laying on the Platform, a Limit is to be enforced.
+
+requested Resources are for example for refining them in others, or for building blueprints.
+
+the availableActions include things like 'Building Units' or 'Build Settler' from the Command center and 'Build Blueprint' in genereal if available, as well as the activation of Producing platforms</Text>
+        <Location left="166" top="132" />
+        <Size width="160" height="227" />
+      </Entity>
+      <Entity type="Class">
+        <Name>PCommandCenter</Name>
+        <Access>Public</Access>
+        <Location left="962" top="375" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PMine</Name>
+        <Access>Public</Access>
+        <Location left="755" top="198" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PFactory</Name>
+        <Access>Public</Access>
+        <Location left="944" top="198" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PPackaging</Name>
+        <Access>Public</Access>
+        <Location left="269" top="437" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PStorage</Name>
+        <Access>Public</Access>
+        <Location left="574" top="437" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PJunkyard</Name>
+        <Access>Public</Access>
+        <Location left="755" top="375" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PWell</Name>
+        <Access>Public</Access>
+        <Location left="269" top="646" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PArmory</Name>
+        <Access>Public</Access>
+        <Location left="574" top="543" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PEneryFacility</Name>
+        <Access>Public</Access>
+        <Location left="269" top="543" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PLaserDefense</Name>
+        <Access>Public</Access>
+        <Location left="269" top="752" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PKineticDefense</Name>
+        <Access>Public</Access>
+        <Location left="574" top="752" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PBarrack</Name>
+        <Access>Public</Access>
+        <Location left="574" top="646" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Generalization" first="1" second="0">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>662</X>
+          <Y>321</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Comment" first="3" second="0">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Generalization" first="5" second="0">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>709</X>
+          <Y>238</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>683</X>
+          <Y>321</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="6" second="0">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>851</X>
+          <Y>321</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="4" second="0">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1025</X>
+          <Y>350</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>697</X>
+          <Y>321</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="9" second="0">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>845</X>
+          <Y>321</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="7" second="0">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>479</X>
+          <Y>470</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>504</X>
+          <Y>470</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="8" second="0">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>540</X>
+          <Y>475</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>504</X>
+          <Y>475</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="12" second="0">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>475</X>
+          <Y>584</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>504</X>
+          <Y>429</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="11" second="0">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>547</X>
+          <Y>584</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>504</X>
+          <Y>429</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="10" second="0">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>471</X>
+          <Y>687</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>504</X>
+          <Y>432</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="15" second="0">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>547</X>
+          <Y>687</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>504</X>
+          <Y>429</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="13" second="0">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>504</X>
+          <Y>790</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="14" second="0">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>504</X>
+          <Y>697</Y>
+        </BendPoint>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Resources</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Interface">
+        <Name>IResource</Name>
+        <Access>Public</Access>
+        <Location left="1080" top="204" />
+        <Size width="224" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void Draw()</Member>
+        <Member type="Method">void Update()</Member>
+        <Member type="Property">coordinates getPosition { get; }</Member>
+        <Member type="Method">void move(vector diff)</Member>
+        <Member type="Property">int holderId { get; set; }</Member>
+        <Member type="Method">void Take(int takerId)</Member>
+        <Member type="Method">void Use()</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>Oil</Name>
+        <Access>Public</Access>
+        <Location left="817" top="353" />
+        <Size width="162" height="77" />
+        <Collapsed>True</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Metal</Name>
+        <Access>Public</Access>
+        <Location left="817" top="545" />
+        <Size width="162" height="77" />
+        <Collapsed>True</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Water</Name>
+        <Access>Public</Access>
+        <Location left="817" top="167" />
+        <Size width="162" height="77" />
+        <Collapsed>True</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Stone</Name>
+        <Access>Public</Access>
+        <Location left="817" top="447" />
+        <Size width="162" height="77" />
+        <Collapsed>True</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Sand</Name>
+        <Access>Public</Access>
+        <Location left="817" top="261" />
+        <Size width="162" height="77" />
+        <Collapsed>True</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Silizium</Name>
+        <Access>Public</Access>
+        <Location left="555" top="261" />
+        <Size width="162" height="77" />
+        <Collapsed>True</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Plastik</Name>
+        <Access>Public</Access>
+        <Location left="555" top="353" />
+        <Size width="162" height="77" />
+        <Collapsed>True</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Beton</Name>
+        <Access>Public</Access>
+        <Location left="555" top="167" />
+        <Size width="162" height="77" />
+        <Collapsed>True</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Kupfer</Name>
+        <Access>Public</Access>
+        <Location left="555" top="545" />
+        <Size width="162" height="77" />
+        <Collapsed>True</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Treibstoff</Name>
+        <Access>Public</Access>
+        <Location left="555" top="447" />
+        <Size width="162" height="77" />
+        <Collapsed>True</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Stahl</Name>
+        <Access>Public</Access>
+        <Location left="555" top="647" />
+        <Size width="162" height="77" />
+        <Collapsed>True</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Chips</Name>
+        <Access>Public</Access>
+        <Location left="304" top="353" />
+        <Size width="162" height="77" />
+        <Collapsed>True</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Dependency" first="5" second="8">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="3" second="8">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="5" second="6">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="1" second="7">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="1" second="10">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="2" second="11">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="2" second="9">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="6" second="12">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>470</X>
+          <Y>288</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="7" second="12">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="9" second="12">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>521</X>
+          <Y>570</Y>
+        </BendPoint>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Screens</Name>
+    <Language>CSharp</Language>
+    <Entities />
+    <Relationships />
+  </ProjectItem>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Sound</Name>
+    <Language>CSharp</Language>
+    <Entities />
+    <Relationships />
+  </ProjectItem>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Name>GameManager</Name>
+    <Language>CSharp</Language>
+    <Entities />
+    <Relationships />
+  </ProjectItem>
+</Project>
