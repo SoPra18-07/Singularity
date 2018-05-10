@@ -1,35 +1,21 @@
-﻿using System;
-using System.Diagnostics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Singularity.map;
 
 namespace Singularity
 {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game
+    public sealed class Game1 : Game
     {
-        private readonly GraphicsDeviceManager mGraphics;
+        private GraphicsDeviceManager mGraphics;
         private SpriteBatch mSpriteBatch;
 
-        private Texture2D mExampleUnit;
-
-        private Map mMap;
-
-        private readonly Random mRandom;
-
-        private int mCounter;
-
-        public Game1()
+        internal Game1()
         {
             mGraphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-
-            mRandom = new Random();
-            mCounter = 0;
         }
 
         /// <summary>
@@ -41,7 +27,7 @@ namespace Singularity
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            IsMouseVisible = true;
+
             base.Initialize();
         }
 
@@ -53,10 +39,6 @@ namespace Singularity
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
-
-            mExampleUnit = Content.Load<Texture2D>("graphics\\exampleUnit");
-
-            mMap = new Map(Content.Load<Texture2D>("graphics\\landscape"), mGraphics.PreferredBackBufferWidth, mGraphics.PreferredBackBufferHeight);
 
             // TODO: use this.Content to load your game content here
         }
@@ -83,17 +65,7 @@ namespace Singularity
                 Exit();
             }
 
-            mMap.Update(gameTime);
-
-            mCounter += gameTime.ElapsedGameTime.Milliseconds;
-
-            if (mCounter >= 1000)
-            {   
-                mMap.GenerateGraphicAtRandomLocation(mExampleUnit);
-
-                mCounter = 0;
-            }
-
+            // TODO: Add your update logic here
 
             base.Update(gameTime);
         }
@@ -107,9 +79,6 @@ namespace Singularity
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            mSpriteBatch.Begin();
-            mMap.Draw(mGraphics, mSpriteBatch);
-            mSpriteBatch.End();
 
             base.Draw(gameTime);
         }
