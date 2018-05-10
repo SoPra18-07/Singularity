@@ -1,6 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Singularity.map;
 
 namespace Singularity
 {
@@ -9,13 +12,24 @@ namespace Singularity
     /// </summary>
     public class Game1 : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        private readonly GraphicsDeviceManager mGraphics;
+        private SpriteBatch mSpriteBatch;
+
+        private Texture2D mExampleUnit;
+
+        private Map mMap;
+
+        private readonly Random mRandom;
+
+        private int mCounter;
 
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);
+            mGraphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            mRandom = new Random();
+            mCounter = 0;
         }
 
         /// <summary>
@@ -27,7 +41,7 @@ namespace Singularity
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            IsMouseVisible = true;
             base.Initialize();
         }
 
@@ -38,7 +52,11 @@ namespace Singularity
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            mSpriteBatch = new SpriteBatch(GraphicsDevice);
+
+            mExampleUnit = Content.Load<Texture2D>("graphics\\exampleUnit");
+
+            mMap = new Map(Content.Load<Texture2D>("graphics\\landscape"), mGraphics.PreferredBackBufferWidth, mGraphics.PreferredBackBufferHeight);
 
             // TODO: use this.Content to load your game content here
         }
@@ -59,10 +77,23 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
+                Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
                 Exit();
+            }
 
-            // TODO: Add your update logic here
+            mMap.Update(gameTime);
+
+            mCounter += gameTime.ElapsedGameTime.Milliseconds;
+
+            if (mCounter >= 1000)
+            {   
+                mMap.GenerateGraphicAtRandomLocation(mExampleUnit);
+
+                mCounter = 0;
+            }
+
 
             base.Update(gameTime);
         }
@@ -76,6 +107,9 @@ namespace Singularity
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            mSpriteBatch.Begin();
+            mMap.Draw(mGraphics, mSpriteBatch);
+            mSpriteBatch.End();
 
             base.Draw(gameTime);
         }

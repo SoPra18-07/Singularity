@@ -41,6 +41,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="map\ILayerable.cs" />
+    <Compile Include="map\LayerComparator.cs" />
+    <Compile Include="map\SpatialGraphic.cs" />
+    <Compile Include="map\Map.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
