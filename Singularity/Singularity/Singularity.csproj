@@ -42,8 +42,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Game1.cs" />
+    <Compile Include="property\IDraw.cs" />
+    <Compile Include="property\IUpdate.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="screen\IScreen.cs" />
+    <Compile Include="screen\IScreenManager.cs" />
+    <Compile Include="screen\RenderLowerScreen.cs" />
+    <Compile Include="screen\StackScreenManager.cs" />
+    <Compile Include="screen\UpdateLowerScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
