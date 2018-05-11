@@ -1,6 +1,6 @@
 <Project>
   <Name>Singularity</Name>
-  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
     <Name>Map</Name>
     <Language>CSharp</Language>
     <Entities>
@@ -67,30 +67,26 @@
     </Entities>
     <Relationships>
       <Relationship type="Association" first="4" second="1">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Aggregation</AssociationType>
       </Relationship>
       <Relationship type="Association" first="1" second="0">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Composition</AssociationType>
       </Relationship>
       <Relationship type="Association" first="3" second="0">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Composition</AssociationType>
       </Relationship>
       <Relationship type="Association" first="2" second="0">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
@@ -100,7 +96,7 @@
       </Relationship>
     </Relationships>
   </ProjectItem>
-  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
     <Name>Units</Name>
     <Language>CSharp</Language>
     <Entities>
@@ -120,7 +116,7 @@
       <Entity type="Class">
         <Name>GeneralUnit</Name>
         <Access>Public</Access>
-        <Location left="292" top="226" />
+        <Location left="299" top="226" />
         <Size width="206" height="216" />
         <Collapsed>False</Collapsed>
         <Member type="Field">optional&lt;resource&gt; carrying</Member>
@@ -168,7 +164,7 @@
       </Relationship>
     </Relationships>
   </ProjectItem>
-  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
     <Name>Platforms</Name>
     <Language>CSharp</Language>
     <Entities>
@@ -458,7 +454,7 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
       </Relationship>
     </Relationships>
   </ProjectItem>
-  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
     <Name>Resources</Name>
     <Language>CSharp</Language>
     <Entities>
@@ -575,50 +571,34 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
     </Entities>
     <Relationships>
       <Relationship type="Dependency" first="5" second="8">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="3" second="8">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="5" second="6">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="1" second="7">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="1" second="10">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="2" second="11">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="2" second="9">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="6" second="12">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -627,14 +607,10 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
         </BendPoint>
       </Relationship>
       <Relationship type="Dependency" first="7" second="12">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="9" second="12">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -644,22 +620,582 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
       </Relationship>
     </Relationships>
   </ProjectItem>
-  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
     <Name>Screens</Name>
     <Language>CSharp</Language>
-    <Entities />
-    <Relationships />
+    <Entities>
+      <Entity type="Interface">
+        <Name>IScreen</Name>
+        <Access>Public</Access>
+        <Location left="741" top="301" />
+        <Size width="213" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">bool UpdateLower()</Member>
+        <Member type="Method">bool DrawLower()</Member>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IScreenManager</Name>
+        <Access>Public</Access>
+        <Location left="163" top="301" />
+        <Size width="221" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void AddScreen(IScreen screen)</Member>
+        <Member type="Method">void RemoveScreen()</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>StackScreenManager</Name>
+        <Access>Public</Access>
+        <Location left="473" top="372" />
+        <Size width="184" height="94" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">Stack&lt;IScreen&gt; mScreenStack</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>GameScreen</Name>
+        <Access>Public</Access>
+        <Location left="1104" top="372" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>HUDScreen</Name>
+        <Access>Public</Access>
+        <Location left="1104" top="80" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>MainMenuScreen</Name>
+        <Access>Public</Access>
+        <Location left="1104" top="271" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>SaveScreen</Name>
+        <Access>Public</Access>
+        <Location left="1104" top="177" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>LoadScreen</Name>
+        <Access>Public</Access>
+        <Location left="1104" top="482" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>OptionScreen</Name>
+        <Access>Public</Access>
+        <Location left="1104" top="588" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>HelpScreen</Name>
+        <Access>Public</Access>
+        <Location left="1104" top="696" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IDraw</Name>
+        <Access>Public</Access>
+        <Location left="619" top="106" />
+        <Size width="220" height="78" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void Draw(SpriteBatch spriteBatch)</Member>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IUpdate</Name>
+        <Access>Public</Access>
+        <Location left="283" top="106" />
+        <Size width="216" height="78" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void Update(GameTime gameTime)</Member>
+      </Entity>
+      <Entity type="Comment">
+        <Text>This is not a loading screen for saves, but a general loading screen, while loading resources (e.g. the map).</Text>
+        <Location left="1343" top="482" />
+        <Size width="213" height="63" />
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Dependency" first="1" second="11">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="0" second="11">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="1" second="10">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="0" second="10">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="2" second="1">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="3" second="0">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1061</X>
+          <Y>409</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>998</X>
+          <Y>409</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="4" second="0">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="5" second="0">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1077</X>
+          <Y>310</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>981</X>
+          <Y>409</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="6" second="0">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="7" second="0">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1064</X>
+          <Y>525</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>994</X>
+          <Y>409</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="8" second="0">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1079</X>
+          <Y>626</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>979</X>
+          <Y>409</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="9" second="0">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1069</X>
+          <Y>732</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>989</X>
+          <Y>409</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Association" first="2" second="0">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Comment" first="12" second="7">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1318</X>
+          <Y>519</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1292</X>
+          <Y>519</Y>
+        </BendPoint>
+      </Relationship>
+    </Relationships>
   </ProjectItem>
-  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
     <Name>Sound</Name>
     <Language>CSharp</Language>
     <Entities />
     <Relationships />
   </ProjectItem>
-  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
     <Name>GameManager</Name>
     <Language>CSharp</Language>
     <Entities />
     <Relationships />
+  </ProjectItem>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Input</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Interface">
+        <Name>IKeyListener</Name>
+        <Access>Public</Access>
+        <Location left="140" top="543" />
+        <Size width="225" height="112" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void KeyTyped(KeyEvent keyEvent)</Member>
+        <Member type="Method">void KeyPressed(KeyEvent keyEvent)</Member>
+        <Member type="Method">void KeyReleased(KeyEvent keyEvent)</Member>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IMouseListener</Name>
+        <Access>Public</Access>
+        <Location left="449" top="543" />
+        <Size width="274" height="95" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void MousePressed(MouseEvent mouseEvent)</Member>
+        <Member type="Method">void MouseReleased(MouseEvent mouseEvent)</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>KeyEvent</Name>
+        <Access>Public</Access>
+        <Location left="1047" top="341" />
+        <Size width="174" height="94" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public Keys[] CurrentKeys { get; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>MouseEvent</Name>
+        <Access>Public</Access>
+        <Location left="793" top="341" />
+        <Size width="210" height="111" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public Vector2 Position { get; }</Member>
+        <Member type="Property">public EMouseAction MouseAction { get; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IUpdate</Name>
+        <Access>Public</Access>
+        <Location left="315" top="52" />
+        <Size width="215" height="78" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void Update(GameTime gameTime)</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>InputManager</Name>
+        <Access>Public</Access>
+        <Location left="255" top="242" />
+        <Size width="328" height="179" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">List&lt;IKeyListener&gt; mKeyListener</Member>
+        <Member type="Field">List&lt;IMouseListener&gt; mMouseListener</Member>
+        <Member type="Method">public void AddKeyListener(IKeyListener keyListener)</Member>
+        <Member type="Method">public bool RemoveKeyListener(IKeyListener keyListener)</Member>
+        <Member type="Method">public void AddMouseListener(IMouseListener mouseListener)</Member>
+        <Member type="Method">public bool RemoveMouseListener(IMouseListener mouseListener)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Enum">
+        <Name>EMouseAction</Name>
+        <Access>Public</Access>
+        <Location left="820" top="543" />
+        <Size width="162" height="95" />
+        <Collapsed>False</Collapsed>
+        <Value>LEFT_CLICK</Value>
+        <Value>RIGHT_CLICK</Value>
+      </Entity>
+      <Entity type="Enum">
+        <Name>Keys</Name>
+        <Access>Public</Access>
+        <Location left="1047" top="543" />
+        <Size width="162" height="2781" />
+        <Collapsed>True</Collapsed>
+        <Value>A</Value>
+        <Value>Add</Value>
+        <Value>Apps</Value>
+        <Value>Attn</Value>
+        <Value>B</Value>
+        <Value>Back</Value>
+        <Value>BrowserBack</Value>
+        <Value>BrowserFavorites</Value>
+        <Value>BrowserForward</Value>
+        <Value>BrowserHome</Value>
+        <Value>BrowserRefresh</Value>
+        <Value>BrowserSearch</Value>
+        <Value>BrowserStop</Value>
+        <Value>C</Value>
+        <Value>CapsLock</Value>
+        <Value>ChatPadGreen</Value>
+        <Value>ChatPadOrange</Value>
+        <Value>Crsel</Value>
+        <Value>D</Value>
+        <Value>D0</Value>
+        <Value>D1</Value>
+        <Value>D2</Value>
+        <Value>D3</Value>
+        <Value>D4</Value>
+        <Value>D5</Value>
+        <Value>D6</Value>
+        <Value>D7</Value>
+        <Value>D8</Value>
+        <Value>D9</Value>
+        <Value>Decimal</Value>
+        <Value>Delete</Value>
+        <Value>Divide</Value>
+        <Value>Down</Value>
+        <Value>E</Value>
+        <Value>End</Value>
+        <Value>Enter</Value>
+        <Value>EraseEof</Value>
+        <Value>Escape</Value>
+        <Value>Execute</Value>
+        <Value>Exsel</Value>
+        <Value>F</Value>
+        <Value>F1</Value>
+        <Value>F10</Value>
+        <Value>F11</Value>
+        <Value>F12</Value>
+        <Value>F13</Value>
+        <Value>F14</Value>
+        <Value>F15</Value>
+        <Value>F16</Value>
+        <Value>F17</Value>
+        <Value>F18</Value>
+        <Value>F19</Value>
+        <Value>F2</Value>
+        <Value>F20</Value>
+        <Value>F21</Value>
+        <Value>F22</Value>
+        <Value>F23</Value>
+        <Value>F24</Value>
+        <Value>F3</Value>
+        <Value>F4</Value>
+        <Value>F5</Value>
+        <Value>F6</Value>
+        <Value>F7</Value>
+        <Value>F8</Value>
+        <Value>F9</Value>
+        <Value>G</Value>
+        <Value>H</Value>
+        <Value>Help</Value>
+        <Value>Home</Value>
+        <Value>I</Value>
+        <Value>ImeConvert</Value>
+        <Value>ImeNoConvert</Value>
+        <Value>Insert</Value>
+        <Value>J</Value>
+        <Value>K</Value>
+        <Value>Kana</Value>
+        <Value>Kanji</Value>
+        <Value>L</Value>
+        <Value>LaunchApplication1</Value>
+        <Value>LaunchApplication2</Value>
+        <Value>LaunchMail</Value>
+        <Value>Left</Value>
+        <Value>LeftAlt</Value>
+        <Value>LeftControl</Value>
+        <Value>LeftShift</Value>
+        <Value>LeftWindows</Value>
+        <Value>M</Value>
+        <Value>MediaNextTrack</Value>
+        <Value>MediaPlayPause</Value>
+        <Value>MediaPreviousTrack</Value>
+        <Value>MediaStop</Value>
+        <Value>Multiply</Value>
+        <Value>N</Value>
+        <Value>None</Value>
+        <Value>NumLock</Value>
+        <Value>NumPad0</Value>
+        <Value>NumPad1</Value>
+        <Value>NumPad2</Value>
+        <Value>NumPad3</Value>
+        <Value>NumPad4</Value>
+        <Value>NumPad5</Value>
+        <Value>NumPad6</Value>
+        <Value>NumPad7</Value>
+        <Value>NumPad8</Value>
+        <Value>NumPad9</Value>
+        <Value>O</Value>
+        <Value>Oem8</Value>
+        <Value>OemAuto</Value>
+        <Value>OemBackslash</Value>
+        <Value>OemClear</Value>
+        <Value>OemCloseBrackets</Value>
+        <Value>OemComma</Value>
+        <Value>OemCopy</Value>
+        <Value>OemEnlW</Value>
+        <Value>OemMinus</Value>
+        <Value>OemOpenBrackets</Value>
+        <Value>OemPeriod</Value>
+        <Value>OemPipe</Value>
+        <Value>OemPlus</Value>
+        <Value>OemQuestion</Value>
+        <Value>OemQuotes</Value>
+        <Value>OemSemicolon</Value>
+        <Value>OemTilde</Value>
+        <Value>P</Value>
+        <Value>Pa1</Value>
+        <Value>PageDown</Value>
+        <Value>PageUp</Value>
+        <Value>Pause</Value>
+        <Value>Play</Value>
+        <Value>Print</Value>
+        <Value>PrintScreen</Value>
+        <Value>ProcessKey</Value>
+        <Value>Q</Value>
+        <Value>R</Value>
+        <Value>Right</Value>
+        <Value>RightAlt</Value>
+        <Value>RightControl</Value>
+        <Value>RightShift</Value>
+        <Value>RightWindows</Value>
+        <Value>S</Value>
+        <Value>Scroll</Value>
+        <Value>Select</Value>
+        <Value>SelectMedia</Value>
+        <Value>Separator</Value>
+        <Value>Sleep</Value>
+        <Value>Space</Value>
+        <Value>Subtract</Value>
+        <Value>T</Value>
+        <Value>Tab</Value>
+        <Value>U</Value>
+        <Value>Up</Value>
+        <Value>V</Value>
+        <Value>VolumeDown</Value>
+        <Value>VolumeMute</Value>
+        <Value>VolumeUp</Value>
+        <Value>W</Value>
+        <Value>X</Value>
+        <Value>Y</Value>
+        <Value>Z</Value>
+        <Value>Zoom</Value>
+      </Entity>
+      <Entity type="Comment">
+        <Text>See also:
+Microsoft.Xna.Framework.Input.Keys
+</Text>
+        <Location left="1280" top="543" />
+        <Size width="200" height="50" />
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Dependency" first="5" second="4">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="3" second="6">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="2" second="7">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="5" second="1">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="5" second="0">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Comment" first="8" second="7">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="5" second="3">
+        <Label>creates</Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>617</X>
+          <Y>263</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>901</X>
+          <Y>316</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="5" second="2">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>608</X>
+          <Y>263</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+    </Relationships>
   </ProjectItem>
 </Project>
