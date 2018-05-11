@@ -3,6 +3,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Singularity.screen
 {
+    /// <inheritdoc/>
+    /// <remarks>
+    /// A basic implementation for a Screen, used for debugging purposes.
+    /// </remarks>
     internal sealed class UpdateLowerScreen : IScreen
     {
         public void Draw(SpriteBatch spriteBatch)
