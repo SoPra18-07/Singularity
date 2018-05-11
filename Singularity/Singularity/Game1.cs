@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Singularity.screen;
 
 namespace Singularity
 {
@@ -12,10 +13,15 @@ namespace Singularity
         private GraphicsDeviceManager mGraphics;
         private SpriteBatch mSpriteBatch;
 
+        private readonly IScreenManager mScreenManager;
+
         internal Game1()
         {
             mGraphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            mScreenManager = new StackScreenManager();
+
         }
 
         /// <summary>
@@ -27,7 +33,6 @@ namespace Singularity
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
@@ -66,7 +71,7 @@ namespace Singularity
             }
 
             // TODO: Add your update logic here
-
+            mScreenManager.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -79,7 +84,7 @@ namespace Singularity
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-
+            mScreenManager.Draw(mSpriteBatch);
             base.Draw(gameTime);
         }
     }
