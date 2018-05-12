@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Singularity.screen;
 
 namespace Singularity
 {
@@ -12,10 +13,15 @@ namespace Singularity
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        private readonly IScreenManager mScreenManager;
+
         internal Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            mScreenManager = new StackScreenManager();
+
         }
 
         /// <summary>
@@ -28,6 +34,11 @@ namespace Singularity
         {
             // TODO: Add your initialization logic here
 
+            // can be used to debug the screen manager
+            /*
+               mScreenManager.AddScreen(new RenderLowerScreen());
+               mScreenManager.AddScreen(new UpdateLowerScreen());
+            */
             base.Initialize();
         }
 
@@ -66,7 +77,7 @@ namespace Singularity
             }
 
             // TODO: Add your update logic here
-
+            mScreenManager.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -79,7 +90,7 @@ namespace Singularity
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-
+            mScreenManager.Draw(mSpriteBatch);
             base.Draw(gameTime);
         }
     }
