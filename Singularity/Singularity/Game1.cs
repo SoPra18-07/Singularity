@@ -33,6 +33,12 @@ namespace Singularity
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+
+            // can be used to debug the screen manager
+            /*
+               mScreenManager.AddScreen(new RenderLowerScreen());
+               mScreenManager.AddScreen(new UpdateLowerScreen());
+            */
             base.Initialize();
         }
 
