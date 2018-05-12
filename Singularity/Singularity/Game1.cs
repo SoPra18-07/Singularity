@@ -40,8 +40,8 @@ namespace Singularity
 
             // can be used to debug the screen manager
             /*
-               _screenManager.AddScreen(new RenderLowerScreen());
-               _screenManager.AddScreen(new UpdateLowerScreen());
+               mScreenManager.AddScreen(new RenderLowerScreen());
+               mScreenManager.AddScreen(new UpdateLowerScreen());
             */
             base.Initialize();
         }
