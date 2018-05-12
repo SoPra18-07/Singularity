@@ -19,7 +19,6 @@ namespace Singularity
         {
             mGraphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            var unnoetigeVariable = 1;
 
             mScreenManager = new StackScreenManager();
 
