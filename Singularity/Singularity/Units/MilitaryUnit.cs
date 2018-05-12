@@ -6,15 +6,16 @@ namespace Singularity.Units
 {
     class MilitaryUnit : IUnit
     {
-        private Vector2 _position;
-        private Vector2 _targetPosition;
+        private Vector2 mPosition;
+        private Vector2 mTargetPosition;
+        private int mRotation;
 
         public MilitaryUnit(Vector2 position)
         {
             Id = 0; // TODO this will later use a random number generator to create a unique
                     // id for the specific unit.
             Health = 10; //TODO
-            _position = position;
+            mPosition = position;
         }
 
         /// <summary>
@@ -29,8 +30,12 @@ namespace Singularity.Units
         public void Move(Vector2 target)
         {
             //TODO
-            _targetPosition = target;
-            _position = _targetPosition;
+            mTargetPosition = target;
+            mPosition = mTargetPosition;
+
+            // figure out last position compared to next position
+            // and figure out the angle between the two positions
+            mRotation = 5; //TODO
         }
 
         /// <summary>
@@ -41,7 +46,7 @@ namespace Singularity.Units
         /// <summary>
         /// The current position of the unit.
         /// </summary>
-        public Vector2 Position => _position;
+        public Vector2 Position => mPosition;
 
         /// <summary>
         /// Used to set and get assignment. Assignment will potentially be implemented as a new type which
@@ -54,11 +59,19 @@ namespace Singularity.Units
 
         /// <summary>
         /// The required Draw method. This is the method called during the Draw method of the main game class.
+        /// It works by taking the sprite batch, extracting the sprite sheet for the unit, and
+        /// drawing a rectangle around the required area.
         /// </summary>
         /// <param name="spriteBatch"></param>
-        public void Draw(SpriteBatch spriteBatch)
+        /// <param name="texture"></param>
+        public void Draw(SpriteBatch spriteBatch, Texture2D texture)
         {
-            throw new NotImplementedException();
+            // the sprite sheet is 900 x 1500 px, 6 x 20 sprites
+            // meaning each sprite is 150 x 75 px
+            var spriteNumber = mRotation / 3;
+            var x = spriteNumber % 6;
+            var y = (int) Math.Ceiling(spriteNumber / 6d);
+            spriteBatch.Draw(texture, mPosition, new Rectangle(x, y, 150, 75), Color.White);
         }
 
         /// <summary>

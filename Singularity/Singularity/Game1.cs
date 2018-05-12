@@ -10,14 +10,18 @@ namespace Singularity
     /// </summary>
     public sealed class Game1 : Game
     {
-        private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+        private GraphicsDeviceManager mGraphics;
+        private SpriteBatch mSpriteBatch;
+
+        // Sprites!
+
+        private Texture2D mMilitaryUnit;
 
         private readonly IScreenManager mScreenManager;
 
         internal Game1()
         {
-            _graphics = new GraphicsDeviceManager(this);
+            mGraphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
             mScreenManager = new StackScreenManager();
@@ -36,8 +40,8 @@ namespace Singularity
 
             // can be used to debug the screen manager
             /*
-               mScreenManager.AddScreen(new RenderLowerScreen());
-               mScreenManager.AddScreen(new UpdateLowerScreen());
+               _screenManager.AddScreen(new RenderLowerScreen());
+               _screenManager.AddScreen(new UpdateLowerScreen());
             */
             base.Initialize();
         }
@@ -49,7 +53,9 @@ namespace Singularity
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            mSpriteBatch = new SpriteBatch(GraphicsDevice);
+
+            mMilitaryUnit = Content.Load<Texture2D>("UnitSpriteSheet");
 
             // TODO: use this.Content to load your game content here
         }

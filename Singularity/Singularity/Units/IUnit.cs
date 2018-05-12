@@ -26,7 +26,8 @@ namespace Singularity.Units
         /// Draw method for unit
         /// </summary>
         /// <param name="spriteBatch"></param>
-        void Draw(SpriteBatch spriteBatch);
+        /// <param name="texture"></param>
+        void Draw(SpriteBatch spriteBatch, Texture2D texture);
 
         /// <summary>
         /// Update method for unit
