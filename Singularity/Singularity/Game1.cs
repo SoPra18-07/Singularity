@@ -9,12 +9,12 @@ namespace Singularity
     /// </summary>
     public sealed class Game1 : Game
     {
-        private GraphicsDeviceManager mGraphics;
-        private SpriteBatch mSpriteBatch;
+        private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
 
         internal Game1()
         {
-            mGraphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
 
@@ -38,7 +38,7 @@ namespace Singularity
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            mSpriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
         }
