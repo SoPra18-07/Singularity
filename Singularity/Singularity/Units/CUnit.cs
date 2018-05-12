@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 namespace Singularity.Units
 {
     internal class CUnit
-    {
+    {;
     }
 }
