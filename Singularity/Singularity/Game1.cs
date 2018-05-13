@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Singularity.platform;
 using Singularity.screen;
 
 namespace Singularity
@@ -12,6 +13,8 @@ namespace Singularity
     {
         private GraphicsDeviceManager mGraphics;
         private SpriteBatch mSpriteBatch;
+        private Texture2D mPlatformSheet;
+        private RegularPlatform platform;
 
         private readonly IScreenManager mScreenManager;
 
@@ -33,7 +36,7 @@ namespace Singularity
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            platform = new RegularPlatform(200, 200, 100);
             // can be used to debug the screen manager
             /*
                mScreenManager.AddScreen(new RenderLowerScreen());
@@ -52,6 +55,7 @@ namespace Singularity
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            mPlatformSheet = Content.Load<Texture2D>("PlatformSpriteSheet");
         }
 
         /// <summary>
@@ -91,6 +95,9 @@ namespace Singularity
 
             // TODO: Add your drawing code here
             mScreenManager.Draw(mSpriteBatch);
+            mSpriteBatch.Begin();
+            platform.Draw(mSpriteBatch, mPlatformSheet);
+            mSpriteBatch.End();
             base.Draw(gameTime);
         }
     }

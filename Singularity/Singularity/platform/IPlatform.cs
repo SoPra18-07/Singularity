@@ -11,15 +11,15 @@ namespace Singularity.platform
     /// <inheritdoc cref="Singularity.property.IUpdate"/>
     /// <remarks>
     /// An abstraction for "Platforms".
-    /// Examples of IPlatforms would be the basic platform, the quarry etc.
+    /// Examples of IPlatform would be the basic platform, the quarry etc.
     /// </remarks>
-    internal interface IPlatforms: IUpdate, IDraw
+    internal interface IPlatform: IUpdate, IDraw
     {
         /// <summary>
         /// Get the assigned Units of this platform.
         /// </summary>
-        /// <returns> a list containing the IDs of the units</returns>
-        List<CUnit> GetAssignedUnitsIDs();
+        /// <returns> a list containing references of the units</returns>
+        List<CUnit> GetAssignedUnits();
 
         /// <summary>
         /// Get the Position of the platform as a 2dimensional vector.
