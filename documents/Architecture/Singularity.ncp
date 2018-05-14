@@ -67,26 +67,30 @@
     </Entities>
     <Relationships>
       <Relationship type="Association" first="4" second="1">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Aggregation</AssociationType>
       </Relationship>
       <Relationship type="Association" first="1" second="0">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Composition</AssociationType>
       </Relationship>
       <Relationship type="Association" first="3" second="0">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
         <AssociationType>Composition</AssociationType>
       </Relationship>
       <Relationship type="Association" first="2" second="0">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
@@ -103,15 +107,14 @@
       <Entity type="Interface">
         <Name>IUnit</Name>
         <Access>Public</Access>
-        <Location left="555" top="56" />
-        <Size width="197" height="216" />
+        <Location left="567" top="61" />
+        <Size width="310" height="147" />
         <Collapsed>False</Collapsed>
-        <Member type="Method">void move()</Member>
-        <Member type="Property">int id { get; }</Member>
-        <Member type="Property">coordinate position { get; }</Member>
-        <Member type="Method">position getPosition()</Member>
-        <Member type="Method">void Draw()</Member>
-        <Member type="Method">void Update()</Member>
+        <Member type="Property">int Id { get; }</Member>
+        <Member type="Property">Vector2 Postion { get; }</Member>
+        <Member type="Property">Assignment Assignment { get; set; }</Member>
+        <Member type="Method">void Draw(SpriteBatch spriteBatch, Texture2D texture)</Member>
+        <Member type="Method">void Update(GameTime gameTime)</Member>
       </Entity>
       <Entity type="Class">
         <Name>GeneralUnit</Name>
@@ -128,25 +131,33 @@
       <Entity type="Class">
         <Name>MilitaryUnit</Name>
         <Access>Public</Access>
-        <Location left="807" top="226" />
-        <Size width="183" height="247" />
+        <Location left="897" top="185" />
+        <Size width="312" height="298" />
         <Collapsed>False</Collapsed>
-        <Member type="Field">int health</Member>
-        <Member type="Method">public int getHealth()</Member>
-        <Member type="Method">public void goTo(coordinate c)</Member>
-        <Member type="Method">public void makeDamage()</Member>
-        <Member type="Method">public void move()</Member>
-        <Member type="Property">public int id { get; }</Member>
-        <Member type="Property">public coordinate position { get; }</Member>
-        <Member type="Method">public position getPosition()</Member>
-        <Member type="Method">public void Draw()</Member>
-        <Member type="Method">public void Update()</Member>
+        <Member type="Field">int mHealth</Member>
+        <Member type="Field">Vector2 mTargetPosition</Member>
+        <Member type="Field">int mRotation</Member>
+        <Member type="Field">Vector2 mPosition</Member>
+        <Member type="Field">Assignment mAssignment</Member>
+        <Member type="Constructor">public MilitaryUnit(Vector2 position)</Member>
+        <Member type="Property">public int Health { get; set; }</Member>
+        <Member type="Method">public void Move(Vector2 target)</Member>
+        <Member type="Property">public int Id { get; }</Member>
+        <Member type="Property">public Vector2 Position { get; }</Member>
+        <Member type="Property">public Assignment Assignment { get; set; }</Member>
+        <Member type="Method">public void Draw(SpriteBatch spriteBatch, Texture2D texture)</Member>
+        <Member type="Method">public void Update(GameTime gameTime)</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Comment">
         <Text>The (second) position of the GeneralUnit is the ID of an Platform or an Road - it is basically only relevant for the inter-Graph stuff</Text>
         <Location left="76" top="288" />
         <Size width="160" height="87" />
+      </Entity>
+      <Entity type="Comment">
+        <Text>TO DOOOOO</Text>
+        <Location left="322" top="140" />
+        <Size width="160" height="75" />
       </Entity>
     </Entities>
     <Relationships>
@@ -156,11 +167,19 @@
       </Relationship>
       <Relationship type="Realization" first="2" second="0">
         <StartOrientation>Horizontal</StartOrientation>
-        <EndOrientation>Horizontal</EndOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>760</X>
+          <Y>283</Y>
+        </BendPoint>
       </Relationship>
       <Relationship type="Realization" first="1" second="0">
         <StartOrientation>Horizontal</StartOrientation>
-        <EndOrientation>Horizontal</EndOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>651</X>
+          <Y>284</Y>
+        </BendPoint>
       </Relationship>
     </Relationships>
   </ProjectItem>
@@ -169,30 +188,43 @@
     <Language>CSharp</Language>
     <Entities>
       <Entity type="Class">
-        <Name>PlatformBlank</Name>
+        <Name>RegularPlatform</Name>
         <Access>Public</Access>
-        <Location left="382" top="106" />
-        <Size width="244" height="298" />
+        <Location left="371" top="10" />
+        <Size width="286" height="519" />
         <Collapsed>False</Collapsed>
-        <Member type="Field">int ID</Member>
-        <Member type="Field">coordinates position</Member>
-        <Member type="Field">Texture texture</Member>
-        <Member type="Field">int health</Member>
-        <Member type="Field">array&lt;UnitID&gt; assigned</Member>
-        <Member type="Field">array&lt;Resources&gt; onPlatform</Member>
-        <Member type="Field">array&lt;Resources&gt; request</Member>
-        <Member type="Field">PlatformActions actionsAvailable</Member>
-        <Member type="Method">public void Draw()</Member>
-        <Member type="Method">public void Update()</Member>
-        <Member type="Method">public array&lt;Resource&gt; getRequried()</Member>
-        <Member type="Method">public array&lt;PlatformActions&gt; getActions()</Member>
+        <Member type="Field">int mId</Member>
+        <Member type="Field">Vector2 mPosition</Member>
+        <Member type="Field">int mHealth</Member>
+        <Member type="Field">List&lt;CUnit&gt; mUnits</Member>
+        <Member type="Field">List&lt;IResources&gt; mResources</Member>
+        <Member type="Field">Dictionary&lt;IResources, int&gt; mCost</Member>
+        <Member type="Field">Action[] mActions</Member>
+        <Member type="Field">Dictionary&lt;IResources, int&gt; mRequested</Member>
+        <Member type="Field">static int sTimesCreated</Member>
+        <Member type="Field">bool mActive</Member>
+        <Member type="Method">public void Draw(SpriteBatch spritebatch, Texture2D spritesheet)</Member>
+        <Member type="Method">public void Update(GameTime t)</Member>
+        <Member type="Method">public Dictionary&lt;Resource&gt; ResourcesRequired()</Member>
+        <Member type="Method">public Action[] GetSpecialActions()</Member>
         <Member type="Property">public bool active { get; set; }</Member>
+        <Member type="Method">public List&lt;CUnit&gt; GetAssignedUnits()</Member>
+        <Member type="Method">public Vector2 GetPosition()</Member>
+        <Member type="Method">public bool DoSpecialAction(Action action)</Member>
+        <Member type="Method">public List&lt;IResources&gt; GetPlatformResources()</Member>
+        <Member type="Method">public void GetHealth()</Member>
+        <Member type="Method">public void SetHealth(int newHealth)</Member>
+        <Member type="Method">public void Store(IResources resource)</Member>
+        <Member type="Method">public void Remove(IResources resource)</Member>
+        <Member type="Constructor">public RegularPlatform(int x, int y, int health)</Member>
+        <Member type="Method">public void SetmRequested(IResource resource, int number)</Member>
+        <Member type="Method">public Dictionary&lt;IResources, int&gt; getmRequested()</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
         <Name>PQuarry</Name>
         <Access>Public</Access>
-        <Location left="755" top="106" />
+        <Location left="944" top="21" />
         <Size width="162" height="77" />
         <Collapsed>False</Collapsed>
         <Modifier>None</Modifier>
@@ -217,7 +249,7 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
       <Entity type="Class">
         <Name>PCommandCenter</Name>
         <Access>Public</Access>
-        <Location left="962" top="375" />
+        <Location left="1143" top="363" />
         <Size width="162" height="77" />
         <Collapsed>False</Collapsed>
         <Modifier>None</Modifier>
@@ -225,7 +257,7 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
       <Entity type="Class">
         <Name>PMine</Name>
         <Access>Public</Access>
-        <Location left="755" top="198" />
+        <Location left="944" top="136" />
         <Size width="162" height="77" />
         <Collapsed>False</Collapsed>
         <Modifier>None</Modifier>
@@ -233,7 +265,7 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
       <Entity type="Class">
         <Name>PFactory</Name>
         <Access>Public</Access>
-        <Location left="944" top="198" />
+        <Location left="1124" top="136" />
         <Size width="162" height="77" />
         <Collapsed>False</Collapsed>
         <Modifier>None</Modifier>
@@ -241,7 +273,7 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
       <Entity type="Class">
         <Name>PPackaging</Name>
         <Access>Public</Access>
-        <Location left="269" top="437" />
+        <Location left="269" top="537" />
         <Size width="162" height="77" />
         <Collapsed>False</Collapsed>
         <Modifier>None</Modifier>
@@ -249,7 +281,7 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
       <Entity type="Class">
         <Name>PStorage</Name>
         <Access>Public</Access>
-        <Location left="574" top="437" />
+        <Location left="574" top="537" />
         <Size width="162" height="77" />
         <Collapsed>False</Collapsed>
         <Modifier>None</Modifier>
@@ -257,7 +289,7 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
       <Entity type="Class">
         <Name>PJunkyard</Name>
         <Access>Public</Access>
-        <Location left="755" top="375" />
+        <Location left="944" top="313" />
         <Size width="162" height="77" />
         <Collapsed>False</Collapsed>
         <Modifier>None</Modifier>
@@ -265,7 +297,7 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
       <Entity type="Class">
         <Name>PWell</Name>
         <Access>Public</Access>
-        <Location left="269" top="646" />
+        <Location left="269" top="715" />
         <Size width="162" height="77" />
         <Collapsed>False</Collapsed>
         <Modifier>None</Modifier>
@@ -273,7 +305,7 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
       <Entity type="Class">
         <Name>PArmory</Name>
         <Access>Public</Access>
-        <Location left="574" top="543" />
+        <Location left="574" top="620" />
         <Size width="162" height="77" />
         <Collapsed>False</Collapsed>
         <Modifier>None</Modifier>
@@ -281,7 +313,7 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
       <Entity type="Class">
         <Name>PEneryFacility</Name>
         <Access>Public</Access>
-        <Location left="269" top="543" />
+        <Location left="269" top="620" />
         <Size width="162" height="77" />
         <Collapsed>False</Collapsed>
         <Modifier>None</Modifier>
@@ -289,7 +321,7 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
       <Entity type="Class">
         <Name>PLaserDefense</Name>
         <Access>Public</Access>
-        <Location left="269" top="752" />
+        <Location left="269" top="813" />
         <Size width="162" height="77" />
         <Collapsed>False</Collapsed>
         <Modifier>None</Modifier>
@@ -297,7 +329,7 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
       <Entity type="Class">
         <Name>PKineticDefense</Name>
         <Access>Public</Access>
-        <Location left="574" top="752" />
+        <Location left="574" top="813" />
         <Size width="162" height="77" />
         <Collapsed>False</Collapsed>
         <Modifier>None</Modifier>
@@ -305,7 +337,7 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
       <Entity type="Class">
         <Name>PBarrack</Name>
         <Access>Public</Access>
-        <Location left="574" top="646" />
+        <Location left="574" top="715" />
         <Size width="162" height="77" />
         <Collapsed>False</Collapsed>
         <Modifier>None</Modifier>
@@ -316,8 +348,8 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="False">
-          <X>662</X>
-          <Y>321</Y>
+          <X>693</X>
+          <Y>225</Y>
         </BendPoint>
       </Relationship>
       <Relationship type="Comment" first="3" second="0">
@@ -328,40 +360,40 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
-          <X>709</X>
-          <Y>238</Y>
+          <X>898</X>
+          <Y>176</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
-          <X>683</X>
-          <Y>321</Y>
+          <X>714</X>
+          <Y>225</Y>
         </BendPoint>
       </Relationship>
       <Relationship type="Generalization" first="6" second="0">
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
-          <X>851</X>
-          <Y>321</Y>
+          <X>1031</X>
+          <Y>259</Y>
         </BendPoint>
       </Relationship>
       <Relationship type="Generalization" first="4" second="0">
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
-          <X>1025</X>
-          <Y>350</Y>
+          <X>1206</X>
+          <Y>338</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
-          <X>697</X>
-          <Y>321</Y>
+          <X>728</X>
+          <Y>225</Y>
         </BendPoint>
       </Relationship>
       <Relationship type="Generalization" first="9" second="0">
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
-          <X>845</X>
-          <Y>321</Y>
+          <X>1034</X>
+          <Y>259</Y>
         </BendPoint>
       </Relationship>
       <Relationship type="Generalization" first="7" second="0">
@@ -369,11 +401,11 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
           <X>479</X>
-          <Y>470</Y>
+          <Y>570</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
-          <X>504</X>
-          <Y>470</Y>
+          <X>493</X>
+          <Y>595</Y>
         </BendPoint>
       </Relationship>
       <Relationship type="Generalization" first="8" second="0">
@@ -381,11 +413,11 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
           <X>540</X>
-          <Y>475</Y>
+          <Y>575</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
-          <X>504</X>
-          <Y>475</Y>
+          <X>493</X>
+          <Y>600</Y>
         </BendPoint>
       </Relationship>
       <Relationship type="Generalization" first="12" second="0">
@@ -393,11 +425,11 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
           <X>475</X>
-          <Y>584</Y>
+          <Y>661</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
-          <X>504</X>
-          <Y>429</Y>
+          <X>493</X>
+          <Y>554</Y>
         </BendPoint>
       </Relationship>
       <Relationship type="Generalization" first="11" second="0">
@@ -405,11 +437,11 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
           <X>547</X>
-          <Y>584</Y>
+          <Y>661</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
-          <X>504</X>
-          <Y>429</Y>
+          <X>493</X>
+          <Y>554</Y>
         </BendPoint>
       </Relationship>
       <Relationship type="Generalization" first="10" second="0">
@@ -417,11 +449,11 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
           <X>471</X>
-          <Y>687</Y>
+          <Y>756</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
-          <X>504</X>
-          <Y>432</Y>
+          <X>493</X>
+          <Y>557</Y>
         </BendPoint>
       </Relationship>
       <Relationship type="Generalization" first="15" second="0">
@@ -429,11 +461,11 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
           <X>547</X>
-          <Y>687</Y>
+          <Y>756</Y>
         </BendPoint>
         <BendPoint relativeToStartShape="False">
-          <X>504</X>
-          <Y>429</Y>
+          <X>493</X>
+          <Y>554</Y>
         </BendPoint>
       </Relationship>
       <Relationship type="Generalization" first="13" second="0">
@@ -441,7 +473,7 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
           <X>504</X>
-          <Y>790</Y>
+          <Y>851</Y>
         </BendPoint>
       </Relationship>
       <Relationship type="Generalization" first="14" second="0">
@@ -449,7 +481,7 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
           <X>504</X>
-          <Y>697</Y>
+          <Y>758</Y>
         </BendPoint>
       </Relationship>
     </Relationships>
@@ -571,34 +603,50 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
     </Entities>
     <Relationships>
       <Relationship type="Dependency" first="5" second="8">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="3" second="8">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="5" second="6">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="1" second="7">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="1" second="10">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="2" second="11">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="2" second="9">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="6" second="12">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -607,10 +655,14 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
         </BendPoint>
       </Relationship>
       <Relationship type="Dependency" first="7" second="12">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="9" second="12">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -731,38 +783,26 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
     </Entities>
     <Relationships>
       <Relationship type="Dependency" first="1" second="11">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="0" second="11">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="1" second="10">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="0" second="10">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="2" second="1">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="3" second="0">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -775,14 +815,10 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
         </BendPoint>
       </Relationship>
       <Relationship type="Dependency" first="4" second="0">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="5" second="0">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -795,14 +831,10 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
         </BendPoint>
       </Relationship>
       <Relationship type="Dependency" first="6" second="0">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="7" second="0">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -815,8 +847,6 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
         </BendPoint>
       </Relationship>
       <Relationship type="Dependency" first="8" second="0">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -829,8 +859,6 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
         </BendPoint>
       </Relationship>
       <Relationship type="Dependency" first="9" second="0">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <BendPoint relativeToStartShape="True">
@@ -843,6 +871,8 @@ the availableActions include things like 'Building Units' or 'Build Settler' fro
         </BendPoint>
       </Relationship>
       <Relationship type="Association" first="2" second="0">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
         <Direction>Unidirectional</Direction>
@@ -1126,12 +1156,12 @@ Microsoft.Xna.Framework.Input.Keys
     </Entities>
     <Relationships>
       <Relationship type="Dependency" first="5" second="4">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Association" first="3" second="6">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
@@ -1140,6 +1170,8 @@ Microsoft.Xna.Framework.Input.Keys
         <EndMultiplicity>1</EndMultiplicity>
       </Relationship>
       <Relationship type="Association" first="2" second="7">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
@@ -1148,6 +1180,8 @@ Microsoft.Xna.Framework.Input.Keys
         <EndMultiplicity>0..*</EndMultiplicity>
       </Relationship>
       <Relationship type="Association" first="5" second="1">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
@@ -1156,6 +1190,8 @@ Microsoft.Xna.Framework.Input.Keys
         <EndMultiplicity>0..*</EndMultiplicity>
       </Relationship>
       <Relationship type="Association" first="5" second="0">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
@@ -1185,6 +1221,8 @@ Microsoft.Xna.Framework.Input.Keys
         <EndMultiplicity>0..*</EndMultiplicity>
       </Relationship>
       <Relationship type="Association" first="5" second="2">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <BendPoint relativeToStartShape="True">
