@@ -14,7 +14,7 @@ namespace Singularity
         private GraphicsDeviceManager mGraphics;
         private SpriteBatch mSpriteBatch;
         private Texture2D mPlatformSheet;
-        private RegularPlatform platform;
+        private RegularPlatform mPlatform;
 
         private readonly IScreenManager mScreenManager;
 
@@ -36,7 +36,7 @@ namespace Singularity
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            platform = new RegularPlatform(200, 200, 100);
+            mPlatform = new RegularPlatform(200, 200, 100, mPlatformSheet);
             // can be used to debug the screen manager
             /*
                mScreenManager.AddScreen(new RenderLowerScreen());
@@ -96,7 +96,7 @@ namespace Singularity
             // TODO: Add your drawing code here
             mScreenManager.Draw(mSpriteBatch);
             mSpriteBatch.Begin();
-            platform.Draw(mSpriteBatch, mPlatformSheet);
+            mPlatform.Draw(mSpriteBatch);
             mSpriteBatch.End();
             base.Draw(gameTime);
         }
