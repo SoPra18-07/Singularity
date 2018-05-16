@@ -1,7 +1,7 @@
 language: csharp
 solution: Singularity/Singularity.sln
 before_install:
-  - wget http://www.monogame.net/releases/v3.4/MonoGame.Linux.zip
+  - wget http://www.builtwithmonogame.com/releases/v3.4/MonoGame.Linux.zip
   - unzip MonoGame.Linux.zip
   - find * -type f -exec chmod 777 {} \; # lazy just make all executable
 install:

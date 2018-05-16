@@ -13,7 +13,8 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin graphics/landscape.png
+
+#begin PlatformSpriteSheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -23,9 +24,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/landscape.png
+/build:PlatformSpriteSheet.png
 
-#begin graphics/exampleUnit.png
+#begin UnitSpriteSheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -35,5 +36,4 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/exampleUnit.png
-
+/build:UnitSpriteSheet.png
