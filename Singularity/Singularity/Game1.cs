@@ -16,6 +16,10 @@ namespace Singularity
         private Texture2D mPlatformSheet;
         private RegularPlatform mPlatform;
 
+        // Sprites!
+
+        private Texture2D mMilitaryUnit;
+
         private readonly IScreenManager mScreenManager;
 
         internal Game1()
@@ -53,6 +57,8 @@ namespace Singularity
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
+
+            mMilitaryUnit = Content.Load<Texture2D>("UnitSpriteSheet");
 
             // TODO: use this.Content to load your game content here
             mPlatformSheet = Content.Load<Texture2D>("PlatformSpriteSheet");

@@ -46,6 +46,8 @@
     <Compile Include="platform\Job.cs" />
     <Compile Include="platform\RegularPlatform.cs" />
     <Compile Include="platform\State.cs" />
+    <Compile Include="Units\IUnit.cs" />
+    <Compile Include="Units\MilitaryUnit.cs" />
     <Compile Include="property\IDraw.cs" />
     <Compile Include="property\IUpdate.cs" />
     <Compile Include="Program.cs" />
