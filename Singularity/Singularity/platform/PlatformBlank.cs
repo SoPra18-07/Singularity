@@ -9,59 +9,20 @@ using Singularity.Units;
 namespace Singularity.platform
 {
 
-    internal class RegularPlatform : IDraw, IUpdate
+    internal class PlatformBlank : IDraw, IUpdate
     {
-        private static int sTimesCreated;
         private int mHealth;
         private int mId;
         private bool mIsBlueprint;
-        private bool mActive;
-        private State state;
         private readonly Action[] mActions;
         private readonly Vector2 mPosition;
         private readonly Texture2D mSpritesheet;
         private readonly Dictionary<CUnit, Job> mAssignedUnits;
-        private List<CUnit> mOnPlatformUnits;
         private List<IResources> mResources;
         private Dictionary<IResources, int> mRequested;
         private readonly Dictionary<IResources, int> mCost;
 
 
-        /// <summary>
-        /// Returns the Active/Passive state of the platform.
-        /// </summary>
-        /// <returns></returns>
-        public bool GetmActive()
-        {
-            return mActive;
-        }
-
-        /// <summary>
-        /// Change the Active/Passive state of the platform.
-        /// </summary>
-        /// <param name="active">True stands for active.</param>
-        public void SetmActive(bool active)
-        {
-            mActive = active;
-        }
-
-        /// <summary>
-        /// Make an unit enter the platform.
-        /// </summary>
-        /// <param name="unit">Unit to enter the platform</param>
-        public void EnterPlatform(CUnit unit)
-        {
-            mOnPlatformUnits.Add(unit);
-        }
-
-        /// <summary>
-        /// Make an unit leave the platform.
-        /// </summary>
-        /// <param name="unit">Unit to leave the platform</param>
-        public void LeavePlatform(CUnit unit)
-        {
-            mOnPlatformUnits.Remove(unit);
-        }
 
         /// <summary>
         /// Get the assigned Units of this platform.
@@ -130,7 +91,7 @@ namespace Singularity.platform
         /// Get the requirements of resources to build this platform.
         /// </summary>
         /// <returns> a dictionary of the resources with a number telling how much of it is required</returns>
-        public Dictionary<IResources, int> ResourcesRequired()
+        public Dictionary<IResources, int> GetResourcesRequired()
         {
             return mCost;
         }
@@ -154,30 +115,43 @@ namespace Singularity.platform
         }
 
         /// <summary>
-        /// Set the health points of the platform to a new value.
+        /// Heal the platform or inflict damage on it.
         /// </summary>
-        /// <param name="newHealth"> the new health points of the platform</param>
-        public void SetHealth(int newHealth)
+        /// <param name="damage">Negative values for healing, positive for damage</param>
+        public void TakeHealDamage(int damage)
         {
-            mHealth = newHealth;
+            mHealth += damage;
+            if (mHealth <= 0)
+            {
+                //destroyplatform
+            }
         }
 
         /// <summary>
         /// Add a new resource to the platform.
         /// </summary>
         /// <param name="resource"> the resource to be added to the platform </param>
-        public void Store(IResources resource)
+        public void StoreResource(IResources resource)
         {
             mResources.Add(resource);
         }
 
         /// <summary>
-        /// Remove the given resource from the platform.
+        /// Use this method to get the resource you asked for. Removes the resource from the platform.
         /// </summary>
-        /// <param name="resource"> the resource to be removed </param>
-        public void Remove(IResources resource)
+        /// <param name="resource">The resource you ask for</param>
+        /// <returns>the resource you asked for, null otherwise.</returns>
+        public IResources GetResource(IResources resource)
         {
-            mResources.Remove(resource);
+            var index = mResources.IndexOf(resource);
+            if (index < 0)
+            {
+                return null;
+            }
+
+            var foundresource = mResources[index];
+            mResources.RemoveAt(index);
+            return foundresource;
         }
 
         /// <summary>
@@ -197,6 +171,11 @@ namespace Singularity.platform
         public void SetmRequested(IResources resource, int number)
         {
             mRequested.Add(resource, number);
+        }
+
+        public void Produce()
+        {
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc cref="Singularity.property.IDraw"/>
@@ -224,15 +203,13 @@ namespace Singularity.platform
             throw new NotImplementedException();
         }
 
-        public RegularPlatform(int x, int y, int health, Texture2D spritesheet)
+        public PlatformBlank(Vector2 position, Texture2D spritesheet)
         {
             //add boundaries check?
-            mPosition = new Vector2(x, y);
-            mHealth = health;
+            mPosition = position;
 
-            //The ID of the nth platform will be n.
-            sTimesCreated++;
-            mId = sTimesCreated;
+            //default?
+            mHealth = 100;
 
             //The only action available so far is BlueprintBuild.
             mActions = new Action[1];
@@ -247,13 +224,8 @@ namespace Singularity.platform
 
             mSpritesheet = spritesheet;
 
-            mActive = true;
-
             mIsBlueprint = true;
             mRequested = new Dictionary<IResources, int>();
-
-            mOnPlatformUnits = new List<CUnit>();
-
         }
     }
 }

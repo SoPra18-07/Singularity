@@ -44,8 +44,7 @@
     <Compile Include="Game1.cs" />
     <Compile Include="platform\Action.cs" />
     <Compile Include="platform\Job.cs" />
-    <Compile Include="platform\RegularPlatform.cs" />
-    <Compile Include="platform\State.cs" />
+    <Compile Include="platform\PlatformBlank.cs" />
     <Compile Include="property\IDraw.cs" />
     <Compile Include="property\IUpdate.cs" />
     <Compile Include="Program.cs" />
