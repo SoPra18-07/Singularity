@@ -13,6 +13,7 @@
 
 #---------------------------------- Content ---------------------------------#
 
+
 #begin PlatformSpriteSheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -36,4 +37,3 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:UnitSpriteSheet.png
-
