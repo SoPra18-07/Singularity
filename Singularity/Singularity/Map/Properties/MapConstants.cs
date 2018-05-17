@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Singularity.Map.Properties
+{   
+    /// <summary>
+    /// Provides constants which are predetermined before the game. May needs tweaks.
+    /// </summary>
+    internal static class MapConstants
+    {   
+        /// <summary>
+        /// The width of the Grid used for collision detection in pixels.
+        /// </summary>
+        public const int GridWidth = 40;
+
+        /// <summary>
+        /// The height of the Grid used for collision detection in pixels.
+        /// </summary>
+        public const int GridHeight = 40;
+
+        /// <summary>
+        /// The width of the background picture for the map.
+        /// </summary>
+        public const int MapWidth = 2032;
+
+        /// <summary>
+        /// The height of the background picture for the map.
+        /// </summary>
+        public const int MapHeight = 1023;
+
+    }
+}

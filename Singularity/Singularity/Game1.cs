@@ -12,6 +12,7 @@ namespace Singularity
     {
         private GraphicsDeviceManager mGraphics;
         private SpriteBatch mSpriteBatch;
+        private Map.Map mMap;
 
         // Sprites!
 
@@ -38,6 +39,10 @@ namespace Singularity
         {
             // TODO: Add your initialization logic here
 
+            IsMouseVisible = true;
+            mGraphics.PreferredBackBufferWidth = 1080;
+            mGraphics.PreferredBackBufferHeight = 720;
+            mGraphics.ApplyChanges();
             // can be used to debug the screen manager
             /*
                mScreenManager.AddScreen(new RenderLowerScreen());
@@ -56,6 +61,13 @@ namespace Singularity
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
             mMilitaryUnit = Content.Load<Texture2D>("UnitSpriteSheet");
+            var backgroundTexture = Content.Load<Texture2D>("MockUpBackground");
+            var debugLine = new Texture2D(mGraphics.GraphicsDevice, 1, 1);
+            debugLine.SetData<Color>(new Color[] {Color.White});
+
+            mMap = new Map.Map(backgroundTexture, debugLine, GraphicsDevice.Viewport);
+
+            System.Diagnostics.Debug.WriteLine(GraphicsDevice.Viewport.Width);
 
             // TODO: use this.Content to load your game content here
         }
@@ -83,6 +95,7 @@ namespace Singularity
             }
 
             // TODO: Add your update logic here
+            mMap.Update(gameTime);
             mScreenManager.Update(gameTime);
             base.Update(gameTime);
         }
@@ -93,10 +106,11 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
             mScreenManager.Draw(mSpriteBatch);
+            mMap.Draw(mSpriteBatch);
             base.Draw(gameTime);
         }
     }

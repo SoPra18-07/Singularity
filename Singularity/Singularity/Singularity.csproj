@@ -41,7 +41,12 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\NoSuchElementException.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Map\Camera.cs" />
+    <Compile Include="Map\CollisionMap.cs" />
+    <Compile Include="Map\Map.cs" />
+    <Compile Include="Map\Properties\MapConstants.cs" />
     <Compile Include="Units\IUnit.cs" />
     <Compile Include="Units\MilitaryUnit.cs" />
     <Compile Include="Property\IDraw.cs" />
@@ -53,6 +58,8 @@
     <Compile Include="Screen\RenderLowerScreen.cs" />
     <Compile Include="Screen\StackScreenManager.cs" />
     <Compile Include="Screen\UpdateLowerScreen.cs" />
+    <Compile Include="Utils\Optional.cs" />
+    <Compile Include="Utils\Pair.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -68,9 +75,7 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Map\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
