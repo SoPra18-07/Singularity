@@ -65,7 +65,7 @@ namespace Singularity
             var debugLine = new Texture2D(mGraphics.GraphicsDevice, 1, 1);
             debugLine.SetData<Color>(new Color[] {Color.White});
 
-            mMap = new Map.Map(backgroundTexture, debugLine, GraphicsDevice.Viewport);
+            mMap = new Map.Map(backgroundTexture, GraphicsDevice.Viewport, debugLine);
 
             System.Diagnostics.Debug.WriteLine(GraphicsDevice.Viewport.Width);
 

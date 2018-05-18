@@ -47,6 +47,9 @@
     <Compile Include="Map\CollisionMap.cs" />
     <Compile Include="Map\Map.cs" />
     <Compile Include="Map\Properties\MapConstants.cs" />
+    <Compile Include="Map\ResourceMap.cs" />
+    <Compile Include="Map\StructureMap.cs" />
+    <Compile Include="Resources\EResourceType.cs" />
     <Compile Include="Units\IUnit.cs" />
     <Compile Include="Units\MilitaryUnit.cs" />
     <Compile Include="Property\IDraw.cs" />
@@ -60,6 +63,7 @@
     <Compile Include="Screen\UpdateLowerScreen.cs" />
     <Compile Include="Utils\Optional.cs" />
     <Compile Include="Utils\Pair.cs" />
+    <Compile Include="Utils\Triple.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
