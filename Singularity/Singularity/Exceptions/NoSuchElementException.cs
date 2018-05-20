@@ -10,14 +10,9 @@ namespace Singularity.Exceptions
     {
         private const string ErrorMessage = "No value present";
 
-        public NoSuchElementException(string message) : base(message)
-        {
-        }
+        public NoSuchElementException(string message) : base(message) { }
 
-        public NoSuchElementException() : base(ErrorMessage)
-        {
-
-        }
+        public NoSuchElementException() : base(ErrorMessage) { }
 
     }
 }

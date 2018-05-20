@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Map.Properties;
@@ -7,6 +6,7 @@ using Singularity.Property;
 
 namespace Singularity.Map
 {   
+    //TODO: update in such a way that zoom is centered on the current mouse position
     /// <inheritdoc/>
     /// <remarks>
     /// The camera object is used to move and zoom the map and all its components.
@@ -27,12 +27,12 @@ namespace Singularity.Map
         /// <summary>
         /// The x location of the camera unzoomed. Could also be called the "true" or "absolute" x location.
         /// </summary>
-        private int mX;
+        private float mX;
 
         /// <summary>
         /// The y location of the camera unzoomed. Could also be called the "true" or "absolute" y location.
         /// </summary>
-        private int mY;
+        private float mY;
 
         /// <summary>
         /// The current zoom value of the camera.
@@ -80,6 +80,8 @@ namespace Singularity.Map
             mOldScrollWheelValue = 0;
             mBounds = new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight);
 
+            mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
+
         }
 
         /// <summary>
@@ -92,92 +94,32 @@ namespace Singularity.Map
             return mTransform;
         }
 
-        public float GetZoom()
-        {
-            return mZoom;
-        }
-
         //TODO: remove this when input manager is there, since we don't need to fetch it anymore
         public void Update(GameTime gametime)
         {
 
-            // camera movement related stuff
-            if (Keyboard.GetState().IsKeyDown(Keys.W))
+            //make sure to validate positional values (not moving out of bounds) after moving the camera.
+            if (ApplyMovement())
             {
-                mY -= CameraMovementSpeed;
+                ValidatePosition();
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
-            {
-                mY += CameraMovementSpeed;
-            }
+            UpdateZoom();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                mX -= CameraMovementSpeed;
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                mX += CameraMovementSpeed;
-            }
-            ValidatePosition();
-
-
-            // camera scroll related stuff
-            var scaleChange = 0f;
-
-            if (Mouse.GetState().ScrollWheelValue - mOldScrollWheelValue < 0)
-            {
-                scaleChange = -0.1f;
-            }
-            else if (Mouse.GetState().ScrollWheelValue - mOldScrollWheelValue > 0)
-            {
-                scaleChange = 0.1f;
-            }
-
-            if (!((mZoom + scaleChange) * MapConstants.MapWidth < mViewport.Width ||
-                  (mZoom + scaleChange) * MapConstants.MapHeight < mViewport.Height))
-            {
-                mZoom += scaleChange;
-            }
-
-            mOldScrollWheelValue = Mouse.GetState().ScrollWheelValue;
-
-            /*
-             * This isn't as complicated as one might think. the first matrix we create looks as follows:
-             *
-             *     [    mZoom   0       0   ]
-             * A = [    0       mZoom   0   ]
-             *     [    0       0       1   ]
-             *
-             * The translation matrix looks as follows:
-             *
-             *     [    1   0   -mX ]
-             * B = [    0   1   -mY ]
-             *     [    0   0   1   ]
-             *
-             * The matrix product would look as follows:
-             *
-             *          [   mZoom   0       -mZoom * mX ]   (x)     (mZoom * x - z * mZoom * mX )       (mZoom * x - mZoom * mX )
-             * A * B =  [   0       mZoom   -mZoom * mY ] * (y) =   (mZoom * y - z * mZoom * mY )   =   (mZoom * y - mZoom * mY )
-             *          [   0       0       1           ]   (z)     (z                          )       (1                      )
-             *
-             * which does make sense,  since we're operating in a 2D room with 2 coordinates. First we adjust our original x coordinate
-             * by the zoom factor. The higher our camera positional values are the more we have to move the object away. Imagine moving
-             * the camera to the right, all the objects have to be moved to the left then to adjust to the camera view. The amount we subtract
-             * also has to get adjusted by the zoom. And thats all we need to do. Wrapped in a convinient matrix.
-             *
-             */
-            mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
+            //finally update the matrix to all the fitting values.    
+            UpdateTransformMatrix();
         }
 
+        // TODO: update this method such that rounding will not cause slight out of map clipping when zoomed in
         /// <summary>
         /// Checks whether the camera would move out of bounds and corrects the camera to
         /// clip to the edge if its the case.
         /// </summary>
         private void ValidatePosition()
-        {
+        {   
+            // first of all we need to update our matrix with the new values, since they got changed by moving.
+            UpdateTransformMatrix();
+
             /*
              * The current top left point of the camera in world space. This isn't too complicated either.
              * We know that all our objects get multiplied by our transform matrix. Thus if we want
@@ -199,22 +141,110 @@ namespace Singularity.Map
             var positionOffsetY = mY - cameraWorldMin.Y;
 
             //finally adjust the values by the given bounds.
-             mX = (int) (MathHelper.Clamp(cameraWorldMin.X, limitWorldMin.X, limitWorldMax.X - cameraSize.X) +
-                          positionOffsetX);
-             mY = (int) (MathHelper.Clamp(cameraWorldMin.Y, limitWorldMin.Y, limitWorldMax.Y - cameraSize.Y) +
+            mX = (int) (MathHelper.Clamp(cameraWorldMin.X, limitWorldMin.X, limitWorldMax.X - cameraSize.X) +
+                        positionOffsetX);
+            mY = (int) (MathHelper.Clamp(cameraWorldMin.Y, limitWorldMin.Y, limitWorldMax.Y - cameraSize.Y) +
                         positionOffsetY);
+
         }
 
-        public Rectangle GetAsView(int x, int y, int width, int height)
+        ///<summary>
+        /// This isn't as complicated as one might think. the first matrix we create looks as follows:
+        ///
+        ///     [    mZoom   0       0   ]
+        /// A = [    0       mZoom   0   ]
+        ///     [    0       0       1   ]
+        ///
+        /// The translation matrix looks as follows:
+        ///
+        ///     [    1   0   -mX ]
+        /// B = [    0   1   -mY ]
+        ///     [    0   0   1   ]
+        ///
+        /// The matrix product would look as follows:
+        ///
+        ///          [   mZoom   0       -mZoom * mX ]   (x)     (mZoom * x - z * mZoom * mX )       (mZoom * x - mZoom * mX )
+        /// A * B =  [   0       mZoom   -mZoom * mY ] * (y) =   (mZoom * y - z * mZoom * mY )   =   (mZoom * y - mZoom * mY )
+        ///          [   0       0       1           ]   (z)     (z                          )       (1                      )
+        ///
+        /// which does make sense,  since we're operating in a 2D room with 2 coordinates. First we adjust our original x coordinate
+        /// by the zoom factor. The higher our camera positional values are the more we have to move the object away. Imagine moving
+        /// the camera to the right, all the objects have to be moved to the left then to adjust to the camera view. The amount we subtract
+        /// also has to get adjusted by the zoom. And thats all we need to do. Wrapped in a convinient matrix.
+        ///
+        /// For reference also check:
+        /// https://en.wikipedia.org/wiki/Translation_(geometry)
+        /// https://en.wikipedia.org/wiki/Scaling_(geometry)
+        ///</summary>
+        private void UpdateTransformMatrix()
         {
-            var newPos = Vector2.Transform(new Vector2(x, y), mTransform);
-            var newSize = new Vector2(width * mZoom, height * mZoom);
-
-            return new Rectangle((int) newPos.X, (int) newPos.Y, (int) newSize.X, (int) newSize.Y);
+            mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
         }
-        public Rectangle GetAsView(Rectangle rectangle)
+
+        /// <summary>
+        /// Fetches key presses and updates the current absolute camera location. 
+        /// </summary>
+        /// <returns>True if the camera got moved, false otherwise</returns>
+        private bool ApplyMovement()
         {
-            return GetAsView(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
+            var moved = false;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.W))
+            {
+                mY -= CameraMovementSpeed;
+                moved = true;
+            }
+
+            else if (Keyboard.GetState().IsKeyDown(Keys.S))
+            {
+                mY += CameraMovementSpeed;
+                moved = true;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.A))
+            {
+                mX -= CameraMovementSpeed;
+                moved = true;
+            }
+
+            else if (Keyboard.GetState().IsKeyDown(Keys.D))
+            {
+                mX += CameraMovementSpeed;
+                moved = true;
+            }
+
+            return moved;
+        }
+
+        /// <summary>
+        /// Updates the current zoom member variable.
+        /// </summary>
+        /// <returns>True if the zoom got changed, false otherwise</returns>
+        private bool UpdateZoom()
+        {
+            var zoomed = false;
+            var scaleChange = 0f;
+
+            if (Mouse.GetState().ScrollWheelValue - mOldScrollWheelValue < 0)
+            {
+                scaleChange = -0.1f;
+            }
+            else if (Mouse.GetState().ScrollWheelValue - mOldScrollWheelValue > 0)
+            {
+                scaleChange = 0.1f;
+            }
+
+            if (!((mZoom + scaleChange) * MapConstants.MapWidth < mViewport.Width ||
+                  (mZoom + scaleChange) * MapConstants.MapHeight < mViewport.Height))
+            {
+                mZoom += scaleChange;
+                zoomed = true;
+            }
+
+            mOldScrollWheelValue = Mouse.GetState().ScrollWheelValue;
+
+            return zoomed;
         }
     }
 }
+

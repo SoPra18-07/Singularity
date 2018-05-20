@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.XPath;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Singularity.Map.Properties;
 using Singularity.Utils;

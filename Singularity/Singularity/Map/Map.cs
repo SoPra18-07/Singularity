@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Map.Properties;
+using Singularity.platform;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Utils;
@@ -33,11 +34,11 @@ namespace Singularity.Map
             mBackgroundTexture = backgroundTexture;
             mDebugLine = debugLine;
 
+            mCamera = new Camera(viewport, 0, 300);
+
             mCollisionMap = new CollisionMap();
             mStructureMap = new StructureMap();
             mResourceMap = new ResourceMap(initialResources);
-
-            mCamera = new Camera(viewport, 0, 300);
         }
 
         /// <see cref="CollisionMap.UpdateCollider(Vector2, int)"/>
@@ -48,29 +49,41 @@ namespace Singularity.Map
 
         public void Draw(SpriteBatch spriteBatch)
         {   
-            spriteBatch.Begin(
-                //SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, mCamera.GetTransform()
-                );
 
-            var position = Vector2.Transform(new Vector2(0, 0), mCamera.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, mCamera.GetTransform());
 
             //draw the background texture
             spriteBatch.Draw(mBackgroundTexture,
-                new Rectangle((int) position.X, (int) position.Y, (int) (MapConstants.MapWidth * mCamera.GetZoom()),  (int) (MapConstants.MapHeight * mCamera.GetZoom())),
+                new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight),
                 Color.White);
 
-            //pass the draw method to the structure map so it can draw all the structures in the game
             mStructureMap.Draw(spriteBatch);
+
 
             //make sure to only draw the grid if a texture is given.
             if (mDebugLine == null)
             {
+                spriteBatch.End();
                 return;
             }
-            //TODO: actually draw the grid.
             //draw the collision map grid.
             var collisonMap = mCollisionMap.GetCollisionMap();
-            
+
+            for (var columnCount = 0; columnCount <= collisonMap.GetLength(0); columnCount++)
+            {
+                spriteBatch.Draw(mDebugLine,
+                    new Rectangle(columnCount * MapConstants.GridWidth, 0, 1, MapConstants.MapHeight),
+                    Color.Yellow);
+            }
+
+            for (var rowCount = 0; rowCount <= collisonMap.GetLength(0); rowCount++)
+            {
+                spriteBatch.Draw(mDebugLine,
+                    new Rectangle(0, rowCount * MapConstants.GridHeight, MapConstants.MapWidth, 1),
+                    Color.Cyan);
+            }
+
+
 
             for (var i = 0; i < collisonMap.GetLength(0); i++)
             {
@@ -92,6 +105,19 @@ namespace Singularity.Map
         public void Update(GameTime gametime)
         {
             mCamera.Update(gametime);
+            mStructureMap.Update(gametime);
+        }
+
+        /// <see cref="StructureMap.AddPlatform(PlatformBlank)"/>
+        public void AddPlatform(PlatformBlank platform)
+        {
+            mStructureMap.AddPlatform(platform);
+        }
+
+        /// <see cref="StructureMap.RemovePlatform(PlatformBlank)"/>
+        public void RemovePlatform(PlatformBlank platform)
+        {
+            mStructureMap.RemovePlatform(platform);
         }
     }
 }

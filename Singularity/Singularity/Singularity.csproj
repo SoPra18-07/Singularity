@@ -49,7 +49,12 @@
     <Compile Include="Map\Properties\MapConstants.cs" />
     <Compile Include="Map\ResourceMap.cs" />
     <Compile Include="Map\StructureMap.cs" />
+    <Compile Include="platform\Action.cs" />
+    <Compile Include="platform\Job.cs" />
+    <Compile Include="platform\PlatformBlank.cs" />
     <Compile Include="Resources\EResourceType.cs" />
+    <Compile Include="Resources\IResources.cs" />
+    <Compile Include="Units\CUnit.cs" />
     <Compile Include="Units\IUnit.cs" />
     <Compile Include="Units\MilitaryUnit.cs" />
     <Compile Include="Property\IDraw.cs" />

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Singularity.Map.Properties
+﻿namespace Singularity.Map.Properties
 {   
     /// <summary>
     /// Provides constants which are predetermined before the game. May needs tweaks.
@@ -24,12 +18,12 @@ namespace Singularity.Map.Properties
         /// <summary>
         /// The width of the background picture for the map.
         /// </summary>
-        public const int MapWidth = 2032;
+        public const int MapWidth = 2000;
 
         /// <summary>
         /// The height of the background picture for the map.
         /// </summary>
-        public const int MapHeight = 1023;
+        public const int MapHeight = 1000;
 
     }
 }
