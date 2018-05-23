@@ -45,6 +45,7 @@
     <Compile Include="platform\Action.cs" />
     <Compile Include="platform\Job.cs" />
     <Compile Include="platform\PlatformBlank.cs" />
+    <Compile Include="screen\GameScreen.cs" />
     <Compile Include="Units\IUnit.cs" />
     <Compile Include="Units\MilitaryUnit.cs" />
     <Compile Include="property\IDraw.cs" />

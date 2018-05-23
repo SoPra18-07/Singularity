@@ -21,6 +21,7 @@ namespace Singularity
         private Texture2D mMilitaryUnit;
 
         private readonly IScreenManager mScreenManager;
+        private readonly GameScreen mGameScreen;
 
         internal Game1()
         {
@@ -28,6 +29,7 @@ namespace Singularity
             Content.RootDirectory = "Content";
 
             mScreenManager = new StackScreenManager();
+            mGameScreen = new GameScreen();
 
         }
 
@@ -40,11 +42,7 @@ namespace Singularity
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            // can be used to debug the screen manager
-            /*
-               mScreenManager.AddScreen(new RenderLowerScreen());
-               mScreenManager.AddScreen(new UpdateLowerScreen());
-            */
+            mScreenManager.AddScreen(mGameScreen);
             base.Initialize();
         }
 
@@ -62,6 +60,8 @@ namespace Singularity
             // TODO: use this.Content to load your game content here
             mPlatformSheet = Content.Load<Texture2D>("PlatformSpriteSheet");
             mPlatform = new PlatformBlank(new Vector2(200, 200), mPlatformSheet);
+
+            mGameScreen.AddObject<PlatformBlank>(mPlatform);
         }
 
         /// <summary>
@@ -100,10 +100,10 @@ namespace Singularity
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            mScreenManager.Draw(mSpriteBatch);
             mSpriteBatch.Begin();
-            mPlatform.Draw(mSpriteBatch);
+            mScreenManager.Draw(mSpriteBatch);
             mSpriteBatch.End();
+
             base.Draw(gameTime);
         }
     }
