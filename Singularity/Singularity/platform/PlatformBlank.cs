@@ -200,7 +200,7 @@ namespace Singularity.platform
         /// <inheritdoc cref="Singularity.property.IUpdate"/>
         public void Update(GameTime t)
         {
-
+            //TODO: implement update code.
         }
 
         public PlatformBlank(Vector2 position, Texture2D spritesheet)

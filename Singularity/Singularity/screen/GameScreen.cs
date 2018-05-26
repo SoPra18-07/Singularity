@@ -96,11 +96,12 @@ namespace Singularity.screen
             if (typeof(IDraw).IsAssignableFrom(typeof(T)))
             {
                 mDrawables.Remove((IDraw) toRemove);
-                return true;
             }
-            mUpdateables.Remove((IUpdate) toRemove);
+            if (typeof(IUpdate).IsAssignableFrom(typeof(T)))
+            {
+                mUpdateables.Remove((IUpdate) toRemove);
+            }
             return true;
-
         }
     }
 }
