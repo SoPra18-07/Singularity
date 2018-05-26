@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Exceptions\NoSuchElementException.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Libraries\Primitives2D.cs" />
     <Compile Include="Map\Camera.cs" />
     <Compile Include="Map\CollisionMap.cs" />
     <Compile Include="Map\Map.cs" />
@@ -52,6 +53,7 @@
     <Compile Include="platform\Action.cs" />
     <Compile Include="platform\Job.cs" />
     <Compile Include="platform\PlatformBlank.cs" />
+    <Compile Include="platform\Road.cs" />
     <Compile Include="Resources\EResourceType.cs" />
     <Compile Include="Resources\IResources.cs" />
     <Compile Include="Units\CUnit.cs" />
