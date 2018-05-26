@@ -15,7 +15,11 @@ namespace Singularity
         private SpriteBatch mSpriteBatch;
         private Texture2D mPlatformSheet;
         private PlatformBlank mPlatform;
+        private PlatformBlank mPlatform2;
         private Map.Map mMap;
+
+        // roads
+        private Road Road1;
 
         // Sprites!
 
@@ -67,12 +71,19 @@ namespace Singularity
             // TODO: use this.Content to load your game content here
             mPlatformSheet = Content.Load<Texture2D>("PlatformSpriteSheet");
             mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet);
+            mPlatform2 = new PlatformBlank(new Vector2(800, 600), mPlatformSheet);
 
             var lineTexture = new Texture2D(mGraphics.GraphicsDevice, 1, 1);
             lineTexture.SetData<Color>(new Color[] { Color.White });
             mMap = new Map.Map(Content.Load<Texture2D>("MockUpBackground"), mGraphics.GraphicsDevice.Viewport, lineTexture);
 
             mMap.AddPlatform(mPlatform);
+            mMap.AddPlatform(mPlatform2);
+
+            // load roads
+            Road1 = new Road(new Vector2(300, 400), new Vector2(800, 600), false);
+
+            
         }
 
         /// <summary>
@@ -114,6 +125,7 @@ namespace Singularity
             // TODO: Add your drawing code here
             mScreenManager.Draw(mSpriteBatch);
             mMap.Draw(mSpriteBatch);
+            Road1.Draw(mSpriteBatch);
             base.Draw(gameTime);
         }
     }
