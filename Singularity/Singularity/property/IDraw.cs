@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 
-namespace Singularity.property
+namespace Singularity.Property
 {   
     /// <summary>
     /// Provides an Interface for everything that should be able to have a draw method.

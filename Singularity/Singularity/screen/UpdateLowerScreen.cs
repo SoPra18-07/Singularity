@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Singularity.screen
+namespace Singularity.Screen
 {
     /// <inheritdoc/>
     /// <remarks>
