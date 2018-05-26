@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.platform;
-using Singularity.screen;
+using Singularity.Screen;
 
 namespace Singularity
 {
@@ -15,6 +15,7 @@ namespace Singularity
         private SpriteBatch mSpriteBatch;
         private Texture2D mPlatformSheet;
         private PlatformBlank mPlatform;
+        private Map.Map mMap;
 
         // Sprites!
 
@@ -45,6 +46,10 @@ namespace Singularity
                mScreenManager.AddScreen(new RenderLowerScreen());
                mScreenManager.AddScreen(new UpdateLowerScreen());
             */
+            IsMouseVisible = true;
+            mGraphics.PreferredBackBufferWidth = 1080;
+            mGraphics.PreferredBackBufferHeight = 720;
+            mGraphics.ApplyChanges();
             base.Initialize();
         }
 
@@ -61,7 +66,13 @@ namespace Singularity
 
             // TODO: use this.Content to load your game content here
             mPlatformSheet = Content.Load<Texture2D>("PlatformSpriteSheet");
-            mPlatform = new PlatformBlank(new Vector2(200, 200), mPlatformSheet);
+            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet);
+
+            var lineTexture = new Texture2D(mGraphics.GraphicsDevice, 1, 1);
+            lineTexture.SetData<Color>(new Color[] { Color.White });
+            mMap = new Map.Map(Content.Load<Texture2D>("MockUpBackground"), mGraphics.GraphicsDevice.Viewport, lineTexture);
+
+            mMap.AddPlatform(mPlatform);
         }
 
         /// <summary>
@@ -88,6 +99,7 @@ namespace Singularity
 
             // TODO: Add your update logic here
             mScreenManager.Update(gameTime);
+            mMap.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -101,9 +113,7 @@ namespace Singularity
 
             // TODO: Add your drawing code here
             mScreenManager.Draw(mSpriteBatch);
-            mSpriteBatch.Begin();
-            mPlatform.Draw(mSpriteBatch);
-            mSpriteBatch.End();
+            mMap.Draw(mSpriteBatch);
             base.Draw(gameTime);
         }
     }
