@@ -19,7 +19,7 @@ namespace Singularity.Resources
         Fuel,
         Steel,
         Copper,
-        Chip
-
+        Chip,
+        None
     };
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.property;
+using Singularity.Property;
 using Singularity.Resources;
 
 namespace Singularity.Units
@@ -11,37 +11,23 @@ namespace Singularity.Units
     {
         public int Id { get; }
         public Vector2 Position { get; private set; }
-        private int PositionId;
+        private int mPositionId;
         public string Assignment { get; set; } // TODO change to an enum type
-        public IResources Carrying { get; set; } // TODO change resource into a nullable type
+        public EResourceType Carrying { get; set; } // TODO change resource into a nullable type
         private int? mTargetId;
         private Stack<int> mPathQueue; // the queue of platform and edges the unit has to traverse to get to its target
-        private bool ConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
+        private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
 
-        public enum JobType
-        {
-            Idle,
-            Construction,
-            Logistics,
-            Defense
-        };
+        
 
         internal JobType Job { get; set; } = JobType.Idle;
-
-        public enum Task
-        {
-            Idle,
-            BuildPlatform,
-            MoveResource,
-            RepairPlatform
-        };
 
         GeneralUnit(int spawnPositionId)
         {
             Id = 0; // TODO make this randomized or simply ascending
             Position = Vector2.Zero; // TODO figure out how to search platform by ID and get its position
-            PositionId = spawnPositionId;
-            Carrying = null;
+            mPositionId = spawnPositionId;
+            Carrying = EResourceType.None;
             mPathQueue = null;
         }
         /// <summary>
@@ -103,20 +89,11 @@ namespace Singularity.Units
                     break;
             }
         }
-
-        private Stack<int> Dijkstra(int currentPositionId, int targetPositionId)
-        {
-            Stack<int> pathList = new Stack<int>();
-            // TODO implement dijkstra
-            return pathList;
-        }
-
-        int? Bfs(int currentPositionId, IResources resourceType)
-        {
-            // TODO
-            // does a breadth first search until it finds the resource
-            return null;
-        }
+        /// <summary>
+        /// Calculates where the unit should move to next
+        /// </summary>
+        /// <param name="targetPosition">The target the unit should move towards</param>
+        /// <returns></returns>
         private Vector2 Move(int targetPosition)
         {
             // first get the target position Vector2 position
@@ -144,35 +121,38 @@ namespace Singularity.Units
 
             if (targetPlatformId != null)
             {
-                ConstructionResourceFound = false; // sets flag to false first
+                mConstructionResourceFound = false; // sets flag to false first
                 //targetPlatformId.popRequiredResources() // not possible yet since it's not possible to search by platform ID
 
                 // TODO implement BFS after Graph has been implemented
-                int? storagePlatformId = Bfs(PositionId, Carrying); // Carrying should be changed later to the required resource
-                                                                   // this is only as a placeholder
+                var bfs = new Bfs();
+                int? storagePlatformId = bfs.Search(mPositionId, Carrying); // Carrying should be changed later to the required resource
+                                                                           // this is only as a placeholder
                 if (storagePlatformId != null)
                 {
-                    ConstructionResourceFound = true;
-                    mPathQueue = Dijkstra(PositionId, (int) storagePlatformId);
-                    while (PositionId != storagePlatformId)
+                    mConstructionResourceFound = true;
+                    var dijkstraAlgo = new Dijkstra();
+                    mPathQueue = dijkstraAlgo.GetPath(mPositionId, (int) storagePlatformId);
+                    while (mPositionId != storagePlatformId)
                     {
                         // set currentTarget to the top most id on the queue
                         int currentTarget = mPathQueue.Pop();
                         // go to the next node in the pathQueue
-                        while (PositionId != currentTarget)
+                        while (mPositionId != currentTarget)
                         {
                             Position = Move(currentTarget);
                             // then update the positionID with whatever the unit is standing on top of
                         }
                     }
                     // pick up resource
-                    mPathQueue = Dijkstra(PositionId, (int) targetPlatformId);
-                    while (PositionId != targetPlatformId)
+                    dijkstraAlgo = new Dijkstra();
+                    mPathQueue = dijkstraAlgo.GetPath(mPositionId, (int)storagePlatformId);
+                    while (mPositionId != targetPlatformId)
                     {
                         // set currentTarget to the top most id on the queue
                         int currentTarget = mPathQueue.Pop();
                         // go to the next node in the pathQueue
-                        while (PositionId != currentTarget)
+                        while (mPositionId != currentTarget)
                         {
                             Position = Move(currentTarget);
                             // then update the positionID with whatever the unit is standing on top of
