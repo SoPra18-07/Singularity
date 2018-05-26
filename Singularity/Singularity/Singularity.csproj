@@ -52,8 +52,6 @@
     <Compile Include="platform\Action.cs" />
     <Compile Include="platform\Job.cs" />
     <Compile Include="platform\PlatformBlank.cs" />
-    <Compile Include="Units\Bfs.cs" />
-    <Compile Include="Units\Dijkstra.cs" />
     <Compile Include="Units\GeneralUnit.cs" />
     <Compile Include="Resources\EResourceType.cs" />
     <Compile Include="Resources\IResources.cs" />
@@ -69,6 +67,7 @@
     <Compile Include="Screen\RenderLowerScreen.cs" />
     <Compile Include="Screen\StackScreenManager.cs" />
     <Compile Include="Screen\UpdateLowerScreen.cs" />
+    <Compile Include="Units\Pathfinding.cs" />
     <Compile Include="Units\Task.cs" />
     <Compile Include="Utils\Optional.cs" />
     <Compile Include="Utils\Pair.cs" />
