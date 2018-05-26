@@ -19,7 +19,7 @@ namespace Singularity
         private Map.Map mMap;
 
         // roads
-        private Road Road1;
+        private Road mRoad1;
 
         // Sprites!
 
@@ -81,7 +81,7 @@ namespace Singularity
             mMap.AddPlatform(mPlatform2);
 
             // load roads
-            Road1 = new Road(new Vector2(300, 400), new Vector2(800, 600), false);
+            mRoad1 = new Road(new Vector2(300, 400), new Vector2(800, 600), false);
 
             
         }
@@ -125,7 +125,7 @@ namespace Singularity
             // TODO: Add your drawing code here
             mScreenManager.Draw(mSpriteBatch);
             mMap.Draw(mSpriteBatch);
-            Road1.Draw(mSpriteBatch);
+            mRoad1.Draw(mSpriteBatch);
             base.Draw(gameTime);
         }
     }

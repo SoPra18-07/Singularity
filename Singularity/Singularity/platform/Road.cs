@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Property;
@@ -50,8 +44,7 @@ namespace Singularity.platform
         {
             spriteBatch.Begin(); // there is weirdness in regards to color and coordinates(i think caused by different
                                  // coordinate system used by Structure map but otherwise works
-            if (mBlueprint){ spriteBatch.DrawLine(Origin, Destination, new Color(new Vector3(46, 53, 97)), 5f); }
-            else { spriteBatch.DrawLine(Origin, Destination, new Color(new Vector4(0, 40, 40, 255)), 5f); }
+            spriteBatch.DrawLine(Origin, Destination, mBlueprint? new Color(new Vector3(46, 53, 97)) : new Color(new Vector4(0, 40, 40, 255)), 5f);
             spriteBatch.End();
         }
     }
