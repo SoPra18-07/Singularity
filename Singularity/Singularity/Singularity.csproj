@@ -53,11 +53,12 @@
     <Compile Include="platform\Action.cs" />
     <Compile Include="platform\Job.cs" />
     <Compile Include="platform\PlatformBlank.cs" />
+    <Compile Include="Units\GeneralUnit.cs" />
     <Compile Include="platform\Road.cs" />
     <Compile Include="Resources\EResourceType.cs" />
     <Compile Include="Resources\IResources.cs" />
-    <Compile Include="Units\CUnit.cs" />
     <Compile Include="Units\IUnit.cs" />
+    <Compile Include="Units\JobType.cs" />
     <Compile Include="Units\MilitaryUnit.cs" />
     <Compile Include="Property\IDraw.cs" />
     <Compile Include="Property\IUpdate.cs" />
@@ -68,6 +69,8 @@
     <Compile Include="Screen\RenderLowerScreen.cs" />
     <Compile Include="Screen\StackScreenManager.cs" />
     <Compile Include="Screen\UpdateLowerScreen.cs" />
+    <Compile Include="Units\Pathfinding.cs" />
+    <Compile Include="Units\Task.cs" />
     <Compile Include="Utils\Optional.cs" />
     <Compile Include="Utils\Pair.cs" />
     <Compile Include="Utils\Triple.cs" />

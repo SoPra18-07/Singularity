@@ -21,18 +21,5 @@ namespace Singularity.Units
         /// Type will eventually be Assignment type
         /// </summary>
         String Assignment { get; set; }
-
-        /// <summary>
-        /// Draw method for unit
-        /// </summary>
-        /// <param name="spriteBatch"></param>
-        /// <param name="texture"></param>
-        void Draw(SpriteBatch spriteBatch, Texture2D texture);
-
-        /// <summary>
-        /// Update method for unit
-        /// </summary>
-        /// <param name="gameTime"></param>
-        void Update(GameTime gameTime);
     }
 }
