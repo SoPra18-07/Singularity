@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.property;
@@ -14,11 +10,11 @@ namespace Singularity.Units
     class GeneralUnit : IUnit, IUpdate, IDraw
     {
         public int Id { get; }
-        public Vector2 Position { get; set; }
+        public Vector2 Position { get; private set; }
         private int PositionId;
         public string Assignment { get; set; } // TODO change to an enum type
         public IResources Carrying { get; set; } // TODO change resource into a nullable type
-        private int? mTargetId = null;
+        private int? mTargetId;
         private Stack<int> mPathQueue; // the queue of platform and edges the unit has to traverse to get to its target
         private bool ConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
 
@@ -30,7 +26,7 @@ namespace Singularity.Units
             Defense
         };
 
-        public JobType Job { get; set; } = JobType.Idle;
+        internal JobType Job { get; set; } = JobType.Idle;
 
         public enum Task
         {
