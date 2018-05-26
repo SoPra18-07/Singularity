@@ -7,7 +7,7 @@ using Singularity.Resources;
 
 namespace Singularity.Units
 {
-    class Pathfinding
+    internal static class Pathfinding
     {
         /// <summary>
         /// Searches for the closest resource of a given type using breadth first search.
@@ -15,7 +15,7 @@ namespace Singularity.Units
         /// <param name="currentPositionId">ID of the current platform the unit is on</param>
         /// <param name="resourceType">Type of resource that is being searched for</param>
         /// <returns></returns>
-        public int? Bfs(int currentPositionId, EResourceType resourceType)
+        public static int? Bfs(int currentPositionId, EResourceType resourceType)
         {
             // TODO
             // does a breadth first search until it finds the resource
@@ -28,7 +28,7 @@ namespace Singularity.Units
         /// <param name="startPlatformId">ID of the starting platform where the algorithm will start its search</param>
         /// <param name="targetPlatformId">ID of the target platform</param>
         /// <returns></returns>
-        public Stack<int> Dijkstra(int startPlatformId, int targetPlatformId)
+        public static Stack<int> Dijkstra(int startPlatformId, int targetPlatformId)
         {
             var pathQueue = new Stack<int>();
             // TODO

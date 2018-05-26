@@ -17,8 +17,6 @@ namespace Singularity.Units
         private int? mTargetId;
         private Stack<int> mPathQueue; // the queue of platform and edges the unit has to traverse to get to its target
         private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
-        private Pathfinding mPath = new Pathfinding();
-
         
 
         internal JobType Job { get; set; } = JobType.Idle;
@@ -126,12 +124,12 @@ namespace Singularity.Units
                 //targetPlatformId.popRequiredResources() // not possible yet since it's not possible to search by platform ID
 
                 // TODO implement BFS after Graph has been implemented
-                int? storagePlatformId = mPath.Bfs(mPositionId, Carrying); // Carrying should be changed later to the required resource
+                int? storagePlatformId = Pathfinding.Bfs(mPositionId, Carrying); // Carrying should be changed later to the required resource
                                                                            // this is only as a placeholder
                 if (storagePlatformId != null)
                 {
                     mConstructionResourceFound = true;
-                    mPathQueue = mPath.Dijkstra(mPositionId, (int) storagePlatformId);
+                    mPathQueue = Pathfinding.Dijkstra(mPositionId, (int) storagePlatformId);
                     while (mPositionId != storagePlatformId)
                     {
                         // set currentTarget to the top most id on the queue
@@ -144,7 +142,7 @@ namespace Singularity.Units
                         }
                     }
                     // pick up resource
-                    mPathQueue = mPath.Dijkstra(mPositionId, (int)storagePlatformId);
+                    mPathQueue = Pathfinding.Dijkstra(mPositionId, (int)storagePlatformId);
                     while (mPositionId != targetPlatformId)
                     {
                         // set currentTarget to the top most id on the queue
