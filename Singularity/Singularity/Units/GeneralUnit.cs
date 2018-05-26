@@ -1,0 +1,219 @@
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Singularity.property;
+using Singularity.Resources;
+
+namespace Singularity.Units
+{
+    class GeneralUnit : IUnit, IUpdate, IDraw
+    {
+        public int Id { get; }
+        public Vector2 Position { get; private set; }
+        private int PositionId;
+        public string Assignment { get; set; } // TODO change to an enum type
+        public IResources Carrying { get; set; } // TODO change resource into a nullable type
+        private int? mTargetId;
+        private Stack<int> mPathQueue; // the queue of platform and edges the unit has to traverse to get to its target
+        private bool ConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
+
+        public enum JobType
+        {
+            Idle,
+            Construction,
+            Logistics,
+            Defense
+        };
+
+        internal JobType Job { get; set; } = JobType.Idle;
+
+        public enum Task
+        {
+            Idle,
+            BuildPlatform,
+            MoveResource,
+            RepairPlatform
+        };
+
+        GeneralUnit(int spawnPositionId)
+        {
+            Id = 0; // TODO make this randomized or simply ascending
+            Position = Vector2.Zero; // TODO figure out how to search platform by ID and get its position
+            PositionId = spawnPositionId;
+            Carrying = null;
+            mPathQueue = null;
+        }
+        /// <summary>
+        /// Used to pick the Task that the unit does. It assigns the unit to a job which the update method uses
+        /// to figure out what to do with the unit.
+        /// </summary>
+        /// <param name="assignedTask">The Task that the unit should have.</param>
+        /// <param name="targetId">If the Task is idle, then null. Otherwise, the id of either the resource or platform
+        /// which it should do the Task on.</param>
+        public void AssignedTask(Task assignedTask, int? targetId = null)
+        {
+            switch (assignedTask)
+            {
+                case Task.Idle:
+                    Job = JobType.Idle;
+                    mTargetId = null;
+                    break;
+
+                case Task.BuildPlatform:
+                    if (targetId != null)
+                    {
+                        // to build a platform, first get the required resources then go into logistics mode and get that resource
+                        Job = JobType.Construction;
+                        mTargetId = targetId;
+                        // unimplementable since resource list is a dictionary whereas it should really be a list so that the
+                        // resource objects can be peaked at and then popped once it has been delivered
+                        mTargetId =
+                            null; // once the platform implementation has been changed, this can just pick up the resource
+                        // ID of the nearest resource of the type
+                    }
+                    else
+                    {
+                        Job = JobType.Idle;
+                    }
+                    break;
+
+                case Task.MoveResource:
+                    if (targetId != null)
+                    {
+                        Job = JobType.Logistics;
+                        mTargetId = targetId;
+                    }
+                    else
+                    {
+                        Job = JobType.Idle;
+                    }
+                    break;
+
+                case Task.RepairPlatform:
+                    if (targetId != null)
+                    {
+                        Job = JobType.Defense;
+                        mTargetId = targetId;
+                    }
+                    else
+                    {
+                        Job = JobType.Idle;
+                    }
+                    break;
+            }
+        }
+
+        private Stack<int> Dijkstra(int currentPositionId, int targetPositionId)
+        {
+            Stack<int> pathList = new Stack<int>();
+            // TODO implement dijkstra
+            return pathList;
+        }
+
+        int? Bfs(int currentPositionId, IResources resourceType)
+        {
+            // TODO
+            // does a breadth first search until it finds the resource
+            return null;
+        }
+        private Vector2 Move(int targetPosition)
+        {
+            // first get the target position Vector2 position
+            // then move x distance in that direction or until above the coordinate of the position
+            // TODO
+            return Vector2.Zero;
+        }
+
+        /// <summary>
+        /// The method called by both construction and defense. Making it its own method simplifies the code.
+        /// </summary>
+        /// <param name="targetPlatformId">The target platform that is to be constructed or repaired.</param>
+        private void Build(int? targetPlatformId)
+        {
+            // pop out the required resource from the required resource list of the target platform
+            // then goes and finds the nearest storage platform with that resource
+            // does this by finding (using BFS) closest storage platform and querying it
+            // and continues to the next closest storage platform until it finds it
+            // if it doesn't find the resource, it waits but does not go idle
+            // once it finds the resource, create a PathQueue using Dijkstra() to the storage platform
+            // Travel to storage platform using Move()
+            // pick up resource
+            // travel back to original target using Move()
+            // once it has arrived, drops the resource onto the platform
+
+            if (targetPlatformId != null)
+            {
+                ConstructionResourceFound = false; // sets flag to false first
+                //targetPlatformId.popRequiredResources() // not possible yet since it's not possible to search by platform ID
+
+                // TODO implement BFS after Graph has been implemented
+                int? storagePlatformId = Bfs(PositionId, Carrying); // Carrying should be changed later to the required resource
+                                                                   // this is only as a placeholder
+                if (storagePlatformId != null)
+                {
+                    ConstructionResourceFound = true;
+                    mPathQueue = Dijkstra(PositionId, (int) storagePlatformId);
+                    while (PositionId != storagePlatformId)
+                    {
+                        // set currentTarget to the top most id on the queue
+                        int currentTarget = mPathQueue.Pop();
+                        // go to the next node in the pathQueue
+                        while (PositionId != currentTarget)
+                        {
+                            Position = Move(currentTarget);
+                            // then update the positionID with whatever the unit is standing on top of
+                        }
+                    }
+                    // pick up resource
+                    mPathQueue = Dijkstra(PositionId, (int) targetPlatformId);
+                    while (PositionId != targetPlatformId)
+                    {
+                        // set currentTarget to the top most id on the queue
+                        int currentTarget = mPathQueue.Pop();
+                        // go to the next node in the pathQueue
+                        while (PositionId != currentTarget)
+                        {
+                            Position = Move(currentTarget);
+                            // then update the positionID with whatever the unit is standing on top of
+                        }
+                    }
+                    // drop the resource.
+                }
+                
+                
+
+            }
+
+        }
+        public void Update(GameTime gametime)
+        {
+            // use switch to change between jobs
+            switch (Job)
+            {
+                case JobType.Idle:
+                    // does nothing
+                    break;
+                case JobType.Construction:
+                    // runs build()
+                    Build(mTargetId);
+                    break;
+                case JobType.Logistics:
+                    // TODO unclear how this should be implmented
+                    break;
+                case JobType.Defense:
+                    // basically the same as the construction one
+                    Build(mTargetId);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            throw new NotImplementedException();
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
