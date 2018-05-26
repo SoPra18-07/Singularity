@@ -16,13 +16,11 @@ namespace Singularity
         private SpriteBatch mSpriteBatch;
         private Texture2D mPlatformSheet;
         private PlatformBlank mPlatform;
-        private Texture2D mMilitaryUnit;
+        private Texture2D mMUnitSheet;
         private MilitaryUnit mMUnit;
         private Map.Map mMap;
 
         // Sprites!
-
-
 
         private readonly IScreenManager mScreenManager;
 
@@ -65,14 +63,12 @@ namespace Singularity
             // Create a new SpriteBatch, which can be used to draw textures.
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
-
+            mMUnitSheet = Content.Load<Texture2D>("UnitSpriteSheet");
+            mMUnit = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet);
 
             // TODO: use this.Content to load your game content here
             mPlatformSheet = Content.Load<Texture2D>("PlatformSpriteSheet");
             mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet);
-
-            mMilitaryUnit = Content.Load<Texture2D>("UnitSpriteSheet");
-            mMUnit = new MilitaryUnit(new Vector2(600, 600), mMilitaryUnit);
 
             var lineTexture = new Texture2D(mGraphics.GraphicsDevice, 1, 1);
             lineTexture.SetData<Color>(new Color[] { Color.White });
@@ -106,7 +102,6 @@ namespace Singularity
             // TODO: Add your update logic here
             mScreenManager.Update(gameTime);
             mMap.Update(gameTime);
-            mMUnit.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -119,11 +114,8 @@ namespace Singularity
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            mSpriteBatch.Begin();
             mScreenManager.Draw(mSpriteBatch);
             mMap.Draw(mSpriteBatch);
-            mMUnit.Draw(mSpriteBatch);
-            mSpriteBatch.End();
             base.Draw(gameTime);
         }
     }
