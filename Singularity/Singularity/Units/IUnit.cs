@@ -21,6 +21,5 @@ namespace Singularity.Units
         /// Type will eventually be Assignment type
         /// </summary>
         String Assignment { get; set; }
-
     }
 }
