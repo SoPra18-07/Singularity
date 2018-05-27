@@ -43,7 +43,7 @@ namespace Singularity.Units
 
             // calculate degree between formed triangle
             double degree;
-            if (Math.Abs(hypot) < .01)
+            if (Math.Abs(hypot) < 0.01)
             {
                 degree = 0;
             }
@@ -188,7 +188,7 @@ namespace Singularity.Units
             // calculate the x distance and y distance needed to get to target
             if (Math.Abs(hypot) < 0.01)
             {
-                xstep = Math.Abs((mPosition.X - mTargetPosition.X + 75));
+                xstep = Math.Abs(mPosition.X - mTargetPosition.X + 75);
                 ystep = Math.Abs(mPosition.Y - mTargetPosition.Y + 37.5);
             }
             else
