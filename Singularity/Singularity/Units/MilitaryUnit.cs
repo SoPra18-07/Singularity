@@ -11,7 +11,7 @@ namespace Singularity.Units
         private Vector2 mPosition;
         private Vector2 mTargetPosition;
         private int mRotation;
-        private Texture2D mMilSheet;
+        readonly Texture2D mMilSheet;
         private double xstep;
         private double ystep;
         private bool selected;
@@ -35,10 +35,13 @@ namespace Singularity.Units
         /// <param name="target"></param>
         public void Rotate(Vector2 target)
         {
+            // form a triangle from unit location to mouse location
+            // adjust to be at center of sprite 150x75
             double x = (target.X - (mPosition.X + 75));
             double y = (target.Y - (mPosition.Y + 37.5));
             double hypot = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
 
+            // calculate degree between formed triangle
             double degree;
             if (Math.Abs(hypot) < .01)
             {
@@ -49,6 +52,7 @@ namespace Singularity.Units
                 degree = Math.Asin(y / hypot) * (180.0 / Math.PI);
             }
 
+            // calculate rotation with increased degrees going counterclockwise
             if (x >= 0)
             {
                 mRotation = (int) (Math.Round(270 - degree, MidpointRounding.AwayFromZero));
@@ -58,6 +62,7 @@ namespace Singularity.Units
                 mRotation = (int) (Math.Round(90 + degree, MidpointRounding.AwayFromZero));
             }
 
+            // add 42 degrees since sprite sheet starts at sprite -42d not 0
             mRotation = (mRotation + 42) % 360;
 
         }
@@ -107,8 +112,10 @@ namespace Singularity.Units
             Color color;
             if (!selected) { color = Color.White; }
             else { color = Color.Gainsboro; }
+            
+            spriteBatch.Begin();
             spriteBatch.Draw(mMilSheet, mPosition, new Rectangle((150 * columnNumber), (75 * rowNumber), 150, 75),color);
-
+            spriteBatch.End();
         }
 
 
@@ -116,18 +123,21 @@ namespace Singularity.Units
         {
             this.Selected();
 
+            // rotate to face mouse
             if (selected && targetReached)
             {
                 this.Rotate(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
             }
 
+            // calculate path to target position
             if (selected && Mouse.GetState().LeftButton == ButtonState.Pressed &&
                 ((Math.Abs((mPosition.X + 75) - Mouse.GetState().X) > 60) ||
                  (Math.Abs((mPosition.Y + 37.5) - Mouse.GetState().Y) > 45)))
             {
-                this.Steps(new Vector2(Mouse.GetState().X-75, (float)(Mouse.GetState().Y-37.5)));
+                this.Steps(new Vector2(Mouse.GetState().X, (float)(Mouse.GetState().Y)));
             }
 
+            // move unit until target reached
             if (!targetReached)
             {
                 this.Move();
@@ -142,6 +152,7 @@ namespace Singularity.Units
         /// </summary>
         private void Selected()
         {
+            // if left click within unit area : selected
             if ((Math.Abs((mPosition.X + 75) - Mouse.GetState().X) < 60) &&
                 (Math.Abs((mPosition.Y + 37.5) - Mouse.GetState().Y) < 45) &&
                 Mouse.GetState().LeftButton == ButtonState.Pressed)
@@ -149,6 +160,7 @@ namespace Singularity.Units
                 selected = true;
             }
 
+            // right click deselects unit
             if (Mouse.GetState().RightButton == ButtonState.Pressed)
             {
                 selected = false;
@@ -163,38 +175,42 @@ namespace Singularity.Units
         /// <param name="target"></param>
         private void Steps(Vector2 target)
         {
+            // set new unit target, and face target position
             mTargetPosition = target;
-            targetReached = false;
             this.Rotate(mTargetPosition);
+            targetReached = false;
+            
 
             // travel along the hypotenuse of triangle formed by start and target position
-            double hypot = (Math.Sqrt(Math.Pow((mPosition.X - mTargetPosition.X), 2) +
-                                      Math.Pow((mPosition.Y - mTargetPosition.Y), 2)));
+            double hypot = (Math.Sqrt(Math.Pow((mPosition.X - mTargetPosition.X + 75), 2) +
+                                      Math.Pow((mPosition.Y - mTargetPosition.Y + 37.5), 2)));
+
+            // calculate the x distance and y distance needed to get to target
             if (Math.Abs(hypot) < 0.01)
             {
-                xstep = Math.Abs((mPosition.X - mTargetPosition.X));
-                ystep = Math.Abs(mPosition.Y - mTargetPosition.Y);
+                xstep = Math.Abs((mPosition.X - mTargetPosition.X + 75));
+                ystep = Math.Abs(mPosition.Y - mTargetPosition.Y + 37.5);
             }
             else
             {
-                xstep = Math.Abs((mPosition.X - mTargetPosition.X) / hypot);
-                ystep = Math.Abs((mPosition.Y - mTargetPosition.Y) / hypot);
+                xstep = Math.Abs((mPosition.X - mTargetPosition.X + 75) / hypot);
+                ystep = Math.Abs((mPosition.Y - mTargetPosition.Y + 37.5) / hypot);
             }
 
             // determine correct direction of x/y movement
-            if (mPosition.X - mTargetPosition.X < 0)
+            if (mPosition.X - mTargetPosition.X + 75 < 0)
             {
                 xstep = -xstep;
             }
 
-            if (mPosition.Y - mTargetPosition.Y < 0)
+            if (mPosition.Y - mTargetPosition.Y +37.5 < 0)
             {
                 ystep = -ystep;
             }
 
             // adjusts speed of unit movement 
-            xstep = xstep * 10;
-            ystep = ystep * 10;     
+            xstep = xstep * 3;
+            ystep = ystep * 3;     
         }
 
         /// <summary>
@@ -203,11 +219,12 @@ namespace Singularity.Units
         /// </summary>
         private void Move()
         {
+            // move position of unit over by x/y step to reach target
             mPosition.X -= (float)xstep;
             mPosition.Y -= (float)ystep;
 
             // check if target position has been reached
-            if (Math.Abs((mPosition.X) - mTargetPosition.X) < 8 && Math.Abs((mPosition.Y) - mTargetPosition.Y) < 8)
+            if (Math.Abs((mPosition.X) - mTargetPosition.X + 75) < 8 && Math.Abs((mPosition.Y) - mTargetPosition.Y + 37.5) < 8)
             {
                 targetReached = true;
             }
