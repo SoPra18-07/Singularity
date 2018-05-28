@@ -76,8 +76,6 @@ namespace Singularity
             mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet);
             mPlatform2 = new PlatformBlank(new Vector2(800, 600), mPlatformSheet);
 
-            var lineTexture = new Texture2D(mGraphics.GraphicsDevice, 1, 1);
-            lineTexture.SetData<Color>(new Color[] { Color.White });
             mMap = new Map.Map(Content.Load<Texture2D>("MockUpBackground"), mGraphics.GraphicsDevice.Viewport, true);
 
             mMap.AddPlatform(mPlatform);
