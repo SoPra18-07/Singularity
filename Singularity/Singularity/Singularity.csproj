@@ -43,12 +43,17 @@
   <ItemGroup>
     <Compile Include="Exceptions\NoSuchElementException.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Input\IKeyListener.cs" />
+    <Compile Include="Input\IMouseListener.cs" />
+    <Compile Include="Input\InputManager.cs" />
+    <Compile Include="Input\KeyEvent.cs" />
     <Compile Include="Map\Camera.cs" />
     <Compile Include="Map\CollisionMap.cs" />
     <Compile Include="Map\Map.cs" />
     <Compile Include="Map\Properties\MapConstants.cs" />
     <Compile Include="Map\ResourceMap.cs" />
     <Compile Include="Map\StructureMap.cs" />
+    <Compile Include="Input\MouseEvent.cs" />
     <Compile Include="platform\Action.cs" />
     <Compile Include="platform\Job.cs" />
     <Compile Include="platform\PlatformBlank.cs" />
@@ -83,6 +88,7 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
