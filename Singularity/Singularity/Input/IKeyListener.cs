@@ -9,7 +9,7 @@
         /// Used to set a key as typed
         /// </summary>
         /// <param name="keyEvent"></param>
-        void KeyTyped(KeyEvent keyEvent);
+        void KeyTyped(KeyEvent keyEvent);   
 
         /// <summary>
         /// Used to set a key as pressed

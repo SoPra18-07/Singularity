@@ -1,73 +1,15 @@
 ﻿
+using Microsoft.Xna.Framework.Input;
+
 namespace Singularity.Input
 {
     internal sealed class KeyEvent
     {
-        public enum Keys
+        public KeyEvent(Keys[] currentKeys)
         {
-            A,
-            Add,
-            B,
-            Back,
-            C,
-            CapsLock,
-            D,
-            Delete,
-            Down,
-            E,
-            End,
-            Enter,
-            Escape,
-            F,
-            F1,
-            F2,
-            F3,
-            F4,
-            F5,
-            F6,
-            F7,
-            F8,
-            F9,
-            F10,
-            F11,
-            F12,
-            G,
-            H,
-            I,
-            Insert,
-            J,
-            K,
-            L,
-            Left,
-            LeftAlt,
-            LeftControl,
-            LeftShift,
-            M,
-            N,
-            O,
-            P,
-            Pause,
-            PrintScreen,
-            Q,
-            R,
-            Right,
-            RightAlt,
-            RightControl,
-            RightShift,
-            S,
-            Space,
-            Subtract,
-            T,
-            Tab,
-            U,
-            Up,
-            V,
-            W,
-            X,
-            Y,
-            Z,
-        };
+            CurrentKeys = currentKeys;
+        }
 
-        public Keys[] CurrentKeys { get; } = new Keys[0]; // solve warnings for now
+        private Keys[] CurrentKeys { get; }
     }
 }

@@ -4,15 +4,14 @@ namespace Singularity.Input
 {
     internal sealed class MouseEvent
     {
-        public Vector2 Position { get; } = Vector2.One;
 
-        public EMouseAction MouseAction { get; } = EMouseAction.LeftClick; // solve warnings for now
-
-
-        public enum EMouseAction
+        public MouseEvent(EMouseAction mouseAction, Vector2 position)
         {
-            LeftClick,
-            RightClick
-        };
+            Position = position;
+            MouseAction = mouseAction;
+        }
+        private Vector2 Position { get; }
+
+        private EMouseAction MouseAction { get; }
     }
 }

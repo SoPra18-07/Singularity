@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Singularity.Property;
 
 namespace Singularity.Input
@@ -14,13 +14,15 @@ namespace Singularity.Input
         private readonly List<IKeyListener> mKeyListener;
         private readonly List<IMouseListener> mMouseListeners;
 
+        private MouseState mCurrentMouseState;
+        private MouseState mPreviousMouseState;
+
         public InputManager()
         {
             mKeyListener = new List<IKeyListener>();
             mMouseListeners = new List<IMouseListener>();
 
-            var mouseEvent = new MouseEvent();
-            var keyEvent = new KeyEvent();
+            mPreviousMouseState = Mouse.GetState();
         }
 
         private void AddKeyListener(IKeyListener iKeyListener)
@@ -57,7 +59,52 @@ namespace Singularity.Input
 
         public void Update(GameTime gametime)
         {
-            throw new NotImplementedException();
+            mCurrentMouseState = Mouse.GetState();
+
+            if (mCurrentMouseState != mPreviousMouseState)
+            {
+                switch (mCurrentMouseState.LeftButton)
+                {
+                    case ButtonState.Pressed:
+                        foreach (var mouseListener in mMouseListeners)
+                        {
+                            mouseListener.MousePressed(new MouseEvent(EMouseAction.LeftClick,
+                                new Vector2(mCurrentMouseState.X, mCurrentMouseState.Y)));
+                        }
+
+                        break;
+                    case ButtonState.Released:
+                        foreach (var mouseListener in mMouseListeners)
+                        {
+                            mouseListener.MouseReleased(new MouseEvent(EMouseAction.LeftClick,
+                                new Vector2(mCurrentMouseState.X, mCurrentMouseState.Y)));
+                        }
+
+                        break;
+                }
+
+                switch (mCurrentMouseState.RightButton)
+                 {
+                     case ButtonState.Pressed:
+                         foreach (var mouseListener in mMouseListeners)
+                         {
+                             mouseListener.MousePressed(new MouseEvent(EMouseAction.RightClick,
+                                 new Vector2(mCurrentMouseState.X, mCurrentMouseState.Y)));
+                         }
+
+                         break;
+                     case ButtonState.Released:
+                         foreach (var mouseListener in mMouseListeners)
+                         {
+                             mouseListener.MouseReleased(new MouseEvent(EMouseAction.RightClick,
+                                 new Vector2(mCurrentMouseState.X, mCurrentMouseState.Y)));
+                         }
+
+                         break;
+                 }
+            }
+
+            mPreviousMouseState = mCurrentMouseState;
         }
     }
 }

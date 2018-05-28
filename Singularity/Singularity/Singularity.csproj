@@ -47,6 +47,7 @@
     <Compile Include="Input\IMouseListener.cs" />
     <Compile Include="Input\InputManager.cs" />
     <Compile Include="Input\KeyEvent.cs" />
+    <Compile Include="Input\MouseAction.cs" />
     <Compile Include="Map\Camera.cs" />
     <Compile Include="Map\CollisionMap.cs" />
     <Compile Include="Map\Map.cs" />
