@@ -68,6 +68,11 @@
         /// <summary>
         /// This represents the chip resource.
         /// </summary>
-        Chip
+        Chip,
+
+        /// <summary>
+        /// This represents an empty resource.
+        /// </summary>
+        None
     };
 }

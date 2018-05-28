@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Singularity.property;
+using Singularity.Property;
 
 namespace Singularity.Resources
 {
