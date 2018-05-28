@@ -20,7 +20,7 @@ namespace Singularity.platform
         private bool mIsBlueprint;
         private readonly Action[] mActions;
         private readonly Texture2D mSpritesheet;
-        private readonly Dictionary<CUnit, Job> mAssignedUnits;
+        private readonly Dictionary<GeneralUnit, Job> mAssignedUnits;
         private List<IResources> mResources;
         private Dictionary<IResources, int> mRequested;
         private readonly Dictionary<IResources, int> mCost;
@@ -34,7 +34,7 @@ namespace Singularity.platform
         /// Get the assigned Units of this platform.
         /// </summary>
         /// <returns> a list containing references of the units</returns>
-        public Dictionary<CUnit, Job> GetAssignedUnits()
+        public Dictionary<GeneralUnit, Job> GetAssignedUnits()
         {
             return mAssignedUnits;
         }
@@ -44,7 +44,7 @@ namespace Singularity.platform
         /// </summary>
         /// <param name="unit">The unit to be assigned.</param>
         /// <param name="job">The Job to be done by the unit</param>
-        public void AssignUnits(CUnit unit, Job job)
+        public void AssignUnits(GeneralUnit unit, Job job)
         {
             mAssignedUnits.Add(unit, job);
         }
@@ -53,7 +53,7 @@ namespace Singularity.platform
         /// Remove an Assigned Unit from the Assigned List.
         /// </summary>
         /// <param name="unit">The unit to unassign.</param>
-        public void UnAssignUnits(CUnit unit)
+        public void UnAssignUnits(GeneralUnit unit)
         {
             mAssignedUnits.Remove(unit);
         }
@@ -211,7 +211,7 @@ namespace Singularity.platform
             mActions = new Action[1];
             mActions[0] = Action.BlueprintBuild;
 
-            mAssignedUnits = new Dictionary<CUnit, Job>();
+            mAssignedUnits = new Dictionary<GeneralUnit, Job>();
 
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<IResources, int>();

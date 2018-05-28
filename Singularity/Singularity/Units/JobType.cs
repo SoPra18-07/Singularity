@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Singularity.Units
 {
-    internal class CUnit
+    public enum JobType
     {
+        Idle,
+        Construction,
+        Logistics,
+        Defense
     }
 }
