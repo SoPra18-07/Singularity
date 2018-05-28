@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using Singularity.platform;
 using Singularity.Screen;
 using Singularity.Units;
@@ -21,6 +22,7 @@ namespace Singularity
         private MilitaryUnit mMUnit2;
         private PlatformBlank mPlatform2;
         private Map.Map mMap;
+        private static Song sSoundtrack;
 
         // roads
         private Road mRoad1;
@@ -87,7 +89,12 @@ namespace Singularity
             // load roads
             mRoad1 = new Road(new Vector2(300, 400), new Vector2(800, 600), false);
 
-            
+            // load and play Soundtrack as background music
+            sSoundtrack = Content.Load<Song>("BGMusic");
+            MediaPlayer.Play(sSoundtrack);
+            MediaPlayer.Volume = 0.1F;
+            MediaPlayer.IsRepeating = true;
+
         }
 
         /// <summary>
