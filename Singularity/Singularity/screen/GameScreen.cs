@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.property;
+using Singularity.Property;
+using Singularity.Screen;
 
 namespace Singularity.screen
 {
@@ -22,19 +22,30 @@ namespace Singularity.screen
         /// </summary>
         private readonly LinkedList<IUpdate> mUpdateables;
 
+        private readonly Map.Map mMap;
+
         // TODO: game screen needs the map in its constructor. Not in master as of now
-        public GameScreen()
+        public GameScreen(Map.Map map)
         {
             mDrawables = new LinkedList<IDraw>();
             mUpdateables = new LinkedList<IUpdate>();
+
+            mMap = map;
+
+            AddObject<Map.Map>(map);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach(var drawable in mDrawables)
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, mMap.GetCamera().GetTransform());
+
+            foreach (var drawable in mDrawables)
             {
                 drawable.Draw(spriteBatch);
             }
+
+            spriteBatch.End();
+
         }
 
         public bool DrawLower()

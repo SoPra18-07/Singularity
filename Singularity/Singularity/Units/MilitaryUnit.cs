@@ -112,10 +112,9 @@ namespace Singularity.Units
             Color color;
             if (!selected) { color = Color.White; }
             else { color = Color.Gainsboro; }
-            
-            spriteBatch.Begin();
+
             spriteBatch.Draw(mMilSheet, mPosition, new Rectangle((150 * columnNumber), (75 * rowNumber), 150, 75),color);
-            spriteBatch.End();
+
         }
 
 
