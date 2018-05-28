@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.property;
+using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
 
@@ -11,24 +11,30 @@ namespace Singularity.platform
 
     internal class PlatformBlank : IDraw, IUpdate
     {
+
+        private const int PlatformWidth = 148;
+        private const int PlatformHeight = 170;
+
         private int mHealth;
         private int mId;
         private bool mIsBlueprint;
         private readonly Action[] mActions;
-        private readonly Vector2 mPosition;
         private readonly Texture2D mSpritesheet;
-        private readonly Dictionary<CUnit, Job> mAssignedUnits;
+        private readonly Dictionary<GeneralUnit, Job> mAssignedUnits;
         private List<IResources> mResources;
         private Dictionary<IResources, int> mRequested;
         private readonly Dictionary<IResources, int> mCost;
 
+        public Vector2 AbsolutePosition { private get; set; }
+
+        public Vector2 AbsoluteSize { private get; set; }
 
 
         /// <summary>
         /// Get the assigned Units of this platform.
         /// </summary>
         /// <returns> a list containing references of the units</returns>
-        public Dictionary<CUnit, Job> GetAssignedUnits()
+        public Dictionary<GeneralUnit, Job> GetAssignedUnits()
         {
             return mAssignedUnits;
         }
@@ -38,7 +44,7 @@ namespace Singularity.platform
         /// </summary>
         /// <param name="unit">The unit to be assigned.</param>
         /// <param name="job">The Job to be done by the unit</param>
-        public void AssignUnits(CUnit unit, Job job)
+        public void AssignUnits(GeneralUnit unit, Job job)
         {
             mAssignedUnits.Add(unit, job);
         }
@@ -47,18 +53,9 @@ namespace Singularity.platform
         /// Remove an Assigned Unit from the Assigned List.
         /// </summary>
         /// <param name="unit">The unit to unassign.</param>
-        public void UnAssignUnits(CUnit unit)
+        public void UnAssignUnits(GeneralUnit unit)
         {
             mAssignedUnits.Remove(unit);
-        }
-
-        /// <summary>
-        /// Get the Position of the platform as a 2dimensional vector.
-        /// </summary>
-        /// <returns>a Vector2 containing the position</returns>
-        public Vector2 GetPosition()
-        {
-            return mPosition;
         }
 
         /// <summary>
@@ -181,32 +178,31 @@ namespace Singularity.platform
         /// <inheritdoc cref="Singularity.property.IDraw"/>
         public void Draw(SpriteBatch spritebatch)
         {
-
             // the sprite sheet is 148x1744 px, 1x12 sprites
             // The sprites have different heights so, by testing I found out the sprite is about 148x170 px
             spritebatch.Draw(
                 mSpritesheet,
-                mPosition,
-                new Rectangle(0, 175, 148, 170),
-                Color.White,
-                0f,
-                new Vector2(mPosition.X, mPosition.Y),
-                1f,
-                SpriteEffects.None,
-                0f
+                new Rectangle(
+                    (int) AbsolutePosition.X,
+                    (int) AbsolutePosition.Y,
+                    (int) AbsoluteSize.X,
+                    (int) AbsoluteSize.Y),
+                new Rectangle(0, 0, (int) AbsoluteSize.X, (int) AbsoluteSize.Y),
+                Color.White
             );
         }
 
         /// <inheritdoc cref="Singularity.property.IUpdate"/>
         public void Update(GameTime t)
         {
-            //TODO: implement update code.
+            //TODO: implement update code
         }
 
         public PlatformBlank(Vector2 position, Texture2D spritesheet)
         {
-            //add boundaries check?
-            mPosition = position;
+
+            AbsolutePosition = position;
+            AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
 
             //default?
             mHealth = 100;
@@ -215,7 +211,7 @@ namespace Singularity.platform
             mActions = new Action[1];
             mActions[0] = Action.BlueprintBuild;
 
-            mAssignedUnits = new Dictionary<CUnit, Job>();
+            mAssignedUnits = new Dictionary<GeneralUnit, Job>();
 
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<IResources, int>();
@@ -226,6 +222,7 @@ namespace Singularity.platform
 
             mIsBlueprint = true;
             mRequested = new Dictionary<IResources, int>();
+          
         }
     }
 }
