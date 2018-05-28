@@ -344,3 +344,10 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# TEX
+.*.sw*
+*.aux
+*.out
+*.toc
+

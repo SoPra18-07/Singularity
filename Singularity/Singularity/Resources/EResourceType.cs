@@ -69,6 +69,5 @@
         /// This represents the chip resource.
         /// </summary>
         Chip
-
     };
 }
