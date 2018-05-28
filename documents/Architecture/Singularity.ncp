@@ -1,0 +1,3835 @@
+<Project>
+  <Name>Singularity</Name>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Map</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Comment">
+        <Text>Three versions:
+- Not visited
+- currently visible
+- already visited
+
+'Draw()' draws the actual Fog of War on top of the map, before the UI is being drawn
+
+Visit does not simply clear the given coordinate but everything in a certain radius, so military units can simply call 'Visit(self.position)' or something similiar, and platforms when being built.</Text>
+        <Location left="411" top="21" />
+        <Size width="189" height="171" />
+      </Entity>
+      <Entity type="Class">
+        <Name>FogOfWar</Name>
+        <Access>Public</Access>
+        <Location left="164" top="71" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">List&lt;List&lt;int&gt;&gt; visited</Member>
+        <Member type="Method">public int GetStateFor(coordinate c)</Member>
+        <Member type="Method">public void Visit(Coordinate c)</Member>
+        <Member type="Method">public void Draw()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>Has coordinates for move, zoom. </Text>
+        <Location left="1301" top="49" />
+        <Size width="160" height="75" />
+      </Entity>
+      <Entity type="Class">
+        <Name>Camera</Name>
+        <Access>Public</Access>
+        <Location left="1059" top="38" />
+        <Size width="192" height="111" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">float ZoomLevel</Member>
+        <Member type="Field">Coordinates CameraLocation</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>The Collision map has high enough resolution to be used as the minimap (colorizing depinding on unit type on cell)
+</Text>
+        <Location left="1181" top="281" />
+        <Size width="160" height="92" />
+      </Entity>
+      <Entity type="Class">
+        <Name>StructureMap</Name>
+        <Access>Public</Access>
+        <Location left="795" top="38" />
+        <Size width="208" height="162" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">array&lt;Platform&gt; platforms</Member>
+        <Member type="Field">List&lt;Platform, Platform&gt; roads</Member>
+        <Member type="Method">public void Draw()</Member>
+        <Member type="Method">public void Update()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Map</Name>
+        <Access>Public</Access>
+        <Location left="433" top="243" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">TerrainMap terrain</Member>
+        <Member type="Field">CollisionMap collisions</Member>
+        <Member type="Field">ResoureMap resources</Member>
+        <Member type="Field">StructureMap structures</Member>
+        <Member type="Field">int height</Member>
+        <Member type="Field">int width</Member>
+        <Member type="Method">public void Draw()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>CollisionMap</Name>
+        <Access>Public</Access>
+        <Location left="795" top="281" />
+        <Size width="320" height="128" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">array&lt;optional&lt;int&gt;&gt; map</Member>
+        <Member type="Method">public optional&lt;int&gt; IsCollision(coordinate c)</Member>
+        <Member type="Method">public bool setCollider(coordinate c, optional&lt;id&gt; n)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>ResourceMap</Name>
+        <Access>Public</Access>
+        <Location left="60" top="331" />
+        <Size width="270" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">array&lt;location, type, amount&gt; resources</Member>
+        <Member type="Method">public optional&lt;Resource, value&gt; getResources(coordinate c)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Association" first="6" second="1">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+      </Relationship>
+      <Relationship type="Comment" first="0" second="1">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Comment" first="2" second="3">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="6" second="3">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>1147</X>
+          <Y>218</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+      </Relationship>
+      <Relationship type="Comment" first="4" second="7">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="7" second="8">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>954</X>
+          <Y>447</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>727</X>
+          <Y>501</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="7" second="5">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>770</X>
+          <Y>308</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>742</X>
+          <Y>86</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Association" first="6" second="5">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>622</X>
+          <Y>346</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+      </Relationship>
+      <Relationship type="Association" first="6" second="7">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+      </Relationship>
+      <Relationship type="Association" first="6" second="8">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Units</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Comment">
+        <Text>Units are actually quite autonomous.
+They are effectively just asking the DistributionManager if there's something to do, and do those tasks then. a task contains a job (has to be the same as the units job), might have a start, endplatform and might have a resource as well (that would need transporting then)
+
+The (second) position of the GeneralUnit is the ID of an Platform or an Road - it is basically only relevant for the inter-Graph stuff</Text>
+        <Location left="772" top="456" />
+        <Size width="208" height="198" />
+      </Entity>
+      <Entity type="Class">
+        <Name>GeneralUnit</Name>
+        <Access>Public</Access>
+        <Location left="484" top="456" />
+        <Size width="206" height="179" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">optional&lt;resource&gt; carrying</Member>
+        <Member type="Field">id position</Member>
+        <Member type="Field">JobType job</Member>
+        <Member type="Field">Task task</Member>
+        <Member type="Method">public Task GetCurrentTask()</Member>
+        <Member type="Method">public void SetNewJob()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IUnit</Name>
+        <Access>Public</Access>
+        <Location left="484" top="246" />
+        <Size width="197" height="163" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void move()</Member>
+        <Member type="Property">int id { get; }</Member>
+        <Member type="Property">coordinate position { get; }</Member>
+        <Member type="Method">position getPosition()</Member>
+        <Member type="Method">void Draw(SpriteBatch sb)</Member>
+        <Member type="Method">void Update(GameTime gt)</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>MilitaryUnit</Name>
+        <Access>Public</Access>
+        <Location left="87" top="124" />
+        <Size width="312" height="298" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">int mHealth</Member>
+        <Member type="Field">Vector2 mTargetPosition</Member>
+        <Member type="Field">int mRotation</Member>
+        <Member type="Field">Vector2 mPosition</Member>
+        <Member type="Field">Assignment mAssignment</Member>
+        <Member type="Constructor">public MilitaryUnit(Vector2 position)</Member>
+        <Member type="Property">public int Health { get; set; }</Member>
+        <Member type="Method">public void Move(Vector2 target)</Member>
+        <Member type="Property">public int Id { get; }</Member>
+        <Member type="Property">public Vector2 Position { get; }</Member>
+        <Member type="Property">public Assignment Assignment { get; set; }</Member>
+        <Member type="Method">public void Draw(SpriteBatch spriteBatch, Texture2D texture)</Member>
+        <Member type="Method">public void Update(GameTime gameTime)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PathManager</Name>
+        <Access>Public</Access>
+        <Location left="772" top="260" />
+        <Size width="206" height="128" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">array&lt;array&lt;int&gt;&gt; Daijkstra</Member>
+        <Member type="Method">public int GraphFromTo(id from, id to)</Member>
+        <Member type="Method">public path AStar(coordinates from, coordinates to)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Enum">
+        <Name>JobType</Name>
+        <Access>Public</Access>
+        <Location left="238" top="456" />
+        <Size width="162" height="129" />
+        <Collapsed>False</Collapsed>
+        <Value>Idle</Value>
+        <Value>Construction</Value>
+        <Value>Logistics</Value>
+        <Value>Defense</Value>
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Comment" first="0" second="1">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="3" second="2">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="2" second="4">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="1" second="2">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="1" second="5">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Platforms</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Class">
+        <Name>ProduceResource</Name>
+        <Access>Public</Access>
+        <Location left="211" top="841" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>BuildUnit</Name>
+        <Access>Public</Access>
+        <Location left="304" top="954" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>PlatformAction</Name>
+        <Access>Public</Access>
+        <Location left="304" top="1102" />
+        <Size width="350" height="214" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">State state { get; set; }</Member>
+        <Member type="Method">void ChangeState()</Member>
+        <Member type="Method">Tuple&lt;Resource, int&gt; getResourcesRequired()</Member>
+        <Member type="Property">Tuple&lt;Resource, int&gt; ResourcesTotalRequired { get; }</Member>
+        <Member type="Method">void Execute()</Member>
+        <Member type="Property">JobType UnitsRequired { get; }</Member>
+        <Member type="Method">void AssignUnit(GeneralUnit u, JobType j)</Member>
+        <Member type="Method">void UnAssignUnit(UnitId uid)</Member>
+        <Member type="Property">Dictionary&lt;GeneralUnit, JobType&gt; AssignedUnits { get; }</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>PStorage</Name>
+        <Access>Public</Access>
+        <Location left="1226" top="704" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Defend</Name>
+        <Access>Public</Access>
+        <Location left="708" top="1055" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>FactoryProduction</Name>
+        <Access>Public</Access>
+        <Location left="420" top="841" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>BuildBlueprint</Name>
+        <Access>Public</Access>
+        <Location left="105" top="931" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>PlatformActions:
+
+The state should be clear, this is for active actions:
+
+Execute():
+unit executing this action, meaning actively producing, building, or getting the action to request resources.
+
+PlatformActions only actively ask for Resources if there's a unit trying to execute the action requiring resources.
+
+ChangeState():
+The user clicked on the action after having selected the platform with it. Depending on the action it will now get active, deactivated or available (the storyManager might disable it as well).</Text>
+        <Location left="895" top="1178" />
+        <Size width="244" height="225" />
+      </Entity>
+      <Entity type="Comment">
+        <Text>Each Action is either 
+- Available: meaning it can be executed, the button for the action can be clicked
+
+- Active : meaning it is currently being executed, so not available right now (the button is shown but cannot be clicked)
+
+- Deactivated: meaning it's manually paused (like factory not producing or blueprint not getting build right now) but can be executed, so button is clickable
+
+- Disabled: Button cannot be clicked, since the action has been disabled (might be due to missing power, unavailability of resources or Unit Limits for producing units)</Text>
+        <Location left="576" top="1375" />
+        <Size width="267" height="207" />
+      </Entity>
+      <Entity type="Enum">
+        <Name>PlatformActionState</Name>
+        <Access>Public</Access>
+        <Location left="332" top="1397" />
+        <Size width="162" height="163" />
+        <Collapsed>False</Collapsed>
+        <Value>Available</Value>
+        <Value>Active</Value>
+        <Value>Deactivated</Value>
+        <Value>Disabled</Value>
+      </Entity>
+      <Entity type="Class">
+        <Name>BuildSettler</Name>
+        <Access>Public</Access>
+        <Location left="511" top="975" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PQuarry</Name>
+        <Access>Public</Access>
+        <Location left="688" top="438" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>onPlatform are Resources laying on the Platform, a Limit is to be enforced. This does also include resources reserved but still on the platform.
+
+requested Resources are for example for refining them in others, or for building blueprints.
+
+the availableActions include things like 'Building Units' or 'Build Settler' from the Command center and 'Build Blueprint' in genereal if available, as well as the activation of Producing platforms
+
+When building a platform, it is first placed with the 'isBlueprint = True' option, indicating that it's not yet a built object. Then, if the resources were brought to the preceding platform and it's been buiilt, it'll change that, and will activate all possible further actions
+
+The Platform takes care of the collision of the Resources on top of it</Text>
+        <Location left="1438" top="142" />
+        <Size width="232" height="314" />
+      </Entity>
+      <Entity type="Class">
+        <Name>PCommandCenter</Name>
+        <Access>Public</Access>
+        <Location left="921" top="704" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PMine</Name>
+        <Access>Public</Access>
+        <Location left="688" top="530" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PFactory</Name>
+        <Access>Public</Access>
+        <Location left="1687" top="378" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PPackaging</Name>
+        <Access>Public</Access>
+        <Location left="1687" top="555" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PJunkyard</Name>
+        <Access>Public</Access>
+        <Location left="1498" top="555" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PWell</Name>
+        <Access>Public</Access>
+        <Location left="921" top="913" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PArmory</Name>
+        <Access>Public</Access>
+        <Location left="1226" top="810" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PEneryFacility</Name>
+        <Access>Public</Access>
+        <Location left="921" top="810" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PLaserDefense</Name>
+        <Access>Public</Access>
+        <Location left="921" top="1019" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PKineticDefense</Name>
+        <Access>Public</Access>
+        <Location left="1226" top="1019" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PBarrack</Name>
+        <Access>Public</Access>
+        <Location left="1226" top="913" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PlatformBlank</Name>
+        <Access>Public</Access>
+        <Location left="1034" top="142" />
+        <Size width="338" height="485" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">int mID</Member>
+        <Member type="Field">Vector2 mPosition</Member>
+        <Member type="Field">Rectangle mTexture</Member>
+        <Member type="Field">Texture mSpriteSheet</Member>
+        <Member type="Field">int mHealth</Member>
+        <Member type="Field">List&lt;IUnit&gt; mAssigned</Member>
+        <Member type="Field">List&lt;Resources&gt; mOnPlatform</Member>
+        <Member type="Field">List&lt;Resources&gt; mReserved</Member>
+        <Member type="Field">Dictionary&lt;Resources, int&gt; mRequestedResources</Member>
+        <Member type="Field">PlatformActions mActions</Member>
+        <Member type="Field">bool mBlueprint</Member>
+        <Member type="Field">Dictionary&lt;Resouces, int&gt; mCost</Member>
+        <Member type="Method">public Dictionary&lt;Resource, int&gt; GetRequestedResources()</Member>
+        <Member type="Method">public List&lt;PlatformActions&gt; GetActions()</Member>
+        <Member type="Method">public void doAction(PlatformAction a)</Member>
+        <Member type="Method">public List&lt;Resource&gt; GetResourcesOnPlatform()</Member>
+        <Member type="Method">public int GetHealth()</Member>
+        <Member type="Method">public void TakeDamage()</Member>
+        <Member type="Method">public Dictionary&lt;IUnit&gt; GetAssignedUnits()</Member>
+        <Member type="Method">public void StoreResource(Resource r)</Member>
+        <Member type="Method">public Resource GetResource(int id)</Member>
+        <Member type="Method">public void ReserveResource(int id)</Member>
+        <Member type="Constructor">public PlatformBlank(Vector2 Coordinates, spriteSheetRef spr)</Member>
+        <Member type="Method">public void Produce()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Dependency" first="13" second="10">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>864</X>
+          <Y>742</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="22" second="4">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="21" second="4">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="0" second="2">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>288</X>
+          <Y>1034</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="13" second="1">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>401</X>
+          <Y>911</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="24" second="6">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>964</X>
+          <Y>353</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Realization" first="10" second="2">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="1" second="2">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="5" second="2">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="6" second="2">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Comment" first="7" second="2">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="2" second="9">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Comment" first="8" second="9">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Comment" first="12" second="24">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Generalization" first="16" second="24">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1769</X>
+          <Y>501</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="3" second="24">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1192</X>
+          <Y>742</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1156</X>
+          <Y>698</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="20" second="24">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1127</X>
+          <Y>851</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1156</X>
+          <Y>652</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="19" second="24">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1199</X>
+          <Y>851</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1156</X>
+          <Y>652</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="18" second="24">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1123</X>
+          <Y>954</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1156</X>
+          <Y>655</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="23" second="24">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1199</X>
+          <Y>954</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1156</X>
+          <Y>652</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="21" second="24">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1156</X>
+          <Y>1057</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1156</X>
+          <Y>703</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="22" second="24">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1156</X>
+          <Y>964</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1156</X>
+          <Y>656</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="17" second="24">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1588</X>
+          <Y>501</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="15" second="24">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1594</X>
+          <Y>501</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="13" second="24">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1116</X>
+          <Y>742</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1156</X>
+          <Y>702</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="11" second="24">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Generalization" first="14" second="24">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="18" second="0">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>292</X>
+          <Y>767</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Realization" first="4" second="2">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="15" second="5">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1880</X>
+          <Y>421</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>499</X>
+          <Y>674</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="14" second="0">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>582</X>
+          <Y>574</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="11" second="0">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>573</X>
+          <Y>486</Y>
+        </BendPoint>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Resources</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Comment">
+        <Text>When Units take Resources, they accelerate the resource so that it will stay behind them. Resources do have quite the negative acceleration, meaning they will halt quite fast if they're not actively being accelerated
+
+A resource is always either on a platform, or being transported by a unit somewhere.</Text>
+        <Location left="834" top="436" />
+        <Size width="160" height="184" />
+      </Entity>
+      <Entity type="Interface">
+        <Name>IResource</Name>
+        <Access>Public</Access>
+        <Location left="834" top="156" />
+        <Size width="224" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">int ID { get; }</Member>
+        <Member type="Method">void Draw()</Member>
+        <Member type="Method">void Update()</Member>
+        <Member type="Property">coordinates getPosition { get; }</Member>
+        <Member type="Method">void Use()</Member>
+        <Member type="Method">void accelerate(vector2 v)</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>Oil</Name>
+        <Access>Public</Access>
+        <Location left="523" top="226" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Metal</Name>
+        <Access>Public</Access>
+        <Location left="523" top="418" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Stone</Name>
+        <Access>Public</Access>
+        <Location left="523" top="320" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Sand</Name>
+        <Access>Public</Access>
+        <Location left="523" top="134" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Silizium</Name>
+        <Access>Public</Access>
+        <Location left="261" top="134" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Plastik</Name>
+        <Access>Public</Access>
+        <Location left="261" top="226" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Beton</Name>
+        <Access>Public</Access>
+        <Location left="261" top="40" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Kupfer</Name>
+        <Access>Public</Access>
+        <Location left="261" top="418" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Treibstoff</Name>
+        <Access>Public</Access>
+        <Location left="261" top="320" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Stahl</Name>
+        <Access>Public</Access>
+        <Location left="261" top="520" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Chips</Name>
+        <Access>Public</Access>
+        <Location left="10" top="226" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Water</Name>
+        <Access>Public</Access>
+        <Location left="523" top="40" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Realization" first="3" second="1">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>713</X>
+          <Y>459</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>809</X>
+          <Y>264</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Realization" first="4" second="1">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="2" second="1">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="5" second="1">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="13" second="1">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Comment" first="0" second="1">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="12" second="9">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>212</X>
+          <Y>264</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>220</X>
+          <Y>448</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="12" second="7">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="12" second="6">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="11" second="3">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="9" second="3">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="10" second="2">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="7" second="2">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="6" second="5">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="8" second="5">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="8" second="13">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Screens</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Class">
+        <Name>OptionScreen</Name>
+        <Access>Public</Access>
+        <Location left="1036" top="73" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>HelpScreen</Name>
+        <Access>Public</Access>
+        <Location left="1036" top="176" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IDraw</Name>
+        <Access>Public</Access>
+        <Location left="537" top="411" />
+        <Size width="220" height="78" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void Draw(SpriteBatch spriteBatch)</Member>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IUpdate</Name>
+        <Access>Public</Access>
+        <Location left="201" top="411" />
+        <Size width="216" height="78" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void Update(GameTime gameTime)</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>Button</Name>
+        <Access>Public</Access>
+        <Location left="1492" top="449" />
+        <Size width="162" height="128" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">Optional&lt;Texture&gt; texture</Member>
+        <Member type="Field">int height</Member>
+        <Member type="Field">int width</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>a slider is like
+
+-----o---------- 13/50
+
+you can slide it with a mouse</Text>
+        <Location left="1945" top="467" />
+        <Size width="160" height="95" />
+      </Entity>
+      <Entity type="Comment">
+        <Text>A Selecter is one of those where you can enter a number and change it by one on the arrows right next to it up or down, looking sth like this:
+
+[13][^][v]</Text>
+        <Location left="2088" top="280" />
+        <Size width="160" height="108" />
+      </Entity>
+      <Entity type="Class">
+        <Name>Selecter</Name>
+        <Access>Public</Access>
+        <Location left="1854" top="280" />
+        <Size width="162" height="128" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">int minimum</Member>
+        <Member type="Field">int maximum</Member>
+        <Member type="Field">int currentVal</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Slider</Name>
+        <Access>Public</Access>
+        <Location left="1725" top="449" />
+        <Size width="162" height="128" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">int minimum</Member>
+        <Member type="Field">int maxmium</Member>
+        <Member type="Field">int currentVal</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Label</Name>
+        <Access>Public</Access>
+        <Location left="1854" top="108" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>Note:
+
+For ease of creation, there are some function names etc not fully in sync, e.g. if there's an Update-function, it's derived from the IUpdate interface (with it's parameters etc), same with Draw or other functions/paramters/attributes.
+
+Since those are no real issues they will be fixed at last when it's being implemented, but probably even before.</Text>
+        <Location left="1275" top="505" />
+        <Size width="191" height="155" />
+      </Entity>
+      <Entity type="Interface">
+        <Name>WindowItem</Name>
+        <Access>Public</Access>
+        <Location left="1643" top="138" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void Draw()</Member>
+        <Member type="Method">void Update()</Member>
+        <Member type="Method">void ReceiveEvents(Event e)</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>Window</Name>
+        <Access>Public</Access>
+        <Location left="1321" top="250" />
+        <Size width="162" height="162" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">string windowName</Member>
+        <Member type="Field">List&lt;WindowItem&gt; items</Member>
+        <Member type="Method">public void Draw()</Member>
+        <Member type="Method">public void Update()</Member>
+        <Member type="Method">public void ReceiveEvent(Event e)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>LoadGameScreen</Name>
+        <Access>Public</Access>
+        <Location left="1036" top="632" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IScreen</Name>
+        <Access>Public</Access>
+        <Location left="665" top="697" />
+        <Size width="213" height="95" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">bool UpdateLower()</Member>
+        <Member type="Method">bool DrawLower()</Member>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IScreenManager</Name>
+        <Access>Public</Access>
+        <Location left="88" top="698" />
+        <Size width="221" height="95" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void AddScreen(IScreen screen)</Member>
+        <Member type="Method">void RemoveScreen()</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>StackScreenManager</Name>
+        <Access>Public</Access>
+        <Location left="405" top="698" />
+        <Size width="184" height="94" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">Stack&lt;IScreen&gt; mScreenStack</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>GameScreen</Name>
+        <Access>Public</Access>
+        <Location left="1036" top="271" />
+        <Size width="162" height="111" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">List&lt;IDraw&gt; drawables</Member>
+        <Member type="Field">List&lt;IUpdate&gt; triggers</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>HUDScreen</Name>
+        <Access>Public</Access>
+        <Location left="1036" top="399" />
+        <Size width="162" height="111" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">List&lt;Window&gt; windows</Member>
+        <Member type="Method">public void ReceiveEvent()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>MainMenuScreen</Name>
+        <Access>Public</Access>
+        <Location left="1036" top="732" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>SaveGameScreen</Name>
+        <Access>Public</Access>
+        <Location left="1036" top="528" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>LoadingScreen</Name>
+        <Access>Public</Access>
+        <Location left="1036" top="829" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>This is not a loading screen for saves, but a general loading screen, while loading resources (e.g. the map).</Text>
+        <Location left="1275" top="829" />
+        <Size width="213" height="63" />
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Realization" first="4" second="11">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Comment" first="5" second="8">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="12" second="11">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Comment" first="6" second="7">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="8" second="11">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="7" second="11">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="9" second="11">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="18" second="12">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="19" second="17">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1235</X>
+          <Y>765</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1235</X>
+          <Y>326</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="19" second="13">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1235</X>
+          <Y>765</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Realization" first="13" second="14">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="16" second="14">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="16" second="15">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="17" second="14">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>993</X>
+          <Y>308</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>922</X>
+          <Y>805</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="18" second="14">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="19" second="14">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1009</X>
+          <Y>771</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>905</X>
+          <Y>805</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="20" second="14">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="21" second="14">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>996</X>
+          <Y>872</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>918</X>
+          <Y>805</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Comment" first="22" second="21">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1250</X>
+          <Y>866</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>1224</X>
+          <Y>866</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="15" second="3">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>198</X>
+          <Y>629</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>309</X>
+          <Y>558</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="15" second="2">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="14" second="2">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="14" second="3">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="1" second="14">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>985</X>
+          <Y>217</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>830</X>
+          <Y>672</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Realization" first="0" second="14">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>935</X>
+          <Y>107</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>830</X>
+          <Y>672</Y>
+        </BendPoint>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Sound</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Class">
+        <Name>SoundManager</Name>
+        <Access>Public</Access>
+        <Location left="248" top="184" />
+        <Size width="265" height="269" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">Dictionary&lt;string, SoundEffect&gt; mSoundList</Member>
+        <Member type="Field">Song mSoundTrack</Member>
+        <Member type="Method">public static void Initialize()</Member>
+        <Member type="Method">public static void PlaySoundtrack()</Member>
+        <Member type="Method">public static void PlaySoundEffect(string soundName)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+    </Entities>
+    <Relationships />
+  </ProjectItem>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Name>DistributionManager</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Comment">
+        <Text>The DistributionManager is responsible for the following tasks:
+
+- collecting all possible jobs for units currently open
+- distributing the units as they are available according to their job
+- collecting resource requests from all platforms
+- distributing the job of taking resources there over the (Carrying) units
+- centrally managing all blueperints and their requested resources
+- assigning jobs for a platform first to the for this platform assigned units
+- redistributing 'Producing' units if a producing platform is built, paused or unpaused
+
+
+taking in:
+- units who finished their job / requesting work
+- actions requesting units (producing, defense)
+- actions requesting resources (producing, blueprint building)
+- units getting reassigned
+- actions being paused/unpaused, thus taking back their requests
+- manual (un)assignment of units
+- units asking for things to do
+
+things happening:
+- PlatformActions will not request all resources at once, but at most one per 'update', so that the other platforms will get a chance to request resources and units as well. Then the queue will be worked on FIFO - this might be subject to change as other systems might prove more effective or efficient.
+- idle units can request for things to do (If their JobType is Idle they will get back either nothing or are being sent around the graph to random platforms)
+
+producePlatforms is when looking for Resources, they're being asked until the requested resource is found and 'reserved'.
+
+Additionally: Platforms are tasked with telling the DistributionManager when there's trash on them, the DistributionManager will create a Task for Logistics carrying that away.
+
+RequestUnits is for PlatformActions requiring actual worker-units, so the only accepted JobTypes are 'Construction' and 'Production'.
+
+There is only a pause and no unpause, since pause simply removes all current requests from the queues, and unpausing happenes automatically when the PlatformAction begins requesting resources/Units again.</Text>
+        <Location left="736" top="100" />
+        <Size width="678" height="377" />
+      </Entity>
+      <Entity type="Enum">
+        <Name>JobType</Name>
+        <Access>Public</Access>
+        <Location left="202" top="573" />
+        <Size width="162" height="129" />
+        <Collapsed>False</Collapsed>
+        <Value>Idle</Value>
+        <Value>Construction</Value>
+        <Value>Logistics</Value>
+        <Value>Defense</Value>
+      </Entity>
+      <Entity type="Class">
+        <Name>Task</Name>
+        <Access>Public</Access>
+        <Location left="475" top="573" />
+        <Size width="203" height="145" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">JobType type</Member>
+        <Member type="Field">Optional&lt;PlatformId&gt; start</Member>
+        <Member type="Field">Optional&lt;PlatformId&gt; end</Member>
+        <Member type="Field">Optional&lt;Resource&gt; required</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>DistributionManager</Name>
+        <Access>Public</Access>
+        <Location left="51" top="125" />
+        <Size width="626" height="366" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">List&lt;GeneralUnit&gt; idle</Member>
+        <Member type="Field">List&lt;GeneralUnit&gt; construction</Member>
+        <Member type="Field">List&lt;GeneralUnit&gt; production</Member>
+        <Member type="Field">List&lt;GeneralUnit&gt; defense</Member>
+        <Member type="Field">List&lt;GeneralUnit&gt; manual</Member>
+        <Member type="Field">Queue&lt;Resource, PlatformAction&gt; resourceRequests</Member>
+        <Member type="Field">List&lt;PlatformActionBuild&gt; blueprintBuilds</Member>
+        <Member type="Field">List&lt;PlatformActionProduce&gt; producingPlatforms</Member>
+        <Member type="Field">List&lt;PlatformActionDefend&gt; defensivePlatforms</Member>
+        <Member type="Method">public void manualAssign(int unitId, int actionId)</Member>
+        <Member type="Method">public void manualUnassign(id unitid)</Member>
+        <Member type="Method">public void RequestResource(PlatformId pid, Resource r)</Member>
+        <Member type="Method">public void RequestUnits(Platform p, JobType j)</Member>
+        <Member type="Method">public void BuildBlueprint(PlatformAction pa)</Member>
+        <Member type="Method">public List&lt;Resources&gt; PlatformRequests(platformid pid)</Member>
+        <Member type="Method">public Optional&lt;Task&gt; RequestNewTask(GeneralUnit gu, JobType j, Optional&lt;PlatformAction&gt; assigned = Nothing)</Member>
+        <Member type="Method">public void PausePlatformAction(PlatformAction action)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Dependency" first="3" second="2">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Comment" first="0" second="3">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="2" second="1">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Input</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Interface">
+        <Name>IKeyListener</Name>
+        <Access>Public</Access>
+        <Location left="140" top="543" />
+        <Size width="225" height="112" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void KeyTyped(KeyEvent keyEvent)</Member>
+        <Member type="Method">void KeyPressed(KeyEvent keyEvent)</Member>
+        <Member type="Method">void KeyReleased(KeyEvent keyEvent)</Member>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IMouseListener</Name>
+        <Access>Public</Access>
+        <Location left="449" top="543" />
+        <Size width="274" height="95" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void MousePressed(MouseEvent mouseEvent)</Member>
+        <Member type="Method">void MouseReleased(MouseEvent mouseEvent)</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>KeyEvent</Name>
+        <Access>Public</Access>
+        <Location left="1047" top="341" />
+        <Size width="174" height="94" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public Keys[] CurrentKeys { get; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>MouseEvent</Name>
+        <Access>Public</Access>
+        <Location left="793" top="341" />
+        <Size width="210" height="111" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public Vector2 Position { get; }</Member>
+        <Member type="Property">public EMouseAction MouseAction { get; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IUpdate</Name>
+        <Access>Public</Access>
+        <Location left="315" top="52" />
+        <Size width="215" height="78" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void Update(GameTime gameTime)</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>InputManager</Name>
+        <Access>Public</Access>
+        <Location left="255" top="242" />
+        <Size width="328" height="179" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">List&lt;IKeyListener&gt; mKeyListener</Member>
+        <Member type="Field">List&lt;IMouseListener&gt; mMouseListener</Member>
+        <Member type="Method">public void AddKeyListener(IKeyListener keyListener)</Member>
+        <Member type="Method">public bool RemoveKeyListener(IKeyListener keyListener)</Member>
+        <Member type="Method">public void AddMouseListener(IMouseListener mouseListener)</Member>
+        <Member type="Method">public bool RemoveMouseListener(IMouseListener mouseListener)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Enum">
+        <Name>EMouseAction</Name>
+        <Access>Public</Access>
+        <Location left="820" top="543" />
+        <Size width="162" height="95" />
+        <Collapsed>False</Collapsed>
+        <Value>LEFT_CLICK</Value>
+        <Value>RIGHT_CLICK</Value>
+      </Entity>
+      <Entity type="Enum">
+        <Name>Keys</Name>
+        <Access>Public</Access>
+        <Location left="1047" top="543" />
+        <Size width="162" height="2781" />
+        <Collapsed>True</Collapsed>
+        <Value>A</Value>
+        <Value>Add</Value>
+        <Value>Apps</Value>
+        <Value>Attn</Value>
+        <Value>B</Value>
+        <Value>Back</Value>
+        <Value>BrowserBack</Value>
+        <Value>BrowserFavorites</Value>
+        <Value>BrowserForward</Value>
+        <Value>BrowserHome</Value>
+        <Value>BrowserRefresh</Value>
+        <Value>BrowserSearch</Value>
+        <Value>BrowserStop</Value>
+        <Value>C</Value>
+        <Value>CapsLock</Value>
+        <Value>ChatPadGreen</Value>
+        <Value>ChatPadOrange</Value>
+        <Value>Crsel</Value>
+        <Value>D</Value>
+        <Value>D0</Value>
+        <Value>D1</Value>
+        <Value>D2</Value>
+        <Value>D3</Value>
+        <Value>D4</Value>
+        <Value>D5</Value>
+        <Value>D6</Value>
+        <Value>D7</Value>
+        <Value>D8</Value>
+        <Value>D9</Value>
+        <Value>Decimal</Value>
+        <Value>Delete</Value>
+        <Value>Divide</Value>
+        <Value>Down</Value>
+        <Value>E</Value>
+        <Value>End</Value>
+        <Value>Enter</Value>
+        <Value>EraseEof</Value>
+        <Value>Escape</Value>
+        <Value>Execute</Value>
+        <Value>Exsel</Value>
+        <Value>F</Value>
+        <Value>F1</Value>
+        <Value>F10</Value>
+        <Value>F11</Value>
+        <Value>F12</Value>
+        <Value>F13</Value>
+        <Value>F14</Value>
+        <Value>F15</Value>
+        <Value>F16</Value>
+        <Value>F17</Value>
+        <Value>F18</Value>
+        <Value>F19</Value>
+        <Value>F2</Value>
+        <Value>F20</Value>
+        <Value>F21</Value>
+        <Value>F22</Value>
+        <Value>F23</Value>
+        <Value>F24</Value>
+        <Value>F3</Value>
+        <Value>F4</Value>
+        <Value>F5</Value>
+        <Value>F6</Value>
+        <Value>F7</Value>
+        <Value>F8</Value>
+        <Value>F9</Value>
+        <Value>G</Value>
+        <Value>H</Value>
+        <Value>Help</Value>
+        <Value>Home</Value>
+        <Value>I</Value>
+        <Value>ImeConvert</Value>
+        <Value>ImeNoConvert</Value>
+        <Value>Insert</Value>
+        <Value>J</Value>
+        <Value>K</Value>
+        <Value>Kana</Value>
+        <Value>Kanji</Value>
+        <Value>L</Value>
+        <Value>LaunchApplication1</Value>
+        <Value>LaunchApplication2</Value>
+        <Value>LaunchMail</Value>
+        <Value>Left</Value>
+        <Value>LeftAlt</Value>
+        <Value>LeftControl</Value>
+        <Value>LeftShift</Value>
+        <Value>LeftWindows</Value>
+        <Value>M</Value>
+        <Value>MediaNextTrack</Value>
+        <Value>MediaPlayPause</Value>
+        <Value>MediaPreviousTrack</Value>
+        <Value>MediaStop</Value>
+        <Value>Multiply</Value>
+        <Value>N</Value>
+        <Value>None</Value>
+        <Value>NumLock</Value>
+        <Value>NumPad0</Value>
+        <Value>NumPad1</Value>
+        <Value>NumPad2</Value>
+        <Value>NumPad3</Value>
+        <Value>NumPad4</Value>
+        <Value>NumPad5</Value>
+        <Value>NumPad6</Value>
+        <Value>NumPad7</Value>
+        <Value>NumPad8</Value>
+        <Value>NumPad9</Value>
+        <Value>O</Value>
+        <Value>Oem8</Value>
+        <Value>OemAuto</Value>
+        <Value>OemBackslash</Value>
+        <Value>OemClear</Value>
+        <Value>OemCloseBrackets</Value>
+        <Value>OemComma</Value>
+        <Value>OemCopy</Value>
+        <Value>OemEnlW</Value>
+        <Value>OemMinus</Value>
+        <Value>OemOpenBrackets</Value>
+        <Value>OemPeriod</Value>
+        <Value>OemPipe</Value>
+        <Value>OemPlus</Value>
+        <Value>OemQuestion</Value>
+        <Value>OemQuotes</Value>
+        <Value>OemSemicolon</Value>
+        <Value>OemTilde</Value>
+        <Value>P</Value>
+        <Value>Pa1</Value>
+        <Value>PageDown</Value>
+        <Value>PageUp</Value>
+        <Value>Pause</Value>
+        <Value>Play</Value>
+        <Value>Print</Value>
+        <Value>PrintScreen</Value>
+        <Value>ProcessKey</Value>
+        <Value>Q</Value>
+        <Value>R</Value>
+        <Value>Right</Value>
+        <Value>RightAlt</Value>
+        <Value>RightControl</Value>
+        <Value>RightShift</Value>
+        <Value>RightWindows</Value>
+        <Value>S</Value>
+        <Value>Scroll</Value>
+        <Value>Select</Value>
+        <Value>SelectMedia</Value>
+        <Value>Separator</Value>
+        <Value>Sleep</Value>
+        <Value>Space</Value>
+        <Value>Subtract</Value>
+        <Value>T</Value>
+        <Value>Tab</Value>
+        <Value>U</Value>
+        <Value>Up</Value>
+        <Value>V</Value>
+        <Value>VolumeDown</Value>
+        <Value>VolumeMute</Value>
+        <Value>VolumeUp</Value>
+        <Value>W</Value>
+        <Value>X</Value>
+        <Value>Y</Value>
+        <Value>Z</Value>
+        <Value>Zoom</Value>
+      </Entity>
+      <Entity type="Comment">
+        <Text>See also:
+Microsoft.Xna.Framework.Input.Keys
+</Text>
+        <Location left="1280" top="543" />
+        <Size width="200" height="50" />
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Dependency" first="5" second="4">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="3" second="6">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="2" second="7">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="5" second="1">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="5" second="0">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Comment" first="8" second="7">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="5" second="3">
+        <Label>creates</Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>617</X>
+          <Y>263</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>901</X>
+          <Y>316</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="5" second="2">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>608</X>
+          <Y>263</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Combined</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Comment">
+        <Text>This is not a loading screen for saves, but a general loading screen, while loading resources (e.g. the map).</Text>
+        <Location left="3117" top="1093" />
+        <Size width="213" height="63" />
+      </Entity>
+      <Entity type="Interface">
+        <Name>IUpdate</Name>
+        <Access>Public</Access>
+        <Location left="1545" top="1292" />
+        <Size width="216" height="78" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void Update(GameTime gt)</Member>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IDraw</Name>
+        <Access>Public</Access>
+        <Location left="1845" top="1388" />
+        <Size width="220" height="78" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void Draw(SpriteBatch s)</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>LoadingScreen</Name>
+        <Access>Public</Access>
+        <Location left="2878" top="1093" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>SaveGameScreen</Name>
+        <Access>Public</Access>
+        <Location left="2878" top="792" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>MainMenuScreen</Name>
+        <Access>Public</Access>
+        <Location left="2878" top="996" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>HUDScreen</Name>
+        <Access>Public</Access>
+        <Location left="2878" top="663" />
+        <Size width="162" height="111" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">List&lt;Window&gt; windows</Member>
+        <Member type="Method">public void ReceiveEvent()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>GameScreen</Name>
+        <Access>Public</Access>
+        <Location left="2878" top="535" />
+        <Size width="162" height="111" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">List&lt;IDraw&gt; drawables</Member>
+        <Member type="Field">List&lt;IUpdate&gt; triggers</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>StackScreenManager</Name>
+        <Access>Public</Access>
+        <Location left="2247" top="962" />
+        <Size width="184" height="94" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">Stack&lt;IScreen&gt; mScreenStack</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IScreenManager</Name>
+        <Access>Public</Access>
+        <Location left="1930" top="962" />
+        <Size width="221" height="95" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void AddScreen(IScreen screen)</Member>
+        <Member type="Method">void RemoveScreen()</Member>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IScreen</Name>
+        <Access>Public</Access>
+        <Location left="2507" top="961" />
+        <Size width="213" height="95" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">bool UpdateLower()</Member>
+        <Member type="Method">bool DrawLower()</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>ResourceMap</Name>
+        <Access>Public</Access>
+        <Location left="1029" top="292" />
+        <Size width="270" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">array&lt;location, type, amount&gt; resources</Member>
+        <Member type="Method">public optional&lt;Resource, value&gt; getResources(coordinate c)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>CollisionMap</Name>
+        <Access>Public</Access>
+        <Location left="1891" top="152" />
+        <Size width="320" height="128" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">array&lt;optional&lt;int&gt;&gt; map</Member>
+        <Member type="Method">public optional&lt;int&gt; IsCollision(coordinate c)</Member>
+        <Member type="Method">public bool setCollider(coordinate c, optional&lt;id&gt; n)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Map</Name>
+        <Access>Public</Access>
+        <Location left="1402" top="204" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">TerrainMap terrain</Member>
+        <Member type="Field">CollisionMap collisions</Member>
+        <Member type="Field">ResoureMap resources</Member>
+        <Member type="Field">StructureMap structures</Member>
+        <Member type="Field">int height</Member>
+        <Member type="Field">int width</Member>
+        <Member type="Method">public void Draw()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>GeneralUnit</Name>
+        <Access>Public</Access>
+        <Location left="665" top="1948" />
+        <Size width="206" height="179" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">optional&lt;resource&gt; carrying</Member>
+        <Member type="Field">id position</Member>
+        <Member type="Field">JobType job</Member>
+        <Member type="Field">Task task</Member>
+        <Member type="Method">public Task GetCurrentTask()</Member>
+        <Member type="Method">public void SetNewJob()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IUnit</Name>
+        <Access>Public</Access>
+        <Location left="665" top="1708" />
+        <Size width="197" height="163" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void move()</Member>
+        <Member type="Property">int id { get; }</Member>
+        <Member type="Property">coordinate position { get; }</Member>
+        <Member type="Method">position getPosition()</Member>
+        <Member type="Method">void Draw(SpriteBatch sb)</Member>
+        <Member type="Method">void Update(GameTime gt)</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>PlatformBlank</Name>
+        <Access>Public</Access>
+        <Location left="2350" top="1679" />
+        <Size width="338" height="485" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">int mID</Member>
+        <Member type="Field">Vector2 mPosition</Member>
+        <Member type="Field">Rectangle mTexture</Member>
+        <Member type="Field">Texture mSpriteSheet</Member>
+        <Member type="Field">int mHealth</Member>
+        <Member type="Field">List&lt;IUnit&gt; mAssigned</Member>
+        <Member type="Field">List&lt;Resources&gt; mOnPlatform</Member>
+        <Member type="Field">List&lt;Resources&gt; mReserved</Member>
+        <Member type="Field">Dictionary&lt;Resources, int&gt; mRequestedResources</Member>
+        <Member type="Field">PlatformActions mActions</Member>
+        <Member type="Field">bool mBlueprint</Member>
+        <Member type="Field">Dictionary&lt;Resouces, int&gt; mCost</Member>
+        <Member type="Method">public Dictionary&lt;Resource, int&gt; GetRequestedResources()</Member>
+        <Member type="Method">public List&lt;PlatformActions&gt; GetActions()</Member>
+        <Member type="Method">public void doAction(PlatformAction a)</Member>
+        <Member type="Method">public List&lt;Resource&gt; GetResourcesOnPlatform()</Member>
+        <Member type="Method">public int GetHealth()</Member>
+        <Member type="Method">public void TakeDamage()</Member>
+        <Member type="Method">public Dictionary&lt;IUnit&gt; GetAssignedUnits()</Member>
+        <Member type="Method">public void StoreResource(Resource r)</Member>
+        <Member type="Method">public Resource GetResource(int id)</Member>
+        <Member type="Method">public void ReserveResource(int id)</Member>
+        <Member type="Constructor">public PlatformBlank(Vector2 Coordinates, spriteSheetRef spr)</Member>
+        <Member type="Method">public void Produce()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PBarrack</Name>
+        <Access>Public</Access>
+        <Location left="2542" top="2450" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PKineticDefense</Name>
+        <Access>Public</Access>
+        <Location left="2542" top="2556" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PLaserDefense</Name>
+        <Access>Public</Access>
+        <Location left="2237" top="2556" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PEneryFacility</Name>
+        <Access>Public</Access>
+        <Location left="2237" top="2347" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PArmory</Name>
+        <Access>Public</Access>
+        <Location left="2542" top="2347" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PWell</Name>
+        <Access>Public</Access>
+        <Location left="2237" top="2450" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PJunkyard</Name>
+        <Access>Public</Access>
+        <Location left="2814" top="2003" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PStorage</Name>
+        <Access>Public</Access>
+        <Location left="2542" top="2241" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PPackaging</Name>
+        <Access>Public</Access>
+        <Location left="3003" top="2003" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PFactory</Name>
+        <Access>Public</Access>
+        <Location left="3003" top="1826" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PMine</Name>
+        <Access>Public</Access>
+        <Location left="2814" top="1826" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PCommandCenter</Name>
+        <Access>Public</Access>
+        <Location left="2237" top="2241" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>onPlatform are Resources laying on the Platform, a Limit is to be enforced. This does also include resources reserved but still on the platform.
+
+requested Resources are for example for refining them in others, or for building blueprints.
+
+the availableActions include things like 'Building Units' or 'Build Settler' from the Command center and 'Build Blueprint' in genereal if available, as well as the activation of Producing platforms
+
+When building a platform, it is first placed with the 'isBlueprint = True' option, indicating that it's not yet a built object. Then, if the resources were brought to the preceding platform and it's been buiilt, it'll change that, and will activate all possible further actions
+
+The Platform takes care of the collision of the Resources on top of it</Text>
+        <Location left="3322" top="1786" />
+        <Size width="236" height="329" />
+      </Entity>
+      <Entity type="Class">
+        <Name>PQuarry</Name>
+        <Access>Public</Access>
+        <Location left="2814" top="1734" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>See also:
+Microsoft.Xna.Framework.Input.Keys
+</Text>
+        <Location left="1202" top="978" />
+        <Size width="200" height="50" />
+      </Entity>
+      <Entity type="Enum">
+        <Name>Keys</Name>
+        <Access>Public</Access>
+        <Location left="969" top="978" />
+        <Size width="162" height="2781" />
+        <Collapsed>True</Collapsed>
+        <Value>A</Value>
+        <Value>Add</Value>
+        <Value>Apps</Value>
+        <Value>Attn</Value>
+        <Value>B</Value>
+        <Value>Back</Value>
+        <Value>BrowserBack</Value>
+        <Value>BrowserFavorites</Value>
+        <Value>BrowserForward</Value>
+        <Value>BrowserHome</Value>
+        <Value>BrowserRefresh</Value>
+        <Value>BrowserSearch</Value>
+        <Value>BrowserStop</Value>
+        <Value>C</Value>
+        <Value>CapsLock</Value>
+        <Value>ChatPadGreen</Value>
+        <Value>ChatPadOrange</Value>
+        <Value>Crsel</Value>
+        <Value>D</Value>
+        <Value>D0</Value>
+        <Value>D1</Value>
+        <Value>D2</Value>
+        <Value>D3</Value>
+        <Value>D4</Value>
+        <Value>D5</Value>
+        <Value>D6</Value>
+        <Value>D7</Value>
+        <Value>D8</Value>
+        <Value>D9</Value>
+        <Value>Decimal</Value>
+        <Value>Delete</Value>
+        <Value>Divide</Value>
+        <Value>Down</Value>
+        <Value>E</Value>
+        <Value>End</Value>
+        <Value>Enter</Value>
+        <Value>EraseEof</Value>
+        <Value>Escape</Value>
+        <Value>Execute</Value>
+        <Value>Exsel</Value>
+        <Value>F</Value>
+        <Value>F1</Value>
+        <Value>F10</Value>
+        <Value>F11</Value>
+        <Value>F12</Value>
+        <Value>F13</Value>
+        <Value>F14</Value>
+        <Value>F15</Value>
+        <Value>F16</Value>
+        <Value>F17</Value>
+        <Value>F18</Value>
+        <Value>F19</Value>
+        <Value>F2</Value>
+        <Value>F20</Value>
+        <Value>F21</Value>
+        <Value>F22</Value>
+        <Value>F23</Value>
+        <Value>F24</Value>
+        <Value>F3</Value>
+        <Value>F4</Value>
+        <Value>F5</Value>
+        <Value>F6</Value>
+        <Value>F7</Value>
+        <Value>F8</Value>
+        <Value>F9</Value>
+        <Value>G</Value>
+        <Value>H</Value>
+        <Value>Help</Value>
+        <Value>Home</Value>
+        <Value>I</Value>
+        <Value>ImeConvert</Value>
+        <Value>ImeNoConvert</Value>
+        <Value>Insert</Value>
+        <Value>J</Value>
+        <Value>K</Value>
+        <Value>Kana</Value>
+        <Value>Kanji</Value>
+        <Value>L</Value>
+        <Value>LaunchApplication1</Value>
+        <Value>LaunchApplication2</Value>
+        <Value>LaunchMail</Value>
+        <Value>Left</Value>
+        <Value>LeftAlt</Value>
+        <Value>LeftControl</Value>
+        <Value>LeftShift</Value>
+        <Value>LeftWindows</Value>
+        <Value>M</Value>
+        <Value>MediaNextTrack</Value>
+        <Value>MediaPlayPause</Value>
+        <Value>MediaPreviousTrack</Value>
+        <Value>MediaStop</Value>
+        <Value>Multiply</Value>
+        <Value>N</Value>
+        <Value>None</Value>
+        <Value>NumLock</Value>
+        <Value>NumPad0</Value>
+        <Value>NumPad1</Value>
+        <Value>NumPad2</Value>
+        <Value>NumPad3</Value>
+        <Value>NumPad4</Value>
+        <Value>NumPad5</Value>
+        <Value>NumPad6</Value>
+        <Value>NumPad7</Value>
+        <Value>NumPad8</Value>
+        <Value>NumPad9</Value>
+        <Value>O</Value>
+        <Value>Oem8</Value>
+        <Value>OemAuto</Value>
+        <Value>OemBackslash</Value>
+        <Value>OemClear</Value>
+        <Value>OemCloseBrackets</Value>
+        <Value>OemComma</Value>
+        <Value>OemCopy</Value>
+        <Value>OemEnlW</Value>
+        <Value>OemMinus</Value>
+        <Value>OemOpenBrackets</Value>
+        <Value>OemPeriod</Value>
+        <Value>OemPipe</Value>
+        <Value>OemPlus</Value>
+        <Value>OemQuestion</Value>
+        <Value>OemQuotes</Value>
+        <Value>OemSemicolon</Value>
+        <Value>OemTilde</Value>
+        <Value>P</Value>
+        <Value>Pa1</Value>
+        <Value>PageDown</Value>
+        <Value>PageUp</Value>
+        <Value>Pause</Value>
+        <Value>Play</Value>
+        <Value>Print</Value>
+        <Value>PrintScreen</Value>
+        <Value>ProcessKey</Value>
+        <Value>Q</Value>
+        <Value>R</Value>
+        <Value>Right</Value>
+        <Value>RightAlt</Value>
+        <Value>RightControl</Value>
+        <Value>RightShift</Value>
+        <Value>RightWindows</Value>
+        <Value>S</Value>
+        <Value>Scroll</Value>
+        <Value>Select</Value>
+        <Value>SelectMedia</Value>
+        <Value>Separator</Value>
+        <Value>Sleep</Value>
+        <Value>Space</Value>
+        <Value>Subtract</Value>
+        <Value>T</Value>
+        <Value>Tab</Value>
+        <Value>U</Value>
+        <Value>Up</Value>
+        <Value>V</Value>
+        <Value>VolumeDown</Value>
+        <Value>VolumeMute</Value>
+        <Value>VolumeUp</Value>
+        <Value>W</Value>
+        <Value>X</Value>
+        <Value>Y</Value>
+        <Value>Z</Value>
+        <Value>Zoom</Value>
+      </Entity>
+      <Entity type="Enum">
+        <Name>EMouseAction</Name>
+        <Access>Public</Access>
+        <Location left="742" top="978" />
+        <Size width="162" height="95" />
+        <Collapsed>False</Collapsed>
+        <Value>LEFT_CLICK</Value>
+        <Value>RIGHT_CLICK</Value>
+      </Entity>
+      <Entity type="Class">
+        <Name>InputManager</Name>
+        <Access>Public</Access>
+        <Location left="177" top="677" />
+        <Size width="328" height="179" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">List&lt;IKeyListener&gt; mKeyListener</Member>
+        <Member type="Field">List&lt;IMouseListener&gt; mMouseListener</Member>
+        <Member type="Method">public void AddKeyListener(IKeyListener keyListener)</Member>
+        <Member type="Method">public bool RemoveKeyListener(IKeyListener keyListener)</Member>
+        <Member type="Method">public void AddMouseListener(IMouseListener mouseListener)</Member>
+        <Member type="Method">public bool RemoveMouseListener(IMouseListener mouseListener)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>MouseEvent</Name>
+        <Access>Public</Access>
+        <Location left="715" top="776" />
+        <Size width="210" height="111" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public Vector2 Position { get; }</Member>
+        <Member type="Property">public EMouseAction MouseAction { get; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>KeyEvent</Name>
+        <Access>Public</Access>
+        <Location left="969" top="776" />
+        <Size width="174" height="94" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public Keys[] CurrentKeys { get; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IMouseListener</Name>
+        <Access>Public</Access>
+        <Location left="371" top="978" />
+        <Size width="317" height="95" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">bool MousePressed(MouseEvent mouseEvent)</Member>
+        <Member type="Method">bool MouseReleased(MouseEvent mouseEvent)</Member>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IKeyListener</Name>
+        <Access>Public</Access>
+        <Location left="62" top="978" />
+        <Size width="265" height="112" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">bool KeyTyped(KeyEvent keyEvent)</Member>
+        <Member type="Method">bool KeyPressed(KeyEvent keyEvent)</Member>
+        <Member type="Method">bool KeyReleased(KeyEvent keyEvent)</Member>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IID</Name>
+        <Access>Public</Access>
+        <Location left="1216" top="1259" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">int id { get; }</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>IDManager</Name>
+        <Access>Public</Access>
+        <Location left="957" top="1259" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">int highest</Member>
+        <Member type="Method">public int getNew()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>Todo:
+- InputManager verknüpfen
+- ScreenManager verknüpfen</Text>
+        <Location left="957" top="1616" />
+        <Size width="234" height="138" />
+      </Entity>
+      <Entity type="Class">
+        <Name>Water</Name>
+        <Access>Public</Access>
+        <Location left="523" top="2233" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Chips</Name>
+        <Access>Public</Access>
+        <Location left="10" top="2419" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Stahl</Name>
+        <Access>Public</Access>
+        <Location left="261" top="2713" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Treibstoff</Name>
+        <Access>Public</Access>
+        <Location left="261" top="2513" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Kupfer</Name>
+        <Access>Public</Access>
+        <Location left="261" top="2611" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Beton</Name>
+        <Access>Public</Access>
+        <Location left="261" top="2233" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Plastik</Name>
+        <Access>Public</Access>
+        <Location left="261" top="2419" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Silizium</Name>
+        <Access>Public</Access>
+        <Location left="261" top="2327" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Sand</Name>
+        <Access>Public</Access>
+        <Location left="523" top="2327" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Stone</Name>
+        <Access>Public</Access>
+        <Location left="523" top="2513" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Metal</Name>
+        <Access>Public</Access>
+        <Location left="523" top="2611" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Oil</Name>
+        <Access>Public</Access>
+        <Location left="523" top="2419" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IResource</Name>
+        <Access>Public</Access>
+        <Location left="834" top="2349" />
+        <Size width="224" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">int ID { get; }</Member>
+        <Member type="Method">void Draw()</Member>
+        <Member type="Method">void Update()</Member>
+        <Member type="Property">coordinates getPosition { get; }</Member>
+        <Member type="Method">void Use()</Member>
+        <Member type="Method">void accelerate(vector2 v)</Member>
+      </Entity>
+      <Entity type="Comment">
+        <Text>When Units take Resources, they accelerate the resource so that it will stay behind them. Resources do have quite the negative acceleration, meaning they will halt quite fast if they're not actively being accelerated
+
+A resource is always either on a platform, or being transported by a unit somewhere.</Text>
+        <Location left="834" top="2629" />
+        <Size width="160" height="184" />
+      </Entity>
+      <Entity type="Class">
+        <Name>BuildSettler</Name>
+        <Access>Public</Access>
+        <Location left="1827" top="2512" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>PlatformAction</Name>
+        <Access>Public</Access>
+        <Location left="1620" top="2639" />
+        <Size width="350" height="197" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">State state { get; set; }</Member>
+        <Member type="Method">Tuple&lt;Resource, int&gt; getResourcesRequired()</Member>
+        <Member type="Property">Tuple&lt;Resource, int&gt; ResourcesTotalRequired { get; }</Member>
+        <Member type="Method">void Execute()</Member>
+        <Member type="Property">JobType UnitsRequired { get; }</Member>
+        <Member type="Method">void AssignUnit(GeneralUnit u, JobType j)</Member>
+        <Member type="Method">void UnAssignUnit(UnitId uid)</Member>
+        <Member type="Property">Dictionary&lt;GeneralUnit, JobType&gt; AssignedUnits { get; }</Member>
+      </Entity>
+      <Entity type="Enum">
+        <Name>PlatformActionState</Name>
+        <Access>Public</Access>
+        <Location left="1648" top="2934" />
+        <Size width="162" height="163" />
+        <Collapsed>False</Collapsed>
+        <Value>Available</Value>
+        <Value>Active</Value>
+        <Value>Deactivated</Value>
+        <Value>Disabled</Value>
+      </Entity>
+      <Entity type="Comment">
+        <Text>Each Action is either 
+- Available: meaning it can be executed, the button for the action can be clicked
+
+- Active : meaning it is currently being executed, so not available right now (the button is shown but cannot be clicked)
+
+- Deactivated: meaning it's manually paused (like factory not producing or blueprint not getting build right now) but can be executed, so button is clickable
+
+- Disabled: Button cannot be clicked, since the action has been disabled (might be due to missing power, unavailability of resources or Unit Limits for producing units)</Text>
+        <Location left="1892" top="2912" />
+        <Size width="267" height="207" />
+      </Entity>
+      <Entity type="Comment">
+        <Text>PlatformActions:
+
+The state should be clear, this is for active actions:
+
+Execute():
+unit executing this action, meaning actively producing, building, or getting the action to request resources.
+
+PlatformActions only actively ask for Resources if there's a unit trying to execute the action requiring resources.
+
+ChangeState():
+The user clicked on the action after having selected the platform with it. Depending on the action it will now get active, deactivated or available (the storyManager might disable it as well).</Text>
+        <Location left="2220" top="2747" />
+        <Size width="315" height="224" />
+      </Entity>
+      <Entity type="Class">
+        <Name>BuildBlueprint</Name>
+        <Access>Public</Access>
+        <Location left="1421" top="2468" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>FactoryProduction</Name>
+        <Access>Public</Access>
+        <Location left="1736" top="2378" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>BuildUnit</Name>
+        <Access>Public</Access>
+        <Location left="1620" top="2491" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>ProduceResource</Name>
+        <Access>Public</Access>
+        <Location left="1527" top="2378" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>StructureMap</Name>
+        <Access>Public</Access>
+        <Location left="1707" top="350" />
+        <Size width="208" height="162" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">array&lt;Platform&gt; platforms</Member>
+        <Member type="Field">List&lt;Platform, Platform&gt; roads</Member>
+        <Member type="Method">public void Draw()</Member>
+        <Member type="Method">public void Update()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>PathManager</Name>
+        <Access>Public</Access>
+        <Location left="1035" top="1811" />
+        <Size width="206" height="128" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">array&lt;array&lt;int&gt;&gt; Daijkstra</Member>
+        <Member type="Method">public int GraphFromTo(id from, id to)</Member>
+        <Member type="Method">public path AStar(coordinates from, coordinates to)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>Serializable</Name>
+        <Access>Public</Access>
+        <Location left="665" top="1220" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">Serial Save()</Member>
+        <Member type="Method">self Load(Serial s)</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>MilitaryUnit</Name>
+        <Access>Public</Access>
+        <Location left="261" top="1547" />
+        <Size width="312" height="298" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">int mHealth</Member>
+        <Member type="Field">Vector2 mTargetPosition</Member>
+        <Member type="Field">int mRotation</Member>
+        <Member type="Field">Vector2 mPosition</Member>
+        <Member type="Field">Assignment mAssignment</Member>
+        <Member type="Constructor">public MilitaryUnit(Vector2 position)</Member>
+        <Member type="Property">public int Health { get; set; }</Member>
+        <Member type="Method">public void Move(Vector2 target)</Member>
+        <Member type="Property">public int Id { get; }</Member>
+        <Member type="Property">public Vector2 Position { get; }</Member>
+        <Member type="Property">public Assignment Assignment { get; set; }</Member>
+        <Member type="Method">public void Draw(SpriteBatch spriteBatch, Texture2D texture)</Member>
+        <Member type="Method">public void Update(GameTime gameTime)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>DistributionManager</Name>
+        <Access>Public</Access>
+        <Location left="2409" top="1194" />
+        <Size width="626" height="366" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">List&lt;GeneralUnit&gt; idle</Member>
+        <Member type="Field">List&lt;GeneralUnit&gt; construction</Member>
+        <Member type="Field">List&lt;GeneralUnit&gt; production</Member>
+        <Member type="Field">List&lt;GeneralUnit&gt; defense</Member>
+        <Member type="Field">List&lt;GeneralUnit&gt; manual</Member>
+        <Member type="Field">Queue&lt;Resource, PlatformAction&gt; resourceRequests</Member>
+        <Member type="Field">List&lt;PlatformActionBuild&gt; blueprintBuilds</Member>
+        <Member type="Field">List&lt;PlatformActionProduce&gt; producingPlatforms</Member>
+        <Member type="Field">List&lt;PlatformActionDefend&gt; defensivePlatforms</Member>
+        <Member type="Method">public void manualAssign(int unitId, int actionId)</Member>
+        <Member type="Method">public void manualUnassign(id unitid)</Member>
+        <Member type="Method">public void RequestResource(PlatformId pid, Resource r)</Member>
+        <Member type="Method">public void RequestUnits(Platform p, JobType j)</Member>
+        <Member type="Method">public void BuildBlueprint(PlatformAction pa)</Member>
+        <Member type="Method">public List&lt;Resources&gt; PlatformRequests(platformid pid)</Member>
+        <Member type="Method">public Optional&lt;Task&gt; RequestNewTask(GeneralUnit gu, JobType j, Optional&lt;PlatformAction&gt; assigned = Nothing)</Member>
+        <Member type="Method">public void PausePlatformAction(PlatformAction action)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>MilitaryManager</Name>
+        <Access>Public</Access>
+        <Location left="431" top="1259" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">List&lt;MilitaryUnit&gt; units</Member>
+        <Member type="Method">public void Draw()</Member>
+        <Member type="Method">public void Update()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>Takes care of navigating military units</Text>
+        <Location left="84" top="1254" />
+        <Size width="160" height="75" />
+      </Entity>
+      <Entity type="Comment">
+        <Text>The Collision map has high enough resolution to be used as the minimap (colorizing depinding on unit type on cell)
+</Text>
+        <Location left="2292" top="81" />
+        <Size width="160" height="92" />
+      </Entity>
+      <Entity type="Class">
+        <Name>Camera</Name>
+        <Access>Public</Access>
+        <Location left="2101" top="350" />
+        <Size width="192" height="111" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">float ZoomLevel</Member>
+        <Member type="Field">Coordinates CameraLocation</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>Has coordinates for move, zoom. </Text>
+        <Location left="2345" top="350" />
+        <Size width="160" height="75" />
+      </Entity>
+      <Entity type="Class">
+        <Name>FogOfWar</Name>
+        <Access>Public</Access>
+        <Location left="1133" top="32" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">List&lt;List&lt;int&gt;&gt; visited</Member>
+        <Member type="Method">public int GetStateFor(coordinate c)</Member>
+        <Member type="Method">public void Visit(Coordinate c)</Member>
+        <Member type="Method">public void Draw()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>Three versions:
+- Not visited
+- currently visible
+- already visited
+
+'Draw()' draws the actual Fog of War on top of the map, before the UI is being drawn
+
+Visit does not simply clear the given coordinate but everything in a certain radius, so military units can simply call 'Visit(self.position)' or something similiar, and platforms when being built.</Text>
+        <Location left="1364" top="10" />
+        <Size width="189" height="171" />
+      </Entity>
+      <Entity type="Comment">
+        <Text>The DistributionManager is responsible for the following tasks:
+
+- collecting all possible jobs for units currently open
+- distributing the units as they are available according to their job
+- collecting resource requests from all platforms
+- distributing the job of taking resources there over the (Carrying) units
+- centrally managing all blueperints and their requested resources
+- assigning jobs for a platform first to the for this platform assigned units
+- redistributing 'Producing' units if a producing platform is built, paused or unpaused
+
+
+taking in:
+- units who finished their job / requesting work
+- actions requesting units (producing, defense)
+- actions requesting resources (producing, blueprint building)
+- units getting reassigned
+- actions being paused/unpaused, thus taking back their requests
+- manual (un)assignment of units
+- units asking for things to do
+
+things happening:
+- PlatformActions will not request all resources at once, but at most one per 'update', so that the other platforms will get a chance to request resources and units as well. Then the queue will be worked on FIFO - this might be subject to change as other systems might prove more effective or efficient.
+- idle units can request for things to do (If their JobType is Idle they will get back either nothing or are being sent around the graph to random platforms)
+
+producePlatforms is when looking for Resources, they're being asked until the requested resource is found and 'reserved'.
+
+Additionally: Platforms are tasked with telling the DistributionManager when there's trash on them, the DistributionManager will create a Task for Logistics carrying that away.
+
+RequestUnits is for PlatformActions requiring actual worker-units, so the only accepted JobTypes are 'Construction' and 'Production'.
+
+There is only a pause and no unpause, since pause simply removes all current requests from the queues, and unpausing happenes automatically when the PlatformAction begins requesting resources/Units again.</Text>
+        <Location left="3094" top="1169" />
+        <Size width="678" height="377" />
+      </Entity>
+      <Entity type="Class">
+        <Name>StoryManager</Name>
+        <Access>Public</Access>
+        <Location left="2607" top="199" />
+        <Size width="162" height="94" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">List&lt;Objective&gt; story</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Enum">
+        <Name>JobType</Name>
+        <Access>Public</Access>
+        <Location left="3524" top="1603" />
+        <Size width="162" height="129" />
+        <Collapsed>False</Collapsed>
+        <Value>Idle</Value>
+        <Value>Construction</Value>
+        <Value>Logistics</Value>
+        <Value>Defense</Value>
+      </Entity>
+      <Entity type="Class">
+        <Name>Task</Name>
+        <Access>Public</Access>
+        <Location left="3142" top="1603" />
+        <Size width="203" height="145" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">JobType type</Member>
+        <Member type="Field">Optional&lt;PlatformId&gt; start</Member>
+        <Member type="Field">Optional&lt;PlatformId&gt; end</Member>
+        <Member type="Field">Optional&lt;Resource&gt; required</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>Units are actually quite autonomous.
+They are effectively just asking the DistributionManager if there's something to do, and do those tasks then. a task contains a job (has to be the same as the units job), might have a start, endplatform and might have a resource as well (that would need transporting then)
+
+The (second) position of the GeneralUnit is the ID of an Platform or an Road - it is basically only relevant for the inter-Graph stuff</Text>
+        <Location left="926" top="1971" />
+        <Size width="208" height="198" />
+      </Entity>
+      <Entity type="Class">
+        <Name>Defend</Name>
+        <Access>Public</Access>
+        <Location left="1388" top="2607" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Objective</Name>
+        <Access>Public</Access>
+        <Location left="2906" top="199" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">Optional&lt;int&gt; enemysKilled</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>LoadGameScreen</Name>
+        <Access>Public</Access>
+        <Location left="2878" top="896" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Window</Name>
+        <Access>Public</Access>
+        <Location left="3163" top="514" />
+        <Size width="162" height="162" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">string windowName</Member>
+        <Member type="Field">List&lt;WindowItem&gt; items</Member>
+        <Member type="Method">public void Draw()</Member>
+        <Member type="Method">public void Update()</Member>
+        <Member type="Method">public void ReceiveEvent(Event e)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>WindowItem</Name>
+        <Access>Public</Access>
+        <Location left="3485" top="402" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void Draw()</Member>
+        <Member type="Method">void Update()</Member>
+        <Member type="Method">void ReceiveEvents(Event e)</Member>
+      </Entity>
+      <Entity type="Comment">
+        <Text>Note:
+
+For ease of creation and reading, there are some function names etc not fully in sync, e.g. if there's an Update-function, it's definitely derived from the IUpdate interface (with it's parameters etc), same with Draw or other functions/paramters/attributes.
+
+Since those are no real issues they will be fixed at last when it's being implemented, but probably even before that.</Text>
+        <Location left="1649" top="1652" />
+        <Size width="240" height="171" />
+      </Entity>
+      <Entity type="Class">
+        <Name>Label</Name>
+        <Access>Public</Access>
+        <Location left="3751" top="381" />
+        <Size width="162" height="77" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Slider</Name>
+        <Access>Public</Access>
+        <Location left="3569" top="727" />
+        <Size width="162" height="128" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">int minimum</Member>
+        <Member type="Field">int maxmium</Member>
+        <Member type="Field">int currentVal</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Selecter</Name>
+        <Access>Public</Access>
+        <Location left="3671" top="544" />
+        <Size width="162" height="128" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">int minimum</Member>
+        <Member type="Field">int maximum</Member>
+        <Member type="Field">int currentVal</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>A Selecter is one of those where you can enter a number and change it by one on the arrows right next to it up or down, looking sth like this:
+
+[13][^][v]</Text>
+        <Location left="3906" top="544" />
+        <Size width="160" height="116" />
+      </Entity>
+      <Entity type="Comment">
+        <Text>a slider is like
+
+-----o---------- 13/50
+
+you can slide it with a mouse</Text>
+        <Location left="3792" top="750" />
+        <Size width="160" height="95" />
+      </Entity>
+      <Entity type="Class">
+        <Name>Button</Name>
+        <Access>Public</Access>
+        <Location left="3349" top="727" />
+        <Size width="162" height="128" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">Optional&lt;Texture&gt; texture</Member>
+        <Member type="Field">int height</Member>
+        <Member type="Field">int width</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Comment">
+        <Text>The IDManager is publicly accessible and can be asked for a new id. usually happens in the constructor of a few objects.</Text>
+        <Location left="932" top="1107" />
+        <Size width="160" height="75" />
+      </Entity>
+      <Entity type="Class">
+        <Name>SoundManager</Name>
+        <Access>Public</Access>
+        <Location left="328" top="107" />
+        <Size width="265" height="269" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">Dictionary&lt;string, SoundEffect&gt; mSoundList</Member>
+        <Member type="Field">Song mSoundTrack</Member>
+        <Member type="Method">public static void Initialize()</Member>
+        <Member type="Method">public static void PlaySoundtrack()</Member>
+        <Member type="Method">public static void PlaySoundEffect(string soundName)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Comment" first="0" second="3">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>3092</X>
+          <Y>1130</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>3066</X>
+          <Y>1130</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="3" second="10">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>2838</X>
+          <Y>1136</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>2760</X>
+          <Y>1069</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="4" second="10">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="5" second="10">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>2851</X>
+          <Y>1035</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>2747</X>
+          <Y>1069</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="6" second="10">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="7" second="10">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>2835</X>
+          <Y>572</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>2764</X>
+          <Y>1069</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="10" second="2">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="9" second="2">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="10" second="1">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="9" second="1">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="13" second="2">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="8" second="9">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="8" second="10">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="14" second="15">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="15" second="1">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="15" second="2">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Generalization" first="27" second="16">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>2768</X>
+          <Y>1866</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>2749</X>
+          <Y>1928</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="30" second="16">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>2729</X>
+          <Y>1928</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="28" second="16">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>2432</X>
+          <Y>2279</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>2472</X>
+          <Y>2239</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="26" second="16">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>2910</X>
+          <Y>1949</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="23" second="16">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>2904</X>
+          <Y>1949</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="18" second="16">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>2472</X>
+          <Y>2501</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>2472</X>
+          <Y>2193</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="19" second="16">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>2472</X>
+          <Y>2594</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>2472</X>
+          <Y>2240</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="17" second="16">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>2515</X>
+          <Y>2491</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>2472</X>
+          <Y>2189</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="22" second="16">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>2439</X>
+          <Y>2491</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>2472</X>
+          <Y>2192</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="21" second="16">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>2515</X>
+          <Y>2388</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>2472</X>
+          <Y>2189</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="20" second="16">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>2443</X>
+          <Y>2388</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>2472</X>
+          <Y>2189</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="24" second="16">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>2508</X>
+          <Y>2279</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>2472</X>
+          <Y>2235</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="25" second="16">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>3084</X>
+          <Y>1978</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>2783</X>
+          <Y>1949</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Comment" first="29" second="16">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="16" second="2">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="16" second="1">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="34" second="36">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>530</X>
+          <Y>698</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="34" second="35">
+        <Label>creates</Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>539</X>
+          <Y>698</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>823</X>
+          <Y>751</Y>
+        </BendPoint>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Comment" first="31" second="32">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="34" second="38">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="34" second="37">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="36" second="32">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>0..*</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="35" second="33">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Dependency" first="16" second="39">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="10" second="39">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="39" second="40">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="47" second="42">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="47" second="50">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="49" second="50">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="48" second="53">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="45" second="53">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="46" second="52">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="44" second="52">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="43" second="49">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="43" second="48">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="43" second="46">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>212</X>
+          <Y>2457</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>220</X>
+          <Y>2641</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Comment" first="55" second="54">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="42" second="54">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="50" second="54">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="53" second="54">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="51" second="54">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="52" second="54">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>713</X>
+          <Y>2652</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>809</X>
+          <Y>2457</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Comment" first="59" second="58">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="57" second="58">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Comment" first="60" second="57">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="61" second="57">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="62" second="57">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="63" second="57">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="56" second="57">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="16" second="62">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="16" second="61">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>2280</X>
+          <Y>1890</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="28" second="56">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>1939</X>
+          <Y>2343</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="28" second="63">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>1717</X>
+          <Y>2448</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="16" second="54">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="16" second="64">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="64" second="57">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="13" second="11">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+      </Relationship>
+      <Relationship type="Association" first="13" second="12">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+      </Relationship>
+      <Relationship type="Association" first="13" second="65">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+      </Relationship>
+      <Relationship type="Dependency" first="65" second="2">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="65" second="1">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="65" second="39">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="14" second="54">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Association</AssociationType>
+      </Relationship>
+      <Relationship type="Dependency" first="15" second="66">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="15" second="67">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="40" second="67">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="13" second="67">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="68" second="15">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="12" second="65">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="12" second="11">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="57" second="54">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="69" second="15">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="6" second="69">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>2758</X>
+          <Y>701</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Dependency" first="68" second="70">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Comment" first="71" second="70">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="6" second="16">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="6" second="12">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Comment" first="72" second="12">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="12" second="2">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="13" second="73">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+      </Relationship>
+      <Relationship type="Association" first="7" second="13">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+      </Relationship>
+      <Relationship type="Comment" first="74" second="73">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Comment" first="76" second="75">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="13" second="75">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+      </Relationship>
+      <Relationship type="Dependency" first="73" second="34">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="68" second="34">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="16" second="34">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="6" second="34">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="65" second="70">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="65" second="69">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="66" second="65">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="57" second="69">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="70" second="1">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="70" second="2">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="57" second="39">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="69" second="1">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Comment" first="77" second="69">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="6" second="78">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="78" second="69">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="78" second="65">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="78" second="70">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="57" second="39">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="14" second="80">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="14" second="69">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>1004</X>
+          <Y>1848</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Comment" first="81" second="14">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="82" second="57">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="19" second="82">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="18" second="82">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="6" second="12">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="83" second="78">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Aggregation</AssociationType>
+      </Relationship>
+      <Relationship type="Realization" first="84" second="10">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="5" second="84">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="5" second="4">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="5" second="7">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="6" second="85">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="88" second="86">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="90" second="86">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="89" second="86">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Comment" first="91" second="90">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="85" second="86">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Comment" first="92" second="89">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="93" second="86">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Comment" first="94" second="40">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="7" second="34">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="6" second="34">
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="16" second="34">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="7" second="95">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="16" second="95">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="68" second="95">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="95" second="78">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="80" second="79">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="69" second="80">
+        <Label>
+        </Label>
+        <StartOrientation>Horizontal</StartOrientation>
+        <EndOrientation>Horizontal</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="34" second="1">
+        <Label>
+        </Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+</Project>
