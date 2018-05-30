@@ -113,7 +113,7 @@ namespace Singularity.Units
             if (!selected) { color = Color.White; }
             else { color = Color.Gainsboro; }
 
-            spriteBatch.Draw(mMilSheet, mPosition, new Rectangle((150 * columnNumber), (75 * rowNumber), 150, 75),color);
+            spriteBatch.Draw(mMilSheet, mPosition, new Rectangle((150 * columnNumber), (75 * rowNumber), 150, 75), color, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, LayerConstants.MilitaryUnitLayer);
 
         }
 

@@ -180,16 +180,17 @@ namespace Singularity.platform
         {
             // the sprite sheet is 148x1744 px, 1x12 sprites
             // The sprites have different heights so, by testing I found out the sprite is about 148x170 px
-            spritebatch.Draw(
-                mSpritesheet,
+
+            spritebatch.Draw(mSpritesheet,
                 new Rectangle(
-                    (int) AbsolutePosition.X,
-                    (int) AbsolutePosition.Y,
-                    (int) AbsoluteSize.X,
-                    (int) AbsoluteSize.Y),
-                new Rectangle(0, 0, (int) AbsoluteSize.X, (int) AbsoluteSize.Y),
-                Color.White
-            );
+                    (int)AbsolutePosition.X,
+                    (int)AbsolutePosition.Y,
+                    (int)AbsoluteSize.X,
+                    (int)AbsoluteSize.Y),
+                new Rectangle(0, 0, (int)AbsoluteSize.X, (int)AbsoluteSize.Y),
+                Color.White,
+                0f, 
+                Vector2.Zero, SpriteEffects.None, LayerConstants.PlatformLayer);
         }
 
         /// <inheritdoc cref="Singularity.property.IUpdate"/>
