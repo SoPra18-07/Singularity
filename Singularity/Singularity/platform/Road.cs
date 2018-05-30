@@ -42,10 +42,7 @@ namespace Singularity.platform
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(); // there is weirdness in regards to color and coordinates(i think caused by different
-                                 // coordinate system used by Structure map but otherwise works
             spriteBatch.DrawLine(Origin, Destination, mBlueprint? new Color(new Vector3(46, 53, 97)) : new Color(new Vector4(0, 40, 40, 255)), 5f);
-            spriteBatch.End();
         }
     }
 }

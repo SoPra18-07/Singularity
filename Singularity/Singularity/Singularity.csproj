@@ -63,6 +63,7 @@
     <Compile Include="Resources\IResource.cs" />
     <Compile Include="Resources\Resource.cs" />
     <Compile Include="Resources\ResourceHelper.cs" />
+    <Compile Include="Screen\GameScreen.cs" />
     <Compile Include="Units\GeneralUnit.cs" />
     <Compile Include="platform\Road.cs" />
     <Compile Include="Units\IUnit.cs" />
