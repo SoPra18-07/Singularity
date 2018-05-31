@@ -46,7 +46,7 @@ namespace Singularity
                mScreenManager.AddScreen(new RenderLowerScreen());
                mScreenManager.AddScreen(new UpdateLowerScreen());
             */
-            XSerializer.TestSerialization();
+            // XSerializer.TestSerialization();
         }
 
         /// <summary>

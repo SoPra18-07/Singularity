@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Singularity.serialization
 {
+    /// <summary>
+    /// A dummy class to create a cyclic reference in SerializationDummy.cs.
+    /// </summary>
     [DataContract()]
     internal class CyclicDummy
     {

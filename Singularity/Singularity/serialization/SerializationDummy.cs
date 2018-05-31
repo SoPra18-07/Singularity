@@ -5,9 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
 namespace Singularity.serialization
 {
+    /// <summary>
+    /// A Serializable Dummy written for the Testmethod of XSerializer.cs. For further Documentation of purpose look it up in mentioned Testmethod.
+    /// </summary>
     [DataContract()]
     internal class SerializationDummy
     {
@@ -19,6 +23,8 @@ namespace Singularity.serialization
         private int mId;
         [DataMember()]
         private List<SerializationDummy> mDummyList;
+        [DataMember()]
+        public Vector2 mVector = new Vector2(1,2);
 
 
         public SerializationDummy(int randomvalue, List<SerializationDummy> list)
@@ -38,6 +44,9 @@ namespace Singularity.serialization
             return mDummyList;
         }
 
+        /// <summary>
+        /// Outputs the content of the fields to the Console.
+        /// </summary>
         public void PrintFields()
         {
             Console.WriteLine("This is the PrintFields method.");
