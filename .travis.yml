@@ -5,7 +5,7 @@ before_install:
   - chmod +x monogame-sdk.run
 install:
   - sudo apt-get install -qq monodevelop libopenal-dev referenceassemblies-pcl ttf-mscorefonts-installer gtk-sharp2; # install needed packages for the monogame sdk
-  - sudo ./monogame-sdk.run; # install monogame sdk
+  - yes Y | sudo ./monogame-sdk.run; # install monogame sdk
 script:
   - (cd Singularity/Singularity/Content/ && mono /opt/monogame-pipeline/MGCB.exe /rebuild /@:"Content.mgcb" /outputDir:"../bin/Release/Content")
   - mdtool build Singularity/Singularity/Singularity.csproj
