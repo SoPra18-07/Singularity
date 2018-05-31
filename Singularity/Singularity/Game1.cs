@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.platform;
 using Singularity.screen;
+using Singularity.serialization;
 
 namespace Singularity
 {
@@ -45,7 +46,7 @@ namespace Singularity
                mScreenManager.AddScreen(new RenderLowerScreen());
                mScreenManager.AddScreen(new UpdateLowerScreen());
             */
-            base.Initialize();
+            XSerializer.TestSerialization();
         }
 
         /// <summary>
@@ -100,10 +101,6 @@ namespace Singularity
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            mScreenManager.Draw(mSpriteBatch);
-            mSpriteBatch.Begin();
-            mPlatform.Draw(mSpriteBatch);
-            mSpriteBatch.End();
             base.Draw(gameTime);
         }
     }
