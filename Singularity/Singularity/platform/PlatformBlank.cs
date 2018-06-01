@@ -18,12 +18,12 @@ namespace Singularity.platform
         private int mHealth;
         private int mId;
         private bool mIsBlueprint;
-        private readonly Action[] mActions;
+        protected Action[] mActions;
+        protected Dictionary<IResources, int> mCost;
         private readonly Texture2D mSpritesheet;
         private readonly Dictionary<GeneralUnit, Job> mAssignedUnits;
         private List<IResources> mResources;
         private Dictionary<IResources, int> mRequested;
-        private readonly Dictionary<IResources, int> mCost;
 
         public Vector2 AbsolutePosition { private get; set; }
 
@@ -176,7 +176,7 @@ namespace Singularity.platform
         }
 
         /// <inheritdoc cref="Singularity.property.IDraw"/>
-        public void Draw(SpriteBatch spritebatch)
+        public virtual void Draw(SpriteBatch spritebatch)
         {
             // the sprite sheet is 148x1744 px, 1x12 sprites
             // The sprites have different heights so, by testing I found out the sprite is about 148x170 px
@@ -193,7 +193,7 @@ namespace Singularity.platform
         }
 
         /// <inheritdoc cref="Singularity.property.IUpdate"/>
-        public void Update(GameTime t)
+        public virtual void Update(GameTime t)
         {
             //TODO: implement update code
         }
