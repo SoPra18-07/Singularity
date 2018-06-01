@@ -93,6 +93,7 @@ namespace Singularity.serialization
             throw new NotImplementedException();
             //Will be implemented further when the explicit workflow is clear.
             var deserializedObjects = Deserialize(path);
+            //Something.Initialize() 
         }
 
         /// <summary>
