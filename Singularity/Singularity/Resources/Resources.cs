@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Singularity.Resources
 {
-    internal interface IResources
+    public class Resource
     {
+        public Resource()
+        {
+        }
     }
 }

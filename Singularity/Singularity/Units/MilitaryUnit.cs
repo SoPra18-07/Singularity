@@ -103,16 +103,16 @@ namespace Singularity.Units
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            // calculate correct sprite on spritesheet to use based on angle 
-            // direction that unit is meant to be faceing 
+            // calculate correct sprite on spritesheet to use based on angle
+            // direction that unit is meant to be faceing
             int rowNumber = (mRotation / 18);
             int columnNumber = ((mRotation - (rowNumber * 18)) / 3);
 
-            // darken color if unit is selected 
+            // darken color if unit is selected
             Color color;
             if (!selected) { color = Color.White; }
             else { color = Color.Gainsboro; }
-            
+
             spriteBatch.Begin();
             spriteBatch.Draw(mMilSheet, mPosition, new Rectangle((150 * columnNumber), (75 * rowNumber), 150, 75),color);
             spriteBatch.End();
@@ -148,7 +148,7 @@ namespace Singularity.Units
         /// <summary>
         /// determines if the the military unit is currently selected by user
         /// left click within area is select
-        /// right click anywhere else is deselect 
+        /// right click anywhere else is deselect
         /// </summary>
         private void Selected()
         {
@@ -170,7 +170,7 @@ namespace Singularity.Units
         /// <summary>
         /// determine x and y movement of unit in order to
         /// reach target destination. This will then be used
-        /// by the Move method 
+        /// by the Move method
         /// </summary>
         /// <param name="target"></param>
         private void Steps(Vector2 target)
@@ -179,7 +179,7 @@ namespace Singularity.Units
             mTargetPosition = target;
             this.Rotate(mTargetPosition);
             targetReached = false;
-            
+
 
             // travel along the hypotenuse of triangle formed by start and target position
             double hypot = (Math.Sqrt(Math.Pow((mPosition.X - mTargetPosition.X + 75), 2) +
@@ -208,9 +208,9 @@ namespace Singularity.Units
                 ystep = -ystep;
             }
 
-            // adjusts speed of unit movement 
+            // adjusts speed of unit movement
             xstep = xstep * 3;
-            ystep = ystep * 3;     
+            ystep = ystep * 3;
         }
 
         /// <summary>

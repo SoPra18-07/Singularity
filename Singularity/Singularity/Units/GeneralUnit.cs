@@ -17,7 +17,7 @@ namespace Singularity.Units
         private int? mTargetId;
         private Stack<int> mPathQueue; // the queue of platform and edges the unit has to traverse to get to its target
         private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
-        
+
 
         internal JobType Job { get; set; } = JobType.Idle;
 
@@ -156,8 +156,8 @@ namespace Singularity.Units
                     }
                     // drop the resource.
                 }
-                
-                
+
+
 
             }
 

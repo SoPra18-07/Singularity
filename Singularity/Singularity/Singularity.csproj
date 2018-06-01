@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.Net.Compilers.2.8.2\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.2.8.2\build\Microsoft.Net.Compilers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -56,13 +57,12 @@
     <Compile Include="Input\InputManager.cs" />
     <Compile Include="Input\KeyEvent.cs" />
     <Compile Include="Input\MouseAction.cs" />
-    <Compile Include="platform\Action.cs" />
-    <Compile Include="platform\Job.cs" />
+    <Compile Include="platform\IPlatformAction.cs" />
     <Compile Include="platform\PlatformBlank.cs" />
     <Compile Include="Units\GeneralUnit.cs" />
     <Compile Include="platform\Road.cs" />
     <Compile Include="Resources\EResourceType.cs" />
-    <Compile Include="Resources\IResources.cs" />
+    <Compile Include="Resources\Resources.cs" />
     <Compile Include="Units\IUnit.cs" />
     <Compile Include="Units\JobType.cs" />
     <Compile Include="Units\MilitaryUnit.cs" />
@@ -80,6 +80,8 @@
     <Compile Include="Utils\Optional.cs" />
     <Compile Include="Utils\Pair.cs" />
     <Compile Include="Utils\Triple.cs" />
+    <Compile Include="platform\PlatformActionState.cs" />
+    <Compile Include="platform\ProduceResource.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -95,6 +97,7 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
     <None Include="ClassDiagram1.cd" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

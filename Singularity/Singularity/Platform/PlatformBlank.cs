@@ -9,7 +9,7 @@ using Singularity.Units;
 namespace Singularity.platform
 {
 
-    public class PlatformBlank : IDraw, IUpdate
+    internal class PlatformBlank : IDraw, IUpdate
     {
 
         private const int PlatformWidth = 148;
@@ -21,9 +21,9 @@ namespace Singularity.platform
         private readonly Action[] mActions;
         private readonly Texture2D mSpritesheet;
         private readonly Dictionary<GeneralUnit, Job> mAssignedUnits;
-        private List<EResourceType> mResources;
-        private Dictionary<EResourceType, int> mRequested;
-        private readonly Dictionary<EResourceType, int> mCost;
+        private List<IResources> mResources;
+        private Dictionary<IResources, int> mRequested;
+        private readonly Dictionary<IResources, int> mCost;
 
         public Vector2 AbsolutePosition { private get; set; }
 
@@ -88,7 +88,7 @@ namespace Singularity.platform
         /// Get the requirements of resources to build this platform.
         /// </summary>
         /// <returns> a dictionary of the resources with a number telling how much of it is required</returns>
-        public Dictionary<EResourceType, int> GetResourcesRequired()
+        public Dictionary<IResources, int> GetResourcesRequired()
         {
             return mCost;
         }
@@ -96,8 +96,8 @@ namespace Singularity.platform
         /// <summary>
         /// Get the Resources on the platform.
         /// </summary>
-        /// <returns> a List with the ResourceTypes of the Resources on the platform.</returns>
-        public List<EResourceType> GetPlatformResources()
+        /// <returns> a List containing the references to the resource-objects</returns>
+        public List<IResources> GetPlatformResources()
         {
             return mResources;
         }
@@ -128,7 +128,7 @@ namespace Singularity.platform
         /// Add a new resource to the platform.
         /// </summary>
         /// <param name="resource"> the resource to be added to the platform </param>
-        public void StoreResource(Resources resource)
+        public void StoreResource(IResources resource)
         {
             mResources.Add(resource);
         }
@@ -138,7 +138,7 @@ namespace Singularity.platform
         /// </summary>
         /// <param name="resource">The resource you ask for</param>
         /// <returns>the resource you asked for, null otherwise.</returns>
-        public Resources GetResource(Resources resource)
+        public IResources GetResource(IResources resource)
         {
             var index = mResources.IndexOf(resource);
             if (index < 0)
@@ -155,7 +155,7 @@ namespace Singularity.platform
         /// Get the resources that are requested and the amount of it.
         /// </summary>
         /// <returns>A dictionary containing this information.</returns>
-        public Dictionary<Resources, int> GetmRequested()
+        public Dictionary<IResources, int> GetmRequested()
         {
             return mRequested;
         }
@@ -165,7 +165,7 @@ namespace Singularity.platform
         /// </summary>
         /// <param name="resource">the resource to be requested (or not)</param>
         /// <param name="number">the number of that resource</param>
-        public void SetmRequested(Resources resource, int number)
+        public void SetmRequested(IResources resource, int number)
         {
             mRequested.Add(resource, number);
         }
@@ -214,15 +214,15 @@ namespace Singularity.platform
             mAssignedUnits = new Dictionary<GeneralUnit, Job>();
 
             //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<EResourceType, int>();
+            mCost = new Dictionary<IResources, int>();
 
-            mResources = new List<EResourceType>();
+            mResources = new List<IResources>();
 
             mSpritesheet = spritesheet;
 
             mIsBlueprint = true;
-            mRequested = new Dictionary<EResourceType, int>();
-
+            mRequested = new Dictionary<IResources, int>();
+          
         }
     }
 }
