@@ -9,10 +9,11 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Singularity.Screen.ScreenClasses
 {
     /// <summary>
-    /// Shows the main menu screen with 5 options:
-    /// New Game, Load Game, Achievements, Options, and Quit Game.
+    /// All the main menu screens are overlayed on top of this screen.
+    /// Since the main menu will have the same animated background, it will
+    /// simply use the same background screen and be overlayed on top of it.
     /// </summary>
-    class MainMenuScreen : IScreen
+    class MenuBackgroundScreen : IScreen
     {
         public void Update(GameTime gametime)
         {

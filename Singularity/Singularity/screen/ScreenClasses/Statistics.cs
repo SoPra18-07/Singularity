@@ -9,10 +9,10 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Singularity.Screen.ScreenClasses
 {
     /// <summary>
-    /// Shows the main menu screen with 5 options:
-    /// New Game, Load Game, Achievements, Options, and Quit Game.
+    /// Shown after Statistics has been selected in the in game pause menu.
+    /// Shows an array of statistics of what the player has done.
     /// </summary>
-    class MainMenuScreen : IScreen
+    class Statistics : IScreen
     {
         public void Update(GameTime gametime)
         {

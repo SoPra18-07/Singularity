@@ -8,7 +8,8 @@ namespace Singularity.screen
 {
     /// <inheritdoc cref="IScreen"/>
     /// <summary>
-    /// The game screen handles everything thats going on explicitly in the game. E.g. game objects, the map, camera. etc.
+    /// Handles everything thats going on explicitly in the game.
+    /// E.g. game objects, the map, camera. etc.
     /// </summary>
     internal sealed class GameScreen : IScreen
     {
