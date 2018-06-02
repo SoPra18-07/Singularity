@@ -5,16 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Property;
 
-namespace Singularity.Units
+namespace Singularity.ScreenClasses
 {
-    interface WindowItem
+    interface IWindowItem: IDraw, IUpdate
     {
-        void Draw(SpriteBatch spriteBatch);
-
-        void Update(GameTime gameTime);
-
+    
         // TODO void ReceiveEvents(Event e)
-
     }
 }
