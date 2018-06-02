@@ -10,7 +10,7 @@ namespace Singularity.Libraries
     /// <summary>
     /// Gives a bunch of helpers to help with animations
     /// </summary>
-    internal static class Animation
+    internal static class Animations
     {
         /// <summary>
         /// Returns an double of what value an animation should be at that uses

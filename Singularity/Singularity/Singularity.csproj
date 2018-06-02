@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Exceptions\NoSuchElementException.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Libraries\Animations.cs" />
     <Compile Include="Libraries\Primitives2D.cs" />
     <Compile Include="Map\Camera.cs" />
     <Compile Include="Map\CollisionMap.cs" />
