@@ -10,7 +10,9 @@ namespace Singularity.Screen.ScreenClasses
 {
     /// <summary>
     /// Shown after clicking save game on the pause menu. Allows the user
-    /// to select a new name for the save file and save the game.
+    /// to select a new name for the save file and save the game. It has
+    /// an input field, shows the current save files, and back and
+    /// save buttons.
     /// </summary>
     class SaveGameScreen : IScreen
     {

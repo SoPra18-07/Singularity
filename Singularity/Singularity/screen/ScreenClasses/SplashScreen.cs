@@ -12,7 +12,8 @@ namespace Singularity.Screen
     /// Shown when the game is first started and shows the logo and
     /// "Press any key to start".
     /// The logo will change depending on not the player has past the reveal
-    /// point in the campaign.
+    /// point in the campaign. Not buttons are shown but it listens for any
+    /// key input.
     /// </summary>
     class SplashScreen : IScreen
     {

@@ -10,7 +10,8 @@ namespace Singularity.Screen.ScreenClasses
 {
     /// <summary>
     /// Shown after Options on the main menu or pause menu has been clicked.
-    /// Allows different settings and options to be set.
+    /// Allows different settings and options to be set. Buttons include
+    /// for the different settings and a back button.
     /// </summary>
     class OptionsScreen : IScreen
     {

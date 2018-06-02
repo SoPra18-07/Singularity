@@ -10,7 +10,8 @@ namespace Singularity.Screen.ScreenClasses
 {
     /// <summary>
     /// Shown after load game has been selected on the main menu or
-    /// pause screen. It shows the different save files that can be loaded.
+    /// pause screen. It shows the different save files that can be loaded
+    /// as a list and has a load game button and a back button.
     /// </summary>
     class LoadSelectScreen : IScreen
     {

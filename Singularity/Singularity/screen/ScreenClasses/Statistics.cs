@@ -10,7 +10,9 @@ namespace Singularity.Screen.ScreenClasses
 {
     /// <summary>
     /// Shown after Statistics has been selected in the in game pause menu.
-    /// Shows an array of statistics of what the player has done.
+    /// Shows an array of statistics of what the player has done. It will be
+    /// shown in the form of a graph over time with different buttons to
+    /// filter different statistics.
     /// </summary>
     class Statistics : IScreen
     {

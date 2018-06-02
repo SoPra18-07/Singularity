@@ -11,7 +11,8 @@ namespace Singularity.Screen.ScreenClasses
     /// <summary>
     /// Shown after the "New Game" button on the main
     /// menu has been clicked. It shows the option to either
-    /// play a new campaign or a new skirmish.
+    /// play a new campaign or a new skirmish. It uses two text buttons
+    /// and a back button
     /// </summary>
     class GameModeSelectScreen : IScreen
     {
