@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
@@ -85,8 +86,10 @@ namespace Singularity
 
             mGameScreen = new GameScreen(mMap);
 
-            // This loads the menu background screen
-            mMenuBackgroundScreen = new MenuBackgroundScreen();
+            // This constructs and loads the menu background screen
+            mMenuBackgroundScreen = new MenuBackgroundScreen(new Vector2(GraphicsDevice.Viewport.Width,
+                GraphicsDevice.Viewport.Height));
+            Debug.Print("Viewport Size: " + GraphicsDevice.Viewport.Width + ", " + GraphicsDevice.Viewport.Height);
             mMenuBackgroundScreen.LoadContent(Content);
 
             // load roads

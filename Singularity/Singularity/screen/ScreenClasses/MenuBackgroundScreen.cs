@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -9,6 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Singularity.Screen.ScreenClasses
 {
+    // TODO animate the menu screen
     /// <summary>
     /// All the main menu screens are overlayed on top of this screen.
     /// Since the main menu will have the same animated background, it will
@@ -18,12 +21,91 @@ namespace Singularity.Screen.ScreenClasses
     {
         private Texture2D mGlowTexture2D;
         private Texture2D mHoloProjectionTexture2D;
+        private static Vector2 sScreenResolution;
+        private static Vector2 sScreenResolutionScaling;
+        private static float sHoloProjectionWidthScaling;
+        private static Vector2 sHoloProjectionScaling;
+        static EScreen sCurrentScreen;
+
+        /// <summary>
+        /// Creates the MenuBackgroundScreen class.
+        /// </summary>
+        /// <param name="screenResolution">Current screen resolution.</param>
+        public MenuBackgroundScreen(Vector2 screenResolution)
+        {
+            sScreenResolutionScaling = new Vector2(screenResolution.X / 1280,
+                screenResolution.Y / 1024);
+            sScreenResolution = screenResolution;
+            sHoloProjectionWidthScaling = 1f;
+            SetHoloProjectionScaling(sHoloProjectionWidthScaling);
+            sCurrentScreen = EScreen.SplashScreen;
+
+            Debug.Print("sScreenResolution: " + sScreenResolution.X + ", " + sScreenResolution.Y);
+            Debug.Print("sScreenResolutionScaling: " + sScreenResolutionScaling.X + ", " + sScreenResolutionScaling.Y);
+        }
+
+        private static void SetHoloProjectionScaling(float widthScaling)
+        {
+            if (sScreenResolutionScaling.X < sScreenResolutionScaling.Y)
+            {
+                sHoloProjectionScaling = new Vector2(sScreenResolutionScaling.X);
+            }
+            else
+            {
+                sHoloProjectionScaling = new Vector2(sScreenResolutionScaling.Y);
+            }
+
+            sHoloProjectionScaling = Vector2.Multiply(sHoloProjectionScaling, new Vector2(widthScaling));
+        }
+
+        /// <summary>
+        /// Changes the dimensions of the screen to fit the viewport resolution.
+        /// </summary>
+        /// <param name="screenResolution">Current viewport screen resolution</param>
+        public static void ChangeResolution(Vector2 screenResolution)
+        {
+            sScreenResolution = screenResolution;
+            sScreenResolutionScaling = new Vector2(screenResolution.X / 1280, screenResolution.Y / 1024);
+            SetHoloProjectionScaling(sHoloProjectionWidthScaling);
+        }
+
+        /// <summary>
+        /// Changes the HoloProjectionTexture width based on the screen being shown and
+        /// starts the animation for the screen.
+        /// </summary>
+        /// <param name="screen">Choose the screen to be overlayed on top
+        /// of the menu background</param>
+        public static void SetScreen(EScreen screen)
+        {
+            sCurrentScreen = screen;
+
+            switch (screen)
+            {
+                case EScreen.AchievementsScreen:
+                    sHoloProjectionWidthScaling = 1.5f;
+                    break;
+                case EScreen.GameModeSelectScreen:
+                    break;
+                case EScreen.LoadSelectScreen:
+                    break;
+                case EScreen.MainMenuScreen:
+                    break;
+                case EScreen.OptionsScreen:
+                    break;
+                case EScreen.SplashScreen:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(screen), screen, null);
+            }
+            SetHoloProjectionScaling(sHoloProjectionWidthScaling);
+        }
 
         public void LoadContent(ContentManager content)
         {
             mGlowTexture2D = content.Load<Texture2D>("Glow");
             mHoloProjectionTexture2D = content.Load<Texture2D>("HoloProjection");
         }
+
         public void Update(GameTime gametime)
         {
             // TODO
@@ -32,13 +114,28 @@ namespace Singularity.Screen.ScreenClasses
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
+
+            // Draw glow
             spriteBatch.Draw(mGlowTexture2D,
-                new Vector2(540, 360),
-                null, Color.AliceBlue,
+                new Vector2(sScreenResolution.X / 2, sScreenResolution.Y / 2),
+                null,
+                Color.AliceBlue,
                 0f,
                 new Vector2(609, 553),
-                new Vector2(0.7f),
-                SpriteEffects.None,0f);
+                sScreenResolutionScaling.X < sScreenResolutionScaling.Y ? sScreenResolutionScaling.X : sScreenResolutionScaling.Y, // Scales based on smaller scalar between height and width,
+                SpriteEffects.None,
+                1f);
+
+            // Draw holoProjection texture
+            spriteBatch.Draw(mHoloProjectionTexture2D,
+                new Vector2(540, 360),
+                null,
+                Color.AliceBlue,
+                0f,
+                new Vector2(367, 515),
+                sHoloProjectionScaling, // Scales based on smaller scalar between height and width
+                SpriteEffects.None,
+                0f);
             
             spriteBatch.End();
         }

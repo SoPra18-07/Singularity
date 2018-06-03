@@ -11,7 +11,7 @@ namespace Singularity.Units
         private Vector2 mPosition;
         private Vector2 mTargetPosition;
         private int mRotation;
-        readonly Texture2D mMilSheet;
+        private readonly Texture2D mMilSheet;
         private double mXstep;
         private double mYstep;
         private bool mSelected;
@@ -33,7 +33,7 @@ namespace Singularity.Units
         /// user mouse and eventually target destination
         /// </summary>
         /// <param name="target"></param>
-        private void Rotate(Vector2 target)
+        public void Rotate(Vector2 target)
         {
             // form a triangle from unit location to mouse location
             // adjust to be at center of sprite 150x75
@@ -70,7 +70,7 @@ namespace Singularity.Units
         /// <summary>
         /// The property which defines the health of the unit
         /// </summary>
-        private int Health { get; set; }
+        public int Health { get; set; }
 
         /// <summary>
         /// The unique ID of the unit.
