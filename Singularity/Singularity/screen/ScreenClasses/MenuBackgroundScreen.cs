@@ -25,7 +25,7 @@ namespace Singularity.Screen.ScreenClasses
         private static Vector2 sScreenResolutionScaling;
         private static float sHoloProjectionWidthScaling;
         private static Vector2 sHoloProjectionScaling;
-        static EScreen sCurrentScreen;
+        private static EScreen sCurrentScreen;
 
         /// <summary>
         /// Creates the MenuBackgroundScreen class.
@@ -76,7 +76,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             sCurrentScreen = screen;
 
-            switch (screen)
+            switch (sCurrentScreen)
             {
                 case EScreen.AchievementsScreen:
                     sHoloProjectionWidthScaling = 1.5f;
@@ -92,7 +92,7 @@ namespace Singularity.Screen.ScreenClasses
                 case EScreen.SplashScreen:
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(screen), screen, null);
+                    throw new ArgumentOutOfRangeException(nameof(sCurrentScreen), sCurrentScreen, null);
             }
             SetHoloProjectionScaling(sHoloProjectionWidthScaling);
         }

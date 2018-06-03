@@ -17,24 +17,32 @@ namespace Singularity
     public sealed class Game1 : Game
     {
         private GraphicsDeviceManager mGraphics;
-        private SpriteBatch mSpriteBatch;
-        private Texture2D mPlatformSheet;
+        
         private PlatformBlank mPlatform;
-        private Texture2D mMUnitSheet;
+        private PlatformBlank mPlatform2;
+
         private MilitaryUnit mMUnit1;
         private MilitaryUnit mMUnit2;
-        private PlatformBlank mPlatform2;
+        
         private Map.Map mMap;
+
         private static Song sSoundtrack;
+
+        // Screens
         private GameScreen mGameScreen;
         private MenuBackgroundScreen mMenuBackgroundScreen;
         private SplashScreen mSplashScreen;
+        private MainMenuScreen mMainMenuScreen;
 
         // roads
         private Road mRoad1;
 
         // Sprites!
+        private SpriteBatch mSpriteBatch;
+        private Texture2D mPlatformSheet;
+        private Texture2D mMUnitSheet;
 
+        // Screen Manager
         private readonly IScreenManager mScreenManager;
 
         internal Game1()
@@ -95,7 +103,7 @@ namespace Singularity
             mMenuBackgroundScreen.LoadContent(Content);
 
             // This loads the contents of the splashscreen.
-            mSplashScreen = new SplashScreen(viewportResolution);
+            mSplashScreen = new SplashScreen(viewportResolution, mScreenManager, mMainMenuScreen);
             mSplashScreen.LoadContent(Content);
 
             // load roads

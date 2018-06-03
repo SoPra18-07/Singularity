@@ -44,7 +44,9 @@
     <Compile Include="Exceptions\NoSuchElementException.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Libraries\Animations.cs" />
+    <Compile Include="Libraries\Bloom Filter.cs" />
     <Compile Include="Libraries\Primitives2D.cs" />
+    <Compile Include="Libraries\QuadRenderer.cs" />
     <Compile Include="Map\Camera.cs" />
     <Compile Include="Map\CollisionMap.cs" />
     <Compile Include="Map\Map.cs" />
@@ -114,6 +116,7 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
+    <None Include="Content\Shaders\Bloom.fx" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

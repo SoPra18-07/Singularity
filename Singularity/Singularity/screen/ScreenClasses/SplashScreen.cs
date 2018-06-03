@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Libraries;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Libraries;
+using Microsoft.Xna.Framework.Input;
+using Singularity.Screen.ScreenClasses;
 
 namespace Singularity.Screen
 {
@@ -19,16 +21,23 @@ namespace Singularity.Screen
     /// </summary>
     class SplashScreen : IScreen
     {
+        // TODO either add bloom to the text or make it a sprite
         private Texture2D mLogoTexture2D;
         private Texture2D mSingularityText;
         private static Vector2 sLogoPosition;
         private static Vector2 sSingularityTextPosition;
         private static Vector2 sTextPosition;
-        private SpriteFont mLiberationSans12;
+        private SpriteFont mLibSans20;
+        private Vector2 mStringCenter;
+        private string mContinueString;
+        private IScreenManager mScreenManager;
+        private IScreen mMainMenuScreen;
 
-        public SplashScreen(Vector2 screenResolution)
+        public SplashScreen(Vector2 screenResolution, IScreenManager screenManager, IScreen mainMenu)
         {
             SetResolution(screenResolution);
+            mScreenManager = screenManager;
+            mMainMenuScreen = mainMenu;
         }
 
         public static void SetResolution(Vector2 screenResolution)
@@ -41,13 +50,21 @@ namespace Singularity.Screen
 
         public void LoadContent(ContentManager content)
         {
-            LogoTexture2D = content.Load<Texture2D>("Logo");
-            SingularityText = content.Load<Texture2D>("SingularityText");
-            LiberationSans12 = content.Load<SpriteFont>("LiberationSans12");
+            mLogoTexture2D = content.Load<Texture2D>("Logo");
+            mSingularityText = content.Load<Texture2D>("SingularityText");
+            mLibSans20 = content.Load<SpriteFont>("LibSans20");
+            mContinueString = "Press any key to continue";
+            mStringCenter = new Vector2(mLibSans20.MeasureString(mContinueString).X / 2, mLibSans20.MeasureString(mContinueString).Y / 2);
         }
         public void Update(GameTime gametime)
         {
-            
+            if (Keyboard.GetState().GetPressedKeys().Length > 0)
+            {
+                // TODO animate screen
+                MenuBackgroundScreen.SetScreen(EScreen.MainMenuScreen);
+                mScreenManager.RemoveScreen();
+                //mScreenManager.AddScreen(mMainMenuScreen);
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -55,7 +72,7 @@ namespace Singularity.Screen
             spriteBatch.Begin();
 
             // Draw the logo
-            spriteBatch.Draw(LogoTexture2D,
+            spriteBatch.Draw(mLogoTexture2D,
                 origin: new Vector2(308, 279),
                 position: sLogoPosition,
                 color: Color.AliceBlue,
@@ -65,8 +82,8 @@ namespace Singularity.Screen
                 layerDepth: 0f,
                 effects: SpriteEffects.None);
 
-            // Draw the SingularityText
-            spriteBatch.Draw(SingularityText,
+            // Draw the mSingularityText
+            spriteBatch.Draw(mSingularityText,
                 origin: new Vector2(322, 41),
                 position: sSingularityTextPosition,
                 color: Color.AliceBlue,
@@ -77,10 +94,17 @@ namespace Singularity.Screen
                 effects: SpriteEffects.None);
 
             // Draw the text
-            spriteBatch.DrawString(LiberationSans12,
-                position: sSingularityTextPosition,
+            spriteBatch.DrawString(mLibSans20,
+                origin: mStringCenter,
+                position: sTextPosition,
                 color: Color.White,
-                text: "Press Any Key to Continue");
+                text: mContinueString,
+                rotation: 0f,
+                scale: 1f,
+                effects: SpriteEffects.None,
+                layerDepth: 0.2f);
+
+            spriteBatch.End();
 
         }
 
