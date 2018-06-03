@@ -77,10 +77,12 @@ namespace Singularity.Map
             }
         }
 
-        public bool IsConcealed(float x, float y)
+        public bool IsConcealed(ISpatial spatial)
         {
-            //TODO: needs ISpatial, thus here minimalistic approach
-            return !mToDraw[(int) x / MapConstants.GridWidth, (int) y / MapConstants.GridHeight];
+            return !mToDraw[(int) spatial.AbsolutePosition.X / MapConstants.GridWidth, (int) spatial.AbsolutePosition.Y / MapConstants.GridHeight] &&
+                   !mToDraw[(int) (spatial.AbsolutePosition.X + spatial.AbsoluteSize.X) / MapConstants.GridWidth, (int) spatial.AbsolutePosition.Y / MapConstants.GridHeight] &&
+                   !mToDraw[(int) spatial.AbsolutePosition.X / MapConstants.GridWidth, (int) (spatial.AbsolutePosition.Y + spatial.AbsoluteSize.Y) / MapConstants.GridHeight] &&
+                   !mToDraw[(int) (spatial.AbsolutePosition.X + spatial.AbsoluteSize.X) / MapConstants.GridWidth, (int) (spatial.AbsolutePosition.Y + spatial.AbsoluteSize.Y) / MapConstants.GridHeight];
 
         }
     }
