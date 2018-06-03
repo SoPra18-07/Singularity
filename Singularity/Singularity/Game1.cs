@@ -33,6 +33,10 @@ namespace Singularity
         private MenuBackgroundScreen mMenuBackgroundScreen;
         private SplashScreen mSplashScreen;
         private MainMenuScreen mMainMenuScreen;
+        private AchievementsScreen mAchievementsScreen;
+        private GameModeSelectScreen mGameModeSelectScreen;
+        private LoadSelectScreen mLoadSelectScreen;
+        private OptionsScreen mOptionsScreen;
 
         // roads
         private Road mRoad1;
@@ -102,9 +106,16 @@ namespace Singularity
             Debug.Print("Viewport Size: " + GraphicsDevice.Viewport.Width + ", " + GraphicsDevice.Viewport.Height);
             mMenuBackgroundScreen.LoadContent(Content);
 
+            // This loads the contents of the mainmenuscreen
+            mMainMenuScreen = new MainMenuScreen(viewportResolution, mScreenManager, mGameModeSelectScreen, mLoadSelectScreen,
+                mAchievementsScreen, mOptionsScreen);
+            mMainMenuScreen.LoadContent(Content);
+
             // This loads the contents of the splashscreen.
             mSplashScreen = new SplashScreen(viewportResolution, mScreenManager, mMainMenuScreen);
             mSplashScreen.LoadContent(Content);
+
+            
 
             // load roads
             mRoad1 = new Road(new Vector2(300, 400), new Vector2(800, 600), false);

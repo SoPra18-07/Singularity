@@ -603,10 +603,9 @@ namespace Singularity.Libraries
         /// <param name="opacityCenter"></param>
 	    public static void StrokedRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color colorBorder, Color colorCenter, float opacityBorder, float opacityCenter)
 	    {
+
+	        FillRectangle(spriteBatch, location, size, colorCenter, 0, opacityCenter);
             DrawRectangle(spriteBatch, location, size, colorBorder, 1, opacityBorder);
-	        Vector2 fillLocation = new Vector2(location.X + 1, location.Y + 1);
-	        Vector2 fillSize = new Vector2(size.X - 2, size.Y - 2);
-	        FillRectangle(spriteBatch, fillLocation, fillSize, colorCenter, 0, opacityCenter);
 	    }
 
         #endregion

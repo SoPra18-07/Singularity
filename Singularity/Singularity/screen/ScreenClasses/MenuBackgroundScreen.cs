@@ -86,6 +86,7 @@ namespace Singularity.Screen.ScreenClasses
                 case EScreen.LoadSelectScreen:
                     break;
                 case EScreen.MainMenuScreen:
+                    sHoloProjectionWidthScaling = 2f;
                     break;
                 case EScreen.OptionsScreen:
                     break;

@@ -63,7 +63,7 @@ namespace Singularity.Screen
                 // TODO animate screen
                 MenuBackgroundScreen.SetScreen(EScreen.MainMenuScreen);
                 mScreenManager.RemoveScreen();
-                //mScreenManager.AddScreen(mMainMenuScreen);
+                mScreenManager.AddScreen(mMainMenuScreen);
             }
         }
 
