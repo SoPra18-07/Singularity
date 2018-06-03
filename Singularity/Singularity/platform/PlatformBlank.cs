@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Property;
@@ -9,24 +10,34 @@ using Singularity.Units;
 namespace Singularity.platform
 {
 
+    [DataContract()]
     internal class PlatformBlank : IDraw, IUpdate
     {
 
+        [DataMember()]
         private const int PlatformWidth = 148;
+        [DataMember()]
         private const int PlatformHeight = 170;
-
+        [DataMember()]
         private int mHealth;
+        [DataMember()]
         private int mId;
+        [DataMember()]
         private bool mIsBlueprint;
+        [DataMember()]
         protected Action[] mActions;
+        [DataMember()]
         protected Dictionary<IResources, int> mCost;
         private readonly Texture2D mSpritesheet;
-        private readonly Dictionary<GeneralUnit, Job> mAssignedUnits;
+        [DataMember()]
+        protected Dictionary<GeneralUnit, Job> mAssignedUnits;
+        [DataMember()]
         private List<IResources> mResources;
+        [DataMember()]
         private Dictionary<IResources, int> mRequested;
-
+        [DataMember()]
         public Vector2 AbsolutePosition { private get; set; }
-
+        [DataMember()]
         public Vector2 AbsoluteSize { private get; set; }
 
 
@@ -170,13 +181,13 @@ namespace Singularity.platform
             mRequested.Add(resource, number);
         }
 
-        public void Produce()
+        public virtual void Produce()
         {
             throw new NotImplementedException();
         }
 
-        /// <inheritdoc cref="Singularity.property.IDraw"/>
-        public virtual void Draw(SpriteBatch spritebatch)
+        /// <inheritdoc cref="IDraw"/>
+        public void Draw(SpriteBatch spritebatch)
         {
             // the sprite sheet is 148x1744 px, 1x12 sprites
             // The sprites have different heights so, by testing I found out the sprite is about 148x170 px
@@ -192,9 +203,10 @@ namespace Singularity.platform
             );
         }
 
-        /// <inheritdoc cref="Singularity.property.IUpdate"/>
+        /// <inheritdoc cref="IUpdate"/>
         public virtual void Update(GameTime t)
         {
+            throw new NotImplementedException();
             //TODO: implement update code
         }
 
@@ -208,6 +220,7 @@ namespace Singularity.platform
             mHealth = 100;
 
             //The only action available so far is BlueprintBuild.
+            //TODO: Change the action thing.
             mActions = new Action[1];
             mActions[0] = Action.BlueprintBuild;
 
