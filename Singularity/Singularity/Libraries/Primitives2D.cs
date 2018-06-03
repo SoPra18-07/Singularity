@@ -241,6 +241,38 @@ namespace Singularity.Libraries
 			FillRectangle(spriteBatch, new Vector2(x, y), new Vector2(w, h), color, angle);
 		}
 
+        /// <summary>
+        /// Draws a filled rectangle
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="location"></param>
+        /// <param name="size"></param>
+        /// <param name="color"></param>
+        /// <param name="angle"></param>
+        /// <param name="opacity"></param>
+	    public static void FillRectangle(this SpriteBatch spriteBatch,
+	        Vector2 location,
+	        Vector2 size,
+	        Color color,
+	        float angle, float opacity)
+	    {
+	        if (sPixel == null)
+	        {
+	            CreateThePixel(spriteBatch);
+	        }
+
+	        // stretch the pixel between the two vectors
+	        spriteBatch.Draw(sPixel,
+	            location,
+	            null,
+	            color * opacity,
+	            angle,
+	            Vector2.Zero,
+	            size,
+	            SpriteEffects.None,
+	            0);
+        }
+
 		#endregion
 
 
@@ -541,8 +573,26 @@ namespace Singularity.Libraries
 			DrawPoints(spriteBatch, center, arc, color, thickness);
 		}
 
-		#endregion
+        #endregion
 
 
-	}
+        #region StrokedRectangle
+        /// <summary>
+        /// Draws Rectangle with 1 pixel outline, opacity can be adjusted
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="location"></param>
+        /// <param name="size"></param>
+        /// <param name="color"></param>
+        /// <param name="opacity"></param>
+	    public static void StrokedRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float opacity)
+	    {
+            DrawRectangle(spriteBatch, location, size, color, 1);
+	        Vector2 fillLocation = new Vector2(location.X + 1, location.Y + 1);
+	        Vector2 fillSize = new Vector2(size.X - 2, size.Y - 2);
+	        FillRectangle(spriteBatch, fillLocation, fillSize, color, 0, opacity);
+	    }
+
+        #endregion
+    }
 }
