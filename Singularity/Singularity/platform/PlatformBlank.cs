@@ -5,12 +5,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.platform
 {
 
-    internal class PlatformBlank : IDraw, IUpdate
+    internal class PlatformBlank : IDraw, IUpdate, ISpatial
     {
 
         private const int PlatformWidth = 148;
@@ -29,6 +28,10 @@ namespace Singularity.platform
         public Vector2 AbsolutePosition { get; set; }
 
         public Vector2 AbsoluteSize { get; set; }
+
+        public Vector2 RelativePosition { get; set; }
+
+        public Vector2 RelativeSize { get; set; }
 
 
         /// <summary>

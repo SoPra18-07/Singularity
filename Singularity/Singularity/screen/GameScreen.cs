@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Map;
 using Singularity.Property;
 using Singularity.Screen;
-using Singularity.Units;
 
 namespace Singularity.screen
 {
@@ -24,42 +23,27 @@ namespace Singularity.screen
         /// </summary>
         private readonly LinkedList<IUpdate> mUpdateables;
 
-        private readonly Map.Map mMap;
+        /// <summary>
+        /// The camera object which holds transformation values.
+        /// </summary>
+        private readonly Camera mCamera;
 
-        private readonly FogOfWar mFow;
-
-        // TODO: game screen needs the map in its constructor. Not in master as of now
         public GameScreen(Map.Map map)
         {
             mDrawables = new LinkedList<IDraw>();
             mUpdateables = new LinkedList<IUpdate>();
 
-            mMap = map;
-            mFow = new FogOfWar(map);
+            mCamera = map.GetCamera();
 
-            AddObject(map);
-            AddObject(mFow);
+            AddObject<Map.Map>(map);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mMap.GetCamera().GetTransform());
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, mCamera.GetTransform());
 
             foreach (var drawable in mDrawables)
             {
-                //TODO: need cast to ISpatial to acces x, y, here checking for military units if working
-
-                var unit = drawable as MilitaryUnit;
-
-                if (unit != null)
-                {
-                    if (mFow.IsConcealed(unit.Position.X, unit.Position.Y))
-                    {
-                        continue;
-                    }
-                }
-
-
                 drawable.Draw(spriteBatch);
             }
 
@@ -76,7 +60,17 @@ namespace Singularity.screen
         {
             foreach (var updateable in mUpdateables)
             {
+                var spatial = updateable as ISpatial;
+
+                if (spatial != null)
+                {
+                    spatial.RelativePosition = Vector2.Transform(spatial.AbsolutePosition, mCamera.GetTransform());
+                    spatial.RelativeSize = spatial.AbsoluteSize * mCamera.GetZoom();
+
+
+                }
                 updateable.Update(gametime);
+
             }
         }
 

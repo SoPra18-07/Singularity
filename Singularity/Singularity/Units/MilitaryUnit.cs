@@ -8,7 +8,6 @@ namespace Singularity.Units
 {
     class MilitaryUnit : IUnit, IDraw, IUpdate
     {
-        private Vector2 mPosition;
         private Vector2 mTargetPosition;
         private int mRotation;
         readonly Texture2D mMilSheet;
@@ -17,13 +16,30 @@ namespace Singularity.Units
         private bool mSelected;
         private bool mTargetReached;
 
+        /*
+         * TODO: Needs some major code changes in its movement and stuff. A lot of hardcoded values won't do
+         * TODO: with zoom. Thus needs to implement to use its own size (relative) to get those values.
+         * TODO: When there are hardcoded numbers it will normally not work with a camera.
+         * TODO: One can easily see that it currently only works with inital zoom and camera in top left corner
+         */
+         
+        public Vector2 AbsolutePosition { get; set; }
+
+        public Vector2 AbsoluteSize { get; set; }
+
+        public Vector2 RelativePosition { get; set; }
+
+        public Vector2 RelativeSize { get; set; }
+
         public MilitaryUnit(Vector2 position, Texture2D spriteSheet)
         {
             Id = 0; // TODO this will later use a random number generator to create a unique
                     // id for the specific unit.
             Health = 10; //TODO
-            mPosition = position;
-            mTargetReached = true;
+            
+            AbsolutePosition = position;
+            targetReached = true;
+
             mMilSheet = spriteSheet;
         }
 
@@ -37,8 +53,8 @@ namespace Singularity.Units
         {
             // form a triangle from unit location to mouse location
             // adjust to be at center of sprite 150x75
-            double x = (target.X - (mPosition.X + 75));
-            double y = (target.Y - (mPosition.Y + 37.5));
+            double x = (target.X - (AbsolutePosition.X + 75));
+            double y = (target.Y - (AbsolutePosition.Y + 37.5));
             double hypot = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
 
             // calculate degree between formed triangle
@@ -78,11 +94,6 @@ namespace Singularity.Units
         public int Id { get; }
 
         /// <summary>
-        /// The current position of the unit.
-        /// </summary>
-        public Vector2 Position => mPosition;
-
-        /// <summary>
         /// Used to set and get assignment. Assignment will potentially be implemented as a new type which
         /// can be used to determine what assignment a unit has.
         /// </summary>
@@ -112,8 +123,8 @@ namespace Singularity.Units
             Color color;
             if (!mSelected) { color = Color.White; }
             else { color = Color.Gainsboro; }
-
-            spriteBatch.Draw(mMilSheet, mPosition, new Rectangle((150 * columnNumber), (75 * rowNumber), 150, 75), color, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, LayerConstants.MilitaryUnitLayer);
+            
+            spriteBatch.Draw(mMilSheet, AbsolutePosition, new Rectangle((150 * columnNumber), (75 * rowNumber), 150, 75), color, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, LayerConstants.MilitaryUnitLayer);
 
         }
 
@@ -129,9 +140,9 @@ namespace Singularity.Units
             }
 
             // calculate path to target position
-            if (mSelected && Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                ((Math.Abs((mPosition.X + 75) - Mouse.GetState().X) > 60) ||
-                 (Math.Abs((mPosition.Y + 37.5) - Mouse.GetState().Y) > 45)))
+            if (selected && Mouse.GetState().LeftButton == ButtonState.Pressed &&
+                ((Math.Abs((AbsolutePosition.X + 75) - Mouse.GetState().X) > 60) ||
+                 (Math.Abs((AbsolutePosition.Y + 37.5) - Mouse.GetState().Y) > 45)))
             {
                 Steps(new Vector2(Mouse.GetState().X, (Mouse.GetState().Y)));
             }
@@ -152,8 +163,8 @@ namespace Singularity.Units
         private void Selected()
         {
             // if left click within unit area : selected
-            if ((Math.Abs((mPosition.X + 75) - Mouse.GetState().X) < 60) &&
-                (Math.Abs((mPosition.Y + 37.5) - Mouse.GetState().Y) < 45) &&
+            if ((Math.Abs((AbsolutePosition.X + 75) - Mouse.GetState().X) < 60) &&
+                (Math.Abs((AbsolutePosition.Y + 37.5) - Mouse.GetState().Y) < 45) &&
                 Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
                 mSelected = true;
@@ -181,28 +192,28 @@ namespace Singularity.Units
             
 
             // travel along the hypotenuse of triangle formed by start and target position
-            double hypot = (Math.Sqrt(Math.Pow((mPosition.X - mTargetPosition.X + 75), 2) +
-                                      Math.Pow((mPosition.Y - mTargetPosition.Y + 37.5), 2)));
+            double hypot = (Math.Sqrt(Math.Pow((AbsolutePosition.X - mTargetPosition.X + 75), 2) +
+                                      Math.Pow((AbsolutePosition.Y - mTargetPosition.Y + 37.5), 2)));
 
             // calculate the x distance and y distance needed to get to target
             if (Math.Abs(hypot) < 0.01)
             {
-                mXstep = Math.Abs(mPosition.X - mTargetPosition.X + 75);
-                mYstep = Math.Abs(mPosition.Y - mTargetPosition.Y + 37.5);
+                xstep = Math.Abs(AbsolutePosition.X - mTargetPosition.X + 75);
+                ystep = Math.Abs(AbsolutePosition.Y - mTargetPosition.Y + 37.5);
             }
             else
             {
-                mXstep = Math.Abs((mPosition.X - mTargetPosition.X + 75) / hypot);
-                mYstep = Math.Abs((mPosition.Y - mTargetPosition.Y + 37.5) / hypot);
+                xstep = Math.Abs((AbsolutePosition.X - mTargetPosition.X + 75) / hypot);
+                ystep = Math.Abs((AbsolutePosition.Y - mTargetPosition.Y + 37.5) / hypot);
             }
 
             // determine correct direction of x/y movement
-            if (mPosition.X - mTargetPosition.X + 75 < 0)
+            if (AbsolutePosition.X - mTargetPosition.X + 75 < 0)
             {
                 mXstep = -mXstep;
             }
 
-            if (mPosition.Y - mTargetPosition.Y +37.5 < 0)
+            if (AbsolutePosition.Y - mTargetPosition.Y +37.5 < 0)
             {
                 mYstep = -mYstep;
             }
@@ -219,11 +230,10 @@ namespace Singularity.Units
         private void Move()
         {
             // move position of unit over by x/y step to reach target
-            mPosition.X -= (float)mXstep;
-            mPosition.Y -= (float)mYstep;
+            AbsolutePosition = new Vector2(AbsolutePosition.X - (float)xstep, AbsolutePosition.Y - (float)ystep);
 
             // check if target position has been reached
-            if (Math.Abs((mPosition.X) - mTargetPosition.X + 75) < 8 && Math.Abs((mPosition.Y) - mTargetPosition.Y + 37.5) < 8)
+            if (Math.Abs((AbsolutePosition.X) - mTargetPosition.X + 75) < 8 && Math.Abs((AbsolutePosition.Y) - mTargetPosition.Y + 37.5) < 8)
             {
                 mTargetReached = true;
             }
