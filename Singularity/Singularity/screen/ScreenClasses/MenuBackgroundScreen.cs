@@ -93,7 +93,7 @@ namespace Singularity.Screen.ScreenClasses
                 case EScreen.SplashScreen:
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(sCurrentScreen), sCurrentScreen, null);
+                    break;
             }
             SetHoloProjectionScaling(sHoloProjectionWidthScaling);
         }
