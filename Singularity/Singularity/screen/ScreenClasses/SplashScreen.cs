@@ -15,14 +15,14 @@ namespace Singularity.Screen.ScreenClasses
         // TODO either add bloom to the text or make it a sprite
         private Texture2D mLogoTexture2D;
         private Texture2D mSingularityText;
-        private static Vector2 sLogoPosition;
-        private static Vector2 sSingularityTextPosition;
-        private static Vector2 sTextPosition;
+        private readonly Vector2 mLogoPosition;
+        private readonly Vector2 mSingularityTextPosition;
+        private readonly Vector2 mTextPosition;
         private SpriteFont mLibSans20;
         private Vector2 mStringCenter;
-        private string mContinueString;
-        private IScreenManager mScreenManager;
-        private IScreen mMainMenuScreen;
+        private readonly string mContinueString;
+        private readonly IScreenManager mScreenManager;
+        private readonly IScreen mMainMenuScreen;
 
         /// <summary>
         /// Shown when the game is first started and shows the logo and
@@ -33,17 +33,12 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         public SplashScreen(Vector2 screenResolution, IScreenManager screenManager, IScreen mainMenu)
         {
-            SetResolution(screenResolution);
+            mLogoPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 - 100);
+            mSingularityTextPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 + 150);
+            mTextPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 + 250);
             mScreenManager = screenManager;
             mMainMenuScreen = mainMenu;
-        }
-
-        public static void SetResolution(Vector2 screenResolution)
-        {
-            sLogoPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 - 100);
-            sSingularityTextPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 + 150);
-            sTextPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 + 250);
-
+            mContinueString = "Press any key to continue";
         }
 
         public void LoadContent(ContentManager content)
@@ -51,7 +46,6 @@ namespace Singularity.Screen.ScreenClasses
             mLogoTexture2D = content.Load<Texture2D>("Logo");
             mSingularityText = content.Load<Texture2D>("SingularityText");
             mLibSans20 = content.Load<SpriteFont>("LibSans20");
-            mContinueString = "Press any key to continue";
             mStringCenter = new Vector2(mLibSans20.MeasureString(mContinueString).X / 2, mLibSans20.MeasureString(mContinueString).Y / 2);
         }
         public void Update(GameTime gametime)
@@ -72,7 +66,7 @@ namespace Singularity.Screen.ScreenClasses
             // Draw the logo
             spriteBatch.Draw(mLogoTexture2D,
                 origin: new Vector2(308, 279),
-                position: sLogoPosition,
+                position: mLogoPosition,
                 color: Color.AliceBlue,
                 rotation: 0f,
                 scale: 0.5f,
@@ -83,7 +77,7 @@ namespace Singularity.Screen.ScreenClasses
             // Draw the mSingularityText
             spriteBatch.Draw(mSingularityText,
                 origin: new Vector2(322, 41),
-                position: sSingularityTextPosition,
+                position: mSingularityTextPosition,
                 color: Color.AliceBlue,
                 rotation: 0f,
                 scale: 0.5f,
@@ -94,7 +88,7 @@ namespace Singularity.Screen.ScreenClasses
             // Draw the text
             spriteBatch.DrawString(mLibSans20,
                 origin: mStringCenter,
-                position: sTextPosition,
+                position: mTextPosition,
                 color: Color.White,
                 text: mContinueString,
                 rotation: 0f,

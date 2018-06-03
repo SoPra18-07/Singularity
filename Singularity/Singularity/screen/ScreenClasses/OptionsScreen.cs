@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Libraries;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -19,6 +20,7 @@ namespace Singularity.Screen.ScreenClasses
         private IScreen mGameplayOptionsScreen;
         private IScreen mGraphicsOptionScreen;
         private IScreen mAudioOptionsScreen;
+        private Vector2 mScreenCenter;
 
         /// <summary>
         /// Shown after Options on the main menu or pause menu has been clicked.
@@ -33,16 +35,26 @@ namespace Singularity.Screen.ScreenClasses
         public OptionsScreen(Vector2 screenResolution, IScreenManager screenManager,
             IScreen gameplayOptionsScreen, IScreen graphicsOptionsScreen, IScreen audioOptionScreen)
         {
-
+            mScreenCenter = screenResolution;
+            mScreenManager = screenManager;
+            mGameplayOptionsScreen = gameplayOptionsScreen;
+            mGraphicsOptionScreen = gameplayOptionsScreen;
+            mAudioOptionsScreen = audioOptionScreen;
         }
+
         public void Update(GameTime gametime)
         {
-            throw new NotImplementedException();
+            // TODO make it work
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            throw new NotImplementedException();
+            spriteBatch.StrokedRectangle(mScreenCenter,
+                new Vector2(600, 400),
+                Color.White,
+                Color.White,
+                0.5f,
+                0.21f);
         }
 
         public bool UpdateLower()
