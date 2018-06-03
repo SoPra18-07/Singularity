@@ -38,7 +38,7 @@ namespace Singularity.Screen.ScreenClasses
             mScreenCenter = screenResolution;
             mScreenManager = screenManager;
             mGameplayOptionsScreen = gameplayOptionsScreen;
-            mGraphicsOptionScreen = gameplayOptionsScreen;
+            mGraphicsOptionScreen = graphicsOptionsScreen;
             mAudioOptionsScreen = audioOptionScreen;
         }
 
