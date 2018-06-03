@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Singularity.platform;
-using Singularity.screen;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;

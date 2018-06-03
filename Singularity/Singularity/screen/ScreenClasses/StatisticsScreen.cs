@@ -8,14 +8,20 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Singularity.Screen.ScreenClasses
 {
+    /// <inheritdoc cref="IScreen"/>
     /// <summary>
-    /// Shown after Statistics has been selected in the in game pause menu.
-    /// Shows an array of statistics of what the player has done. It will be
-    /// shown in the form of a graph over time with different buttons to
-    /// filter different statistics.
+    /// Handles everything thats going on explicitly in the game.
+    /// E.g. game objects, the map, camera. etc.
     /// </summary>
     class Statistics : IScreen
     {
+        /// <summary>
+        /// Shown after Statistics has been selected in the in game pause menu.
+        /// Shows an array of statistics of what the player has done. It will be
+        /// shown in the form of a graph over time with different buttons to
+        /// filter different statistics.
+        /// </summary>
+
         public void Update(GameTime gametime)
         {
             throw new NotImplementedException();

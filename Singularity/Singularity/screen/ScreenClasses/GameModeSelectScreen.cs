@@ -8,14 +8,20 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Singularity.Screen.ScreenClasses
 {
+    /// <inheritdoc cref="IScreen"/>
     /// <summary>
-    /// Shown after the "New Game" button on the main
-    /// menu has been clicked. It shows the option to either
-    /// play a new campaign or a new skirmish. It uses two text buttons
-    /// and a back button
+    /// Handles everything thats going on explicitly in the game.
+    /// E.g. game objects, the map, camera. etc.
     /// </summary>
+    
     class GameModeSelectScreen : IScreen
     {
+        /// <summary>
+        /// Shown after the "New Game" button on the main
+        /// menu has been clicked. It shows the option to either
+        /// play a new campaign or a new skirmish. It uses two text buttons
+        /// and a back button
+        /// </summary>
         public void Update(GameTime gametime)
         {
             throw new NotImplementedException();

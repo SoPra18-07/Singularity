@@ -1,23 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Libraries;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Singularity.Screen.ScreenClasses;
 
-namespace Singularity.Screen
+namespace Singularity.Screen.ScreenClasses
 {
+    /// <inheritdoc cref="IScreen"/>
     /// <summary>
-    /// Shown when the game is first started and shows the logo and
-    /// "Press any key to start".
-    /// The logo will change depending on not the player has past the reveal
-    /// point in the campaign. Not buttons are shown but it listens for any
-    /// key input.
+    /// Handles everything thats going on explicitly in the game.
+    /// E.g. game objects, the map, camera. etc.
     /// </summary>
     class SplashScreen : IScreen
     {
@@ -33,6 +24,13 @@ namespace Singularity.Screen
         private IScreenManager mScreenManager;
         private IScreen mMainMenuScreen;
 
+        /// <summary>
+        /// Shown when the game is first started and shows the logo and
+        /// "Press any key to start".
+        /// The logo will change depending on not the player has past the reveal
+        /// point in the campaign. Not buttons are shown but it listens for any
+        /// key input.
+        /// </summary>
         public SplashScreen(Vector2 screenResolution, IScreenManager screenManager, IScreen mainMenu)
         {
             SetResolution(screenResolution);

@@ -8,12 +8,17 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Singularity.Screen.ScreenClasses
 {
+    /// <inheritdoc cref="IScreen"/>
     /// <summary>
-    /// Shows the pause menu when in the middle of a game. It shows the
-    /// following: Resume, Quick Save, Save, Statistics, Quit Game.
+    /// Handles everything thats going on explicitly in the game.
+    /// E.g. game objects, the map, camera. etc.
     /// </summary>
     class GamePauseScreen : IScreen
     {
+        /// <summary>
+        /// Shows the pause menu when in the middle of a game. It shows the
+        /// following: Resume, Quick Save, Save, Statistics, Quit Game.
+        /// </summary>
         public void Update(GameTime gametime)
         {
             throw new NotImplementedException();
