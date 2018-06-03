@@ -38,7 +38,7 @@ namespace Singularity.screen
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, mMap.GetCamera().GetTransform());
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mMap.GetCamera().GetTransform());
 
             foreach (var drawable in mDrawables)
             {
