@@ -34,7 +34,7 @@ namespace Singularity.Units
             Id = 0; // TODO make this randomized or simply ascending
             AbsolutePosition = Vector2.Zero; // TODO figure out how to search platform by ID and get its position
             mPositionId = spawnPositionId;
-            Carrying = EResourceType.None;
+            Carrying = EResourceType.Trash; // TODO change this to a nullable type or some other implementation after dist manager is implemented
             mPathQueue = null;
         }
         /// <summary>

@@ -123,8 +123,8 @@ namespace Singularity.Units
             Color color;
             if (!mSelected) { color = Color.White; }
             else { color = Color.Gainsboro; }
-
-            spriteBatch.Draw(mMilSheet, AbsolutePosition, new Rectangle((150 * columnNumber), (75 * rowNumber), 150, 75),color);
+            
+            spriteBatch.Draw(mMilSheet, AbsolutePosition, new Rectangle((150 * columnNumber), (75 * rowNumber), 150, 75), color, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, LayerConstants.MilitaryUnitLayer);
 
         }
 
