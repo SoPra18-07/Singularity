@@ -33,7 +33,7 @@ namespace Singularity.Units
         /// user mouse and eventually target destination
         /// </summary>
         /// <param name="target"></param>
-        public void Rotate(Vector2 target)
+        private void Rotate(Vector2 target)
         {
             // form a triangle from unit location to mouse location
             // adjust to be at center of sprite 150x75
@@ -70,7 +70,7 @@ namespace Singularity.Units
         /// <summary>
         /// The property which defines the health of the unit
         /// </summary>
-        public int Health { get; set; }
+        private int Health { get; set; }
 
         /// <summary>
         /// The unique ID of the unit.

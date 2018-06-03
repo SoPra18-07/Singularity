@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -13,8 +14,10 @@ using Singularity.ScreenClasses;
 
 namespace Singularity.Screen
 {
-    class Button: IWindowItem, IDraw, IUpdate
+    class Button: IWindowItem
     {
+        public event EventHandler ButtonClicked;
+        public event EventHandler ButtonHovering;
         private float mScale;
         private Texture2D mButtonTexture;
         private bool mCurrentMouseState;
@@ -31,41 +34,38 @@ namespace Singularity.Screen
             mPosition = position;
         }
 
+        protected virtual void OnButtonClicked(EventArgs e)
+        {
+            if (ButtonClicked != null)
+            {
+                ButtonClicked(this, e);
+            }
+        }
+
+        protected virtual void OnButtonHovering(EventArgs e)
+        {
+            if (ButtonHovering != null)
+            {
+                ButtonHovering(this, e);
+            }
+        }
 
         /// <summary>
-        /// returns true if the button has been left clicked
-        /// otherwise returns false 
+        /// sends out button events (button hover/ button click)
         /// </summary>
         /// <returns></returns>
-        public bool ButtonReleased()
+        public void ButtonEvents()
         {
             if (mCurrentMouseState == false && mPreviousMouseState == true)
             {
-                return true;
+                OnButtonClicked(EventArgs.Empty);
             }
-            else
-            {
-                return false;
-            }    
-        }
-
-        /// <summary>
-        /// returns true if mouse is hovering over button area
-        /// </summary>
-        /// <returns></returns>
-        public bool ButtonHover()
-        {
             if (Mouse.GetState().X < mPosition.X && Mouse.GetState().X >= mPosition.X + mButtonTexture.Width &&
                 Mouse.GetState().Y < mPosition.Y && Mouse.GetState().Y >= mPosition.Y + mButtonTexture.Height)
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                OnButtonHovering(EventArgs.Empty);
             }
         }
-
 
         /// <summary>
         /// draws the button to specified scale
@@ -92,11 +92,15 @@ namespace Singularity.Screen
             }
 
             // if left click released then change current mouse state
-            if (Mouse.GetState().LeftButton == ButtonState.Released && mCurrentMouseState == false)
+            if (Mouse.GetState().LeftButton == ButtonState.Released && mCurrentMouseState == false &&
+                Mouse.GetState().X < mPosition.X && Mouse.GetState().X >= mPosition.X + mButtonTexture.Width &&
+                Mouse.GetState().Y < mPosition.Y && Mouse.GetState().Y >= mPosition.Y + mButtonTexture.Height)
             {
                 mPreviousMouseState = mCurrentMouseState;
                 mCurrentMouseState = true;
             }
+
+            ButtonEvents();
         }
     }
 }
