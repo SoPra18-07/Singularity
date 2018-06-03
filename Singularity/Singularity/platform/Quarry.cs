@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -9,6 +10,7 @@ using Singularity.Resources;
 
 namespace Singularity.platform
 {
+    [DataContract()]
     class Quarry : PlatformBlank
     {
         public Quarry(Vector2 position, Texture2D spritesheet): base(position, spritesheet)
