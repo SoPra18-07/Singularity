@@ -58,6 +58,7 @@
     <Compile Include="Input\MouseAction.cs" />
     <Compile Include="platform\Action.cs" />
     <Compile Include="platform\Job.cs" />
+    <Compile Include="platform\Mine.cs" />
     <Compile Include="platform\PlatformBlank.cs" />
     <Compile Include="platform\Quarry.cs" />
     <Compile Include="platform\Well.cs" />
