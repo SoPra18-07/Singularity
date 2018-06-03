@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Singularity.platform;
+using Singularity.Resources;
 using Singularity.screen;
 using Singularity.Screen;
 using Singularity.Units;
@@ -73,10 +74,10 @@ namespace Singularity
 
             // TODO: use this.Content to load your game content here
             mPlatformSheet = Content.Load<Texture2D>("PlatformSpriteSheet");
-            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet);
+            mPlatform = new PlatformBlank(new Vector2(400, 300), mPlatformSheet);
             mPlatform2 = new PlatformBlank(new Vector2(800, 600), mPlatformSheet);
 
-            mMap = new Map.Map(Content.Load<Texture2D>("MockUpBackground"), mGraphics.GraphicsDevice.Viewport, true);
+            mMap = new Map.Map(Content.Load<Texture2D>("MockUpBackground"), mGraphics.GraphicsDevice.Viewport, false);
 
             mMap.AddPlatform(mPlatform);
             mMap.AddPlatform(mPlatform2);
@@ -91,6 +92,8 @@ namespace Singularity
             mGameScreen.AddObject<PlatformBlank>(mPlatform);
             mGameScreen.AddObject<PlatformBlank>(mPlatform2);
             mGameScreen.AddObject<Road>(mRoad1);
+
+            mGameScreen.AddObject(ResourceHelper.GetRandomlyDistributedResources(5));
 
             mScreenManager.AddScreen(mGameScreen);
 
@@ -134,7 +137,7 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.TransparentBlack);
 
             // TODO: Add your drawing code here
 

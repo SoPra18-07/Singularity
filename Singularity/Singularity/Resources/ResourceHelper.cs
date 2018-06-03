@@ -1,67 +1,107 @@
 ﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Map.Properties;
 
 namespace Singularity.Resources
 {
 
     /// <summary>
-    /// Provides a helper class to ease access to the corresponding texture for a given resource type and the sprite sheet holding all the images for resources.
+    /// Provides a helper class to ease access to the corresponding color for a given resource type and provide random resources distribution.
     /// </summary>
     internal static class ResourceHelper
     {
 
         /// <summary>
-        /// Gets the fitting texture for the given resource type and the spritesheet holding all the resource images.
+        /// Gets the fitting color for the given resource type.
         /// </summary>
-        /// <param name="type">The resource type of the resource to get the texture for</param>
-        /// <param name="spriteSheet">The spritesheet holding all the textures for resources</param>
-        /// <returns>The texture for the given type</returns>
-        public static Texture2D GetTexture(EResourceType type, Texture2D spriteSheet)
+        /// <param name="type">The resource type of the resource to get the color for</param>
+        /// <returns>The color for the given type</returns>
+        public static Color GetColor(EResourceType type)
         {
-            // TODO: actually implement code, since the spritesheet is as of now not created, thus no code can be provided.
+            // TODO: use a more fitting color distribution, literally just chose anything here.
             switch (type)
             {
                 case EResourceType.Chip:
-                    break;
+                    return Color.LavenderBlush;
 
                 case EResourceType.Concrete:
-                    break;
+                    return Color.LightBlue;
 
                 case EResourceType.Copper:
-                    break;
+                    return Color.IndianRed;
 
                 case EResourceType.Fuel:
-                    break;
+                    return Color.DarkSlateGray;
 
                 case EResourceType.Metal:
-                    break;
+                    return Color.DarkMagenta;
 
                 case EResourceType.Oil:
-                    break;
+                    return Color.RosyBrown;
 
                 case EResourceType.Plastic:
-                    break;
+                    return Color.BlueViolet;
 
                 case EResourceType.Sand:
-                    break;
+                    return Color.Yellow;
 
                 case EResourceType.Silicon:
-                    break;
+                    return Color.Beige;
 
                 case EResourceType.Steel:
-                    break;
+                    return Color.Black;
 
                 case EResourceType.Stone:
-                    break;
+                    return Color.LightGray;
 
                 case EResourceType.Water:
-                    break;
+                    return Color.Aqua;
+
+                case EResourceType.Trash:
+                    return Color.Gray;
 
                 default:
                     throw new NotSupportedException();
             }
+        }
 
-            return null;
+        /// <summary>
+        /// TODO: add docu
+        /// </summary>
+        /// <param name="amount"></param>
+        /// <returns></returns>
+        public static List<Resource> GetRandomlyDistributedResources(int amount)
+        {
+            if (amount < 0)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            // one could use a normal distribution for this value and make it dynamic to the map size. This would actually yield a nice dynamic solution.
+            const int defaultWidth = 200;
+
+            EResourceType[] basicResources = {EResourceType.Water, EResourceType.Sand, EResourceType.Oil, EResourceType.Metal, EResourceType.Stone};
+
+            var resources = new List<Resource>(amount);
+            var rnd = new Random();
+
+            for (var i = 0; i < amount; i++)
+            {
+                var xPos = rnd.Next(MapConstants.MapWidth - defaultWidth);
+                var yPos = rnd.Next(MapConstants.MapHeight - (int) (defaultWidth * 0.6f));
+
+                if (!Map.Map.IsOnTop(new Vector2(xPos, yPos)))
+                {
+                    amount++;
+                    continue;
+                }
+                resources.Add(new Resource(basicResources[rnd.Next(basicResources.Length - 1)], new Vector2(xPos, yPos), defaultWidth));
+
+            }
+            return resources;
+
         }
     }
 }

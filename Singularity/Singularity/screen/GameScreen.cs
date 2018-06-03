@@ -92,6 +92,25 @@ namespace Singularity.screen
         }
 
         /// <summary>
+        /// Adds the given objects to the game screens list of objects to handle.
+        /// </summary>
+        /// <typeparam name="T">The type of the objects to be added. Needs to inherit from IDraw or IUpdate</typeparam>
+        /// <param name="toAdd">The objects to be added to the game screen</param>
+        /// <returns>True if all given objects could be added to the screen, false otherwise</returns>
+        public bool AddObject<T>(List<T> toAdd)
+        {
+            var isSuccessful = true;
+
+            foreach(var t in toAdd)
+            {
+                isSuccessful = isSuccessful && AddObject<T>(t);
+            }
+
+            return isSuccessful;
+
+        }
+
+        /// <summary>
         /// Removes the given object from the game screens list of objects to handle.
         /// </summary>
         /// <typeparam name="T">The type of the object to be removed. Needs to inherit from IDraw or IUpdate</typeparam>

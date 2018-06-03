@@ -26,7 +26,7 @@ namespace Singularity.Units
             Id = 0; // TODO make this randomized or simply ascending
             Position = Vector2.Zero; // TODO figure out how to search platform by ID and get its position
             mPositionId = spawnPositionId;
-            Carrying = EResourceType.None;
+            Carrying = EResourceType.Trash;
             mPathQueue = null;
         }
         /// <summary>
