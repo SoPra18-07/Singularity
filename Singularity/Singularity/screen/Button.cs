@@ -22,14 +22,28 @@ namespace Singularity.Screen
         private bool mCurrentMouseState;
         private bool mPreviousMouseState;
         private Vector2 mPosition;
+        private bool misText;
+        private string mbuttonText;
+        private SpriteFont mFont;
+
 
 
         public Button(float scale, Texture2D buttonTexture, Vector2 position)
         {
+            misText = false;
             mScale = scale;
             mButtonTexture = buttonTexture;
             mPreviousMouseState = true;
             mCurrentMouseState = true;
+            mPosition = position;
+        }
+
+        public Button(float scale, string buttonText, SpriteFont font, Vector2 position)
+        {
+            misText = true;
+            mbuttonText = buttonText;
+            mScale = scale;
+            mFont = font;
             mPosition = position;
         }
 
@@ -72,7 +86,33 @@ namespace Singularity.Screen
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-           spriteBatch.Draw(mButtonTexture, mPosition, null, Color.AntiqueWhite, 0f, new Vector2(0,0), mScale, SpriteEffects.None, 0f);
+
+            if (misText == false)
+            {
+                spriteBatch.Draw(mButtonTexture,
+                    mPosition,
+                    null,
+                    Color.AntiqueWhite,
+                    0f,
+                    new Vector2(0, 0),
+                    mScale,
+                    SpriteEffects.None,
+                    0f);
+
+            }
+
+            else
+            {
+                spriteBatch.DrawString(mFont,
+                    origin: Vector2.Zero, 
+                    position: mPosition, 
+                    color: Color.White,
+                    text: mbuttonText,
+                    rotation: 0f,
+                    scale: 1f,
+                    effects: SpriteEffects.None,
+                    layerDepth: 0.2f);
+            }
         }
 
         /// <summary>

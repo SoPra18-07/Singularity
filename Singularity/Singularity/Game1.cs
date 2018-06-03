@@ -107,7 +107,7 @@ namespace Singularity
 
             // This loads the contents of the mainmenuscreen
             mMainMenuScreen = new MainMenuScreen(viewportResolution, mScreenManager, mGameModeSelectScreen, mLoadSelectScreen,
-                mAchievementsScreen, mOptionsScreen);
+                mAchievementsScreen, mOptionsScreen, mGameScreen);
             mMainMenuScreen.LoadContent(Content);
 
             // This loads the contents of the splashscreen.
