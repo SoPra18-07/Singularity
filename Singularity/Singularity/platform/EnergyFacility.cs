@@ -11,26 +11,17 @@ using Singularity.Resources;
 namespace Singularity.platform
 {
     [DataContract()]
-    class Junkyard : PlatformBlank
+    class EnergyFacility : PlatformBlank
     {
-        public Junkyard(Vector2 position, Texture2D spritesheet): base(position, spritesheet)
+        public EnergyFacility(Vector2 position, Texture2D spritesheet): base(position, spritesheet)
         {
-            //mActions = IPlatformAction[1];
-            //mActions[0] = BuildBlueprintJunkyard(this);
+            //mActions = IPlatformAction[2];
+            //mActions[0] = BuildPlatformBlueprint(this);
+            //mActions[1] = ;
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
+            //Something like "Hello InstanceThatManagesEnergyLevels I exist now(Myself)"
             mCost = new Dictionary<IResources, int>();
-        }
-
-        public void BurnTrash()
-        {
-            //foreach (var resource in mResources)
-            //{
-            //if (resource.Type == EResourceType.Trash)
-            //{
-            //    mResources.Remove(resource);
-            //}
-            //}
         }
     }
 }

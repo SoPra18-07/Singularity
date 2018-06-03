@@ -19,6 +19,7 @@ namespace Singularity.platform
             //mActions = IPlatformAction[2];
             //mActions[0] = BuildWellBlueprint(this);
             //mActions[1] = ProduceWellResource(this);
+            //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<IResources, int>();
         }

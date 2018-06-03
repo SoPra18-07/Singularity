@@ -57,6 +57,7 @@
     <Compile Include="Input\KeyEvent.cs" />
     <Compile Include="Input\MouseAction.cs" />
     <Compile Include="platform\Action.cs" />
+    <Compile Include="platform\EnergyFacility.cs" />
     <Compile Include="platform\Job.cs" />
     <Compile Include="platform\Junkyard.cs" />
     <Compile Include="platform\Mine.cs" />

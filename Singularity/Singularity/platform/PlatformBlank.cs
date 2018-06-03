@@ -221,6 +221,7 @@ namespace Singularity.platform
             mHealth = 100;
 
             //Waiting for PlatformActions to be completed.
+            //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //TODO: Change the action thing.
             mActions = new Action[1];
             mActions[0] = Action.BlueprintBuild;

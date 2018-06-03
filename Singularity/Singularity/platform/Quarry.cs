@@ -18,6 +18,7 @@ namespace Singularity.platform
             //mActions = IPlatformAction[2];
             //mActions[0] = BuildQuarryBlueprint(this);
             //mActions[1] = ProduceQuarryResource(this);
+            //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<IResources, int>();
         }
