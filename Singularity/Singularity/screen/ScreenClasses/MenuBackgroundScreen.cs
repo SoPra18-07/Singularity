@@ -33,11 +33,8 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="screenResolution">Current screen resolution.</param>
         public MenuBackgroundScreen(Vector2 screenResolution)
         {
-            sScreenResolutionScaling = new Vector2(screenResolution.X / 1280,
-                screenResolution.Y / 1024);
-            sScreenResolution = screenResolution;
             sHoloProjectionWidthScaling = 1f;
-            SetHoloProjectionScaling(sHoloProjectionWidthScaling);
+            SetResolution(screenResolution);
             sCurrentScreen = EScreen.SplashScreen;
 
             Debug.Print("sScreenResolution: " + sScreenResolution.X + ", " + sScreenResolution.Y);
@@ -62,7 +59,7 @@ namespace Singularity.Screen.ScreenClasses
         /// Changes the dimensions of the screen to fit the viewport resolution.
         /// </summary>
         /// <param name="screenResolution">Current viewport screen resolution</param>
-        public static void ChangeResolution(Vector2 screenResolution)
+        public static void SetResolution(Vector2 screenResolution)
         {
             sScreenResolution = screenResolution;
             sScreenResolutionScaling = new Vector2(screenResolution.X / 1280, screenResolution.Y / 1024);

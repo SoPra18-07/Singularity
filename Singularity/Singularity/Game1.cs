@@ -28,6 +28,7 @@ namespace Singularity
         private static Song sSoundtrack;
         private GameScreen mGameScreen;
         private MenuBackgroundScreen mMenuBackgroundScreen;
+        private SplashScreen mSplashScreen;
 
         // roads
         private Road mRoad1;
@@ -74,7 +75,6 @@ namespace Singularity
             mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet);
             mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet);
 
-            // TODO: use this.Content to load your game content here
             mPlatformSheet = Content.Load<Texture2D>("PlatformSpriteSheet");
             mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet);
             mPlatform2 = new PlatformBlank(new Vector2(800, 600), mPlatformSheet);
@@ -91,6 +91,10 @@ namespace Singularity
                 GraphicsDevice.Viewport.Height));
             Debug.Print("Viewport Size: " + GraphicsDevice.Viewport.Width + ", " + GraphicsDevice.Viewport.Height);
             mMenuBackgroundScreen.LoadContent(Content);
+
+            // This loads the contents of the splashscreen.
+            mSplashScreen = new SplashScreen();
+            mSplashScreen.LoadContent(Content);
 
             // load roads
             mRoad1 = new Road(new Vector2(300, 400), new Vector2(800, 600), false);

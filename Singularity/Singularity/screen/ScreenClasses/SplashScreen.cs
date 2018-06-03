@@ -18,10 +18,29 @@ namespace Singularity.Screen
     /// </summary>
     class SplashScreen : IScreen
     {
+        private Texture2D LogoTexture2D;
+        private Texture2D SingularityText;
+        private static Vector2 sLogoPosition;
+        private static Vector2 sSingularityTextPosition;
+        private static Vector2 sTextPosition;
+
+        public SplashScreen(Vector2 screenResolution)
+        {
+            SetResolution(screenResolution);
+        }
+
+        public static void SetResolution(Vector2 screenResolution)
+        {
+            sLogoPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 - 150);
+            sSingularityTextPosition = new Vector2(screenResolution.X, screenResolution.Y / 2 + 250);
+            sTextPosition = new Vector2(screenResolution.X, screenResolution.Y / 2 + 450);
+
+        }
 
         public void LoadContent(ContentManager content)
         {
-            content.Load<Texture2D>()
+            LogoTexture2D = content.Load<Texture2D>("Logo");
+            SingularityText = content.Load<Texture2D>("SingularityText");
         }
         public void Update(GameTime gametime)
         {
@@ -30,17 +49,40 @@ namespace Singularity.Screen
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            throw new NotImplementedException();
+            // Draw the logo
+            spriteBatch.Draw(LogoTexture2D,
+                origin: new Vector2(308, 279),
+                position: sLogoPosition,
+                color: Color.AliceBlue,
+                rotation: 0f,
+                scale: 1f,
+                sourceRectangle: null,
+                layerDepth: 0f,
+                effects: SpriteEffects.None);
+
+            // Draw the SingularityText
+            spriteBatch.Draw(SingularityText,
+                origin: new Vector2(322, 41),
+                position: sSingularityTextPosition,
+                color: Color.AliceBlue,
+                rotation: 0f,
+                scale: 1f,
+                sourceRectangle: null,
+                layerDepth: 0.1f,
+                effects: SpriteEffects.None);
+
+            // Draw the text
+
         }
 
         public bool UpdateLower()
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public bool DrawLower()
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }
