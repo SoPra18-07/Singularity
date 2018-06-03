@@ -58,7 +58,12 @@ namespace Singularity.Map
             //draw the background texture
             spriteBatch.Draw(mBackgroundTexture,
                 new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight),
-                Color.White);
+                null,
+                Color.White,
+                0f,
+                Vector2.Zero,
+                SpriteEffects.None,
+                LayerConstants.MapLayer);
 
             mStructureMap.Draw(spriteBatch);
 

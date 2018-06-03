@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Singularity.Screen.ScreenClasses
@@ -15,24 +16,41 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     class MenuBackgroundScreen : IScreen
     {
+        private Texture2D mGlowTexture2D;
+        private Texture2D mHoloProjectionTexture2D;
+
+        public void LoadContent(ContentManager content)
+        {
+            mGlowTexture2D = content.Load<Texture2D>("Glow");
+            mHoloProjectionTexture2D = content.Load<Texture2D>("HoloProjection");
+        }
         public void Update(GameTime gametime)
         {
-            throw new NotImplementedException();
+            // TODO
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            throw new NotImplementedException();
+            spriteBatch.Begin();
+            spriteBatch.Draw(mGlowTexture2D,
+                new Vector2(540, 360),
+                null, Color.AliceBlue,
+                0f,
+                new Vector2(609, 553),
+                new Vector2(0.7f),
+                SpriteEffects.None,0f);
+            
+            spriteBatch.End();
         }
 
         public bool UpdateLower()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool DrawLower()
         {
-            throw new NotImplementedException();
+            return false;
         }
     }
 }

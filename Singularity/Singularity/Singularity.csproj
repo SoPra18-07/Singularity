@@ -60,23 +60,14 @@
     <Compile Include="platform\Action.cs" />
     <Compile Include="platform\Job.cs" />
     <Compile Include="platform\PlatformBlank.cs" />
-    <Compile Include="Screen\ScreenClasses\GameScreen.cs" />
-    <Compile Include="Screen\Button.cs" />
-    <Compile Include="Screen\ScreenClasses\AchievementsScreen.cs" />
-    <Compile Include="Screen\ScreenClasses\GameModeSelectScreen.cs" />
-    <Compile Include="Screen\ScreenClasses\GamePauseScreen.cs" />
-    <Compile Include="Screen\ScreenClasses\LoadingScreen.cs" />
-    <Compile Include="Screen\ScreenClasses\LoadSelectScreen.cs" />
-    <Compile Include="Screen\ScreenClasses\MainMenuScreen.cs" />
-    <Compile Include="Screen\ScreenClasses\MenuBackgroundScreen.cs" />
-    <Compile Include="Screen\ScreenClasses\OptionsScreen.cs" />
-    <Compile Include="Screen\ScreenClasses\SaveGameScreen.cs" />
-    <Compile Include="Screen\ScreenClasses\SplashScreen.cs" />
-    <Compile Include="Screen\ScreenClasses\Statistics.cs" />
+    <Compile Include="Resources\EResourceType.cs" />
+    <Compile Include="Resources\IResource.cs" />
+    <Compile Include="Resources\Resource.cs" />
+    <Compile Include="Resources\ResourceHelper.cs" />
+    <Compile Include="Property\LayerConstants.cs" />
+    <Compile Include="Screen\GameScreen.cs" />
     <Compile Include="Units\GeneralUnit.cs" />
     <Compile Include="platform\Road.cs" />
-    <Compile Include="Resources\EResourceType.cs" />
-    <Compile Include="Resources\IResources.cs" />
     <Compile Include="Units\IUnit.cs" />
     <Compile Include="Units\JobType.cs" />
     <Compile Include="Units\MilitaryUnit.cs" />
@@ -84,6 +75,7 @@
     <Compile Include="Property\IUpdate.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\Geometry.cs" />
     <Compile Include="Screen\IScreen.cs" />
     <Compile Include="Screen\IScreenManager.cs" />
     <Compile Include="Screen\RenderLowerScreen.cs" />
@@ -114,7 +106,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

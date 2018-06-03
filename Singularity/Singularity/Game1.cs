@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Media;
 using Singularity.platform;
 using Singularity.screen;
 using Singularity.Screen;
+using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 
 namespace Singularity
@@ -25,6 +26,7 @@ namespace Singularity
         private Map.Map mMap;
         private static Song sSoundtrack;
         private GameScreen mGameScreen;
+        private MenuBackgroundScreen mMenuBackgroundScreen;
 
         // roads
         private Road mRoad1;
@@ -83,6 +85,10 @@ namespace Singularity
 
             mGameScreen = new GameScreen(mMap);
 
+            // This loads the menu background screen
+            mMenuBackgroundScreen = new MenuBackgroundScreen();
+            mMenuBackgroundScreen.LoadContent(Content);
+
             // load roads
             mRoad1 = new Road(new Vector2(300, 400), new Vector2(800, 600), false);
 
@@ -92,7 +98,9 @@ namespace Singularity
             mGameScreen.AddObject<PlatformBlank>(mPlatform2);
             mGameScreen.AddObject<Road>(mRoad1);
 
+            // Add the screens to the screen manager
             mScreenManager.AddScreen(mGameScreen);
+            mScreenManager.AddScreen(mMenuBackgroundScreen);
 
             // load and play Soundtrack as background music
             sSoundtrack = Content.Load<Song>("BGMusic");
@@ -134,7 +142,7 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
 
