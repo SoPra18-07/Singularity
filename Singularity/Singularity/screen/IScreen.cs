@@ -1,9 +1,9 @@
-﻿using Singularity.property;
+﻿using Singularity.Property;
 
-namespace Singularity.screen
+namespace Singularity.Screen
 {
-    /// <inheritdoc cref="Singularity.property.IDraw"/>
-    /// <inheritdoc cref="Singularity.property.IUpdate"/>
+    /// <inheritdoc cref="Singularity.Property.IDraw"/>
+    /// <inheritdoc cref="Singularity.Property.IUpdate"/>
     /// <remarks>
     /// An abstraction for "Screens" used by an IScreenManager. Possible examples
     /// for IScreens would be "Game Screens", "Main Menu Screens", etc..
