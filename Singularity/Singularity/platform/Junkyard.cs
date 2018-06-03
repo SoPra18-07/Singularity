@@ -15,23 +15,20 @@ namespace Singularity.platform
     {
         public Junkyard(Vector2 position, Texture2D spritesheet): base(position, spritesheet)
         {
-            //mActions = IPlatformAction[];
-            //mActions[0] = ProduceQuarryResource(this);
-            //mActions[1] = ;
+            //mActions = IPlatformAction[1];
+            //mActions[0] = BuildBlueprintJunkyard(this);
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<IResources, int>();
         }
 
-        public override void Produce()
+        public void BurnTrash()
         {
-            throw new NotImplementedException();
-            //foreach (var pair in mAssignedUnits)
+            //foreach (var resource in mResources)
             //{
-            //if (pair.Value.GetJobType() == JobType.Production)
+            //if (resource.Type == EResourceType.Trash)
             //{
-            //pair.Key.Produce();
+            //    mResources.Remove(resource);
             //}
-
             //}
         }
     }

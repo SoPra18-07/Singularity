@@ -30,9 +30,11 @@ namespace Singularity.platform
         protected Dictionary<IResources, int> mCost;
         private readonly Texture2D mSpritesheet;
         [DataMember()]
+        private string mSpritename;
+        [DataMember()]
         protected Dictionary<GeneralUnit, Job> mAssignedUnits;
         [DataMember()]
-        private List<IResources> mResources;
+        protected List<IResources> mResources;
         [DataMember()]
         private Dictionary<IResources, int> mRequested;
         [DataMember()]
@@ -218,7 +220,7 @@ namespace Singularity.platform
             //default?
             mHealth = 100;
 
-            //The only action available so far is BlueprintBuild.
+            //Waiting for PlatformActions to be completed.
             //TODO: Change the action thing.
             mActions = new Action[1];
             mActions[0] = Action.BlueprintBuild;

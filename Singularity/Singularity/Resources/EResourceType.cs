@@ -20,6 +20,7 @@ namespace Singularity.Resources
         Steel,
         Copper,
         Chip,
+        Trash,
         None
     };
 }

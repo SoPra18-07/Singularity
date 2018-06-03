@@ -15,9 +15,9 @@ namespace Singularity.platform
     {
         public Mine(Vector2 position, Texture2D spritesheet): base(position, spritesheet)
         {
-            //mActions = IPlatformAction[];
-            //mActions[0] = ProduceQuarryResource(this);
-            //mActions[1] = ;
+            //mActions = IPlatformAction[2];
+            //mActions[0] = BuildPlatformBlueprint(this);
+            //mActions[1] = ProduceMineResource(this);
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<IResources, int>();
         }
@@ -25,14 +25,7 @@ namespace Singularity.platform
         public override void Produce()
         {
             throw new NotImplementedException();
-            //foreach (var pair in mAssignedUnits)
-            //{
-            //if (pair.Value.GetJobType() == JobType.Production)
-            //{
-            //pair.Key.Produce();
-            //}
-
-            //}
+            //mActions[1].Execute();
         }
     }
 }
