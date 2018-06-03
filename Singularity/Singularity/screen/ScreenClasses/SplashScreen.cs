@@ -19,11 +19,12 @@ namespace Singularity.Screen
     /// </summary>
     class SplashScreen : IScreen
     {
-        private Texture2D LogoTexture2D;
-        private Texture2D SingularityText;
+        private Texture2D mLogoTexture2D;
+        private Texture2D mSingularityText;
         private static Vector2 sLogoPosition;
         private static Vector2 sSingularityTextPosition;
         private static Vector2 sTextPosition;
+        private SpriteFont mLiberationSans12;
 
         public SplashScreen(Vector2 screenResolution)
         {
@@ -42,6 +43,7 @@ namespace Singularity.Screen
         {
             LogoTexture2D = content.Load<Texture2D>("Logo");
             SingularityText = content.Load<Texture2D>("SingularityText");
+            LiberationSans12 = content.Load<SpriteFont>("LiberationSans12");
         }
         public void Update(GameTime gametime)
         {
@@ -75,10 +77,10 @@ namespace Singularity.Screen
                 effects: SpriteEffects.None);
 
             // Draw the text
-
-            // debug draw stroked rectangle
-            spriteBatch.StrokedRectangle(sTextPosition, new Vector2(332, 40), Color.White, 0.21f);
-            spriteBatch.End();
+            spriteBatch.DrawString(LiberationSans12,
+                position: sSingularityTextPosition,
+                color: Color.White,
+                text: "Press Any Key to Continue");
 
         }
 

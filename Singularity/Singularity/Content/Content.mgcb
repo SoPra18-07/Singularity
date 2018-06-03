@@ -151,3 +151,10 @@
 /processorParam:TextureFormat=Color
 /build:SingularityText.png
 
+#begin LiberationSans12.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:LiberationSans12.spritefont
+
