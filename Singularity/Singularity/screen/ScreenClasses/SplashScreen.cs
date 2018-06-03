@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Singularity.Screen
@@ -17,6 +18,11 @@ namespace Singularity.Screen
     /// </summary>
     class SplashScreen : IScreen
     {
+
+        public void LoadContent(ContentManager content)
+        {
+            content.Load<Texture2D>()
+        }
         public void Update(GameTime gametime)
         {
             throw new NotImplementedException();
