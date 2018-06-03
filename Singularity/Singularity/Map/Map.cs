@@ -126,6 +126,11 @@ namespace Singularity.Map
             mStructureMap.RemovePlatform(platform);
         }
 
+        public CollisionMap GetCollisionMap()
+        {
+            return mCollisionMap;
+        }
+
         public Camera GetCamera()
         {
             return mCamera;

@@ -46,6 +46,7 @@
     <Compile Include="Libraries\Primitives2D.cs" />
     <Compile Include="Map\Camera.cs" />
     <Compile Include="Map\CollisionMap.cs" />
+    <Compile Include="Map\FogOfWar.cs" />
     <Compile Include="Map\Map.cs" />
     <Compile Include="Map\Properties\MapConstants.cs" />
     <Compile Include="Map\ResourceMap.cs" />
