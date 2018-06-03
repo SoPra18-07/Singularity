@@ -100,15 +100,24 @@ namespace Singularity.Screen.ScreenClasses
             SetHoloProjectionScaling(sHoloProjectionWidthScaling);
         }
 
+        /// <summary>
+        /// Loads content specific to this screen
+        /// </summary>
+        /// <param name="content">ContentManager for the entire game</param>
         public void LoadContent(ContentManager content)
         {
             mGlowTexture2D = content.Load<Texture2D>("Glow");
             mHoloProjectionTexture2D = content.Load<Texture2D>("HoloProjection");
         }
 
-        public void Update(GameTime gametime)
+        /// <summary>
+        /// Update animates the background. It uses the Easing animation method and also implements
+        /// a flickering animation to the HoloProjectionTexture.
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public void Update(GameTime gameTime)
         {
-            // TODO
+            // TODO (used for animation)
         }
 
         public void Draw(SpriteBatch spriteBatch)
