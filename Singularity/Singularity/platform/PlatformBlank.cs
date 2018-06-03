@@ -206,7 +206,6 @@ namespace Singularity.platform
         /// <inheritdoc cref="IUpdate"/>
         public virtual void Update(GameTime t)
         {
-            throw new NotImplementedException();
             //TODO: implement update code
         }
 
