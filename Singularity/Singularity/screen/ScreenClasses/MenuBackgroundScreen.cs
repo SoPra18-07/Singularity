@@ -52,7 +52,7 @@ namespace Singularity.Screen.ScreenClasses
                 sHoloProjectionScaling = new Vector2(sScreenResolutionScaling.Y);
             }
 
-            sHoloProjectionScaling = Vector2.Multiply(sHoloProjectionScaling, new Vector2(widthScaling));
+            sHoloProjectionScaling = Vector2.Multiply(sHoloProjectionScaling, new Vector2(widthScaling, 1f));
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Singularity.Screen.ScreenClasses
                 case EScreen.LoadSelectScreen:
                     break;
                 case EScreen.MainMenuScreen:
-                    sHoloProjectionWidthScaling = 2f;
+                    sHoloProjectionWidthScaling = 4f;
                     break;
                 case EScreen.OptionsScreen:
                     break;

@@ -165,3 +165,10 @@
 /processorParam:TextureFormat=Compressed
 /build:LibSans12.spritefont
 
+#begin LibSans36.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:LibSans36.spritefont
+

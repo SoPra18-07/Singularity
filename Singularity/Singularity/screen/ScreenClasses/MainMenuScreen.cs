@@ -22,6 +22,12 @@ namespace Singularity.Screen.ScreenClasses
         private IScreen mAchievementsScreen;
         private IScreen mOptionsScreen;
         private static Vector2 sMenuBox;
+        private SpriteFont mLibSans36;
+        private string mgameModeString;
+        private string mloadSelectString;
+        private string achievementsString;
+        private string mOptionsString;
+
 
 
         public MainMenuScreen(Vector2 screenResolution, IScreenManager screenManager, IScreen gameModeSelect,
@@ -38,7 +44,10 @@ namespace Singularity.Screen.ScreenClasses
 
         public static void SetResolution(Vector2 screenResolution)
         {
-            sMenuBox = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 - 100);
+            sMenuBox = new Vector2(screenResolution.X / 2 - 150, screenResolution.Y / 2 - 175);
+
+            // TODO change size of menu box based on the resolution of the screen 
+
             //sSingularityTextPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 + 150);
             //sTextPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 + 250);
 
@@ -46,6 +55,8 @@ namespace Singularity.Screen.ScreenClasses
 
         public void LoadContent(ContentManager content)
         {
+            mOptionsString = "Options";
+            mLibSans36 = content.Load<SpriteFont>("LibSans36");
         }
         public void Update(GameTime gametime)
         {
@@ -55,7 +66,18 @@ namespace Singularity.Screen.ScreenClasses
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
-            spriteBatch.StrokedRectangle(new Vector2(300,300), new Vector2(300,300), Color.White, Color.White, .5f, .20f);
+            spriteBatch.StrokedRectangle(sMenuBox, new Vector2(300,350), Color.White, Color.White, .5f, .20f);
+
+            spriteBatch.DrawString(mLibSans36,
+                origin: Vector2.Zero, 
+                position: new Vector2(sMenuBox.X + 50, sMenuBox.Y + 50), 
+                color: Color.White,
+                text: mOptionsString,
+                rotation: 0f,
+                scale: 1f,
+                effects: SpriteEffects.None,
+                layerDepth: 0.2f);
+
             spriteBatch.End();
         }
 
