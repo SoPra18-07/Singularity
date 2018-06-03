@@ -9,7 +9,7 @@ using Singularity.Units;
 namespace Singularity.platform
 {
 
-    internal class PlatformBlank : IDraw, IUpdate
+    internal class PlatformBlank : IDraw, IUpdate, ISpatial
     {
 
         private const int PlatformWidth = 148;
@@ -21,13 +21,17 @@ namespace Singularity.platform
         private readonly Action[] mActions;
         private readonly Texture2D mSpritesheet;
         private readonly Dictionary<GeneralUnit, Job> mAssignedUnits;
-        private List<IResources> mResources;
-        private Dictionary<IResources, int> mRequested;
-        private readonly Dictionary<IResources, int> mCost;
+        private List<IResource> mResources;
+        private Dictionary<IResource, int> mRequested;
+        private readonly Dictionary<IResource, int> mCost;
 
-        public Vector2 AbsolutePosition { private get; set; }
+        public Vector2 AbsolutePosition { get; set; }
 
-        public Vector2 AbsoluteSize { private get; set; }
+        public Vector2 AbsoluteSize { get; set; }
+
+        public Vector2 RelativePosition { get; set; }
+
+        public Vector2 RelativeSize { get; set; }
 
 
         /// <summary>
@@ -88,7 +92,7 @@ namespace Singularity.platform
         /// Get the requirements of resources to build this platform.
         /// </summary>
         /// <returns> a dictionary of the resources with a number telling how much of it is required</returns>
-        public Dictionary<IResources, int> GetResourcesRequired()
+        public Dictionary<IResource, int> GetResourcesRequired()
         {
             return mCost;
         }
@@ -97,7 +101,7 @@ namespace Singularity.platform
         /// Get the Resources on the platform.
         /// </summary>
         /// <returns> a List containing the references to the resource-objects</returns>
-        public List<IResources> GetPlatformResources()
+        public List<IResource> GetPlatformResources()
         {
             return mResources;
         }
@@ -128,7 +132,7 @@ namespace Singularity.platform
         /// Add a new resource to the platform.
         /// </summary>
         /// <param name="resource"> the resource to be added to the platform </param>
-        public void StoreResource(IResources resource)
+        public void StoreResource(IResource resource)
         {
             mResources.Add(resource);
         }
@@ -138,7 +142,7 @@ namespace Singularity.platform
         /// </summary>
         /// <param name="resource">The resource you ask for</param>
         /// <returns>the resource you asked for, null otherwise.</returns>
-        public IResources GetResource(IResources resource)
+        public IResource GetResource(IResource resource)
         {
             var index = mResources.IndexOf(resource);
             if (index < 0)
@@ -155,7 +159,7 @@ namespace Singularity.platform
         /// Get the resources that are requested and the amount of it.
         /// </summary>
         /// <returns>A dictionary containing this information.</returns>
-        public Dictionary<IResources, int> GetmRequested()
+        public Dictionary<IResource, int> GetmRequested()
         {
             return mRequested;
         }
@@ -165,7 +169,7 @@ namespace Singularity.platform
         /// </summary>
         /// <param name="resource">the resource to be requested (or not)</param>
         /// <param name="number">the number of that resource</param>
-        public void SetmRequested(IResources resource, int number)
+        public void SetmRequested(IResource resource, int number)
         {
             mRequested.Add(resource, number);
         }
@@ -180,16 +184,17 @@ namespace Singularity.platform
         {
             // the sprite sheet is 148x1744 px, 1x12 sprites
             // The sprites have different heights so, by testing I found out the sprite is about 148x170 px
-            spritebatch.Draw(
-                mSpritesheet,
+
+            spritebatch.Draw(mSpritesheet,
                 new Rectangle(
-                    (int) AbsolutePosition.X,
-                    (int) AbsolutePosition.Y,
-                    (int) AbsoluteSize.X,
-                    (int) AbsoluteSize.Y),
-                new Rectangle(0, 0, (int) AbsoluteSize.X, (int) AbsoluteSize.Y),
-                Color.White
-            );
+                    (int)AbsolutePosition.X,
+                    (int)AbsolutePosition.Y,
+                    (int)AbsoluteSize.X,
+                    (int)AbsoluteSize.Y),
+                new Rectangle(0, 0, (int)AbsoluteSize.X, (int)AbsoluteSize.Y),
+                Color.White,
+                0f, 
+                Vector2.Zero, SpriteEffects.None, LayerConstants.PlatformLayer);
         }
 
         /// <inheritdoc cref="Singularity.property.IUpdate"/>
@@ -214,14 +219,14 @@ namespace Singularity.platform
             mAssignedUnits = new Dictionary<GeneralUnit, Job>();
 
             //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<IResources, int>();
+            mCost = new Dictionary<IResource, int>();
 
-            mResources = new List<IResources>();
+            mResources = new List<IResource>();
 
             mSpritesheet = spritesheet;
 
             mIsBlueprint = true;
-            mRequested = new Dictionary<IResources, int>();
+            mRequested = new Dictionary<IResource, int>();
           
         }
     }
