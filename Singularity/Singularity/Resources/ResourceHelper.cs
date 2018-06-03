@@ -68,10 +68,10 @@ namespace Singularity.Resources
         }
 
         /// <summary>
-        /// TODO: add docu
+        /// Randomly distributes basic resources on the map, specified by the amount.
         /// </summary>
-        /// <param name="amount"></param>
-        /// <returns></returns>
+        /// <param name="amount">The amount of resources to distribute onto the map</param>
+        /// <returns>A list of the new created resources</returns>
         public static List<Resource> GetRandomlyDistributedResources(int amount)
         {
             if (amount < 0)
@@ -79,9 +79,10 @@ namespace Singularity.Resources
                 throw new ArgumentOutOfRangeException();
             }
 
-            // one could use a normal distribution for this value and make it dynamic to the map size. This would actually yield a nice dynamic solution.
+            // TODO: one could use a normal distribution for this value and make it dynamic to the map size. This would actually yield a nice dynamic solution.
             const int defaultWidth = 200;
 
+            // make sure to only distribute basic resources
             EResourceType[] basicResources = {EResourceType.Water, EResourceType.Sand, EResourceType.Oil, EResourceType.Metal, EResourceType.Stone};
 
             var resources = new List<Resource>(amount);
@@ -92,7 +93,8 @@ namespace Singularity.Resources
                 var xPos = rnd.Next(MapConstants.MapWidth - defaultWidth);
                 var yPos = rnd.Next(MapConstants.MapHeight - (int) (defaultWidth * 0.6f));
 
-                if (!Map.Map.IsOnTop(new Vector2(xPos, yPos)))
+                //check whether the rectangle enclosing the ellipse is on the map. Then the ellipse has to be on the map aswell
+                if (!Map.Map.IsOnTop(new Rectangle(xPos, yPos, defaultWidth, (int) (defaultWidth * 0.6f))))
                 {
                     amount++;
                     continue;

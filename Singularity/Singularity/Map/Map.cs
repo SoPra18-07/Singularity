@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
@@ -159,5 +160,24 @@ namespace Singularity.Map
             return (sign == 1 && sign2 == 1 && sign3 == 1 && sign4 == 1);
 
         }
+
+        /// <summary>
+        /// Checks whether the given rectangle is on the map.
+        /// </summary>
+        /// <param name="rect">The rectangle which should be checked whether its on the map</param>
+        /// <returns>True if the rectangle is on the map, false otherwise</returns>
+        public static bool IsOnTop(Rectangle rect)
+        {
+
+            // simple logic, this yields true if all of them are true and false if one is false. One can easily convince himself,
+            // that if all the "edge" points of the rectangle are on the map then the rectangle is on the map.
+
+            return (IsOnTop(new Vector2(rect.X, rect.Y)) && 
+                    IsOnTop(new Vector2(rect.X + rect.Width, rect.Y)) &&
+                    IsOnTop(new Vector2(rect.X, rect.Y + rect.Height)) &&
+                    IsOnTop(new Vector2(rect.X + rect.Width, rect.Y + rect.Height)));
+
+        }
+
     }
 }
