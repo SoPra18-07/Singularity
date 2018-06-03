@@ -12,10 +12,12 @@ namespace Singularity.Map
     {
 
         private readonly CollisionMap mCollMap;
+        private readonly StructureMap mStructMap;
 
         public FogOfWar(Map map)
         {
             mCollMap = map.GetCollisionMap();
+            mStructMap = map.GetStructureMap();
         }
 
 
