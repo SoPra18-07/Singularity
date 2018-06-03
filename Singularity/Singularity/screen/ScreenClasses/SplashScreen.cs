@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Libraries;
 
 namespace Singularity.Screen
 {
@@ -31,9 +32,9 @@ namespace Singularity.Screen
 
         public static void SetResolution(Vector2 screenResolution)
         {
-            sLogoPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 - 150);
-            sSingularityTextPosition = new Vector2(screenResolution.X, screenResolution.Y / 2 + 250);
-            sTextPosition = new Vector2(screenResolution.X, screenResolution.Y / 2 + 450);
+            sLogoPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 - 100);
+            sSingularityTextPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 + 150);
+            sTextPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 + 250);
 
         }
 
@@ -44,18 +45,20 @@ namespace Singularity.Screen
         }
         public void Update(GameTime gametime)
         {
-            throw new NotImplementedException();
+            
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            spriteBatch.Begin();
+
             // Draw the logo
             spriteBatch.Draw(LogoTexture2D,
                 origin: new Vector2(308, 279),
                 position: sLogoPosition,
                 color: Color.AliceBlue,
                 rotation: 0f,
-                scale: 1f,
+                scale: 0.5f,
                 sourceRectangle: null,
                 layerDepth: 0f,
                 effects: SpriteEffects.None);
@@ -66,12 +69,16 @@ namespace Singularity.Screen
                 position: sSingularityTextPosition,
                 color: Color.AliceBlue,
                 rotation: 0f,
-                scale: 1f,
+                scale: 0.5f,
                 sourceRectangle: null,
                 layerDepth: 0.1f,
                 effects: SpriteEffects.None);
 
             // Draw the text
+
+            // debug draw stroked rectangle
+            spriteBatch.StrokedRectangle(sTextPosition, new Vector2(332, 40), Color.White, 0.21f);
+            spriteBatch.End();
 
         }
 

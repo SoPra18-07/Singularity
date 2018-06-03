@@ -68,6 +68,8 @@ namespace Singularity
         /// </summary>
         protected override void LoadContent()
         {
+            var viewportResolution = new Vector2(GraphicsDevice.Viewport.Width,
+                GraphicsDevice.Viewport.Height);
             // Create a new SpriteBatch, which can be used to draw textures.
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -86,14 +88,14 @@ namespace Singularity
 
             mGameScreen = new GameScreen(mMap);
 
+
             // This constructs and loads the menu background screen
-            mMenuBackgroundScreen = new MenuBackgroundScreen(new Vector2(GraphicsDevice.Viewport.Width,
-                GraphicsDevice.Viewport.Height));
+            mMenuBackgroundScreen = new MenuBackgroundScreen(viewportResolution);
             Debug.Print("Viewport Size: " + GraphicsDevice.Viewport.Width + ", " + GraphicsDevice.Viewport.Height);
             mMenuBackgroundScreen.LoadContent(Content);
 
             // This loads the contents of the splashscreen.
-            mSplashScreen = new SplashScreen();
+            mSplashScreen = new SplashScreen(viewportResolution);
             mSplashScreen.LoadContent(Content);
 
             // load roads
@@ -108,6 +110,7 @@ namespace Singularity
             // Add the screens to the screen manager
             mScreenManager.AddScreen(mGameScreen);
             mScreenManager.AddScreen(mMenuBackgroundScreen);
+            mScreenManager.AddScreen(mSplashScreen);
 
             // load and play Soundtrack as background music
             sSoundtrack = Content.Load<Song>("BGMusic");
