@@ -38,7 +38,7 @@ namespace Singularity.Units
             Health = 10; //TODO
             
             AbsolutePosition = position;
-            targetReached = true;
+            mTargetReached = true;
 
             mMilSheet = spriteSheet;
         }
@@ -140,7 +140,7 @@ namespace Singularity.Units
             }
 
             // calculate path to target position
-            if (selected && Mouse.GetState().LeftButton == ButtonState.Pressed &&
+            if (mSelected && Mouse.GetState().LeftButton == ButtonState.Pressed &&
                 ((Math.Abs((AbsolutePosition.X + 75) - Mouse.GetState().X) > 60) ||
                  (Math.Abs((AbsolutePosition.Y + 37.5) - Mouse.GetState().Y) > 45)))
             {
@@ -198,13 +198,13 @@ namespace Singularity.Units
             // calculate the x distance and y distance needed to get to target
             if (Math.Abs(hypot) < 0.01)
             {
-                xstep = Math.Abs(AbsolutePosition.X - mTargetPosition.X + 75);
-                ystep = Math.Abs(AbsolutePosition.Y - mTargetPosition.Y + 37.5);
+                mXstep = Math.Abs(AbsolutePosition.X - mTargetPosition.X + 75);
+                mYstep = Math.Abs(AbsolutePosition.Y - mTargetPosition.Y + 37.5);
             }
             else
             {
-                xstep = Math.Abs((AbsolutePosition.X - mTargetPosition.X + 75) / hypot);
-                ystep = Math.Abs((AbsolutePosition.Y - mTargetPosition.Y + 37.5) / hypot);
+                mXstep = Math.Abs((AbsolutePosition.X - mTargetPosition.X + 75) / hypot);
+                mYstep = Math.Abs((AbsolutePosition.Y - mTargetPosition.Y + 37.5) / hypot);
             }
 
             // determine correct direction of x/y movement
@@ -230,7 +230,7 @@ namespace Singularity.Units
         private void Move()
         {
             // move position of unit over by x/y step to reach target
-            AbsolutePosition = new Vector2(AbsolutePosition.X - (float)xstep, AbsolutePosition.Y - (float)ystep);
+            AbsolutePosition = new Vector2(AbsolutePosition.X - (float)mXstep, AbsolutePosition.Y - (float)mYstep);
 
             // check if target position has been reached
             if (Math.Abs((AbsolutePosition.X) - mTargetPosition.X + 75) < 8 && Math.Abs((AbsolutePosition.Y) - mTargetPosition.Y + 37.5) < 8)
