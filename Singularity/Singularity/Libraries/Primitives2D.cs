@@ -159,14 +159,15 @@ namespace Singularity.Libraries
 		/// <param name="rect">The rectangle to draw</param>
 		/// <param name="color">The color to draw the rectangle in</param>
 		/// <param name="angle">The angle in radians to draw the rectangle at</param>
-		public static void FillRectangle(this SpriteBatch spriteBatch, Rectangle rect, Color color, float angle)
+		/// <param name="layer">The depth of the layer this gets drawn on</param>
+		public static void FillRectangle(this SpriteBatch spriteBatch, Rectangle rect, Color color, float angle, float layer)
 		{
 			if (sPixel == null)
 			{
 				CreateThePixel(spriteBatch);
 			}
 
-			spriteBatch.Draw(sPixel, rect, null, color, angle, Vector2.Zero, SpriteEffects.None, 0);
+			spriteBatch.Draw(sPixel, rect, null, color, angle, Vector2.Zero, SpriteEffects.None, layer);
 		}
 
 

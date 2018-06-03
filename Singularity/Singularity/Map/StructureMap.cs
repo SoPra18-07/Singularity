@@ -67,5 +67,10 @@ namespace Singularity.Map
             mPlatforms.Remove(platform);
         }
 
+        public LinkedList<PlatformBlank> GetPlatforms()
+        {
+            return mPlatforms;
+        }
+
     }
 }

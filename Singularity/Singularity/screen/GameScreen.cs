@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Map;
 using Singularity.Property;
 using Singularity.Screen;
+using Singularity.Units;
 
 namespace Singularity.screen
 {
@@ -24,6 +26,8 @@ namespace Singularity.screen
 
         private readonly Map.Map mMap;
 
+        private readonly FogOfWar mFow;
+
         // TODO: game screen needs the map in its constructor. Not in master as of now
         public GameScreen(Map.Map map)
         {
@@ -31,8 +35,10 @@ namespace Singularity.screen
             mUpdateables = new LinkedList<IUpdate>();
 
             mMap = map;
+            mFow = new FogOfWar(map);
 
-            AddObject<Map.Map>(map);
+            AddObject(map);
+            AddObject(mFow);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -41,6 +47,19 @@ namespace Singularity.screen
 
             foreach (var drawable in mDrawables)
             {
+                //TODO: need cast to ISpatial to acces x, y, here checking for military units if working
+
+                var unit = drawable as MilitaryUnit;
+
+                if (unit != null)
+                {
+                    if (mFow.IsConcealed(unit.Position.X, unit.Position.Y))
+                    {
+                        continue;
+                    }
+                }
+
+
                 drawable.Draw(spriteBatch);
             }
 

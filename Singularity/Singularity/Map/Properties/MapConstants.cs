@@ -8,12 +8,12 @@
         /// <summary>
         /// The width of the Grid used for collision detection in pixels.
         /// </summary>
-        public const int GridWidth = 40;
+        public const int GridWidth = 20;
 
         /// <summary>
         /// The height of the Grid used for collision detection in pixels.
         /// </summary>
-        public const int GridHeight = 40;
+        public const int GridHeight = 20;
 
         /// <summary>
         /// The width of the background picture for the map.

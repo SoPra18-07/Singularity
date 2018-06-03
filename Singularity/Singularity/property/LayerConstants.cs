@@ -45,5 +45,10 @@ namespace Singularity.Property
         /// </summary>
         public const float GeneralUnitLayer = 0.5f;
 
+        /// <summary>
+        /// A float depicting the layer for the fog of war
+        /// </summary>
+        public const float FogOfWarLayer = 0.9f;
+
     }
 }
