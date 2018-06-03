@@ -29,7 +29,7 @@ namespace Singularity.Units
 
         internal JobType Job { get; set; } = JobType.Idle;
 
-        GeneralUnit(int spawnPositionId)
+        public GeneralUnit(int spawnPositionId)
         {
             Id = 0; // TODO make this randomized or simply ascending
             AbsolutePosition = Vector2.Zero; // TODO figure out how to search platform by ID and get its position
