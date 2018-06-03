@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Map;
 using Singularity.Property;
 
 namespace Singularity.Screen.ScreenClasses
@@ -22,22 +23,24 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         private readonly LinkedList<IUpdate> mUpdateables;
 
-        private readonly Map.Map mMap;
+        /// <summary>
+        /// The camera object which holds transformation values.
+        /// </summary>
+        private readonly Camera mCamera;
 
-        // TODO: game screen needs the map in its constructor. Not in master as of now
         public GameScreen(Map.Map map)
         {
             mDrawables = new LinkedList<IDraw>();
             mUpdateables = new LinkedList<IUpdate>();
 
-            mMap = map;
+            mCamera = map.GetCamera();
 
             AddObject<Map.Map>(map);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mMap.GetCamera().GetTransform());
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, mCamera.GetTransform());
 
             foreach (var drawable in mDrawables)
             {
@@ -57,7 +60,17 @@ namespace Singularity.Screen.ScreenClasses
         {
             foreach (var updateable in mUpdateables)
             {
+                var spatial = updateable as ISpatial;
+
+                if (spatial != null)
+                {
+                    spatial.RelativePosition = Vector2.Transform(spatial.AbsolutePosition, mCamera.GetTransform());
+                    spatial.RelativeSize = spatial.AbsoluteSize * mCamera.GetZoom();
+
+
+                }
                 updateable.Update(gametime);
+
             }
         }
 

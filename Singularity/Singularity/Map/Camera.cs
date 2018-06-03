@@ -110,6 +110,15 @@ namespace Singularity.Map
             UpdateTransformMatrix();
         }
 
+        /// <summary>
+        /// Gets the current zoom level of this camera.
+        /// </summary>
+        /// <returns>The zoom mentioned</returns>
+        public float GetZoom()
+        {
+            return mZoom;
+        }
+
         // TODO: update this method such that rounding will not cause slight out of map clipping when zoomed in
         /// <summary>
         /// Checks whether the camera would move out of bounds and corrects the camera to

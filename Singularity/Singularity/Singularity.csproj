@@ -62,6 +62,7 @@
     <Compile Include="platform\Action.cs" />
     <Compile Include="platform\Job.cs" />
     <Compile Include="platform\PlatformBlank.cs" />
+    <Compile Include="Property\ISpatial.cs" />
     <Compile Include="Resources\EResourceType.cs" />
     <Compile Include="Resources\IResource.cs" />
     <Compile Include="Resources\Resource.cs" />
