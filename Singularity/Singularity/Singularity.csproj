@@ -102,7 +102,7 @@
     <Compile Include="Screen\UpdateLowerScreen.cs" />
     <Compile Include="Units\Pathfinding.cs" />
     <Compile Include="Units\Task.cs" />
-    <Compile Include="Screen\WindowItem.cs" />
+    <Compile Include="Screen\IWindowItem.cs" />
     <Compile Include="Utils\Optional.cs" />
     <Compile Include="Utils\Pair.cs" />
     <Compile Include="Utils\Triple.cs" />
