@@ -11,7 +11,7 @@ namespace Singularity
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public sealed class Game1 : Game
+    internal sealed class Game1 : Game
     {
         private GraphicsDeviceManager mGraphics;
         private SpriteBatch mSpriteBatch;
@@ -80,7 +80,7 @@ namespace Singularity
             mPlatform2 = new PlatformBlank(new Vector2(800, 600), mPlatformSheet);
 
             var lineTexture = new Texture2D(mGraphics.GraphicsDevice, 1, 1);
-            lineTexture.SetData<Color>(new Color[] { Color.White });
+            lineTexture.SetData(new[] { Color.White });
             mMap = new Map.Map(Content.Load<Texture2D>("MockUpBackground"), mGraphics.GraphicsDevice.Viewport, lineTexture);
 
             mMap.AddPlatform(mPlatform);

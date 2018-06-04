@@ -5,5 +5,5 @@ namespace Singularity.Input
     {
         LeftClick,
         RightClick
-    };
+    }
 }

@@ -6,16 +6,16 @@ using Singularity.Property;
 
 namespace Singularity.Units
 {
-    class MilitaryUnit : IUnit, IDraw, IUpdate
+    internal sealed class MilitaryUnit : IUnit, IDraw, IUpdate
     {
         private Vector2 mPosition;
         private Vector2 mTargetPosition;
         private int mRotation;
-        readonly Texture2D mMilSheet;
-        private double xstep;
-        private double ystep;
-        private bool selected;
-        private bool targetReached;
+        private readonly Texture2D mMilSheet;
+        private double mXstep;
+        private double mYstep;
+        private bool mSelected;
+        private bool mTargetReached;
 
         public MilitaryUnit(Vector2 position, Texture2D spriteSheet)
         {
@@ -23,7 +23,7 @@ namespace Singularity.Units
                     // id for the specific unit.
             Health = 10; //TODO
             mPosition = position;
-            targetReached = true;
+            mTargetReached = true;
             mMilSheet = spriteSheet;
         }
 
@@ -33,7 +33,7 @@ namespace Singularity.Units
         /// user mouse and eventually target destination
         /// </summary>
         /// <param name="target"></param>
-        public void Rotate(Vector2 target)
+        private void Rotate(Vector2 target)
         {
             // form a triangle from unit location to mouse location
             // adjust to be at center of sprite 150x75
@@ -70,7 +70,7 @@ namespace Singularity.Units
         /// <summary>
         /// The property which defines the health of the unit
         /// </summary>
-        public int Health { get; set; }
+        private int Health { get; set; }
 
         /// <summary>
         /// The unique ID of the unit.
@@ -98,7 +98,7 @@ namespace Singularity.Units
         /// <param name="damage"></param>
         public void MakeDamage(int damage)
         {
-             Health -= damage; //TODO
+             Health -= damage; // TODO
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -110,7 +110,7 @@ namespace Singularity.Units
 
             // darken color if unit is selected
             Color color;
-            if (!selected) { color = Color.White; }
+            if (!mSelected) { color = Color.White; }
             else { color = Color.Gainsboro; }
 
             spriteBatch.Begin();
@@ -121,26 +121,26 @@ namespace Singularity.Units
 
         public void Update(GameTime gameTime)
         {
-            this.Selected();
+            Selected();
 
             // rotate to face mouse
-            if (selected && targetReached)
+            if (mSelected && mTargetReached)
             {
-                this.Rotate(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
+                Rotate(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
             }
 
             // calculate path to target position
-            if (selected && Mouse.GetState().LeftButton == ButtonState.Pressed &&
+            if (mSelected && Mouse.GetState().LeftButton == ButtonState.Pressed &&
                 ((Math.Abs((mPosition.X + 75) - Mouse.GetState().X) > 60) ||
                  (Math.Abs((mPosition.Y + 37.5) - Mouse.GetState().Y) > 45)))
             {
-                this.Steps(new Vector2(Mouse.GetState().X, (float)(Mouse.GetState().Y)));
+                Steps(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
             }
 
             // move unit until target reached
-            if (!targetReached)
+            if (!mTargetReached)
             {
-                this.Move();
+                Move();
             }
         }
 
@@ -157,13 +157,13 @@ namespace Singularity.Units
                 (Math.Abs((mPosition.Y + 37.5) - Mouse.GetState().Y) < 45) &&
                 Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
-                selected = true;
+                mSelected = true;
             }
 
             // right click deselects unit
             if (Mouse.GetState().RightButton == ButtonState.Pressed)
             {
-                selected = false;
+                mSelected = false;
             }
         }
 
@@ -177,8 +177,8 @@ namespace Singularity.Units
         {
             // set new unit target, and face target position
             mTargetPosition = target;
-            this.Rotate(mTargetPosition);
-            targetReached = false;
+            Rotate(mTargetPosition);
+            mTargetReached = false;
 
 
             // travel along the hypotenuse of triangle formed by start and target position
@@ -188,29 +188,29 @@ namespace Singularity.Units
             // calculate the x distance and y distance needed to get to target
             if (Math.Abs(hypot) < 0.01)
             {
-                xstep = Math.Abs(mPosition.X - mTargetPosition.X + 75);
-                ystep = Math.Abs(mPosition.Y - mTargetPosition.Y + 37.5);
+                mXstep = Math.Abs(mPosition.X - mTargetPosition.X + 75);
+                mYstep = Math.Abs(mPosition.Y - mTargetPosition.Y + 37.5);
             }
             else
             {
-                xstep = Math.Abs((mPosition.X - mTargetPosition.X + 75) / hypot);
-                ystep = Math.Abs((mPosition.Y - mTargetPosition.Y + 37.5) / hypot);
+                mXstep = Math.Abs((mPosition.X - mTargetPosition.X + 75) / hypot);
+                mYstep = Math.Abs((mPosition.Y - mTargetPosition.Y + 37.5) / hypot);
             }
 
             // determine correct direction of x/y movement
             if (mPosition.X - mTargetPosition.X + 75 < 0)
             {
-                xstep = -xstep;
+                mXstep = -mXstep;
             }
 
             if (mPosition.Y - mTargetPosition.Y +37.5 < 0)
             {
-                ystep = -ystep;
+                mYstep = -mYstep;
             }
 
             // adjusts speed of unit movement
-            xstep = xstep * 3;
-            ystep = ystep * 3;
+            mXstep = mXstep * 3;
+            mYstep = mYstep * 3;
         }
 
         /// <summary>
@@ -220,13 +220,13 @@ namespace Singularity.Units
         private void Move()
         {
             // move position of unit over by x/y step to reach target
-            mPosition.X -= (float)xstep;
-            mPosition.Y -= (float)ystep;
+            mPosition.X -= (float)mXstep;
+            mPosition.Y -= (float)mYstep;
 
             // check if target position has been reached
             if (Math.Abs((mPosition.X) - mTargetPosition.X + 75) < 8 && Math.Abs((mPosition.Y) - mTargetPosition.Y + 37.5) < 8)
             {
-                targetReached = true;
+                mTargetReached = true;
             }
         }
     }

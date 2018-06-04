@@ -22,12 +22,18 @@ namespace Singularity.Platform
         private readonly Texture2D mSpritesheet;
         private readonly Dictionary<GeneralUnit, JobType> mAssignedUnits;
         private List<Resource> mResources; // here we need the actual Resources
+
+        internal Vector2 GetLocation()
+        {
+            throw new NotImplementedException();
+        }
+
         private Dictionary<EResourceType, int> mRequested;
         private readonly Dictionary<EResourceType, int> mCost;
 
-        public Vector2 AbsolutePosition { private get; set; }
+        private Vector2 AbsolutePosition { get; }
 
-        public Vector2 AbsoluteSize { private get; set; }
+        private Vector2 AbsoluteSize { get; }
 
 
         /// <summary>
@@ -68,18 +74,19 @@ namespace Singularity.Platform
         }
 
         /// <summary>
-        /// Perform the given PlatformAction on the platform. might need to give the ID instead HACK
+        /// Perform the given PlatformAction on the platform.
         /// </summary>
-        /// <param name="IPlatformAction"> The IPlatformAction to be performed </param>
+        /// <param name="platformAction"> The IPlatformAction to be performed </param>
         /// <returns> true if it was succesfull</returns>
-        public bool DoIPlatformAction(IPlatformAction IPlatformAction)
+        public bool DoIPlatformAction(IPlatformAction platformAction)
         {
-            //This return is normally an if, I just had to do it this way because resharper would cry otherwise. As soon as doBlueprintBuild is implemented we can change this.
+            // FIXME might need to give the ID instead
+            // This return is normally an if, I just had to do it this way because resharper would cry otherwise. As soon as doBlueprintBuild is implemented we can change this.
             // return (IPlatformAction == IPlatformAction.BlueprintBuild);
-            //{
-            //doBlueprintBuild
-            //return true;
-            //}
+            // {
+            // doBlueprintBuild
+            // return true;
+            // }
 
             //return false;
             return true;
@@ -137,7 +144,7 @@ namespace Singularity.Platform
         /// <summary>
         /// Use this method to get the resource you asked for. Removes the resource from the platform.
         /// </summary>
-        /// <param name="resource">The resource you ask for</param>
+        /// <param name="resourcetype">The resource you ask for</param>
         /// <returns>the resource you asked for, null otherwise.</returns>
         public Resource GetResource(EResourceType resourcetype)
         {
@@ -177,7 +184,7 @@ namespace Singularity.Platform
             throw new NotImplementedException();
         }
 
-        /// <inheritdoc cref="Singularity.property.IDraw"/>
+        /// <inheritdoc cref="Singularity.Property.IDraw"/>
         public void Draw(SpriteBatch spritebatch)
         {
             // the sprite sheet is 148x1744 px, 1x12 sprites
@@ -194,7 +201,7 @@ namespace Singularity.Platform
             );
         }
 
-        /// <inheritdoc cref="Singularity.property.IUpdate"/>
+        /// <inheritdoc cref="Singularity.Property.IUpdate"/>
         public void Update(GameTime t)
         {
             //TODO: implement update code
@@ -225,6 +232,11 @@ namespace Singularity.Platform
             mIsBlueprint = true;
             mRequested = new Dictionary<EResourceType, int>();
           
+        }
+
+        public bool PlatformHasSpace()
+        {
+            return mResources.Count < 10;
         }
     }
 }

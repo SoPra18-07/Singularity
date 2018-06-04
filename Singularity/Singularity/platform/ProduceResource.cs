@@ -1,36 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
+using Singularity.Map;
 using Singularity.Resources;
 using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.Platform
 {
 
     public class ProduceWellResource : APlatformAction
     {
-        public ProduceWellResource(PlatformBlank platform) : base(platform)
+
+        // The ResourceMap is needed for actually 'producing' the resources.
+        private ResourceMap mResourceMap;
+
+        public ProduceWellResource(PlatformBlank platform, ResourceMap resourceMap) : base(platform)
         {
+            mResourceMap = resourceMap;
         }
 
         public override List<JobType> UnitsRequired { get; } = new List<JobType>{ JobType.Production };
 
         public override void Execute()
         {
-            throw new NotImplementedException();
-            // if PlatformBlank.isNotFull() ... // (of resources obviously)
-            // Optional<Resources> r = ResourceMap.get<well/quarry/mine>ResourceFrom(Platform.coordinates.get()); // or similiar
-            // if (r.IsPresent())
-            // {
-            //     PlatformBlank.addResource(r);
-            // }
+            var resource = mResourceMap.GetResources(mPlatform.GetLocation());
+            if (!resource.IsPresent() || !mPlatform.PlatformHasSpace()) return;
+            var res = new Resource(resource.Get().GetFirst());
+            mPlatform.StoreResource(res);
         }
     }
 
     public class ProduceQuarryResource : APlatformAction
     {
-        public ProduceQuarryResource(PlatformBlank platform) : base(platform)
+        // The ResourceMap is needed for actually 'producing' the resources.
+        private ResourceMap mResourceMap;
+
+        public ProduceQuarryResource(PlatformBlank platform, ResourceMap resourceMap) : base(platform)
         {
+            mResourceMap = resourceMap;
         }
 
         public override List<JobType> UnitsRequired { get; } = new List<JobType> { JobType.Production };
@@ -44,6 +50,9 @@ namespace Singularity.Platform
 
     public class ProduceMineResource : APlatformAction
     {
+        // The ResourceMap is needed for actually 'producing' the resources.
+        private ResourceMap mResourceMap;
+
         public ProduceMineResource(PlatformBlank platform) : base(platform)
         {
         }
@@ -59,11 +68,11 @@ namespace Singularity.Platform
 
     public class BuildBluePrint : APlatformAction
     {
-        internal Dictionary<EResourceType, int> RequiredResources;
+        private Dictionary<EResourceType, int> mRequiredResources;
         public BuildBluePrint(PlatformBlank platform, PlatformBlank toBeBuilt) : base(platform)
         {
-            RequiredResources = toBeBuilt.GetResourcesRequired();
-        }
+            mRequiredResources = toBeBuilt.GetResourcesRequired();
+        }   
 
         public override List<JobType> UnitsRequired { get; } = new List<JobType>{ JobType.Construction };
 

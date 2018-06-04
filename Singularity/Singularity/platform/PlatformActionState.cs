@@ -1,5 +1,4 @@
-﻿using System;
-namespace Singularity.Platform
+﻿namespace Singularity.Platform
 {
     /// <summary>
     /// Each PlatformAction is in either one of the following States.
@@ -8,7 +7,7 @@ namespace Singularity.Platform
     {
         /// <summary> Available: meaning it is currently being executed, so not
         ///  available right now (the button in the ui is deactivated, and thus
-        ///  cannot be clicked) <\summary>
+        ///  cannot be clicked) </summary>
         Available,
         /// <summary> Active: meaning it is currently being executed,
         ///  so not available right now (the button cannot be clicked) </summary>

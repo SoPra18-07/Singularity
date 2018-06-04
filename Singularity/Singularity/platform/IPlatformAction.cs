@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Singularity.Resources;
 using Singularity.Units;
 
@@ -24,7 +25,7 @@ namespace Singularity.Platform
         /// (for finishing this action, or for producing the next resource etc)
         /// </summary>
         /// <returns>The required resources.</returns>
-        Dictionary<EResourceType, int> getRequiredResources();
+        Dictionary<EResourceType, int> GetRequiredResources();
 
         /// <summary>
         /// Execute this PlatformAction.
@@ -48,8 +49,9 @@ namespace Singularity.Platform
         /// <summary>
         /// Unassigns the assigned unit with the given unitid.
         /// </summary>
-        /// <param name="unitid">UnitId of the unit to be unassigned</param>
-        void UnAssignUnit(int unitid);
+        /// <param name="amount">The amount of units being UNassigned</param>
+        /// <param name="job"></param>
+        void UnAssignUnits(int amount, JobType job);
 
         /// <summary>
         /// Gets the JobType required for this PlatformAction. Can be several.
@@ -63,7 +65,7 @@ namespace Singularity.Platform
         /// Gets the assigned units and their respective JobTypes.
         /// </summary>
         /// <value>The assigned units.</value>
-        Dictionary<GeneralUnit, Singularity.Units.JobType> AssignedUnits { get; }
+        Dictionary<GeneralUnit, JobType> AssignedUnits { get; }
 
         PlatformBlank Platform { get; }
     }
@@ -73,21 +75,21 @@ namespace Singularity.Platform
 
     public abstract class APlatformAction : IPlatformAction
     {
-        private Dictionary<GeneralUnit, JobType> _assignedUnits = new Dictionary<GeneralUnit, JobType>();
-        private readonly PlatformBlank _platform;
+        protected readonly Dictionary<GeneralUnit, JobType> mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
+        protected readonly PlatformBlank mPlatform;
 
-        public APlatformAction(PlatformBlank platform)
+        protected APlatformAction(PlatformBlank platform)
         {
-             _platform = platform;
+             mPlatform = platform;
         }
 
 
-        public PlatformActionState State { get; set; } = PlatformActionState.Active;
+        public PlatformActionState State { get; private set; } = PlatformActionState.Active;
 
         public abstract List<JobType> UnitsRequired { get; }
 
-        PlatformBlank IPlatformAction.Platform => _platform;
-        Dictionary<GeneralUnit, JobType> IPlatformAction.AssignedUnits => _assignedUnits;
+        PlatformBlank IPlatformAction.Platform => mPlatform;
+        Dictionary<GeneralUnit, JobType> IPlatformAction.AssignedUnits => mAssignedUnits;
 
         /// <summary>
         /// Assigns the unit to this PlatformAction and to this platform.
@@ -96,7 +98,7 @@ namespace Singularity.Platform
         /// <param name="job">Job.</param>
         void IPlatformAction.AssignUnit(GeneralUnit unit, JobType job)
         {
-            _assignedUnits.Add(unit, job);
+            mAssignedUnits.Add(unit, job);
         }
 
         public abstract void Execute();
@@ -106,7 +108,7 @@ namespace Singularity.Platform
         /// (for finishing this action, or for producing the next resource etc)
         /// </summary>
         /// <returns>The required resources.</returns>
-        Dictionary<EResourceType, int> IPlatformAction.getRequiredResources()
+        Dictionary<EResourceType, int> IPlatformAction.GetRequiredResources()
         {
             return new Dictionary<EResourceType, int>();
         }
@@ -126,17 +128,13 @@ namespace Singularity.Platform
             }
         }
 
-        public void UnAssignUnit(int unitid)
+        public void UnAssignUnits(int amount, JobType job)
         {
-        // TODO: depending on the UI this requires to be written differently.
-
-            foreach (var unit in _assignedUnits.Keys)
+            foreach (var unit in mAssignedUnits.Keys)
             {
-                if (unit.Id == unitid)
-                {
-                    _assignedUnits.Remove(unit);
-                }
-                break;
+                if (unit.Job != job || amount <= 0) continue;
+                mAssignedUnits.Remove(unit);
+                amount -= 1;
             }
         }
     }
