@@ -49,18 +49,12 @@ namespace Singularity.Screen
 
         protected virtual void OnButtonClicked(EventArgs e)
         {
-            if (ButtonClicked != null)
-            {
-                ButtonClicked(this, e);
-            }
+            ButtonClicked?.Invoke(this, e);
         }
 
         protected virtual void OnButtonHovering(EventArgs e)
         {
-            if (ButtonHovering != null)
-            {
-                ButtonHovering(this, e);
-            }
+            ButtonHovering?.Invoke(this, e);
         }
 
         /// <summary>

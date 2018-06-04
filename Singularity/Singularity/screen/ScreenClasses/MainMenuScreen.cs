@@ -12,45 +12,62 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Singularity.Screen.ScreenClasses
 {
+    /// <inheritdoc cref="IScreen"/>
     /// <summary>
-    /// Shows the main menu screen with 5 options:
-    /// New Game, Load Game, Achievements, Options, and Quit Game.
+    /// Handles everything thats going on explicitly in the game.
+    /// E.g. game objects, the map, camera. etc.
     /// </summary>
     class MainMenuScreen : IScreen
     {
-        private IScreenManager mScreenManager;
+        private static Vector2 sMenuBox;
+        private EScreen mScreenState;
+
+        // Fonts
+        private SpriteFont mLibSans36;
+        private SpriteFont mLibSans20;
+
+        // All connecting screens
         private IScreen mGameModeSelectScreen;
         private IScreen mLoadSelectScreen;
         private IScreen mAchievementsScreen;
         private IScreen mOptionsScreen;
-        private IScreen mGameScreen;
-        private static Vector2 sMenuBox;
-        private SpriteFont mLibSans36;
-        private SpriteFont mLibSans20; 
-        private string mgameModeString;
-        private string mloadSelectString;
-        private string achievementsString;
-        private string mOptionsString;
-        private string mTitle;
-        private Button mPlay;
-        private Button mLoad;
-        private Button mOptions;
-        private Button mAchievements;
-        private Button mQuit;
+        private IScreen mSplashScreen;
 
+        // Background
+        private MenuBackgroundScreen mMenuBackgroundScreen;
 
+        // all text is stored as string variables to allow for easy changes
+        private readonly string mPlayString;
+        private readonly string mLoadSelectString;
+        private readonly string mAchievementsString;
+        private readonly string mOptionsString;
+        private readonly string mQuitString;
+        private readonly string mTitle;
 
-        public MainMenuScreen(Vector2 screenResolution, IScreenManager screenManager, IScreen gameModeSelect,
-            IScreen loadSelect, IScreen achievementsScreen, IScreen optionsScreen, IScreen gameScreen)
+        // Buttons on the main menu
+        private Button mPlayButton;
+        private Button mLoadButton;
+        private Button mAchievementsButton;
+        private Button mOptionsButton;
+        private Button mQuitButton;
+
+        /// <summary>
+        /// Shows the main menu screen with 5 options:
+        /// New Game, Load Game, Achievements, Options, and Quit Game.
+        /// </summary>
+        /// <param name="screenResolution">Screen resolution of the game</param>
+        /// <param name="screenManager">Stack screen manager of the game</param>
+        /// <param name="showSplash">Defines if the splash screen should be shown</param>
+        public MainMenuScreen(Vector2 screenResolution)
         {
             SetResolution(screenResolution);
-            mScreenManager = screenManager;
-            mGameModeSelectScreen = gameModeSelect;
-            mLoadSelectScreen = loadSelect;
-            mAchievementsScreen = achievementsScreen;
-            mOptionsScreen = optionsScreen;
-            mGameScreen = gameScreen;
 
+            mPlayString = "New Game";
+            mLoadSelectString = "Load Game";
+            mAchievementsString = "Achivements";
+            mOptionsString = "Options";
+            mQuitString = "Quit";
+            mTitle = "Singularity";
         }
 
         public static void SetResolution(Vector2 screenResolution)
@@ -63,50 +80,61 @@ namespace Singularity.Screen.ScreenClasses
 
         public void LoadContent(ContentManager content)
         {
-            mOptionsString = "Options";
-            mTitle = "Singularity";
+            // Load Fonts
             mLibSans36 = content.Load<SpriteFont>("LibSans36");
             mLibSans20 = content.Load<SpriteFont>("LibSans20");
-            mPlay = new Button(1, "Play", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 80));
-            mLoad = new Button(1, "Load", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 130));
-            mOptions = new Button(1, "Options", mLibSans20, new Vector2(sMenuBox.X+30, sMenuBox.Y + 180));
-            mAchievements = new Button(1, "Achievements", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 230));
-            mQuit = new Button(1, "Quit", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 280));
 
-
+            // Create buttons
+            mPlayButton = new Button(1,
+                mPlayString,
+                mLibSans20,
+                new Vector2(sMenuBox.X + 30, sMenuBox.Y + 80));
+            mLoadButton = new Button(1,
+                mLoadSelectString,
+                mLibSans20,
+                new Vector2(sMenuBox.X + 30, sMenuBox.Y + 130));
+            mOptionsButton = new Button(1,
+                mOptionsString,
+                mLibSans20,
+                new Vector2(sMenuBox.X + 30, sMenuBox.Y + 180));
+            mAchievementsButton = new Button(1,
+                mAchievementsString,
+                mLibSans20,
+                new Vector2(sMenuBox.X + 30, sMenuBox.Y + 230));
+            mQuitButton = new Button(1,
+                mQuitString,
+                mLibSans20,
+                new Vector2(sMenuBox.X + 30, sMenuBox.Y + 280));
+            
         }
 
         public void Update(GameTime gametime)
         {
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-            {
-                Debug.Print("Mouse is at: " + Mouse.GetState().X + ", " + Mouse.GetState().Y);
-                Debug.Print("Menu Box is at: " + sMenuBox.X + ", " + sMenuBox.Y);
-                if (Mouse.GetState().X < (sMenuBox.X + mLibSans20.MeasureString("Play").X + 30)
-                    && (Mouse.GetState().X >= sMenuBox.X + 30)
-                    && Mouse.GetState().Y >= (sMenuBox.Y + 80)
-                    && Mouse.GetState().Y < (sMenuBox.Y + mLibSans20.MeasureString("Play").Y + 80))
-                {
-                    // TODO animate screen
-                    MenuBackgroundScreen.SetScreen(EScreen.GameScreen);
-                    mScreenManager.RemoveScreen();
-                    mScreenManager.AddScreen(mGameScreen);
-                }
-            }
-
+            // TODO
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
-            spriteBatch.StrokedRectangle(sMenuBox, new Vector2(300,350), Color.White, Color.White, .5f, .20f);
-            spriteBatch.DrawString(mLibSans36, mTitle, new Vector2(sMenuBox.X+30, sMenuBox.Y+10), Color.White);
-            mPlay.Draw(spriteBatch);
-            mLoad.Draw(spriteBatch);
-            mOptions.Draw(spriteBatch);
-            mAchievements.Draw(spriteBatch);
-            mQuit.Draw(spriteBatch);
-            
+
+            // Draw menu window
+            spriteBatch.StrokedRectangle(sMenuBox,
+                new Vector2(300, 350),
+                Color.White,
+                Color.White,
+                .5f,
+                .20f);
+            spriteBatch.DrawString(mLibSans36,
+                mTitle,
+                new Vector2(sMenuBox.X + 30, sMenuBox.Y + 10), Color.White);
+
+            // Draw menu buttons
+            mPlayButton.Draw(spriteBatch);
+            mLoadButton.Draw(spriteBatch);
+            mOptionsButton.Draw(spriteBatch);
+            mAchievementsButton.Draw(spriteBatch);
+            mQuitButton.Draw(spriteBatch);
+
             spriteBatch.End();
         }
 

@@ -29,13 +29,7 @@ namespace Singularity
 
         // Screens
         private GameScreen mGameScreen;
-        private MenuBackgroundScreen mMenuBackgroundScreen;
-        private SplashScreen mSplashScreen;
-        private MainMenuScreen mMainMenuScreen;
-        private AchievementsScreen mAchievementsScreen;
-        private GameModeSelectScreen mGameModeSelectScreen;
-        private LoadSelectScreen mLoadSelectScreen;
-        private OptionsScreen mOptionsScreen;
+        private MainMenuManagerScreen mMainMenuManager;
 
         // roads
         private Road mRoad1;
@@ -99,22 +93,17 @@ namespace Singularity
 
             mGameScreen = new GameScreen(mMap);
 
-
-            // This constructs and loads the menu background screen
-            mMenuBackgroundScreen = new MenuBackgroundScreen(viewportResolution);
-            Debug.Print("Viewport Size: " + GraphicsDevice.Viewport.Width + ", " + GraphicsDevice.Viewport.Height);
-            mMenuBackgroundScreen.LoadContent(Content);
-
             // This loads the contents of the mainmenuscreen
-            mMainMenuScreen = new MainMenuScreen(viewportResolution, mScreenManager, mGameModeSelectScreen, mLoadSelectScreen,
-                mAchievementsScreen, mOptionsScreen, mGameScreen);
-            mMainMenuScreen.LoadContent(Content);
+            mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true);
 
-            // This loads the contents of the splashscreen.
-            mSplashScreen = new SplashScreen(viewportResolution, mScreenManager, mMainMenuScreen);
-            mSplashScreen.LoadContent(Content);
+            // Add the screens to the screen manager
+            // The idea is that the game screen is always at the bottom and stuff is added simply
+            // on top of it.
+            mScreenManager.AddScreen(mGameScreen);
+            mScreenManager.AddScreen(mMainMenuManager);
+            // TODO load game screen contents only after game new game or load game has been started
 
-            
+            mMainMenuManager.LoadContent(Content);
 
             // load roads
             mRoad1 = new Road(new Vector2(300, 400), new Vector2(800, 600), false);
@@ -124,11 +113,6 @@ namespace Singularity
             mGameScreen.AddObject<PlatformBlank>(mPlatform);
             mGameScreen.AddObject<PlatformBlank>(mPlatform2);
             mGameScreen.AddObject<Road>(mRoad1);
-
-            // Add the screens to the screen manager
-            mScreenManager.AddScreen(mGameScreen);
-            mScreenManager.AddScreen(mMenuBackgroundScreen);
-            mScreenManager.AddScreen(mSplashScreen);
 
             // load and play Soundtrack as background music
             sSoundtrack = Content.Load<Song>("BGMusic");
