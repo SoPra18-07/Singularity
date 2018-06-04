@@ -86,7 +86,7 @@ namespace Singularity.serialization
             var dummy1 = (SerializationDummy) deserializedList[0];
             var dummy2 = (SerializationDummy) deserializedList[1];
             dummyd.Increment();
-            if (dummy1.GetList().GetHashCode() == dummy2.GetList().GetHashCode())
+            if (ReferenceEquals(dummy1.GetList(), dummy2.GetList()))
             {
                 Console.WriteLine("SHARED REFERENCES HAVE BEEN PRESERVED CORRECTLY.");
             }
@@ -96,7 +96,7 @@ namespace Singularity.serialization
             }
 
             //Check Cyclic reference
-            if (dummyd.GetDummy().GetCyclicReference().GetHashCode() == dummyd.GetHashCode())
+            if (ReferenceEquals(dummyd.GetDummy().GetCyclicReference(), dummyd))
             {
                 Console.WriteLine("CYCLIC REFERNCE HAS BEEN PRESERVED CORRECTLY.");
             }
