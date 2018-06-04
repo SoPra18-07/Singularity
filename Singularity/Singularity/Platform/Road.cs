@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Property;
 
-namespace Singularity.platform
+namespace Singularity.Platform
 {
     class Road : IDraw
     {
