@@ -11,7 +11,7 @@ namespace Singularity.platform
 {
 
     [DataContract()]
-    internal class PlatformBlank : IDraw, IUpdate
+    class PlatformBlank : IDraw, IUpdate
     {
 
         [DataMember()]
