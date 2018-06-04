@@ -30,7 +30,7 @@ namespace Singularity.platform
         protected Dictionary<IResources, int> mCost;
         private readonly Texture2D mSpritesheet;
         [DataMember()]
-        private string mSpritename;
+        protected string mSpritename;
         [DataMember()]
         protected Dictionary<GeneralUnit, Job> mAssignedUnits;
         [DataMember()]
