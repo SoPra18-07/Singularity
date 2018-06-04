@@ -4,7 +4,6 @@ namespace Singularity.Input
 {
     internal sealed class MouseEvent
     {
-
         public MouseEvent(EMouseAction mouseAction, Vector2 position)
         {
             Position = position;

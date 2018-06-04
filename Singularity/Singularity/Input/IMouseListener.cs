@@ -6,6 +6,12 @@
     internal interface IMouseListener
     {
         /// <summary>
+        /// Used to set a mouse button as typed
+        /// </summary>
+        /// <param name="mouseEvent"></param>
+        void MouseTyped(MouseEvent mouseEvent);
+
+        /// <summary>
         /// Used to set a mouse button as pressed
         /// </summary>
         /// <param name="mouseEvent"></param>
