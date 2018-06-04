@@ -57,7 +57,8 @@ namespace Singularity
                mScreenManager.AddScreen(new RenderLowerScreen());
                mScreenManager.AddScreen(new UpdateLowerScreen());
             */
-            XSerializer.TestSerialization();
+
+            // XSerializer.TestSerialization();
             IsMouseVisible = true;
             mGraphics.PreferredBackBufferWidth = 1080;
             mGraphics.PreferredBackBufferHeight = 720;
