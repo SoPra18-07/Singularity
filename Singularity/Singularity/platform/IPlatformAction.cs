@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using Singularity.Resources;
 using Singularity.Units;
 
-namespace Singularity.platform
+namespace Singularity.Platform
 {
 
 
     /// <summary>
     /// Provides a combined interface for everything required for the implementation of the PlatformActions.
     /// </summary>
-    interface IPlatformAction
+    public interface IPlatformAction
     {
 
         /// <summary>

@@ -8,6 +8,7 @@ namespace Singularity.Resources
 {
     public class Resource
     {
+        internal EResourceType stype;
         public Resource()
         {
         }

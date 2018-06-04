@@ -4,7 +4,7 @@ using Singularity.Resources;
 using Singularity.Units;
 using Singularity.Utils;
 
-namespace Singularity.platform
+namespace Singularity.Platform
 {
 
     public class ProduceWellResource : APlatformAction

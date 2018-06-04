@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Singularity.platform
+namespace Singularity.Platform
 {
     /// <summary>
     /// Each PlatformAction is in either one of the following States.

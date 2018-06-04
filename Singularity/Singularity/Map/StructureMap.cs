@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Property;
 using Singularity.Utils;
-using Singularity.platform;
+using Singularity.Platform;
 
 namespace Singularity.Map
 {

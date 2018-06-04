@@ -7,7 +7,7 @@ using Singularity.Resources;
 
 namespace Singularity.Units
 {
-    class GeneralUnit : IUnit, IUpdate, IDraw
+    public class GeneralUnit : IUnit, IUpdate, IDraw
     {
         public int Id { get; }
         public Vector2 Position { get; private set; }

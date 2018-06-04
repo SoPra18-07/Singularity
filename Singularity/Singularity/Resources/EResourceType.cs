@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Singularity.Resources
 {
-    internal enum EResourceType
+    public enum EResourceType
     {
         Water,
         Sand,
