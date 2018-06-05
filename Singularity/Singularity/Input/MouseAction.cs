@@ -1,7 +1,6 @@
-﻿
-namespace Singularity.Input
+﻿namespace Singularity.Input
 {
-    internal enum EMouseAction
+    public enum EMouseAction
     {
         LeftClick,
         RightClick,

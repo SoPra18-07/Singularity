@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Singularity.Input;
 using Singularity.platform;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
@@ -16,13 +17,13 @@ namespace Singularity
     public sealed class Game1 : Game
     {
         private GraphicsDeviceManager mGraphics;
-        
+
         private PlatformBlank mPlatform;
         private PlatformBlank mPlatform2;
 
         private MilitaryUnit mMUnit1;
         private MilitaryUnit mMUnit2;
-        
+
         private Map.Map mMap;
 
         private static Song sSoundtrack;
@@ -30,6 +31,7 @@ namespace Singularity
         // Screens
         private GameScreen mGameScreen;
         private MainMenuManagerScreen mMainMenuManager;
+        private InputManager mInputManager;
 
         // roads
         private Road mRoad1;
@@ -47,6 +49,7 @@ namespace Singularity
             mGraphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
+            mInputManager = new InputManager();
             mScreenManager = new StackScreenManager();
 
         }
@@ -144,6 +147,7 @@ namespace Singularity
                 Exit();
             }
 
+            mInputManager.Update(gameTime);
             mScreenManager.Update(gameTime);
             base.Update(gameTime);
         }
