@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
+using Singularity.Input;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -26,22 +27,20 @@ namespace Singularity.Screen.ScreenClasses
         private IScreen mGameScreen;
         private static Vector2 sMenuBox;
         private SpriteFont mLibSans36;
-        private SpriteFont mLibSans20; 
-        private string mgameModeString;
-        private string mloadSelectString;
-        private string achievementsString;
-        private string mOptionsString;
+        private SpriteFont mLibSans20;
         private string mTitle;
         private Button mPlay;
         private Button mLoad;
         private Button mOptions;
         private Button mAchievements;
         private Button mQuit;
+        private List<Button> mButtonsList;
+        private InputManager mInputManager;
 
 
 
         public MainMenuScreen(Vector2 screenResolution, IScreenManager screenManager, IScreen gameModeSelect,
-            IScreen loadSelect, IScreen achievementsScreen, IScreen optionsScreen, IScreen gameScreen)
+            IScreen loadSelect, IScreen achievementsScreen, IScreen optionsScreen, IScreen gameScreen, InputManager inputManager)
         {
             SetResolution(screenResolution);
             mScreenManager = screenManager;
@@ -50,7 +49,8 @@ namespace Singularity.Screen.ScreenClasses
             mAchievementsScreen = achievementsScreen;
             mOptionsScreen = optionsScreen;
             mGameScreen = gameScreen;
-
+            mButtonsList = new List<Button>();
+            mInputManager = inputManager;
         }
 
         public static void SetResolution(Vector2 screenResolution)
@@ -63,35 +63,27 @@ namespace Singularity.Screen.ScreenClasses
 
         public void LoadContent(ContentManager content)
         {
-            mOptionsString = "Options";
             mTitle = "Singularity";
             mLibSans36 = content.Load<SpriteFont>("LibSans36");
             mLibSans20 = content.Load<SpriteFont>("LibSans20");
-            mPlay = new Button(1, "Play", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 80));
-            mLoad = new Button(1, "Load", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 130));
-            mOptions = new Button(1, "Options", mLibSans20, new Vector2(sMenuBox.X+30, sMenuBox.Y + 180));
-            mAchievements = new Button(1, "Achievements", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 230));
-            mQuit = new Button(1, "Quit", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 280));
-
+            mPlay = new Button("Play", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 90), mInputManager);
+            mLoad = new Button("Load", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 140), mInputManager);
+            mOptions = new Button("Options", mLibSans20, new Vector2(sMenuBox.X+30, sMenuBox.Y + 190), mInputManager);
+            mAchievements = new Button("Achievements", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 240), mInputManager);
+            mQuit = new Button("Quit", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 290), mInputManager);
+            mButtonsList.Add(mPlay);
+            mButtonsList.Add(mLoad);
+            mButtonsList.Add(mOptions);
+            mButtonsList.Add(mAchievements);
+            mButtonsList.Add(mQuit);
 
         }
 
         public void Update(GameTime gametime)
         {
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            foreach (Button button in mButtonsList)
             {
-                Debug.Print("Mouse is at: " + Mouse.GetState().X + ", " + Mouse.GetState().Y);
-                Debug.Print("Menu Box is at: " + sMenuBox.X + ", " + sMenuBox.Y);
-                if (Mouse.GetState().X < (sMenuBox.X + mLibSans20.MeasureString("Play").X + 30)
-                    && (Mouse.GetState().X >= sMenuBox.X + 30)
-                    && Mouse.GetState().Y >= (sMenuBox.Y + 80)
-                    && Mouse.GetState().Y < (sMenuBox.Y + mLibSans20.MeasureString("Play").Y + 80))
-                {
-                    // TODO animate screen
-                    MenuBackgroundScreen.SetScreen(EScreen.GameScreen);
-                    mScreenManager.RemoveScreen();
-                    mScreenManager.AddScreen(mGameScreen);
-                }
+                button.Update(gametime);
             }
 
         }
@@ -100,12 +92,11 @@ namespace Singularity.Screen.ScreenClasses
         {
             spriteBatch.Begin();
             spriteBatch.StrokedRectangle(sMenuBox, new Vector2(300,350), Color.White, Color.White, .5f, .20f);
-            spriteBatch.DrawString(mLibSans36, mTitle, new Vector2(sMenuBox.X+30, sMenuBox.Y+10), Color.White);
-            mPlay.Draw(spriteBatch);
-            mLoad.Draw(spriteBatch);
-            mOptions.Draw(spriteBatch);
-            mAchievements.Draw(spriteBatch);
-            mQuit.Draw(spriteBatch);
+            spriteBatch.DrawString(mLibSans36, mTitle, new Vector2(sMenuBox.X+30, sMenuBox.Y+20), Color.White);
+            foreach (Button button in mButtonsList)
+            {
+                button.Draw(spriteBatch);
+            }
             
             spriteBatch.End();
         }

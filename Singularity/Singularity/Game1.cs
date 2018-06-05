@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Singularity.Input;
 using Singularity.platform;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
@@ -36,6 +37,7 @@ namespace Singularity
         private GameModeSelectScreen mGameModeSelectScreen;
         private LoadSelectScreen mLoadSelectScreen;
         private OptionsScreen mOptionsScreen;
+        private InputManager mInputManager;
 
         // roads
         private Road mRoad1;
@@ -54,6 +56,8 @@ namespace Singularity
             Content.RootDirectory = "Content";
 
             mScreenManager = new StackScreenManager();
+
+            mInputManager = new InputManager();
 
         }
 
@@ -107,7 +111,7 @@ namespace Singularity
 
             // This loads the contents of the mainmenuscreen
             mMainMenuScreen = new MainMenuScreen(viewportResolution, mScreenManager, mGameModeSelectScreen, mLoadSelectScreen,
-                mAchievementsScreen, mOptionsScreen, mGameScreen);
+                mAchievementsScreen, mOptionsScreen, mGameScreen, mInputManager);
             mMainMenuScreen.LoadContent(Content);
 
             // This loads the contents of the splashscreen.

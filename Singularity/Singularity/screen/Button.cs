@@ -8,91 +8,96 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Singularity.Input;
 using Singularity.Property;
 
 
 namespace Singularity.Screen
 {
-    class Button: IWindowItem
+    class Button : IWindowItem
     {
-        public event EventHandler ButtonClicked;
-        public event EventHandler ButtonHovering;
-        private float mScale;
-        private Texture2D mButtonTexture;
-        private bool mCurrentMouseState;
-        private bool mPreviousMouseState;
-        private Vector2 mPosition;
         private bool misText;
+        private float mScale;
+        private Texture2D mbuttonTexture;
         private string mbuttonText;
+        private Vector2 mPosition;
+        private float mWidth;
+        private float mHeight;
         private SpriteFont mFont;
+        private Color mColor;
+        private InputManager mInputMangager;
 
+        public event EventHandler ButtonReleased;
+        public event EventHandler ButtonHovering;
 
-
-        public Button(float scale, Texture2D buttonTexture, Vector2 position)
+        /// <summary>
+        /// Creates a button using a Texture2D
+        /// </summary>
+        /// <param name="scale"> scale of the texture</param>
+        /// <param name="buttonTexture"></param>
+        /// <param name="position"></param>
+        public Button(float scale, Texture2D buttonTexture, Vector2 position, InputManager inputManager)
         {
             misText = false;
             mScale = scale;
-            mButtonTexture = buttonTexture;
-            mPreviousMouseState = true;
-            mCurrentMouseState = true;
+            mbuttonTexture = buttonTexture;
             mPosition = position;
+            mWidth = mbuttonTexture.Width;
+            mHeight = mbuttonTexture.Height;
+            mColor = Color.White;
+            mInputMangager = inputManager;
         }
 
-        public Button(float scale, string buttonText, SpriteFont font, Vector2 position)
+        /// <summary>
+        /// Creates a Button made of text
+        /// </summary>
+        /// <param name="buttonText">text that button will appear as</param>
+        /// <param name="font"></param>
+        /// <param name="position"></param>
+        public Button(string buttonText, SpriteFont font, Vector2 position, InputManager inputManager)
         {
             misText = true;
             mbuttonText = buttonText;
-            mScale = scale;
             mFont = font;
             mPosition = position;
+            mWidth = mFont.MeasureString(mbuttonText).X;
+            mHeight = mFont.MeasureString(mbuttonText).Y;
+            mColor = Color.White;
+            mInputMangager = inputManager;
         }
 
-        protected virtual void OnButtonClicked(EventArgs e)
+        /// <summary>
+        /// Sends out event that button has been left click released
+        /// </summary>
+        protected virtual void OnButtonReleased()
         {
-            if (ButtonClicked != null)
+            if (ButtonReleased != null)
             {
-                ButtonClicked(this, e);
+                ButtonReleased(this, EventArgs.Empty);
             }
         }
 
-        protected virtual void OnButtonHovering(EventArgs e)
+        /// <summary>
+        /// Sends out event that mouse is hovering over the button
+        /// </summary>
+        protected virtual void OnButtonHovering()
         {
             if (ButtonHovering != null)
             {
-                ButtonHovering(this, e);
+                ButtonHovering(this, EventArgs.Empty);
             }
         }
 
-        /// <summary>
-        /// sends out button events (button hover/ button click)
-        /// </summary>
-        /// <returns></returns>
-        public void ButtonEvents()
-        {
-            if (mCurrentMouseState == false && mPreviousMouseState == true)
-            {
-                OnButtonClicked(EventArgs.Empty);
-            }
-            if (Mouse.GetState().X < mPosition.X && Mouse.GetState().X >= mPosition.X + mButtonTexture.Width &&
-                Mouse.GetState().Y < mPosition.Y && Mouse.GetState().Y >= mPosition.Y + mButtonTexture.Height)
-            {
-                OnButtonHovering(EventArgs.Empty);
-            }
-        }
 
-        /// <summary>
-        /// draws the button to specified scale
-        /// </summary>
-        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-
+            // draw for button that uses a Texture2D
             if (misText == false)
             {
-                spriteBatch.Draw(mButtonTexture,
+                spriteBatch.Draw(mbuttonTexture,
                     mPosition,
                     null,
-                    Color.AntiqueWhite,
+                    mColor,
                     0f,
                     new Vector2(0, 0),
                     mScale,
@@ -101,12 +106,13 @@ namespace Singularity.Screen
 
             }
 
+            // draw for button that uses text
             else
             {
                 spriteBatch.DrawString(mFont,
-                    origin: Vector2.Zero, 
-                    position: mPosition, 
-                    color: Color.White,
+                    origin: Vector2.Zero,
+                    position: mPosition,
+                    color: mColor,
                     text: mbuttonText,
                     rotation: 0f,
                     scale: 1f,
@@ -114,32 +120,29 @@ namespace Singularity.Screen
                     layerDepth: 0.2f);
             }
         }
-
-        /// <summary>
-        /// updates the state of the button (left clicked or not)
-        /// </summary>
-        /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
-            // if left click within button area change current mouse state
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                Mouse.GetState().X < mPosition.X && Mouse.GetState().X >= mPosition.X + mButtonTexture.Width &&
-                Mouse.GetState().Y < mPosition.Y && Mouse.GetState().Y >= mPosition.Y + mButtonTexture.Height)
+            if (Mouse.GetState().X >= mPosition.X &&
+                Mouse.GetState().X <= mPosition.X + mWidth &&
+                Mouse.GetState().Y > mPosition.Y &&
+                Mouse.GetState().Y <= mPosition.Y + mHeight)
             {
-                mPreviousMouseState = mCurrentMouseState;
-                mCurrentMouseState = false;
+                OnButtonHovering();
+                mColor = Color.Gray;
             }
 
-            // if left click released then change current mouse state
-            if (Mouse.GetState().LeftButton == ButtonState.Released && mCurrentMouseState == false &&
-                Mouse.GetState().X < mPosition.X && Mouse.GetState().X >= mPosition.X + mButtonTexture.Width &&
-                Mouse.GetState().Y < mPosition.Y && Mouse.GetState().Y >= mPosition.Y + mButtonTexture.Height)
+            else
             {
-                mPreviousMouseState = mCurrentMouseState;
-                mCurrentMouseState = true;
+                mColor = Color.White;
             }
 
-            ButtonEvents();
         }
+
+        public void MousePressed(MouseEvent mouseEvent)
+        {
+        }
+
     }
+
+
 }
