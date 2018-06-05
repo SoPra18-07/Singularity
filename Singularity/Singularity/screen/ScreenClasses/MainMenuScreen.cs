@@ -13,44 +13,64 @@ using Singularity.Input;
 
 namespace Singularity.Screen.ScreenClasses
 {
+    /// <inheritdoc cref="IScreen"/>
     /// <summary>
-    /// Shows the main menu screen with 5 options:
-    /// New Game, Load Game, Achievements, Options, and Quit Game.
+    /// Handles everything thats going on explicitly in the game.
+    /// E.g. game objects, the map, camera. etc.
     /// </summary>
     class MainMenuScreen : IScreen
     {
-        private IScreenManager mScreenManager;
+        private static Vector2 sMenuBox;
+        private EScreen mScreenState;
+
+        // Fonts
+        private SpriteFont mLibSans36;
+        private SpriteFont mLibSans20;
+
+        // All connecting screens
         private IScreen mGameModeSelectScreen;
         private IScreen mLoadSelectScreen;
         private IScreen mAchievementsScreen;
         private IScreen mOptionsScreen;
-        private IScreen mGameScreen;
-        private static Vector2 sMenuBox;
-        private SpriteFont mLibSans36;
-        private SpriteFont mLibSans20;
-        private string mTitle;
-        private Button mPlay;
-        private Button mLoad;
-        private Button mOptions;
-        private Button mAchievements;
-        private Button mQuit;
-        private List<Button> mButtonsList;
-        private InputManager mInputManager;
+        private IScreen mSplashScreen;
 
+        // Background
+        private MenuBackgroundScreen mMenuBackgroundScreen;
 
+        // all text is stored as string variables to allow for easy changes
+        private readonly string mPlayString;
+        private readonly string mLoadSelectString;
+        private readonly string mAchievementsString;
+        private readonly string mOptionsString;
+        private readonly string mQuitString;
+        private readonly string mTitle;
 
-        public MainMenuScreen(Vector2 screenResolution, IScreenManager screenManager, IScreen gameModeSelect,
-            IScreen loadSelect, IScreen achievementsScreen, IScreen optionsScreen, IScreen gameScreen, InputManager inputManager)
+        // Buttons on the main menu
+        private Button mPlayButton;
+        private Button mLoadButton;
+        private Button mAchievementsButton;
+        private Button mOptionsButton;
+        private Button mQuitButton;
+        private List<Button> mButtonList;
+
+        /// <summary>
+        /// Shows the main menu screen with 5 options:
+        /// New Game, Load Game, Achievements, Options, and Quit Game.
+        /// </summary>
+        /// <param name="screenResolution">Screen resolution of the game</param>
+        /// <param name="screenManager">Stack screen manager of the game</param>
+        /// <param name="showSplash">Defines if the splash screen should be shown</param>
+        public MainMenuScreen(Vector2 screenResolution)
         {
             SetResolution(screenResolution);
-            mScreenManager = screenManager;
-            mGameModeSelectScreen = gameModeSelect;
-            mLoadSelectScreen = loadSelect;
-            mAchievementsScreen = achievementsScreen;
-            mOptionsScreen = optionsScreen;
-            mGameScreen = gameScreen;
-            mButtonsList = new List<Button>();
-            mInputManager = inputManager;
+
+            mPlayString = "New Game";
+            mLoadSelectString = "Load Game";
+            mAchievementsString = "Achivements";
+            mOptionsString = "Options";
+            mQuitString = "Quit";
+            mTitle = "Singularity";
+            mButtonList = new List<Button>();
         }
 
         public static void SetResolution(Vector2 screenResolution)
@@ -63,41 +83,52 @@ namespace Singularity.Screen.ScreenClasses
 
         public void LoadContent(ContentManager content)
         {
-            mTitle = "Singularity";
             mLibSans36 = content.Load<SpriteFont>("LibSans36");
             mLibSans20 = content.Load<SpriteFont>("LibSans20");
-            mPlay = new Button("Play", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 90), mInputManager);
-            mLoad = new Button("Load", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 140), mInputManager);
-            mOptions = new Button("Options", mLibSans20, new Vector2(sMenuBox.X+30, sMenuBox.Y + 190), mInputManager);
-            mAchievements = new Button("Achievements", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 240), mInputManager);
-            mQuit = new Button("Quit", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 290), mInputManager);
-            mButtonsList.Add(mPlay);
-            mButtonsList.Add(mLoad);
-            mButtonsList.Add(mOptions);
-            mButtonsList.Add(mAchievements);
-            mButtonsList.Add(mQuit);
+            mPlayButton = new Button("Play", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 90));
+            mLoadButton = new Button("Load", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 140));
+            mOptionsButton = new Button("Options", mLibSans20, new Vector2(sMenuBox.X+30, sMenuBox.Y + 190));
+            mAchievementsButton = new Button("Achievements", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 240));
+            mQuitButton = new Button("Quit", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 290));
+            mButtonList.Add(mPlayButton);
+            mButtonList.Add(mLoadButton);
+            mButtonList.Add(mOptionsButton);
+            mButtonList.Add(mAchievementsButton);
+            mButtonList.Add(mQuitButton);
 
         }
 
         public void Update(GameTime gametime)
         {
-            foreach (Button button in mButtonsList)
+
+            foreach (Button button in mButtonList)
             {
                 button.Update(gametime);
             }
-
         }
+
 
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
-            spriteBatch.StrokedRectangle(sMenuBox, new Vector2(300,350), Color.White, Color.White, .5f, .20f);
-            spriteBatch.DrawString(mLibSans36, mTitle, new Vector2(sMenuBox.X+30, sMenuBox.Y+20), Color.White);
-            foreach (Button button in mButtonsList)
+
+            foreach (Button button in mButtonList)
             {
                 button.Draw(spriteBatch);
             }
-            
+           
+
+            // Draw menu window
+            spriteBatch.StrokedRectangle(sMenuBox,
+                new Vector2(300, 350),
+                Color.White,
+                Color.White,
+                .5f,
+                .20f);
+            spriteBatch.DrawString(mLibSans36,
+                mTitle,
+                new Vector2(sMenuBox.X + 30, sMenuBox.Y + 10), Color.White);
+
             spriteBatch.End();
         }
 

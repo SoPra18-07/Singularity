@@ -36,7 +36,7 @@ namespace Singularity.Screen
         /// <param name="scale"> scale of the texture</param>
         /// <param name="buttonTexture"></param>
         /// <param name="position"></param>
-        public Button(float scale, Texture2D buttonTexture, Vector2 position, InputManager inputManager)
+        public Button(float scale, Texture2D buttonTexture, Vector2 position)
         {
             misText = false;
             mScale = scale;
@@ -45,7 +45,6 @@ namespace Singularity.Screen
             mWidth = mbuttonTexture.Width;
             mHeight = mbuttonTexture.Height;
             mColor = Color.White;
-            mInputMangager = inputManager;
         }
 
         /// <summary>
@@ -54,7 +53,7 @@ namespace Singularity.Screen
         /// <param name="buttonText">text that button will appear as</param>
         /// <param name="font"></param>
         /// <param name="position"></param>
-        public Button(string buttonText, SpriteFont font, Vector2 position, InputManager inputManager)
+        public Button(string buttonText, SpriteFont font, Vector2 position)
         {
             misText = true;
             mbuttonText = buttonText;
@@ -63,7 +62,6 @@ namespace Singularity.Screen
             mWidth = mFont.MeasureString(mbuttonText).X;
             mHeight = mFont.MeasureString(mbuttonText).Y;
             mColor = Color.White;
-            mInputMangager = inputManager;
         }
 
         /// <summary>
@@ -75,7 +73,9 @@ namespace Singularity.Screen
             {
                 ButtonReleased(this, EventArgs.Empty);
             }
+
         }
+
 
         /// <summary>
         /// Sends out event that mouse is hovering over the button

@@ -21,8 +21,6 @@ namespace Singularity.Screen.ScreenClasses
         private SpriteFont mLibSans20;
         private Vector2 mStringCenter;
         private readonly string mContinueString;
-        private readonly IScreenManager mScreenManager;
-        private readonly IScreen mMainMenuScreen;
 
         /// <summary>
         /// Shown when the game is first started and shows the logo and
@@ -31,13 +29,11 @@ namespace Singularity.Screen.ScreenClasses
         /// point in the campaign. Not buttons are shown but it listens for any
         /// key input.
         /// </summary>
-        public SplashScreen(Vector2 screenResolution, IScreenManager screenManager, IScreen mainMenu)
+        public SplashScreen(Vector2 screenResolution)
         {
             mLogoPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 - 100);
             mSingularityTextPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 + 150);
             mTextPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 + 250);
-            mScreenManager = screenManager;
-            mMainMenuScreen = mainMenu;
             mContinueString = "Press any key to continue";
         }
 
@@ -50,13 +46,6 @@ namespace Singularity.Screen.ScreenClasses
         }
         public void Update(GameTime gametime)
         {
-            if (Keyboard.GetState().GetPressedKeys().Length > 0)
-            {
-                // TODO animate screen
-                MenuBackgroundScreen.SetScreen(EScreen.MainMenuScreen);
-                mScreenManager.RemoveScreen();
-                mScreenManager.AddScreen(mMainMenuScreen);
-            }
         }
 
         public void Draw(SpriteBatch spriteBatch)

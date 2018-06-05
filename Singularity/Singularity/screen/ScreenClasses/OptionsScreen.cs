@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 
@@ -32,14 +33,10 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="gameplayOptionsScreen"></param>
         /// <param name="graphicsOptionsScreen"></param>
         /// <param name="audioOptionScreen"></param>
-        public OptionsScreen(Vector2 screenResolution, IScreenManager screenManager,
-            IScreen gameplayOptionsScreen, IScreen graphicsOptionsScreen, IScreen audioOptionScreen)
+        public OptionsScreen(Vector2 screenResolution, IScreenManager screenManager)
         {
             mScreenCenter = screenResolution;
             mScreenManager = screenManager;
-            mGameplayOptionsScreen = gameplayOptionsScreen;
-            mGraphicsOptionScreen = graphicsOptionsScreen;
-            mAudioOptionsScreen = audioOptionScreen;
         }
 
         public void Update(GameTime gametime)
@@ -55,6 +52,11 @@ namespace Singularity.Screen.ScreenClasses
                 Color.White,
                 0.5f,
                 0.21f);
+        }
+
+        public void LoadContent(ContentManager content)
+        {
+            // TODO
         }
 
         public bool UpdateLower()

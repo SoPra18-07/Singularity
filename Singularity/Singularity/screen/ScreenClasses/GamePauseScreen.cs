@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Singularity.Screen.ScreenClasses
@@ -25,6 +26,11 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         public void Draw(SpriteBatch spriteBatch)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LoadContent(ContentManager content)
         {
             throw new NotImplementedException();
         }

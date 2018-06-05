@@ -45,6 +45,7 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Libraries\Animations.cs" />
     <Compile Include="Libraries\Bloom Filter.cs" />
+    <Compile Include="Input\IMouseWheelListener.cs" />
     <Compile Include="Libraries\Primitives2D.cs" />
     <Compile Include="Libraries\QuadRenderer.cs" />
     <Compile Include="Map\Camera.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Screen\ScreenClasses\GameScreen.cs" />
     <Compile Include="Screen\ScreenClasses\LoadingScreen.cs" />
     <Compile Include="Screen\ScreenClasses\LoadSelectScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\MainMenuManagerScreen.cs" />
     <Compile Include="Screen\ScreenClasses\MainMenuScreen.cs" />
     <Compile Include="Screen\ScreenClasses\MenuBackgroundScreen.cs" />
     <Compile Include="Screen\ScreenClasses\OptionScreens\GameplayOptionsScreen.cs" />
@@ -100,7 +102,7 @@
     <Compile Include="Screen\UpdateLowerScreen.cs" />
     <Compile Include="Units\Pathfinding.cs" />
     <Compile Include="Units\Task.cs" />
-    <Compile Include="Screen\WindowItem.cs" />
+    <Compile Include="Screen\IWindowItem.cs" />
     <Compile Include="Utils\Optional.cs" />
     <Compile Include="Utils\Pair.cs" />
     <Compile Include="Utils\Triple.cs" />

@@ -21,11 +21,11 @@ namespace Singularity.Screen.ScreenClasses
     {
         private Texture2D mGlowTexture2D;
         private Texture2D mHoloProjectionTexture2D;
-        private static Vector2 sScreenResolution;
-        private static Vector2 sScreenResolutionScaling;
-        private static float sHoloProjectionWidthScaling;
-        private static Vector2 sHoloProjectionScaling;
-        private static EScreen sCurrentScreen;
+        private Vector2 mScreenResolution;
+        private Vector2 mScreenResolutionScaling;
+        private float mHoloProjectionWidthScaling;
+        private Vector2 mHoloProjectionScaling;
+        private EScreen mCurrentScreen;
 
         /// <summary>
         /// Creates the MenuBackgroundScreen class.
@@ -33,37 +33,37 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="screenResolution">Current screen resolution.</param>
         public MenuBackgroundScreen(Vector2 screenResolution)
         {
-            sHoloProjectionWidthScaling = 1f;
+            mHoloProjectionWidthScaling = 1f;
             SetResolution(screenResolution);
-            sCurrentScreen = EScreen.SplashScreen;
+            mCurrentScreen = EScreen.SplashScreen;
 
-            Debug.Print("sScreenResolution: " + sScreenResolution.X + ", " + sScreenResolution.Y);
-            Debug.Print("sScreenResolutionScaling: " + sScreenResolutionScaling.X + ", " + sScreenResolutionScaling.Y);
+            Debug.Print("sScreenResolution: " + mScreenResolution.X + ", " + mScreenResolution.Y);
+            Debug.Print("sScreenResolutionScaling: " + mScreenResolutionScaling.X + ", " + mScreenResolutionScaling.Y);
         }
 
-        private static void SetHoloProjectionScaling(float widthScaling)
+        private void SetHoloProjectionScaling(float widthScaling)
         {
-            if (sScreenResolutionScaling.X < sScreenResolutionScaling.Y)
+            if (mScreenResolutionScaling.X < mScreenResolutionScaling.Y)
             {
-                sHoloProjectionScaling = new Vector2(sScreenResolutionScaling.X);
+                mHoloProjectionScaling = new Vector2(mScreenResolutionScaling.X);
             }
             else
             {
-                sHoloProjectionScaling = new Vector2(sScreenResolutionScaling.Y);
+                mHoloProjectionScaling = new Vector2(mScreenResolutionScaling.Y);
             }
 
-            sHoloProjectionScaling = Vector2.Multiply(sHoloProjectionScaling, new Vector2(widthScaling, 1f));
+            mHoloProjectionScaling = Vector2.Multiply(mHoloProjectionScaling, new Vector2(widthScaling, 1f));
         }
 
         /// <summary>
         /// Changes the dimensions of the screen to fit the viewport resolution.
         /// </summary>
         /// <param name="screenResolution">Current viewport screen resolution</param>
-        public static void SetResolution(Vector2 screenResolution)
+        public void SetResolution(Vector2 screenResolution)
         {
-            sScreenResolution = screenResolution;
-            sScreenResolutionScaling = new Vector2(screenResolution.X / 1280, screenResolution.Y / 1024);
-            SetHoloProjectionScaling(sHoloProjectionWidthScaling);
+            mScreenResolution = screenResolution;
+            mScreenResolutionScaling = new Vector2(screenResolution.X / 1280, screenResolution.Y / 1024);
+            SetHoloProjectionScaling(mHoloProjectionWidthScaling);
         }
 
         /// <summary>
@@ -72,30 +72,30 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         /// <param name="screen">Choose the screen to be overlayed on top
         /// of the menu background</param>
-        public static void SetScreen(EScreen screen)
+        public void SetScreen(EScreen screen)
         {
-            sCurrentScreen = screen;
+            mCurrentScreen = screen;
 
-            switch (sCurrentScreen)
+            switch (mCurrentScreen)
             {
                 case EScreen.AchievementsScreen:
-                    sHoloProjectionWidthScaling = 1.5f;
+                    mHoloProjectionWidthScaling = 1.5f;
                     break;
                 case EScreen.GameModeSelectScreen:
                     break;
                 case EScreen.LoadSelectScreen:
                     break;
                 case EScreen.MainMenuScreen:
-                    sHoloProjectionWidthScaling = 4f;
+                    mHoloProjectionWidthScaling = 4f;
                     break;
                 case EScreen.OptionsScreen:
                     break;
                 case EScreen.SplashScreen:
                     break;
                 default:
-                    break;
+                    throw new ArgumentOutOfRangeException();
             }
-            SetHoloProjectionScaling(sHoloProjectionWidthScaling);
+            SetHoloProjectionScaling(mHoloProjectionWidthScaling);
         }
 
         /// <summary>
@@ -124,12 +124,12 @@ namespace Singularity.Screen.ScreenClasses
 
             // Draw glow
             spriteBatch.Draw(mGlowTexture2D,
-                new Vector2(sScreenResolution.X / 2, sScreenResolution.Y / 2),
+                new Vector2(mScreenResolution.X / 2, mScreenResolution.Y / 2),
                 null,
                 Color.AliceBlue,
                 0f,
                 new Vector2(609, 553),
-                sScreenResolutionScaling.X < sScreenResolutionScaling.Y ? sScreenResolutionScaling.X : sScreenResolutionScaling.Y, // Scales based on smaller scalar between height and width,
+                mScreenResolutionScaling.X < mScreenResolutionScaling.Y ? mScreenResolutionScaling.X : mScreenResolutionScaling.Y, // Scales based on smaller scalar between height and width,
                 SpriteEffects.None,
                 1f);
 
@@ -140,7 +140,7 @@ namespace Singularity.Screen.ScreenClasses
                 Color.AliceBlue,
                 0f,
                 new Vector2(367, 515),
-                sHoloProjectionScaling, // Scales based on smaller scalar between height and width
+                mHoloProjectionScaling, // Scales based on smaller scalar between height and width
                 SpriteEffects.None,
                 0f);
             
@@ -149,7 +149,7 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool UpdateLower()
         {
-            return false;
+            return true;
         }
 
         public bool DrawLower()
