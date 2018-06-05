@@ -10,6 +10,8 @@ install:
   - sudo apt-get install -qq monodevelop libopenal-dev referenceassemblies-pcl ttf-mscorefonts-installer gtk-sharp2 gtk-sharp3; # install needed packages for the monogame sdk
   - yes Y | sudo ./monogame-sdk.run; # install monogame sdk
   - sudo ./generate.sh && yes Y|sudo ./monogame-linux.run; # install monogame sdk
+  - sudo cp -r /usr/lib/mono/xbuild/MonoGame/v3.0/Assemblies/DesktopGL /usr/lib/mono/xbuild/MonoGame/v3.0/Assemblies/Windows
 script:
   - (cd Singularity/Singularity/Content/ && mono /opt/monogame-pipeline/MGCB.exe /rebuild /@:"Content.mgcb" /outputDir:"../bin/Release/Content")
   - sudo mdtool build Singularity/Singularity/Singularity.csproj
+  # this is actually necessary since otherwise for some reason there's no acesses to Build-required temp-paths.
