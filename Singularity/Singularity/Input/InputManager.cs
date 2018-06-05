@@ -10,7 +10,7 @@ namespace Singularity.Input
     /// <summary>
     /// Manages the UserInput
     /// </summary>
-    internal sealed class InputManager : IUpdate
+    public sealed class InputManager : IUpdate
     {
         private readonly List<IKeyListener> mKeyListener;
         private readonly List<IMouseListener> mMouseListener;
@@ -28,7 +28,7 @@ namespace Singularity.Input
             mMouseListener = new List<IMouseListener>();
             mMouseWheelListener = new List<IMouseWheelListener>();
 
-            // get states for later use
+            // get states for later
             mPreviousMouseState = Mouse.GetState();
             mPreviousKeyboardState = Keyboard.GetState();
         }
@@ -83,12 +83,16 @@ namespace Singularity.Input
 
         public void Update(GameTime gametime)
         {
+            // update 'current' values
             mCurrentMouseState = Mouse.GetState();
             mCurrentKeyboardState = Keyboard.GetState();
 
-            // process mouse wheel changes
+
+            // # BEGIN - mouse wheel events
+
+
             if (mCurrentMouseState.ScrollWheelValue < mPreviousMouseState.ScrollWheelValue)
-                // mouse wheel has been scrolled downwards -> create event 'ScrollDown'
+            // mouse wheel has been scrolled downwards -> create event 'ScrollDown'
             {
                 foreach (var mouseWheelListener in mMouseWheelListener)
                 {
@@ -96,7 +100,7 @@ namespace Singularity.Input
                 }
             }
             else if (mCurrentMouseState.ScrollWheelValue > mPreviousMouseState.ScrollWheelValue)
-                // mouse wheel has been scrolled upwards -> create event 'ScrollUp'
+            // mouse wheel has been scrolled upwards -> create event 'ScrollUp'
             {
                 foreach (var mouseWheelListener in mMouseWheelListener)
                 {
@@ -104,13 +108,21 @@ namespace Singularity.Input
                 }
             }
 
+
+            // # END - mouse wheel events
+
+
+            // # BEGIN - mouse button events
+
+
             // process left mouse button changes
             switch (mCurrentMouseState.LeftButton)
+                // switch-case for left mouse button-state
             {
                 case ButtonState.Pressed:
                     // left mouse button is pressed
                     if (mPreviousMouseState.LeftButton != ButtonState.Pressed)
-                        // left mouse button just pressed -> create events 'typed' + 'pressed'
+                    // left mouse button just pressed -> create events 'typed' + 'pressed'
                     {
                         foreach (var mouseListener in mMouseListener)
                         {
@@ -121,7 +133,7 @@ namespace Singularity.Input
                         }
                     }
                     else
-                        // left mouse button was already pressed -> create event 'pressed'
+                    // left mouse button was already pressed -> create event 'pressed'
                     {
                         foreach (var mouseListener in mMouseListener)
                         {
@@ -132,23 +144,25 @@ namespace Singularity.Input
 
                     break;
                 case ButtonState.Released:
+                    if (mPreviousMouseState.LeftButton == ButtonState.Pressed)
                     // left mouse button was released -> create event 'released'
-                    foreach (var mouseListener in mMouseListener)
                     {
-                        mouseListener.MouseReleased(new MouseEvent(EMouseAction.LeftClick,
-                            new Vector2(mCurrentMouseState.X, mCurrentMouseState.Y)));
+                        foreach (var mouseListener in mMouseListener)
+                        {
+                            mouseListener.MouseReleased(new MouseEvent(EMouseAction.LeftClick,
+                                new Vector2(mCurrentMouseState.X, mCurrentMouseState.Y)));
+                        }
                     }
 
                     break;
             }
 
-            // process right mouse button changes
             switch (mCurrentMouseState.RightButton)
+            // switch-case for right mouse button-state
             {
                 case ButtonState.Pressed:
-                    // right mouse button is pressed
                     if (mPreviousMouseState.RightButton != ButtonState.Pressed)
-                        // right mouse button just pressed -> create events 'typed' + 'pressed'
+                    // right mouse button was just pressed -> create events 'typed' + 'pressed'
                     {
                         foreach (var mouseListener in mMouseListener)
                         {
@@ -159,7 +173,7 @@ namespace Singularity.Input
                         }
                     }
                     else
-                        // right mouse button was already pressed -> create event 'pressed'
+                    // right mouse button was already pressed -> create event 'pressed'
                     {
                         foreach (var mouseListener in mMouseListener)
                         {
@@ -170,30 +184,40 @@ namespace Singularity.Input
 
                     break;
                 case ButtonState.Released:
+                    if (mPreviousMouseState.RightButton == ButtonState.Pressed)
                     // right mouse button was released -> create event 'released'
-                    foreach (var mouseListener in mMouseListener)
                     {
-                        mouseListener.MouseReleased(new MouseEvent(EMouseAction.RightClick,
-                            new Vector2(mCurrentMouseState.X, mCurrentMouseState.Y)));
+                        foreach (var mouseListener in mMouseListener)
+                        {
+                            mouseListener.MouseReleased(new MouseEvent(EMouseAction.RightClick,
+                                new Vector2(mCurrentMouseState.X, mCurrentMouseState.Y)));
+                        }
                     }
 
                     break;
             }
 
-            // go through all pressed keys and create events accordingly
+
+            // # END - mouse button events
+
+
+            // # BEGIN - process key events
+
+
             foreach (var pressedKey in mCurrentKeyboardState.GetPressedKeys())
+            // go through all pressed keys and create events accordingly
             {
                 if (!mPreviousKeyboardState.GetPressedKeys().Contains(pressedKey))
-                    // new key was pressed -> create events 'typed' + 'pressed'
+                // new key was pressed -> create events 'typed' + 'pressed'
                 {
                     foreach (var keyListener in mKeyListener)
                     {
-                        keyListener.KeyTyped(new KeyEvent(mCurrentKeyboardState.GetPressedKeys()));
                         keyListener.KeyPressed(new KeyEvent(mCurrentKeyboardState.GetPressedKeys()));
+                        keyListener.KeyTyped(new KeyEvent(mCurrentKeyboardState.GetPressedKeys()));
                     }
                 }
-                else 
-                    // key was already pressed -> create event 'pressed'
+                else
+                // key was already pressed -> create event 'pressed'
                 {
                     foreach (var keyListener in mKeyListener)
                     {
@@ -202,22 +226,27 @@ namespace Singularity.Input
                 }
             }
 
-            // go through all previously pressed keys and create events if they are no longer pressed
             foreach (var previouslyPressedKey in mPreviousKeyboardState.GetPressedKeys())
+            // go through all previously pressed keys and create events if they are no longer pressed
             {
                 if (mCurrentKeyboardState.GetPressedKeys().Contains(previouslyPressedKey))
-                    // the key was already pressed -> no event
+                // the key was already pressed -> no event
                 {
                     continue;
                 }
 
-                // the key has been released since the last update -> create event 'release'
+                // the key was released -> create event 'release'
                 foreach (var keyListener in mKeyListener)
                 {
-                    keyListener.KeyReleased(new KeyEvent(mCurrentKeyboardState.GetPressedKeys()));
+                    keyListener.KeyReleased(new KeyEvent(mPreviousKeyboardState.GetPressedKeys()));
                 }
             }
 
+
+            // # END - process key events
+
+
+            // update 'previous'-values
             mPreviousMouseState = mCurrentMouseState;
             mPreviousKeyboardState = mCurrentKeyboardState;
 
