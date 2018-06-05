@@ -2,16 +2,15 @@
 
 namespace Singularity.Input
 {
-    internal sealed class MouseEvent
+    public sealed class MouseEvent
     {
-
         public MouseEvent(EMouseAction mouseAction, Vector2 position)
         {
             Position = position;
             MouseAction = mouseAction;
         }
-        private Vector2 Position { get; }
+        public Vector2 Position { get; }
 
-        private EMouseAction MouseAction { get; }
+        public EMouseAction MouseAction { get; }
     }
 }

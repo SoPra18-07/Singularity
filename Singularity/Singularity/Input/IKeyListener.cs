@@ -3,13 +3,13 @@
     /// <summary>
     /// Provides an interface for everything that uses keys
     /// </summary>
-    internal interface IKeyListener
+    public interface IKeyListener
     {
         /// <summary>
         /// Used to set a key as typed
         /// </summary>
         /// <param name="keyEvent"></param>
-        void KeyTyped(KeyEvent keyEvent);   
+        void KeyTyped(KeyEvent keyEvent);
 
         /// <summary>
         /// Used to set a key as pressed
