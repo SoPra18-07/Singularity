@@ -155,6 +155,9 @@ namespace Singularity
                 Exit();
             }
 
+            // a new static input manager
+            InputManager2.Update(gameTime);
+
             mInputManager.Update(gameTime);
             mScreenManager.Update(gameTime);
             base.Update(gameTime);
