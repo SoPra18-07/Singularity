@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Singularity.Screen.ScreenClasses
 {
     // TODO animate the menu screen
+    /// <inheritdoc cref="IScreen"/>
     /// <summary>
     /// All the main menu screens are overlayed on top of this screen.
     /// Since the main menu will have the same animated background, it will
@@ -41,6 +42,11 @@ namespace Singularity.Screen.ScreenClasses
             Debug.Print("sScreenResolutionScaling: " + mScreenResolutionScaling.X + ", " + mScreenResolutionScaling.Y);
         }
 
+        /// <summary>
+        /// Determines the scaling of the holoprojection polygon by first making it fit within the screen then
+        /// making it stretch to the appropriate width.
+        /// </summary>
+        /// <param name="widthScaling">Scalar factor of how stretched out the projection should be.</param>
         private void SetHoloProjectionScaling(float widthScaling)
         {
             if (mScreenResolutionScaling.X < mScreenResolutionScaling.Y)
@@ -147,11 +153,19 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.End();
         }
 
+        /// <summary>
+        /// Determines whether or not the screen below this on the stack should update.
+        /// </summary>
+        /// <returns>Bool. If true, then the screen below this will be updated.</returns>
         public bool UpdateLower()
         {
             return true;
         }
-
+        
+        /// <summary>
+        /// Determines whether or not the screen below this on the stack should be drawn.
+        /// </summary>
+        /// <returns>Bool. If true, then the screen below this will be drawn.</returns>
         public bool DrawLower()
         {
             return false;

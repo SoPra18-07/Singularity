@@ -12,38 +12,38 @@ namespace Singularity.Screen.ScreenClasses
 {
     /// <inheritdoc cref="IScreen"/>
     /// <summary>
-    /// Handles everything thats going on explicitly in the game.
-    /// E.g. game objects, the map, camera. etc.
+    /// Shown after Options on the main menu or pause menu has been clicked.
+    /// Allows different settings and options to be set. Buttons include
+    /// for the different settings and a back button.
     /// </summary>
     class OptionsScreen : IScreen
     {
-        private IScreenManager mScreenManager;
-        private IScreen mGameplayOptionsScreen;
-        private IScreen mGraphicsOptionScreen;
-        private IScreen mAudioOptionsScreen;
         private Vector2 mScreenCenter;
 
         /// <summary>
-        /// Shown after Options on the main menu or pause menu has been clicked.
-        /// Allows different settings and options to be set. Buttons include
-        /// for the different settings and a back button.
+        /// Creates an instance of the Options screen.
         /// </summary>
-        /// <param name="screenResolution"></param>
-        /// <param name="screenManager"></param>
-        /// <param name="gameplayOptionsScreen"></param>
-        /// <param name="graphicsOptionsScreen"></param>
-        /// <param name="audioOptionScreen"></param>
-        public OptionsScreen(Vector2 screenResolution, IScreenManager screenManager)
+        /// <param name="screenResolution">Screen resolution used for scaling</param>
+        public OptionsScreen(Vector2 screenResolution)
         {
             mScreenCenter = screenResolution;
-            mScreenManager = screenManager;
+            
         }
 
+        /// <summary>
+        /// Updates the contents of the screen.
+        /// </summary>
+        /// <param name="gametime">Current gametime. Used for actions
+        /// that take place over time </param>
         public void Update(GameTime gametime)
         {
             // TODO make it work
         }
 
+        /// <summary>
+        /// Draws the content of this screen.
+        /// </summary>
+        /// <param name="spriteBatch">spriteBatch that this object should draw to.</param>
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.StrokedRectangle(mScreenCenter,
@@ -54,16 +54,28 @@ namespace Singularity.Screen.ScreenClasses
                 0.21f);
         }
 
+        /// <summary>
+        /// Loads any content that this screen might need.
+        /// </summary>
+        /// <param name="content">Content Manager that should handle the content loading</param>
         public void LoadContent(ContentManager content)
         {
             // TODO
         }
 
+        /// <summary>
+        /// Determines whether or not the screen below this on the stack should update.
+        /// </summary>
+        /// <returns>Bool. If true, then the screen below this will be updated.</returns>
         public bool UpdateLower()
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Determines whether or not the screen below this on the stack should be drawn.
+        /// </summary>
+        /// <returns>Bool. If true, then the screen below this will be drawn.</returns>
         public bool DrawLower()
         {
             throw new NotImplementedException();

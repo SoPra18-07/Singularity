@@ -156,7 +156,8 @@ namespace Singularity
                 Exit();
             }
 
-            // a new static input manager
+            // a new static input manager. It requires updating every tick to figure out where
+            // the mouse is.
             InputManager2.Update(gameTime);
 
             mInputManager.Update(gameTime);

@@ -11,8 +11,9 @@ namespace Singularity.Screen.ScreenClasses
     {
         /// <inheritdoc cref="IScreen"/>
         /// <summary>
-        /// Handles everything thats going on explicitly in the game.
-        /// E.g. game objects, the map, camera. etc.
+        /// Manages the main menu. This is the screen that is first loaded into the stack screen manager
+        /// and loads all the other main menu screens. Also handles button events which involve switching
+        /// between menu screens.
         /// </summary>
         private readonly IScreenManager mScreenManager;
         private EScreen mScreenState;
@@ -32,9 +33,7 @@ namespace Singularity.Screen.ScreenClasses
         private static string sPressed;
 
         /// <summary>
-        /// Manages the main menu. This is the screen that is first loaded into the stack screen manager
-        /// and loads all the other main menu screens. Also handles button events which involve switching
-        /// between menu screens.
+        /// Creates an instance of the MainMenuManagerScreen class
         /// </summary>
         /// <param name="screenResolution">Screen resolution of the game.</param>
         /// <param name="screenManager">Stack screen manager of the game.</param>
@@ -48,7 +47,7 @@ namespace Singularity.Screen.ScreenClasses
             mGameModeSelectScreen = new GameModeSelectScreen();
             mLoadSelectScreen = new LoadSelectScreen();
             mAchievementsScreen = new AchievementsScreen();
-            mOptionsScreen = new OptionsScreen(screenResolution, screenManager);
+            mOptionsScreen = new OptionsScreen(screenResolution);
             mMenuBackgroundScreen = new MenuBackgroundScreen(screenResolution);
             mSplashScreen = new SplashScreen(screenResolution);
             mMainMenuScreen = new MainMenuScreen(screenResolution);
@@ -58,6 +57,10 @@ namespace Singularity.Screen.ScreenClasses
             sPressed = "None";
         }
 
+        /// <summary>
+        /// Loads any content specific to this screen.
+        /// </summary>
+        /// <param name="content">Content Manager that should handle the content loading</param>
         public void LoadContent(ContentManager content)
         {
             // Load content for all the other menu screens
@@ -87,6 +90,11 @@ namespace Singularity.Screen.ScreenClasses
 
         }
 
+        /// <summary>
+        /// Updates the state of the main menu and changes the screen that is currently being displayed
+        /// by the stack screen manager
+        /// </summary>
+        /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
             // TODO this is temporary. This will be replaced with event handlers from the buttons or input
@@ -155,17 +163,29 @@ namespace Singularity.Screen.ScreenClasses
             sPressed = "None";
         }
 
+        /// <summary>
+        /// Draws the content of this screen.
+        /// </summary>
+        /// <param name="spriteBatch">spriteBatch that this object should draw to.</param>
         public void Draw(SpriteBatch spriteBatch)
         {
             // This screen draws nothing
         }
 
+        /// <summary>
+        /// Determines whether or not the screen below this on the stack should update.
+        /// </summary>
+        /// <returns>Bool. If true, then the screen below this will be updated.</returns>
         public bool UpdateLower()
         {
             // below this screen is the game so it shouldn't update the game
             return false;
         }
 
+        /// <summary>
+        /// Determines whether or not the screen below this on the stack should be drawn.
+        /// </summary>
+        /// <returns>Bool. If true, then the screen below this will be drawn.</returns>
         public bool DrawLower()
         {
             return mScreenState == EScreen.GameScreen? true : false;

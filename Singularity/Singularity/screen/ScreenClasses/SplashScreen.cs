@@ -7,8 +7,11 @@ namespace Singularity.Screen.ScreenClasses
 {
     /// <inheritdoc cref="IScreen"/>
     /// <summary>
-    /// Handles everything thats going on explicitly in the game.
-    /// E.g. game objects, the map, camera. etc.
+    /// Shown when the game is first started and shows the logo and
+    /// "Press any key to start".
+    /// The logo will change depending on not the player has past the reveal
+    /// point in the campaign. Not buttons are shown but it listens for any
+    /// key input.
     /// </summary>
     class SplashScreen : IScreen
     {
@@ -23,12 +26,9 @@ namespace Singularity.Screen.ScreenClasses
         private readonly string mContinueString;
 
         /// <summary>
-        /// Shown when the game is first started and shows the logo and
-        /// "Press any key to start".
-        /// The logo will change depending on not the player has past the reveal
-        /// point in the campaign. Not buttons are shown but it listens for any
-        /// key input.
+        /// Creates an instance of the splash screen.
         /// </summary>
+        /// <param name="screenResolution">Viewport resolution used for scaling.</param>
         public SplashScreen(Vector2 screenResolution)
         {
             mLogoPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 - 100);
@@ -37,6 +37,10 @@ namespace Singularity.Screen.ScreenClasses
             mContinueString = "Press any key to continue";
         }
 
+        /// <summary>
+        /// Loads any content that this screen might need.
+        /// </summary>
+        /// <param name="content">Content Manager that should handle the content loading</param>
         public void LoadContent(ContentManager content)
         {
             mLogoTexture2D = content.Load<Texture2D>("Logo");
@@ -44,10 +48,20 @@ namespace Singularity.Screen.ScreenClasses
             mLibSans20 = content.Load<SpriteFont>("LibSans20");
             mStringCenter = new Vector2(mLibSans20.MeasureString(mContinueString).X / 2, mLibSans20.MeasureString(mContinueString).Y / 2);
         }
+
+        /// <summary>
+        /// Updates the screen every tick.
+        /// </summary>
+        /// <param name="gametime">Current gametime. Used for actions
+        /// that take place over time</param>
         public void Update(GameTime gametime)
         {
         }
 
+        /// <summary>
+        /// Draws all the objects that this screen uses.
+        /// </summary>
+        /// <param name="spriteBatch">SpriteBatch that the objects should be drawn onto.</param>
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
@@ -89,11 +103,19 @@ namespace Singularity.Screen.ScreenClasses
 
         }
 
+        /// <summary>
+        /// Determines whether or not the screen below this on the stack should update.
+        /// </summary>
+        /// <returns>Bool. If true, then the screen below this will be updated.</returns>
         public bool UpdateLower()
         {
             return true;
         }
 
+        /// <summary>
+        /// Determines whether or not the screen below this on the stack should be drawn.
+        /// </summary>
+        /// <returns>Bool. If true, then the screen below this will be drawn.</returns>
         public bool DrawLower()
         {
             return true;

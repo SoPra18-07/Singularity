@@ -15,8 +15,8 @@ namespace Singularity.Screen.ScreenClasses
 {
     /// <inheritdoc cref="IScreen"/>
     /// <summary>
-    /// Handles everything thats going on explicitly in the game.
-    /// E.g. game objects, the map, camera. etc.
+    /// Shows the main menu screen with 5 options:
+    /// New Game, Load Game, Achievements, Options, and Quit Game.
     /// </summary>
     class MainMenuScreen : IScreen
     {
@@ -54,8 +54,7 @@ namespace Singularity.Screen.ScreenClasses
         private List<Button> mButtonList;
 
         /// <summary>
-        /// Shows the main menu screen with 5 options:
-        /// New Game, Load Game, Achievements, Options, and Quit Game.
+        /// 
         /// </summary>
         /// <param name="screenResolution">Screen resolution of the game</param>
         /// <param name="screenManager">Stack screen manager of the game</param>
@@ -73,7 +72,10 @@ namespace Singularity.Screen.ScreenClasses
             mButtonList = new List<Button>();
         }
 
-
+        /// <summary>
+        /// Used for scaling of the menu box
+        /// </summary>
+        /// <param name="screenResolution">Current screen resolution</param>
         public static void SetResolution(Vector2 screenResolution)
         {
             sMenuBox = new Vector2(screenResolution.X / 2 - 150, screenResolution.Y / 2 - 175);
@@ -82,6 +84,10 @@ namespace Singularity.Screen.ScreenClasses
 
         }
 
+        /// <summary>
+        /// Loads any content specific to this screen.
+        /// </summary>
+        /// <param name="content">Content Manager that should handle the content loading</param>
         public void LoadContent(ContentManager content)
         {
             mLibSans36 = content.Load<SpriteFont>("LibSans36");
@@ -118,7 +124,10 @@ namespace Singularity.Screen.ScreenClasses
             }
         }
 
-
+        /// <summary>
+        /// Draws the content of this screen.
+        /// </summary>
+        /// <param name="spriteBatch">spriteBatch that this object should draw to.</param>
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
@@ -143,11 +152,19 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.End();
         }
 
+        /// <summary>
+        /// Determines whether or not the screen below this on the stack should update.
+        /// </summary>
+        /// <returns>Bool. If true, then the screen below this will be updated.</returns>
         public bool UpdateLower()
         {
             return true;
         }
 
+        /// <summary>
+        /// Determines whether or not the screen below this on the stack should be drawn.
+        /// </summary>
+        /// <returns>Bool. If true, then the screen below this will be drawn.</returns>
         public bool DrawLower()
         {
             return true;
