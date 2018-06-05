@@ -12,4 +12,4 @@ install:
   - sudo ./generate.sh && yes Y|sudo ./monogame-linux.run; # install monogame sdk
 script:
   - (cd Singularity/Singularity/Content/ && mono /opt/monogame-pipeline/MGCB.exe /rebuild /@:"Content.mgcb" /outputDir:"../bin/Release/Content")
-  - mdtool build Singularity/Singularity/Singularity.csproj
+  - sudo mdtool build Singularity/Singularity/Singularity.csproj
