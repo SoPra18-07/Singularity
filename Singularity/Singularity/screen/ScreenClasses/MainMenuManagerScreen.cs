@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -102,12 +103,22 @@ namespace Singularity.Screen.ScreenClasses
                 case EScreen.MainMenuScreen:
                     if (sPressed == "Play")
                     {
-                        mMenuBackgroundScreen.SetScreen(EScreen.SplashScreen);
-                        mScreenManager.RemoveScreen();
-                        mScreenManager.RemoveScreen();
-                        // mScreenManager.AddScreen(mSplashScreen);
-                        mScreenState = EScreen.GameScreen;
-                        sPressed = "None";
+                        SwitchScreen(EScreen.GameModeSelectScreen, mGameModeSelectScreen);
+                    }
+
+                    if (sPressed == "Load")
+                    {
+                        SwitchScreen(EScreen.LoadSelectScreen, mLoadSelectScreen);
+                    }
+
+                    if (sPressed == "Options")
+                    {
+                        SwitchScreen(EScreen.OptionsScreen, mOptionsScreen);
+                    }
+
+                    if (sPressed == "Achievments")
+                    {
+                        SwitchScreen(EScreen.AchievementsScreen, mAchievementsScreen);
                     }
                     break;
                 case EScreen.OptionsScreen:
@@ -129,6 +140,21 @@ namespace Singularity.Screen.ScreenClasses
             }
         }
 
+        /// <summary>
+        /// Automates the process of removing and adding new screens
+        /// that are part of the MainMenu to the stack manager.
+        /// </summary>
+        /// <param name="eScreen"></param>
+        /// <param name="iScreen"></param>
+        private void SwitchScreen(EScreen eScreen, IScreen iScreen)
+        {
+            mMenuBackgroundScreen.SetScreen(eScreen);
+            mScreenManager.RemoveScreen();
+            mScreenManager.AddScreen(iScreen);
+            mScreenState = eScreen;
+            sPressed = "None";
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             // This screen draws nothing
@@ -147,28 +173,57 @@ namespace Singularity.Screen.ScreenClasses
 
         #region MainMenuScreen Button Handlers
 
-
+        /// <summary>
+        /// Receives Play button released event and changes sPressed
+        /// to result in screen change within Update method.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArg"></param>
         public static void OnPlayButtonReleased(Object sender, EventArgs eventArg)
         {
             sPressed = "Play";
         }
 
+        /// <summary>
+        /// Receives Load button released event and changes sPressed
+        /// to result in screen change within Update method.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
         public static void OnLoadButtonReleased(Object sender, EventArgs eventArgs)
         {
             sPressed = "Load";
         }
 
+        /// <summary>
+        /// Receives Options button released event and changes sPressed
+        /// to result in screen change within Update method.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
         public static void OnOptionsButtonReleased(Object sender, EventArgs eventArgs)
         {
             sPressed = "Options";
 
         }
 
+        /// <summary>
+        /// Receives Achievements button released event and changes sPressed
+        /// to result in screen change within Update method.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
         public static void OnAchievementsButtonReleased(Object sender, EventArgs eventArgs)
         {
             sPressed = "Achievements";
         }
 
+        /// <summary>
+        /// Receives Quit button released event and
+        /// exits game.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
         public static void OnQuitButtonReleased(Object sender, EventArgs eventArgs)
         {
             //TODO: handle when quit button is clicked

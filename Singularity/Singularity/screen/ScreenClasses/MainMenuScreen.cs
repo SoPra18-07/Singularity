@@ -73,6 +73,7 @@ namespace Singularity.Screen.ScreenClasses
             mButtonList = new List<Button>();
         }
 
+
         public static void SetResolution(Vector2 screenResolution)
         {
             sMenuBox = new Vector2(screenResolution.X / 2 - 150, screenResolution.Y / 2 - 175);
@@ -104,6 +105,10 @@ namespace Singularity.Screen.ScreenClasses
 
         }
 
+        /// <summary>
+        /// Updates the buttons within the MainMenuScreen.
+        /// </summary>
+        /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
 
