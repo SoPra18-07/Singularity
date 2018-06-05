@@ -21,7 +21,7 @@ namespace Singularity.platform
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Something like "Hello InstanceThatManagesEnergyLevels I exist now(Myself)"
             //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<IResources, int>();
+            mCost = new Dictionary<IResource, int>();
         }
     }
 }

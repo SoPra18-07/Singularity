@@ -21,7 +21,7 @@ namespace Singularity.platform
             //mActions[1] = ProduceWellResource(this);
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<IResources, int>();
+            mCost = new Dictionary<IResource, int>();
         }
 
         public override void Produce()

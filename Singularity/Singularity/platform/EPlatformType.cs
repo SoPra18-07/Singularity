@@ -8,6 +8,7 @@ namespace Singularity.platform
 {
     enum EPlatformType
     {
+        Blank,
 
     }
 }
