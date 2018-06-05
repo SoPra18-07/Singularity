@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using System.IO;
 using System.Xml;
+using Singularity.screen;
+using Singularity.Utils;
 
 namespace Singularity.serialization
 {
@@ -22,7 +24,7 @@ namespace Singularity.serialization
         /// <param name="toSerialize"> The object to be serialized</param>
         /// <param name="filepath"> The path where the xml-file should be created. Note that the name of the xml-file has to be part of the path.
         /// Example: ..\config\Gamesave_to_be_created.xml </param>
-        public static void Serialize(object toSerialize, string filepath)
+        private static void Serialize(object toSerialize, string filepath)
         {
             var ser = new NetDataContractSerializer();
             var fs = new FileStream(filepath, FileMode.Create);
@@ -43,57 +45,65 @@ namespace Singularity.serialization
         }
 
         /// <summary>
-        /// Deserialize the objects of the given xml-file to a List.
+        /// Deserialize the object of the given xml-file.
         /// </summary>
         /// <param name="filepath">The xml-file I was talking about</param>
-        /// <returns>A List containing all the Xml-objects of the file.</returns>
-        public static List<object> Deserialize(string filepath)
+        /// <returns>A List containing all objects of the given file. Currently we should only have files with one object, though.</returns>
+        private static List<object> Deserialize(string filepath)
         {
             var ser = new NetDataContractSerializer();
             var fs = new FileStream(filepath, FileMode.Open);
             var reader = XmlDictionaryReader.CreateTextReader(fs, new XmlDictionaryReaderQuotas());
-            var deserializedObjects = new List<object>();
+            var deserializedObject = new List<object>();
 
             while (reader.Read())
             {
                 if (ser.IsStartObject(reader))
                 {
                     var o = ser.ReadObject(reader);
-                    var otype = o.GetType();
-                    deserializedObjects.Add(Convert.ChangeType(o, otype));
+                    deserializedObject.Add(o);
                 }
                 break;
             }
             fs.Flush();
             fs.Close();
-            return deserializedObjects;
+
+            return deserializedObject;
         }
 
         /// <summary>
-        /// Save the current Gamestate in a xml file. The destination will be  %USERPROFILE%\Saved Games and the name of the file will
-        /// depend on the level and the ingame time.
+        /// Save the given object in a xml file with the given name. Already existing files with that name will be overridden.
+        /// The destination will be  %USERPROFILE%\Saved Games\Singularity (the directory will be created if it doesnt exist).
         /// </summary>
-        public static void SaveGamestate()
+        /// <param name="toSave">The object that should be saved</param>
+        /// /// <param name="name">The name of the file. Don't forget to add .xml at the end!!!</param>
+        public static void Save(object toSave, string name)
         {
-            throw new NotImplementedException();
-            var path = @"%USERPROFILE%\Saved Games";
+            var path = @"%USERPROFILE%\Saved Games\Singularity";
             path = Environment.ExpandEnvironmentVariables(path);
-
-            //Will be implemented further when the explicit workflow is clear.
-            path = path + @"\"; //+ Game.GetLevelName() + "-" + Game.GetIngameTime() + ".xml"
-            //Serialize(GameScreen, path);
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            path = path + @"\" + name; 
+            Serialize(toSave, path);  
         }
 
         /// <summary>
-        /// Load the Xml file containing the Gamestate.
+        /// Load the Xml-file containing whatever data. Remember that in our Saves there should only be one object, contact me if you want to change that.
+        /// It may be, that a typecast is needed since this method returns an object.
         /// </summary>
-        /// /// <param name="path">The xml-file I was talking about</param>
-        public static void LoadGame(string path)
+        /// <param name="path">The Xml-file I was talking about</param>
+        /// <returns>The Object that has been loaded</returns>
+        public static object Load(string path)
         {
-            throw new NotImplementedException();
-            //Will be implemented further when the explicit workflow is clear.
-            var deserializedObjects = Deserialize(path);
-            //Something.Initialize() 
+            var loadedObjects = Deserialize(path);
+            if (loadedObjects.Count == 0)
+            {
+                throw new Exception("There are no deserialized Objects. Most likely your .xml file is empty.");
+            }
+            //One may implement additional logic here later
+            return loadedObjects[0];
         }
 
         /// <summary>
@@ -134,8 +144,8 @@ namespace Singularity.serialization
 
             //Check shared references
             var deserializedList = dummyd.GetList();
-            var dummy1 = (SerializationDummy) deserializedList[0];
-            var dummy2 = (SerializationDummy) deserializedList[1];
+            var dummy1 = deserializedList[0];
+            var dummy2 = deserializedList[1];
             dummyd.Increment();
             if (ReferenceEquals(dummy1.GetList(), dummy2.GetList()))
             {
