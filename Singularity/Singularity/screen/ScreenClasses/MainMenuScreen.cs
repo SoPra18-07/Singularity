@@ -96,6 +96,12 @@ namespace Singularity.Screen.ScreenClasses
             mButtonList.Add(mAchievementsButton);
             mButtonList.Add(mQuitButton);
 
+            mPlayButton.ButtonReleased += MainMenuManagerScreen.OnPlayButtonReleased;
+            mLoadButton.ButtonReleased += MainMenuManagerScreen.OnLoadButtonReleased;
+            mOptionsButton.ButtonReleased += MainMenuManagerScreen.OnOptionsButtonReleased;
+            mAchievementsButton.ButtonReleased += MainMenuManagerScreen.OnAchievementsButtonReleased;
+            mQuitButton.ButtonReleased += MainMenuManagerScreen.OnQuitButtonReleased;
+
         }
 
         public void Update(GameTime gametime)

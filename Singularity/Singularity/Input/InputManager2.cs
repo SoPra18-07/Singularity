@@ -20,7 +20,7 @@ namespace Singularity.Input
         #region Left Button
 
         /// <summary>
-        /// Returns a bool that says whether or not a the mleft mouse button has been
+        /// Returns a bool that says whether or not a the left mouse button has been
         /// clicked over a rectangular region.
         /// </summary>
         /// <param name="bounds">A rectangle representing the bounds of the button</param>

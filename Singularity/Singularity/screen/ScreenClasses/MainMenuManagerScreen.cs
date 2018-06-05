@@ -27,6 +27,9 @@ namespace Singularity.Screen.ScreenClasses
         // Background
         private readonly MenuBackgroundScreen mMenuBackgroundScreen;
 
+        // Which button pressed
+        private static string sPressed;
+
         /// <summary>
         /// Manages the main menu. This is the screen that is first loaded into the stack screen manager
         /// and loads all the other main menu screens. Also handles button events which involve switching
@@ -50,6 +53,8 @@ namespace Singularity.Screen.ScreenClasses
             mMainMenuScreen = new MainMenuScreen(screenResolution);
 
             mScreenState = showSplash ? EScreen.SplashScreen : EScreen.MainMenuScreen;
+
+            sPressed = "None";
         }
 
         public void LoadContent(ContentManager content)
@@ -95,6 +100,15 @@ namespace Singularity.Screen.ScreenClasses
                 case EScreen.LoadSelectScreen:
                     break;
                 case EScreen.MainMenuScreen:
+                    if (sPressed == "Play")
+                    {
+                        mMenuBackgroundScreen.SetScreen(EScreen.SplashScreen);
+                        mScreenManager.RemoveScreen();
+                        mScreenManager.RemoveScreen();
+                        // mScreenManager.AddScreen(mSplashScreen);
+                        mScreenState = EScreen.GameScreen;
+                        sPressed = "None";
+                    }
                     break;
                 case EScreen.OptionsScreen:
                     break;
@@ -128,7 +142,42 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool DrawLower()
         {
-            return false;
+            return mScreenState == EScreen.GameScreen? true : false;
         }
+
+        #region MainMenuScreen Button Handlers
+
+
+        public static void OnPlayButtonReleased(Object sender, EventArgs eventArg)
+        {
+            sPressed = "Play";
+        }
+
+        public static void OnLoadButtonReleased(Object sender, EventArgs eventArgs)
+        {
+            sPressed = "Load";
+        }
+
+        public static void OnOptionsButtonReleased(Object sender, EventArgs eventArgs)
+        {
+            sPressed = "Options";
+
+        }
+
+        public static void OnAchievementsButtonReleased(Object sender, EventArgs eventArgs)
+        {
+            sPressed = "Achievements";
+        }
+
+        public static void OnQuitButtonReleased(Object sender, EventArgs eventArgs)
+        {
+            //TODO: handle when quit button is clicked
+            throw new DivideByZeroException("Game Quit not yet Implemented");
+            
+        }
+
+        #endregion
+
+
     }
 }
