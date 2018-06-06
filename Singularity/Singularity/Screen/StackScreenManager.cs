@@ -9,7 +9,7 @@ namespace Singularity.Screen
     /// An implementation for the ScreenManager as shown in the lecture. Utilizes a stack
     /// for the screens to maintain a stacked view of all current screens, allowing to cascade
     /// through all of them if needed.
-    /// </remarks> 
+    /// </remarks>
     internal sealed class StackScreenManager : IScreenManager
     {
         /// <summary>
@@ -34,7 +34,7 @@ namespace Singularity.Screen
         }
 
         public void Update(GameTime gameTime)
-        {   
+        {
             // Note that this already "reverses" the stack, since the implementation calls
             // LinkedList.addLast(mScreenStack.pop()) for every element in the stack, thus the
             // formerly "top" item in the stack is now the first item in the linked list. This

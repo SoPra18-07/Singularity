@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.Net.Compilers.2.8.2\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.2.8.2\build\Microsoft.Net.Compilers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -57,21 +58,22 @@
     <Compile Include="Input\InputManager.cs" />
     <Compile Include="Input\KeyEvent.cs" />
     <Compile Include="Input\MouseAction.cs" />
-    <Compile Include="platform\Action.cs" />
-    <Compile Include="platform\Job.cs" />
-    <Compile Include="platform\PlatformBlank.cs" />
-    <Compile Include="serialization\CyclicDummy.cs" />
-    <Compile Include="serialization\XSerializer.cs" />
-    <Compile Include="serialization\SerializationDummy.cs" />
-    <Compile Include="Property\ISpatial.cs" />
+    <Compile Include="Platform\IPlatformAction.cs" />
+    <Compile Include="Platform\Road.cs" />
     <Compile Include="Resources\EResourceType.cs" />
+    <Compile Include="Platform\Action.cs" />
+    <Compile Include="Platform\Job.cs" />
+    <Compile Include="Platform\PlatformBlank.cs" />
+    <Compile Include="Serialization\CyclicDummy.cs" />
+    <Compile Include="Serialization\XSerializer.cs" />
+    <Compile Include="Serialization\SerializationDummy.cs" />
+    <Compile Include="Property\ISpatial.cs" />
     <Compile Include="Resources\IResource.cs" />
     <Compile Include="Resources\Resource.cs" />
     <Compile Include="Resources\ResourceHelper.cs" />
     <Compile Include="Property\LayerConstants.cs" />
     <Compile Include="Screen\GameScreen.cs" />
     <Compile Include="Units\GeneralUnit.cs" />
-    <Compile Include="platform\Road.cs" />
     <Compile Include="Units\IUnit.cs" />
     <Compile Include="Units\JobType.cs" />
     <Compile Include="Units\MilitaryUnit.cs" />
@@ -90,6 +92,8 @@
     <Compile Include="Utils\Optional.cs" />
     <Compile Include="Utils\Pair.cs" />
     <Compile Include="Utils\Triple.cs" />
+    <Compile Include="Platform\PlatformActionState.cs" />
+    <Compile Include="Platform\ProduceResource.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -105,7 +109,7 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
-    <None Include="ClassDiagram1.cd" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

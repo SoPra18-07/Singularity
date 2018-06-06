@@ -8,7 +8,7 @@ namespace Singularity.Map
     /// <summary>
     /// The resource map is used to store the amount of resources on a specified location.
     /// </summary>
-    internal sealed class ResourceMap
+    public sealed class ResourceMap
     {
         /// <summary>
         /// The internal resource map used to store said resources.
@@ -19,7 +19,7 @@ namespace Singularity.Map
         /// Creates a new resource map with the given initial resources.
         /// </summary>
         /// <param name="initialResources">A dictionary holding intial resource values. If left empty it will be null</param>
-        public ResourceMap(IDictionary<Vector2, Pair<EResourceType, int>> initialResources)
+        internal ResourceMap(IDictionary<Vector2, Pair<EResourceType, int>> initialResources)
         {
             if (initialResources == null)
             {
@@ -34,7 +34,7 @@ namespace Singularity.Map
         /// </summary>
         /// <param name="location">The location at which resources are to be</param>
         /// <returns></returns>
-        public Optional<Pair<EResourceType, int>> GetResources(Vector2 location)
+        internal Optional<Pair<EResourceType, int>> GetResources(Vector2 location)
         {
             return Optional<Pair<EResourceType, int>>.Of(mResourceMap[location]);
         }

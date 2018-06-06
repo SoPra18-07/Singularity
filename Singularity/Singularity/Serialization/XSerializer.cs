@@ -4,7 +4,6 @@ using System.Runtime.Serialization;
 using System.IO;
 using System.Xml;
 
-
 namespace Singularity.serialization
 {
     /// <summary>
@@ -80,8 +79,8 @@ namespace Singularity.serialization
             {
                 Directory.CreateDirectory(path);
             }
-            path = path + @"\" + name; 
-            Serialize(toSave, path);  
+            path = path + @"\" + name;
+            Serialize(toSave, path);
         }
 
         /// <summary>

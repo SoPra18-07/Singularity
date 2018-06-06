@@ -2,10 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Singularity.Platform;
 using Singularity.Input;
-using Singularity.platform;
 using Singularity.screen;
-using Singularity.serialization;
 using Singularity.Screen;
 using Singularity.Units;
 
@@ -14,7 +13,7 @@ namespace Singularity
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public sealed class Game1 : Game
+    internal sealed class Game1 : Game
     {
         private GraphicsDeviceManager mGraphics;
         private SpriteBatch mSpriteBatch;

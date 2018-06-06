@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Singularity.Screen
@@ -7,26 +8,26 @@ namespace Singularity.Screen
     /// <remarks>
     /// A basic implementation for a Screen, used for debugging purposes.
     /// </remarks>
-    internal sealed class RenderLowerScreen : IScreen
+    internal sealed class UpdateLowerScreen : IScreen
     {
         public void Draw(SpriteBatch spriteBatch)
         {
-            System.Diagnostics.Debug.WriteLine("RenderLowerScreen: Draw called");
+            Debug.WriteLine("Update Lower Screen: Draw called");
         }
 
         public bool DrawLower()
         {
-            return true;
+            return false;
         }
 
         public void Update(GameTime gametime)
         {
-            System.Diagnostics.Debug.WriteLine("RenderLowerScreen: Update called");
+            Debug.Write("Update Lower Screen: Update called");
         }
 
         public bool UpdateLower()
         {
-            return false;
+            return true;
         }
     }
 }

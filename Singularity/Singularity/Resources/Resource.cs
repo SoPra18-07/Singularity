@@ -9,7 +9,7 @@ namespace Singularity.Resources
     /// <summary>
     /// Represents a resource in the game. Written in such a fashion that it can represent any resource there is and will be.
     /// </summary>
-    internal class Resource : IResource
+    public class Resource : IResource
     {
         /// <summary>
         /// The velocity of this resource object.
