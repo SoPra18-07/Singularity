@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Singularity.Platform;
+using Singularity.Input;
+using Singularity.serialization;
 using Singularity.Screen;
 using Singularity.Units;
 
@@ -23,6 +25,8 @@ namespace Singularity
         private PlatformBlank mPlatform2;
         private Map.Map mMap;
         private static Song sSoundtrack;
+        private GameScreen mGameScreen;
+        private InputManager mInputManager;
 
         // roads
         private Road mRoad1;
@@ -36,6 +40,7 @@ namespace Singularity
             mGraphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
+            mInputManager = new InputManager();
             mScreenManager = new StackScreenManager();
 
         }
@@ -54,10 +59,13 @@ namespace Singularity
                mScreenManager.AddScreen(new RenderLowerScreen());
                mScreenManager.AddScreen(new UpdateLowerScreen());
             */
+
+            // XSerializer.TestSerialization();
             IsMouseVisible = true;
             mGraphics.PreferredBackBufferWidth = 1080;
             mGraphics.PreferredBackBufferHeight = 720;
             mGraphics.ApplyChanges();
+
             base.Initialize();
         }
 
@@ -79,15 +87,23 @@ namespace Singularity
             mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet);
             mPlatform2 = new PlatformBlank(new Vector2(800, 600), mPlatformSheet);
 
-            var lineTexture = new Texture2D(mGraphics.GraphicsDevice, 1, 1);
-            lineTexture.SetData(new[] { Color.White });
-            mMap = new Map.Map(Content.Load<Texture2D>("MockUpBackground"), mGraphics.GraphicsDevice.Viewport, lineTexture);
+            mMap = new Map.Map(Content.Load<Texture2D>("MockUpBackground"), mGraphics.GraphicsDevice.Viewport, true);
 
             mMap.AddPlatform(mPlatform);
             mMap.AddPlatform(mPlatform2);
 
+            mGameScreen = new GameScreen(mMap);
+
             // load roads
             mRoad1 = new Road(new Vector2(300, 400), new Vector2(800, 600), false);
+
+            mGameScreen.AddObject<MilitaryUnit>(mMUnit1);
+            mGameScreen.AddObject<MilitaryUnit>(mMUnit2);
+            mGameScreen.AddObject<PlatformBlank>(mPlatform);
+            mGameScreen.AddObject<PlatformBlank>(mPlatform2);
+            mGameScreen.AddObject<Road>(mRoad1);
+
+            mScreenManager.AddScreen(mGameScreen);
 
             // load and play Soundtrack as background music
             sSoundtrack = Content.Load<Song>("BGMusic");
@@ -119,11 +135,8 @@ namespace Singularity
                 Exit();
             }
 
-            // TODO: Add your update logic here
+            mInputManager.Update(gameTime);
             mScreenManager.Update(gameTime);
-            mMap.Update(gameTime);
-            mMUnit1.Update(gameTime);
-            mMUnit2.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -138,10 +151,6 @@ namespace Singularity
             // TODO: Add your drawing code here
 
             mScreenManager.Draw(mSpriteBatch);
-            mMap.Draw(mSpriteBatch);
-            mMUnit1.Draw(mSpriteBatch);
-            mMUnit2.Draw(mSpriteBatch);
-            mRoad1.Draw(mSpriteBatch);
             base.Draw(gameTime);
         }
     }

@@ -10,7 +10,6 @@ namespace Singularity.Units
     public class GeneralUnit : IUnit, IUpdate, IDraw
     {
         public int Id { get; }
-        public Vector2 Position { get; private set; }
         private int mPositionId;
         public string Assignment { get; set; } // TODO change to an enum type
         public EResourceType Carrying { get; set; } // TODO change resource into a nullable type
@@ -18,15 +17,24 @@ namespace Singularity.Units
         private Stack<int> mPathQueue; // the queue of platform and edges the unit has to traverse to get to its target
         private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
 
+        // TODO: also use the size for the units representation since we someday need to draw rectangles over units (bounding box)
+
+        public Vector2 AbsolutePosition { get; set; }
+
+        public Vector2 AbsoluteSize { get; set; }
+
+        public Vector2 RelativePosition { get; set; }
+
+        public Vector2 RelativeSize { get; set; }
 
         internal JobType Job { get; set; } = JobType.Idle;
 
-        GeneralUnit(int spawnPositionId)
+        public GeneralUnit(int spawnPositionId)
         {
             Id = 0; // TODO make this randomized or simply ascending
-            Position = Vector2.Zero; // TODO figure out how to search platform by ID and get its position
+            AbsolutePosition = Vector2.Zero; // TODO figure out how to search platform by ID and get its position
             mPositionId = spawnPositionId;
-            Carrying = EResourceType.None;
+            Carrying = EResourceType.Trash; // TODO change this to a nullable type or some other implementation after dist manager is implemented
             mPathQueue = null;
         }
         /// <summary>
@@ -137,7 +145,7 @@ namespace Singularity.Units
                         // go to the next node in the pathQueue
                         while (mPositionId != currentTarget)
                         {
-                            Position = Move(currentTarget);
+                            AbsolutePosition = Move(currentTarget);
                             // then update the positionID with whatever the unit is standing on top of
                         }
                     }
@@ -150,7 +158,7 @@ namespace Singularity.Units
                         // go to the next node in the pathQueue
                         while (mPositionId != currentTarget)
                         {
-                            Position = Move(currentTarget);
+                            AbsolutePosition = Move(currentTarget);
                             // then update the positionID with whatever the unit is standing on top of
                         }
                     }

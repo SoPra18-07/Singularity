@@ -361,7 +361,8 @@ namespace Singularity.Libraries
 		/// <param name="point2">The second point</param>
 		/// <param name="color">The color to use</param>
 		/// <param name="thickness">The thickness of the line</param>
-		public static void DrawLine(this SpriteBatch spriteBatch, Vector2 point1, Vector2 point2, Color color, float thickness)
+		/// <param name="layerDepth">The depth of the layer this gets drawn to</param>
+		public static void DrawLine(this SpriteBatch spriteBatch, Vector2 point1, Vector2 point2, Color color, float thickness, float layerDepth = 0)
 		{
 			// calculate the distance between the two vectors
 			float distance = Vector2.Distance(point1, point2);
@@ -387,16 +388,17 @@ namespace Singularity.Libraries
 		}
 
 
-		/// <summary>
-		/// Draws a line from point1 to point2 with an offset
-		/// </summary>
-		/// <param name="spriteBatch">The destination drawing surface</param>
-		/// <param name="point">The starting point</param>
-		/// <param name="length">The length of the line</param>
-		/// <param name="angle">The angle of this line from the starting point</param>
-		/// <param name="color">The color to use</param>
-		/// <param name="thickness">The thickness of the line</param>
-		public static void DrawLine(this SpriteBatch spriteBatch, Vector2 point, float length, float angle, Color color, float thickness)
+        /// <summary>
+        /// Draws a line from point1 to point2 with an offset
+        /// </summary>
+        /// <param name="spriteBatch">The destination drawing surface</param>
+        /// <param name="point">The starting point</param>
+        /// <param name="length">The length of the line</param>
+        /// <param name="angle">The angle of this line from the starting point</param>
+        /// <param name="color">The color to use</param>
+        /// <param name="thickness">The thickness of the line</param>
+        /// <param name="layerDepth">The depth of the layer this gets drawn to</param>
+        public static void DrawLine(this SpriteBatch spriteBatch, Vector2 point, float length, float angle, Color color, float thickness, float layerDepth = 0)
 		{
 			if (sPixel == null)
 			{
@@ -412,7 +414,7 @@ namespace Singularity.Libraries
 			                 Vector2.Zero,
 			                 new Vector2(length, thickness),
 			                 SpriteEffects.None,
-			                 0);
+			                 layerDepth);
 		}
 
 		#endregion

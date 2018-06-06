@@ -9,7 +9,7 @@ using Singularity.Units;
 namespace Singularity.Platform
 {
 
-    public class PlatformBlank : IDraw, IUpdate
+    internal class PlatformBlank : IDraw, IUpdate, ISpatial
     {
 
         private const int PlatformWidth = 148;
@@ -20,9 +20,6 @@ namespace Singularity.Platform
         private bool mIsBlueprint;
         private readonly IPlatformAction[] mIPlatformActions;
         private readonly Texture2D mSpritesheet;
-        private readonly Dictionary<GeneralUnit, JobType> mAssignedUnits;
-        private List<Resource> mResources; // here we need the actual Resources
-
         internal Vector2 GetLocation()
         {
             throw new NotImplementedException();
@@ -30,10 +27,16 @@ namespace Singularity.Platform
 
         private Dictionary<EResourceType, int> mRequested;
         private readonly Dictionary<EResourceType, int> mCost;
+        private readonly Dictionary<GeneralUnit, Job> mAssignedUnits;
+        private List<IResource> mResources;
 
-        private Vector2 AbsolutePosition { get; }
+        public Vector2 AbsolutePosition { get; set; }
 
-        private Vector2 AbsoluteSize { get; }
+        public Vector2 AbsoluteSize { get; set; }
+
+        public Vector2 RelativePosition { get; set; }
+
+        public Vector2 RelativeSize { get; set; }
 
 
         /// <summary>
@@ -189,16 +192,17 @@ namespace Singularity.Platform
         {
             // the sprite sheet is 148x1744 px, 1x12 sprites
             // The sprites have different heights so, by testing I found out the sprite is about 148x170 px
-            spritebatch.Draw(
-                mSpritesheet,
+
+            spritebatch.Draw(mSpritesheet,
                 new Rectangle(
-                    (int) AbsolutePosition.X,
-                    (int) AbsolutePosition.Y,
-                    (int) AbsoluteSize.X,
-                    (int) AbsoluteSize.Y),
-                new Rectangle(0, 0, (int) AbsoluteSize.X, (int) AbsoluteSize.Y),
-                Color.White
-            );
+                    (int)AbsolutePosition.X,
+                    (int)AbsolutePosition.Y,
+                    (int)AbsoluteSize.X,
+                    (int)AbsoluteSize.Y),
+                new Rectangle(0, 0, (int)AbsoluteSize.X, (int)AbsoluteSize.Y),
+                Color.White,
+                0f, 
+                Vector2.Zero, SpriteEffects.None, LayerConstants.PlatformLayer);
         }
 
         /// <inheritdoc cref="Singularity.Property.IUpdate"/>
