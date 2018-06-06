@@ -46,7 +46,7 @@ namespace Singularity.Platform
         void AssignUnit(GeneralUnit unit, JobType job);
 
         /// <summary>
-        /// Unassigns the assigned unit with the given unitid.
+        /// Unassigns an amount of assigned units based on their JobType.
         /// </summary>
         /// <param name="amount">The amount of units being UNassigned</param>
         /// <param name="job"></param>
