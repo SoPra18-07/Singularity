@@ -62,7 +62,6 @@
     <Compile Include="Platform\Road.cs" />
     <Compile Include="Resources\EResourceType.cs" />
     <Compile Include="Platform\Action.cs" />
-    <Compile Include="Platform\Job.cs" />
     <Compile Include="Platform\PlatformBlank.cs" />
     <Compile Include="Serialization\CyclicDummy.cs" />
     <Compile Include="Serialization\XSerializer.cs" />
