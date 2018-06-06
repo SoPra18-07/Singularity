@@ -100,7 +100,7 @@ namespace Singularity.serialization
             var loadedObjects = Deserialize(path);
             if (loadedObjects.Count == 0)
             {
-                throw new Exception("There are no deserialized Objects. Most likely your .xml file is empty.");
+                throw new IOException("There are no deserialized Objects. Most likely your .xml file is empty.");
             }
             //One may implement additional logic here later
             return loadedObjects[0];
