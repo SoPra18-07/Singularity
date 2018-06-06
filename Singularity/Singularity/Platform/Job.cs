@@ -1,4 +1,4 @@
-﻿namespace Singularity.platform
+﻿namespace Singularity.Platform
 {
     class Job
     {
