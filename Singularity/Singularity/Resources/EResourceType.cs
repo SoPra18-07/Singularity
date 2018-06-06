@@ -8,7 +8,7 @@
     /// being a different resource. This way we can dynamically differ between the different instances
     /// as stated above.
     /// </summary>
-    internal enum EResourceType
+    public enum EResourceType
     {
         /// <summary>
         /// This represents the water resource and is a raw resource.

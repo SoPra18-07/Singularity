@@ -9,7 +9,7 @@ using Singularity.Units;
 namespace Singularity.Platform
 {
 
-    internal class PlatformBlank : IDraw, IUpdate, ISpatial
+    public class PlatformBlank : IDraw, IUpdate, ISpatial
     {
 
         private const int PlatformWidth = 148;
@@ -27,8 +27,8 @@ namespace Singularity.Platform
 
         private Dictionary<EResourceType, int> mRequested;
         private readonly Dictionary<EResourceType, int> mCost;
-        private readonly Dictionary<GeneralUnit, Job> mAssignedUnits;
-        private List<IResource> mResources;
+        private readonly Dictionary<GeneralUnit, JobType> mAssignedUnits;
+        private List<Resource> mResources;
 
         public Vector2 AbsolutePosition { get; set; }
 

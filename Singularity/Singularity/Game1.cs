@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Singularity.Platform;
 using Singularity.Input;
-using Singularity.serialization;
+using Singularity.screen;
 using Singularity.Screen;
 using Singularity.Units;
 

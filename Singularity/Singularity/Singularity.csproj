@@ -61,13 +61,12 @@
     <Compile Include="Platform\IPlatformAction.cs" />
     <Compile Include="Platform\Road.cs" />
     <Compile Include="Resources\EResourceType.cs" />
-    <Compile Include="Resources\Resources.cs" />
     <Compile Include="platform\Action.cs" />
     <Compile Include="platform\Job.cs" />
     <Compile Include="platform\PlatformBlank.cs" />
-    <Compile Include="serialization\CyclicDummy.cs" />
-    <Compile Include="serialization\XSerializer.cs" />
-    <Compile Include="serialization\SerializationDummy.cs" />
+    <Compile Include="Serialization\CyclicDummy.cs" />
+    <Compile Include="Serialization\XSerializer.cs" />
+    <Compile Include="Serialization\SerializationDummy.cs" />
     <Compile Include="Property\ISpatial.cs" />
     <Compile Include="Resources\IResource.cs" />
     <Compile Include="Resources\Resource.cs" />
