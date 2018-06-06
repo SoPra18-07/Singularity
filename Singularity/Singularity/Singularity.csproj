@@ -60,6 +60,9 @@
     <Compile Include="platform\Action.cs" />
     <Compile Include="platform\Job.cs" />
     <Compile Include="platform\PlatformBlank.cs" />
+    <Compile Include="serialization\CyclicDummy.cs" />
+    <Compile Include="serialization\XSerializer.cs" />
+    <Compile Include="serialization\SerializationDummy.cs" />
     <Compile Include="Property\ISpatial.cs" />
     <Compile Include="Resources\EResourceType.cs" />
     <Compile Include="Resources\IResource.cs" />
@@ -93,6 +96,7 @@
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>

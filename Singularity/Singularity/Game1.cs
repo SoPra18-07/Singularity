@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Media;
 using Singularity.Input;
 using Singularity.platform;
 using Singularity.screen;
+using Singularity.serialization;
 using Singularity.Screen;
 using Singularity.Units;
 
@@ -53,6 +54,14 @@ namespace Singularity
         /// </summary>
         protected override void Initialize()
         {
+            // TODO: Add your initialization logic here
+            // can be used to debug the screen manager
+            /*
+               mScreenManager.AddScreen(new RenderLowerScreen());
+               mScreenManager.AddScreen(new UpdateLowerScreen());
+            */
+
+            // XSerializer.TestSerialization();
             IsMouseVisible = true;
             mGraphics.PreferredBackBufferWidth = 1080;
             mGraphics.PreferredBackBufferHeight = 720;
