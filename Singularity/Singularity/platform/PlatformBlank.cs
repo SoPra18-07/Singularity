@@ -18,7 +18,7 @@ namespace Singularity.platform
         [DataMember()]
         private const int PlatformWidth = 148;
         [DataMember()]
-        private const int PlatformHeight = 170;
+        private const int PlatformHeight = 172;
         [DataMember()]
         private int mHealth;
         [DataMember()]
@@ -196,9 +196,58 @@ namespace Singularity.platform
         /// <inheritdoc cref="IDraw"/>
         public void Draw(SpriteBatch spritebatch)
         {
-            // the sprite sheet is 148x1744 px, 1x12 sprites
-            // The sprites have different heights so, by testing I found out the sprite is about 148x170 px
-
+            var position = 0;
+            var sheet = "b"; // b stands for blank, c for cone, cyl for Cylindrical and d for Dome
+            switch (mType)
+            {
+                case EPlatformType.Blank:
+                    break;
+                case EPlatformType.Energy:
+                    sheet = "d";
+                    break;
+                case EPlatformType.Factory:
+                    position = 1;
+                    sheet = "d";
+                    break;
+                case EPlatformType.Junkyard:
+                    position = 2;
+                    sheet = "d";
+                    break;
+                case EPlatformType.Mine:
+                    position = 3;
+                    sheet = "d";
+                    break;
+                case EPlatformType.Packaging:
+                    position = 4;
+                    sheet = "d";
+                    break;
+                case EPlatformType.Quarry:
+                    position = 5;
+                    sheet = "d";
+                    break;
+                case EPlatformType.Storage:
+                    position = 6;
+                    sheet = "d";
+                    break;
+                case EPlatformType.Well:
+                    position = 7;
+                    sheet = "d";
+                    break;
+                case EPlatformType.Kinetic:
+                    sheet = "c";
+                    break;
+                case EPlatformType.Laser:
+                    sheet = "c";
+                    position = 1;
+                    break;
+                case EPlatformType.Barracks:
+                    sheet = "cyl";
+                    break;
+                case EPlatformType.Command:
+                    sheet = "cyl";
+                    position = 1;
+                    break;
+            }
             spritebatch.Draw(mSpritesheet,
                 new Rectangle(
                     (int)AbsolutePosition.X,

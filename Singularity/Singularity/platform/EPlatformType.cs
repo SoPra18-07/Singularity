@@ -8,7 +8,18 @@ namespace Singularity.platform
 {
     enum EPlatformType
     {
-        Blank,
-
+        Barracks,
+        Command,
+        Energy,
+        Factory,
+        Junkyard,
+        Kinetic,
+        Laser,
+        Mine,
+        Packaging,
+        Quarry,
+        Storage,
+        Well,
+        Blank
     }
 }

@@ -17,7 +17,8 @@ namespace Singularity
     {
         private GraphicsDeviceManager mGraphics;
         private SpriteBatch mSpriteBatch;
-        private Texture2D mPlatformSheet;
+        private Texture2D mPlatformBlankTexture;
+        private Texture2D mPlatformDomeTexture;
         private PlatformBlank mPlatform;
         private Texture2D mMUnitSheet;
         private MilitaryUnit mMUnit1;
@@ -75,9 +76,10 @@ namespace Singularity
             mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet);
 
             // TODO: use this.Content to load your game content here
-            mPlatformSheet = Content.Load<Texture2D>("PlatformSpriteSheet");
-            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet);
-            mPlatform2 = new PlatformBlank(new Vector2(800, 600), mPlatformSheet);
+            mPlatformBlankTexture = Content.Load<Texture2D>("PlatformBasic");
+            mPlatformDomeTexture = Content.Load<Texture2D>("Dome");
+            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformBlankTexture);
+            mPlatform2 = new Well(new Vector2(800, 600), mPlatformDomeTexture);
 
             mMap = new Map.Map(Content.Load<Texture2D>("MockUpBackground"), mGraphics.GraphicsDevice.Viewport, true);
 

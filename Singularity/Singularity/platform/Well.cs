@@ -14,6 +14,11 @@ namespace Singularity.platform
     [DataContract()]
     class Well: PlatformBlank
     {
+        [DataMember()]
+        private const int PlatformWidth = 144;
+        [DataMember()]
+        private const int PlatformHeight = 127;
+
         public Well(Vector2 position, Texture2D spritesheet): base(position, spritesheet)
         {
             //mActions = IPlatformAction[2];

@@ -13,6 +13,11 @@ namespace Singularity.platform
     [DataContract()]
     class Quarry : PlatformBlank
     {
+        [DataMember()]
+        private const int PlatformWidth = 144;
+        [DataMember()]
+        private const int PlatformHeight = 127;
+
         public Quarry(Vector2 position, Texture2D spritesheet): base(position, spritesheet)
         {
             //mActions = IPlatformAction[2];
