@@ -5,9 +5,8 @@
     /// </summary>
     public enum PlatformActionState
     {
-        /// <summary> Available: meaning it is currently being executed, so not
-        ///  available right now (the button in the ui is deactivated, and thus
-        ///  cannot be clicked) </summary>
+        /// <summary> Available: meaning it can be executed,
+        /// the button for the action can be clicked </summary>
         Available,
         /// <summary> Active: meaning it is currently being executed,
         ///  so not available right now (the button cannot be clicked) </summary>
