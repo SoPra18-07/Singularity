@@ -260,16 +260,38 @@ namespace Singularity.Platform
                     position = 1;
                     break;
             }
-            spritebatch.Draw(mSpritesheet,
-                new Rectangle(
-                    (int)AbsolutePosition.X,
-                    (int)AbsolutePosition.Y,
-                    (int)AbsoluteSize.X,
-                    (int)AbsoluteSize.Y),
-                new Rectangle(0, 0, (int)AbsoluteSize.X, (int)AbsoluteSize.Y),
-                Color.White,
-                0f, 
-                Vector2.Zero, SpriteEffects.None, LayerConstants.PlatformLayer);
+
+            switch (sheet)
+            {
+                case "b":
+                    spritebatch.Draw(mSpritesheet,
+                        new Rectangle(
+                            (int) AbsolutePosition.X,
+                            (int) AbsolutePosition.Y,
+                            (int) AbsoluteSize.X,
+                            (int) AbsoluteSize.Y),
+                        new Rectangle(0, 0, (int) AbsoluteSize.X, (int) AbsoluteSize.Y),
+                        Color.White,
+                        0f,
+                        Vector2.Zero,
+                        SpriteEffects.None,
+                        LayerConstants.PlatformLayer);
+                    break;
+                case "d":
+                    spritebatch.Draw(mSpritesheet,
+                        new Rectangle(
+                            (int)AbsolutePosition.X,
+                            (int)AbsolutePosition.Y,
+                            (int)AbsoluteSize.X,
+                            (int)AbsoluteSize.Y),
+                        new Rectangle(position % 4 * (int)AbsoluteSize.X, position / 4 * (int)AbsoluteSize.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y),
+                        Color.White,
+                        0f,
+                        Vector2.Zero,
+                        SpriteEffects.None,
+                        LayerConstants.PlatformLayer);
+                    break;
+            }
         }
 
         /// <inheritdoc cref="Singularity.Property.IUpdate"/>
