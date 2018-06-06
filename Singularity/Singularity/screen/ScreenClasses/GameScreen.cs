@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Map;
 using Singularity.Property;
-using Singularity.Screen;
 
-namespace Singularity.screen
+namespace Singularity.Screen.ScreenClasses
 {
     /// <inheritdoc cref="IScreen"/>
     /// <summary>
-    /// The game screen handles everything thats going on explicitly in the game. E.g. game objects, the map, camera. etc.
+    /// Handles everything thats going on explicitly in the game.
+    /// E.g. game objects, the map, camera. etc.
     /// </summary>
     internal sealed class GameScreen : IScreen
     {
@@ -72,6 +73,11 @@ namespace Singularity.screen
                 updateable.Update(gametime);
 
             }
+        }
+
+        public void LoadContent(ContentManager content)
+        {
+            throw new System.NotImplementedException();
         }
 
         public bool UpdateLower()

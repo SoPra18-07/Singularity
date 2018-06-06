@@ -1,4 +1,5 @@
-﻿using Singularity.Property;
+﻿using Microsoft.Xna.Framework.Content;
+using Singularity.Property;
 
 namespace Singularity.Screen
 {
@@ -9,7 +10,13 @@ namespace Singularity.Screen
     /// for IScreens would be "Game Screens", "Main Menu Screens", etc..
     /// </remarks>
     internal interface IScreen : IUpdate, IDraw
-    { 
+    {
+        /// <summary>
+        /// Loads any content required by the screen.
+        /// </summary>
+        /// <param name="content">ContentManager used by the game</param>
+        void LoadContent(ContentManager content);
+        
         /// <summary>
         /// Determines whether the screen below this one in a screen manager should be updated or not.
         /// </summary>

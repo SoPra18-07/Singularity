@@ -43,8 +43,12 @@
   <ItemGroup>
     <Compile Include="Exceptions\NoSuchElementException.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Input\InputManager2.cs" />
+    <Compile Include="Libraries\Animations.cs" />
+    <Compile Include="Libraries\Bloom Filter.cs" />
     <Compile Include="Input\IMouseWheelListener.cs" />
     <Compile Include="Libraries\Primitives2D.cs" />
+    <Compile Include="Libraries\QuadRenderer.cs" />
     <Compile Include="Map\Camera.cs" />
     <Compile Include="Map\CollisionMap.cs" />
     <Compile Include="Map\Map.cs" />
@@ -66,7 +70,22 @@
     <Compile Include="Resources\Resource.cs" />
     <Compile Include="Resources\ResourceHelper.cs" />
     <Compile Include="Property\LayerConstants.cs" />
-    <Compile Include="Screen\GameScreen.cs" />
+    <Compile Include="Screen\Button.cs" />
+    <Compile Include="Screen\EScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\AchievementsScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\GameModeSelectScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\GamePauseScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\GameScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\LoadingScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\LoadSelectScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\MainMenuManagerScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\MainMenuScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\MenuBackgroundScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\OptionScreens\GameplayOptionsScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\OptionsScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\SaveGameScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\SplashScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\StatisticsScreen.cs" />
     <Compile Include="Units\GeneralUnit.cs" />
     <Compile Include="platform\Road.cs" />
     <Compile Include="Units\IUnit.cs" />
@@ -84,6 +103,7 @@
     <Compile Include="Screen\UpdateLowerScreen.cs" />
     <Compile Include="Units\Pathfinding.cs" />
     <Compile Include="Units\Task.cs" />
+    <Compile Include="Screen\IWindowItem.cs" />
     <Compile Include="Utils\Optional.cs" />
     <Compile Include="Utils\Pair.cs" />
     <Compile Include="Utils\Triple.cs" />
@@ -101,12 +121,12 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
-    <None Include="ClassDiagram1.cd" />
+    <None Include="Content\Shaders\Bloom.fx" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

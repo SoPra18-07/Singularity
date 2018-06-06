@@ -10,7 +10,7 @@ namespace Singularity.Units
     {
         private Vector2 mTargetPosition;
         private int mRotation;
-        readonly Texture2D mMilSheet;
+        private readonly Texture2D mMilSheet;
         private double mXstep;
         private double mYstep;
         private bool mSelected;
