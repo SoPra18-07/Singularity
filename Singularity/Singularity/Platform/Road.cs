@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Property;
 
-namespace Singularity.platform
+namespace Singularity.Platform
 {
     class Road : IDraw, ISpatial
     {
@@ -39,11 +39,11 @@ namespace Singularity.platform
                 mBlueprint = value;
                 if (!value) { // add road to graph
                            }
-            } 
+            }
         }
 
         /// <summary>
-        /// Road is simply an edge between two platforms. 
+        /// Road is simply an edge between two platforms.
         /// </summary>
         /// <param name="origin"></param>
         /// <param name="destination"></param>

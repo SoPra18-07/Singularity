@@ -11,7 +11,7 @@ namespace Singularity.Screen
     /// below if they say so.
     /// </remarks>
     internal interface IScreenManager : IUpdate, IDraw
-    {   
+    {
         /// <summary>
         /// Adds the given screen to the screen manager as the "top" screen.
         /// </summary>

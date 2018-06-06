@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Resources;
 using Singularity.Units;
 
-namespace Singularity.platform
+namespace Singularity.Platform
 {
     [DataContract()]
     class Well: PlatformBlank
@@ -26,7 +26,7 @@ namespace Singularity.platform
             //mActions[1] = ProduceWellResource(this);
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<IResource, int>();
+            mCost = new Dictionary<EResourceType, int>();
         }
 
         public override void Produce()

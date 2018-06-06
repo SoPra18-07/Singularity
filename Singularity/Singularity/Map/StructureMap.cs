@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Utils;
-using Singularity.platform;
 
 namespace Singularity.Map
 {

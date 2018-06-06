@@ -1,13 +1,7 @@
-﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Singularity.Exceptions;
+﻿using Singularity.Exceptions;
 
 namespace Singularity.Utils
-{   
+{
     /// <summary>
     /// A container object which may or may not contain a non-null
     /// value. If a value is present, isPresent() will return true
@@ -15,7 +9,7 @@ namespace Singularity.Utils
     /// </summary>
     /// <typeparam name="T">The type of this optional</typeparam>
     internal sealed class Optional<T>
-    {   
+    {
         private readonly T mValue;
 
         /// <summary>

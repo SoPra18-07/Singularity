@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Resources;
 
-namespace Singularity.platform
+namespace Singularity.Platform
 {
     [DataContract()]
     class EnergyFacility : PlatformBlank
@@ -26,7 +26,7 @@ namespace Singularity.platform
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Something like "Hello InstanceThatManagesEnergyLevels I exist now(Myself)"
             //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<IResource, int>();
+            mCost = new Dictionary<EResourceType, int>();
         }
     }
 }
