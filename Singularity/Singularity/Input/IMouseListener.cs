@@ -3,8 +3,14 @@
     /// <summary>
     /// Provides an interface for everything that uses mouse input
     /// </summary>
-    internal interface IMouseListener
+    public interface IMouseListener
     {
+        /// <summary>
+        /// Used to set a mouse button as typed
+        /// </summary>
+        /// <param name="mouseEvent"></param>
+        void MouseTyped(MouseEvent mouseEvent);
+
         /// <summary>
         /// Used to set a mouse button as pressed
         /// </summary>

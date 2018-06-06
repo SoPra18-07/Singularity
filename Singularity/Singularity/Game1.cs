@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Singularity.Input;
 using Singularity.platform;
 using Singularity.screen;
 using Singularity.serialization;
@@ -26,6 +27,7 @@ namespace Singularity
         private Map.Map mMap;
         private static Song sSoundtrack;
         private GameScreen mGameScreen;
+        private InputManager mInputManager;
 
         // roads
         private Road mRoad1;
@@ -39,6 +41,7 @@ namespace Singularity
             mGraphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
+            mInputManager = new InputManager();
             mScreenManager = new StackScreenManager();
 
         }
@@ -133,6 +136,7 @@ namespace Singularity
                 Exit();
             }
 
+            mInputManager.Update(gameTime);
             mScreenManager.Update(gameTime);
             base.Update(gameTime);
         }
