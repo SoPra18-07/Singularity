@@ -20,7 +20,7 @@ namespace Singularity.Platform
 
         public Junkyard(Vector2 position, Texture2D spritesheet): base(position, spritesheet)
         {
-            //mActions = IPlatformAction[1];
+            mIPlatformActions = new IPlatformAction[1];
             //mActions[0] = BuildBlueprintJunkyard(this);
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
@@ -32,13 +32,13 @@ namespace Singularity.Platform
 
         public void BurnTrash()
         {
-            //foreach (var resource in mResources)
-            //{
-            //if (resource.Type == EResourceType.Trash)
-            //{
-            //    mResources.Remove(resource);
-            //}
-            //}
+            foreach (var resource in mResources)
+            {
+                if (resource.Type == EResourceType.Trash)
+                {
+                    mResources.Remove(resource);
+                }
+            }
         }
     }
 }

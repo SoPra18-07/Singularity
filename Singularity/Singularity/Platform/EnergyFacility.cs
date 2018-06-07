@@ -20,7 +20,7 @@ namespace Singularity.Platform
 
         public EnergyFacility(Vector2 position, Texture2D spritesheet): base(position, spritesheet)
         {
-            //mActions = IPlatformAction[2];
+            mIPlatformActions = new IPlatformAction[2];
             //mActions[0] = BuildPlatformBlueprint(this);
             //mActions[1] = ;
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
@@ -32,14 +32,14 @@ namespace Singularity.Platform
             AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
         }
 
-        public void TurnOn()
+        public void TurnOn(StoryManager.StoryManager story)
         {
-
+            story.AddEnergy(20);
         }
 
-        public void TurnOff()
+        public void TurnOff(StoryManager.StoryManager story)
         {
-
+            story.AddEnergy(-20);
         }
     }
 }

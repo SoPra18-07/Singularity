@@ -53,8 +53,9 @@ namespace Singularity.Platform
         // The ResourceMap is needed for actually 'producing' the resources.
         private ResourceMap mResourceMap;
 
-        public ProduceMineResource(PlatformBlank platform) : base(platform)
+        public ProduceMineResource(PlatformBlank platform, ResourceMap resourceMap) : base(platform)
         {
+            mResourceMap = resourceMap;
         }
 
         public override List<JobType> UnitsRequired { get; } = new List<JobType> { JobType.Production };

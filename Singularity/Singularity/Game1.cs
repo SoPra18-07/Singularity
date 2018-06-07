@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Singularity.Platform;
 using Singularity.Input;
+using Singularity.Map;
 using Singularity.screen;
 using Singularity.Screen;
 using Singularity.Units;
@@ -23,7 +24,8 @@ namespace Singularity
         private Texture2D mMUnitSheet;
         private MilitaryUnit mMUnit1;
         private MilitaryUnit mMUnit2;
-        private PlatformBlank mPlatform2;
+        private Junkyard mPlatform2;
+        private EnergyFacility mPlatform3;
         private Map.Map mMap;
         private static Song sSoundtrack;
         private GameScreen mGameScreen;
@@ -87,8 +89,8 @@ namespace Singularity
             mPlatformBlankTexture = Content.Load<Texture2D>("PlatformBasic");
             mPlatformDomeTexture = Content.Load<Texture2D>("Dome");
             mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformBlankTexture);
-            mPlatform = new EnergyFacility(new Vector2(600, 400), mPlatformDomeTexture);
-            mPlatform2 = new Well(new Vector2(800, 600), mPlatformDomeTexture);
+            mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
+            mPlatform3 = new EnergyFacility(new Vector2(600, 400), mPlatformDomeTexture);
 
             mMap = new Map.Map(Content.Load<Texture2D>("MockUpBackground"), mGraphics.GraphicsDevice.Viewport, true);
 
@@ -103,7 +105,8 @@ namespace Singularity
             mGameScreen.AddObject<MilitaryUnit>(mMUnit1);
             mGameScreen.AddObject<MilitaryUnit>(mMUnit2);
             mGameScreen.AddObject<PlatformBlank>(mPlatform);
-            mGameScreen.AddObject<PlatformBlank>(mPlatform2);
+            mGameScreen.AddObject<Junkyard>(mPlatform2);
+            mGameScreen.AddObject<EnergyFacility>(mPlatform3);
             mGameScreen.AddObject<Road>(mRoad1);
 
             mScreenManager.AddScreen(mGameScreen);
