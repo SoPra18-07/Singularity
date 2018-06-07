@@ -79,7 +79,7 @@ namespace Singularity
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
             mMUnitSheet = Content.Load<Texture2D>("UnitSpriteSheet");
-            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet);
+           // mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet);
             mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet);
 
             // TODO: use this.Content to load your game content here
@@ -97,7 +97,7 @@ namespace Singularity
             // load roads
             mRoad1 = new Road(new Vector2(300, 400), new Vector2(800, 600), false);
 
-            mGameScreen.AddObject<MilitaryUnit>(mMUnit1);
+            //mGameScreen.AddObject<MilitaryUnit>(mMUnit1);
             mGameScreen.AddObject<MilitaryUnit>(mMUnit2);
             mGameScreen.AddObject<PlatformBlank>(mPlatform);
             mGameScreen.AddObject<PlatformBlank>(mPlatform2);
