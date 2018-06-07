@@ -27,6 +27,19 @@ namespace Singularity.Platform
             //Something like "Hello InstanceThatManagesEnergyLevels I exist now(Myself)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
+            mType = EPlatformType.Energy;
+            mSpritename = "Dome";
+            AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
+        }
+
+        public void TurnOn()
+        {
+
+        }
+
+        public void TurnOff()
+        {
+
         }
     }
 }

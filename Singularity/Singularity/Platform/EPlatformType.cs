@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Singularity.Platform
 {
-    enum EPlatformType
+    public enum EPlatformType
     {
         Barracks,
         Command,

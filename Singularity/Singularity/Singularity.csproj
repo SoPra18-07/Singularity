@@ -79,6 +79,7 @@
     <Compile Include="Resources\ResourceHelper.cs" />
     <Compile Include="Property\LayerConstants.cs" />
     <Compile Include="Screen\GameScreen.cs" />
+    <Compile Include="StoryManager\StoryManager.cs" />
     <Compile Include="Units\GeneralUnit.cs" />
     <Compile Include="Units\IUnit.cs" />
     <Compile Include="Units\JobType.cs" />

@@ -25,6 +25,9 @@ namespace Singularity.Platform
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
+            mType = EPlatformType.Junkyard;
+            mSpritename = "Dome";
+            AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
         }
 
         public void BurnTrash()

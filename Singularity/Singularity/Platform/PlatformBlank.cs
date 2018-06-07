@@ -15,7 +15,7 @@ namespace Singularity.Platform
 
     {
         [DataMember()]
-        private EPlatformType mType = EPlatformType.Blank;
+        protected EPlatformType mType = EPlatformType.Blank;
         [DataMember()]
         private const int PlatformWidth = 148;
         [DataMember()]
@@ -25,7 +25,7 @@ namespace Singularity.Platform
         [DataMember()]
         private int mId;
         [DataMember()]
-        private bool mIsBlueprint;
+        protected bool mIsBlueprint;
         [DataMember()]
         protected Dictionary<EResourceType, int> mCost;
         [DataMember()]
@@ -38,7 +38,7 @@ namespace Singularity.Platform
         [DataMember()]
         protected List<Resource> mResources;
         [DataMember()]
-        private Dictionary<EResourceType, int> mRequested;
+        protected Dictionary<EResourceType, int> mRequested;
 
         internal Vector2 GetLocation()
         {
@@ -328,7 +328,7 @@ namespace Singularity.Platform
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //The only IPlatformAction available so far is BlueprintBuild.
             mIPlatformActions = new IPlatformAction[1];
-            // mIPlatformActions[0] = IPlatformAction.BlueprintBuild;
+            //mIPlatformActions[0] = IPlatformAction.BlueprintBuild;
 
             mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
 
@@ -338,6 +338,7 @@ namespace Singularity.Platform
             mResources = new List<Resource>();
 
             mSpritesheet = spritesheet;
+            mSpritename = "PlatformBasic";
 
             mIsBlueprint = true;
             mRequested = new Dictionary<EResourceType, int>();

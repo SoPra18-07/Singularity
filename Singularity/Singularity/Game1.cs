@@ -87,6 +87,7 @@ namespace Singularity
             mPlatformBlankTexture = Content.Load<Texture2D>("PlatformBasic");
             mPlatformDomeTexture = Content.Load<Texture2D>("Dome");
             mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformBlankTexture);
+            mPlatform = new EnergyFacility(new Vector2(600, 400), mPlatformDomeTexture);
             mPlatform2 = new Well(new Vector2(800, 600), mPlatformDomeTexture);
 
             mMap = new Map.Map(Content.Load<Texture2D>("MockUpBackground"), mGraphics.GraphicsDevice.Viewport, true);
