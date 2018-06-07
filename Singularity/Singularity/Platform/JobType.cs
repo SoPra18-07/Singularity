@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Singularity.Resources
+namespace Singularity.Platform
 {
-    internal interface IResources
+    class Job
     {
     }
 }

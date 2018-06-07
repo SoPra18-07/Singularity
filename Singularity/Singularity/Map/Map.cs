@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Libraries;
 using Singularity.Map.Properties;
-using Singularity.platform;
+using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Utils;
@@ -20,6 +21,8 @@ namespace Singularity.Map
         private readonly Texture2D mBackgroundTexture;
         private readonly Texture2D mDebugLine;
 
+        private bool mDebug;
+
         /// <summary>
         /// Creates a new Map object, which solely draws its background
         /// texture and if debugLine is given the grid. If initialResources isn't
@@ -27,12 +30,12 @@ namespace Singularity.Map
         /// </summary>
         /// <param name="backgroundTexture">The background texture of the map</param>
         /// <param name="viewport">The viewport of the window</param>
-        /// <param name="debugLine">The texture used to draw the lines for the grid, if not specified the grid won't be drawn</param>
+        /// <param name="debug">Whether the debug grid lines are drawn or not</param>
         /// <param name="initialResources">The initial resources of this map, if not specified there will not be any on the map</param>
-        public Map(Texture2D backgroundTexture, Viewport viewport, Texture2D debugLine = null, IDictionary<Vector2, Pair<EResourceType, int>> initialResources = null)
+        public Map(Texture2D backgroundTexture, Viewport viewport, bool debug = false, IDictionary<Vector2, Pair<EResourceType, int>> initialResources = null)
         {
             mBackgroundTexture = backgroundTexture;
-            mDebugLine = debugLine;
+            mDebug = debug;
 
             mCamera = new Camera(viewport, 0, 300);
 
@@ -50,37 +53,41 @@ namespace Singularity.Map
         public void Draw(SpriteBatch spriteBatch)
         {   
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, mCamera.GetTransform());
+            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, mCamera.GetTransform());
 
             //draw the background texture
             spriteBatch.Draw(mBackgroundTexture,
                 new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight),
-                Color.White);
+                null,
+                Color.White,
+                0f,
+                Vector2.Zero,
+                SpriteEffects.None,
+                LayerConstants.MapLayer);
 
             mStructureMap.Draw(spriteBatch);
 
 
             //make sure to only draw the grid if a texture is given.
-            if (mDebugLine == null)
+            if (!mDebug)
             {
-                spriteBatch.End();
                 return;
+
             }
             //draw the collision map grid.
             var collisonMap = mCollisionMap.GetCollisionMap();
 
             for (var columnCount = 0; columnCount <= collisonMap.GetLength(0); columnCount++)
             {
-                spriteBatch.Draw(mDebugLine,
-                    new Rectangle(columnCount * MapConstants.GridWidth, 0, 1, MapConstants.MapHeight),
-                    Color.Yellow);
+
+                Primitives2D.DrawLine(
+                    spriteBatch, new Vector2(columnCount * MapConstants.GridWidth, 0), MapConstants.MapHeight, MathHelper.Pi/2f, Color.Blue, 1);
             }
 
             for (var rowCount = 0; rowCount <= collisonMap.GetLength(0); rowCount++)
             {
-                spriteBatch.Draw(mDebugLine,
-                    new Rectangle(0, rowCount * MapConstants.GridHeight, MapConstants.MapWidth, 1),
-                    Color.Cyan);
+                Primitives2D.DrawLine(
+                    spriteBatch, new Vector2(0, rowCount * MapConstants.GridHeight), MapConstants.MapWidth, 0, Color.Yellow, 1);
             }
 
 
@@ -99,7 +106,6 @@ namespace Singularity.Map
 
                 }
             }
-            spriteBatch.End();
         }
         //TODO: remove if input manager is available since we only use this to pass an update to the camera.
         public void Update(GameTime gametime)
@@ -118,6 +124,11 @@ namespace Singularity.Map
         public void RemovePlatform(PlatformBlank platform)
         {
             mStructureMap.RemovePlatform(platform);
+        }
+
+        public Camera GetCamera()
+        {
+            return mCamera;
         }
     }
 }
