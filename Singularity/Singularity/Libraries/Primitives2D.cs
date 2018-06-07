@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Utils;
 
 namespace Singularity.Libraries
 {
@@ -19,8 +20,9 @@ namespace Singularity.Libraries
 		#region Private Members
 
 		private static readonly Dictionary<String, List<Vector2>> sCircleCache = new Dictionary<string, List<Vector2>>();
-		//private static readonly Dictionary<String, List<Vector2>> arcCache = new Dictionary<string, List<Vector2>>();
-		private static Texture2D sPixel;
+	    private static readonly Dictionary<Rectangle, List<Vector2>> sEllipseCache = new Dictionary<Rectangle, List<Vector2>>();
+        //private static readonly Dictionary<String, List<Vector2>> arcCache = new Dictionary<string, List<Vector2>>();
+        private static Texture2D sPixel;
 
 		#endregion
 
@@ -34,35 +36,37 @@ namespace Singularity.Libraries
 		}
 
 
-		/// <summary>
-		/// Draws a list of connecting points
-		/// </summary>
-		/// <param name="spriteBatch">The destination drawing surface</param>
-		/// /// <param name="position">Where to position the points</param>
-		/// <param name="points">The points to connect with lines</param>
-		/// <param name="color">The color to use</param>
-		/// <param name="thickness">The thickness of the lines</param>
-		private static void DrawPoints(SpriteBatch spriteBatch, Vector2 position, List<Vector2> points, Color color, float thickness)
-		{
-			if (points.Count < 2)
-			{
-			    return;
-			}
+	    /// <summary>
+	    /// Draws a list of connecting points
+	    /// </summary>
+	    /// <param name="spriteBatch">The destination drawing surface</param>
+	    /// /// <param name="position">Where to position the points</param>
+	    /// <param name="points">The points to connect with lines</param>
+	    /// <param name="color">The color to use</param>
+	    /// <param name="thickness">The thickness of the lines</param>
+	    private static void DrawPoints(SpriteBatch spriteBatch, Vector2 position, List<Vector2> points, Color color, float thickness, float layer = 0f)
+	    {
+	        if (points.Count < 2)
+	        {
+	            return;
+	        }
 
-		    for (int i = 1; i < points.Count; i++)
-			{
-				DrawLine(spriteBatch, points[i - 1] + position, points[i] + position, color, thickness);
-			}
-		}
+	        for (int i = 1; i < points.Count; i++)
+	        {
+                DrawLine(spriteBatch, points[i - 1] + position, points[i] + position, color, thickness, layer);
+	        }
+            // connect the last and first again
+	        DrawLine(spriteBatch, points[points.Count - 1] + position, points[0] + position, color, thickness, layer);
+        }
 
 
-		/// <summary>
-		/// Creates a list of vectors that represents a circle
-		/// </summary>
-		/// <param name="radius">The radius of the circle</param>
-		/// <param name="sides">The number of sides to generate</param>
-		/// <returns>A list of vectors that, if connected, will create a circle</returns>
-		private static List<Vector2> CreateCircle(double radius, int sides)
+        /// <summary>
+        /// Creates a list of vectors that represents a circle
+        /// </summary>
+        /// <param name="radius">The radius of the circle</param>
+        /// <param name="sides">The number of sides to generate</param>
+        /// <returns>A list of vectors that, if connected, will create a circle</returns>
+        private static List<Vector2> CreateCircle(double radius, int sides)
 		{
 			// Look for a cached version of this circle
 			String circleKey = radius + "x" + sides;
@@ -89,6 +93,70 @@ namespace Singularity.Libraries
 
 			return vectors;
 		}
+
+	    private static List<Vector2> CreateEllipse(Rectangle rect)
+	    {
+	        if (sEllipseCache.ContainsKey(rect))
+	        {
+	            return sEllipseCache[rect];
+	        }
+
+            var vectors = new List<Vector2>();
+
+	        var a = rect.Width / 2;
+	        var b = rect.Height / 2;
+
+	        const double precision = 0.001;
+
+            // The reason for the double the two different for loops is so the points are "sorted" correctly. We want to draw lines
+            // between all of the vectors we add, so we need to make sure that "neighbours" are added next to each other. 
+
+            // this is EXTREMELY inefficient. This is the most naive way to calculate and has the highest resolution (according to precision) that can
+            // be shown on screen. This will definitely need some kind of rework.
+            for (var x = rect.X; x <= rect.X + rect.Width; x++)
+	        {
+	            for (var y = rect.Y; y <= rect.Y + rect.Height / 2; y++)
+	            {
+
+	                var distanceToFocuses = Math.Pow(x - rect.Center.X, 2) / Math.Pow(a, 2) + Math.Pow(y - rect.Center.Y, 2) / Math.Pow(b, 2);
+
+                    if (!(distanceToFocuses < 1 && distanceToFocuses + precision > 1 ||
+	                      distanceToFocuses > 1 && distanceToFocuses - precision < 1))
+	                {
+	                    continue;
+
+	                }
+                    //System.Diagnostics.Debug.Write(x + ", "  + y);
+	                vectors.Add(new Vector2(x, y));
+
+                }
+
+
+            }
+	        for (var x = rect.X + rect.Width; x >= rect.X; x--)
+	        {
+	            for (var y = rect.Y + rect.Height / 2; y <= rect.Y + rect.Height; y++)
+	            {
+
+	                var distanceToFocuses = Math.Pow(x - rect.Center.X, 2) / Math.Pow(a, 2) +
+	                                        Math.Pow(y - rect.Center.Y, 2) / Math.Pow(b, 2);
+
+	                if (!(distanceToFocuses < 1 && distanceToFocuses + precision > 1 ||
+	                      distanceToFocuses > 1 && distanceToFocuses - precision < 1))
+	                {
+	                    continue;
+
+	                }
+
+	                //System.Diagnostics.Debug.Write(x + ", "  + y);
+	                vectors.Add(new Vector2(x, y));
+
+	            }
+	        }
+	        sEllipseCache.Add(rect, vectors);
+            return vectors;
+	        
+	    }
 
 
 		/// <summary>
@@ -441,83 +509,112 @@ namespace Singularity.Libraries
 		#endregion
 
 
-		#region DrawCircle
+		#region DrawEllipse
 
 		/// <summary>
-		/// Draw a circle
+		/// Draw an ellipse
 		/// </summary>
 		/// <param name="spriteBatch">The destination drawing surface</param>
-		/// <param name="center">The center of the circle</param>
-		/// <param name="radius">The radius of the circle</param>
-		/// <param name="sides">The number of sides to generate</param>
-		/// <param name="color">The color of the circle</param>
-		public static void DrawCircle(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, Color color)
+		/// <param name="rect">The rectangle which desribes the ellipse</param>
+		/// <param name="color">The color of the ellipse</param>
+		public static void DrawEllipse(this SpriteBatch spriteBatch, Rectangle rect, Color color, float layer)
 		{
-			DrawPoints(spriteBatch, center, CreateCircle(radius, sides), color, 1.0f);
+			DrawPoints(spriteBatch, Vector2.Zero, CreateEllipse(rect), color, 1.0f, layer);
 		}
 
 
-		/// <summary>
-		/// Draw a circle
-		/// </summary>
-		/// <param name="spriteBatch">The destination drawing surface</param>
-		/// <param name="center">The center of the circle</param>
-		/// <param name="radius">The radius of the circle</param>
-		/// <param name="sides">The number of sides to generate</param>
-		/// <param name="color">The color of the circle</param>
-		/// <param name="thickness">The thickness of the lines used</param>
-		public static void DrawCircle(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, Color color, float thickness)
+	    /// <summary>
+	    /// Draw an ellipse
+	    /// </summary>
+	    /// <param name="spriteBatch">The destination drawing surface</param>
+	    /// <param name="rect">The rectangle which desribes the ellipse</param>
+	    /// <param name="color">The color of the ellipse</param>
+        /// <param name="thickness">The thickness of the lines used</param>
+        public static void DrawEllipse(this SpriteBatch spriteBatch, Rectangle rect, Color color, float thickness, float layer)
 		{
-			DrawPoints(spriteBatch, center, CreateCircle(radius, sides), color, thickness);
-		}
+		    DrawPoints(spriteBatch, Vector2.Zero, CreateEllipse(rect), color, thickness, layer);
+        }
+
+        #endregion
 
 
-		/// <summary>
-		/// Draw a circle
-		/// </summary>
-		/// <param name="spriteBatch">The destination drawing surface</param>
-		/// <param name="x">The center X of the circle</param>
-		/// <param name="y">The center Y of the circle</param>
-		/// <param name="radius">The radius of the circle</param>
-		/// <param name="sides">The number of sides to generate</param>
-		/// <param name="color">The color of the circle</param>
-		public static void DrawCircle(this SpriteBatch spriteBatch, float x, float y, float radius, int sides, Color color)
-		{
-			DrawPoints(spriteBatch, new Vector2(x, y), CreateCircle(radius, sides), color, 1.0f);
-		}
+        #region DrawCircle
+
+        /// <summary>
+        /// Draw a circle
+        /// </summary>
+        /// <param name="spriteBatch">The destination drawing surface</param>
+        /// <param name="center">The center of the circle</param>
+        /// <param name="radius">The radius of the circle</param>
+        /// <param name="sides">The number of sides to generate</param>
+        /// <param name="color">The color of the circle</param>
+        public static void DrawCircle(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, Color color)
+        {
+            DrawPoints(spriteBatch, center, CreateCircle(radius, sides), color, 1.0f);
+        }
 
 
-		/// <summary>
-		/// Draw a circle
-		/// </summary>
-		/// <param name="spriteBatch">The destination drawing surface</param>
-		/// <param name="x">The center X of the circle</param>
-		/// <param name="y">The center Y of the circle</param>
-		/// <param name="radius">The radius of the circle</param>
-		/// <param name="sides">The number of sides to generate</param>
-		/// <param name="color">The color of the circle</param>
-		/// <param name="thickness">The thickness of the lines used</param>
-		public static void DrawCircle(this SpriteBatch spriteBatch, float x, float y, float radius, int sides, Color color, float thickness)
-		{
-			DrawPoints(spriteBatch, new Vector2(x, y), CreateCircle(radius, sides), color, thickness);
-		}
-
-		#endregion
+        /// <summary>
+        /// Draw a circle
+        /// </summary>
+        /// <param name="spriteBatch">The destination drawing surface</param>
+        /// <param name="center">The center of the circle</param>
+        /// <param name="radius">The radius of the circle</param>
+        /// <param name="sides">The number of sides to generate</param>
+        /// <param name="color">The color of the circle</param>
+        /// <param name="thickness">The thickness of the lines used</param>
+        public static void DrawCircle(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, Color color, float thickness)
+        {
+            DrawPoints(spriteBatch, center, CreateCircle(radius, sides), color, thickness);
+        }
 
 
-		#region DrawArc
+        /// <summary>
+        /// Draw a circle
+        /// </summary>
+        /// <param name="spriteBatch">The destination drawing surface</param>
+        /// <param name="x">The center X of the circle</param>
+        /// <param name="y">The center Y of the circle</param>
+        /// <param name="radius">The radius of the circle</param>
+        /// <param name="sides">The number of sides to generate</param>
+        /// <param name="color">The color of the circle</param>
+        public static void DrawCircle(this SpriteBatch spriteBatch, float x, float y, float radius, int sides, Color color)
+        {
+            DrawPoints(spriteBatch, new Vector2(x, y), CreateCircle(radius, sides), color, 1.0f);
+        }
 
-		/// <summary>
-		/// Draw a arc
-		/// </summary>
-		/// <param name="spriteBatch">The destination drawing surface</param>
-		/// <param name="center">The center of the arc</param>
-		/// <param name="radius">The radius of the arc</param>
-		/// <param name="sides">The number of sides to generate</param>
-		/// <param name="startingAngle">The starting angle of arc, 0 being to the east, increasing as you go clockwise</param>
-		/// <param name="radians">The number of radians to draw, clockwise from the starting angle</param>
-		/// <param name="color">The color of the arc</param>
-		public static void DrawArc(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, float startingAngle, float radians, Color color)
+
+        /// <summary>
+        /// Draw a circle
+        /// </summary>
+        /// <param name="spriteBatch">The destination drawing surface</param>
+        /// <param name="x">The center X of the circle</param>
+        /// <param name="y">The center Y of the circle</param>
+        /// <param name="radius">The radius of the circle</param>
+        /// <param name="sides">The number of sides to generate</param>
+        /// <param name="color">The color of the circle</param>
+        /// <param name="thickness">The thickness of the lines used</param>
+        public static void DrawCircle(this SpriteBatch spriteBatch, float x, float y, float radius, int sides, Color color, float thickness)
+        {
+            DrawPoints(spriteBatch, new Vector2(x, y), CreateCircle(radius, sides), color, thickness);
+        }
+
+        #endregion
+
+
+        #region DrawArc
+
+        /// <summary>
+        /// Draw a arc
+        /// </summary>
+        /// <param name="spriteBatch">The destination drawing surface</param>
+        /// <param name="center">The center of the arc</param>
+        /// <param name="radius">The radius of the arc</param>
+        /// <param name="sides">The number of sides to generate</param>
+        /// <param name="startingAngle">The starting angle of arc, 0 being to the east, increasing as you go clockwise</param>
+        /// <param name="radians">The number of radians to draw, clockwise from the starting angle</param>
+        /// <param name="color">The color of the arc</param>
+        public static void DrawArc(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, float startingAngle, float radians, Color color)
 		{
 			DrawArc(spriteBatch, center, radius, sides, startingAngle, radians, color, 1.0f);
 		}

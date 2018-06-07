@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Media;
 using Singularity.Platform;
 using Singularity.Input;
 using Singularity.Map;
+using Singularity.Resources;
 using Singularity.screen;
 using Singularity.Screen;
 using Singularity.Units;
@@ -102,12 +103,12 @@ namespace Singularity
             // load roads
             mRoad1 = new Road(new Vector2(300, 400), new Vector2(800, 600), false);
 
-            mGameScreen.AddObject<MilitaryUnit>(mMUnit1);
-            mGameScreen.AddObject<MilitaryUnit>(mMUnit2);
-            mGameScreen.AddObject<PlatformBlank>(mPlatform);
-            mGameScreen.AddObject<Junkyard>(mPlatform2);
-            mGameScreen.AddObject<EnergyFacility>(mPlatform3);
-            mGameScreen.AddObject<Road>(mRoad1);
+            mGameScreen.AddObject(mMUnit1);
+            mGameScreen.AddObject(mMUnit2);
+            mGameScreen.AddObject(mPlatform);
+            mGameScreen.AddObject(mPlatform2);
+            mGameScreen.AddObject(mRoad1);
+            mGameScreen.AddObject(ResourceHelper.GetRandomlyDistributedResources(5));
 
             mScreenManager.AddScreen(mGameScreen);
 
