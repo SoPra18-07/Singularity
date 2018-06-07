@@ -12,8 +12,10 @@ namespace Singularity.Resources
     /// <summary>
     /// Represents a resource in the game. Written in such a fashion that it can represent any resource there is and will be.
     /// </summary>
-    internal sealed class Resource : IResource
+    public sealed class Resource : IResource
     {
+
+        public const int DefaultWidth = 200;
 
         /// <summary>
         /// The current position of this resource on the map.
@@ -60,10 +62,15 @@ namespace Singularity.Resources
 
             mColor = ResourceHelper.GetColor(type);
 
-            mWidth = width;
-
             // could be handled more dynamically, for now this is o.k.
             mHeight = (int) (width * 0.6f);
+
+            mWidth = width;
+
+            if (width <= 0)
+            {
+                mWidth = DefaultWidth;
+            }
 
         }
 
