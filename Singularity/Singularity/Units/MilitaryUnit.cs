@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Property;
@@ -16,12 +17,19 @@ namespace Singularity.Units
         private static readonly Color sSelectedColor = Color.Gainsboro;
         private static readonly Color sNotSelectedColor = Color.White;
 
+        private const double Speed = 4;
+
         private Color mColor;
 
         private int mColumn;
         private int mRow;
 
         private bool mIsMoving;
+        private Rectangle mBounds;
+
+        private Vector2 mMovementVector;
+
+        private int mMovementApplyTimes;
 
         private Vector2 mTargetPosition;
         private int mRotation;
@@ -45,6 +53,7 @@ namespace Singularity.Units
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(DefaultWidth, DefaultHeight);
             mIsMoving = false;
+            mMovementApplyTimes = 0;
 
             mMilSheet = spriteSheet;
         }
@@ -147,6 +156,9 @@ namespace Singularity.Units
 
         public void Update(GameTime gameTime)
         {
+            mBounds = new Rectangle(
+                (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
+
             mSelected = IsSelected();
 
             if (mSelected && !mIsMoving)
@@ -154,9 +166,9 @@ namespace Singularity.Units
                 Rotate(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
             }
 
-            if (mSelected && Mouse.GetState().LeftButton == ButtonState.Pressed && 
-                ((Math.Abs((RelativePosition.X + (RelativeSize.X / 2)) - Mouse.GetState().X) > 60) ||
-                 (Math.Abs((RelativePosition.Y + (RelativeSize.Y / 2)) - Mouse.GetState().Y) > 45)))
+            if (mSelected && !mIsMoving && Mouse.GetState().LeftButton == ButtonState.Pressed && 
+                ((Math.Abs(mBounds.Center.X - Mouse.GetState().X) > 60) ||
+                 (Math.Abs(mBounds.Center.Y - Mouse.GetState().Y) > 45)))
             {
                 mIsMoving = true;
                 mTargetPosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
@@ -188,8 +200,8 @@ namespace Singularity.Units
         {
 
             // if left click within unit area : selected
-            if ((Math.Abs((RelativePosition.X + (RelativeSize.X / 2)) - Mouse.GetState().X) < 60) &&
-                (Math.Abs((RelativePosition.Y + (RelativeSize.Y / 2)) - Mouse.GetState().Y) < 45) &&
+            if ((Math.Abs(mBounds.Center.X - Mouse.GetState().X) < 60) &&
+                (Math.Abs(mBounds.Center.Y - Mouse.GetState().Y) < 45) &&
                 Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
                 return true;
@@ -208,12 +220,9 @@ namespace Singularity.Units
         /// <param name="target"></param>
         private void MoveToTarget(Vector2 target)
         {
-            var bounds = new Rectangle(
-                (int) RelativePosition.X, (int) RelativePosition.Y, (int) RelativeSize.X, (int) RelativeSize.Y);
 
-            var movementVector = Geometry.NormalizeVector(new Vector2(target.X - bounds.Center.X, target.Y - bounds.Center.Y));
-            // adjusts speed of unit movement 
-            AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X, AbsolutePosition.Y + movementVector.Y);
+            mMovementVector = Geometry.NormalizeVector(new Vector2(target.X - mBounds.Center.X, target.Y - mBounds.Center.Y));
+            AbsolutePosition = new Vector2((int) (AbsolutePosition.X + mMovementVector.X * Speed), (int) (AbsolutePosition.Y + mMovementVector.Y * Speed));
         }
 
         /// <summary>
@@ -222,9 +231,9 @@ namespace Singularity.Units
         /// </summary>
         private bool HasReachedTarget()
         {
+            return Math.Abs(RelativePosition.X - (RelativeSize.X / 2) - mTargetPosition.X) < 8 &&
+                   Math.Abs(RelativePosition.Y - (RelativeSize.Y / 2) - mTargetPosition.Y) < 8;
 
-            return Math.Abs((RelativePosition.X) - mTargetPosition.X + (RelativeSize.X / 2)) < 8 &&
-                   Math.Abs((RelativePosition.Y) - mTargetPosition.Y + (RelativeSize.Y / 2)) < 8;
         }
     }
 }
