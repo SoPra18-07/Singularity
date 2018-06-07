@@ -209,7 +209,7 @@ namespace Singularity.Platform
         public void Draw(SpriteBatch spritebatch)
         {
             var position = 0;
-            var sheet = "b"; // b stands for blank, c for cone, cyl for Cylindrical and d for Dome
+            var sheet = "b"; // b stands for blank, c for cone or cylindrical and d for Dome
             switch (mType)
             {
                 case EPlatformType.Blank:
@@ -253,10 +253,10 @@ namespace Singularity.Platform
                     position = 1;
                     break;
                 case EPlatformType.Barracks:
-                    sheet = "cyl";
+                    sheet = "c";
                     break;
                 case EPlatformType.Command:
-                    sheet = "cyl";
+                    sheet = "c";
                     position = 1;
                     break;
             }
@@ -291,6 +291,21 @@ namespace Singularity.Platform
                         SpriteEffects.None,
                         LayerConstants.PlatformLayer);
                     break;
+                case "c":
+                    spritebatch.Draw(mSpritesheet,
+                        new Rectangle(
+                            (int)AbsolutePosition.X,
+                            (int)AbsolutePosition.Y,
+                            (int)AbsoluteSize.X,
+                            (int)AbsoluteSize.Y),
+                        new Rectangle((int)AbsoluteSize.X, position * (int)AbsoluteSize.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y),
+                        Color.White,
+                        0f,
+                        Vector2.Zero,
+                        SpriteEffects.None,
+                        LayerConstants.PlatformLayer);
+                    break;
+                
             }
         }
 
