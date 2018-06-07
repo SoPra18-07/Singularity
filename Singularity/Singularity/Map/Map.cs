@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Map.Properties;
-using Singularity.platform;
+using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Utils;

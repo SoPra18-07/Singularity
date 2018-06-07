@@ -6,10 +6,10 @@ using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
 
-namespace Singularity.platform
+namespace Singularity.Platform
 {
 
-    internal class PlatformBlank : IDraw, IUpdate, ISpatial
+    public class PlatformBlank : IDraw, IUpdate, ISpatial
     {
 
         private const int PlatformWidth = 148;
@@ -18,12 +18,17 @@ namespace Singularity.platform
         private int mHealth;
         private int mId;
         private bool mIsBlueprint;
-        private readonly Action[] mActions;
+        private readonly IPlatformAction[] mIPlatformActions;
         private readonly Texture2D mSpritesheet;
-        private readonly Dictionary<GeneralUnit, Job> mAssignedUnits;
-        private List<IResource> mResources;
-        private Dictionary<IResource, int> mRequested;
-        private readonly Dictionary<IResource, int> mCost;
+        internal Vector2 GetLocation()
+        {
+            throw new NotImplementedException();
+        }
+
+        private Dictionary<EResourceType, int> mRequested;
+        private readonly Dictionary<EResourceType, int> mCost;
+        private readonly Dictionary<GeneralUnit, JobType> mAssignedUnits;
+        private List<Resource> mResources;
 
         public Vector2 AbsolutePosition { get; set; }
 
@@ -38,7 +43,7 @@ namespace Singularity.platform
         /// Get the assigned Units of this platform.
         /// </summary>
         /// <returns> a list containing references of the units</returns>
-        public Dictionary<GeneralUnit, Job> GetAssignedUnits()
+        public Dictionary<GeneralUnit, JobType> GetAssignedUnits()
         {
             return mAssignedUnits;
         }
@@ -48,7 +53,7 @@ namespace Singularity.platform
         /// </summary>
         /// <param name="unit">The unit to be assigned.</param>
         /// <param name="job">The Job to be done by the unit</param>
-        public void AssignUnits(GeneralUnit unit, Job job)
+        public void AssignUnits(GeneralUnit unit, JobType job)
         {
             mAssignedUnits.Add(unit, job);
         }
@@ -63,36 +68,38 @@ namespace Singularity.platform
         }
 
         /// <summary>
-        /// Get the special actions you can perform on this platform.
+        /// Get the special IPlatformActions you can perform on this platform.
         /// </summary>
-        /// <returns> an array with the available actions.</returns>
-        public Action[] GetActions()
+        /// <returns> an array with the available IPlatformActions.</returns>
+        public IPlatformAction[] GetIPlatformActions()
         {
-            return mActions;
+            return mIPlatformActions;
         }
 
         /// <summary>
-        /// Perform the given action on the platform.
+        /// Perform the given PlatformAction on the platform.
         /// </summary>
-        /// <param name="action"> The action to be performed </param>
+        /// <param name="platformAction"> The IPlatformAction to be performed </param>
         /// <returns> true if it was succesfull</returns>
-        public bool DoAction(Action action)
+        public bool DoIPlatformAction(IPlatformAction platformAction)
         {
-            //This return is normally an if, I just had to do it this way because resharper would cry otherwise. As soon as doBlueprintBuild is implemented we can change this.
-            return (action == Action.BlueprintBuild);
-            //{
-                //doBlueprintBuild
-                //return true;
-            //}
+            // FIXME might need to give the ID instead
+            // This return is normally an if, I just had to do it this way because resharper would cry otherwise. As soon as doBlueprintBuild is implemented we can change this.
+            // return (IPlatformAction == IPlatformAction.BlueprintBuild);
+            // {
+            // doBlueprintBuild
+            // return true;
+            // }
 
             //return false;
+            return true;
         }
 
         /// <summary>
         /// Get the requirements of resources to build this platform.
         /// </summary>
         /// <returns> a dictionary of the resources with a number telling how much of it is required</returns>
-        public Dictionary<IResource, int> GetResourcesRequired()
+        public Dictionary<EResourceType, int> GetResourcesRequired()
         {
             return mCost;
         }
@@ -101,7 +108,7 @@ namespace Singularity.platform
         /// Get the Resources on the platform.
         /// </summary>
         /// <returns> a List containing the references to the resource-objects</returns>
-        public List<IResource> GetPlatformResources()
+        public List<Resource> GetPlatformResources()
         {
             return mResources;
         }
@@ -132,7 +139,7 @@ namespace Singularity.platform
         /// Add a new resource to the platform.
         /// </summary>
         /// <param name="resource"> the resource to be added to the platform </param>
-        public void StoreResource(IResource resource)
+        public void StoreResource(Resource resource)
         {
             mResources.Add(resource);
         }
@@ -140,26 +147,27 @@ namespace Singularity.platform
         /// <summary>
         /// Use this method to get the resource you asked for. Removes the resource from the platform.
         /// </summary>
-        /// <param name="resource">The resource you ask for</param>
+        /// <param name="resourcetype">The resource you ask for</param>
         /// <returns>the resource you asked for, null otherwise.</returns>
-        public IResource GetResource(IResource resource)
+        public Resource GetResource(EResourceType resourcetype)
         {
-            var index = mResources.IndexOf(resource);
-            if (index < 0)
-            {
-                return null;
-            }
+            // var index = mResources.FindIndex(x => x.isType(resourcetype));
+            // if (index < 0)
+            // {
+            // return null;
+            // }
 
-            var foundresource = mResources[index];
-            mResources.RemoveAt(index);
-            return foundresource;
+            // var foundresource = mResources[index];
+            // mResources.RemoveAt(index);
+            // return foundresource;
+            return null;
         }
 
         /// <summary>
         /// Get the resources that are requested and the amount of it.
         /// </summary>
         /// <returns>A dictionary containing this information.</returns>
-        public Dictionary<IResource, int> GetmRequested()
+        public Dictionary<EResourceType, int> GetmRequested()
         {
             return mRequested;
         }
@@ -169,7 +177,7 @@ namespace Singularity.platform
         /// </summary>
         /// <param name="resource">the resource to be requested (or not)</param>
         /// <param name="number">the number of that resource</param>
-        public void SetmRequested(IResource resource, int number)
+        public void SetmRequested(EResourceType resource, int number)
         {
             mRequested.Add(resource, number);
         }
@@ -179,7 +187,7 @@ namespace Singularity.platform
             throw new NotImplementedException();
         }
 
-        /// <inheritdoc cref="Singularity.property.IDraw"/>
+        /// <inheritdoc cref="Singularity.Property.IDraw"/>
         public void Draw(SpriteBatch spritebatch)
         {
             // the sprite sheet is 148x1744 px, 1x12 sprites
@@ -197,7 +205,7 @@ namespace Singularity.platform
                 Vector2.Zero, SpriteEffects.None, LayerConstants.PlatformLayer);
         }
 
-        /// <inheritdoc cref="Singularity.property.IUpdate"/>
+        /// <inheritdoc cref="Singularity.Property.IUpdate"/>
         public void Update(GameTime t)
         {
             //TODO: implement update code
@@ -212,22 +220,27 @@ namespace Singularity.platform
             //default?
             mHealth = 100;
 
-            //The only action available so far is BlueprintBuild.
-            mActions = new Action[1];
-            mActions[0] = Action.BlueprintBuild;
+            //The only IPlatformAction available so far is BlueprintBuild.
+            mIPlatformActions = new IPlatformAction[1];
+            // mIPlatformActions[0] = IPlatformAction.BlueprintBuild;
 
-            mAssignedUnits = new Dictionary<GeneralUnit, Job>();
+            mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
 
             //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<IResource, int>();
+            mCost = new Dictionary<EResourceType, int>();
 
-            mResources = new List<IResource>();
+            mResources = new List<Resource>();
 
             mSpritesheet = spritesheet;
 
             mIsBlueprint = true;
-            mRequested = new Dictionary<IResource, int>();
+            mRequested = new Dictionary<EResourceType, int>();
           
+        }
+
+        public bool PlatformHasSpace()
+        {
+            return mResources.Count < 10;
         }
     }
 }

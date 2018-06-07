@@ -2,9 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Singularity.Platform;
 using Singularity.Input;
-using Singularity.platform;
-using Singularity.Resources;
 using Singularity.screen;
 using Singularity.Screen;
 using Singularity.Units;
@@ -14,7 +13,7 @@ namespace Singularity
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public sealed class Game1 : Game
+    internal sealed class Game1 : Game
     {
         private GraphicsDeviceManager mGraphics;
         private SpriteBatch mSpriteBatch;
@@ -54,6 +53,14 @@ namespace Singularity
         /// </summary>
         protected override void Initialize()
         {
+            // TODO: Add your initialization logic here
+            // can be used to debug the screen manager
+            /*
+               mScreenManager.AddScreen(new RenderLowerScreen());
+               mScreenManager.AddScreen(new UpdateLowerScreen());
+            */
+
+            // XSerializer.TestSerialization();
             IsMouseVisible = true;
             mGraphics.PreferredBackBufferWidth = 1080;
             mGraphics.PreferredBackBufferHeight = 720;
@@ -77,10 +84,10 @@ namespace Singularity
 
             // TODO: use this.Content to load your game content here
             mPlatformSheet = Content.Load<Texture2D>("PlatformSpriteSheet");
-            mPlatform = new PlatformBlank(new Vector2(400, 300), mPlatformSheet);
+            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet);
             mPlatform2 = new PlatformBlank(new Vector2(800, 600), mPlatformSheet);
 
-            mMap = new Map.Map(Content.Load<Texture2D>("MockUpBackground"), mGraphics.GraphicsDevice.Viewport, false);
+            mMap = new Map.Map(Content.Load<Texture2D>("MockUpBackground"), mGraphics.GraphicsDevice.Viewport, true);
 
             mMap.AddPlatform(mPlatform);
             mMap.AddPlatform(mPlatform2);
@@ -95,8 +102,6 @@ namespace Singularity
             mGameScreen.AddObject<PlatformBlank>(mPlatform);
             mGameScreen.AddObject<PlatformBlank>(mPlatform2);
             mGameScreen.AddObject<Road>(mRoad1);
-
-            mGameScreen.AddObject(ResourceHelper.GetRandomlyDistributedResources(5));
 
             mScreenManager.AddScreen(mGameScreen);
 
@@ -141,7 +146,7 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.TransparentBlack);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
 

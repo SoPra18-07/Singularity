@@ -6,11 +6,11 @@ using Singularity.Property;
 
 namespace Singularity.Units
 {
-    class MilitaryUnit : IUnit, IDraw, IUpdate
+    internal sealed class MilitaryUnit : IUnit, IDraw, IUpdate
     {
         private Vector2 mTargetPosition;
         private int mRotation;
-        readonly Texture2D mMilSheet;
+        private readonly Texture2D mMilSheet;
         private double mXstep;
         private double mYstep;
         private bool mSelected;
@@ -49,7 +49,7 @@ namespace Singularity.Units
         /// user mouse and eventually target destination
         /// </summary>
         /// <param name="target"></param>
-        public void Rotate(Vector2 target)
+        private void Rotate(Vector2 target)
         {
             // form a triangle from unit location to mouse location
             // adjust to be at center of sprite 150x75
@@ -86,7 +86,7 @@ namespace Singularity.Units
         /// <summary>
         /// The property which defines the health of the unit
         /// </summary>
-        public int Health { get; set; }
+        private int Health { get; set; }
 
         /// <summary>
         /// The unique ID of the unit.
@@ -109,17 +109,17 @@ namespace Singularity.Units
         /// <param name="damage"></param>
         public void MakeDamage(int damage)
         {
-             Health -= damage; //TODO
+             Health -= damage; // TODO
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            // calculate correct sprite on spritesheet to use based on angle 
-            // direction that unit is meant to be faceing 
+            // calculate correct sprite on spritesheet to use based on angle
+            // direction that unit is meant to be faceing
             int rowNumber = (mRotation / 18);
             int columnNumber = ((mRotation - (rowNumber * 18)) / 3);
 
-            // darken color if unit is selected 
+            // darken color if unit is selected
             Color color;
             if (!mSelected) { color = Color.White; }
             else { color = Color.Gainsboro; }
@@ -144,7 +144,7 @@ namespace Singularity.Units
                 ((Math.Abs((AbsolutePosition.X + 75) - Mouse.GetState().X) > 60) ||
                  (Math.Abs((AbsolutePosition.Y + 37.5) - Mouse.GetState().Y) > 45)))
             {
-                Steps(new Vector2(Mouse.GetState().X, (Mouse.GetState().Y)));
+                Steps(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
             }
 
             // move unit until target reached
@@ -158,7 +158,7 @@ namespace Singularity.Units
         /// <summary>
         /// determines if the the military unit is currently selected by user
         /// left click within area is select
-        /// right click anywhere else is deselect 
+        /// right click anywhere else is deselect
         /// </summary>
         private void Selected()
         {
@@ -180,7 +180,7 @@ namespace Singularity.Units
         /// <summary>
         /// determine x and y movement of unit in order to
         /// reach target destination. This will then be used
-        /// by the Move method 
+        /// by the Move method
         /// </summary>
         /// <param name="target"></param>
         private void Steps(Vector2 target)
@@ -189,7 +189,6 @@ namespace Singularity.Units
             mTargetPosition = target;
             Rotate(mTargetPosition);
             mTargetReached = false;
-            
 
             // travel along the hypotenuse of triangle formed by start and target position
             double hypot = (Math.Sqrt(Math.Pow((AbsolutePosition.X - mTargetPosition.X + 75), 2) +

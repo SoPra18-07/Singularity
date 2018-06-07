@@ -7,7 +7,7 @@ using Singularity.Resources;
 
 namespace Singularity.Units
 {
-    class GeneralUnit : IUnit, IUpdate, IDraw
+    public class GeneralUnit : IUnit, IUpdate, IDraw
     {
         public int Id { get; }
         private int mPositionId;
@@ -17,7 +17,7 @@ namespace Singularity.Units
         private Stack<int> mPathQueue; // the queue of platform and edges the unit has to traverse to get to its target
         private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
 
-         // TODO: also use the size for the units representation since we someday need to draw rectangles over units (bounding box)
+        // TODO: also use the size for the units representation since we someday need to draw rectangles over units (bounding box)
 
         public Vector2 AbsolutePosition { get; set; }
 
@@ -164,8 +164,8 @@ namespace Singularity.Units
                     }
                     // drop the resource.
                 }
-                
-                
+
+
 
             }
 
