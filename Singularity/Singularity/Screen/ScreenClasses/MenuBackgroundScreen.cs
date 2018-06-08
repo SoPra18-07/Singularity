@@ -22,7 +22,7 @@ namespace Singularity.Screen.ScreenClasses
     {
         private Texture2D mGlowTexture2D;
         private Texture2D mHoloProjectionTexture2D;
-        private Vector2 mScreenResolution;
+        private Vector2 mScreenCenter;
         private Vector2 mScreenResolutionScaling;
         private float mHoloProjectionWidthScaling;
         private Vector2 mHoloProjectionScaling;
@@ -38,7 +38,7 @@ namespace Singularity.Screen.ScreenClasses
             SetResolution(screenResolution);
             mCurrentScreen = EScreen.SplashScreen;
 
-            Debug.Print("sScreenResolution: " + mScreenResolution.X + ", " + mScreenResolution.Y);
+            Debug.Print("sScreenResolution: " + mScreenCenter.X + ", " + mScreenCenter.Y);
             Debug.Print("sScreenResolutionScaling: " + mScreenResolutionScaling.X + ", " + mScreenResolutionScaling.Y);
         }
 
@@ -67,7 +67,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="screenResolution">Current viewport screen resolution</param>
         public void SetResolution(Vector2 screenResolution)
         {
-            mScreenResolution = screenResolution;
+            mScreenCenter = new Vector2(screenResolution.X / 2, screenResolution.Y / 2);
             mScreenResolutionScaling = new Vector2(screenResolution.X / 1280, screenResolution.Y / 1024);
             SetHoloProjectionScaling(mHoloProjectionWidthScaling);
         }
@@ -92,9 +92,10 @@ namespace Singularity.Screen.ScreenClasses
                 case EScreen.LoadSelectScreen:
                     break;
                 case EScreen.MainMenuScreen:
-                    mHoloProjectionWidthScaling = 4f;
+                    mHoloProjectionWidthScaling = 3f;
                     break;
                 case EScreen.OptionsScreen:
+                    mHoloProjectionWidthScaling = 5.5f;
                     break;
                 case EScreen.SplashScreen:
                     break;
@@ -130,7 +131,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // Draw glow
             spriteBatch.Draw(mGlowTexture2D,
-                new Vector2(mScreenResolution.X / 2, mScreenResolution.Y / 2),
+                mScreenCenter,
                 null,
                 Color.AliceBlue,
                 0f,
@@ -141,7 +142,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // Draw holoProjection texture
             spriteBatch.Draw(mHoloProjectionTexture2D,
-                new Vector2(540, 360),
+                mScreenCenter,
                 null,
                 Color.AliceBlue,
                 0f,

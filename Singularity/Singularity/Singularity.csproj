@@ -73,6 +73,7 @@
     <Compile Include="Resources\EResourceType.cs" />
     <Compile Include="Platform\Action.cs" />
     <Compile Include="Platform\PlatformBlank.cs" />
+    <Compile Include="Screen\EOptionScreenState.cs" />
     <Compile Include="Serialization\CyclicDummy.cs" />
     <Compile Include="Serialization\XSerializer.cs" />
     <Compile Include="Serialization\SerializationDummy.cs" />
@@ -92,7 +93,6 @@
     <Compile Include="Screen\ScreenClasses\MainMenuManagerScreen.cs" />
     <Compile Include="Screen\ScreenClasses\MainMenuScreen.cs" />
     <Compile Include="Screen\ScreenClasses\MenuBackgroundScreen.cs" />
-    <Compile Include="Screen\ScreenClasses\OptionScreens\GameplayOptionsScreen.cs" />
     <Compile Include="Screen\ScreenClasses\OptionsScreen.cs" />
     <Compile Include="Screen\ScreenClasses\SaveGameScreen.cs" />
     <Compile Include="Screen\ScreenClasses\SplashScreen.cs" />

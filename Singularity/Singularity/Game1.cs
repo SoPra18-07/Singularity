@@ -20,7 +20,7 @@ namespace Singularity
     /// </summary>
     internal sealed class Game1 : Game
     {
-        private GraphicsDeviceManager mGraphics;
+        internal GraphicsDeviceManager mGraphics;
 
         private Texture2D mPlatformBlankTexture;
         private Texture2D mPlatformDomeTexture;
@@ -88,6 +88,7 @@ namespace Singularity
             IsMouseVisible = true;
             mGraphics.PreferredBackBufferWidth = 1080;
             mGraphics.PreferredBackBufferHeight = 720;
+            mGraphics.IsFullScreen = false;
             mGraphics.ApplyChanges();
 
             base.Initialize();
@@ -126,7 +127,7 @@ namespace Singularity
 
             mGameScreen = new GameScreen(mMap);
 
-            mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true);
+            mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
 
             // Add the screens to the screen manager
             // The idea is that the game screen is always at the bottom and stuff is added simply
@@ -176,12 +177,6 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-                Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
-                Exit();
-            }
-
             // a new static input manager. It requires updating every tick to figure out where
             // the mouse is.
             InputManager2.Update(gameTime);

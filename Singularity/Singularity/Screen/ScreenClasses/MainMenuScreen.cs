@@ -20,22 +20,12 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     class MainMenuScreen : IScreen
     {
-        private static Vector2 sMenuBox;
+        private readonly Vector2 mMenuBoxPosition;
         private EScreen mScreenState;
 
         // Fonts
         private SpriteFont mLibSans36;
         private SpriteFont mLibSans20;
-
-        // All connecting screens
-        private IScreen mGameModeSelectScreen;
-        private IScreen mLoadSelectScreen;
-        private IScreen mAchievementsScreen;
-        private IScreen mOptionsScreen;
-        private IScreen mSplashScreen;
-
-        // Background
-        private MenuBackgroundScreen mMenuBackgroundScreen;
 
         // all text is stored as string variables to allow for easy changes
         private readonly string mPlayString;
@@ -51,17 +41,15 @@ namespace Singularity.Screen.ScreenClasses
         private Button mAchievementsButton;
         private Button mOptionsButton;
         private Button mQuitButton;
-        private List<Button> mButtonList;
+        private readonly List<Button> mButtonList;
 
         /// <summary>
-        /// 
+        /// Used to construct a new instance of the main menu screen
         /// </summary>
         /// <param name="screenResolution">Screen resolution of the game</param>
-        /// <param name="screenManager">Stack screen manager of the game</param>
-        /// <param name="showSplash">Defines if the splash screen should be shown</param>
         public MainMenuScreen(Vector2 screenResolution)
         {
-            SetResolution(screenResolution);
+            mMenuBoxPosition = new Vector2(screenResolution.X / 2 - 150, screenResolution.Y / 2 - 175);
 
             mPlayString = "New Game";
             mLoadSelectString = "Load Game";
@@ -69,19 +57,7 @@ namespace Singularity.Screen.ScreenClasses
             mOptionsString = "Options";
             mQuitString = "Quit";
             mTitle = "Singularity";
-            mButtonList = new List<Button>();
-        }
-
-        /// <summary>
-        /// Used for scaling of the menu box
-        /// </summary>
-        /// <param name="screenResolution">Current screen resolution</param>
-        public static void SetResolution(Vector2 screenResolution)
-        {
-            sMenuBox = new Vector2(screenResolution.X / 2 - 150, screenResolution.Y / 2 - 175);
-
-            // TODO change size of menu box based on the resolution of the screen 
-
+            mButtonList = new List<Button>(5);
         }
 
         /// <summary>
@@ -92,11 +68,11 @@ namespace Singularity.Screen.ScreenClasses
         {
             mLibSans36 = content.Load<SpriteFont>("LibSans36");
             mLibSans20 = content.Load<SpriteFont>("LibSans20");
-            mPlayButton = new Button("Play", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 90));
-            mLoadButton = new Button("Load", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 140));
-            mOptionsButton = new Button("Options", mLibSans20, new Vector2(sMenuBox.X+30, sMenuBox.Y + 190));
-            mAchievementsButton = new Button("Achievements", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 240));
-            mQuitButton = new Button("Quit", mLibSans20, new Vector2(sMenuBox.X + 30, sMenuBox.Y + 290));
+            mPlayButton = new Button(mPlayString, mLibSans20, new Vector2(mMenuBoxPosition.X + 30, mMenuBoxPosition.Y + 90));
+            mLoadButton = new Button(mLoadSelectString, mLibSans20, new Vector2(mMenuBoxPosition.X + 30, mMenuBoxPosition.Y + 140));
+            mOptionsButton = new Button(mOptionsString, mLibSans20, new Vector2(mMenuBoxPosition.X+30, mMenuBoxPosition.Y + 190));
+            mAchievementsButton = new Button(mAchievementsString, mLibSans20, new Vector2(mMenuBoxPosition.X + 30, mMenuBoxPosition.Y + 240));
+            mQuitButton = new Button(mQuitString, mLibSans20, new Vector2(mMenuBoxPosition.X + 30, mMenuBoxPosition.Y + 290));
             mButtonList.Add(mPlayButton);
             mButtonList.Add(mLoadButton);
             mButtonList.Add(mOptionsButton);
@@ -139,7 +115,7 @@ namespace Singularity.Screen.ScreenClasses
            
 
             // Draw menu window
-            spriteBatch.StrokedRectangle(sMenuBox,
+            spriteBatch.StrokedRectangle(mMenuBoxPosition,
                 new Vector2(300, 350),
                 Color.White,
                 Color.White,
@@ -147,7 +123,7 @@ namespace Singularity.Screen.ScreenClasses
                 .20f);
             spriteBatch.DrawString(mLibSans36,
                 mTitle,
-                new Vector2(sMenuBox.X + 30, sMenuBox.Y + 10), Color.White);
+                new Vector2(mMenuBoxPosition.X + 30, mMenuBoxPosition.Y + 10), Color.White);
 
             spriteBatch.End();
         }
