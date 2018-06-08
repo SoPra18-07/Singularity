@@ -81,7 +81,6 @@
     <Compile Include="Resources\Resource.cs" />
     <Compile Include="Resources\ResourceHelper.cs" />
     <Compile Include="Property\LayerConstants.cs" />
-<<<<<<< HEAD
     <Compile Include="Screen\Button.cs" />
     <Compile Include="Screen\EScreen.cs" />
     <Compile Include="Screen\ScreenClasses\AchievementsScreen.cs" />
@@ -98,10 +97,8 @@
     <Compile Include="Screen\ScreenClasses\SaveGameScreen.cs" />
     <Compile Include="Screen\ScreenClasses\SplashScreen.cs" />
     <Compile Include="Screen\ScreenClasses\StatisticsScreen.cs" />
-=======
     <Compile Include="Screen\GameScreen.cs" />
     <Compile Include="StoryManager\StoryManager.cs" />
->>>>>>> master
     <Compile Include="Units\GeneralUnit.cs" />
     <Compile Include="Units\IUnit.cs" />
     <Compile Include="Units\JobType.cs" />
@@ -139,11 +136,8 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
-<<<<<<< HEAD
     <None Include="Content\Shaders\Bloom.fx" />
-=======
     <None Include="packages.config" />
->>>>>>> master
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
