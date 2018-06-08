@@ -20,7 +20,7 @@ namespace Singularity.Screen
     /// text or Texture2D. The buttons can send out Clicked, Released,
     /// and Hovering events that other classes can subscribe to.
     /// </summary>
-    class Button : IUpdate, IDraw //TODO this needs to implement IWindowItem which will have update and draw
+    class Button : IWindowItem
     {
         // bool to indicated if the button is made of text
         private readonly bool mIsText;
