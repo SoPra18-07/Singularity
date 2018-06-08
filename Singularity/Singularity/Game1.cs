@@ -22,7 +22,6 @@ namespace Singularity
     {
         private GraphicsDeviceManager mGraphics;
 
-        private SpriteBatch mSpriteBatch;
         private Texture2D mPlatformBlankTexture;
         private Texture2D mPlatformDomeTexture;
         private PlatformBlank mPlatform;
@@ -30,7 +29,6 @@ namespace Singularity
 
         private MilitaryUnit mMUnit1;
         private MilitaryUnit mMUnit2;
-        private Junkyard mPlatform2;
         private EnergyFacility mPlatform3;
         private Map.Map mMap;
 
