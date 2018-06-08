@@ -4,13 +4,13 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Map;
 using Singularity.Property;
-using Singularity.Screen;
 
-namespace Singularity.screen
+namespace Singularity.Screen.ScreenClasses
 {
     /// <inheritdoc cref="IScreen"/>
     /// <summary>
-    /// The game screen handles everything thats going on explicitly in the game. E.g. game objects, the map, camera. etc.
+    /// Handles everything thats going on explicitly in the game.
+    /// E.g. game objects, the map, camera. etc.
     /// </summary>
     internal sealed class GameScreen : IScreen
     {
@@ -41,7 +41,7 @@ namespace Singularity.screen
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mCamera.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, mCamera.GetTransform());
 
             foreach (var drawable in mDrawables)
             {
@@ -107,25 +107,6 @@ namespace Singularity.screen
                 mUpdateables.AddLast((IUpdate) toAdd);
             }
             return true;
-
-        }
-
-        /// <summary>
-        /// Adds the given objects to the game screens list of objects to handle.
-        /// </summary>
-        /// <typeparam name="T">The type of the objects to be added. Needs to inherit from IDraw or IUpdate</typeparam>
-        /// <param name="toAdd">The objects to be added to the game screen</param>
-        /// <returns>True if all given objects could be added to the screen, false otherwise</returns>
-        public bool AddObject<T>(List<T> toAdd)
-        {
-            var isSuccessful = true;
-
-            foreach(var t in toAdd)
-            {
-                isSuccessful = isSuccessful && AddObject<T>(t);
-            }
-
-            return isSuccessful;
 
         }
 

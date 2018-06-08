@@ -1,13 +1,16 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Singularity.Platform;
 using Singularity.Input;
+
 using Singularity.Map;
 using Singularity.Resources;
-using Singularity.screen;
 using Singularity.Screen;
+using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 
 namespace Singularity
@@ -18,25 +21,40 @@ namespace Singularity
     internal sealed class Game1 : Game
     {
         private GraphicsDeviceManager mGraphics;
-        private SpriteBatch mSpriteBatch;
+
         private Texture2D mPlatformBlankTexture;
         private Texture2D mPlatformDomeTexture;
         private PlatformBlank mPlatform;
-        private Texture2D mMUnitSheet;
+        private PlatformBlank mPlatform2;
+
         private MilitaryUnit mMUnit1;
         private MilitaryUnit mMUnit2;
-        private Junkyard mPlatform2;
         private EnergyFacility mPlatform3;
         private Map.Map mMap;
+
         private static Song sSoundtrack;
+
+        // Screens
         private GameScreen mGameScreen;
+        private MenuBackgroundScreen mMenuBackgroundScreen;
+        private SplashScreen mSplashScreen;
+        private MainMenuScreen mMainMenuScreen;
+        private AchievementsScreen mAchievementsScreen;
+        private GameModeSelectScreen mGameModeSelectScreen;
+        private LoadSelectScreen mLoadSelectScreen;
+        private OptionsScreen mOptionsScreen;
+        private MainMenuManagerScreen mMainMenuManager;
         private InputManager mInputManager;
 
         // roads
         private Road mRoad1;
 
         // Sprites!
+        private SpriteBatch mSpriteBatch;
+        private Texture2D mPlatformSheet;
+        private Texture2D mMUnitSheet;
 
+        // Screen Manager
         private readonly IScreenManager mScreenManager;
 
         internal Game1()
@@ -46,6 +64,8 @@ namespace Singularity
 
             mInputManager = new InputManager();
             mScreenManager = new StackScreenManager();
+
+            mInputManager = new InputManager();
 
         }
 
@@ -79,11 +99,16 @@ namespace Singularity
         /// </summary>
         protected override void LoadContent()
         {
+            var viewportResolution = new Vector2(GraphicsDevice.Viewport.Width,
+                GraphicsDevice.Viewport.Height);
             // Create a new SpriteBatch, which can be used to draw textures.
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
             mMUnitSheet = Content.Load<Texture2D>("UnitSpriteSheet");
 
+            mPlatformSheet = Content.Load<Texture2D>("PlatformSpriteSheet");
+            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet);
+            mPlatform2 = new PlatformBlank(new Vector2(800, 600), mPlatformSheet);
             // TODO: use this.Content to load your game content here
             mPlatformBlankTexture = Content.Load<Texture2D>("PlatformBasic");
             mPlatformDomeTexture = Content.Load<Texture2D>("Dome");
@@ -101,6 +126,17 @@ namespace Singularity
 
             mGameScreen = new GameScreen(mMap);
 
+            mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true);
+
+            // Add the screens to the screen manager
+            // The idea is that the game screen is always at the bottom and stuff is added simply
+            // on top of it.
+            mScreenManager.AddScreen(mGameScreen);
+            mScreenManager.AddScreen(mMainMenuManager);
+            // TODO load game screen contents only after game new game or load game has been started
+
+            mMainMenuManager.LoadContent(Content);
+
             // load roads
             mRoad1 = new Road(mPlatform, mPlatform2, false);
             var road2 = new Road(mPlatform, mPlatform3, false);
@@ -115,8 +151,6 @@ namespace Singularity
             mGameScreen.AddObject(road2);
             mGameScreen.AddObject(road3);
             mGameScreen.AddObject(ResourceHelper.GetRandomlyDistributedResources(5));
-
-            mScreenManager.AddScreen(mGameScreen);
 
             // load and play Soundtrack as background music
             sSoundtrack = Content.Load<Song>("BGMusic");
@@ -148,6 +182,10 @@ namespace Singularity
                 Exit();
             }
 
+            // a new static input manager. It requires updating every tick to figure out where
+            // the mouse is.
+            InputManager2.Update(gameTime);
+
             mInputManager.Update(gameTime);
             mScreenManager.Update(gameTime);
             base.Update(gameTime);
@@ -159,7 +197,7 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
 
