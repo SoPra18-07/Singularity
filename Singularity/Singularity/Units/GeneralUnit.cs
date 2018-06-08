@@ -29,6 +29,9 @@ namespace Singularity.Units
 
         internal JobType Job { get; set; } = JobType.Idle;
 
+        //If a Command center controlling this unit is destroyed or turned off, this unit will also be turned off
+        public bool Active { get; set; }
+
         public GeneralUnit(int spawnPositionId)
         {
             Id = 0; // TODO make this randomized or simply ascending
@@ -170,6 +173,7 @@ namespace Singularity.Units
             }
 
         }
+
         public void Update(GameTime gametime)
         {
             // use switch to change between jobs

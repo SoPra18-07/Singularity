@@ -21,6 +21,7 @@ namespace Singularity
         private SpriteBatch mSpriteBatch;
         private Texture2D mPlatformBlankTexture;
         private Texture2D mPlatformDomeTexture;
+        private Texture2D mPlatformCylindersTexture;
         private PlatformBlank mPlatform;
         private Texture2D mMUnitSheet;
         private MilitaryUnit mMUnit1;
@@ -89,6 +90,7 @@ namespace Singularity
             // TODO: use this.Content to load your game content here
             mPlatformBlankTexture = Content.Load<Texture2D>("PlatformBasic");
             mPlatformDomeTexture = Content.Load<Texture2D>("Dome");
+            mPlatformCylindersTexture = Content.Load<Texture2D>("Cylinders");
             mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformBlankTexture);
             mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 400), mPlatformDomeTexture);
@@ -97,6 +99,7 @@ namespace Singularity
 
             mMap.AddPlatform(mPlatform);
             mMap.AddPlatform(mPlatform2);
+            mMap.AddPlatform(mPlatform3);
 
             mGameScreen = new GameScreen(mMap);
 
@@ -107,6 +110,7 @@ namespace Singularity
             mGameScreen.AddObject(mMUnit2);
             mGameScreen.AddObject(mPlatform);
             mGameScreen.AddObject(mPlatform2);
+            mGameScreen.AddObject(mPlatform3);
             mGameScreen.AddObject(mRoad1);
             mGameScreen.AddObject(ResourceHelper.GetRandomlyDistributedResources(5));
 

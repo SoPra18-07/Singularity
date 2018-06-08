@@ -58,11 +58,15 @@
     <Compile Include="Input\InputManager.cs" />
     <Compile Include="Input\KeyEvent.cs" />
     <Compile Include="Input\MouseAction.cs" />
+    <Compile Include="Platform\CommandCenter.cs" />
     <Compile Include="Platform\EnergyFacility.cs" />
     <Compile Include="Platform\EPlatformType.cs" />
+    <Compile Include="Platform\Factory.cs" />
     <Compile Include="Platform\Junkyard.cs" />
     <Compile Include="Platform\Mine.cs" />
+    <Compile Include="Platform\Packaging.cs" />
     <Compile Include="Platform\Quarry.cs" />
+    <Compile Include="Platform\Storage.cs" />
     <Compile Include="Platform\Well.cs" />
     <Compile Include="Platform\IPlatformAction.cs" />
     <Compile Include="Platform\Road.cs" />

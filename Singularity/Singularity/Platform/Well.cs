@@ -22,8 +22,8 @@ namespace Singularity.Platform
 
         public Well(Vector2 position, Texture2D spritesheet, ResourceMap resource): base(position, spritesheet)
         {
+            //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[2];
-            //mActions[0] = BuildWellBlueprint(this);
             mIPlatformActions[1] = new ProduceWellResource(this, resource);
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.

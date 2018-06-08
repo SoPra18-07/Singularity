@@ -6,35 +6,43 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Map;
 using Singularity.Resources;
 
 namespace Singularity.Platform
 {
     [DataContract()]
-    class Quarry : PlatformBlank
+    class Storage: PlatformBlank
     {
         [DataMember()]
         private const int PlatformWidth = 144;
         [DataMember()]
         private const int PlatformHeight = 127;
 
-        public Quarry(Vector2 position, Texture2D spritesheet, ResourceMap resource): base(position, spritesheet)
+        public Storage(Vector2 position, Texture2D spritesheet): base(position, spritesheet)
         {
             //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[2];
-            mIPlatformActions[0] = new ProduceQuarryResource(this, resource);
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
-            mType = EPlatformType.Quarry;
+            mType = EPlatformType.Storage;
             mSpritename = "Dome";
             AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
         }
 
         public override void Produce()
         {
-            mIPlatformActions[1].Execute();
+            throw new NotImplementedException();
+            //mIPlatformActions[0].Execute();
+        }
+
+        /// <summary>
+        /// Connects this storage to another storage to act like a portal.
+        /// </summary>
+        /// <param name="storage">The other storage to be connected to</param>
+        public void Connect(Storage storage)
+        {
+            throw new NotImplementedException();
         }
     }
 }

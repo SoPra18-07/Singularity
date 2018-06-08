@@ -20,9 +20,8 @@ namespace Singularity.Platform
 
         public EnergyFacility(Vector2 position, Texture2D spritesheet): base(position, spritesheet)
         {
+            //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[2];
-            //mActions[0] = BuildPlatformBlueprint(this);
-            //mActions[1] = ;
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Something like "Hello InstanceThatManagesEnergyLevels I exist now(Myself)"
             //Add Costs of the platform here if you got them.

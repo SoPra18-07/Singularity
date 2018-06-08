@@ -21,9 +21,9 @@ namespace Singularity.Platform
 
         public Mine(Vector2 position, Texture2D spritesheet, ResourceMap resource): base(position, spritesheet)
         {
+            //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[2];
-            //mActions[0] = BuildPlatformBlueprint(this);
-            mIPlatformActions[1] = new ProduceMineResource(this, resource);
+            mIPlatformActions[0] = new ProduceMineResource(this, resource);
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();

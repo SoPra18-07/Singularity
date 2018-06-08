@@ -49,6 +49,8 @@ namespace Singularity.Platform
         public Vector2 AbsolutePosition { get; set; }
         [DataMember()]
         public Vector2 AbsoluteSize { get; set; }
+
+        //Not sure if to serialize RelativeStuff
         [DataMember()]
         public Vector2 RelativePosition { get; set; }
         [DataMember()]
@@ -298,7 +300,7 @@ namespace Singularity.Platform
                             (int)AbsolutePosition.Y,
                             (int)AbsoluteSize.X,
                             (int)AbsoluteSize.Y),
-                        new Rectangle((int)AbsoluteSize.X, position * (int)AbsoluteSize.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y),
+                        new Rectangle(0, position * (int)AbsoluteSize.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y),
                         Color.White,
                         0f,
                         Vector2.Zero,
@@ -324,11 +326,9 @@ namespace Singularity.Platform
             //default?
             mHealth = 100;
 
-            //Waiting for PlatformActions to be completed.
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
-            //The only IPlatformAction available so far is BlueprintBuild.
+            //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[1];
-            //mIPlatformActions[0] = IPlatformAction.BlueprintBuild;
 
             mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
 
