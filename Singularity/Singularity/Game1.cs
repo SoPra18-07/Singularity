@@ -4,8 +4,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Singularity.Platform;
 using Singularity.Input;
-using Singularity.platform;
+
+using Singularity.Map;
+using Singularity.Resources;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
@@ -15,16 +18,20 @@ namespace Singularity
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public sealed class Game1 : Game
+    internal sealed class Game1 : Game
     {
         private GraphicsDeviceManager mGraphics;
 
+        private SpriteBatch mSpriteBatch;
+        private Texture2D mPlatformBlankTexture;
+        private Texture2D mPlatformDomeTexture;
         private PlatformBlank mPlatform;
         private PlatformBlank mPlatform2;
 
         private MilitaryUnit mMUnit1;
         private MilitaryUnit mMUnit2;
-
+        private Junkyard mPlatform2;
+        private EnergyFacility mPlatform3;
         private Map.Map mMap;
 
         private static Song sSoundtrack;
@@ -72,6 +79,14 @@ namespace Singularity
         /// </summary>
         protected override void Initialize()
         {
+            // TODO: Add your initialization logic here
+            // can be used to debug the screen manager
+            /*
+               mScreenManager.AddScreen(new RenderLowerScreen());
+               mScreenManager.AddScreen(new UpdateLowerScreen());
+            */
+
+            // XSerializer.TestSerialization();
             IsMouseVisible = true;
             mGraphics.PreferredBackBufferWidth = 1080;
             mGraphics.PreferredBackBufferHeight = 720;
@@ -92,14 +107,21 @@ namespace Singularity
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
             mMUnitSheet = Content.Load<Texture2D>("UnitSpriteSheet");
-            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet);
-            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet);
 
             mPlatformSheet = Content.Load<Texture2D>("PlatformSpriteSheet");
             mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet);
             mPlatform2 = new PlatformBlank(new Vector2(800, 600), mPlatformSheet);
+            // TODO: use this.Content to load your game content here
+            mPlatformBlankTexture = Content.Load<Texture2D>("PlatformBasic");
+            mPlatformDomeTexture = Content.Load<Texture2D>("Dome");
+            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformBlankTexture);
+            mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
+            mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
 
             mMap = new Map.Map(Content.Load<Texture2D>("MockUpBackground"), mGraphics.GraphicsDevice.Viewport, true);
+
+            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera());
+            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera());
 
             mMap.AddPlatform(mPlatform);
             mMap.AddPlatform(mPlatform2);
@@ -118,13 +140,19 @@ namespace Singularity
             mMainMenuManager.LoadContent(Content);
 
             // load roads
-            mRoad1 = new Road(new Vector2(300, 400), new Vector2(800, 600), false);
+            mRoad1 = new Road(mPlatform, mPlatform2, false);
+            var road2 = new Road(mPlatform, mPlatform3, false);
+            var road3 = new Road(mPlatform2, mPlatform3, false);
 
-            mGameScreen.AddObject<MilitaryUnit>(mMUnit1);
-            mGameScreen.AddObject<MilitaryUnit>(mMUnit2);
-            mGameScreen.AddObject<PlatformBlank>(mPlatform);
-            mGameScreen.AddObject<PlatformBlank>(mPlatform2);
-            mGameScreen.AddObject<Road>(mRoad1);
+            mGameScreen.AddObject(mMUnit1);
+            mGameScreen.AddObject(mMUnit2);
+            mGameScreen.AddObject(mPlatform);
+            mGameScreen.AddObject(mPlatform2);
+            mGameScreen.AddObject(mPlatform3);
+            mGameScreen.AddObject(mRoad1);
+            mGameScreen.AddObject(road2);
+            mGameScreen.AddObject(road3);
+            mGameScreen.AddObject(ResourceHelper.GetRandomlyDistributedResources(5));
 
             // load and play Soundtrack as background music
             sSoundtrack = Content.Load<Song>("BGMusic");
