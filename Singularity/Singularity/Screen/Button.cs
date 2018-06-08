@@ -39,10 +39,16 @@ namespace Singularity.Screen
         private Rectangle mBounds;
         private bool mClicked;
 
-        // events that can be sent out by buttons
-        // an event handler must be created in the class that 
-        // has an instance of buttons is created in
-        // order to receive these events
+        // these events are sent out when they occur to an 
+        // instance of a button
+        // HOW TO USE:
+        // put this in the class where an instance of a button is generated:
+        // NameOfButtonInsance.Event += ClassToReceiveEvent.NameOfMethodInWhichClassReceivesEvent;
+        // the above subscribes the "ClassToReceiveEvent" to the button event (it activate the "NameOfMethodInWhichClassReceivesEvent"
+        // when the event occurs
+        // In the ClassToReceiveEvent create the method NameOfMethodInWhichClassReceivesEvent and write in the 
+        // code you which to be executed when Event occurs
+        // public static void NameOfMethodInWhichClassReceivesEvent(Object sender, EventArgs eventArg){ .....}
         public event EventHandler ButtonReleased;
         public event EventHandler ButtonHovering;
         public event EventHandler ButtonClicked;
