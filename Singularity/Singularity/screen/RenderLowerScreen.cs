@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+﻿using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Singularity.Screen
@@ -12,7 +12,7 @@ namespace Singularity.Screen
     {
         public void Draw(SpriteBatch spriteBatch)
         {
-            System.Diagnostics.Debug.WriteLine("RenderLowerScreen: Draw called");
+            Debug.WriteLine("RenderLowerScreen: Draw called");
         }
 
         public bool DrawLower()
@@ -22,12 +22,7 @@ namespace Singularity.Screen
 
         public void Update(GameTime gametime)
         {
-            System.Diagnostics.Debug.WriteLine("RenderLowerScreen: Update called");
-        }
-
-        public void LoadContent(ContentManager content)
-        {
-            throw new System.NotImplementedException();
+            Debug.WriteLine("RenderLowerScreen: Update called");
         }
 
         public bool UpdateLower()

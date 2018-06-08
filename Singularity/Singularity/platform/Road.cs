@@ -3,21 +3,14 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Property;
 
-namespace Singularity.platform
+namespace Singularity.Platform
 {
-    class Road : IDraw, ISpatial
+    internal sealed class Road : IDraw, ISpatial
     {
-        public Vector2 Origin { get; }
-        public Vector2 Destination { get; }
-        private bool mBlueprint;
+        private Vector2 Source { get; }
+        private Vector2 Destination { get; }
 
-        /*
-         TODO: The size and position needs to be integrated in this object in some way. It doesn't
-         TODO: really matter if its a bad representation since you can easily transform the position and size
-         TODO: in your own queries. For example the position could be used as the origin and the width of the size
-         TODO: as the length and the height of the size as the thickness. Now you can transform the size rectangle
-         TODO: to perfectly fit your line with an angle.
-        */
+        private bool mBlueprint;
 
         public Vector2 AbsolutePosition { get; set; }
 
@@ -39,26 +32,29 @@ namespace Singularity.platform
                 mBlueprint = value;
                 if (!value) { // add road to graph
                            }
-            } 
+            }
         }
 
         /// <summary>
-        /// Road is simply an edge between two platforms. 
+        /// Road is simply an edge between two platforms.
         /// </summary>
-        /// <param name="origin"></param>
-        /// <param name="destination"></param>
-        /// <param name="blueprint"></param>
-        public Road(Vector2 origin, Vector2 destination, bool blueprint)
+        /// <param name="source">The source ISpatial object from which this road gets drawn</param>
+        /// <param name="destination">The destinaion ISpatial object to which this road gets drawn</param>
+        /// <param name="blueprint">Whether this road is a blueprint or not</param>
+        public Road(ISpatial source, ISpatial destination, bool blueprint)
         {
-            Origin = origin;
-            Destination = destination;
+            // the hardcoded values need some changes for different platforms, ill wait until those are implemented to find a good solution.
+            Source = new Vector2(source.AbsolutePosition.X + source.AbsoluteSize.X / 2, source.AbsolutePosition.Y + 109);
+            Destination = new Vector2(destination.AbsolutePosition.X + destination.AbsoluteSize.X / 2, destination.AbsolutePosition.Y + 109);
             Blueprint = blueprint;
+
+            AbsolutePosition = Source;
         }
 
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawLine(Origin, Destination, mBlueprint? new Color(new Vector3(46, 53, 97)) : new Color(new Vector4(0, 40, 40, 255)), 5f, LayerConstants.RoadLayer);
+            spriteBatch.DrawLine(Source, Destination, mBlueprint ? new Color(new Vector3(46, 53, 97)) : new Color(new Vector4(0, 40, 40, 255)), 5f, LayerConstants.RoadLayer);
         }
     }
 }

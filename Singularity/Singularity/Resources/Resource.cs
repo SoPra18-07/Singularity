@@ -1,6 +1,9 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Libraries;
+using Singularity.Property;
+using Singularity.Units;
 using Singularity.Utils;
 
 namespace Singularity.Resources
@@ -9,22 +12,10 @@ namespace Singularity.Resources
     /// <summary>
     /// Represents a resource in the game. Written in such a fashion that it can represent any resource there is and will be.
     /// </summary>
-    internal class Resource : IResource
+    public sealed class Resource : IResource
     {
-        /// <summary>
-        /// The velocity of this resource object.
-        /// </summary>
-        private const float Velocity = 2;
 
-        /// <summary>
-        /// The width for the texture to be rendered.
-        /// </summary>
-        private const int Width = 10;
-
-        /// <summary>
-        /// The height for the texture to be rendered.
-        /// </summary>
-        private const int Height = 10;
+        public const int DefaultWidth = 200;
 
         /// <summary>
         /// The current position of this resource on the map.
@@ -32,14 +23,22 @@ namespace Singularity.Resources
         private Vector2 mPosition;
 
         /// <summary>
-        /// The direction the resource is moving.
+        /// The color of this resource.
         /// </summary>
-        private Vector2 mDirection;
+        private readonly Color mColor;
+
+
+        //TODO: remove when ISpatial is there. 
 
         /// <summary>
-        /// The texture of this resource.
+        /// The width of this resource. The height gets set by this value.
         /// </summary>
-        private Texture2D mTexture;
+        private int mWidth;
+
+        /// <summary>
+        /// The height of this resource. Gets automatically set by the width.
+        /// </summary>
+        private int mHeight;
 
         /*
            TODO: im not quite sure whether the ID is "unique" such that every instance of this class
@@ -55,36 +54,35 @@ namespace Singularity.Resources
         /// </summary>
         /// <param name="type">The resource type of this resource. Specifies what kind of resource this will represent in the game</param>
         /// <param name="position">The inital position for this resource</param>
-        /// <param name="spriteSheet">The sprite sheet for all the resources in the game</param>
-        public Resource(EResourceType type, Vector2 position, Texture2D spriteSheet)
+        /// <param name="width">The width of the resource on screen</param>
+        public Resource(EResourceType type, Vector2 position, int width)
         {
-            if (position.Equals(null))
-            {
-                mPosition = new Vector2(0, 0);
-            }
-
             Type = type;
             mPosition = position;
-            mDirection = Vector2.Zero;
 
-            mTexture = ResourceHelper.GetTexture(type, spriteSheet);
+            mColor = ResourceHelper.GetColor(type);
+
+            // could be handled more dynamically, for now this is o.k.
+            mHeight = (int) (width * 0.6f);
+
+            mWidth = width;
+
+            if (width <= 0)
+            {
+                mWidth = DefaultWidth;
+            }
 
         }
 
-        public void Accelerate(Vector2 vector)
+        public void Follow(GeneralUnit unitToFollow)
         {
-            // TODO: im not quite sure what was the intended way for the acceleration so im for now just implementing a basic acceleration without friction and a default velocity.
-            mDirection += Geometry.NormalizeVector(vector);
+            //TODO: implement
+            throw new NotImplementedException();
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            // TODO: remove comment when a sprite sheet is provided since mTexture will be null atm.
-            /*
-            spriteBatch.Draw(mTexture, 
-                new Rectangle((int) mPosition.X, (int) mPosition.Y, Width, Height), 
-                Color.White);
-            */
+            spriteBatch.DrawEllipse(new Rectangle((int) mPosition.X, (int) mPosition.Y, mWidth, mHeight), mColor, 4f, LayerConstants.ResourceLayer);
         }
 
         public Vector2 GetPosition()
@@ -94,7 +92,7 @@ namespace Singularity.Resources
 
         public void Update(GameTime gametime)
         {
-            mPosition += mDirection * Velocity;
+            //TODO: implement update code
         }
 
         public void Use()
