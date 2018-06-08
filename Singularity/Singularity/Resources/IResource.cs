@@ -1,16 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Singularity.Property;
+using Singularity.Units;
 
 namespace Singularity.Resources
 {
 
-    /// <inheritdoc cref="Singularity.property.IDraw"/>
-    /// <inheritdoc cref="Singularity.property.IUpdate"/>
+    /// <inheritdoc cref="Singularity.Property.IDraw"/>
+    /// <inheritdoc cref="Singularity.Property.IUpdate"/>
     /// <remarks>
     /// An interface providing necessary signatures for resources.
     /// </remarks>
     internal interface IResource : IDraw, IUpdate
     {
+
         /// <summary>
         /// Gets the ID for this resource.
         /// </summary>
@@ -21,6 +23,8 @@ namespace Singularity.Resources
         /// Also see: <see cref="EResourceType"/>.
         /// </summary>
         EResourceType Type { get; }
+
+        //TODO: remove when ISpatial is there. Since it provides the position.
 
         /// <summary>
         /// Gets the current position of this resource on the map.
@@ -34,9 +38,9 @@ namespace Singularity.Resources
         void Use();
 
         /// <summary>
-        /// Accelarets the resource in such a fashion that it moves with a unit if held.
+        /// Follows the unit which holds this resource.
         /// </summary>
-        /// <param name="vector">The vector with which to accelerate this resource</param>
-        void Accelerate(Vector2 vector);
+        /// <param name="unitToFollow">The unit which holds this resource, thus this resource needs to follow the unit</param>
+        void Follow(GeneralUnit unitToFollow);
     }
 }

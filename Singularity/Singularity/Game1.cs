@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Singularity.Platform;
 using Singularity.Input;
+using Singularity.Map;
+using Singularity.Resources;
 using Singularity.screen;
 using Singularity.Screen;
 using Singularity.Units;
@@ -17,12 +19,14 @@ namespace Singularity
     {
         private GraphicsDeviceManager mGraphics;
         private SpriteBatch mSpriteBatch;
-        private Texture2D mPlatformSheet;
+        private Texture2D mPlatformBlankTexture;
+        private Texture2D mPlatformDomeTexture;
         private PlatformBlank mPlatform;
         private Texture2D mMUnitSheet;
         private MilitaryUnit mMUnit1;
         private MilitaryUnit mMUnit2;
-        private PlatformBlank mPlatform2;
+        private Junkyard mPlatform2;
+        private EnergyFacility mPlatform3;
         private Map.Map mMap;
         private static Song sSoundtrack;
         private GameScreen mGameScreen;
@@ -79,15 +83,18 @@ namespace Singularity
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
             mMUnitSheet = Content.Load<Texture2D>("UnitSpriteSheet");
-            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet);
-            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet);
 
             // TODO: use this.Content to load your game content here
-            mPlatformSheet = Content.Load<Texture2D>("PlatformSpriteSheet");
-            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet);
-            mPlatform2 = new PlatformBlank(new Vector2(800, 600), mPlatformSheet);
+            mPlatformBlankTexture = Content.Load<Texture2D>("PlatformBasic");
+            mPlatformDomeTexture = Content.Load<Texture2D>("Dome");
+            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformBlankTexture);
+            mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
+            mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
 
             mMap = new Map.Map(Content.Load<Texture2D>("MockUpBackground"), mGraphics.GraphicsDevice.Viewport, true);
+
+            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera());
+            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera());
 
             mMap.AddPlatform(mPlatform);
             mMap.AddPlatform(mPlatform2);
@@ -95,13 +102,19 @@ namespace Singularity
             mGameScreen = new GameScreen(mMap);
 
             // load roads
-            mRoad1 = new Road(new Vector2(300, 400), new Vector2(800, 600), false);
+            mRoad1 = new Road(mPlatform, mPlatform2, false);
+            var road2 = new Road(mPlatform, mPlatform3, false);
+            var road3 = new Road(mPlatform2, mPlatform3, false);
 
-            mGameScreen.AddObject<MilitaryUnit>(mMUnit1);
-            mGameScreen.AddObject<MilitaryUnit>(mMUnit2);
-            mGameScreen.AddObject<PlatformBlank>(mPlatform);
-            mGameScreen.AddObject<PlatformBlank>(mPlatform2);
-            mGameScreen.AddObject<Road>(mRoad1);
+            mGameScreen.AddObject(mMUnit1);
+            mGameScreen.AddObject(mMUnit2);
+            mGameScreen.AddObject(mPlatform);
+            mGameScreen.AddObject(mPlatform2);
+            mGameScreen.AddObject(mPlatform3);
+            mGameScreen.AddObject(mRoad1);
+            mGameScreen.AddObject(road2);
+            mGameScreen.AddObject(road3);
+            mGameScreen.AddObject(ResourceHelper.GetRandomlyDistributedResources(5));
 
             mScreenManager.AddScreen(mGameScreen);
 
