@@ -79,15 +79,18 @@ namespace Singularity
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
             mMUnitSheet = Content.Load<Texture2D>("UnitSpriteSheet");
-           // mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet);
-            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet);
 
             // TODO: use this.Content to load your game content here
             mPlatformSheet = Content.Load<Texture2D>("PlatformSpriteSheet");
             mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet);
             mPlatform2 = new PlatformBlank(new Vector2(800, 600), mPlatformSheet);
+            var platform3 = new PlatformBlank(new Vector2(1200, 300), mPlatformSheet);
+            var platform4 = new PlatformBlank(new Vector2(900, 100), mPlatformSheet);
 
             mMap = new Map.Map(Content.Load<Texture2D>("MockUpBackground"), mGraphics.GraphicsDevice.Viewport, true);
+
+            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera());
+            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera());
 
             mMap.AddPlatform(mPlatform);
             mMap.AddPlatform(mPlatform2);
@@ -95,13 +98,23 @@ namespace Singularity
             mGameScreen = new GameScreen(mMap);
 
             // load roads
-            mRoad1 = new Road(new Vector2(300, 400), new Vector2(800, 600), false);
+            mRoad1 = new Road(mPlatform, mPlatform2, false);
+            var road2 = new Road(mPlatform, platform3, false);
+            var road3 = new Road(mPlatform2, platform3, false);
+            var road4 = new Road(platform3, platform4, false);
+            var road5 = new Road(mPlatform, platform4, false);
 
-            //mGameScreen.AddObject<MilitaryUnit>(mMUnit1);
+            mGameScreen.AddObject<MilitaryUnit>(mMUnit1);
             mGameScreen.AddObject<MilitaryUnit>(mMUnit2);
             mGameScreen.AddObject<PlatformBlank>(mPlatform);
             mGameScreen.AddObject<PlatformBlank>(mPlatform2);
+            mGameScreen.AddObject<PlatformBlank>(platform3);
+            mGameScreen.AddObject<PlatformBlank>(platform4);
             mGameScreen.AddObject<Road>(mRoad1);
+            mGameScreen.AddObject<Road>(road2);
+            mGameScreen.AddObject<Road>(road3);
+            mGameScreen.AddObject<Road>(road4);
+            mGameScreen.AddObject<Road>(road5);
 
             mScreenManager.AddScreen(mGameScreen);
 
