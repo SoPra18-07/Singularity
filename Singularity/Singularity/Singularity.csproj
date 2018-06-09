@@ -44,6 +44,9 @@
   <ItemGroup>
     <Compile Include="Exceptions\NoSuchElementException.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Input\EClickType.cs" />
+    <Compile Include="Input\IMouseClickListener.cs" />
+    <Compile Include="Input\IMousePositionListener.cs" />
     <Compile Include="Input\IMouseWheelListener.cs" />
     <Compile Include="Libraries\Primitives2D.cs" />
     <Compile Include="Map\Camera.cs" />
@@ -52,9 +55,7 @@
     <Compile Include="Map\Properties\MapConstants.cs" />
     <Compile Include="Map\ResourceMap.cs" />
     <Compile Include="Map\StructureMap.cs" />
-    <Compile Include="Input\MouseEvent.cs" />
     <Compile Include="Input\IKeyListener.cs" />
-    <Compile Include="Input\IMouseListener.cs" />
     <Compile Include="Input\InputManager.cs" />
     <Compile Include="Input\KeyEvent.cs" />
     <Compile Include="Input\MouseAction.cs" />

@@ -6,9 +6,9 @@
     public interface IMouseWheelListener
     {
         /// <summary>
-        /// Used to set the mouse wheel as changed
+        /// This event is fired if the mouse wheel value has been changed.
         /// </summary>
-        /// <param name="mouseEvent"></param>
-        void MouseWheelValueChanged(MouseEvent mouseEvent);
+        /// <param name="mouseAction">The mouse Action, either ScrollUp or ScrollDown</param>
+        void MouseWheelValueChanged(EMouseAction mouseAction);
     }
 }

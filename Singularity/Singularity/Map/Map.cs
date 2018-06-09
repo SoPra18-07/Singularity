@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Input;
 using Singularity.Libraries;
 using Singularity.Map.Properties;
 using Singularity.Platform;
@@ -33,12 +34,12 @@ namespace Singularity.Map
         /// <param name="viewport">The viewport of the window</param>
         /// <param name="debug">Whether the debug grid lines are drawn or not</param>
         /// <param name="initialResources">The initial resources of this map, if not specified there will not be any on the map</param>
-        public Map(Texture2D backgroundTexture, Viewport viewport, bool debug = false, IDictionary<Vector2, Pair<EResourceType, int>> initialResources = null)
+        public Map(Texture2D backgroundTexture, Viewport viewport, InputManager inputManager, bool debug = false, IDictionary<Vector2, Pair<EResourceType, int>> initialResources = null)
         {
             mBackgroundTexture = backgroundTexture;
             mDebug = debug;
 
-            mCamera = new Camera(viewport, 0, 300);
+            mCamera = new Camera(viewport, inputManager, 0, 300);
 
             mCollisionMap = new CollisionMap();
             mStructureMap = new StructureMap();
