@@ -21,6 +21,7 @@ namespace Singularity
     internal sealed class Game1 : Game
     {
         internal GraphicsDeviceManager mGraphics;
+        internal GraphicsAdapter mGraphicsAdapter;
 
         private Texture2D mPlatformBlankTexture;
         private Texture2D mPlatformDomeTexture;
@@ -36,15 +37,8 @@ namespace Singularity
 
         // Screens
         private GameScreen mGameScreen;
-        private MenuBackgroundScreen mMenuBackgroundScreen;
-        private SplashScreen mSplashScreen;
-        private MainMenuScreen mMainMenuScreen;
-        private AchievementsScreen mAchievementsScreen;
-        private GameModeSelectScreen mGameModeSelectScreen;
-        private LoadSelectScreen mLoadSelectScreen;
-        private OptionsScreen mOptionsScreen;
         private MainMenuManagerScreen mMainMenuManager;
-        private InputManager mInputManager;
+        private readonly InputManager mInputManager;
 
         // roads
         private Road mRoad1;
@@ -61,6 +55,8 @@ namespace Singularity
         {
             mGraphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            mGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
 
             mInputManager = new InputManager();
             mScreenManager = new StackScreenManager();

@@ -285,14 +285,19 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         /// <summary>
-        /// Makes the game full screen
+        /// Makes the game full screen. Currently makes the game full screen with the actual screen resolution.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="eventArgs"></param>
         private void OnFullScreenReleased(Object sender, EventArgs eventArgs)
         {
+            var width = game.mGraphicsAdapter.CurrentDisplayMode.Width;
+            var height = game.mGraphicsAdapter.CurrentDisplayMode.Height;
+            game.mGraphics.PreferredBackBufferWidth = width;
+            game.mGraphics.PreferredBackBufferHeight = height;
             game.mGraphics.IsFullScreen = true;
             game.mGraphics.ApplyChanges();
+            MainMenuManagerScreen.SetResolution(new Vector2(width, height));
         }
 
         private void OnResoOneReleased(Object sender, EventArgs eventArgs)
@@ -313,7 +318,7 @@ namespace Singularity.Screen.ScreenClasses
 
         private void OnAntialiasingReleased(Object sender, EventArgs eventArgs)
         {
-            // todo figure this out later
+            
         }
 
         #endregion

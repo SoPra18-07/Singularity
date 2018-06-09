@@ -140,6 +140,19 @@ namespace Singularity.Screen.ScreenClasses
                 SpriteEffects.None,
                 1f);
 
+            // draw holoProjection texture without scaling
+            spriteBatch.Draw(mHoloProjectionTexture2D,
+                mScreenCenter,
+                null,
+                Color.AliceBlue,
+                0f,
+                new Vector2(367, 515),
+                new Vector2(mHoloProjectionWidthScaling * 0.7f, 0.7f), 
+                SpriteEffects.None,
+                0f);
+
+            /*
+             Other draw call for holoprojection texture that resizes
             // Draw holoProjection texture
             spriteBatch.Draw(mHoloProjectionTexture2D,
                 mScreenCenter,
@@ -150,7 +163,7 @@ namespace Singularity.Screen.ScreenClasses
                 mHoloProjectionScaling, // Scales based on smaller scalar between height and width
                 SpriteEffects.None,
                 0f);
-            
+            */
             spriteBatch.End();
         }
 
