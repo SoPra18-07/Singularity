@@ -215,7 +215,7 @@ namespace Singularity.Screen.ScreenClasses
         public bool UpdateLower()
         {
             // below this screen is the game so it shouldn't update the game
-            return false;
+            return mScreenState == EScreen.GameScreen;
         }
 
         /// <summary>
