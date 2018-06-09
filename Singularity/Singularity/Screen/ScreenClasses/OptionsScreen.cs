@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using Singularity.Libraries;
 
 namespace Singularity.Screen.ScreenClasses
@@ -36,8 +37,10 @@ namespace Singularity.Screen.ScreenClasses
         private readonly string mBackString;
 
         private readonly string mFullScreenString;
-        private readonly string mResolutionString;
+        private readonly string mResolutionString; // used later
         private readonly string mAntialiasingString;
+
+        private readonly string mMuteString;
 
         // fonts
         private SpriteFont mLibSans36;
@@ -60,7 +63,8 @@ namespace Singularity.Screen.ScreenClasses
         
         // Audio tab
         // todo add the following:
-        // Master volume and toggle
+        private readonly List<Button> mAudioButtons;
+        private Button mMuteButton; // add slider once completed
         // Background volume and toggle
         // Sound effect volume and toggle
         // 3D sound effect toggle
@@ -92,8 +96,11 @@ namespace Singularity.Screen.ScreenClasses
             mResolutionString = "Resolution:";
             mAntialiasingString = "Anti-Aliasing";
 
+            mMuteString = "Mute";
+
             mTabButtons = new List<Button>(5);
             mGraphicsButtons = new List<Button>(4);
+            mAudioButtons = new List<Button>(1);
 
             mScreenState = EOptionScreenState.Gameplay;
             this.game = game;
@@ -135,6 +142,10 @@ namespace Singularity.Screen.ScreenClasses
             mGraphicsButtons.Add(mResolution2);
             mGraphicsButtons.Add(mAntialiasing);
 
+            // Audio settings
+            mMuteButton = new Button(mMuteString, mLibSans20, new Vector2(mContentPadding, mTopContentPadding));
+
+            mAudioButtons.Add(mMuteButton);
 
             // Button handler bindings
             mGameplayButton.ButtonReleased += OnGameplayReleased;
@@ -146,6 +157,8 @@ namespace Singularity.Screen.ScreenClasses
             mResolution1.ButtonReleased += OnResoOneReleased;
             mResolution2.ButtonReleased += OnResoTwoReleased;
             mAntialiasing.ButtonReleased += OnAntialiasingReleased;
+
+            mMuteButton.ButtonReleased += OnMuteReleased;
         }
 
         /// <summary>
@@ -171,6 +184,11 @@ namespace Singularity.Screen.ScreenClasses
                     }
                     break;
                 case EOptionScreenState.Audio:
+                    foreach (Button button in mAudioButtons)
+                    {
+                        button.Update(gametime);
+                    }
+                    break;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -225,6 +243,10 @@ namespace Singularity.Screen.ScreenClasses
                     }
                     break;
                 case EOptionScreenState.Audio:
+                    foreach (var button in mAudioButtons)
+                    {
+                        button.Draw(spriteBatch);
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -318,7 +340,12 @@ namespace Singularity.Screen.ScreenClasses
 
         private void OnAntialiasingReleased(Object sender, EventArgs eventArgs)
         {
-            
+            // potentially impossible
+        }
+
+        private void OnMuteReleased(Object sender, EventArgs eventArgs)
+        {
+            MediaPlayer.IsMuted = !MediaPlayer.IsMuted;
         }
 
         #endregion
