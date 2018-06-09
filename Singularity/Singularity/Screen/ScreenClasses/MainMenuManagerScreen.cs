@@ -25,6 +25,7 @@ namespace Singularity.Screen.ScreenClasses
         private IScreen mOptionsScreen;
         private IScreen mSplashScreen;
         private IScreen mMainMenuScreen;
+        private IScreen mLoadingScreen;
 
         // Background
         private MenuBackgroundScreen mMenuBackgroundScreen;
@@ -54,7 +55,7 @@ namespace Singularity.Screen.ScreenClasses
             mScreenManager = screenManager;
             mGame = game;
             
-            initialize(screenResolution, game);
+            Initialize(screenResolution, game);
             
             mScreenState = showSplash ? EScreen.SplashScreen : EScreen.MainMenuScreen;
 
@@ -101,7 +102,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             if (sResolutionChanged)
             {
-                initialize(sViewportResolution, mGame);
+                Initialize(sViewportResolution, mGame);
                 LoadScreenContents(mContent);
                 mScreenManager.RemoveScreen();
                 mScreenManager.RemoveScreen();
@@ -117,7 +118,10 @@ namespace Singularity.Screen.ScreenClasses
                 case EScreen.GameModeSelectScreen:
                     if (sPressed == "Free Play")
                     {
-                        SwitchScreen(EScreen.GameScreen, this); // Hack to pass something to switchscreen without a nullable type
+                        SwitchScreen(EScreen.LoadingScreen, this); // Hack to pass something to switchscreen without a nullable type
+                        mScreenManager.AddScreen(mLoadingScreen);
+                        mGame.mGameScreen.LoadContent(mContent);
+                        SwitchScreen(EScreen.GameScreen, this);
                     }
                     break;
                 case EScreen.GameScreen:
@@ -179,7 +183,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="iScreen"></param>
         private void SwitchScreen(EScreen eScreen, IScreen iScreen)
         {
-            
+            // remove current top screen
             mScreenManager.RemoveScreen();
             if (iScreen != this)
             {
@@ -188,6 +192,7 @@ namespace Singularity.Screen.ScreenClasses
             }
             else
             {
+                // remove menu background
                 mScreenManager.RemoveScreen();
             }
             mScreenState = eScreen;
@@ -233,7 +238,7 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         /// <param name="screenResolution"></param>
         /// <param name="game"></param>
-        private void initialize(Vector2 screenResolution, Game1 game)
+        private void Initialize(Vector2 screenResolution, Game1 game)
         {
             mGameModeSelectScreen = new GameModeSelectScreen(screenResolution);
             mLoadSelectScreen = new LoadSelectScreen();
@@ -242,6 +247,7 @@ namespace Singularity.Screen.ScreenClasses
             mMenuBackgroundScreen = new MenuBackgroundScreen(screenResolution);
             mSplashScreen = new SplashScreen(screenResolution);
             mMainMenuScreen = new MainMenuScreen(screenResolution);
+            mLoadingScreen = new LoadingScreen(screenResolution);
         }
 
         /// <summary>
@@ -258,7 +264,10 @@ namespace Singularity.Screen.ScreenClasses
             mLoadSelectScreen.LoadContent(content);
             mAchievementsScreen.LoadContent(content);
             mOptionsScreen.LoadContent(content);
+            mLoadingScreen.LoadContent(content);
         }
+
+
 
         #region MainMenuScreen Button Handlers
 

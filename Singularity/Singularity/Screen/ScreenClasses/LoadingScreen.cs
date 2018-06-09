@@ -17,6 +17,18 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     class LoadingScreen : IScreen
     {
+        private Texture2D mLogo;
+        private readonly Vector2 mLogoPosition;
+        
+        /// <summary>
+        /// Constructs a new instance of the loading screen.
+        /// </summary>
+        /// <param name="screenResolution">Viewport resolution for scaling</param>
+        public LoadingScreen(Vector2 screenResolution)
+        {
+            mLogoPosition = Vector2.Add(screenResolution, new Vector2(-106, -97));
+
+        }
         /// <summary>
         /// Updates the contents of the screen.
         /// </summary>
@@ -24,7 +36,7 @@ namespace Singularity.Screen.ScreenClasses
         /// that take place over time </param>
         public void Update(GameTime gametime)
         {
-            throw new NotImplementedException();
+            // doesn't update
         }
 
         /// <summary>
@@ -33,7 +45,11 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="spriteBatch">spriteBatch that this object should draw to.</param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            throw new NotImplementedException();
+            spriteBatch.Begin();
+
+            spriteBatch.Draw(mLogo, mLogoPosition, null, Color.White, 0f, Vector2.Zero, 0.14f, SpriteEffects.None, 0f);
+            
+            spriteBatch.End();
         }
 
         /// <summary>
@@ -42,7 +58,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="content">Content Manager that should handle the content loading</param>
         public void LoadContent(ContentManager content)
         {
-            throw new NotImplementedException();
+            mLogo = content.Load<Texture2D>("Logo");
         }
 
         /// <summary>
@@ -51,7 +67,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>Bool. If true, then the screen below this will be updated.</returns>
         public bool UpdateLower()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         /// <summary>
@@ -60,7 +76,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>Bool. If true, then the screen below this will be drawn.</returns>
         public bool DrawLower()
         {
-            throw new NotImplementedException();
+            return false;
         }
     }
 }

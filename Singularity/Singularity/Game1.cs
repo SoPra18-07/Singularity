@@ -23,14 +23,10 @@ namespace Singularity
         internal GraphicsDeviceManager mGraphics;
         internal GraphicsAdapter mGraphicsAdapter;
 
-        
-
-        
-
         private static Song sSoundtrack;
 
         // Screens
-        private GameScreen mGameScreen;
+        internal GameScreen mGameScreen;
         private MainMenuManagerScreen mMainMenuManager;
         private readonly InputManager mInputManager;
 
