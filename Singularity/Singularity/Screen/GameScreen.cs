@@ -28,21 +28,14 @@ namespace Singularity.screen
         /// </summary>
         private readonly Camera mCamera;
 
-        /// <summary>
-        /// The Fog of War for the current map.
-        /// </summary>
-        private readonly FogOfWar mFow;
-
         public GameScreen(Map.Map map)
         {
             mDrawables = new LinkedList<IDraw>();
             mUpdateables = new LinkedList<IUpdate>();
 
             mCamera = map.GetCamera();
-            mFow = new FogOfWar(map);
 
             AddObject<Map.Map>(map);
-            AddObject(mFow);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -51,17 +44,6 @@ namespace Singularity.screen
 
             foreach (var drawable in mDrawables)
             {
-                var spatial = drawable as ISpatial;
-
-                if (spatial != null)
-                {
-                    if (mFow.IsConcealed(spatial))
-                    {
-                        continue;
-                    }
-
-                }
-
                 drawable.Draw(spriteBatch);
             }
 

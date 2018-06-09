@@ -43,6 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Exceptions\NoSuchElementException.cs" />
+    <Compile Include="Exceptions\UnsupportedTextureSizeException.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Input\IMouseWheelListener.cs" />
     <Compile Include="Libraries\Primitives2D.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Platform\Well.cs" />
     <Compile Include="Platform\IPlatformAction.cs" />
     <Compile Include="Platform\Road.cs" />
+    <Compile Include="Property\IRevealing.cs" />
     <Compile Include="Resources\EResourceType.cs" />
     <Compile Include="Platform\Action.cs" />
     <Compile Include="Platform\PlatformBlank.cs" />

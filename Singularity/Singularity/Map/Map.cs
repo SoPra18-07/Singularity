@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Exceptions;
 using Singularity.Libraries;
 using Singularity.Map.Properties;
 using Singularity.Platform;
@@ -33,15 +34,22 @@ namespace Singularity.Map
         /// <param name="viewport">The viewport of the window</param>
         /// <param name="debug">Whether the debug grid lines are drawn or not</param>
         /// <param name="initialResources">The initial resources of this map, if not specified there will not be any on the map</param>
-        public Map(Texture2D backgroundTexture, Viewport viewport, bool debug = false, IDictionary<Vector2, Pair<EResourceType, int>> initialResources = null)
+        /// <param name="fow">The fog of war for this map</param>
+        public Map(Texture2D backgroundTexture, Viewport viewport, FogOfWar fow, bool debug = false, IDictionary<Vector2, Pair<EResourceType, int>> initialResources = null)
         {
+            if (backgroundTexture.Width != MapConstants.MapWidth && backgroundTexture.Height != MapConstants.MapHeight)
+            {
+                // i'm limited to the options i'm given. This needs to be done so i can achieve consistency with the fog of war
+                throw new UnsupportedTextureSizeException(backgroundTexture.Width, backgroundTexture.Height, MapConstants.MapWidth, MapConstants.MapHeight);
+            }
+
             mBackgroundTexture = backgroundTexture;
             mDebug = debug;
 
-            mCamera = new Camera(viewport, 0, 300);
+            mCamera = new Camera(viewport, 0, 0);
 
             mCollisionMap = new CollisionMap();
-            mStructureMap = new StructureMap();
+            mStructureMap = new StructureMap(fow);
             mResourceMap = new ResourceMap(initialResources);
         }
 
@@ -54,8 +62,6 @@ namespace Singularity.Map
         public void Draw(SpriteBatch spriteBatch)
         {   
 
-            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, mCamera.GetTransform());
-
             //draw the background texture
             spriteBatch.Draw(mBackgroundTexture,
                 new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight),
@@ -65,8 +71,7 @@ namespace Singularity.Map
                 Vector2.Zero,
                 SpriteEffects.None,
                 LayerConstants.MapLayer);
-
-            mStructureMap.Draw(spriteBatch);
+            
 
 
             //make sure to only draw the grid if a texture is given.
@@ -82,20 +87,20 @@ namespace Singularity.Map
             {
 
                 spriteBatch.DrawLine(
-                    new Vector2(columnCount * MapConstants.GridWidth, 0), MapConstants.MapHeight, MathHelper.Pi/2f, Color.Blue, 1);
+                    new Vector2(columnCount * MapConstants.GridWidth, 0), MapConstants.MapHeight, MathHelper.Pi/2f, Color.Blue, 1, LayerConstants.GridDebugLayer);
             }
 
             for (var rowCount = 0; rowCount <= collisonMap.GetLength(0); rowCount++)
             {
                 spriteBatch.DrawLine(
-                    new Vector2(0, rowCount * MapConstants.GridHeight), MapConstants.MapWidth, 0, Color.Yellow, 1);
+                    new Vector2(0, rowCount * MapConstants.GridHeight), MapConstants.MapWidth, 0, Color.Yellow, 1, LayerConstants.GridDebugLayer);
             }
         }
+
         //TODO: remove if input manager is available since we only use this to pass an update to the camera.
         public void Update(GameTime gametime)
         {
             mCamera.Update(gametime);
-            mStructureMap.Update(gametime);
         }
 
         /// <see cref="StructureMap.AddPlatform(PlatformBlank)"/>
@@ -187,6 +192,11 @@ namespace Singularity.Map
                     IsOnTop(new Vector2(rect.X, rect.Y + rect.Height)) &&
                     IsOnTop(new Vector2(rect.X + rect.Width, rect.Y + rect.Height)));
 
+        }
+
+        public Texture2D GetTexture()
+        {
+            return mBackgroundTexture;
         }
 
     }
