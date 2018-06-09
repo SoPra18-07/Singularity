@@ -1,9 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.IO.MemoryMappedFiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Map;
+using Singularity.Platform;
 using Singularity.Property;
+using Singularity.Resources;
+using Singularity.Units;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -14,6 +18,28 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     internal sealed class GameScreen : IScreen
     {
+        // sprite textures
+        private Texture2D mPlatformSheet;
+        private Texture2D mMUnitSheet;
+        private Texture2D mPlatformBlankTexture;
+        private Texture2D mPlatformDomeTexture;
+
+        // platforms
+        private PlatformBlank mPlatform;
+        private PlatformBlank mPlatform2;
+        private EnergyFacility mPlatform3;
+
+        // units
+        private MilitaryUnit mMUnit1;
+        private MilitaryUnit mMUnit2;
+
+        // map
+        private readonly Map.Map mMap;
+
+        // roads
+        // roads
+        private Road mRoad1;
+
         /// <summary>
         /// This list contains all the drawable objects currently in the game.
         /// </summary>
@@ -33,6 +59,8 @@ namespace Singularity.Screen.ScreenClasses
         {
             mDrawables = new LinkedList<IDraw>();
             mUpdateables = new LinkedList<IUpdate>();
+
+            mMap = map;
 
             mCamera = map.GetCamera();
 
@@ -77,7 +105,39 @@ namespace Singularity.Screen.ScreenClasses
 
         public void LoadContent(ContentManager content)
         {
-            throw new System.NotImplementedException();
+            mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
+
+            mPlatformSheet = content.Load<Texture2D>("PlatformSpriteSheet");
+            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet);
+            mPlatform2 = new PlatformBlank(new Vector2(800, 600), mPlatformSheet);
+            // TODO: use this.Content to load your game content here
+            mPlatformBlankTexture = content.Load<Texture2D>("PlatformBasic");
+            mPlatformDomeTexture = content.Load<Texture2D>("Dome");
+            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformBlankTexture);
+            mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
+            mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
+
+            
+            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera());
+            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera());
+
+            mMap.AddPlatform(mPlatform);
+            mMap.AddPlatform(mPlatform2);
+
+            // load roads
+            mRoad1 = new Road(mPlatform, mPlatform2, false);
+            var road2 = new Road(mPlatform, mPlatform3, false);
+            var road3 = new Road(mPlatform2, mPlatform3, false);
+
+            AddObject(mMUnit1);
+            AddObject(mMUnit2);
+            AddObject(mPlatform);
+            AddObject(mPlatform2);
+            AddObject(mPlatform3);
+            AddObject(mRoad1);
+            AddObject(road2);
+            AddObject(road3);
+            AddObject(ResourceHelper.GetRandomlyDistributedResources(5));
         }
 
         public bool UpdateLower()
