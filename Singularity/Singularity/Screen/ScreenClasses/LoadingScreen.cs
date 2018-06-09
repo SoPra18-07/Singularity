@@ -67,7 +67,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>Bool. If true, then the screen below this will be updated.</returns>
         public bool UpdateLower()
         {
-            return false;
+            return true;
         }
 
         /// <summary>

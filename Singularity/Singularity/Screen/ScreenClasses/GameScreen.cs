@@ -138,6 +138,9 @@ namespace Singularity.Screen.ScreenClasses
             AddObject(road2);
             AddObject(road3);
             AddObject(ResourceHelper.GetRandomlyDistributedResources(5));
+
+            // artificially adding wait to test loading screen
+            System.Threading.Thread.Sleep(500);
         }
 
         public bool UpdateLower()

@@ -61,8 +61,6 @@ namespace Singularity.Screen.ScreenClasses
 
             sPressed = "None";
             sResolutionChanged = false;
-
-
         }
 
         /// <summary>
@@ -120,14 +118,16 @@ namespace Singularity.Screen.ScreenClasses
                     {
                         SwitchScreen(EScreen.LoadingScreen, this); // Hack to pass something to switchscreen without a nullable type
                         mScreenManager.AddScreen(mLoadingScreen);
-                        mGame.mGameScreen.LoadContent(mContent);
-                        SwitchScreen(EScreen.GameScreen, this);
                     }
                     break;
                 case EScreen.GameScreen:
-                    
                     break;
                 case EScreen.LoadSelectScreen:
+                    break;
+                case EScreen.LoadingScreen:
+                    mGame.mGameScreen.LoadContent(mContent);
+                    mScreenState = EScreen.GameScreen;
+                    mScreenManager.RemoveScreen();
                     break;
                 case EScreen.MainMenuScreen:
                     if (sPressed == "Play")
