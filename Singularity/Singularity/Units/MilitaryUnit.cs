@@ -35,6 +35,10 @@ namespace Singularity.Units
         private Vector2 mTargetPosition;
         private int mRotation;
         private readonly Texture2D mMilSheet;
+
+        private double mXstep;
+        private double mYstep;
+
         private bool mSelected;
          
         public Vector2 AbsolutePosition { get; set; }

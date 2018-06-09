@@ -309,6 +309,38 @@ namespace Singularity.Libraries
 			FillRectangle(spriteBatch, new Vector2(x, y), new Vector2(w, h), color, angle);
 		}
 
+        /// <summary>
+        /// Draws a filled rectangle
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="location"></param>
+        /// <param name="size"></param>
+        /// <param name="color"></param>
+        /// <param name="angle"></param>
+        /// <param name="opacity"></param>
+	    public static void FillRectangle(this SpriteBatch spriteBatch,
+	        Vector2 location,
+	        Vector2 size,
+	        Color color,
+	        float angle, float opacity)
+	    {
+	        if (sPixel == null)
+	        {
+	            CreateThePixel(spriteBatch);
+	        }
+
+	        // stretch the pixel between the two vectors
+	        spriteBatch.Draw(sPixel,
+	            location,
+	            null,
+	            color * opacity,
+	            angle,
+	            Vector2.Zero,
+	            size,
+	            SpriteEffects.None,
+	            0);
+        }
+
 		#endregion
 
 
@@ -359,34 +391,48 @@ namespace Singularity.Libraries
 		}
 
 
-		/// <summary>
-		/// Draws a rectangle with the thickness provided
-		/// </summary>
-		/// <param name="spriteBatch">The destination drawing surface</param>
-		/// <param name="location">Where to draw</param>
-		/// <param name="size">The size of the rectangle</param>
-		/// <param name="color">The color to draw the rectangle in</param>
-		/// <param name="thickness">The thickness of the line</param>
-		public static void DrawRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float thickness)
+        /// <summary>
+        /// Draws a rectangle with the thickness provided
+        /// </summary>
+        /// <param name="spriteBatch">The destination drawing surface</param>
+        /// <param name="location">Where to draw</param>
+        /// <param name="size">The size of the rectangle</param>
+        /// <param name="color">The color to draw the rectangle in</param>
+        /// <param name="thickness">The thickness of the line</param>
+        public static void DrawRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float thickness)
 		{
 			DrawRectangle(spriteBatch, new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y), color, thickness);
 		}
 
-		#endregion
+        /// <summary>
+        /// Draws rectangle with adjustable opaque borders
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="location"></param>
+        /// <param name="size"></param>
+        /// <param name="color"></param>
+        /// <param name="thickness"></param>
+        /// <param name="opacity"></param>
+	    public static void DrawRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float thickness, float opacity)
+	    {
+	        DrawRectangle(spriteBatch, new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y), color*opacity, thickness);
+	    }
+
+        #endregion
 
 
-		#region DrawLine
+        #region DrawLine
 
-		/// <summary>
-		/// Draws a line from point1 to point2 with an offset
-		/// </summary>
-		/// <param name="spriteBatch">The destination drawing surface</param>
-		/// <param name="x1">The X coord of the first point</param>
-		/// <param name="y1">The Y coord of the first point</param>
-		/// <param name="x2">The X coord of the second point</param>
-		/// <param name="y2">The Y coord of the second point</param>
-		/// <param name="color">The color to use</param>
-		public static void DrawLine(this SpriteBatch spriteBatch, float x1, float y1, float x2, float y2, Color color)
+        /// <summary>
+        /// Draws a line from point1 to point2 with an offset
+        /// </summary>
+        /// <param name="spriteBatch">The destination drawing surface</param>
+        /// <param name="x1">The X coord of the first point</param>
+        /// <param name="y1">The Y coord of the first point</param>
+        /// <param name="x2">The X coord of the second point</param>
+        /// <param name="y2">The Y coord of the second point</param>
+        /// <param name="color">The color to use</param>
+        public static void DrawLine(this SpriteBatch spriteBatch, float x1, float y1, float x2, float y2, Color color)
 		{
 			DrawLine(spriteBatch, new Vector2(x1, y1), new Vector2(x2, y2), color, 1.0f);
 		}
@@ -638,8 +684,27 @@ namespace Singularity.Libraries
 			DrawPoints(spriteBatch, center, arc, color, thickness);
 		}
 
-		#endregion
+        #endregion
 
 
-	}
+        #region StrokedRectangle
+        /// <summary>
+        /// Draws stroked rectangle
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="location"></param>
+        /// <param name="size"></param>
+        /// <param name="colorBorder"></param>
+        /// <param name="colorCenter"></param>
+        /// <param name="opacityBorder"></param>
+        /// <param name="opacityCenter"></param>
+	    public static void StrokedRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color colorBorder, Color colorCenter, float opacityBorder, float opacityCenter)
+	    {
+
+	        FillRectangle(spriteBatch, location, size, colorCenter, 0, opacityCenter);
+            DrawRectangle(spriteBatch, location, size, colorBorder, 1, opacityBorder);
+	    }
+
+        #endregion
+    }
 }
