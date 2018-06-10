@@ -11,7 +11,7 @@ using Singularity.Units;
 namespace Singularity.Platform
 {
     [DataContract()]
-    public class PlatformBlank : IDraw, IUpdate, ISpatial
+    public class PlatformBlank : IDraw, IUpdate, ISpatial, IRevealing
 
     {
         [DataMember()]
@@ -39,6 +39,10 @@ namespace Singularity.Platform
         protected List<Resource> mResources;
         [DataMember()]
         protected Dictionary<EResourceType, int> mRequested;
+
+        public Vector2 Center { get; private set; }
+
+        public int RevelationRadius { get; private set; }
 
         internal Vector2 GetLocation()
         {
@@ -342,7 +346,10 @@ namespace Singularity.Platform
 
             mIsBlueprint = true;
             mRequested = new Dictionary<EResourceType, int>();
-          
+
+            RevelationRadius = (int)AbsoluteSize.Y;
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+
         }
 
         public bool PlatformHasSpace()
