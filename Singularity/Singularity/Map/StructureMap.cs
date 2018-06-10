@@ -7,12 +7,10 @@ using Singularity.Utils;
 
 namespace Singularity.Map
 {
-    /// <inheritdoc cref="IUpdate"/>
-    /// <inheritdoc cref="IDraw"/>
     /// <summary>
     /// A Structure map holds all the structures currently in the game.
     /// </summary>
-    internal sealed class StructureMap : IUpdate, IDraw
+    internal sealed class StructureMap
     {
         /// <summary>
         /// A list of all the platforms currently in the game
@@ -24,29 +22,18 @@ namespace Singularity.Map
         /// </summary>
         private readonly LinkedList<Pair<PlatformBlank, PlatformBlank>> mRoads;
 
+
+        private readonly FogOfWar mFow;
+
         /// <summary>
         /// Creates a new structure map which holds all the structures currently in the game.
         /// </summary>
-        public StructureMap()
+        public StructureMap(FogOfWar fow)
         {
+            mFow = fow;
+
             mPlatforms = new LinkedList<PlatformBlank>();
             mRoads = new LinkedList<Pair<PlatformBlank, PlatformBlank>>();
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            foreach (var platform in mPlatforms)
-            {
-                platform.Update(gameTime);
-            }
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            foreach (var platform in mPlatforms)
-            {
-                platform.Draw(spriteBatch);
-            }
         }
 
         /// <summary>
@@ -56,6 +43,7 @@ namespace Singularity.Map
         public void AddPlatform(PlatformBlank platform)
         {
             mPlatforms.AddLast(platform);
+            mFow.AddRevealingObject(platform);
         }
 
         /// <summary>
@@ -65,6 +53,12 @@ namespace Singularity.Map
         public void RemovePlatform(PlatformBlank platform)
         {
             mPlatforms.Remove(platform);
+            mFow.RemoveRevealingObject(platform);
+        }
+
+        public LinkedList<PlatformBlank> GetPlatforms()
+        {
+            return mPlatforms;
         }
 
     }

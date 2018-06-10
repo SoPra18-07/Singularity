@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Media;
 using Singularity.Platform;
 using Singularity.Input;
 using Singularity.Map;
+using Singularity.Map.Properties;
 using Singularity.Resources;
 using Singularity.screen;
 using Singularity.Screen;
@@ -83,6 +84,7 @@ namespace Singularity
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
             mMUnitSheet = Content.Load<Texture2D>("UnitSpriteSheet");
+            var mapBackground = Content.Load<Texture2D>("MockUpBackground");
 
             // TODO: use this.Content to load your game content here
             mPlatformBlankTexture = Content.Load<Texture2D>("PlatformBasic");
@@ -91,13 +93,19 @@ namespace Singularity
             mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
 
-            mMap = new Map.Map(Content.Load<Texture2D>("MockUpBackground"), mGraphics.GraphicsDevice.Viewport, mInputManager, true);
+            var fow = new FogOfWar(mapBackground);
 
-            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
-            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
+            mMap = new Map.Map(mapBackground, mGraphics.GraphicsDevice.Viewport, fow, true);
+
+            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera());
+            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera());
+
+            fow.AddRevealingObject(mMUnit1);
+            fow.AddRevealingObject(mMUnit2);
 
             mMap.AddPlatform(mPlatform);
             mMap.AddPlatform(mPlatform2);
+            mMap.AddPlatform(mPlatform3);
 
             mGameScreen = new GameScreen(mMap);
 
@@ -114,6 +122,7 @@ namespace Singularity
             mGameScreen.AddObject(mRoad1);
             mGameScreen.AddObject(road2);
             mGameScreen.AddObject(road3);
+            mGameScreen.AddObject(fow);
             mGameScreen.AddObject(ResourceHelper.GetRandomlyDistributedResources(5));
 
             mScreenManager.AddScreen(mGameScreen);

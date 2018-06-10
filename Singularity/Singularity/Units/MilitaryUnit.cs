@@ -9,7 +9,7 @@ using Singularity.Property;
 
 namespace Singularity.Units
 {
-    internal sealed class MilitaryUnit : IUnit, IDraw, IUpdate, IMouseClickListener, IMousePositionListener
+    internal sealed class MilitaryUnit : IUnit, IDraw, IUpdate, IRevealing, IMouseClickListener, IMousePositionListener
     {
         private const int DefaultWidth = 150;
         private const int DefaultHeight = 75;
@@ -51,6 +51,9 @@ namespace Singularity.Units
 
         public Vector2 RelativeSize { get; set; }
 
+        public Vector2 Center { get; private set; }
+
+        public int RevelationRadius { get; private set; }
         public Rectangle Bounds { get; private set; }
 
         public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, InputManager manager)
@@ -61,6 +64,10 @@ namespace Singularity.Units
             
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(DefaultWidth, DefaultHeight);
+
+            RevelationRadius = (int) AbsoluteSize.X;
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X  / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+
             mIsMoving = false;
             mCamera = camera;
 
@@ -186,6 +193,8 @@ namespace Singularity.Units
 
             //finally select the appropriate color for selected/deselected units.
             mColor = mSelected ? sSelectedColor : sNotSelectedColor;
+
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
         }
 
         /// <summary>

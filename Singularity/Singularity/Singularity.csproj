@@ -43,6 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Exceptions\NoSuchElementException.cs" />
+    <Compile Include="Exceptions\UnsupportedTextureSizeException.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Input\EClickType.cs" />
     <Compile Include="Input\IMouseClickListener.cs" />
@@ -51,6 +52,7 @@
     <Compile Include="Libraries\Primitives2D.cs" />
     <Compile Include="Map\Camera.cs" />
     <Compile Include="Map\CollisionMap.cs" />
+    <Compile Include="Map\FogOfWar.cs" />
     <Compile Include="Map\Map.cs" />
     <Compile Include="Map\Properties\MapConstants.cs" />
     <Compile Include="Map\ResourceMap.cs" />
@@ -67,9 +69,12 @@
     <Compile Include="Platform\Well.cs" />
     <Compile Include="Platform\IPlatformAction.cs" />
     <Compile Include="Platform\Road.cs" />
+    <Compile Include="Property\IRevealing.cs" />
     <Compile Include="Resources\EResourceType.cs" />
     <Compile Include="Platform\Action.cs" />
     <Compile Include="Platform\PlatformBlank.cs" />
+    <Compile Include="Screen\Slider.cs" />
+    <Compile Include="Screen\WindowItem.cs" />
     <Compile Include="Serialization\CyclicDummy.cs" />
     <Compile Include="Serialization\XSerializer.cs" />
     <Compile Include="Serialization\SerializationDummy.cs" />
