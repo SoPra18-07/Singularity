@@ -103,3 +103,21 @@
 /processorParam:TextureFormat=Color
 /build:MockUpBackground.png
 
+#begin Sound/Tutorial_Build.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sound/Tutorial_Build.mp3
+
+#begin Sound/SFX/ButtonPress.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/SFX/ButtonPress.wav
+
+#begin Sound/UI/ButtonPress.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/UI/ButtonPress.wav
+

@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.IO;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
@@ -9,6 +11,7 @@ using Singularity.Map.Properties;
 using Singularity.Resources;
 using Singularity.screen;
 using Singularity.Screen;
+using Singularity.Sound;
 using Singularity.Units;
 
 namespace Singularity
@@ -29,7 +32,7 @@ namespace Singularity
         private Junkyard mPlatform2;
         private EnergyFacility mPlatform3;
         private Map.Map mMap;
-        private static Song sSoundtrack;
+        private SoundManager mSoundManager;
         private GameScreen mGameScreen;
         private InputManager mInputManager;
 
@@ -70,6 +73,7 @@ namespace Singularity
             mGraphics.PreferredBackBufferWidth = 1080;
             mGraphics.PreferredBackBufferHeight = 720;
             mGraphics.ApplyChanges();
+            mSoundManager = new SoundManager();
 
             base.Initialize();
         }
@@ -128,10 +132,8 @@ namespace Singularity
             mScreenManager.AddScreen(mGameScreen);
 
             // load and play Soundtrack as background music
-            sSoundtrack = Content.Load<Song>("BGMusic");
-            MediaPlayer.Play(sSoundtrack);
-            MediaPlayer.Volume = 0.1F;
-            MediaPlayer.IsRepeating = true;
+            mSoundManager.LoadContent(Content);
+            SoundManager.PlaySoundTrack();
 
         }
 
