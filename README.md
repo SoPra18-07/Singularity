@@ -3,6 +3,7 @@
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/SoPra18-07/Singularity.svg?columns=all)](https://waffle.io/SoPra18-07/Singularity)
 [![GPLv3 license](https://img.shields.io/badge/License-GPLv3-blue.svg)](http://perso.crans.org/besson/LICENSE.html)
 
+Current state [here](https://github.com/SoPra18-07/Singularity/network).
 
 ## Team members:
 - Norbert Balazs ([balazn](https://github.com/Akai-Ryu))
