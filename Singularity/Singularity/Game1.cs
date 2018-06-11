@@ -105,7 +105,7 @@ namespace Singularity
             
             // load and play Soundtrack as background music
             mSoundManager.LoadContent(Content);
-            SoundManager.PlaySoundTrack();
+            mSoundManager.PlaySoundTrack();
 
         }
 

@@ -103,7 +103,6 @@
     <Compile Include="Screen\ScreenClasses\SaveGameScreen.cs" />
     <Compile Include="Screen\ScreenClasses\SplashScreen.cs" />
     <Compile Include="Screen\ScreenClasses\StatisticsScreen.cs" />
-    <Compile Include="Screen\GameScreen.cs" />
     <Compile Include="Sound\SoundClass.cs" />
     <Compile Include="Sound\SoundManager.cs" />
     <Compile Include="Sound\SoundPhase.cs" />
