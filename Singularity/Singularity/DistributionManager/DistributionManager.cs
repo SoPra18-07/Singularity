@@ -8,6 +8,7 @@ using Singularity.Platform;
 using Singularity.Resources;
 using Singularity.Units;
 using Singularity.Utils;
+using Action = System.Action;
 
 namespace Singularity.DistributionManager
 {
@@ -30,7 +31,7 @@ namespace Singularity.DistributionManager
         [DataMember()]
         private Queue<Pair<EResourceType, IPlatformAction>> mRefiningOrStoringResources;
         [DataMember()]
-        private Queue<Pair<GeneralUnit, IPlatformAction>> mReque
+        private Queue<Pair<GeneralUnit, IPlatformAction>> mRequestedUnits;
 
         //An Felix: Vielleicht BuildBluePrint nicht in "ProduceResourceAction.cs" reinhauen (da hätte ich nicht danach gesucht)
         [DataMember()]
@@ -71,6 +72,8 @@ namespace Singularity.DistributionManager
 
         public void RequestResource(PlatformBlank platform, Resource resource, bool isbuilding = false)
         {
+            throw new NotImplementedException();
+            //Will repair request ressources or units? And what unit will be used?
             Pair<EResourceType, IPlatformAction> request;
             if (isbuilding)
             {
@@ -95,7 +98,51 @@ namespace Singularity.DistributionManager
         public void RequestUnits(PlatformBlank platform, JobType job)
         {
             throw new NotImplementedException();
-            var request = m
+            var request = mRequestedUnits.Dequeue();
+            //Here again a reminder that a platformactionproduce interface would be nice
+            //if (request.GetSecond().GetType() == PlatformActionProduce)
+            //{
+            //    var assignee = mProduction.Find(x => x.GetTask() == Task.Idle());
+            //A new type of task, produce, has to be implemented
+            //    assignee.AssignedTask(Task.Produce, request.GetSecond().Platform);
+            //}elsif (request.GetSecond().GetType() == PlatformActionDefend)
+            //{
+            //    var assignee = mDefense.Find(x => x.GetTask() == Task.Idle);
+            //    assignee.AssignedTask(Task.Defend, request.GetSecond().Platform);
+            //}
+        }
+
+        //Do we even need that? I think the units should do that
+        public List<Resource> PlatformRequests(PlatformBlank platform)
+        {
+            return platform.GetPlatformResources();
+        }
+
+        //Why does this have to return a Task? It should only take it into the queue
+        //and thats it, shouldnt it? Furthermore the platformaction shouldnt be optional. This is regarding the architecture.
+        //The unit should be optional tho, you give the unit only if there are assigned units for the platform.
+        public void RequestNewTask(Optional<GeneralUnit> unit, JobType job, IPlatformAction action)
+        {
+            throw new NotImplementedException();
+            switch (job)
+            {
+                case JobType.Construction:
+                    foreach (var entry in action.GetRequiredResources())
+                    {
+                        for (var i = entry.Value; i >= 0; i--)
+                        {
+                            mBuildingResources.Enqueue(new Pair<EResourceType, IPlatformAction>(entry.Key, action));
+                        }
+                    }
+                    break;
+                //case JobType.others etc...
+            }
+        }
+
+        public void PausePlatformAction(IPlatformAction action)
+        {
+            throw new NotImplementedException();
+            //Actions need a sleep method
         }
     }
 }
