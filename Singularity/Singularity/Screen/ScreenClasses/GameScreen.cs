@@ -3,6 +3,7 @@ using System.IO.MemoryMappedFiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Input;
 using Singularity.Map;
 using Singularity.Platform;
 using Singularity.Property;
@@ -34,9 +35,12 @@ namespace Singularity.Screen.ScreenClasses
         private MilitaryUnit mMUnit2;
 
         // map
-        private readonly Map.Map mMap;
+        private Map.Map mMap;
 
-        // roads
+        // input manager and viewport
+        private readonly InputManager mInputManager;
+        private readonly Viewport mViewport;
+
         // roads
         private Road mRoad1;
 
@@ -53,18 +57,15 @@ namespace Singularity.Screen.ScreenClasses
         /// <summary>
         /// The camera object which holds transformation values.
         /// </summary>
-        private readonly Camera mCamera;
+        private Camera mCamera;
 
-        public GameScreen(Map.Map map)
+        public GameScreen(Viewport viewport, InputManager inputManager)
         {
             mDrawables = new LinkedList<IDraw>();
             mUpdateables = new LinkedList<IUpdate>();
 
-            mMap = map;
-
-            mCamera = map.GetCamera();
-
-            AddObject<Map.Map>(map);
+            mInputManager = inputManager;
+            mViewport = viewport;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -105,6 +106,15 @@ namespace Singularity.Screen.ScreenClasses
 
         public void LoadContent(ContentManager content)
         {
+            var mapBackground = content.Load<Texture2D>("MockUpBackground");
+            mCamera = mMap.GetCamera();
+
+            var fow = new FogOfWar(mapBackground);
+            fow.AddRevealingObject(mMUnit1);
+            fow.AddRevealingObject(mMUnit2);
+            mMap = new Map.Map(mapBackground, mViewport, fow, mInputManager, false);
+            AddObject<Map.Map>(mMap);
+
             mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
 
             mPlatformSheet = content.Load<Texture2D>("PlatformSpriteSheet");
@@ -117,9 +127,10 @@ namespace Singularity.Screen.ScreenClasses
             mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
 
+            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
+            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
+
             
-            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera());
-            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera());
 
             mMap.AddPlatform(mPlatform);
             mMap.AddPlatform(mPlatform2);

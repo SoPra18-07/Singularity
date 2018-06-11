@@ -78,10 +78,9 @@
     <Compile Include="Platform\Action.cs" />
     <Compile Include="Platform\PlatformBlank.cs" />
     <Compile Include="Screen\EOptionScreenState.cs" />
+    <Compile Include="Screen\IWindowItem.cs" />
     <Compile Include="Screen\Slider.cs" />
     <Compile Include="Screen\Button.cs" />
-    <Compile Include="Screen\Slider.cs" />
-    <Compile Include="Screen\IWindowItem.cs" />
     <Compile Include="Serialization\CyclicDummy.cs" />
     <Compile Include="Serialization\XSerializer.cs" />
     <Compile Include="Serialization\SerializationDummy.cs" />
@@ -90,7 +89,6 @@
     <Compile Include="Resources\Resource.cs" />
     <Compile Include="Resources\ResourceHelper.cs" />
     <Compile Include="Property\LayerConstants.cs" />
-    <Compile Include="Screen\Button.cs" />
     <Compile Include="Screen\EScreen.cs" />
     <Compile Include="Screen\ScreenClasses\AchievementsScreen.cs" />
     <Compile Include="Screen\ScreenClasses\GameModeSelectScreen.cs" />
@@ -123,7 +121,6 @@
     <Compile Include="Screen\UpdateLowerScreen.cs" />
     <Compile Include="Units\Pathfinding.cs" />
     <Compile Include="Units\Task.cs" />
-    <Compile Include="Screen\IWindowItem.cs" />
     <Compile Include="Utils\Optional.cs" />
     <Compile Include="Utils\Pair.cs" />
     <Compile Include="Utils\Triple.cs" />
