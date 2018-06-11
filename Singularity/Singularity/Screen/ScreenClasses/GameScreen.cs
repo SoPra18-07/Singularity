@@ -34,8 +34,9 @@ namespace Singularity.Screen.ScreenClasses
         private MilitaryUnit mMUnit1;
         private MilitaryUnit mMUnit2;
 
-        // map
+        // map and fog of war
         private Map.Map mMap;
+        private FogOfWar mFow;
 
         // input manager and viewport
         private readonly InputManager mInputManager;
@@ -107,13 +108,10 @@ namespace Singularity.Screen.ScreenClasses
         public void LoadContent(ContentManager content)
         {
             var mapBackground = content.Load<Texture2D>("MockUpBackground");
+            mFow = new FogOfWar(mapBackground);
+            mMap = new Map.Map(mapBackground, mViewport, mFow, mInputManager);
             mCamera = mMap.GetCamera();
-
-            var fow = new FogOfWar(mapBackground);
-            fow.AddRevealingObject(mMUnit1);
-            fow.AddRevealingObject(mMUnit2);
-            mMap = new Map.Map(mapBackground, mViewport, fow, mInputManager, false);
-            AddObject<Map.Map>(mMap);
+            AddObject(mMap);
 
             mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
 
@@ -130,7 +128,8 @@ namespace Singularity.Screen.ScreenClasses
             mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
             mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
 
-            
+            mFow.AddRevealingObject(mMUnit1);
+            mFow.AddRevealingObject(mMUnit2);
 
             mMap.AddPlatform(mPlatform);
             mMap.AddPlatform(mPlatform2);
@@ -148,6 +147,7 @@ namespace Singularity.Screen.ScreenClasses
             AddObject(mRoad1);
             AddObject(road2);
             AddObject(road3);
+            AddObject(mFow);
             AddObject(ResourceHelper.GetRandomlyDistributedResources(5));
 
             // artificially adding wait to test loading screen

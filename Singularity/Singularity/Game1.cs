@@ -89,11 +89,6 @@ namespace Singularity
             // Create a new SpriteBatch, which can be used to draw textures.
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            var mapBackground = Content.Load<Texture2D>("MockUpBackground");
-            var fow = new FogOfWar(mapBackground);
-
-            var map = new Map.Map(mapBackground, mGraphics.GraphicsDevice.Viewport, fow, mInputManager, true);
-
             mGameScreen = new GameScreen(mGraphics.GraphicsDevice.Viewport, mInputManager);
 
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
