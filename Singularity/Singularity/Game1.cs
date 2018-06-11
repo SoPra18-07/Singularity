@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Media;
 using Singularity.Platform;
 using Singularity.Input;
 using Singularity.Map;
+using Singularity.Map.Properties;
 using Singularity.Resources;
 using Singularity.screen;
 using Singularity.Screen;
@@ -84,8 +85,7 @@ namespace Singularity
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
             mMUnitSheet = Content.Load<Texture2D>("UnitSpriteSheet");
-            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet);
-            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet);
+            var mapBackground = Content.Load<Texture2D>("MockUpBackground");
 
             // TODO: use this.Content to load your game content here
             mPlatformBlankTexture = Content.Load<Texture2D>("PlatformBasic");
@@ -95,7 +95,15 @@ namespace Singularity
             mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture, new StoryManager.StoryManager());
             mPlatform3 = new EnergyFacility(new Vector2(600, 400), mPlatformDomeTexture);
 
-            mMap = new Map.Map(Content.Load<Texture2D>("MockUpBackground"), mGraphics.GraphicsDevice.Viewport, true);
+            var fow = new FogOfWar(mapBackground);
+
+            mMap = new Map.Map(mapBackground, mGraphics.GraphicsDevice.Viewport, fow, mInputManager, true);
+
+            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
+            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
+
+            fow.AddRevealingObject(mMUnit1);
+            fow.AddRevealingObject(mMUnit2);
 
             mMap.AddPlatform(mPlatform);
             mMap.AddPlatform(mPlatform2);
@@ -104,7 +112,9 @@ namespace Singularity
             mGameScreen = new GameScreen(mMap);
 
             // load roads
-            mRoad1 = new Road(new Vector2(300, 400), new Vector2(800, 600), false);
+            mRoad1 = new Road(mPlatform, mPlatform2, false);
+            var road2 = new Road(mPlatform, mPlatform3, false);
+            var road3 = new Road(mPlatform2, mPlatform3, false);
 
             mGameScreen.AddObject(mMUnit1);
             mGameScreen.AddObject(mMUnit2);
@@ -112,6 +122,9 @@ namespace Singularity
             mGameScreen.AddObject(mPlatform2);
             mGameScreen.AddObject(mPlatform3);
             mGameScreen.AddObject(mRoad1);
+            mGameScreen.AddObject(road2);
+            mGameScreen.AddObject(road3);
+            mGameScreen.AddObject(fow);
             mGameScreen.AddObject(ResourceHelper.GetRandomlyDistributedResources(5));
 
             mScreenManager.AddScreen(mGameScreen);
