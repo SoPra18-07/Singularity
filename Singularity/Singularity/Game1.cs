@@ -95,10 +95,10 @@ namespace Singularity
 
             var fow = new FogOfWar(mapBackground);
 
-            mMap = new Map.Map(mapBackground, mGraphics.GraphicsDevice.Viewport, fow, true);
+            mMap = new Map.Map(mapBackground, mGraphics.GraphicsDevice.Viewport, fow, mInputManager, true);
 
-            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera());
-            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera());
+            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
+            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
 
             fow.AddRevealingObject(mMUnit1);
             fow.AddRevealingObject(mMUnit2);
