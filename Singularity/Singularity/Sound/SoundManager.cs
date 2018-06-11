@@ -20,7 +20,7 @@ namespace Singularity.Sound
         private readonly AudioListener mListener;
         // The z coordinate for 3D audio.
         private float mSoundPlaneDepth;
-        // Dictionary containing all the songs assigned to their names and sorted by phase of the game.
+        // Dictionary containing all the songs assigned to the level names and paired with phase of the game.
         private readonly Dictionary<string, Song[]> mAllSongs;
         // Dictionary containing all the sound FX assigned to their individual name.
         private readonly Dictionary<string, SoundEffect> mEffects;
@@ -135,7 +135,7 @@ namespace Singularity.Sound
 
         #endregion
 
-        public static void PlaySoundTrack()
+        public void PlaySoundTrack()
         {
             if (sSoundtrack == null)
                 return;

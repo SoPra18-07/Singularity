@@ -11,6 +11,7 @@ using Singularity.Map;
 using Singularity.Map.Properties;
 using Singularity.Resources;
 using Singularity.Screen;
+using Singularity.Screen.ScreenClasses;
 using Singularity.Sound;
 using Singularity.Units;
 
@@ -24,7 +25,7 @@ namespace Singularity
         internal GraphicsDeviceManager mGraphics;
         internal GraphicsAdapter mGraphicsAdapter;
 
-        private static Song sSoundtrack;
+        private SoundManager mSoundManager;
 
         // Screens
         internal GameScreen mGameScreen;
