@@ -108,10 +108,7 @@ namespace Singularity.Screen.ScreenClasses
         public void LoadContent(ContentManager content)
         {
             var mapBackground = content.Load<Texture2D>("MockUpBackground");
-            mFow = new FogOfWar(mapBackground);
-            mMap = new Map.Map(mapBackground, mViewport, mFow, mInputManager);
-            mCamera = mMap.GetCamera();
-            AddObject(mMap);
+            
 
             mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
 
@@ -125,6 +122,11 @@ namespace Singularity.Screen.ScreenClasses
             mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
 
+            mFow = new FogOfWar(mapBackground);
+            mMap = new Map.Map(mapBackground, mViewport, mFow, mInputManager);
+            mCamera = mMap.GetCamera();
+            AddObject(mMap);
+
             mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
             mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
 
@@ -133,6 +135,7 @@ namespace Singularity.Screen.ScreenClasses
 
             mMap.AddPlatform(mPlatform);
             mMap.AddPlatform(mPlatform2);
+            mMap.AddPlatform(mPlatform3);
 
             // load roads
             mRoad1 = new Road(mPlatform, mPlatform2, false);
