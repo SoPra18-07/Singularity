@@ -8,7 +8,6 @@ using Singularity.Platform;
 using Singularity.Resources;
 using Singularity.Units;
 using Singularity.Utils;
-using Action = Singularity.Platform.Action;
 
 namespace Singularity.DistributionManager
 {
@@ -27,8 +26,11 @@ namespace Singularity.DistributionManager
         private List<GeneralUnit> mManual;
 
         [DataMember()]
-        private Queue<Pair<Resource, IPlatformAction>> mResourceRequests;
-
+        private Queue<Pair<EResourceType, IPlatformAction>> mBuildingResources;
+        [DataMember()]
+        private Queue<Pair<EResourceType, IPlatformAction>> mRefiningOrStoringResources;
+        [DataMember()]
+        private Queue<Pair<GeneralUnit, IPlatformAction>> mReque
 
         //An Felix: Vielleicht BuildBluePrint nicht in "ProduceResourceAction.cs" reinhauen (da hätte ich nicht danach gesucht)
         [DataMember()]
@@ -43,23 +45,57 @@ namespace Singularity.DistributionManager
 
         //Alternativ könnte man auch bei den beiden Listen direkt die Platformen einsetzen?
 
-        public void ManualAssign(GeneralUnit unit, IPlatformAction action)
+        public DistributionManager()
+        { 
+            mIdle = new List<GeneralUnit>();
+            mConstruction = new List<GeneralUnit>();
+            mProduction = new List<GeneralUnit>();
+            mDefense = new List<GeneralUnit>();
+            mManual = new List<GeneralUnit>();
+
+            mBuildingResources = new Queue<Pair<EResourceType, IPlatformAction>>();
+            mRefiningOrStoringResources = new Queue<Pair<EResourceType, IPlatformAction>>();
+            mBlueprintBuilds = new List<BuildBluePrint>();
+        }
+
+        public void ManualAssign(GeneralUnit unit, IPlatformAction action, JobType job)
         {
-            //Mit Felix reden: Warum ist da überhaupt JobType drin?
-            //action.AssignUnit(unit, JobType.);
+            action.AssignUnit(unit, job);
         }
 
         public void ManualUnassign(GeneralUnit unit)
         {
-            //Siehe oben
-            //IPlatformAction.UnAssignUnits(unit, JobType.);
+            throw new NotImplementedException();
+            //I guess we need an extra method for that.
         }
 
-        public void RequestResource(PlatformBlank platform, Resource resource)
+        public void RequestResource(PlatformBlank platform, Resource resource, bool isbuilding = false)
         {
-            //Wozu?
+            Pair<EResourceType, IPlatformAction> request;
+            if (isbuilding)
+            {
+                request = mBuildingResources.Dequeue();
+                //GeneralUnit has to be changed (Because wrong implemented).
+                //I will do that later,
+                //to not mess with svn
+                //var assignee = mConstruction.Find(x => x.GetTask() == Task.Idle);
+                //assignee.AssignedTask(Task.BuildPlatform, Pair.GetFirst(), Pair.GetSecond().Platform);
+            }
+            else
+            {
+                request = mRefiningOrStoringResources.Dequeue();
+                //GeneralUnit has to be changed (Because wrong implemented).
+                //I will do that later,
+                //to not mess with svn
+                //var assignee = mConstruction.Find(x => x.GetTask() == Task.Idle);
+                //assignee.AssignedTask(Task.BuildPlatform, Pair.GetFirst(), Pair.GetSecond().Platform);
+            }
         }
 
-        public void
+        public void RequestUnits(PlatformBlank platform, JobType job)
+        {
+            throw new NotImplementedException();
+            var request = m
+        }
     }
 }
