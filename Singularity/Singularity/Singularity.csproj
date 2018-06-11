@@ -93,7 +93,6 @@
     <Compile Include="Screen\ScreenClasses\AchievementsScreen.cs" />
     <Compile Include="Screen\ScreenClasses\GameModeSelectScreen.cs" />
     <Compile Include="Screen\ScreenClasses\GamePauseScreen.cs" />
-    <Compile Include="Screen\ScreenClasses\GameScreen.cs" />
     <Compile Include="Screen\ScreenClasses\LoadingScreen.cs" />
     <Compile Include="Screen\ScreenClasses\LoadSelectScreen.cs" />
     <Compile Include="Screen\ScreenClasses\MainMenuManagerScreen.cs" />
