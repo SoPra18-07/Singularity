@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Singularity.Input;
 using Singularity.Map;
 using Singularity.Property;
 
 namespace Singularity.Units
 {
-    internal sealed class MilitaryUnit : IUnit, IDraw, IUpdate
+    internal sealed class MilitaryUnit : IUnit, IDraw, IUpdate, IRevealing, IMouseClickListener, IMousePositionListener
     {
         private const int DefaultWidth = 150;
         private const int DefaultHeight = 75;
@@ -23,7 +25,6 @@ namespace Singularity.Units
         private int mRow;
 
         private bool mIsMoving;
-        private Rectangle mBounds;
         private Rectangle mBoundsSnapshot;
         private Vector2 mToAdd;
         private double mZoomSnapshot;
@@ -40,6 +41,11 @@ namespace Singularity.Units
         private double mYstep;
 
         private bool mSelected;
+
+        private float mMouseX;
+
+        private float mMouseY;
+
          
         public Vector2 AbsolutePosition { get; set; }
 
@@ -49,7 +55,12 @@ namespace Singularity.Units
 
         public Vector2 RelativeSize { get; set; }
 
-        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera)
+        public Vector2 Center { get; private set; }
+
+        public int RevelationRadius { get; private set; }
+        public Rectangle Bounds { get; private set; }
+
+        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, InputManager manager)
         {
             Id = 0; // TODO this will later use a random number generator to create a unique
                     // id for the specific unit.
@@ -57,8 +68,15 @@ namespace Singularity.Units
             
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(DefaultWidth, DefaultHeight);
+
+            RevelationRadius = (int) AbsoluteSize.X;
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X  / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+
             mIsMoving = false;
             mCamera = camera;
+
+            manager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            manager.AddMousePositionListener(this);
 
             mMilSheet = spriteSheet;
         }
@@ -153,30 +171,16 @@ namespace Singularity.Units
         public void Update(GameTime gameTime)
         {
             //make sure to update the relative bounds rectangle enclosing this unit.
-            mBounds = new Rectangle(
+            Bounds = new Rectangle(
                 (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
-
-            UpdateSelected();
 
             // this makes the unit rotate according to the mouse position when its selected and not moving.
             if (mSelected && !mIsMoving)
             {
-                Rotate(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
+                Rotate(new Vector2(mMouseX, mMouseY));
             }
 
-            // this is the point when the unit starts moving. We need to make snapshots of the source point, destination point and the 
-            // current zoom, this is important, since we want our unit to move to the point we click and not move to the point we click
-            // that gets affected by zooming and stuff.
-            if (mSelected && !mIsMoving && Mouse.GetState().LeftButton == ButtonState.Pressed && 
-                ((Math.Abs(mBounds.Center.X - Mouse.GetState().X) > mBounds.Width - 15) ||
-                 (Math.Abs(mBounds.Center.Y - Mouse.GetState().Y) > mBounds.Height - 30)))
-            {
-                mIsMoving = true;
-                mTargetPosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
-                mBoundsSnapshot = mBounds;
-                mZoomSnapshot = mCamera.GetZoom();
-
-            } else if (HasReachedTarget())
+            if (HasReachedTarget())
             {
                 mIsMoving = false;
             }
@@ -193,29 +197,8 @@ namespace Singularity.Units
 
             //finally select the appropriate color for selected/deselected units.
             mColor = mSelected ? sSelectedColor : sNotSelectedColor;
-        }
 
-
-        /// <summary>
-        /// Sets the selected status of this unit to true or false, according to what mouse action was executed.
-        /// </summary>
-        private void UpdateSelected()
-        {
-
-            // if left click within unit area : selected
-            if ((Math.Abs(mBounds.Center.X - Mouse.GetState().X) < mBounds.Width - 15) &&
-                (Math.Abs(mBounds.Center.Y - Mouse.GetState().Y) < mBounds.Height - 30) &&
-                Mouse.GetState().LeftButton == ButtonState.Pressed)
-            {
-                mSelected = true;
-            }
-
-            // right click deselects unit
-            if (Mouse.GetState().RightButton == ButtonState.Pressed)
-            {
-                mSelected = false;
-            }
-
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
         }
 
         /// <summary>
@@ -248,6 +231,47 @@ namespace Singularity.Units
             mToAdd = Vector2.Zero;
             return true;
 
+        }
+
+        public void MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
+        {
+
+            switch (mouseAction)
+            {
+                case EMouseAction.LeftClick:
+                    if (mSelected && !mIsMoving && !withinBounds)
+                    {
+                        mIsMoving = true;
+                        mTargetPosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+                        mBoundsSnapshot = Bounds;
+                        mZoomSnapshot = mCamera.GetZoom();
+                    }
+
+                    if (withinBounds) { 
+                        mSelected = true;
+                    }
+                    return;
+
+                case EMouseAction.RightClick:
+                    mSelected = false;
+                    return;
+            }
+        }
+
+        public void MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
+        {
+            
+        }
+
+        public void MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
+        {
+           
+        }
+
+        public void MousePositionChanged(float newX, float newY)
+        {
+            mMouseX = newX;
+            mMouseY = newY;
         }
     }
 }

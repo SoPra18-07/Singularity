@@ -39,10 +39,19 @@ namespace Singularity.Screen
         private Rectangle mBounds;
         private bool mClicked;
 
-        // events that can be sent out by buttons
+        // these events are sent out when they occur to an 
+        // instance of a button
+        // HOW TO USE:
+        // put this in the class where an instance of a button is generated:
+        // NameOfButtonInsance.Event += ClassToReceiveEvent.NameOfMethodInWhichClassReceivesEvent;
+        // the above subscribes the "ClassToReceiveEvent" to the button event (it activate the "NameOfMethodInWhichClassReceivesEvent"
+        // when the event occurs
+        // In the ClassToReceiveEvent create the method NameOfMethodInWhichClassReceivesEvent and write in the 
+        // code you which to be executed when Event occurs
+        // public static void NameOfMethodInWhichClassReceivesEvent(Object sender, EventArgs eventArg){ .....}
         public event EventHandler ButtonReleased;
         public event EventHandler ButtonHovering;
-        public event EventHandler ButtonClicked; 
+        public event EventHandler ButtonClicked;
 
 
         /// <summary>
@@ -75,8 +84,8 @@ namespace Singularity.Screen
             mButtonText = buttonText;
             mFont = font;
             mPosition = position;
-            mWidth = (int) mFont.MeasureString(mButtonText).X;
-            mHeight = (int) mFont.MeasureString(mButtonText).Y;
+            mWidth = (int)mFont.MeasureString(mButtonText).X;
+            mHeight = (int)mFont.MeasureString(mButtonText).Y;
             mColor = Color.White;
             CreateRectangularBounds();
         }
@@ -87,7 +96,7 @@ namespace Singularity.Screen
         /// </summary>
         private void CreateRectangularBounds()
         {
-            mBounds = new Rectangle((int) mPosition.X, (int) mPosition.Y, mWidth, mHeight);
+            mBounds = new Rectangle((int)mPosition.X, (int)mPosition.Y, mWidth, mHeight);
         }
 
         /// <summary>
@@ -185,7 +194,11 @@ namespace Singularity.Screen
             }
 
             // check if button has been left clicked
-            if (InputManager2.LeftClicked(mBounds))
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
+                Mouse.GetState().X >= mPosition.X &&
+                Mouse.GetState().X <= mPosition.X + mWidth &&
+                Mouse.GetState().Y >= mPosition.Y &&
+                Mouse.GetState().Y <= mPosition.Y + mHeight)
             {
                 OnButtonClicked();
                 mClicked = true;
@@ -196,14 +209,17 @@ namespace Singularity.Screen
 
             if (Mouse.GetState().LeftButton == ButtonState.Released)
             {
-                if (InputManager2.LeftReleased(mBounds))
+                if (Mouse.GetState().X >= mPosition.X &&
+                    Mouse.GetState().X <= mPosition.X + mWidth &&
+                    Mouse.GetState().Y >= mPosition.Y &&
+                    Mouse.GetState().Y <= mPosition.Y + mHeight)
                 {
                     OnButtonReleased();
                 }
 
                 // reset to not clicked
                 mClicked = false;
-            }  
+            }
         }
     }
 }

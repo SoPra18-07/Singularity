@@ -8,6 +8,7 @@ using Singularity.Platform;
 using Singularity.Input;
 
 using Singularity.Map;
+using Singularity.Map.Properties;
 using Singularity.Resources;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;

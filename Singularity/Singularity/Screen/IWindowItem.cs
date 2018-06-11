@@ -1,10 +1,14 @@
-﻿using Singularity.Property;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Singularity.Property;
 
 namespace Singularity.Screen
 {
-    interface IWindowItem: IDraw, IUpdate
+    interface IWindowItem : IUpdate, IDraw
     {
-    
-        // TODO void ReceiveEvents(Event e)
+        //TODO implement the methods specific to IWindowItem
     }
 }
