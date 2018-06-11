@@ -108,7 +108,7 @@ namespace Singularity.Screen.ScreenClasses
         public void LoadContent(ContentManager content)
         {
             var mapBackground = content.Load<Texture2D>("MockUpBackground");
-            
+
 
             mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
 
@@ -177,11 +177,11 @@ namespace Singularity.Screen.ScreenClasses
 
             if (typeof(IDraw).IsAssignableFrom(typeof(T)))
             {
-                mDrawables.AddLast((IDraw) toAdd);
+                mDrawables.AddLast((IDraw)toAdd);
             }
             if (typeof(IUpdate).IsAssignableFrom(typeof(T)))
-            { 
-                mUpdateables.AddLast((IUpdate) toAdd);
+            {
+                mUpdateables.AddLast((IUpdate)toAdd);
             }
             return true;
 
@@ -202,11 +202,11 @@ namespace Singularity.Screen.ScreenClasses
 
             if (typeof(IDraw).IsAssignableFrom(typeof(T)))
             {
-                mDrawables.Remove((IDraw) toRemove);
+                mDrawables.Remove((IDraw)toRemove);
             }
             if (typeof(IUpdate).IsAssignableFrom(typeof(T)))
             {
-                mUpdateables.Remove((IUpdate) toRemove);
+                mUpdateables.Remove((IUpdate)toRemove);
             }
             return true;
         }
