@@ -207,7 +207,7 @@ namespace Singularity.Screen
 
             // check if left button is also released within button bounds to send out ButtonReleased event
 
-            if (Mouse.GetState().LeftButton == ButtonState.Released)
+            if (Mouse.GetState().LeftButton == ButtonState.Released && mClicked)
             {
                 if (Mouse.GetState().X >= mPosition.X &&
                     Mouse.GetState().X <= mPosition.X + mWidth &&
