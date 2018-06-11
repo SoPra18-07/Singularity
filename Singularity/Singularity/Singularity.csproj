@@ -74,7 +74,7 @@
     <Compile Include="Platform\Action.cs" />
     <Compile Include="Platform\PlatformBlank.cs" />
     <Compile Include="Screen\Slider.cs" />
-    <Compile Include="Screen\WindowItem.cs" />
+    <Compile Include="Screen\IWindowItem.cs" />
     <Compile Include="Serialization\CyclicDummy.cs" />
     <Compile Include="Serialization\XSerializer.cs" />
     <Compile Include="Serialization\SerializationDummy.cs" />
