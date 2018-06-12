@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Input;
-using Singularity.Input;
+
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -18,7 +12,7 @@ namespace Singularity.Screen.ScreenClasses
     /// Shows the main menu screen with 5 options:
     /// New Game, Load Game, Achievements, Options, and Quit Game.
     /// </summary>
-    class MainMenuScreen : IScreen
+    internal sealed class MainMenuScreen : ITransitionableMenu
     {
         private readonly Vector2 mMenuBoxPosition;
         private EScreen mScreenState;
@@ -42,6 +36,14 @@ namespace Singularity.Screen.ScreenClasses
         private Button mOptionsButton;
         private Button mQuitButton;
         private readonly List<Button> mButtonList;
+
+        // Transition properties
+        public bool TransitionRunning { get; private set; }
+
+        public void TransitionTo(EScreen eScreen, GameTime gameTime)
+        {
+            throw new System.NotImplementedException();
+        }
 
         /// <summary>
         /// Used to construct a new instance of the main menu screen
@@ -86,6 +88,7 @@ namespace Singularity.Screen.ScreenClasses
             mQuitButton.ButtonReleased += MainMenuManagerScreen.OnQuitButtonReleased;
 
         }
+
 
         /// <summary>
         /// Updates the buttons within the MainMenuScreen.

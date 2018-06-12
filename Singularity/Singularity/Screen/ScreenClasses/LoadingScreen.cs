@@ -15,7 +15,7 @@ namespace Singularity.Screen.ScreenClasses
     /// As long as not all resources have been loaded (e.g. map generation
     /// or on a save file load), this screen will be shown.
     /// </summary>
-    class LoadingScreen : IScreen
+    class LoadingScreen : ITransitionableMenu
     {
         private Texture2D mLogo;
         private readonly Vector2 mLogoPosition;
@@ -77,6 +77,12 @@ namespace Singularity.Screen.ScreenClasses
         public bool DrawLower()
         {
             return false;
+        }
+
+        public bool TransitionRunning { get; private set; }
+        public void TransitionTo(EScreen eScreen, GameTime gameTime)
+        {
+            throw new NotImplementedException();
         }
     }
 }

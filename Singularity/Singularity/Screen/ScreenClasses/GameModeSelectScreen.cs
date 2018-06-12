@@ -10,7 +10,7 @@ using Singularity.Libraries;
 
 namespace Singularity.Screen.ScreenClasses
 {
-    /// <inheritdoc cref="IScreen"/>
+    /// <inheritdoc cref="ITransitionableMenu"/>
     /// <summary>
     /// Shown after the "New Game" button on the main
     /// menu has been clicked. It shows the option to either
@@ -18,15 +18,15 @@ namespace Singularity.Screen.ScreenClasses
     /// and a back button.
     /// </summary>
 
-    class GameModeSelectScreen : IScreen
+    internal sealed class GameModeSelectScreen : ITransitionableMenu
     {
 
-        private string mStoryString;
-        private string mFreePlayString;
-        private string mBackString;
-        private string mWindowTitleString;
+        private readonly string mStoryString;
+        private readonly string mFreePlayString;
+        private readonly string mBackString;
+        private readonly string mWindowTitleString;
 
-        private List<Button> mButtonList;
+        private readonly List<Button> mButtonList;
 
         private SpriteFont mLibSans36;
         private SpriteFont mLibSans20;
@@ -35,7 +35,7 @@ namespace Singularity.Screen.ScreenClasses
         private Button mFreePlayButton;
         private Button mBackButton;
 
-        private Vector2 mMenuBoxPosition;
+        private readonly Vector2 mMenuBoxPosition;
 
         public GameModeSelectScreen(Vector2 screenResolution)
         {
@@ -128,6 +128,13 @@ namespace Singularity.Screen.ScreenClasses
         public bool DrawLower()
         {
             return true;
+        }
+
+        public bool TransitionRunning { get; private set; }
+
+        public void TransitionTo(EScreen eScreen, GameTime gameTime)
+        {
+            throw new NotImplementedException();
         }
     }
 }

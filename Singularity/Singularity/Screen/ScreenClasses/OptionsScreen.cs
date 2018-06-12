@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,15 +8,15 @@ using Singularity.Libraries;
 
 namespace Singularity.Screen.ScreenClasses
 {
-    /// <inheritdoc cref="IScreen"/>
+    /// <inheritdoc cref="ITransitionableMenu"/>
     /// <summary>
     /// Shown after Options on the main menu or pause menu has been clicked.
     /// Allows different settings and options to be set. Buttons include
     /// for the different settings and a back button.
     /// </summary>
-    class OptionsScreen : IScreen
+    internal sealed class OptionsScreen : ITransitionableMenu
     {
-        private Game1 game;
+        private readonly Game1 mGame;
         // layout. Made only once to reduce unnecssary calculations at draw time
         private readonly Vector2 mBoxPosition;
         private readonly Vector2 mWindowTitlePosition;
@@ -70,11 +67,12 @@ namespace Singularity.Screen.ScreenClasses
         // 3D sound effect toggle
         
         private EOptionScreenState mScreenState;
-        
+
         /// <summary>
         /// Creates an instance of the Options screen.
         /// </summary>
         /// <param name="screenResolution">Screen resolution used for scaling</param>
+        /// <param name="game">Game1 class passed on to options to allow changing of options</param>
         public OptionsScreen(Vector2 screenResolution, Game1 game)
         {
             // scaling of all positions according to viewport size
@@ -103,7 +101,7 @@ namespace Singularity.Screen.ScreenClasses
             mAudioButtons = new List<Button>(1);
 
             mScreenState = EOptionScreenState.Gameplay;
-            this.game = game;
+            mGame = game;
         }
 
         /// <summary>
@@ -313,28 +311,28 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="eventArgs"></param>
         private void OnFullScreenReleased(Object sender, EventArgs eventArgs)
         {
-            var width = game.mGraphicsAdapter.CurrentDisplayMode.Width;
-            var height = game.mGraphicsAdapter.CurrentDisplayMode.Height;
-            game.mGraphics.PreferredBackBufferWidth = width;
-            game.mGraphics.PreferredBackBufferHeight = height;
-            game.mGraphics.IsFullScreen = true;
-            game.mGraphics.ApplyChanges();
+            var width = mGame.mGraphicsAdapter.CurrentDisplayMode.Width;
+            var height = mGame.mGraphicsAdapter.CurrentDisplayMode.Height;
+            mGame.mGraphics.PreferredBackBufferWidth = width;
+            mGame.mGraphics.PreferredBackBufferHeight = height;
+            mGame.mGraphics.IsFullScreen = true;
+            mGame.mGraphics.ApplyChanges();
             MainMenuManagerScreen.SetResolution(new Vector2(width, height));
         }
 
         private void OnResoOneReleased(Object sender, EventArgs eventArgs)
         {
-            game.mGraphics.PreferredBackBufferWidth = 1080;
-            game.mGraphics.PreferredBackBufferHeight = 720;
-            game.mGraphics.ApplyChanges();
+            mGame.mGraphics.PreferredBackBufferWidth = 1080;
+            mGame.mGraphics.PreferredBackBufferHeight = 720;
+            mGame.mGraphics.ApplyChanges();
             MainMenuManagerScreen.SetResolution(new Vector2(1080, 720));
         }
 
         private void OnResoTwoReleased(Object sender, EventArgs eventArgs)
         {
-            game.mGraphics.PreferredBackBufferWidth = 1920;
-            game.mGraphics.PreferredBackBufferHeight = 1080;
-            game.mGraphics.ApplyChanges();
+            mGame.mGraphics.PreferredBackBufferWidth = 1920;
+            mGame.mGraphics.PreferredBackBufferHeight = 1080;
+            mGame.mGraphics.ApplyChanges();
             MainMenuManagerScreen.SetResolution(new Vector2(1920, 1080));
         }
 
@@ -349,5 +347,11 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         #endregion
+
+        public bool TransitionRunning { get; }
+        public void TransitionTo(EScreen eScreen, GameTime gameTime)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
