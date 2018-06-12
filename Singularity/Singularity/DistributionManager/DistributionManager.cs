@@ -37,8 +37,10 @@ namespace Singularity.DistributionManager
         [DataMember()]
         private List<BuildBluePrint> mBlueprintBuilds;
 
-        // An der Stelle mit Felix reden, PlatformActionProduce als abstrakte Klasse würde helfen?
-        // Mhm weiß nicht ob das wirklich notwendig ist ... ich mach mir mal gedanken
+        // L:An der Stelle mit Felix reden, PlatformActionProduce als abstrakte Klasse würde helfen?
+        // F:Mhm weiß nicht ob das wirklich notwendig ist ... ich mach mir mal gedanken
+        // L:Zumindest ein interface würde benötigt, ich denke nicht dass der sinn hinter der sache ist für jede produzierende plattform ne extra liste mit
+        // List<PlatformnamehiereinsetzenActionProduce> zu erstellen. Das gleiche mit mDefensivePlatforms
         // [DataMember()]
         // private List<PlatformActionProduce> mProducingPlatforms;
 
@@ -47,7 +49,7 @@ namespace Singularity.DistributionManager
 
         // Alternativ könnte man auch bei den beiden Listen direkt die Platformen einsetzen?
         // Momentan ja, aber wenn du ne plattform haben willst die (rein theoretisch) verteidigen und Produzieren gleichzeitig kann? Oder gleichzeitig KineticDefense und LaserDefense ist?
-
+        // Aber wollen wir das? also entweder so, oder halt wie oben vorgeschlagen.
         public DistributionManager()
         {
             mIdle = new List<GeneralUnit>();
@@ -66,19 +68,23 @@ namespace Singularity.DistributionManager
             action.AssignUnit(unit, job);
         }
 
-        public void ManualUnassign(GeneralUnit unit)
+        public void ManualUnassign(JobType job, int i)
         {
             throw new NotImplementedException();
             // I guess we need an extra method for that.
             // regarding that: actually we might want to have only the JobType and an integer .. I think I've refactored that somewhere else as well before (Platforms?)
+            // I guess it was PlatformActions.
         }
 
         // Okay yes you're right. We want a PlatformAction here instead of a platform.
-        public void RequestResource(PlatformBlank platform, Resource resource, bool isbuilding = false) // explain what 'isbuilding' is for, I got confused for a sec
+        public void RequestResource(PlatformBlank platform, Resource resource, bool isbuilding = false) 
+            // explain what 'isbuilding' is for, I got confused for a sec
+            // I guessed isbuilding is wether the resource requested, has been requested for building or for producing/Storing
         {
             throw new NotImplementedException();
             // Will repair request ressources or units? And what unit will be used?
             // We do not have repair yet or anytime soon.
+            // In that case I guess Ill ignore it for now.
             Pair<EResourceType, IPlatformAction> request;
             if (isbuilding)
             {
@@ -158,6 +164,7 @@ namespace Singularity.DistributionManager
             throw new NotImplementedException();
             // Actions need a sleep method
             // No, they're just being removed from occurences in the DistributionManager. As soon as they unpause, they'll send requests for Resources and units again.
+            // Ah ok I got that part
         }
     }
 }
