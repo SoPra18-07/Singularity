@@ -273,10 +273,10 @@ namespace Singularity.Units
            
         }
 
-        public void MousePositionChanged(float newX, float newY)
+        public void MousePositionChanged(float relX, float relY, float absX, float absY)
         {
-            mMouseX = newX;
-            mMouseY = newY;
+            mMouseX = relX;
+            mMouseY = relY;
         }
     }
 }
