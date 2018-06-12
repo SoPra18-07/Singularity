@@ -16,8 +16,9 @@ namespace Singularity.Screen
         /// <summary>
         /// Method called to tell a screen to transition and which screen it should transition to.
         /// </summary>
-        /// <param name="eScreen">Target screen for the transition</param>
+        /// <param name="originScreen"></param>
+        /// <param name="targetScreen"></param>
         /// <param name="gameTime">GameTime when the transition is called indicating transition start time</param>
-        void TransitionTo(EScreen eScreen, GameTime gameTime);
+        void TransitionTo(EScreen originScreen, EScreen targetScreen, GameTime gameTime);
     }
 }

@@ -64,7 +64,7 @@ namespace Singularity.Screen.ScreenClasses
             throw new NotImplementedException();
         }
 
-        public void TransitionTo(EScreen eScreen, GameTime gameTime)
+        public void TransitionTo(EScreen originScreen, EScreen targetScreen, GameTime gameTime)
         {
 
         }

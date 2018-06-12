@@ -19,7 +19,8 @@ namespace Singularity.Screen.ScreenClasses
     {
         private Texture2D mLogo;
         private readonly Vector2 mLogoPosition;
-        
+        public bool TransitionRunning { get; }
+
         /// <summary>
         /// Constructs a new instance of the loading screen.
         /// </summary>
@@ -27,6 +28,7 @@ namespace Singularity.Screen.ScreenClasses
         public LoadingScreen(Vector2 screenResolution)
         {
             mLogoPosition = Vector2.Add(screenResolution, new Vector2(-106, -97));
+            TransitionRunning = false;
 
         }
         /// <summary>
@@ -79,10 +81,10 @@ namespace Singularity.Screen.ScreenClasses
             return false;
         }
 
-        public bool TransitionRunning { get; private set; }
-        public void TransitionTo(EScreen eScreen, GameTime gameTime)
+        
+        public void TransitionTo(EScreen originScreen, EScreen targetScreen, GameTime gameTime)
         {
-            throw new NotImplementedException();
+            // transition not necessary
         }
     }
 }

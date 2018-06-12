@@ -35,10 +35,19 @@ namespace Singularity.Screen.ScreenClasses
         private Button mFreePlayButton;
         private Button mBackButton;
 
+        // Transition variables
         private readonly Vector2 mMenuBoxPosition;
+        private float mMenuOpacity;
+        private double mTransitionStartTime;
+        private double mTransitionDuration;
+        private EScreen mTargetScreen;
+
+        public bool TransitionRunning { get; private set; }
 
         public GameModeSelectScreen(Vector2 screenResolution)
         {
+            mMenuBoxPosition = new Vector2(screenResolution.X / 2 - 204, screenResolution.Y / 4);
+
             mStoryString = "Campaign Mode";
             mFreePlayString = "Skirmish";
             mBackString = "Back";
@@ -48,6 +57,7 @@ namespace Singularity.Screen.ScreenClasses
 
             mMenuBoxPosition = new Vector2(screenResolution.X / 2 - 150, screenResolution.Y / 2 - 175);
 
+            mMenuOpacity = 0;
         }
 
         /// <summary>
@@ -57,9 +67,48 @@ namespace Singularity.Screen.ScreenClasses
         /// that take place over time </param>
         public void Update(GameTime gametime)
         {
+            if (TransitionRunning)
+            {
+                Transition(gametime);
+            }
+
             foreach (Button button in mButtonList)
             {
                 button.Update(gametime);
+                button.Opacity = mMenuOpacity;
+            }
+        }
+
+        /// <summary>
+        /// Code that actually does the transition
+        /// </summary>
+        /// <param name="gameTime">Current gameTime</param>
+        private void Transition(GameTime gameTime)
+        {
+            switch (mTargetScreen)
+            {
+                case EScreen.GameModeSelectScreen:
+                    if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
+                    {
+                        TransitionRunning = false;
+                        mMenuOpacity = 1f;
+                    }
+
+                    mMenuOpacity =
+                        (float)Animations.Easing(0, 1f, mTransitionStartTime, mTransitionDuration, gameTime);
+                    break;
+                case EScreen.MainMenuScreen:
+                    if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
+                    {
+                        TransitionRunning = false;
+                        mMenuOpacity = 0f;
+                    }
+
+                    mMenuOpacity =
+                        (float)Animations.Easing(1, 0f, mTransitionStartTime, mTransitionDuration, gameTime);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -79,14 +128,14 @@ namespace Singularity.Screen.ScreenClasses
 
             // Draw menu window
             spriteBatch.StrokedRectangle(mMenuBoxPosition,
-                new Vector2(300, 350),
+                new Vector2(408, 420),
                 Color.White,
                 Color.White,
                 .5f,
                 .20f);
             spriteBatch.DrawString(mLibSans36,
                 mWindowTitleString,
-                new Vector2(mMenuBoxPosition.X + 30, mMenuBoxPosition.Y + 10), Color.White);
+                new Vector2(mMenuBoxPosition.X + 30, mMenuBoxPosition.Y + 10), new Color(new Vector3(.9137f, .9058f, .8314f)));
 
             spriteBatch.End();
         }
@@ -99,9 +148,9 @@ namespace Singularity.Screen.ScreenClasses
         {
             mLibSans36 = content.Load<SpriteFont>("LibSans36");
             mLibSans20 = content.Load<SpriteFont>("LibSans20");
-            mStoryButton = new Button(mStoryString, mLibSans20, new Vector2(mMenuBoxPosition.X + 30, mMenuBoxPosition.Y + 90));
-            mFreePlayButton = new Button(mFreePlayString, mLibSans20, new Vector2(mMenuBoxPosition.X + 30, mMenuBoxPosition.Y + 140));
-            mBackButton = new Button(mBackString, mLibSans20, new Vector2(mMenuBoxPosition.X + 30, mMenuBoxPosition.Y + 190));
+            mStoryButton = new Button(mStoryString, mLibSans20, new Vector2(mMenuBoxPosition.X + 30, mMenuBoxPosition.Y + 90), new Color(new Vector3(.9137f, .9058f, .8314f)));
+            mFreePlayButton = new Button(mFreePlayString, mLibSans20, new Vector2(mMenuBoxPosition.X + 30, mMenuBoxPosition.Y + 140), new Color(new Vector3(.9137f, .9058f, .8314f)));
+            mBackButton = new Button(mBackString, mLibSans20, new Vector2(mMenuBoxPosition.X + 30, mMenuBoxPosition.Y + 190), new Color(new Vector3(.9137f, .9058f, .8314f)));
             mButtonList.Add(mStoryButton);
             mButtonList.Add(mFreePlayButton);
             mButtonList.Add(mBackButton);
@@ -130,11 +179,14 @@ namespace Singularity.Screen.ScreenClasses
             return true;
         }
 
-        public bool TransitionRunning { get; private set; }
+        
 
-        public void TransitionTo(EScreen eScreen, GameTime gameTime)
+        public void TransitionTo(EScreen originScreen, EScreen targetScreen, GameTime gameTime)
         {
-            throw new NotImplementedException();
+            mTargetScreen = targetScreen;
+            mTransitionDuration = 350;
+            mTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
+            TransitionRunning = true;
         }
     }
 }

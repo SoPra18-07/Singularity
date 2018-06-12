@@ -54,7 +54,7 @@ namespace Singularity.Platform
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawLine(Source, Destination, mBlueprint ? new Color(new Vector3(46, 53, 97)) : new Color(new Vector4(0, 40, 40, 255)), 5f, LayerConstants.RoadLayer);
+            spriteBatch.DrawLine(Source, Destination, mBlueprint ? new Color(new Vector3(.1804f, .2078f, .3804f)) : new Color(new Vector4(.776f, .776f, .776f, 255)), 5f, LayerConstants.RoadLayer);
         }
     }
 }
