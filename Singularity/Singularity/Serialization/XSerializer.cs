@@ -10,7 +10,7 @@ namespace Singularity.serialization
     /// A Xml-Serializer that uses the NetDataContractSerializer for serialization. Besides serializing and deserializing it also has a
     /// testmethod, a method to load a Savegame (in xml) and a method to save the current Gamestate.
     /// </summary>
-    class XSerializer
+    internal static class XSerializer
     {
         /// <summary>
         /// Serializes a object that has the  DataContract() attribute and all of its Fields that have been marked by the DataMember() attribute.
