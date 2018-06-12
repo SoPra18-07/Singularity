@@ -33,21 +33,23 @@ namespace Singularity.DistributionManager
         [DataMember()]
         private Queue<Pair<GeneralUnit, IPlatformAction>> mRequestedUnits;
 
-        //An Felix: Vielleicht BuildBluePrint nicht in "ProduceResourceAction.cs" reinhauen (da hätte ich nicht danach gesucht)
+        // An Felix: Vielleicht BuildBluePrint nicht in "ProduceResourceAction.cs" reinhauen (da hätte ich nicht danach gesucht) - muss ich eh nochmal refactorn mit PlatformBlank und jz dem hier
         [DataMember()]
         private List<BuildBluePrint> mBlueprintBuilds;
 
-        //An der Stelle mit Felix reden, PlatformActionProduce als abstrakte Klasse würde helfen?
-        //[DataMember()]
-        //private List<PlatformActionProduce> mProducingPlatforms;
+        // An der Stelle mit Felix reden, PlatformActionProduce als abstrakte Klasse würde helfen?
+        // Mhm weiß nicht ob das wirklich notwendig ist ... ich mach mir mal gedanken
+        // [DataMember()]
+        // private List<PlatformActionProduce> mProducingPlatforms;
 
-        //[DataMember()]
-        //private List<PlatformActionDefend> mDefensivePlatforms;
+        // [DataMember()]
+        // private List<PlatformActionDefend> mDefensivePlatforms;
 
-        //Alternativ könnte man auch bei den beiden Listen direkt die Platformen einsetzen?
+        // Alternativ könnte man auch bei den beiden Listen direkt die Platformen einsetzen?
+        // Momentan ja, aber wenn du ne plattform haben willst die (rein theoretisch) verteidigen und Produzieren gleichzeitig kann? Oder gleichzeitig KineticDefense und LaserDefense ist?
 
         public DistributionManager()
-        { 
+        {
             mIdle = new List<GeneralUnit>();
             mConstruction = new List<GeneralUnit>();
             mProduction = new List<GeneralUnit>();
@@ -67,31 +69,34 @@ namespace Singularity.DistributionManager
         public void ManualUnassign(GeneralUnit unit)
         {
             throw new NotImplementedException();
-            //I guess we need an extra method for that.
+            // I guess we need an extra method for that.
+            // regarding that: actually we might want to have only the JobType and an integer .. I think I've refactored that somewhere else as well before (Platforms?)
         }
 
-        public void RequestResource(PlatformBlank platform, Resource resource, bool isbuilding = false)
+        // Okay yes you're right. We want a PlatformAction here instead of a platform.
+        public void RequestResource(PlatformBlank platform, Resource resource, bool isbuilding = false) // explain what 'isbuilding' is for, I got confused for a sec
         {
             throw new NotImplementedException();
-            //Will repair request ressources or units? And what unit will be used?
+            // Will repair request ressources or units? And what unit will be used?
+            // We do not have repair yet or anytime soon.
             Pair<EResourceType, IPlatformAction> request;
             if (isbuilding)
             {
                 request = mBuildingResources.Dequeue();
-                //GeneralUnit has to be changed (Because wrong implemented).
-                //I will do that later,
-                //to not mess with svn
-                //var assignee = mConstruction.Find(x => x.GetTask() == Task.Idle);
-                //assignee.AssignedTask(Task.BuildPlatform, Pair.GetFirst(), Pair.GetSecond().Platform);
+                // GeneralUnit has to be changed (Because wrong implemented).
+                // I will do that later,
+                // to not mess with svn
+                // var assignee = mConstruction.Find(x => x.GetTask() == Task.Idle); // no, this is wrong. you need to keep track of units with 'JobType: Idle', as well as those with 'JobType: Construction' but with nothing to do !! (they are supposed to ask for tasks frequently - but easy to get confused here :D
+                // assignee.AssignedTask(Task.BuildPlatform, Pair.GetFirst(), Pair.GetSecond().Platform);
             }
             else
             {
                 request = mRefiningOrStoringResources.Dequeue();
-                //GeneralUnit has to be changed (Because wrong implemented).
-                //I will do that later,
-                //to not mess with svn
-                //var assignee = mConstruction.Find(x => x.GetTask() == Task.Idle);
-                //assignee.AssignedTask(Task.BuildPlatform, Pair.GetFirst(), Pair.GetSecond().Platform);
+                // GeneralUnit has to be changed (Because wrong implemented).
+                // I will do that later,
+                // to not mess with svn
+                // var assignee = mConstruction.Find(x => x.GetTask() == Task.Idle); // <- careful with Idle here. They're not assigned to do anything! (we can make that optional later on though)
+                // assignee.AssignedTask(Task.BuildPlatform, Pair.GetFirst(), Pair.GetSecond().Platform);
             }
         }
 
@@ -99,28 +104,37 @@ namespace Singularity.DistributionManager
         {
             throw new NotImplementedException();
             var request = mRequestedUnits.Dequeue();
-            //Here again a reminder that a platformactionproduce interface would be nice
-            //if (request.GetSecond().GetType() == PlatformActionProduce)
-            //{
-            //    var assignee = mProduction.Find(x => x.GetTask() == Task.Idle());
-            //A new type of task, produce, has to be implemented
-            //    assignee.AssignedTask(Task.Produce, request.GetSecond().Platform);
-            //}elsif (request.GetSecond().GetType() == PlatformActionDefend)
-            //{
-            //    var assignee = mDefense.Find(x => x.GetTask() == Task.Idle);
-            //    assignee.AssignedTask(Task.Defend, request.GetSecond().Platform);
-            //}
+            // Here again a reminder that a platformactionproduce interface would be nice
+            // Produce, and which others? Defense and Construction also ask for units, with different JobTypes. Still, we might want the PlatformAction instead of the platform for pausing later on ...
+            //
+            // So, the way this is supposed to work is the following; each platformAction once(!) while being active requests units of the required JobTypes here (Logistics cannot be requested for, it's resulting from ResourceRequests). Now if the PlatformAction pauses it's refernce is getting deleted (it's asked-for units and resources) - and if it's unpaused again it's again requesting once(!) the required units. This can actually be a List with the PlatformActions-id as index or sth ...
+            //
+            // if (request.GetSecond().GetType() == PlatformActionProduce)
+            // {
+            //     var assignee = mProduction.Find(x => x.GetTask() == Task.Idle());
+            // A new type of task, produce, has to be implemented
+            //     assignee.AssignedTask(Task.Produce, request.GetSecond().Platform);
+            // }elsif (request.GetSecond().GetType() == PlatformActionDefend)
+            // {
+            //     var assignee = mDefense.Find(x => x.GetTask() == Task.Idle);
+            //     assignee.AssignedTask(Task.Defend, request.GetSecond().Platform);
+            // }
         }
 
-        //Do we even need that? I think the units should do that
-        public List<Resource> PlatformRequests(PlatformBlank platform)
+        // Do we even need that? I think the units should do that - huh? no this was supposed to be from platformId to Resources on that platform, primarily for internal use when searching resources ... if you have actual platform-references all the better (you could probably get them from the producing (and factory) PlatformActions ...)
+        public List<EResourceType> PlatformRequests(PlatformBlank platform)
         {
             return platform.GetPlatformResources();
         }
 
-        //Why does this have to return a Task? It should only take it into the queue
-        //and thats it, shouldnt it? Furthermore the platformaction shouldnt be optional. This is regarding the architecture.
-        //The unit should be optional tho, you give the unit only if there are assigned units for the platform.
+        // Why does this have to return a Task? It should only take it into the queue
+        // and thats it, shouldnt it? Furthermore the platformaction shouldnt be optional. This is regarding the architecture.
+        // The unit should be optional tho, you give the unit only if there are assigned units for the platform.
+        //
+        // Ah, I can see where your confusion is coming from. So, the version you're thinking about is absolutely valid but needs more (and better) coding. This would be the only 'bigger' function either way. Oh, and it'd absolutely need a different structure ...
+        //
+        // Okay, so how was it supposed to work (in my version, if you want to implement it is for you to decide):
+        // - The units (with nothing to do (idle, but not 'JobType: Idle') ask for new Tasks here. So what is needed is ... actually yes, unit is not required. So the JobType is required, to return a Task of that JobType. Also, if this unit is assigned to some specific PlatformAction (like building a Blueprint, Logistics for a certain Factory, ...), it is supposed to only get Tasks involving this PlatformAction. However, if a unit is not manually assigned somewhere, what action do you want to get here? 
         public void RequestNewTask(Optional<GeneralUnit> unit, JobType job, IPlatformAction action)
         {
             throw new NotImplementedException();
@@ -135,14 +149,15 @@ namespace Singularity.DistributionManager
                         }
                     }
                     break;
-                //case JobType.others etc...
+                // case JobType.others etc...
             }
         }
 
         public void PausePlatformAction(IPlatformAction action)
         {
             throw new NotImplementedException();
-            //Actions need a sleep method
+            // Actions need a sleep method
+            // No, they're just being removed from occurences in the DistributionManager. As soon as they unpause, they'll send requests for Resources and units again.
         }
     }
 }
