@@ -7,7 +7,7 @@ using Singularity.Resources;
 
 namespace Singularity.Units
 {
-    public class GeneralUnit : IUnit, IUpdate, IDraw
+    public class GeneralUnit : IUnit, IUpdate, IDraw, ISpatial
     {
         public int Id { get; }
         private int mPositionId;

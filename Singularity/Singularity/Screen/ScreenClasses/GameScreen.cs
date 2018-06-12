@@ -84,7 +84,7 @@ namespace Singularity.Screen.ScreenClasses
         public void Draw(SpriteBatch spriteBatch)
         {
 
-            // if you're interested in whats going on here, refer to the documentation of the FogOfWar class. 
+            // if you're interested in whats going on here, refer to the documentation of the FogOfWar class.
 
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mCamera.GetTransform());
 
@@ -106,7 +106,7 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.End();
 
             mFow.FillInvertedMask(spriteBatch);
-           
+
 
         }
 
@@ -125,7 +125,6 @@ namespace Singularity.Screen.ScreenClasses
 
             foreach (var spatial in mSpatialObjects)
             {
-
                 spatial.RelativePosition = Vector2.Transform(spatial.AbsolutePosition, mCamera.GetTransform());
                 spatial.RelativeSize = spatial.AbsoluteSize * mCamera.GetZoom();
 
@@ -154,8 +153,8 @@ namespace Singularity.Screen.ScreenClasses
             mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
 
-
             mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, mInputManager);
+
             mCamera = mMap.GetCamera();
 
             mFow = new FogOfWar(mCamera, mGraphicsDevice);
@@ -189,6 +188,7 @@ namespace Singularity.Screen.ScreenClasses
             AddObject(road2);
             AddObject(road3);
             AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
+            AddObject(mFow);
 
             // artificially adding wait to test loading screen
             System.Threading.Thread.Sleep(500);
@@ -227,6 +227,7 @@ namespace Singularity.Screen.ScreenClasses
             {
                 mUpdateables.AddLast((IUpdate)toAdd);
             }
+
             return true;
 
         }
@@ -240,14 +241,12 @@ namespace Singularity.Screen.ScreenClasses
         public bool AddObjects<T>(IEnumerable<T> toAdd)
         {
             var isSuccessful = true;
-   
             foreach (var t in toAdd)
             {
                 isSuccessful = isSuccessful && AddObject<T>(t);
             }
-   
+
             return isSuccessful;
-   
         }
 
         /// <summary>
