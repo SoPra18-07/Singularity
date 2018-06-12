@@ -45,8 +45,8 @@ namespace Singularity.Map
 
             // make sure the resolution of the fog of war is as dense as the collision map
             mToDraw = new bool[
-                (MapConstants.MapWidth / MapConstants.GridWidth),
-                (MapConstants.MapHeight / MapConstants.GridHeight)
+                (MapConstants.MapWidth / MapConstants.FogOfWarGridWidth),
+                (MapConstants.MapHeight / MapConstants.FogOfWarGridHeight)
             ];
         }
 
@@ -72,8 +72,8 @@ namespace Singularity.Map
                      */
                     spriteBatch.Draw(
                         mMapTexture,
-                        new Rectangle((int)(i * (MapConstants.GridWidth)), (int) j * MapConstants.GridHeight, MapConstants.GridWidth, MapConstants.GridHeight),
-                        new Rectangle((int) (i * (MapConstants.GridWidth)), (int) j * MapConstants.GridHeight, MapConstants.GridWidth, MapConstants.GridHeight),
+                        new Rectangle((int)(i * (MapConstants.FogOfWarGridWidth)), (int) j * MapConstants.FogOfWarGridHeight, MapConstants.FogOfWarGridWidth, MapConstants.FogOfWarGridHeight),
+                        new Rectangle((int) (i * (MapConstants.FogOfWarGridWidth)), (int) j * MapConstants.FogOfWarGridHeight, MapConstants.FogOfWarGridWidth, MapConstants.FogOfWarGridHeight),
                         Color.White,
                         0f, 
                         Vector2.Zero,
@@ -85,10 +85,10 @@ namespace Singularity.Map
 
                     spriteBatch.FillRectangle(
                         new Rectangle(
-                            i * MapConstants.GridWidth, 
-                            j * MapConstants.GridHeight,
-                            MapConstants.GridWidth,
-                            MapConstants.GridHeight),
+                            i * MapConstants.FogOfWarGridWidth, 
+                            j * MapConstants.FogOfWarGridHeight,
+                            MapConstants.FogOfWarGridWidth,
+                            MapConstants.FogOfWarGridHeight),
                         new Color(Color.Black, .5f),
                         0,
                         LayerConstants.FogOfWarLayer);
@@ -121,8 +121,8 @@ namespace Singularity.Map
             // this is definitely not the best solution, the reason for this is that we dont want
             // revealed portions to be revealed forever. So we need to set everything to false again before we reupdate the array.
             mToDraw = new bool[
-                (MapConstants.MapWidth / MapConstants.GridWidth),
-                (MapConstants.MapHeight / MapConstants.GridHeight)
+                (MapConstants.MapWidth / MapConstants.FogOfWarGridWidth),
+                (MapConstants.MapHeight / MapConstants.FogOfWarGridHeight)
             ];
 
             foreach (var revealingObject in mRevealingObjects)
@@ -131,11 +131,11 @@ namespace Singularity.Map
                 // where (x, y) is the center point of each tile.
                 for (var x = revealingObject.Center.X - revealingObject.RevelationRadius;
                     x <= revealingObject.Center.X + revealingObject.RevelationRadius;
-                    x += MapConstants.GridWidth)
+                    x += MapConstants.FogOfWarGridWidth)
                 {
                     for (var y = revealingObject.Center.Y - revealingObject.RevelationRadius;
                         y <= revealingObject.Center.Y + revealingObject.RevelationRadius;
-                        y += MapConstants.GridHeight)
+                        y += MapConstants.FogOfWarGridHeight)
                     {
                         // Now we check whether the distance of the current point to the center of the circle is smaller than the radius of the circle
                         // if yes -> point is in the circle, if no -> point is out of the circle
@@ -146,7 +146,7 @@ namespace Singularity.Map
                             continue;
                         }
 
-                        mToDraw[(int) (x / MapConstants.GridWidth), (int) (y / MapConstants.GridHeight)] = true;
+                        mToDraw[(int) (x / MapConstants.FogOfWarGridWidth), (int) (y / MapConstants.FogOfWarGridHeight)] = true;
 
                     }
                 }
