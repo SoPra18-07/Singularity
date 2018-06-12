@@ -7,11 +7,12 @@ using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
+using Singularity.Utils;
 
 namespace Singularity.Platform
 {
     [DataContract()]
-    public class PlatformBlank : IDraw, IUpdate, ISpatial, IRevealing
+    public class PlatformBlank : IDraw, IUpdate, ICollider, IRevealing
 
     {
         [DataMember()]
@@ -43,6 +44,12 @@ namespace Singularity.Platform
         public Vector2 Center { get; private set; }
 
         public int RevelationRadius { get; private set; }
+
+        public Rectangle AbsBounds { get; private set; }
+
+        public bool Moved { get; private set; }
+
+        public int Id { get; private set; }
 
         internal Vector2 GetLocation()
         {
@@ -316,11 +323,12 @@ namespace Singularity.Platform
         /// <inheritdoc cref="Singularity.Property.IUpdate"/>
         public void Update(GameTime t)
         {
-            //TODO: implement update code
+
         }
 
         public PlatformBlank(Vector2 position, Texture2D spritesheet)
         {
+            Id = IdGenerator.NextID();
 
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
@@ -349,6 +357,8 @@ namespace Singularity.Platform
 
             RevelationRadius = (int)AbsoluteSize.Y;
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
+            Moved = false;
 
         }
 

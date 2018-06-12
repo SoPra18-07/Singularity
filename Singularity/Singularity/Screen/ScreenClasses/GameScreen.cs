@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
+using Singularity.Libraries;
 using Singularity.Map;
 using Singularity.Platform;
 using Singularity.Property;
@@ -100,7 +101,16 @@ namespace Singularity.Screen.ScreenClasses
 
 
                 }
+
                 updateable.Update(gametime);
+
+
+                var collider = updateable as ICollider;
+
+                if (collider != null)
+                {
+                    mMap.UpdateCollider(collider);
+                }
 
             }
         }
@@ -122,8 +132,10 @@ namespace Singularity.Screen.ScreenClasses
             mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
 
+            var resources = ResourceHelper.GetRandomlyDistributedResources(5);
+
             mFow = new FogOfWar(mapBackground);
-            mMap = new Map.Map(mapBackground, mViewport, mFow, mInputManager);
+            mMap = new Map.Map(mapBackground, mViewport, mFow, mInputManager, false, resources);
             mCamera = mMap.GetCamera();
             AddObject(mMap);
 
@@ -151,7 +163,7 @@ namespace Singularity.Screen.ScreenClasses
             AddObject(road2);
             AddObject(road3);
             AddObject(mFow);
-            AddObject(ResourceHelper.GetRandomlyDistributedResources(5));
+            AddObjects(resources);
 
             // artificially adding wait to test loading screen
             System.Threading.Thread.Sleep(500);
@@ -183,7 +195,27 @@ namespace Singularity.Screen.ScreenClasses
             { 
                 mUpdateables.AddLast((IUpdate) toAdd);
             }
+
             return true;
+
+        }
+
+        /// <summary>
+        /// Adds the given objects to the game screens list of objects to handle.
+        /// </summary>
+        /// <typeparam name="T">The type of the objects to be added. Needs to inherit from IDraw or IUpdate</typeparam>
+        /// <param name="toAdd">The objects to be added to the game screen</param>
+        /// <returns>True if all given objects could be added to the screen, false otherwise</returns>
+        public bool AddObjects<T>(IEnumerable<T> toAdd)
+        {
+            var isSuccessful = true;
+
+            foreach (var t in toAdd)
+            {
+                isSuccessful = isSuccessful && AddObject<T>(t);
+            }
+
+            return isSuccessful;
 
         }
 
