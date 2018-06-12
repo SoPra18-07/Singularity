@@ -143,12 +143,13 @@ namespace Singularity.DistributionManager
         // - The units (with nothing to do (idle, but not 'JobType: Idle') ask for new Tasks here. So what is needed is ... actually yes, unit is not required. So the JobType is required, to return a Task of that JobType. Also, if this unit is assigned to some specific PlatformAction (like building a Blueprint, Logistics for a certain Factory, ...), it is supposed to only get Tasks involving this PlatformAction. However, if a unit is not manually assigned somewhere, what action do you want to get here? 
         public void RequestNewTask(Optional<GeneralUnit> unit, JobType job, Optional<IPlatformAction> assignedAction)
         {
-            switch(job)
+            throw new NotImplementedException();
+            //switch(job)
 
-            {
-                case job == JobType.Idle:
-                    
-            }
+            //{
+            //case job == JobType.Idle:
+
+            //}
         }
 
         public void PausePlatformAction(IPlatformAction action)
