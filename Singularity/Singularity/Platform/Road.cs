@@ -38,14 +38,14 @@ namespace Singularity.Platform
         /// <summary>
         /// Road is simply an edge between two platforms.
         /// </summary>
-        /// <param name="source">The source ISpatial object from which this road gets drawn</param>
-        /// <param name="destination">The destinaion ISpatial object to which this road gets drawn</param>
+        /// <param name="source">The source IRevealing object from which this road gets drawn</param>
+        /// <param name="destination">The destinaion IRevealing object to which this road gets drawn</param>
         /// <param name="blueprint">Whether this road is a blueprint or not</param>
-        public Road(ISpatial source, ISpatial destination, bool blueprint)
+        public Road(IRevealing source, IRevealing destination, bool blueprint)
         {
             // the hardcoded values need some changes for different platforms, ill wait until those are implemented to find a good solution.
-            Source = new Vector2(source.AbsolutePosition.X + source.AbsoluteSize.X / 2, source.AbsolutePosition.Y + 109);
-            Destination = new Vector2(destination.AbsolutePosition.X + destination.AbsoluteSize.X / 2, destination.AbsolutePosition.Y + 109);
+            Source = source.Center;
+            Destination = destination.Center;
             Blueprint = blueprint;
 
             AbsolutePosition = Source;
