@@ -5,6 +5,7 @@
         Idle,
         BuildPlatform,
         MoveResource,
-        RepairPlatform
+        RepairPlatform,
+        Move
     }
 }

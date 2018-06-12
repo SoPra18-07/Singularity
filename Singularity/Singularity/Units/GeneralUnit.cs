@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
+using Singularity.Utils;
 
 namespace Singularity.Units
 {
@@ -16,7 +18,16 @@ namespace Singularity.Units
         private int? mTargetId;
         private Stack<int> mPathQueue; // the queue of platform and edges the unit has to traverse to get to its target
         private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
+        
 
+        //These are the assigned task and a flag, wether the unit is done with it.
+        private Pair<Task, int> mAssignedTask;
+
+        private bool mDone;
+
+        private DistributionManager.DistributionManager mDistrManager;
+
+        private IPlatformAction AssignedAction;
         // TODO: also use the size for the units representation since we someday need to draw rectangles over units (bounding box)
 
         public Vector2 AbsolutePosition { get; set; }
@@ -94,6 +105,10 @@ namespace Singularity.Units
                         Job = JobType.Idle;
                     }
                     break;
+
+                //The idea is to use this task to move while your jobtype is idle (since we want these units to move around)
+                //case Task.Move:
+                    //Move(targetId);
             }
         }
         /// <summary>
@@ -107,6 +122,15 @@ namespace Singularity.Units
             // then move x distance in that direction or until above the coordinate of the position
             // TODO
             return Vector2.Zero;
+        }
+
+        /// <summary>
+        /// Used to change the job. Is usually only called if the player wants more/less Units working in a certain job.
+        /// </summary>
+        /// <param name="job">The job the unit should do.</param>
+        public void ChangeJob(JobType job)
+        {
+            Job = job;
         }
 
         /// <summary>
@@ -172,25 +196,25 @@ namespace Singularity.Units
         }
         public void Update(GameTime gametime)
         {
-            // use switch to change between jobs
-            switch (Job)
+
+            // I think the intention here was to do the tasks.
+            switch (mAssignedTask.GetFirst())
             {
-                case JobType.Idle:
-                    // does nothing
+                case Task.Idle:
+                    mAssignedTask = mDistrManager.RequestNewTask(Job, Optional<IPlatformAction>.Of(AssignedAction));
                     break;
-                case JobType.Construction:
-                    // runs build()
-                    Build(mTargetId);
+                case Task.Move:
+                    //Move around
                     break;
-                case JobType.Logistics:
-                    // TODO unclear how this should be implmented
+                case Task.BuildPlatform:
+                    //Build();
                     break;
-                case JobType.Defense:
-                    // basically the same as the construction one
-                    Build(mTargetId);
+                case Task.MoveResource:
+                    //MoveResource();
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                case Task.RepairPlatform:
+                    //Repair();
+                    break;
             }
             throw new NotImplementedException();
         }
