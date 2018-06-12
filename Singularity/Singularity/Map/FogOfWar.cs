@@ -14,7 +14,7 @@ namespace Singularity.Map
     /// The FogOfWar grays out areas which are not "visible" from the current state of the game. Platforms and Units can
     /// discover new areas which is why they possess a light circle around them.
     /// </remarks>
-    internal sealed class FogOfWar : IDraw, IUpdate
+    public sealed class FogOfWar : IDraw, IUpdate
     {
         
         /// <summary>

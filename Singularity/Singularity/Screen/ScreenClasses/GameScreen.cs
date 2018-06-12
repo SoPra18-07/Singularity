@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO.MemoryMappedFiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -46,6 +47,8 @@ namespace Singularity.Screen.ScreenClasses
         // roads
         private Road mRoad1;
 
+        private PlatformBuildingRoadConnector mPlatformRoadConnector;
+
         /// <summary>
         /// This list contains all the drawable objects currently in the game.
         /// </summary>
@@ -56,15 +59,29 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         private readonly LinkedList<IUpdate> mUpdateables;
 
+        private readonly LinkedList<IDraw> mDrawablesToAdd;
+
+        private readonly LinkedList<IUpdate> mUpdateablesToAdd;
+
+        private readonly LinkedList<IDraw> mDrawablesToRemove;
+
+        private readonly LinkedList<IUpdate> mUpdateablesToRemove;
+
         /// <summary>
         /// The camera object which holds transformation values.
         /// </summary>
         private Camera mCamera;
 
-        public GameScreen(Viewport viewport, InputManager inputManager)
+        public GameScreen(Viewport viewport, InputManager inputManager, Camera camera)
         {
             mDrawables = new LinkedList<IDraw>();
             mUpdateables = new LinkedList<IUpdate>();
+            mDrawablesToAdd = new LinkedList<IDraw>();
+            mUpdateablesToAdd = new LinkedList<IUpdate>();
+            mDrawablesToRemove = new LinkedList<IDraw>();
+            mUpdateablesToRemove = new LinkedList<IUpdate>();
+
+            mCamera = camera;
 
             mInputManager = inputManager;
             mViewport = viewport;
@@ -85,7 +102,7 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool DrawLower()
         {
-            return false;
+            return true;
         }
 
         public void Update(GameTime gametime)
@@ -102,8 +119,34 @@ namespace Singularity.Screen.ScreenClasses
 
                 }
 
-                updateable.Update(gametime);
+                var platform = updateable as PlatformBlank;
 
+                if (platform != null)
+                {
+                    if (platform.IsPlaced && !platform.IsAdded)
+                    {
+                        mMap.AddPlatform(platform);
+                        platform.IsAdded = true;
+                    }
+
+                    if (platform.IsSemiPlaced && !platform.IsPlaced)
+                    {
+                        mPlatformRoadConnector.SetPlatformToConnect(platform);
+                    }
+                }
+
+                var road = updateable as Road;
+
+                if (road != null)
+                {
+                    if (road.IsPlaced && !road.IsAdded)
+                    {
+                        mMap.AddRoad(road);
+                        road.IsAdded = true;
+                    }
+                }
+
+                updateable.Update(gametime);
 
                 var collider = updateable as ICollider;
 
@@ -113,6 +156,31 @@ namespace Singularity.Screen.ScreenClasses
                 }
 
             }
+
+            foreach (var updateToAdd in mUpdateablesToAdd)
+            {
+                mUpdateables.AddLast(updateToAdd);
+            }
+
+            foreach (var updateToRemove in mUpdateablesToRemove)
+            {
+                mUpdateables.Remove(updateToRemove);
+            }
+
+            foreach (var drawToAdd in mDrawablesToAdd)
+            {
+                mDrawables.AddLast(drawToAdd);
+            }
+
+            foreach (var drawToRemove in mDrawablesToRemove)
+            {
+                mDrawables.Remove(drawToRemove);
+            }
+
+            mUpdateablesToAdd.Clear();
+            mUpdateablesToRemove.Clear();
+            mDrawablesToAdd.Clear();
+            mDrawablesToRemove.Clear();
         }
 
         public void LoadContent(ContentManager content)
@@ -132,12 +200,17 @@ namespace Singularity.Screen.ScreenClasses
             mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
 
+
             var resources = ResourceHelper.GetRandomlyDistributedResources(5);
 
             mFow = new FogOfWar(mapBackground);
-            mMap = new Map.Map(mapBackground, mViewport, mFow, mInputManager, false, resources);
+
+            var structMap = new StructureMap(mFow);
+
+            mMap = new Map.Map(mapBackground, mFow, mCamera, structMap, false, resources);
             mCamera = mMap.GetCamera();
-            AddObject(mMap);
+
+            mPlatformRoadConnector = new PlatformBuildingRoadConnector(structMap, mInputManager, this);
 
             mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
             mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
@@ -145,15 +218,12 @@ namespace Singularity.Screen.ScreenClasses
             mFow.AddRevealingObject(mMUnit1);
             mFow.AddRevealingObject(mMUnit2);
 
-            mMap.AddPlatform(mPlatform);
-            mMap.AddPlatform(mPlatform2);
-            mMap.AddPlatform(mPlatform3);
-
             // load roads
             mRoad1 = new Road(mPlatform, mPlatform2, false);
             var road2 = new Road(mPlatform, mPlatform3, false);
             var road3 = new Road(mPlatform2, mPlatform3, false);
 
+            AddObject(mMap);
             AddObject(mMUnit1);
             AddObject(mMUnit2);
             AddObject(mPlatform);
@@ -163,6 +233,7 @@ namespace Singularity.Screen.ScreenClasses
             AddObject(road2);
             AddObject(road3);
             AddObject(mFow);
+            AddObject(mPlatformRoadConnector);
             AddObjects(resources);
 
             // artificially adding wait to test loading screen
@@ -171,7 +242,7 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool UpdateLower()
         {
-            return false;
+            return true;
         }
 
         /// <summary>
@@ -189,11 +260,11 @@ namespace Singularity.Screen.ScreenClasses
 
             if (typeof(IDraw).IsAssignableFrom(typeof(T)))
             {
-                mDrawables.AddLast((IDraw)toAdd);
+                mDrawablesToAdd.AddLast((IDraw)toAdd);
             }
             if (typeof(IUpdate).IsAssignableFrom(typeof(T)))
             {
-                mUpdateables.AddLast((IUpdate)toAdd);
+                mUpdateablesToAdd.AddLast((IUpdate)toAdd);
             }
 
             return true;
@@ -234,11 +305,11 @@ namespace Singularity.Screen.ScreenClasses
 
             if (typeof(IDraw).IsAssignableFrom(typeof(T)))
             {
-                mDrawables.Remove((IDraw)toRemove);
+                mDrawablesToRemove.Remove((IDraw)toRemove);
             }
             if (typeof(IUpdate).IsAssignableFrom(typeof(T)))
             {
-                mUpdateables.Remove((IUpdate)toRemove);
+                mUpdateablesToRemove.Remove((IUpdate)toRemove);
             }
             return true;
         }
