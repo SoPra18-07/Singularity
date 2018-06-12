@@ -8,7 +8,6 @@ using Singularity.Platform;
 using Singularity.Resources;
 using Singularity.Units;
 using Singularity.Utils;
-using Action = System.Action;
 
 namespace Singularity.DistributionManager
 {
@@ -130,7 +129,8 @@ namespace Singularity.DistributionManager
         // Do we even need that? I think the units should do that - huh? no this was supposed to be from platformId to Resources on that platform, primarily for internal use when searching resources ... if you have actual platform-references all the better (you could probably get them from the producing (and factory) PlatformActions ...)
         public List<EResourceType> PlatformRequests(PlatformBlank platform)
         {
-            return platform.GetPlatformResources();
+            throw new NotImplementedException();
+            //return platform.GetPlatformResources();
         }
 
         // Why does this have to return a Task? It should only take it into the queue
@@ -141,21 +141,13 @@ namespace Singularity.DistributionManager
         //
         // Okay, so how was it supposed to work (in my version, if you want to implement it is for you to decide):
         // - The units (with nothing to do (idle, but not 'JobType: Idle') ask for new Tasks here. So what is needed is ... actually yes, unit is not required. So the JobType is required, to return a Task of that JobType. Also, if this unit is assigned to some specific PlatformAction (like building a Blueprint, Logistics for a certain Factory, ...), it is supposed to only get Tasks involving this PlatformAction. However, if a unit is not manually assigned somewhere, what action do you want to get here? 
-        public void RequestNewTask(Optional<GeneralUnit> unit, JobType job, IPlatformAction action)
+        public void RequestNewTask(Optional<GeneralUnit> unit, JobType job, Optional<IPlatformAction> assignedAction)
         {
-            throw new NotImplementedException();
-            switch (job)
+            switch(job)
+
             {
-                case JobType.Construction:
-                    foreach (var entry in action.GetRequiredResources())
-                    {
-                        for (var i = entry.Value; i >= 0; i--)
-                        {
-                            mBuildingResources.Enqueue(new Pair<EResourceType, IPlatformAction>(entry.Key, action));
-                        }
-                    }
-                    break;
-                // case JobType.others etc...
+                case job == JobType.Idle:
+                    
             }
         }
 
