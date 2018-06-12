@@ -7,13 +7,41 @@ using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
+using Singularity.Utils;
 
 namespace Singularity.Platform
 {
     [DataContract()]
-    public class PlatformBlank : IDraw, IUpdate, ISpatial, IRevealing
+    public class PlatformBlank : IDraw, IUpdate, ICollider, IRevealing, IStructure
 
     {
+
+        private bool mIsSemiPlaced;
+
+        public bool IsPlaced { get; set; }
+
+        public bool IsAdded { get; set; }
+
+        public bool IsSemiPlaced 
+        {
+            get { return mIsSemiPlaced; }
+            set
+            {
+                if (!value || !Map.Map.IsOnTop(new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y)))
+                {
+                    return;
+                }
+
+                mIsSemiPlaced = true;
+                RevelationRadius = (int)AbsoluteSize.Y;
+                Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+                AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
+            }
+          }
+    
+
+        private float mLayer;
+
         [DataMember()]
         protected EPlatformType mType = EPlatformType.Blank;
         [DataMember()]
@@ -43,6 +71,12 @@ namespace Singularity.Platform
         public Vector2 Center { get; private set; }
 
         public int RevelationRadius { get; private set; }
+
+        public Rectangle AbsBounds { get; private set; }
+
+        public bool Moved { get; private set; }
+
+        public int Id { get; private set; }
 
         internal Vector2 GetLocation()
         {
@@ -279,7 +313,7 @@ namespace Singularity.Platform
                         0f,
                         Vector2.Zero,
                         SpriteEffects.None,
-                        LayerConstants.PlatformLayer);
+                        mLayer);
                     break;
                 case "d":
                     spritebatch.Draw(mSpritesheet,
@@ -293,7 +327,7 @@ namespace Singularity.Platform
                         0f,
                         Vector2.Zero,
                         SpriteEffects.None,
-                        LayerConstants.PlatformLayer);
+                        mLayer);
                     break;
                 case "c":
                     spritebatch.Draw(mSpritesheet,
@@ -307,7 +341,7 @@ namespace Singularity.Platform
                         0f,
                         Vector2.Zero,
                         SpriteEffects.None,
-                        LayerConstants.PlatformLayer);
+                        mLayer);
                     break;
                 
             }
@@ -316,11 +350,16 @@ namespace Singularity.Platform
         /// <inheritdoc cref="Singularity.Property.IUpdate"/>
         public void Update(GameTime t)
         {
-            //TODO: implement update code
+            mLayer = (IsPlaced ? LayerConstants.PlatformLayer : LayerConstants.PlatformBuildingLayer);
         }
 
-        public PlatformBlank(Vector2 position, Texture2D spritesheet)
+        public PlatformBlank(Vector2 position, Texture2D spritesheet, bool isPlaced = true)
         {
+            Id = IdGenerator.NextID();
+
+            IsAdded = false;
+            IsPlaced = isPlaced;
+            IsSemiPlaced = isPlaced;
 
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
@@ -349,6 +388,12 @@ namespace Singularity.Platform
 
             RevelationRadius = (int)AbsoluteSize.Y;
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+            Moved = false;
+
+            if (isPlaced)
+            {
+                AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
+            }
 
         }
 

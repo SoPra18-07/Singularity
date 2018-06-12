@@ -7,10 +7,12 @@ using Microsoft.Xna.Framework;
 
 namespace Singularity.Property
 {
-    public interface IRevealing
+    internal interface ICollider : ISpatial
     {
-        int RevelationRadius { get; }
+        Rectangle AbsBounds { get; }
 
-        Vector2 Center { get; }
+        bool Moved { get; }
+
+        int Id { get; }
     }
 }

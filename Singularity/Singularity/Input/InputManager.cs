@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Singularity.Map;
 using Singularity.Property;
 
 namespace Singularity.Input
@@ -21,14 +22,21 @@ namespace Singularity.Input
         private readonly Dictionary<IMouseClickListener, EClickType> mLeftClickType;
         private readonly Dictionary<IMouseClickListener, EClickType> mRightClickType;
 
+        private Vector2 mCurrentAbsMousePos;
+        private Vector2 mPreviousAbsMousePos;
+
         private MouseState mCurrentMouseState;
         private MouseState mPreviousMouseState;
 
         private KeyboardState mCurrentKeyboardState;
         private KeyboardState mPreviousKeyboardState;
 
-        public InputManager()
+        private readonly Camera mCamera;
+
+        public InputManager(Camera camera)
         {
+            mCamera = camera;
+
             mKeyListener = new List<IKeyListener>();
             mMousePositionListener = new List<IMousePositionListener>();
             mMouseClickListener = new List<IMouseClickListener>();
@@ -119,6 +127,8 @@ namespace Singularity.Input
             // update 'current' values
             mCurrentMouseState = Mouse.GetState();
             mCurrentKeyboardState = Keyboard.GetState();
+            mCurrentAbsMousePos = Vector2.Transform(new Vector2(mCurrentMouseState.X, mCurrentMouseState.Y),
+                Matrix.Invert(mCamera.GetTransform()));
 
 
             // # BEGIN - mouse wheel events
@@ -363,11 +373,13 @@ namespace Singularity.Input
 
             // # BEGIN - mouse position changed events
 
-            if (mCurrentMouseState.X != mPreviousMouseState.X || mCurrentMouseState.Y != mPreviousMouseState.Y)
+            if (mCurrentMouseState.X != mPreviousMouseState.X || mCurrentMouseState.Y != mPreviousMouseState.Y || mCurrentAbsMousePos.X != mPreviousAbsMousePos.X || mCurrentAbsMousePos.Y != mPreviousAbsMousePos.Y)
             {
+
                 foreach (var mousePositionListener in mMousePositionListener)
                 {
-                   mousePositionListener.MousePositionChanged(mCurrentMouseState.X, mCurrentMouseState.Y);
+                    
+                   mousePositionListener.MousePositionChanged(mCurrentMouseState.X, mCurrentMouseState.Y, mCurrentAbsMousePos.X, mCurrentAbsMousePos.Y);
                 }
             }
 
@@ -432,6 +444,7 @@ namespace Singularity.Input
             // update 'previous'-values
             mPreviousMouseState = mCurrentMouseState;
             mPreviousKeyboardState = mCurrentKeyboardState;
+            mPreviousAbsMousePos = mCurrentAbsMousePos;
 
         }
 

@@ -20,7 +20,7 @@ namespace Singularity.Platform
         [DataMember()]
         private const int PlatformHeight = 127;
 
-        public Well(Vector2 position, Texture2D spritesheet, ResourceMap resource): base(position, spritesheet)
+        public Well(Vector2 position, Texture2D spritesheet, ResourceMap resource, bool isPlaced = true): base(position, spritesheet, isPlaced)
         {
             mIPlatformActions = new IPlatformAction[2];
             //mActions[0] = BuildWellBlueprint(this);

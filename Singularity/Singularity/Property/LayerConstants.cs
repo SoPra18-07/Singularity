@@ -9,10 +9,13 @@
     /// </summary>
     internal static class LayerConstants
     {
+
+        #region GameScreenLayers
+
         /// <summary>
         /// A float depicting the layer for the map
         /// </summary>
-        public const float MapLayer = 0.0f;
+        public const float MapLayer = 0.05f;
 
         /// <summary>
         /// A float depicting the layer for resources
@@ -50,9 +53,26 @@
         public const float FogOfWarLayer = 0.91f;
 
         /// <summary>
+        /// A float depicting the layer for building objects.
+        /// </summary>
+        public const float PlatformBuildingLayer = 0.93f;
+
+        /// <summary>
+        /// A float depicting the layer for building objects.
+        /// </summary>
+        public const float RoadBuildingLayer = 0.92f;
+
+        /// <summary>
+        /// A float depicting the layer for the hitbox of the collider.
+        /// </summary>
+        public const float CollisionDebugLayer = 0.95f;
+
+        /// <summary>
         /// A float depicting the layer for the grid debug of the map
         /// </summary>
         public const float GridDebugLayer = 0.99f;
+
+        #endregion
 
     }
 }

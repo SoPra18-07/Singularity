@@ -4,7 +4,8 @@ using Microsoft.Xna.Framework.Media;
 using Singularity.Input;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
-
+using Singularity.Sound;
+using Singularity.Units;
 
 namespace Singularity
 {
@@ -16,12 +17,12 @@ namespace Singularity
         internal GraphicsDeviceManager mGraphics;
         internal GraphicsAdapter mGraphicsAdapter;
 
-        private static Song sSoundtrack;
+        private SoundManager mSoundManager;
 
         // Screens
         internal GameScreen mGameScreen;
         private MainMenuManagerScreen mMainMenuManager;
-        private readonly InputManager mInputManager;
+        private InputManager mInputManager;
 
 
         // Sprites!
@@ -38,10 +39,7 @@ namespace Singularity
 
             mGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
 
-            mInputManager = new InputManager();
             mScreenManager = new StackScreenManager();
-
-            mInputManager = new InputManager();
 
         }
 
@@ -66,6 +64,7 @@ namespace Singularity
             mGraphics.PreferredBackBufferHeight = 1024;
             mGraphics.IsFullScreen = false;
             mGraphics.ApplyChanges();
+            mSoundManager = new SoundManager();
 
             base.Initialize();
         }
@@ -81,23 +80,29 @@ namespace Singularity
             // Create a new SpriteBatch, which can be used to draw textures.
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            mGameScreen = new GameScreen(mGraphics.GraphicsDevice.Viewport, mInputManager);
+            var camera = new Camera(GraphicsDevice.Viewport);
+
+            mInputManager = new InputManager(camera);
+
+            camera.SetInputManager(mInputManager);
+
+            mGameScreen = new GameScreen(mGraphics.GraphicsDevice.Viewport, mInputManager, camera);
+            var uIScreen = new PresentationUIScreen(mGameScreen, mInputManager);
 
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
 
             // Add the screens to the screen manager
             // The idea is that the game screen is always at the bottom and stuff is added simply
             // on top of it.
+            mScreenManager.AddScreen(uIScreen);
             mScreenManager.AddScreen(mGameScreen);
             mScreenManager.AddScreen(mMainMenuManager);
             
             mMainMenuManager.LoadContent(Content);
-            
+            uIScreen.LoadContent(Content);
             // load and play Soundtrack as background music
-            sSoundtrack = Content.Load<Song>("BGMusic");
-            MediaPlayer.Play(sSoundtrack);
-            MediaPlayer.Volume = 0.1F;
-            MediaPlayer.IsRepeating = true;
+            mSoundManager.LoadContent(Content);
+            mSoundManager.PlaySoundTrack();
 
         }
 

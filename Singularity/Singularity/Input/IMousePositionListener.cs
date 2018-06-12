@@ -14,8 +14,10 @@ namespace Singularity.Input
         /// <summary>
         /// Gets fired if and only if the mouse position gets changed.
         /// </summary>
-        /// <param name="newX">The new x mouse coordinate</param>
-        /// <param name="newY">The new y mouse coordinate</param>
-        void MousePositionChanged(float newX, float newY);
+        /// <param name="relX">The relative x coordinate of the mouse</param>
+        /// <param name="relY">The relative y coordinate of the mouse</param>
+        /// <param name="absX">The absolute x coordinate of the mouse</param>
+        /// <param name="absY">The absolute y coordinate of the mouse</param>
+        void MousePositionChanged(float relX, float relY, float absX, float absY);
     }
 }

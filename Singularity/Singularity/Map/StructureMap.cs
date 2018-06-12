@@ -10,7 +10,7 @@ namespace Singularity.Map
     /// <summary>
     /// A Structure map holds all the structures currently in the game.
     /// </summary>
-    internal sealed class StructureMap
+    public sealed class StructureMap
     {
         /// <summary>
         /// A list of all the platforms currently in the game
@@ -20,7 +20,7 @@ namespace Singularity.Map
         /// <summary>
         /// A list of all the roads in the game, identified by a source and destination platform.
         /// </summary>
-        private readonly LinkedList<Pair<PlatformBlank, PlatformBlank>> mRoads;
+        private readonly LinkedList<Road> mRoads;
 
 
         private readonly FogOfWar mFow;
@@ -33,7 +33,7 @@ namespace Singularity.Map
             mFow = fow;
 
             mPlatforms = new LinkedList<PlatformBlank>();
-            mRoads = new LinkedList<Pair<PlatformBlank, PlatformBlank>>();
+            mRoads = new LinkedList<Road>();
         }
 
         /// <summary>
@@ -46,6 +46,11 @@ namespace Singularity.Map
             mFow.AddRevealingObject(platform);
         }
 
+        public void AddRoad(Road road)
+        {
+            mRoads.AddLast(road);
+        }
+
         /// <summary>
         /// Removes the specified platform from this map.
         /// </summary>
@@ -54,6 +59,11 @@ namespace Singularity.Map
         {
             mPlatforms.Remove(platform);
             mFow.RemoveRevealingObject(platform);
+        }
+
+        public void RemoveRoad(Road road)
+        {
+            mRoads.Remove(road);
         }
 
         public LinkedList<PlatformBlank> GetPlatforms()

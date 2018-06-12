@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
+using Singularity.Libraries;
 using Singularity.Property;
 
 
@@ -38,6 +39,7 @@ namespace Singularity.Screen
 
         private Rectangle mBounds;
         private bool mClicked;
+        private bool mWithBorder;
 
         /// <summary>
         /// Opacity of the button useful for transitions or transparent buttons
@@ -65,7 +67,7 @@ namespace Singularity.Screen
         /// <param name="scale"> scale of the texture</param>
         /// <param name="buttonTexture"></param>
         /// <param name="position"></param>
-        public Button(float scale, Texture2D buttonTexture, Vector2 position)
+        public Button(float scale, Texture2D buttonTexture, Vector2 position, bool withBorder)
         {
             mIsText = false;
             mScale = scale;
@@ -75,6 +77,7 @@ namespace Singularity.Screen
             mHeight = mButtonTexture.Height;
             mColor = Color.White;
             CreateRectangularBounds();
+
         }
 
         /// <summary>
@@ -167,6 +170,10 @@ namespace Singularity.Screen
                     mScale,
                     SpriteEffects.None,
                     0f);
+                if (mWithBorder)
+                {
+                    spriteBatch.DrawRectangle(new Vector2(mPosition.X-1, mPosition.Y-1), new Vector2(mButtonTexture.Width+1, mButtonTexture.Height+1), Color.White, 1);
+                }
 
             }
 

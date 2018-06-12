@@ -42,6 +42,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DistributionManager\DistributionManager.cs" />
     <Compile Include="Exceptions\NoSuchElementException.cs" />
     <Compile Include="Exceptions\UnsupportedTextureSizeException.cs" />
     <Compile Include="Game1.cs" />
@@ -67,12 +68,15 @@
     <Compile Include="Input\MouseAction.cs" />
     <Compile Include="Platform\EnergyFacility.cs" />
     <Compile Include="Platform\EPlatformType.cs" />
+    <Compile Include="Platform\IStructure.cs" />
     <Compile Include="Platform\Junkyard.cs" />
     <Compile Include="Platform\Mine.cs" />
+    <Compile Include="Platform\PlatformBuildingRoadConnector.cs" />
     <Compile Include="Platform\Quarry.cs" />
     <Compile Include="Platform\Well.cs" />
     <Compile Include="Platform\IPlatformAction.cs" />
     <Compile Include="Platform\Road.cs" />
+    <Compile Include="Property\ICollider.cs" />
     <Compile Include="Property\IRevealing.cs" />
     <Compile Include="Resources\EResourceType.cs" />
     <Compile Include="Platform\Action.cs" />
@@ -80,13 +84,14 @@
     <Compile Include="Screen\EOptionScreenState.cs" />
     <Compile Include="Screen\ITransitionableMenu.cs" />
     <Compile Include="Screen\IWindowItem.cs" />
+    <Compile Include="Screen\ScreenClasses\GameScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\PresentationUIScreen.cs" />
     <Compile Include="Screen\Slider.cs" />
     <Compile Include="Screen\Button.cs" />
     <Compile Include="Serialization\CyclicDummy.cs" />
     <Compile Include="Serialization\XSerializer.cs" />
     <Compile Include="Serialization\SerializationDummy.cs" />
     <Compile Include="Property\ISpatial.cs" />
-    <Compile Include="Resources\IResource.cs" />
     <Compile Include="Resources\Resource.cs" />
     <Compile Include="Resources\ResourceHelper.cs" />
     <Compile Include="Property\LayerConstants.cs" />
@@ -94,7 +99,6 @@
     <Compile Include="Screen\ScreenClasses\AchievementsScreen.cs" />
     <Compile Include="Screen\ScreenClasses\GameModeSelectScreen.cs" />
     <Compile Include="Screen\ScreenClasses\GamePauseScreen.cs" />
-    <Compile Include="Screen\ScreenClasses\GameScreen.cs" />
     <Compile Include="Screen\ScreenClasses\LoadingScreen.cs" />
     <Compile Include="Screen\ScreenClasses\LoadSelectScreen.cs" />
     <Compile Include="Screen\ScreenClasses\MainMenuManagerScreen.cs" />
@@ -104,6 +108,9 @@
     <Compile Include="Screen\ScreenClasses\SaveGameScreen.cs" />
     <Compile Include="Screen\ScreenClasses\SplashScreen.cs" />
     <Compile Include="Screen\ScreenClasses\StatisticsScreen.cs" />
+    <Compile Include="Sound\SoundClass.cs" />
+    <Compile Include="Sound\SoundManager.cs" />
+    <Compile Include="Sound\SoundPhase.cs" />
     <Compile Include="StoryManager\StoryManager.cs" />
     <Compile Include="Units\GeneralUnit.cs" />
     <Compile Include="Units\IUnit.cs" />
@@ -121,6 +128,7 @@
     <Compile Include="Screen\UpdateLowerScreen.cs" />
     <Compile Include="Units\Pathfinding.cs" />
     <Compile Include="Units\Task.cs" />
+    <Compile Include="Utils\IdGenerator.cs" />
     <Compile Include="Utils\Optional.cs" />
     <Compile Include="Utils\Pair.cs" />
     <Compile Include="Utils\Triple.cs" />

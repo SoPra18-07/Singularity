@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Map;
 using Singularity.Resources;
 
 namespace Singularity.Platform
@@ -18,7 +19,7 @@ namespace Singularity.Platform
         [DataMember()]
         private const int PlatformHeight = 127;
 
-        public Junkyard(Vector2 position, Texture2D spritesheet): base(position, spritesheet)
+        public Junkyard(Vector2 position, Texture2D spritesheet, bool isPlaced = true): base(position, spritesheet, isPlaced)
         {
             mIPlatformActions = new IPlatformAction[1];
             //mActions[0] = BuildBlueprintJunkyard(this);
