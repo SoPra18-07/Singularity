@@ -12,6 +12,7 @@ using Singularity.Map.Properties;
 using Singularity.Resources;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
+using Singularity.Sound;
 using Singularity.Units;
 
 namespace Singularity
@@ -24,7 +25,7 @@ namespace Singularity
         internal GraphicsDeviceManager mGraphics;
         internal GraphicsAdapter mGraphicsAdapter;
 
-        private static Song sSoundtrack;
+        private SoundManager mSoundManager;
 
         // Screens
         internal GameScreen mGameScreen;
@@ -74,6 +75,7 @@ namespace Singularity
             mGraphics.PreferredBackBufferHeight = 720;
             mGraphics.IsFullScreen = false;
             mGraphics.ApplyChanges();
+            mSoundManager = new SoundManager();
 
             base.Initialize();
         }
@@ -102,10 +104,8 @@ namespace Singularity
             mMainMenuManager.LoadContent(Content);
             
             // load and play Soundtrack as background music
-            sSoundtrack = Content.Load<Song>("BGMusic");
-            MediaPlayer.Play(sSoundtrack);
-            MediaPlayer.Volume = 0.1F;
-            MediaPlayer.IsRepeating = true;
+            mSoundManager.LoadContent(Content);
+            mSoundManager.PlaySoundTrack();
 
         }
 
