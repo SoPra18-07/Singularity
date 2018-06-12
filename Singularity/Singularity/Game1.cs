@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using Singularity.Input;
+using Singularity.Map;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Sound;
