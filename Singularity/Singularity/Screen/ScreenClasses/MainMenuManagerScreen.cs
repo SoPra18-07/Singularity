@@ -117,8 +117,15 @@ namespace Singularity.Screen.ScreenClasses
                 case EScreen.GameModeSelectScreen:
                     if (sPressed == "Free Play")
                     {
-                        SwitchScreen(EScreen.LoadingScreen, mGameModeSelectScreen, mLoadingScreen, gametime);
+                        mScreenManager.RemoveScreen();
+                        mScreenManager.RemoveScreen();
                         mScreenManager.AddScreen(mLoadingScreen);
+                        mScreenState = EScreen.LoadingScreen;
+                    }
+
+                    if (sPressed == "Back")
+                    {
+                        SwitchScreen(EScreen.MainMenuScreen, mGameModeSelectScreen, mMainMenuScreen, gametime);
                     }
                     break;
                 case EScreen.GameScreen:

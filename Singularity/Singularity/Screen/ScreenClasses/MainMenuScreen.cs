@@ -190,6 +190,9 @@ namespace Singularity.Screen.ScreenClasses
             switch (mTargetScreen)
             {
                 case EScreen.AchievementsScreen:
+                    
+                    break;
+                case EScreen.GameModeSelectScreen:
                     if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
                     {
                         TransitionRunning = false;
@@ -198,8 +201,6 @@ namespace Singularity.Screen.ScreenClasses
 
                     mMenuOpacity =
                         (float)Animations.Easing(1, 0, mTransitionStartTime, mTransitionDuration, gameTime);
-                    break;
-                case EScreen.GameModeSelectScreen:
                     break;
                 case EScreen.LoadSelectScreen:
                     break;
