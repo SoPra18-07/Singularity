@@ -50,7 +50,7 @@ namespace Singularity.Platform
                 mPlatformToConnect = null;
                 return;
             }
-            
+
             if (mPlatformToConnect.IsPlaced)
             {
                 mPlatformToConnect = null;
@@ -113,12 +113,12 @@ namespace Singularity.Platform
 
         public void MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {
-            
+
         }
 
         public void MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
-            
+
         }
     }
 }

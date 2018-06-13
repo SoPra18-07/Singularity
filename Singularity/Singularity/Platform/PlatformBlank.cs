@@ -22,7 +22,7 @@ namespace Singularity.Platform
 
         public bool IsAdded { get; set; }
 
-        public bool IsSemiPlaced 
+        public bool IsSemiPlaced
         {
             get { return mIsSemiPlaced; }
             set
@@ -34,11 +34,11 @@ namespace Singularity.Platform
 
                 mIsSemiPlaced = true;
                 RevelationRadius = (int)AbsoluteSize.Y;
-                Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+                // Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
                 AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
             }
           }
-    
+
 
         private float mLayer;
 
@@ -68,7 +68,7 @@ namespace Singularity.Platform
         [DataMember()]
         protected Dictionary<EResourceType, int> mRequested;
 
-        public Vector2 Center { get; private set; }
+        public Vector2 Center => new Vector2(AbsolutePosition.X + PlatformWidth / 2, AbsolutePosition.Y + PlatformHeight - 36);
 
         public int RevelationRadius { get; private set; }
 
@@ -343,7 +343,7 @@ namespace Singularity.Platform
                         SpriteEffects.None,
                         mLayer);
                     break;
-                
+
             }
         }
 
@@ -387,7 +387,7 @@ namespace Singularity.Platform
             mRequested = new Dictionary<EResourceType, int>();
 
             RevelationRadius = (int)AbsoluteSize.Y;
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+
             Moved = false;
 
             if (isPlaced)
