@@ -27,8 +27,8 @@ namespace Singularity.Libraries
         /// <returns>The current value of the easing animation</returns>
         public static double Easing(float startValue,
             float endValue,
-            double startTime,
-            double duration,
+            int startTime,
+            int duration,
             GameTime gameTime)
         {
             // range is a separate var to make it easier to read.
@@ -36,8 +36,7 @@ namespace Singularity.Libraries
 
             // x is a separate var to make it easier to read as well.
             var x = gameTime.TotalGameTime.TotalMilliseconds - startTime;
-
-            return startValue + range * (-Math.Cos(x * Math.PI / duration) / 2 + 0.5d);
+            return startValue + range * -(Math.Cos(x * Math.PI / duration) / 2 + 0.5d);
         }
     }
 }

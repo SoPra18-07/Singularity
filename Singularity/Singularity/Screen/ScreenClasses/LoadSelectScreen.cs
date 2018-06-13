@@ -9,15 +9,14 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Singularity.Screen.ScreenClasses
 {
-    /// <inheritdoc cref="ITransitionableMenu"/>
+    /// <inheritdoc cref="IScreen"/>
     /// <summary>
     /// Shown after load game has been selected on the main menu or
     /// pause screen. It shows the different save files that can be loaded
     /// as a list and has a load game button and a back button.
     /// </summary>
-    internal sealed class LoadSelectScreen : ITransitionableMenu
+    class LoadSelectScreen : IScreen
     {
-        public bool TransitionRunning { get; private set; }
         /// <summary>
         /// Updates the contents of the screen.
         /// </summary>
@@ -62,11 +61,6 @@ namespace Singularity.Screen.ScreenClasses
         public bool DrawLower()
         {
             throw new NotImplementedException();
-        }
-
-        public void TransitionTo(EScreen originScreen, EScreen targetScreen, GameTime gameTime)
-        {
-
         }
     }
 }

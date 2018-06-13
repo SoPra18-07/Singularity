@@ -69,7 +69,11 @@ namespace Singularity.Platform
 
         public void Draw(SpriteBatch spriteBatch)
         {
+<<<<<<< HEAD
             spriteBatch.DrawLine(Source, AbsolutePosition, mBlueprint ? new Color(new Vector3(.1804f, .2078f, .3804f)) : new Color(new Vector4(.776f, .776f, .776f, 255)), 5f, mLayer);
+=======
+            spriteBatch.DrawLine(Source, AbsolutePosition, mBlueprint ? new Color(new Vector3(46, 53, 97)) : new Color(new Vector4(0, 40, 40, 255)), 5f, mLayer);
+>>>>>>> parent of dd6e809... Merge pull request #160 from SoPra18-07/#118-Animate-Main-Menu
         }
 
         public void Update(GameTime gametime)

@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Singularity.Screen.ScreenClasses
 {
-    /// <inheritdoc cref="ITransitionableMenu"/>
+    /// <inheritdoc cref="IScreen"/>
     /// <summary>
     /// Used to show achievements that the player has earned.
     /// It shows achievements already earned in a list format, not
@@ -18,7 +18,7 @@ namespace Singularity.Screen.ScreenClasses
     /// and their description. If an achievement has not been earned yet,
     /// the achievement texture is blacked out.
     /// </summary>
-    internal sealed class AchievementsScreen : ITransitionableMenu
+    class AchievementsScreen : IScreen
     {
         /// <summary>
         /// Updates the contents of the screen.
@@ -62,12 +62,6 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         /// <returns>Bool. If true, then the screen below this will be drawn.</returns>
         public bool DrawLower()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool TransitionRunning { get; }
-        public void TransitionTo(EScreen originScreen, EScreen targetScreen, GameTime gameTime)
         {
             throw new NotImplementedException();
         }
