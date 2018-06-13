@@ -68,8 +68,8 @@ namespace Singularity.Screen
             mScale = scale;
             mButtonTexture = buttonTexture;
             mPosition = position;
-            mWidth = mButtonTexture.Width;
-            mHeight = mButtonTexture.Height;
+            mWidth = (int)(mButtonTexture.Width * scale);
+            mHeight = (int)(mButtonTexture.Height * scale);
             mColor = Color.White;
             CreateRectangularBounds();
             mWithBorder = withBorder;
@@ -158,7 +158,8 @@ namespace Singularity.Screen
                     0f);
                 if (mWithBorder)
                 {
-                    spriteBatch.DrawRectangle(new Vector2(mPosition.X - 1, mPosition.Y - 1), new Vector2(mButtonTexture.Width + 1, mButtonTexture.Height + 1), Color.White, 1);
+                    //spriteBatch.DrawRectangle(new Vector2(mPosition.X - 1, mPosition.Y - 1), new Vector2(mButtonTexture.Width + 1, mButtonTexture.Height + 1), Color.White, 1);
+                    spriteBatch.DrawRectangle(mPosition, new Vector2(mWidth,mHeight), Color.White, 1);
                 }
 
             }

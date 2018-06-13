@@ -68,6 +68,7 @@ namespace Singularity
 
             // XSerializer.TestSerialization();
             IsMouseVisible = true;
+
             mGraphics.PreferredBackBufferWidth = 1080;
             mGraphics.PreferredBackBufferHeight = 720;
             mGraphics.IsFullScreen = false;

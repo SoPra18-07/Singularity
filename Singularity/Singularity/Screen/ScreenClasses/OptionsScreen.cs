@@ -313,12 +313,22 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="eventArgs"></param>
         private void OnFullScreenReleased(Object sender, EventArgs eventArgs)
         {
-            var width = game.mGraphicsAdapter.CurrentDisplayMode.Width;
-            var height = game.mGraphicsAdapter.CurrentDisplayMode.Height;
-            game.mGraphics.PreferredBackBufferWidth = width;
-            game.mGraphics.PreferredBackBufferHeight = height;
-            game.mGraphics.IsFullScreen = true;
-            game.mGraphics.ApplyChanges();
+            var width = mGame.mGraphicsAdapter.CurrentDisplayMode.Width;
+            var height = mGame.mGraphicsAdapter.CurrentDisplayMode.Height;
+            var truth = false;
+            if (mGame.mGraphics.IsFullScreen)
+            {
+                width = 1080;
+                height = 720;
+            }
+            else
+            {
+                truth = true;
+            }
+            mGame.mGraphics.PreferredBackBufferWidth = width;
+            mGame.mGraphics.PreferredBackBufferHeight = height;
+            mGame.mGraphics.IsFullScreen = truth;
+            mGame.mGraphics.ApplyChanges();
             MainMenuManagerScreen.SetResolution(new Vector2(width, height));
         }
 

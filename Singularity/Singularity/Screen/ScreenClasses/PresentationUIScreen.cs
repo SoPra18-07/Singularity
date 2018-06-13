@@ -66,7 +66,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             mTexture = content.Load<Texture2D>("PlatformBasic");
 
-            mButton = new Button(.5f, mTexture, new Vector2(0, 0), false);
+            mButton = new Button(.5f, mTexture, new Vector2(0, 0), true);
 
             mButton.ButtonReleased += OnButtonRelease;
         }
