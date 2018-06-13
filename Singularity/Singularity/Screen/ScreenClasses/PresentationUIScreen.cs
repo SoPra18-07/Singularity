@@ -73,12 +73,12 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool DrawLower()
         {
-            return true;
+            return false;
         }
 
         public bool UpdateLower()
         {
-            return true;
+            return false;
         }
 
         /// <summary>
