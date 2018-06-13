@@ -355,7 +355,7 @@ namespace Singularity.Platform
 
         public PlatformBlank(Vector2 position, Texture2D spritesheet, bool isPlaced = true)
         {
-            Id = IdGenerator.NextID();
+            Id = IdGenerator.NextId();
 
             IsAdded = false;
             IsPlaced = isPlaced;

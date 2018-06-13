@@ -10,7 +10,7 @@ namespace Singularity.Utils
     {
         private static int sId = 0;
 
-        public static int NextID()
+        public static int NextId()
         {
             sId++;
             return sId;

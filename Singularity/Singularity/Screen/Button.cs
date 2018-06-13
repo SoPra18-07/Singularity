@@ -72,6 +72,7 @@ namespace Singularity.Screen
             mHeight = mButtonTexture.Height;
             mColor = Color.White;
             CreateRectangularBounds();
+            mWithBorder = withBorder;
 
         }
 

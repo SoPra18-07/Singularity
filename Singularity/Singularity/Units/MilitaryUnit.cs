@@ -65,7 +65,7 @@ namespace Singularity.Units
 
         public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, InputManager manager)
         {
-            Id = IdGenerator.NextID(); // TODO this will later use a random number generator to create a unique
+            Id = IdGenerator.NextId(); // TODO this will later use a random number generator to create a unique
                     // id for the specific unit.
             Health = 10; //TODO
             
