@@ -1,11 +1,12 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Property;
 
 namespace Singularity.Platform
 {
-    internal sealed class Road : IDraw, ISpatial
+    internal sealed class Road : ISpatial
     {
         private Vector2 Source { get; }
         private Vector2 Destination { get; }
@@ -55,6 +56,11 @@ namespace Singularity.Platform
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.DrawLine(Source, Destination, mBlueprint ? new Color(new Vector3(46, 53, 97)) : new Color(new Vector4(0, 40, 40, 255)), 5f, LayerConstants.RoadLayer);
+        }
+
+        public void Update(GameTime gametime)
+        {
+
         }
     }
 }
