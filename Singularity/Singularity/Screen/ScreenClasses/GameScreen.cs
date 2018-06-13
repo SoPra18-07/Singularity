@@ -44,6 +44,10 @@ namespace Singularity.Screen.ScreenClasses
         private readonly InputManager mInputManager;
         private readonly Viewport mViewport;
 
+        // Screens used by the GameScreen
+        private IScreen mUIScreen;
+        private readonly IScreenManager mScreenManager;
+
         // roads
         private Road mRoad1;
 
@@ -72,7 +76,7 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         private Camera mCamera;
 
-        public GameScreen(Viewport viewport, InputManager inputManager, Camera camera)
+        public GameScreen(Viewport viewport, InputManager inputManager, Camera camera, IScreenManager screenManager)
         {
             mDrawables = new LinkedList<IDraw>();
             mUpdateables = new LinkedList<IUpdate>();
@@ -85,6 +89,9 @@ namespace Singularity.Screen.ScreenClasses
 
             mInputManager = inputManager;
             mViewport = viewport;
+
+            mUIScreen = new PresentationUIScreen(this, mInputManager);
+            mScreenManager = screenManager;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -235,6 +242,10 @@ namespace Singularity.Screen.ScreenClasses
             AddObject(mFow);
             AddObject(mPlatformRoadConnector);
             AddObjects(resources);
+
+            mUIScreen.LoadContent(content);
+            mScreenManager.RemoveScreen();
+            mScreenManager.AddScreen(mUIScreen);
 
             // artificially adding wait to test loading screen
             System.Threading.Thread.Sleep(500);
