@@ -69,6 +69,7 @@ namespace Singularity.Screen
 
                 }
             }
+            Debug.WriteLine("");
         }
     }
 }

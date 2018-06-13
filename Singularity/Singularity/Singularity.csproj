@@ -42,6 +42,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DistributionManager\DistributionManager.cs" />
     <Compile Include="Exceptions\NoSuchElementException.cs" />
     <Compile Include="Exceptions\UnsupportedTextureSizeException.cs" />
     <Compile Include="Game1.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Platform\Action.cs" />
     <Compile Include="Platform\PlatformBlank.cs" />
     <Compile Include="Screen\EOptionScreenState.cs" />
+    <Compile Include="Screen\ITransitionableMenu.cs" />
     <Compile Include="Screen\IWindowItem.cs" />
     <Compile Include="Screen\ScreenClasses\GameScreen.cs" />
     <Compile Include="Screen\ScreenClasses\PresentationUIScreen.cs" />

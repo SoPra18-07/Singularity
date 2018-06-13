@@ -1,15 +1,8 @@
-﻿using System;
-using System.Diagnostics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using Singularity.Platform;
 using Singularity.Input;
-
 using Singularity.Map;
-using Singularity.Map.Properties;
-using Singularity.Resources;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Sound;
@@ -68,8 +61,8 @@ namespace Singularity
 
             // XSerializer.TestSerialization();
             IsMouseVisible = true;
-            mGraphics.PreferredBackBufferWidth = 1080;
-            mGraphics.PreferredBackBufferHeight = 720;
+            mGraphics.PreferredBackBufferWidth = 1280;
+            mGraphics.PreferredBackBufferHeight = 1024;
             mGraphics.IsFullScreen = false;
             mGraphics.ApplyChanges();
             mSoundManager = new SoundManager();
