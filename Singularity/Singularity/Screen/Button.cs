@@ -78,7 +78,7 @@ namespace Singularity.Screen
             mColor = Color.White;
             CreateRectangularBounds();
             mWithBorder = withBorder;
-            Opactiy = 1;
+            Opacity = 1;
 
         }
 
