@@ -66,7 +66,9 @@ namespace Singularity.Platform
                 return;
             }
 
-            mRoad.AbsolutePosition = hoveringPlatform.Center;
+
+
+            mRoad.AbsolutePosition = ((IRevealing) hoveringPlatform).Center;
         }
 
         public void MousePositionChanged(float relX, float relY, float absX, float absY)

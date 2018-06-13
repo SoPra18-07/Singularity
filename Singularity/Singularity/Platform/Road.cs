@@ -53,17 +53,16 @@ namespace Singularity.Platform
         /// <param name="source">The source ISpatial object from which this road gets drawn</param>
         /// <param name="destination">The destinaion ISpatial object to which this road gets drawn</param>
         /// <param name="blueprint">Whether this road is a blueprint or not</param>
-        public Road(PlatformBlank source, PlatformBlank destination, bool blueprint, bool isPlaced = true)
+        public Road(IRevealing source, IRevealing destination, bool blueprint, bool isPlaced = true)
         {
             IsPlaced = isPlaced;
             IsSemiPlaced = isPlaced;
             IsAdded = false;
 
             // the hardcoded values need some changes for different platforms, ill wait until those are implemented to find a good solution.
-            Source = new Vector2(source.AbsolutePosition.X + source.AbsoluteSize.X / 2, source.AbsolutePosition.Y + 109);
-            Destination = new Vector2(destination.AbsolutePosition.X + destination.AbsoluteSize.X / 2, destination.AbsolutePosition.Y + 109);
+            Source = source.Center;
             Blueprint = blueprint;
-
+            //Fix this to be the destination.
             AbsolutePosition = destination.Center;
         }
 

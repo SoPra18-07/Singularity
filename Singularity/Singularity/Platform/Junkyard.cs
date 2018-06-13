@@ -21,7 +21,7 @@ namespace Singularity.Platform
         private const int PlatformHeight = 127;
 
         public new Vector2 Center => new Vector2(AbsolutePosition.X + PlatformWidth / 2, AbsolutePosition.Y + PlatformHeight - 36);
-
+        public new Vector2 AbsolutePosition { get; set; }
 
         public Junkyard(Vector2 position, Texture2D spritesheet, bool isPlaced = true): base(position, spritesheet, isPlaced)
         {
@@ -33,6 +33,7 @@ namespace Singularity.Platform
             mType = EPlatformType.Junkyard;
             mSpritename = "Dome";
             AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
+            AbsolutePosition = position;
         }
 
         public void BurnTrash()
