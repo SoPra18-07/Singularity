@@ -118,7 +118,30 @@ namespace Singularity.DistributionManager
         }
         public void ManualAssign(GeneralUnit unit, IPlatformAction action, JobType job)
         {
+            throw new NotImplementedException();
+            var ujob = unit.Job;
+            List<GeneralUnit> oldlist;
+            switch (ujob)
+            {
+                case JobType.Construction:
+                    oldlist = mConstruction;
+                    break;
+                case JobType.Idle:
+                    oldlist = mIdle;
+                    break;
+                case JobType.Production:
+                    oldlist = mDefense;
+                    break;
+                case JobType.Defense:
+                    oldlist = mProduction;
+                    break;
+            }
+
+            var removeit = oldlist.Find(x => x.Equals(unit));
+            oldlist.Remove(removeit);
+            mManual.Add(removeit);
             action.AssignUnit(unit, job);
+
         }
 
         public void ManualUnassign(JobType job, int i)
