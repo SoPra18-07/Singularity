@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Singularity.Graph
 {
-
+    /// <summary>
+    /// Provides a basic Graph object, holding a list of nodes and edges. Self explanatory
+    /// </summary>
     public class Graph
     {
         private readonly List<INode> mNodes;

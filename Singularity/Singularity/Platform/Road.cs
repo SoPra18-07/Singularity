@@ -76,5 +76,10 @@ namespace Singularity.Platform
         {
             return Destination;
         }
+
+        public float GetCost()
+        {
+            return Vector2.Distance(((IRevealing) Source).Center, ((IRevealing) Destination).Center);
+        }
     }
 }

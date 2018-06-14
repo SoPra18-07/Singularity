@@ -155,8 +155,6 @@ namespace Singularity.Screen.ScreenClasses
             mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
-
-            var genUnit = new GeneralUnit(mPlatform, pathManager);
             var genUnit2 = new GeneralUnit(mPlatform2, pathManager);
             var genUnit3 = new GeneralUnit(mPlatform3, pathManager);
 
@@ -167,6 +165,7 @@ namespace Singularity.Screen.ScreenClasses
             var platform4 = new Well(new Vector2(1000, 200), mPlatformDomeTexture, mMap.GetResourceMap());
             var platform5 = new Quarry(new Vector2(1300, 400), mPlatformDomeTexture, mMap.GetResourceMap());
 
+            var genUnit = new GeneralUnit(mPlatform, pathManager);
             var genUnit4 = new GeneralUnit(platform4, pathManager);
             var genUnit5 = new GeneralUnit(platform5, pathManager);
 
@@ -183,6 +182,7 @@ namespace Singularity.Screen.ScreenClasses
             var road3 = new Road(mPlatform2, mPlatform3, false);
             var road4 = new Road(platform4, platform5, false);
             var road5 = new Road(platform5, mPlatform, false);
+            var road6 = new Road(mPlatform, platform4, false);
 
             mFow.AddRevealingObject(mMUnit1);
             mFow.AddRevealingObject(mMUnit2);
@@ -202,6 +202,7 @@ namespace Singularity.Screen.ScreenClasses
             mMap.AddRoad(road3);
             mMap.AddRoad(road4);
             mMap.AddRoad(road5);
+            mMap.AddRoad(road6);
 
             AddObject(mMUnit1);
             AddObject(mMUnit2);
@@ -215,11 +216,14 @@ namespace Singularity.Screen.ScreenClasses
             AddObject(road3);
             AddObject(road4);
             AddObject(road5);
+            AddObject(road6);
+
             AddObject(genUnit);
             AddObject(genUnit2);
             AddObject(genUnit3);
             AddObject(genUnit4);
             AddObject(genUnit5);
+  
             AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
 
             // artificially adding wait to test loading screen

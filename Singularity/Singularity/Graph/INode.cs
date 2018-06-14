@@ -6,10 +6,21 @@ using System.Threading.Tasks;
 
 namespace Singularity.Graph
 {
+    /// <summary>
+    /// Provides an interface for nodes, having a set of edges going outwards of it and inwards.
+    /// </summary>
     public interface INode
     {
-        List<IEdge> GetOutwardsEdges();
+        /// <summary>
+        /// Gets all the edges facing outwards of this node.
+        /// </summary>
+        /// <returns>The edges mentioned</returns>
+        IEnumerable<IEdge> GetOutwardsEdges();
 
-        List<IEdge> GetInwardsEdges();
+        /// <summary>
+        /// Gets all the edges facing inwards of this node.
+        /// </summary>
+        /// <returns>The edges mentioned</returns>
+        IEnumerable<IEdge> GetInwardsEdges();
     }
 }

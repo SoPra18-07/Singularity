@@ -9,10 +9,18 @@ using Singularity.Units;
 
 namespace Singularity.Graph.Paths
 {
-    public class PathManager
-    {
-        private readonly List<Graph> mGraphs;
 
+    /// <summary>
+    /// The path manager holds all the graphs currently in the game and can
+    /// get paths for general and military units, given a destination.
+    /// </summary>
+    public sealed class PathManager
+    {
+        /// <summary>
+        /// All the graphs currently in the game
+        /// </summary>
+        private readonly List<Graph> mGraphs;
+        
         public PathManager()
         {
             mGraphs = new List<Graph>();
@@ -29,20 +37,30 @@ namespace Singularity.Graph.Paths
         }
 
 
-        public IPath GetPath<T>(T unit)
+        /// <summary>
+        /// Gets a path for the given unit and its destination.
+        /// </summary>
+        /// <typeparam name="T">The type of the object wanting to request a path</typeparam>
+        /// <param name="unit">The unit which requests a path</param>
+        /// <param name="destination">The destination to which the path should lead</param>
+        /// <returns></returns>
+        public IPath GetPath<T>(T unit, INode destination)
         {
+            // the basic idea for military and general units to use the same method and the distinuishing
+            // between the two is handled here.
+
             var asGeneralUnit = unit as GeneralUnit;
 
             if (asGeneralUnit != null)
             {
-                return GetPathForGeneralUnits(asGeneralUnit);
+                return GetPathForGeneralUnits(asGeneralUnit, destination);
             }
 
             var asMilitaryUnit = unit as MilitaryUnit;
 
             if (asMilitaryUnit != null)
             {
-                return GetPathForMilitaryUnits(asMilitaryUnit);
+                return GetPathForMilitaryUnits(asMilitaryUnit, destination);
             }
 
             throw new InvalidGenericArgumentException(
@@ -50,17 +68,16 @@ namespace Singularity.Graph.Paths
                 "supported: MilitaryUnit and GeneralUnit.");
 
         }
-
-        private IPath GetPathForGeneralUnits(GeneralUnit unit)
+        
+        private IPath GetPathForGeneralUnits(GeneralUnit unit, INode destination)
         {
-            var pathfinding = PathfindingFactory.GetPathfinding();
-
             //todo: know which units are on which graph
-            return pathfinding.Dijkstra(mGraphs[0]);
+            return PathfindingFactory.GetPathfinding().AStar(mGraphs[0], unit.CurrentNode, destination);
         }
 
-        private IPath GetPathForMilitaryUnits(MilitaryUnit unit)
+        private IPath GetPathForMilitaryUnits(MilitaryUnit unit, INode destination)
         {
+            //todo: implement
             var pathfinding = PathfindingFactory.GetPathfinding();
 
             return new SortedPath();

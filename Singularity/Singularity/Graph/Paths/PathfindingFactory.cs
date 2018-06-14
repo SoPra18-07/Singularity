@@ -18,7 +18,7 @@ namespace Singularity.Graph.Paths
 
         public static IPathfinding GetPathfinding()
         {
-            return sPathfinding ?? (sPathfinding = new DummyPathfinding());
+            return sPathfinding ?? (sPathfinding = new DefaultPathfinding());
         }
 
     }

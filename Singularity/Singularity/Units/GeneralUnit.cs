@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Graph;
 using Singularity.Graph.Paths;
 using Singularity.Libraries;
 using Singularity.Platform;
@@ -20,7 +21,11 @@ namespace Singularity.Units
         public EResourceType Carrying { get; set; } // TODO change resource into a nullable type
         private int? mTargetId;
         private Queue<Vector2> mPathQueue; // the queue of platform center locations
+        private Queue<INode> mNodeQueue;
+
         private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
+
+        public INode CurrentNode { get; private set; }
 
         // TODO: also use the size for the units representation since we someday need to draw rectangles over units (bounding box)
 
@@ -34,20 +39,41 @@ namespace Singularity.Units
 
         private readonly PathManager mPathManager;
 
+        /// <summary>
+        /// whether the unit is moving or currently standing still,
+        /// this is used so the unit can ask for a new path if it
+        /// doesn't move
+        /// </summary>
         private bool mIsMoving;
 
-        private Vector2 mCurrentTarget;
+        /// <summary>
+        /// The node the unit started from. Changes when the unit reaches its destination (to the destination).
+        /// </summary>
+        private INode mCurrentNode;
 
+        /// <summary>
+        /// The node the unit moves to. Null if the unit doesn't move anywhere
+        /// </summary>
+        private INode mDestination;
+
+        /// <summary>
+        /// The speed the unit moves at.
+        /// </summary>
         private const float Speed = 3f;
 
         internal JobType Job { get; set; } = JobType.Idle;
 
         public GeneralUnit(PlatformBlank platform, PathManager pathManager)
         {
+            mDestination = null;
+
+            CurrentNode = platform;
+
             Id = 0; // TODO make this randomized or simply ascending
             AbsolutePosition = ((IRevealing) platform).Center; // TODO figure out how to search platform by ID and get its position
             Carrying = EResourceType.Trash; // TODO change this to a nullable type or some other implementation after dist manager is implemented
             mPathQueue = new Queue<Vector2>();
+            mNodeQueue = new Queue<INode>();
 
             mIsMoving = false;
             mPathManager = pathManager;
@@ -112,7 +138,7 @@ namespace Singularity.Units
             }
         }
         /// <summary>
-        /// Calculates where the unit should move to next
+        /// Moves the unit to the target position by its given speed.
         /// </summary>
         /// <param name="targetPosition">The target the unit should move towards</param>
         /// <returns></returns>
@@ -122,7 +148,6 @@ namespace Singularity.Units
             mIsMoving = true;
 
             var movementVector = Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y));
-
 
             AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X * Speed, AbsolutePosition.Y + movementVector.Y * Speed);
 
@@ -194,10 +219,15 @@ namespace Singularity.Units
         }
         public void Update(GameTime gametime)
         {
-            if (mPathQueue.Count <= 0 && !mIsMoving)
+
+            // if this if clause is fulfilled we get a new path to move to.
+            // we only do this if we're not moving, have no destination and our
+            // current nodequeue is empty (the path)
+            if (mDestination != null && mNodeQueue.Count <= 0 && !mIsMoving)
             {
-                mPathQueue = mPathManager.GetPath(this).GetPath();
-                mCurrentTarget = mPathQueue.Dequeue();
+                mNodeQueue = mPathManager.GetPath(this, mDestination).GetNodePath();
+
+                mCurrentNode = mNodeQueue.Dequeue();
             }
 
             // use switch to change between jobs
@@ -220,23 +250,38 @@ namespace Singularity.Units
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            if (ReachedTarget(mCurrentTarget) && mPathQueue.Count > 0)
+
+            if (mCurrentNode == null)
             {
-                mCurrentTarget = mPathQueue.Dequeue();
+                return;
             }
 
-            if (mCurrentTarget != null)
+            // update the current node to move to after the last one got reached.
+            if (ReachedTarget(((IRevealing)mCurrentNode).Center) && mNodeQueue.Count > 0)
             {
-                Move(mCurrentTarget);
-                ReachedTarget(mCurrentTarget);
+                mCurrentNode = mNodeQueue.Dequeue();
             }
+            // finally move to the current node.
+            Move(((IRevealing)mCurrentNode).Center);
+
+            // check whether we have reached the target after our move call.
+            ReachedTarget(((IRevealing)mCurrentNode).Center);
+
         }
 
+        /// <summary>
+        /// Checks whether the target has been reached.
+        /// </summary>
+        /// <param name="target">The target which is checked against</param>
+        /// <returns></returns>
         private bool ReachedTarget(Vector2 target)
-        { 
+        {
 
+            //since we're operating with float values we just want the distance to be smaller than 2 pixels.
             if (Vector2.Distance(AbsolutePosition, target) < 2)
             {
+                CurrentNode = mCurrentNode;
+                mDestination = null;
                 mIsMoving = false;
                 return true;
             }
