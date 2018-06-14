@@ -13,9 +13,9 @@ using Singularity.Resources;
 using Singularity.Utils;
 
 namespace Singularity.Map
-{   
+{
     internal sealed class Map : IDraw, IUpdate
-    {   
+    {
         private readonly CollisionMap mCollisionMap;
         private readonly StructureMap mStructureMap;
         private readonly ResourceMap mResourceMap;
@@ -33,10 +33,10 @@ namespace Singularity.Map
         /// </summary>
         /// <param name="backgroundTexture">The background texture of the map</param>
         /// <param name="viewport">The viewport of the window</param>
+        /// <param name="fow">The fog of war for this map</param>
         /// <param name="debug">Whether the debug grid lines are drawn or not</param>
         /// <param name="initialResources">The initial resources of this map, if not specified there will not be any on the map</param>
-        /// <param name="fow">The fog of war for this map</param>
-        public Map(Texture2D backgroundTexture, Viewport viewport, InputManager inputManager, bool debug = false, IDictionary<Vector2, Pair<EResourceType, int>> initialResources = null)
+        public Map(Texture2D backgroundTexture, Viewport viewport, InputManager inputManager, bool debug = false, IEnumerable<Resource> initialResources = null)
         {
 
             mBackgroundTexture = backgroundTexture;
@@ -49,14 +49,14 @@ namespace Singularity.Map
             mResourceMap = new ResourceMap(initialResources);
         }
 
-        /// <see cref="CollisionMap.UpdateCollider(Vector2, int)"/>
-        public void UpdateCollider(Vector2 coordinates, int id)
+        /// <see cref="CollisionMap.UpdateCollider(ICollider)"/>
+        public void UpdateCollider(ICollider collider)
         {
-            mCollisionMap.UpdateCollider(coordinates, id);
+            mCollisionMap.UpdateCollider(collider);
         }
 
         public void Draw(SpriteBatch spriteBatch)
-        {   
+        {
 
             //draw the background texture
             spriteBatch.Draw(mBackgroundTexture,
@@ -67,7 +67,7 @@ namespace Singularity.Map
                 Vector2.Zero,
                 SpriteEffects.None,
                 LayerConstants.MapLayer);
-            
+
 
 
             //make sure to only draw the grid if a texture is given.
@@ -91,6 +91,21 @@ namespace Singularity.Map
                 spriteBatch.DrawLine(
                     new Vector2(0, rowCount * MapConstants.GridHeight), MapConstants.MapWidth, 0, Color.Yellow, 1, LayerConstants.GridDebugLayer);
             }
+
+            var colMap = mCollisionMap.GetCollisionMap();
+
+            for(var i = 0; i < colMap.GetLength(0); i++)
+            {
+                for (var j = 0; j < colMap.GetLength(1); j ++)
+                {
+                    if (colMap[i, j].IsPresent())
+                    {
+
+                        spriteBatch.FillRectangle(new Rectangle(i * MapConstants.GridWidth, j * MapConstants.GridHeight, MapConstants.GridWidth, MapConstants.GridHeight),
+                            new Color(new Vector4(1, 0, 0, 0.2f)), 0f, LayerConstants.CollisionDebugLayer);
+                    }
+                }
+            }
         }
 
         //TODO: remove if input manager is available since we only use this to pass an update to the camera.
@@ -111,14 +126,9 @@ namespace Singularity.Map
             mStructureMap.RemovePlatform(platform);
         }
 
-        public StructureMap GetStructureMap()
+        public void RemoveResource(Resource resource)
         {
-            return mStructureMap;
-        }
-        
-        public CollisionMap GetCollisionMap()
-        {
-            return mCollisionMap;
+            mResourceMap.RemoveResource(resource);
         }
 
         public Camera GetCamera()
@@ -130,8 +140,9 @@ namespace Singularity.Map
         /// Checks whether the given vector is on the map.
         /// </summary>
         /// <param name="position">The position of which to check whether it is on the map</param>
+        /// <param name="camera">The camera is needed to translate relative coordinates into absolute ones, if null then the given coordinates are treated as absolute ones</param>
         /// <returns>True if the position is on the map, false otherwise</returns>
-        public static bool IsOnTop(Vector2 position)
+        public static bool IsOnTop(Vector2 position, Camera camera = null)
         {
             //TODO: extend to rectangle, so we move away from whether the origin point is on the map.
 
@@ -148,24 +159,28 @@ namespace Singularity.Map
              * lines that specify our map the given position is also on the map.
              */
 
+            var worldSpacePosition =
+                (camera == null ? position : Vector2.Transform(position, Matrix.Invert(camera.GetTransform())));
+
+
             var sign = Math.Sign(
-                (MapConstants.sTop.X - MapConstants.sLeft.X) * (position.Y - MapConstants.sLeft.Y) -
-                (MapConstants.sTop.Y - MapConstants.sLeft.Y) * (position.X - MapConstants.sLeft.X)
+                (MapConstants.sTop.X - MapConstants.sLeft.X) * (worldSpacePosition.Y - MapConstants.sLeft.Y) -
+                (MapConstants.sTop.Y - MapConstants.sLeft.Y) * (worldSpacePosition.X - MapConstants.sLeft.X)
             );
 
             var sign2 = Math.Sign(
-                (MapConstants.sLeft.X - MapConstants.sBottom.X) * (position.Y - MapConstants.sBottom.Y) -
-                (MapConstants.sLeft.Y - MapConstants.sBottom.Y) * (position.X - MapConstants.sBottom.X)
+                (MapConstants.sLeft.X - MapConstants.sBottom.X) * (worldSpacePosition.Y - MapConstants.sBottom.Y) -
+                (MapConstants.sLeft.Y - MapConstants.sBottom.Y) * (worldSpacePosition.X - MapConstants.sBottom.X)
             );
 
             var sign3 = Math.Sign(
-                (MapConstants.sRight.X - MapConstants.sTop.X) * (position.Y - MapConstants.sTop.Y) -
-                (MapConstants.sRight.Y - MapConstants.sTop.Y) * (position.X - MapConstants.sTop.X)
+                (MapConstants.sRight.X - MapConstants.sTop.X) * (worldSpacePosition.Y - MapConstants.sTop.Y) -
+                (MapConstants.sRight.Y - MapConstants.sTop.Y) * (worldSpacePosition.X - MapConstants.sTop.X)
             );
 
             var sign4 = Math.Sign(
-                (MapConstants.sBottom.X - MapConstants.sRight.X) * (position.Y - MapConstants.sRight.Y) -
-                (MapConstants.sBottom.Y - MapConstants.sRight.Y) * (position.X - MapConstants.sRight.X)
+                (MapConstants.sBottom.X - MapConstants.sRight.X) * (worldSpacePosition.Y - MapConstants.sRight.Y) -
+                (MapConstants.sBottom.Y - MapConstants.sRight.Y) * (worldSpacePosition.X - MapConstants.sRight.X)
             );
 
             return (sign == 1 && sign2 == 1 && sign3 == 1 && sign4 == 1);
@@ -176,24 +191,21 @@ namespace Singularity.Map
         /// Checks whether the given rectangle is on the map.
         /// </summary>
         /// <param name="rect">The rectangle which should be checked whether its on the map</param>
+        /// <param name="camera">The camera is needed to translate relative coordinates into absolute ones, if null then the given coordinates are treated as absolute ones</param>
         /// <returns>True if the rectangle is on the map, false otherwise</returns>
-        public static bool IsOnTop(Rectangle rect)
+        public static bool IsOnTop(Rectangle rect, Camera camera = null)
         {
 
             // simple logic, this yields true if all of them are true and false if one is false. One can easily convince himself,
             // that if all the "edge" points of the rectangle are on the map then the rectangle is on the map.
 
-            return (IsOnTop(new Vector2(rect.X, rect.Y)) && 
-                    IsOnTop(new Vector2(rect.X + rect.Width, rect.Y)) &&
-                    IsOnTop(new Vector2(rect.X, rect.Y + rect.Height)) &&
-                    IsOnTop(new Vector2(rect.X + rect.Width, rect.Y + rect.Height)));
+            return (IsOnTop(new Vector2(rect.X, rect.Y), camera) &&
+                    IsOnTop(new Vector2(rect.X + rect.Width, rect.Y), camera) &&
+                    IsOnTop(new Vector2(rect.X, rect.Y + rect.Height), camera) &&
+                    IsOnTop(new Vector2(rect.X + rect.Width, rect.Y + rect.Height), camera));
 
-        }
-
-        public Texture2D GetTexture()
-        {
-            return mBackgroundTexture;
         }
 
     }
 }
+
