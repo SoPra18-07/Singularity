@@ -235,9 +235,6 @@ namespace Singularity.Screen.ScreenClasses
             AddObject(mFow);
             AddObject(mPlatformRoadConnector);
             AddObjects(resources);
-
-            // artificially adding wait to test loading screen
-            System.Threading.Thread.Sleep(500);
         }
 
         public bool UpdateLower()
