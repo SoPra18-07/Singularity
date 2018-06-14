@@ -135,7 +135,6 @@ namespace Singularity.Screen.ScreenClasses
                 case EScreen.LoadingScreen:
                     mGame.mGameScreen.LoadContent(mContent);
                     mScreenState = EScreen.GameScreen;
-                    mScreenManager.RemoveScreen();
                     break;
                 case EScreen.MainMenuScreen:
                     if (sPressed == "Play")

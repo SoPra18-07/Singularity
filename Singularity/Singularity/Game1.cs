@@ -87,20 +87,18 @@ namespace Singularity
 
             camera.SetInputManager(mInputManager);
 
-            mGameScreen = new GameScreen(mGraphics.GraphicsDevice.Viewport, mInputManager, camera);
-            var uIScreen = new PresentationUIScreen(mGameScreen, mInputManager);
+            mGameScreen = new GameScreen(mGraphics.GraphicsDevice.Viewport, mInputManager, camera, mScreenManager);
 
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
 
             // Add the screens to the screen manager
             // The idea is that the game screen is always at the bottom and stuff is added simply
             // on top of it.
-            mScreenManager.AddScreen(uIScreen);
+
             mScreenManager.AddScreen(mGameScreen);
             mScreenManager.AddScreen(mMainMenuManager);
 
             mMainMenuManager.LoadContent(Content);
-            uIScreen.LoadContent(Content);
             // load and play Soundtrack as background music
             mSoundManager.LoadContent(Content);
             mSoundManager.PlaySoundTrack();
