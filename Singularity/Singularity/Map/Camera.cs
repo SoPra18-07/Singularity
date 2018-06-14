@@ -52,10 +52,6 @@ namespace Singularity.Map
         /// </summary>
         private readonly Rectangle mBounds;
 
-        /// <summary>
-        /// The scroll wheel value which is always 1 update behind the actual update.
-        /// </summary>
-        private int mOldScrollWheelValue;
 
         /// <summary>
         /// Creates a new Camera object which provides a transform matrix to adjust
@@ -80,7 +76,6 @@ namespace Singularity.Map
             mY = y;
             mViewport = viewport;
             mZoom = 1.0f;
-            mOldScrollWheelValue = 0;
             mBounds = new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight);
 
             inputManager.AddKeyListener(this);
@@ -255,6 +250,19 @@ namespace Singularity.Map
             {
                 mZoom += scrollChange;
             }
+        }
+
+        public Matrix GetStencilProjection()
+        {
+
+            var cameraWorldMin = Vector2.Transform(Vector2.Zero, Matrix.Invert(mTransform));
+
+            return Matrix.CreateOrthographicOffCenter(cameraWorldMin.X,
+                cameraWorldMin.X + (mViewport.Width / mZoom),
+                cameraWorldMin.Y + (mViewport.Height / mZoom),
+                cameraWorldMin.Y,
+                0,
+                1);
         }
     }
 }

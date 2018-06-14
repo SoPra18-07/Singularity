@@ -9,12 +9,11 @@ using Singularity.Platform;
 using Singularity.Resources;
 using Singularity.Units;
 using Singularity.Utils;
-using Task = Singularity.Units.Task;
 
 namespace Singularity.DistributionManager
 {
     [DataContract()]
-    class DistributionManager
+    public class DistributionManager
     {
         [DataMember()]
         private List<GeneralUnit> mIdle;
@@ -72,7 +71,6 @@ namespace Singularity.DistributionManager
         /// <param name="change"></param>
         public void DistributeJobs(JobType oldj, JobType newj, int change)
         {
-            throw new NotImplementedException();
             List<GeneralUnit> oldlist;
             switch (oldj)
             {
@@ -218,7 +216,7 @@ namespace Singularity.DistributionManager
         //
         // Okay, so how was it supposed to work (in my version, if you want to implement it is for you to decide):
         // - The units (with nothing to do (idle, but not 'JobType: Idle') ask for new Tasks here. So what is needed is ... actually yes, unit is not required. So the JobType is required, to return a Task of that JobType. Also, if this unit is assigned to some specific PlatformAction (like building a Blueprint, Logistics for a certain Factory, ...), it is supposed to only get Tasks involving this PlatformAction. However, if a unit is not manually assigned somewhere, what action do you want to get here? 
-        public Pair<Task, int> RequestNewTask(JobType job, Optional<IPlatformAction> assignedAction)
+        public Task RequestNewTask(JobType job, Optional<IPlatformAction> assignedAction)
         {
             throw new NotImplementedException();
             /*switch(job)

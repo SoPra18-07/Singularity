@@ -3,7 +3,7 @@ using Singularity.Property;
 
 namespace Singularity.Units
 {
-    interface IUnit : ISpatial
+    interface IUnit
     {
 
         /// <summary>

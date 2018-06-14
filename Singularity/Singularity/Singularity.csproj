@@ -44,9 +44,21 @@
   <ItemGroup>
     <Compile Include="DistributionManager\DistributionManager.cs" />
     <Compile Include="DistributionManager\Task.cs" />
+    <Compile Include="Exceptions\InvalidGenericArgumentException.cs" />
     <Compile Include="Exceptions\NoSuchElementException.cs" />
     <Compile Include="Exceptions\UnsupportedTextureSizeException.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Graph\EEdgeFacing.cs" />
+    <Compile Include="Graph\Graph.cs" />
+    <Compile Include="Graph\IEdge.cs" />
+    <Compile Include="Graph\INode.cs" />
+    <Compile Include="Graph\Paths\DefaultPathfinding.cs" />
+    <Compile Include="Graph\Paths\DummyPathfinding.cs" />
+    <Compile Include="Graph\Paths\IPath.cs" />
+    <Compile Include="Graph\Paths\IPathfinding.cs" />
+    <Compile Include="Graph\Paths\PathfindingFactory.cs" />
+    <Compile Include="Graph\Paths\PathManager.cs" />
+    <Compile Include="Graph\Paths\SortedPath.cs" />
     <Compile Include="Input\InputManager2.cs" />
     <Compile Include="Libraries\Animations.cs" />
     <Compile Include="Libraries\Bloom Filter.cs" />
@@ -75,6 +87,7 @@
     <Compile Include="Platform\Well.cs" />
     <Compile Include="Platform\IPlatformAction.cs" />
     <Compile Include="Platform\Road.cs" />
+    <Compile Include="Property\ICollider.cs" />
     <Compile Include="Property\IRevealing.cs" />
     <Compile Include="Resources\EResourceType.cs" />
     <Compile Include="Platform\Action.cs" />
@@ -88,7 +101,6 @@
     <Compile Include="Serialization\XSerializer.cs" />
     <Compile Include="Serialization\SerializationDummy.cs" />
     <Compile Include="Property\ISpatial.cs" />
-    <Compile Include="Resources\IResource.cs" />
     <Compile Include="Resources\Resource.cs" />
     <Compile Include="Resources\ResourceHelper.cs" />
     <Compile Include="Property\LayerConstants.cs" />
@@ -123,7 +135,7 @@
     <Compile Include="Screen\RenderLowerScreen.cs" />
     <Compile Include="Screen\StackScreenManager.cs" />
     <Compile Include="Screen\UpdateLowerScreen.cs" />
-    <Compile Include="Units\Pathfinding.cs" />
+    <Compile Include="Utils\IdGenerator.cs" />
     <Compile Include="Utils\Optional.cs" />
     <Compile Include="Utils\Pair.cs" />
     <Compile Include="Utils\Triple.cs" />
@@ -145,7 +157,6 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
     <None Include="Content\Shaders\Bloom.fx" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

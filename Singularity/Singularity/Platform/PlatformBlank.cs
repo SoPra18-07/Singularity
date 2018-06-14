@@ -1,19 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Graph;
 using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
+using Singularity.Utils;
 
 namespace Singularity.Platform
 {
     [DataContract()]
-    public class PlatformBlank : IDraw, IUpdate, ISpatial, IRevealing
+    public class PlatformBlank : IRevealing, INode, ICollider
 
     {
+
+        private List<IEdge> mInwardsEdges;
+
+        private List<IEdge> mOutwardsEdges;
+
         [DataMember()]
         protected EPlatformType mType = EPlatformType.Blank;
         [DataMember()]
@@ -40,9 +48,15 @@ namespace Singularity.Platform
         [DataMember()]
         protected Dictionary<EResourceType, int> mRequested;
 
-        public Vector2 Center { get; private set; }
+        public Vector2 Center { get; set; }
 
         public int RevelationRadius { get; private set; }
+
+        public Rectangle AbsBounds { get; private set; }
+
+        public bool Moved { get; private set; }
+
+        public int Id { get; private set; }
 
         internal Vector2 GetLocation()
         {
@@ -316,11 +330,16 @@ namespace Singularity.Platform
         /// <inheritdoc cref="Singularity.Property.IUpdate"/>
         public void Update(GameTime t)
         {
-            //TODO: implement update code
+
         }
 
-        public PlatformBlank(Vector2 position, Texture2D spritesheet)
+        public PlatformBlank(Vector2 position, Texture2D spritesheet, Vector2 center = new Vector2())
         {
+
+            Id = IdGenerator.NextID();
+
+            mInwardsEdges = new List<IEdge>();
+            mOutwardsEdges = new List<IEdge>();
 
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
@@ -348,13 +367,57 @@ namespace Singularity.Platform
             mRequested = new Dictionary<EResourceType, int>();
 
             RevelationRadius = (int)AbsoluteSize.Y;
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
+            Moved = false;
+
+            if (center == Vector2.Zero)
+            {
+                // no value was specified so just use the platform blank implementation.
+                Center = new Vector2(AbsolutePosition.X + PlatformWidth / 2, AbsolutePosition.Y + PlatformHeight - 36);
+            }
+            else
+            {
+                //value was given by subclass thus take that
+                Center = center;
+            }
 
         }
 
         public bool PlatformHasSpace()
         {
             return mResources.Count < 10;
+        }
+
+        public void AddEdge(IEdge edge, EEdgeFacing facing)
+        {
+            if (facing == EEdgeFacing.Inwards)
+            {
+                mInwardsEdges.Add(edge);
+                return;
+            }
+            mOutwardsEdges.Add(edge);
+
+        }
+
+        public void RemoveEdge(IEdge edge, EEdgeFacing facing)
+        {
+            if (facing == EEdgeFacing.Inwards)
+            {
+                mInwardsEdges.Remove(edge);
+                return;
+            }
+            mOutwardsEdges.Remove(edge);
+
+        }
+
+        public IEnumerable<IEdge> GetOutwardsEdges()
+        {
+            return mOutwardsEdges;
+        }
+
+        public IEnumerable<IEdge> GetInwardsEdges()
+        {
+            return mInwardsEdges;
         }
     }
 }

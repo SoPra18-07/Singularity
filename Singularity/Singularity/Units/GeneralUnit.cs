@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.DistributionManager;
 using Singularity.Platform;
+using Singularity.Graph;
+using Singularity.Graph.Paths;
+using Singularity.Libraries;
 using Singularity.Property;
 using Singularity.Resources;
+using Singularity.Units;
 using Singularity.Utils;
 
 namespace Singularity.Units
 {
     [DataContract()]
-    public class GeneralUnit : IUnit, IUpdate, IDraw
+    public class GeneralUnit : IUnit, IUpdate, IDraw, ISpatial
     {
         [DataMember()]
         public int Id { get; }
@@ -21,12 +26,14 @@ namespace Singularity.Units
         [DataMember()]
         public string Assignment { get; set; } // TODO change to an enum type
         [DataMember()]
-        public Resource Carrying { get; set; } // TODO change resource into a nullable type
+        public Optional<Resource> Carrying { get; set; } // TODO change resource into a nullable type
         [DataMember()]
         private int? mTargetId;
         [DataMember()]
-        private Stack<int> mPathQueue; // the queue of platform and edges the unit has to traverse to get to its target
+        private Queue<Vector2> mPathQueue; // the queue of platform center locations
         [DataMember()]
+        private Queue<INode> mNodeQueue;
+
         private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
         
 
@@ -39,6 +46,8 @@ namespace Singularity.Units
 
         private IPlatformAction AssignedAction;
 
+        public INode CurrentNode { get; private set; }
+
         // TODO: also use the size for the units representation since we someday need to draw rectangles over units (bounding box)
 
         public Vector2 AbsolutePosition { get; set; }
@@ -49,15 +58,45 @@ namespace Singularity.Units
 
         public Vector2 RelativeSize { get; set; }
 
+        private readonly PathManager mPathManager;
+
+        /// <summary>
+        /// whether the unit is moving or currently standing still,
+        /// this is used so the unit can ask for a new path if it
+        /// doesn't move
+        /// </summary>
+        private bool mIsMoving;
+
+        /// <summary>
+        /// The node the unit started from. Changes when the unit reaches its destination (to the destination).
+        /// </summary>
+        private INode mCurrentNode;
+
+        /// <summary>
+        /// The node the unit moves to. Null if the unit doesn't move anywhere
+        /// </summary>
+        private INode mDestination;
+
+        /// <summary>
+        /// The speed the unit moves at.
+        /// </summary>
+        private const float Speed = 3f;
+
         internal JobType Job { get; set; } = JobType.Idle;
 
-        public GeneralUnit(int spawnPositionId)
+        public GeneralUnit(PlatformBlank platform, PathManager pathManager, DistributionManager.DistributionManager distrManager)
         {
-            Id = 0; // TODO make this randomized or simply ascending
-            AbsolutePosition = Vector2.Zero; // TODO figure out how to search platform by ID and get its position
-            mPositionId = spawnPositionId;
-            Carrying = null; // TODO change this to a nullable type or some other implementation after dist manager is implemented
-            mPathQueue = null;
+            mDestination = null;
+
+            CurrentNode = platform;
+
+            AbsolutePosition = ((IRevealing) platform).Center; // TODO figure out how to search platform by ID and get its position
+            mPathQueue = new Queue<Vector2>();
+            mNodeQueue = new Queue<INode>();
+
+            mIsMoving = false;
+            mPathManager = pathManager;
+            mDistrManager = distrManager;
         }
         /// <summary>
         /// Used to pick the Task that the unit does. It assigns the unit to a job which the update method uses
@@ -124,17 +163,18 @@ namespace Singularity.Units
             }
         }
         /// <summary>
-        /// Calculates where the unit should move to next
+        /// Moves the unit to the target position by its given speed.
         /// </summary>
         /// <param name="targetPosition">The target the unit should move towards</param>
         /// <returns></returns>
-        private Vector2 Move(int targetPosition)
+        private void Move(Vector2 targetPosition)
         {
-            throw new NotImplementedException();
-            // first get the target position Vector2 position
-            // then move x distance in that direction or until above the coordinate of the position
-            // TODO
-            return Vector2.Zero;
+
+            mIsMoving = true;
+
+            var movementVector = Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y));
+
+            AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X * Speed, AbsolutePosition.Y + movementVector.Y * Speed);
         }
 
         /// <summary>
@@ -164,6 +204,7 @@ namespace Singularity.Units
             // travel back to original target using Move()
             // once it has arrived, drops the resource onto the platform
 
+            /*
             if (targetPlatformId != null)
             {
                 mConstructionResourceFound = false; // sets flag to false first
@@ -202,40 +243,67 @@ namespace Singularity.Units
                     }
                     // drop the resource.
                 }
+                
 
 
 
             }
+            */
 
         }
         public void Update(GameTime gametime)
         {
-            throw new NotImplementedException();
-            // I think the intention here was to do the tasks.
-            switch (mAssignedTask.GetFirst())
+            // if this if clause is fulfilled we get a new path to move to.
+            // we only do this if we're not moving, have no destination and our
+            // current nodequeue is empty (the path)
+            if (mDestination != null && mNodeQueue.Count <= 0 && !mIsMoving)
             {
-                case Task.Idle:
-                    mAssignedTask = mDistrManager.RequestNewTask(Job, Optional<IPlatformAction>.Of(AssignedAction));
-                    break;
-                case Task.Move:
-                    //Move around
-                    break;
-                case Task.BuildPlatform:
-                    //Build();
-                    break;
-                case Task.MoveResource:
-                    //MoveResource();
-                    break;
-                case Task.RepairPlatform:
-                    //Repair();
-                    break;
+                mNodeQueue = mPathManager.GetPath(this, mDestination).GetNodePath();
+
+                mCurrentNode = mNodeQueue.Dequeue();
             }
-            throw new NotImplementedException();
+
+            if (mCurrentNode == null)
+            {
+                return;
+            }
+
+            // update the current node to move to after the last one got reached.
+            if (ReachedTarget(((PlatformBlank)mCurrentNode).Center) && mNodeQueue.Count > 0)
+            {
+                mCurrentNode = mNodeQueue.Dequeue();
+            }
+            // finally move to the current node.
+            Move(((PlatformBlank)mCurrentNode).Center);
+
+            // check whether we have reached the target after our move call.
+            ReachedTarget(((PlatformBlank)mCurrentNode).Center);
+
+        }
+
+        /// <summary>
+        /// Checks whether the target has been reached.
+        /// </summary>
+        /// <param name="target">The target which is checked against</param>
+        /// <returns></returns>
+        private bool ReachedTarget(Vector2 target)
+        {
+
+            //since we're operating with float values we just want the distance to be smaller than 2 pixels.
+            if (Vector2.Distance(AbsolutePosition, target) < 2)
+            {
+                CurrentNode = mCurrentNode;
+                mDestination = null;
+                mIsMoving = false;
+                return true;
+            }
+
+            return false;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            throw new NotImplementedException();
+            spriteBatch.DrawCircle(AbsolutePosition, 10, 20, Color.Green, 10, LayerConstants.GeneralUnitLayer);
         }
     }
 }

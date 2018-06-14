@@ -6,19 +6,19 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Property;
 using Singularity.Resources;
 
 namespace Singularity.Platform
 {
     [DataContract()]
-    class Junkyard : PlatformBlank
+    class Junkyard : PlatformBlank, IRevealing
     {
         [DataMember()]
         private const int PlatformWidth = 144;
         [DataMember()]
         private const int PlatformHeight = 127;
-
-        public Junkyard(Vector2 position, Texture2D spritesheet): base(position, spritesheet)
+        public Junkyard(Vector2 position, Texture2D spritesheet): base(position, spritesheet, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
         {
             mIPlatformActions = new IPlatformAction[1];
             //mActions[0] = BuildBlueprintJunkyard(this);
