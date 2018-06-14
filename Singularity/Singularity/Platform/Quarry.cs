@@ -7,17 +7,20 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Map;
+using Singularity.Property;
 using Singularity.Resources;
 
 namespace Singularity.Platform
 {
     [DataContract()]
-    class Quarry : PlatformBlank
+    class Quarry : PlatformBlank, IRevealing
     {
         [DataMember()]
         private const int PlatformWidth = 144;
         [DataMember()]
         private const int PlatformHeight = 127;
+
+        public Vector2 Center => new Vector2(AbsolutePosition.X + PlatformWidth / 2, AbsolutePosition.Y + PlatformHeight - 36);
 
         public Quarry(Vector2 position, Texture2D spritesheet, ResourceMap resource): base(position, spritesheet)
         {
