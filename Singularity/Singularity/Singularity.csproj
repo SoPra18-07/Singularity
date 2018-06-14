@@ -85,6 +85,7 @@
     <Compile Include="Platform\Well.cs" />
     <Compile Include="Platform\IPlatformAction.cs" />
     <Compile Include="Platform\Road.cs" />
+    <Compile Include="Property\ICollider.cs" />
     <Compile Include="Property\IRevealing.cs" />
     <Compile Include="Resources\EResourceType.cs" />
     <Compile Include="Platform\Action.cs" />
@@ -98,7 +99,6 @@
     <Compile Include="Serialization\XSerializer.cs" />
     <Compile Include="Serialization\SerializationDummy.cs" />
     <Compile Include="Property\ISpatial.cs" />
-    <Compile Include="Resources\IResource.cs" />
     <Compile Include="Resources\Resource.cs" />
     <Compile Include="Resources\ResourceHelper.cs" />
     <Compile Include="Property\LayerConstants.cs" />
@@ -134,6 +134,7 @@
     <Compile Include="Screen\StackScreenManager.cs" />
     <Compile Include="Screen\UpdateLowerScreen.cs" />
     <Compile Include="Units\Task.cs" />
+    <Compile Include="Utils\IdGenerator.cs" />
     <Compile Include="Utils\Optional.cs" />
     <Compile Include="Utils\Pair.cs" />
     <Compile Include="Utils\Triple.cs" />
