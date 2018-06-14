@@ -257,15 +257,15 @@ namespace Singularity.Units
             }
 
             // update the current node to move to after the last one got reached.
-            if (ReachedTarget(((IRevealing)mCurrentNode).Center) && mNodeQueue.Count > 0)
+            if (ReachedTarget(((PlatformBlank)mCurrentNode).Center) && mNodeQueue.Count > 0)
             {
                 mCurrentNode = mNodeQueue.Dequeue();
             }
             // finally move to the current node.
-            Move(((IRevealing)mCurrentNode).Center);
+            Move(((PlatformBlank)mCurrentNode).Center);
 
             // check whether we have reached the target after our move call.
-            ReachedTarget(((IRevealing)mCurrentNode).Center);
+            ReachedTarget(((PlatformBlank)mCurrentNode).Center);
 
         }
 
