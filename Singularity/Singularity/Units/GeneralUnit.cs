@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.DistributionManager;
 using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
@@ -9,25 +11,34 @@ using Singularity.Utils;
 
 namespace Singularity.Units
 {
+    [DataContract()]
     public class GeneralUnit : IUnit, IUpdate, IDraw
     {
+        [DataMember()]
         public int Id { get; }
+        [DataMember()]
         private int mPositionId;
+        [DataMember()]
         public string Assignment { get; set; } // TODO change to an enum type
-        public EResourceType Carrying { get; set; } // TODO change resource into a nullable type
+        [DataMember()]
+        public Resource Carrying { get; set; } // TODO change resource into a nullable type
+        [DataMember()]
         private int? mTargetId;
+        [DataMember()]
         private Stack<int> mPathQueue; // the queue of platform and edges the unit has to traverse to get to its target
+        [DataMember()]
         private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
         
 
         //These are the assigned task and a flag, wether the unit is done with it.
-        private Pair<Task, int> mAssignedTask;
+        private Task mAssignedTask;
 
         private bool mDone;
 
         private DistributionManager.DistributionManager mDistrManager;
 
         private IPlatformAction AssignedAction;
+
         // TODO: also use the size for the units representation since we someday need to draw rectangles over units (bounding box)
 
         public Vector2 AbsolutePosition { get; set; }
@@ -45,7 +56,7 @@ namespace Singularity.Units
             Id = 0; // TODO make this randomized or simply ascending
             AbsolutePosition = Vector2.Zero; // TODO figure out how to search platform by ID and get its position
             mPositionId = spawnPositionId;
-            Carrying = EResourceType.Trash; // TODO change this to a nullable type or some other implementation after dist manager is implemented
+            Carrying = null; // TODO change this to a nullable type or some other implementation after dist manager is implemented
             mPathQueue = null;
         }
         /// <summary>
@@ -57,6 +68,7 @@ namespace Singularity.Units
         /// which it should do the Task on.</param>
         public void AssignedTask(Task assignedTask, int? targetId = null)
         {
+            throw new NotImplementedException();
             switch (assignedTask)
             {
                 case Task.Idle:
@@ -118,6 +130,7 @@ namespace Singularity.Units
         /// <returns></returns>
         private Vector2 Move(int targetPosition)
         {
+            throw new NotImplementedException();
             // first get the target position Vector2 position
             // then move x distance in that direction or until above the coordinate of the position
             // TODO
@@ -139,6 +152,7 @@ namespace Singularity.Units
         /// <param name="targetPlatformId">The target platform that is to be constructed or repaired.</param>
         private void Build(int? targetPlatformId)
         {
+            throw new NotImplementedException();
             // pop out the required resource from the required resource list of the target platform
             // then goes and finds the nearest storage platform with that resource
             // does this by finding (using BFS) closest storage platform and querying it
@@ -196,7 +210,7 @@ namespace Singularity.Units
         }
         public void Update(GameTime gametime)
         {
-
+            throw new NotImplementedException();
             // I think the intention here was to do the tasks.
             switch (mAssignedTask.GetFirst())
             {
