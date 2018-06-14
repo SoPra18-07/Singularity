@@ -36,7 +36,7 @@ namespace Singularity.Map
         /// <param name="fow">The fog of war for this map</param>
         /// <param name="debug">Whether the debug grid lines are drawn or not</param>
         /// <param name="initialResources">The initial resources of this map, if not specified there will not be any on the map</param>
-        public Map(Texture2D backgroundTexture, Viewport viewport, InputManager inputManager, bool debug = false, IDictionary<Vector2, Pair<EResourceType, int>> initialResources = null)
+        public Map(Texture2D backgroundTexture, Viewport viewport, InputManager inputManager, bool debug = false, IEnumerable<Resource> initialResources = null)
         {
 
             mBackgroundTexture = backgroundTexture;
