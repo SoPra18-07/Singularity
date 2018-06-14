@@ -71,6 +71,7 @@ namespace Singularity
 
             // XSerializer.TestSerialization();
             IsMouseVisible = true;
+            mGraphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
             mGraphics.PreferredBackBufferWidth = 1080;
             mGraphics.PreferredBackBufferHeight = 720;
             mGraphics.IsFullScreen = false;
@@ -91,7 +92,7 @@ namespace Singularity
             // Create a new SpriteBatch, which can be used to draw textures.
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            mGameScreen = new GameScreen(mGraphics.GraphicsDevice.Viewport, mInputManager);
+            mGameScreen = new GameScreen(mGraphics.GraphicsDevice, mInputManager);
 
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
 
