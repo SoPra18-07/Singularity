@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -326,8 +327,9 @@ namespace Singularity.Platform
 
         }
 
-        public PlatformBlank(Vector2 position, Texture2D spritesheet)
+        public PlatformBlank(Vector2 position, Texture2D spritesheet, Vector2 center = new Vector2())
         {
+
             Id = IdGenerator.NextID();
 
             AbsolutePosition = position;
@@ -356,9 +358,19 @@ namespace Singularity.Platform
             mRequested = new Dictionary<EResourceType, int>();
 
             RevelationRadius = (int)AbsoluteSize.Y;
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
             AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
             Moved = false;
+
+            if (center == Vector2.Zero)
+            {
+                // no value was specified so just use the platform blank implementation.
+                Center = new Vector2(AbsolutePosition.X + PlatformWidth / 2, AbsolutePosition.Y + PlatformHeight - 36);
+            }
+            else
+            {
+                //value was given by subclass thus take that
+                Center = center;
+            }
 
         }
 
