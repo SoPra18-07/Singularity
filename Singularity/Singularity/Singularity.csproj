@@ -79,6 +79,7 @@
     <Compile Include="Platform\PlatformBlank.cs" />
     <Compile Include="Screen\EOptionScreenState.cs" />
     <Compile Include="Screen\IWindowItem.cs" />
+    <Compile Include="Screen\ScreenClasses\GameScreen.cs" />
     <Compile Include="Screen\Slider.cs" />
     <Compile Include="Screen\Button.cs" />
     <Compile Include="Serialization\CyclicDummy.cs" />
@@ -93,7 +94,6 @@
     <Compile Include="Screen\ScreenClasses\AchievementsScreen.cs" />
     <Compile Include="Screen\ScreenClasses\GameModeSelectScreen.cs" />
     <Compile Include="Screen\ScreenClasses\GamePauseScreen.cs" />
-    <Compile Include="Screen\ScreenClasses\GameScreen.cs" />
     <Compile Include="Screen\ScreenClasses\LoadingScreen.cs" />
     <Compile Include="Screen\ScreenClasses\LoadSelectScreen.cs" />
     <Compile Include="Screen\ScreenClasses\MainMenuManagerScreen.cs" />
@@ -103,6 +103,9 @@
     <Compile Include="Screen\ScreenClasses\SaveGameScreen.cs" />
     <Compile Include="Screen\ScreenClasses\SplashScreen.cs" />
     <Compile Include="Screen\ScreenClasses\StatisticsScreen.cs" />
+    <Compile Include="Sound\SoundClass.cs" />
+    <Compile Include="Sound\SoundManager.cs" />
+    <Compile Include="Sound\SoundPhase.cs" />
     <Compile Include="StoryManager\StoryManager.cs" />
     <Compile Include="Units\GeneralUnit.cs" />
     <Compile Include="Units\IUnit.cs" />

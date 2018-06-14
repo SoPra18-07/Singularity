@@ -12,42 +12,25 @@ namespace Singularity.Resources
     /// <summary>
     /// Represents a resource in the game. Written in such a fashion that it can represent any resource there is and will be.
     /// </summary>
-    public sealed class Resource : IResource
+    public sealed class Resource : ISpatial
     {
-
-        public const int DefaultWidth = 200;
-
-        /// <summary>
-        /// The current position of this resource on the map.
-        /// </summary>
-        private Vector2 mPosition;
 
         /// <summary>
         /// The color of this resource.
         /// </summary>
         private readonly Color mColor;
 
-
-        //TODO: remove when ISpatial is there. 
-
-        /// <summary>
-        /// The width of this resource. The height gets set by this value.
-        /// </summary>
-        private int mWidth;
-
-        /// <summary>
-        /// The height of this resource. Gets automatically set by the width.
-        /// </summary>
-        private int mHeight;
-
-        /*
-           TODO: im not quite sure whether the ID is "unique" such that every instance of this class
-           TODO: should hold a different id, or if every different resouce should hold a different id,
-           TODO: thus i've not written any id assignment yet.
-        */
-        public int Id { get; }
-
         public EResourceType Type { get; }
+
+        public Vector2 RelativePosition { get; set; }
+
+        public Vector2 RelativeSize { get; set; }
+        
+
+        public Vector2 AbsolutePosition { get; set; }
+        
+
+        public Vector2 AbsoluteSize { get; set; }
 
         /// <summary>
         /// Creates a new resource object for the given type, position and spriteSheet.
@@ -58,36 +41,17 @@ namespace Singularity.Resources
         public Resource(EResourceType type, Vector2 position, int width)
         {
             Type = type;
-            mPosition = position;
+
+            AbsolutePosition = position;
+            AbsoluteSize = new Vector2(width, (int)(width * 0.6f));
 
             mColor = ResourceHelper.GetColor(type);
 
-            // could be handled more dynamically, for now this is o.k.
-            mHeight = (int) (width * 0.6f);
-
-            mWidth = width;
-
-            if (width <= 0)
-            {
-                mWidth = DefaultWidth;
-            }
-
-        }
-
-        public void Follow(GeneralUnit unitToFollow)
-        {
-            //TODO: implement
-            throw new NotImplementedException();
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawEllipse(new Rectangle((int) mPosition.X, (int) mPosition.Y, mWidth, mHeight), mColor, 4f, LayerConstants.ResourceLayer);
-        }
-
-        public Vector2 GetPosition()
-        {
-            return mPosition;
+            spriteBatch.DrawEllipse(new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y), mColor, 4f, LayerConstants.ResourceLayer);
         }
 
         public void Update(GameTime gametime)
@@ -95,9 +59,5 @@ namespace Singularity.Resources
             //TODO: implement update code
         }
 
-        public void Use()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

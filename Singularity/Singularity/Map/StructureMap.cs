@@ -22,16 +22,11 @@ namespace Singularity.Map
         /// </summary>
         private readonly LinkedList<Pair<PlatformBlank, PlatformBlank>> mRoads;
 
-
-        private readonly FogOfWar mFow;
-
         /// <summary>
         /// Creates a new structure map which holds all the structures currently in the game.
         /// </summary>
-        public StructureMap(FogOfWar fow)
-        {
-            mFow = fow;
-
+        public StructureMap()
+        { 
             mPlatforms = new LinkedList<PlatformBlank>();
             mRoads = new LinkedList<Pair<PlatformBlank, PlatformBlank>>();
         }
@@ -43,7 +38,6 @@ namespace Singularity.Map
         public void AddPlatform(PlatformBlank platform)
         {
             mPlatforms.AddLast(platform);
-            mFow.AddRevealingObject(platform);
         }
 
         /// <summary>
@@ -53,7 +47,6 @@ namespace Singularity.Map
         public void RemovePlatform(PlatformBlank platform)
         {
             mPlatforms.Remove(platform);
-            mFow.RemoveRevealingObject(platform);
         }
 
         public LinkedList<PlatformBlank> GetPlatforms()

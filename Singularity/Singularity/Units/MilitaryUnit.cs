@@ -170,6 +170,7 @@ namespace Singularity.Units
 
         public void Update(GameTime gameTime)
         {
+
             //make sure to update the relative bounds rectangle enclosing this unit.
             Bounds = new Rectangle(
                 (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);

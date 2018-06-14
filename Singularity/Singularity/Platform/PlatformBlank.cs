@@ -40,7 +40,7 @@ namespace Singularity.Platform
         [DataMember()]
         protected Dictionary<EResourceType, int> mRequested;
 
-        public Vector2 Center { get; private set; }
+        public Vector2 Center => new Vector2(AbsolutePosition.X + PlatformWidth / 2, AbsolutePosition.Y + PlatformHeight - 36);     
 
         public int RevelationRadius { get; private set; }
 
@@ -348,7 +348,6 @@ namespace Singularity.Platform
             mRequested = new Dictionary<EResourceType, int>();
 
             RevelationRadius = (int)AbsoluteSize.Y;
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
 
         }
 
