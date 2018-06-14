@@ -106,7 +106,6 @@ namespace Singularity.Screen.ScreenClasses
             switch (targetScreen)
             {
                 case EScreen.AchievementsScreen:
-                    mTransitionTargetValue = 1.5f;
                     break;
                 case EScreen.GameModeSelectScreen:
                     break;
@@ -119,7 +118,6 @@ namespace Singularity.Screen.ScreenClasses
                 case EScreen.OptionsScreen:
                     mTransitionTargetValue = 4f;
                     mTransitionDuration = 300;
-                    mTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
                     break;
 
                 default:
@@ -127,7 +125,7 @@ namespace Singularity.Screen.ScreenClasses
             }
             // SetHoloProjectionScaling(mHoloProjectionWidthScaling);
             TransitionRunning = true;
-
+            mTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
             mTransitionInitialValue = mHoloProjectionWidthScaling;
         }
 

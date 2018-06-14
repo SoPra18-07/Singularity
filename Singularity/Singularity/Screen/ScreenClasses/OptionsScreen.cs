@@ -25,7 +25,7 @@ namespace Singularity.Screen.ScreenClasses
         private readonly float mTabPadding;
         private readonly float mContentPadding;
         private readonly float mTopContentPadding;
-        private Vector2 mScreenResolution;
+        private readonly Vector2 mScreenResolution;
 
         // All strings are variables to allow for easy editing and localization
         private readonly string mWindowTitleString;
@@ -157,8 +157,8 @@ namespace Singularity.Screen.ScreenClasses
 
             // Graphics settings
             mFullScreen = new Button(mFullScreenString, mLibSans20, new Vector2(mContentPadding, mTopContentPadding), mTextColor);
-            mResolution1 = new Button("1080 x 720", mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 40), mTextColor);
-            mResolution2 = new Button("1920 x 1080", mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 80));
+            mResolution1 = new Button("800 x 600", mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 40), mTextColor);
+            mResolution2 = new Button("960 x 720", mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 80));
             mAntialiasing = new Button(mAntialiasingString, mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 120), mTextColor);
 
             mGraphicsButtons.Add(mFullScreen);
@@ -413,18 +413,18 @@ namespace Singularity.Screen.ScreenClasses
 
         private void OnResoOneReleased(Object sender, EventArgs eventArgs)
         {
-            mGame.mGraphics.PreferredBackBufferWidth = 1080;
-            mGame.mGraphics.PreferredBackBufferHeight = 720;
+            mGame.mGraphics.PreferredBackBufferWidth = 800;
+            mGame.mGraphics.PreferredBackBufferHeight = 600;
             mGame.mGraphics.ApplyChanges();
-            MainMenuManagerScreen.SetResolution(new Vector2(1080, 720));
+            MainMenuManagerScreen.SetResolution(new Vector2(800, 600));
         }
 
         private void OnResoTwoReleased(Object sender, EventArgs eventArgs)
         {
-            mGame.mGraphics.PreferredBackBufferWidth = 1920;
-            mGame.mGraphics.PreferredBackBufferHeight = 1080;
+            mGame.mGraphics.PreferredBackBufferWidth = 960;
+            mGame.mGraphics.PreferredBackBufferHeight = 720;
             mGame.mGraphics.ApplyChanges();
-            MainMenuManagerScreen.SetResolution(new Vector2(1920, 1080));
+            MainMenuManagerScreen.SetResolution(new Vector2(960, 720));
         }
 
         private void OnAntialiasingReleased(Object sender, EventArgs eventArgs)
