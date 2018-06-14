@@ -7,13 +7,19 @@ using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
+using Singularity.Graph;
 
 namespace Singularity.Platform
 {
     [DataContract()]
-    public class PlatformBlank : IDraw, IUpdate, ISpatial, IRevealing
+    public class PlatformBlank : ISpatial, IRevealing, INode
 
     {
+
+        private List<IEdge> mInwardsEdges;
+
+        private List<IEdge> mOutwardsEdges;
+
         [DataMember()]
         protected EPlatformType mType = EPlatformType.Blank;
         [DataMember()]
@@ -322,6 +328,9 @@ namespace Singularity.Platform
         public PlatformBlank(Vector2 position, Texture2D spritesheet)
         {
 
+            mInwardsEdges = new List<IEdge>();
+            mOutwardsEdges = new List<IEdge>();
+
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
 
@@ -354,6 +363,38 @@ namespace Singularity.Platform
         public bool PlatformHasSpace()
         {
             return mResources.Count < 10;
+        }
+
+        public void AddEdge(IEdge edge, EEdgeFacing facing)
+        {
+            if (facing == EEdgeFacing.Inwards)
+            {
+                mInwardsEdges.Add(edge);
+                return;
+            }
+            mOutwardsEdges.Add(edge);
+
+        }
+
+        public void RemoveEdge(IEdge edge, EEdgeFacing facing)
+        {
+            if (facing == EEdgeFacing.Inwards)
+            {
+                mInwardsEdges.Remove(edge);
+                return;
+            }
+            mOutwardsEdges.Remove(edge);
+
+        }
+
+        public List<IEdge> GetOutwardsEdges()
+        {
+            return mOutwardsEdges;
+        }
+
+        public List<IEdge> GetInwardsEdges()
+        {
+            return mInwardsEdges;
         }
     }
 }

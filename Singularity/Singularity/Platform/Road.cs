@@ -1,15 +1,17 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Graph;
 using Singularity.Libraries;
 using Singularity.Property;
 
 namespace Singularity.Platform
 {
-    internal sealed class Road : ISpatial
+    internal sealed class Road : ISpatial, IEdge
     {
-        private Vector2 Source { get; }
-        private Vector2 Destination { get; }
+        private PlatformBlank Source { get; }
+
+        private PlatformBlank Destination { get; }
 
         private bool mBlueprint;
 
@@ -42,25 +44,37 @@ namespace Singularity.Platform
         /// <param name="source">The source IRevealing object from which this road gets drawn</param>
         /// <param name="destination">The destinaion IRevealing object to which this road gets drawn</param>
         /// <param name="blueprint">Whether this road is a blueprint or not</param>
-        public Road(IRevealing source, IRevealing destination, bool blueprint)
+        public Road(PlatformBlank source, PlatformBlank destination, bool blueprint)
         {
             // the hardcoded values need some changes for different platforms, ill wait until those are implemented to find a good solution.
-            Source = source.Center;
-            Destination = destination.Center;
+            Source = source;
+            Destination = destination;
             Blueprint = blueprint;
 
-            AbsolutePosition = Source;
+            source.AddEdge(this, EEdgeFacing.Outwards);
+            destination.AddEdge(this, EEdgeFacing.Inwards);
+
         }
 
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawLine(Source, Destination, mBlueprint ? new Color(new Vector3(46, 53, 97)) : new Color(new Vector4(0, 40, 40, 255)), 5f, LayerConstants.RoadLayer);
+            spriteBatch.DrawLine(((IRevealing)Source).Center, ((IRevealing)Destination).Center, mBlueprint ? new Color(new Vector3(46, 53, 97)) : new Color(new Vector4(0, 40, 40, 255)), 5f, LayerConstants.RoadLayer);
         }
 
         public void Update(GameTime gametime)
         {
 
+        }
+
+        public INode GetParent()
+        {
+            return Source;
+        }
+
+        public INode GetChild()
+        {
+            return Destination;
         }
     }
 }

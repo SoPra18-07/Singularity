@@ -42,9 +42,20 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\InvalidGenericArgumentException.cs" />
     <Compile Include="Exceptions\NoSuchElementException.cs" />
     <Compile Include="Exceptions\UnsupportedTextureSizeException.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Graph\EEdgeFacing.cs" />
+    <Compile Include="Graph\Graph.cs" />
+    <Compile Include="Graph\IEdge.cs" />
+    <Compile Include="Graph\INode.cs" />
+    <Compile Include="Graph\Paths\DummyPathfinding.cs" />
+    <Compile Include="Graph\Paths\IPath.cs" />
+    <Compile Include="Graph\Paths\IPathfinding.cs" />
+    <Compile Include="Graph\Paths\PathfindingFactory.cs" />
+    <Compile Include="Graph\Paths\PathManager.cs" />
+    <Compile Include="Graph\Paths\SortedPath.cs" />
     <Compile Include="Input\InputManager2.cs" />
     <Compile Include="Libraries\Animations.cs" />
     <Compile Include="Libraries\Bloom Filter.cs" />
@@ -121,7 +132,6 @@
     <Compile Include="Screen\RenderLowerScreen.cs" />
     <Compile Include="Screen\StackScreenManager.cs" />
     <Compile Include="Screen\UpdateLowerScreen.cs" />
-    <Compile Include="Units\Pathfinding.cs" />
     <Compile Include="Units\Task.cs" />
     <Compile Include="Utils\Optional.cs" />
     <Compile Include="Utils\Pair.cs" />

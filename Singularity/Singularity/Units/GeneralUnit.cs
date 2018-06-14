@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Graph.Paths;
+using Singularity.Libraries;
+using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
+using Singularity.Utils;
 
 namespace Singularity.Units
 {
@@ -14,7 +19,7 @@ namespace Singularity.Units
         public string Assignment { get; set; } // TODO change to an enum type
         public EResourceType Carrying { get; set; } // TODO change resource into a nullable type
         private int? mTargetId;
-        private Stack<int> mPathQueue; // the queue of platform and edges the unit has to traverse to get to its target
+        private Queue<Vector2> mPathQueue; // the queue of platform center locations
         private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
 
         // TODO: also use the size for the units representation since we someday need to draw rectangles over units (bounding box)
@@ -27,15 +32,25 @@ namespace Singularity.Units
 
         public Vector2 RelativeSize { get; set; }
 
+        private readonly PathManager mPathManager;
+
+        private bool mIsMoving;
+
+        private Vector2 mCurrentTarget;
+
+        private const float Speed = 3f;
+
         internal JobType Job { get; set; } = JobType.Idle;
 
-        public GeneralUnit(int spawnPositionId)
+        public GeneralUnit(PlatformBlank platform, PathManager pathManager)
         {
             Id = 0; // TODO make this randomized or simply ascending
-            AbsolutePosition = Vector2.Zero; // TODO figure out how to search platform by ID and get its position
-            mPositionId = spawnPositionId;
+            AbsolutePosition = ((IRevealing) platform).Center; // TODO figure out how to search platform by ID and get its position
             Carrying = EResourceType.Trash; // TODO change this to a nullable type or some other implementation after dist manager is implemented
-            mPathQueue = null;
+            mPathQueue = new Queue<Vector2>();
+
+            mIsMoving = false;
+            mPathManager = pathManager;
         }
         /// <summary>
         /// Used to pick the Task that the unit does. It assigns the unit to a job which the update method uses
@@ -101,12 +116,16 @@ namespace Singularity.Units
         /// </summary>
         /// <param name="targetPosition">The target the unit should move towards</param>
         /// <returns></returns>
-        private Vector2 Move(int targetPosition)
+        private void Move(Vector2 targetPosition)
         {
-            // first get the target position Vector2 position
-            // then move x distance in that direction or until above the coordinate of the position
-            // TODO
-            return Vector2.Zero;
+
+            mIsMoving = true;
+
+            var movementVector = Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y));
+
+
+            AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X * Speed, AbsolutePosition.Y + movementVector.Y * Speed);
+
         }
 
         /// <summary>
@@ -126,6 +145,7 @@ namespace Singularity.Units
             // travel back to original target using Move()
             // once it has arrived, drops the resource onto the platform
 
+            /*
             if (targetPlatformId != null)
             {
                 mConstructionResourceFound = false; // sets flag to false first
@@ -164,14 +184,22 @@ namespace Singularity.Units
                     }
                     // drop the resource.
                 }
+                
 
 
 
             }
+            */
 
         }
         public void Update(GameTime gametime)
         {
+            if (mPathQueue.Count <= 0 && !mIsMoving)
+            {
+                mPathQueue = mPathManager.GetPath(this).GetPath();
+                mCurrentTarget = mPathQueue.Dequeue();
+            }
+
             // use switch to change between jobs
             switch (Job)
             {
@@ -192,12 +220,33 @@ namespace Singularity.Units
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            throw new NotImplementedException();
+            if (ReachedTarget(mCurrentTarget) && mPathQueue.Count > 0)
+            {
+                mCurrentTarget = mPathQueue.Dequeue();
+            }
+
+            if (mCurrentTarget != null)
+            {
+                Move(mCurrentTarget);
+                ReachedTarget(mCurrentTarget);
+            }
+        }
+
+        private bool ReachedTarget(Vector2 target)
+        { 
+
+            if (Vector2.Distance(AbsolutePosition, target) < 2)
+            {
+                mIsMoving = false;
+                return true;
+            }
+
+            return false;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            throw new NotImplementedException();
+            spriteBatch.DrawCircle(AbsolutePosition, 10, 20, Color.Green, 10, LayerConstants.GeneralUnitLayer);
         }
     }
 }
