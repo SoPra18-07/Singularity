@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Graph;
 using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
+using Singularity.Utils;
 
 namespace Singularity.Platform
 {
@@ -363,7 +365,6 @@ namespace Singularity.Platform
             mRequested = new Dictionary<EResourceType, int>();
 
             RevelationRadius = (int)AbsoluteSize.Y;
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
             AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
             Moved = false;
 
@@ -396,12 +397,12 @@ namespace Singularity.Platform
 
         }
 
-        public List<IEdge> GetOutwardsEdges()
+        public IEnumerable<IEdge> GetOutwardsEdges()
         {
             return mOutwardsEdges;
         }
 
-        public List<IEdge> GetInwardsEdges()
+        public IEnumerable<IEdge> GetInwardsEdges()
         {
             return mInwardsEdges;
         }
