@@ -94,7 +94,7 @@ namespace Singularity.Resources
                 var yPos = rnd.Next(MapConstants.MapHeight - (int) (defaultWidth * 0.6f));
 
                 //check whether the rectangle enclosing the ellipse is on the map. Then the ellipse has to be on the map aswell
-                if (!Map.Map.IsOnTop(new Rectangle(xPos, yPos, defaultWidth, (int) (defaultWidth * 0.6f))))
+                if (!Map.Map.IsOnTop(new Rectangle(xPos, yPos, defaultWidth, (int) (defaultWidth * 0.6f)), null))
                 {
                     amount++;
                     continue;

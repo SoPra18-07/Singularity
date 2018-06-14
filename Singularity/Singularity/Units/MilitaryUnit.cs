@@ -6,10 +6,11 @@ using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
 using Singularity.Map;
 using Singularity.Property;
+using Singularity.Utils;
 
 namespace Singularity.Units
 {
-    internal sealed class MilitaryUnit : IUnit, IDraw, IUpdate, IRevealing, IMouseClickListener, IMousePositionListener
+    internal sealed class MilitaryUnit : ICollider, IUnit, IDraw, IUpdate, IRevealing, IMouseClickListener, IMousePositionListener
     {
         private const int DefaultWidth = 150;
         private const int DefaultHeight = 75;
@@ -37,16 +38,13 @@ namespace Singularity.Units
         private int mRotation;
         private readonly Texture2D mMilSheet;
 
-        private double mXstep;
-        private double mYstep;
-
         private bool mSelected;
 
         private float mMouseX;
 
         private float mMouseY;
 
-         
+
         public Vector2 AbsolutePosition { get; set; }
 
         public Vector2 AbsoluteSize { get; set; }
@@ -57,12 +55,17 @@ namespace Singularity.Units
 
         public Vector2 Center { get; private set; }
 
+        public bool Moved { get; private set; }
+
         public int RevelationRadius { get; private set; }
+
         public Rectangle Bounds { get; private set; }
+
+        public Rectangle AbsBounds { get; private set; }
 
         public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, InputManager manager)
         {
-            Id = 0; // TODO this will later use a random number generator to create a unique
+            Id = IdGenerator.NextID(); // TODO this will later use a random number generator to create a unique
                     // id for the specific unit.
             Health = 10; //TODO
             
@@ -72,6 +75,7 @@ namespace Singularity.Units
             RevelationRadius = (int) AbsoluteSize.X;
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X  / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
 
+            Moved = false;
             mIsMoving = false;
             mCamera = camera;
 
@@ -200,6 +204,8 @@ namespace Singularity.Units
             mColor = mSelected ? sSelectedColor : sNotSelectedColor;
 
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int) AbsolutePosition.Y, (int)AbsoluteSize.X, (int) AbsoluteSize.Y);
+            Moved = mIsMoving;
         }
 
         /// <summary>
@@ -236,11 +242,10 @@ namespace Singularity.Units
 
         public void MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
-
             switch (mouseAction)
             {
                 case EMouseAction.LeftClick:
-                    if (mSelected && !mIsMoving && !withinBounds)
+                    if (mSelected && !mIsMoving && !withinBounds && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f), (int)(mMouseY - RelativeSize.Y / 2f), (int)RelativeSize.X, (int)RelativeSize.Y), mCamera))
                     {
                         mIsMoving = true;
                         mTargetPosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
