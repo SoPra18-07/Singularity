@@ -36,7 +36,7 @@ namespace Singularity.Map
         /// <param name="debug">Whether the debug grid lines are drawn or not</param>
         /// <param name="initialResources">The initial resources of this map, if not specified there will not be any on the map</param>
         /// <param name="fow">The fog of war for this map</param>
-        public Map(Texture2D backgroundTexture, Viewport viewport, FogOfWar fow, InputManager inputManager, bool debug = false, IEnumerable<Resource> initialResources = null)
+        public Map(Texture2D backgroundTexture, Viewport viewport, InputManager inputManager, bool debug = false, IEnumerable<Resource> initialResources = null)
         {
             if (backgroundTexture.Width != MapConstants.MapWidth && backgroundTexture.Height != MapConstants.MapHeight)
             {
@@ -50,7 +50,7 @@ namespace Singularity.Map
             mCamera = new Camera(viewport, inputManager, 0, 0);
 
             mCollisionMap = new CollisionMap();
-            mStructureMap = new StructureMap(fow);
+            mStructureMap = new StructureMap();
             mResourceMap = new ResourceMap(initialResources);
         }
 
