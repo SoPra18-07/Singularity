@@ -15,11 +15,12 @@ namespace Singularity.Screen.ScreenClasses
     /// As long as not all resources have been loaded (e.g. map generation
     /// or on a save file load), this screen will be shown.
     /// </summary>
-    class LoadingScreen : IScreen
+    class LoadingScreen : ITransitionableMenu
     {
         private Texture2D mLogo;
         private readonly Vector2 mLogoPosition;
-        
+        public bool TransitionRunning { get; }
+
         /// <summary>
         /// Constructs a new instance of the loading screen.
         /// </summary>
@@ -27,6 +28,7 @@ namespace Singularity.Screen.ScreenClasses
         public LoadingScreen(Vector2 screenResolution)
         {
             mLogoPosition = Vector2.Add(screenResolution, new Vector2(-106, -97));
+            TransitionRunning = false;
 
         }
         /// <summary>
@@ -48,7 +50,7 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.Begin();
 
             spriteBatch.Draw(mLogo, mLogoPosition, null, Color.White, 0f, Vector2.Zero, 0.14f, SpriteEffects.None, 0f);
-            
+
             spriteBatch.End();
         }
 
@@ -77,6 +79,12 @@ namespace Singularity.Screen.ScreenClasses
         public bool DrawLower()
         {
             return false;
+        }
+
+
+        public void TransitionTo(EScreen originScreen, EScreen targetScreen, GameTime gameTime)
+        {
+            // transition not necessary
         }
     }
 }

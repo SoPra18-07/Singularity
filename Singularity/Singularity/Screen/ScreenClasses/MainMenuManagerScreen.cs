@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Cryptography.X509Certificates;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -19,23 +18,24 @@ namespace Singularity.Screen.ScreenClasses
         private EScreen mScreenState;
 
         // All connecting screens
-        private IScreen mGameModeSelectScreen;
-        private IScreen mLoadSelectScreen;
-        private IScreen mAchievementsScreen;
-        private IScreen mOptionsScreen;
-        private IScreen mSplashScreen;
-        private IScreen mMainMenuScreen;
-        private IScreen mLoadingScreen;
+        private ITransitionableMenu mGameModeSelectScreen;
+        private ITransitionableMenu mLoadSelectScreen;
+        private ITransitionableMenu mAchievementsScreen;
+        private ITransitionableMenu mOptionsScreen;
+        private ITransitionableMenu mSplashScreen;
+        private ITransitionableMenu mMainMenuScreen;
+        private ITransitionableMenu mLoadingScreen;
 
         // Background
         private MenuBackgroundScreen mMenuBackgroundScreen;
 
-        // Which button pressed
+        // Screen transition variables
         private static string sPressed;
+        private int mTransitionState;
 
         // The game itself (to allow for quitting)
         private readonly Game1 mGame;
-        
+
         // viewport resolution changes
         private static Vector2 sViewportResolution;
         private static bool sResolutionChanged;
@@ -54,13 +54,14 @@ namespace Singularity.Screen.ScreenClasses
         {
             mScreenManager = screenManager;
             mGame = game;
-            
-            Initialize(screenResolution, game);
-            
+
+            Initialize(screenResolution, false, game);
+
             mScreenState = showSplash ? EScreen.SplashScreen : EScreen.MainMenuScreen;
 
             sPressed = "None";
             sResolutionChanged = false;
+            mTransitionState = 0;
         }
 
         /// <summary>
@@ -100,11 +101,11 @@ namespace Singularity.Screen.ScreenClasses
         {
             if (sResolutionChanged)
             {
-                Initialize(sViewportResolution, mGame);
+                Initialize(sViewportResolution, sResolutionChanged, mGame);
                 LoadScreenContents(mContent);
                 mScreenManager.RemoveScreen();
                 mScreenManager.RemoveScreen();
-                mMenuBackgroundScreen.SetScreen(EScreen.OptionsScreen);
+                mMenuBackgroundScreen.TransitionTo(EScreen.OptionsScreen, EScreen.OptionsScreen, gametime);
                 mScreenManager.AddScreen(mMenuBackgroundScreen);
                 mScreenManager.AddScreen(mOptionsScreen);
                 sResolutionChanged = false;
@@ -116,7 +117,7 @@ namespace Singularity.Screen.ScreenClasses
                 case EScreen.GameModeSelectScreen:
                     if (sPressed == "Free Play")
                     {
-                        SwitchScreen(EScreen.LoadingScreen, this); // Hack to pass something to switchscreen without a nullable type
+                        SwitchScreen(EScreen.LoadingScreen, mGameModeSelectScreen, mLoadingScreen, gametime);
                         mScreenManager.AddScreen(mLoadingScreen);
                     }
                     break;
@@ -132,22 +133,22 @@ namespace Singularity.Screen.ScreenClasses
                 case EScreen.MainMenuScreen:
                     if (sPressed == "Play")
                     {
-                        SwitchScreen(EScreen.GameModeSelectScreen, mGameModeSelectScreen);
+                        SwitchScreen(EScreen.GameModeSelectScreen, mMainMenuScreen, mGameModeSelectScreen, gametime);
                     }
 
                     if (sPressed == "Load")
                     {
-                        SwitchScreen(EScreen.LoadSelectScreen, mLoadSelectScreen);
+                        SwitchScreen(EScreen.LoadSelectScreen, mMainMenuScreen, mLoadSelectScreen, gametime);
                     }
 
                     if (sPressed == "Options")
                     {
-                        SwitchScreen(EScreen.OptionsScreen, mOptionsScreen);
+                        SwitchScreen(EScreen.OptionsScreen, mMainMenuScreen, mOptionsScreen, gametime);
                     }
 
                     if (sPressed == "Achievments")
                     {
-                        SwitchScreen(EScreen.AchievementsScreen, mAchievementsScreen);
+                        SwitchScreen(EScreen.AchievementsScreen, mMainMenuScreen, mAchievementsScreen, gametime);
                     }
 
                     if (sPressed == "Quit")
@@ -156,47 +157,117 @@ namespace Singularity.Screen.ScreenClasses
                     }
                     break;
                 case EScreen.OptionsScreen:
+                    if (sPressed == "Back")
+                    {
+                        SwitchScreen(EScreen.MainMenuScreen, mOptionsScreen, mMainMenuScreen, gametime);
+                    }
                     break;
                 case EScreen.SplashScreen:
                     if (Keyboard.GetState().GetPressedKeys().Length > 0
                         || Mouse.GetState().LeftButton == ButtonState.Pressed
                         || Mouse.GetState().RightButton == ButtonState.Pressed)
                     {
-                        // TODO animate screen
-                        SwitchScreen(EScreen.MainMenuScreen, mMainMenuScreen);
+                        sPressed = "Pressed";
                     }
+
+                    if (sPressed == "Pressed")
+                    {
+                        SwitchScreen(EScreen.MainMenuScreen, mSplashScreen, mMainMenuScreen, gametime);
+                    }
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            if (sPressed == "Back")
-            {
-                SwitchScreen(EScreen.MainMenuScreen, mMainMenuScreen);
-            }
+
         }
 
         /// <summary>
         /// Automates the process of removing and adding new screens
         /// that are part of the MainMenu to the stack manager.
         /// </summary>
-        /// <param name="eScreen"></param>
-        /// <param name="iScreen"></param>
-        private void SwitchScreen(EScreen eScreen, IScreen iScreen)
+        /// <param name="targetEScreen"></param>
+        /// <param name="originScreen"></param>
+        /// <param name="targetScreen"></param>
+        /// <param name="gameTime">Used for animations</param>
+        private void SwitchScreen(EScreen targetEScreen, ITransitionableMenu originScreen, ITransitionableMenu targetScreen, GameTime gameTime)
         {
-            // remove current top screen
-            mScreenManager.RemoveScreen();
-            if (iScreen != this)
+            switch (mTransitionState)
             {
-                mScreenManager.AddScreen(iScreen);
-                mMenuBackgroundScreen.SetScreen(eScreen);
+                case (0):
+                    // start the necessary transitions
+                    originScreen.TransitionTo(mScreenState, targetEScreen, gameTime);
+                    mMenuBackgroundScreen.TransitionTo(mScreenState, targetEScreen, gameTime);
+                    mTransitionState = 1;
+                    break;
+
+                case (1):
+                    // Wait for the origin screen to finish transitioning out
+                    if (!originScreen.TransitionRunning)
+                    {
+                        // once it is done transitioning out, remove it and add the target screen
+                        mScreenManager.RemoveScreen();
+                        mScreenManager.AddScreen(targetScreen);
+                        // then start transitioning the target screen
+                        targetScreen.TransitionTo(mScreenState, targetEScreen, gameTime);
+                        mTransitionState = 2;
+                    }
+                    break;
+                case (2):
+                    // now wait for the target screen to finish transitioning in
+                    if (!targetScreen.TransitionRunning)
+                    {
+                        // once it is done transitioning in, change the states of everyone to reflect the new state
+                        mScreenState = targetEScreen;
+                        sPressed = "None";
+                        mTransitionState = 0;
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
+
+            /* old code
+            var origin = new EScreen();
+            // make sure that this isn't a switch to the gamescreen, represented by this being the screen that is passed
+            if (targetScreen != mLoadingScreen)
+            {
+                // check if the transition is running. If yes, then don't do anything
+                if (!mMenuBackgroundScreen.TransitionRunning)
+                {
+                    origin = mScreenState;
+                    // if the transition hasn't started, start it
+                    if (mMenuBackgroundScreen.CurrentScreen != eScreen)
+                    {
+                        mCurrentScreen.TransitionTo(origin, eScreen, gameTime);
+                        mMenuBackgroundScreen.TransitionTo(origin, eScreen, gameTime);
+                    }
+                    // if it is finish, "reset" the transition states.
+                    if (!mCurrentScreen.TransitionRunning)
+                    {
+                        mCurrentScreen = targetScreen;
+                        mScreenState = eScreen;
+                        sPressed = "None";
+                    }
+                }
+            }
+            // special switch case for loading screen
             else
             {
-                // remove menu background
+                // remove menu background if it is a switch to gamescreen
                 mScreenManager.RemoveScreen();
             }
-            mScreenState = eScreen;
-            sPressed = "None";
+            // check to see if the transition out of the current screen is done but the transition in hasn't been completed yet
+            if (!mCurrentScreen.TransitionRunning && mCurrentScreen == targetScreen)
+            {
+                // once the transition is finished, remove the screen
+                mScreenManager.RemoveScreen();
+                // add the target screen and replace the current screen with that screen
+                mScreenManager.AddScreen(targetScreen);
+                targetScreen.TransitionTo(origin, eScreen, gameTime);
+                mCurrentScreen = targetScreen;
+            }
+            */
         }
 
         /// <summary>
@@ -224,7 +295,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>Bool. If true, then the screen below this will be drawn.</returns>
         public bool DrawLower()
         {
-            return mScreenState == EScreen.GameScreen? true : false;
+            return mScreenState == EScreen.GameScreen ? true : false;
         }
 
         public static void SetResolution(Vector2 viewportResolution)
@@ -238,12 +309,12 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         /// <param name="screenResolution"></param>
         /// <param name="game"></param>
-        private void Initialize(Vector2 screenResolution, Game1 game)
+        private void Initialize(Vector2 screenResolution, bool screenResolutionChanged, Game1 game)
         {
             mGameModeSelectScreen = new GameModeSelectScreen(screenResolution);
             mLoadSelectScreen = new LoadSelectScreen();
             mAchievementsScreen = new AchievementsScreen();
-            mOptionsScreen = new OptionsScreen(screenResolution, game);
+            mOptionsScreen = new OptionsScreen(screenResolution, screenResolutionChanged, game);
             mMenuBackgroundScreen = new MenuBackgroundScreen(screenResolution);
             mSplashScreen = new SplashScreen(screenResolution);
             mMainMenuScreen = new MainMenuScreen(screenResolution);
@@ -337,7 +408,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO: implement start game with story
             throw new NotImplementedException("No story yet unfortunately");
 
-            
+
         }
 
         /// <summary>

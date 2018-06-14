@@ -1,19 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using Singularity.Platform;
 using Singularity.Input;
-
-using Singularity.Map;
-using Singularity.Map.Properties;
-using Singularity.Resources;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
-using Singularity.Sound;
-using Singularity.Units;
+
 
 namespace Singularity
 {
@@ -25,17 +16,17 @@ namespace Singularity
         internal GraphicsDeviceManager mGraphics;
         internal GraphicsAdapter mGraphicsAdapter;
 
-        private SoundManager mSoundManager;
+        private static Song sSoundtrack;
 
         // Screens
         internal GameScreen mGameScreen;
         private MainMenuManagerScreen mMainMenuManager;
-        private InputManager mInputManager;
+        private readonly InputManager mInputManager;
 
 
         // Sprites!
         private SpriteBatch mSpriteBatch;
-        
+
 
         // Screen Manager
         private readonly IScreenManager mScreenManager;
@@ -47,7 +38,10 @@ namespace Singularity
 
             mGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
 
+            mInputManager = new InputManager();
             mScreenManager = new StackScreenManager();
+
+            mInputManager = new InputManager();
 
         }
 
@@ -68,12 +62,10 @@ namespace Singularity
 
             // XSerializer.TestSerialization();
             IsMouseVisible = true;
-
-            mGraphics.PreferredBackBufferWidth = 1080;
-            mGraphics.PreferredBackBufferHeight = 720;
+            mGraphics.PreferredBackBufferWidth = 1280;
+            mGraphics.PreferredBackBufferHeight = 1024;
             mGraphics.IsFullScreen = false;
             mGraphics.ApplyChanges();
-            mSoundManager = new SoundManager();
 
             base.Initialize();
         }
@@ -89,29 +81,23 @@ namespace Singularity
             // Create a new SpriteBatch, which can be used to draw textures.
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            var camera = new Camera(GraphicsDevice.Viewport);
-
-            mInputManager = new InputManager(camera);
-
-            camera.SetInputManager(mInputManager);
-
-            mGameScreen = new GameScreen(mGraphics.GraphicsDevice.Viewport, mInputManager, camera);
-            var uIScreen = new PresentationUIScreen(mGameScreen, mInputManager);
+            mGameScreen = new GameScreen(mGraphics.GraphicsDevice.Viewport, mInputManager);
 
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
 
             // Add the screens to the screen manager
             // The idea is that the game screen is always at the bottom and stuff is added simply
             // on top of it.
-            mScreenManager.AddScreen(uIScreen);
             mScreenManager.AddScreen(mGameScreen);
             mScreenManager.AddScreen(mMainMenuManager);
-            
+
             mMainMenuManager.LoadContent(Content);
-            uIScreen.LoadContent(Content);
+
             // load and play Soundtrack as background music
-            mSoundManager.LoadContent(Content);
-            mSoundManager.PlaySoundTrack();
+            sSoundtrack = Content.Load<Song>("BGMusic");
+            MediaPlayer.Play(sSoundtrack);
+            MediaPlayer.Volume = 0.1F;
+            MediaPlayer.IsRepeating = true;
 
         }
 
