@@ -118,6 +118,7 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Update(GameTime gametime)
         {
+
             foreach (var updateable in mUpdateables)
             {
                 updateable.Update(gametime);
@@ -126,13 +127,18 @@ namespace Singularity.Screen.ScreenClasses
 
             foreach (var spatial in mSpatialObjects)
             {
+                var collidingObject = spatial as ICollider;
+
+                if (collidingObject != null)
+                {
+                    mMap.UpdateCollider(collidingObject);
+                }
 
                 spatial.RelativePosition = Vector2.Transform(spatial.AbsolutePosition, mCamera.GetTransform());
                 spatial.RelativeSize = spatial.AbsoluteSize * mCamera.GetZoom();
 
                 spatial.Update(gametime);
             }
-
             mFow.Update(gametime);
 
 
@@ -159,7 +165,7 @@ namespace Singularity.Screen.ScreenClasses
             var genUnit3 = new GeneralUnit(mPlatform3, pathManager);
 
 
-            mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, mInputManager, pathManager);
+            mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, mInputManager, pathManager, true);
             mCamera = mMap.GetCamera();
 
             var platform4 = new Well(new Vector2(1000, 200), mPlatformDomeTexture, mMap.GetResourceMap());
@@ -171,8 +177,6 @@ namespace Singularity.Screen.ScreenClasses
 
             mFow = new FogOfWar(mCamera, mGraphicsDevice);
 
-            AddObject(mMap);
-
             mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
             mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
 
@@ -183,6 +187,8 @@ namespace Singularity.Screen.ScreenClasses
             var road4 = new Road(platform4, platform5, false);
             var road5 = new Road(platform5, mPlatform, false);
             var road6 = new Road(mPlatform, platform4, false);
+
+            AddObject(mMap);
 
             mFow.AddRevealingObject(mMUnit1);
             mFow.AddRevealingObject(mMUnit2);

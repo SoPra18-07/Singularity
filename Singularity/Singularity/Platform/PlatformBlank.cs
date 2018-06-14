@@ -13,7 +13,7 @@ using Singularity.Utils;
 namespace Singularity.Platform
 {
     [DataContract()]
-    public class PlatformBlank : ISpatial, IRevealing, INode
+    public class PlatformBlank : IRevealing, INode, ICollider
 
     {
 
