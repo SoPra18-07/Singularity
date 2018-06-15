@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.CodeDom;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
@@ -32,6 +33,7 @@ namespace Singularity
         private static Song sSoundtrack;
         private GameScreen mGameScreen;
         private InputManager mInputManager;
+        private SpriteFont mTestFontForUserI;
 
         // roads
         private Road mRoad1;
@@ -133,6 +135,10 @@ namespace Singularity
             MediaPlayer.Volume = 0.1F;
             MediaPlayer.IsRepeating = true;
 
+            // test windowObject
+            mTestFontForUserI = Content.Load<SpriteFont>("testFontForUI");
+            var userI = new UserInterfaceScreen(mInputManager, mTestFontForUserI);
+            mScreenManager.AddScreen(userI);
         }
 
         /// <summary>

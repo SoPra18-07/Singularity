@@ -103,3 +103,10 @@
 /processorParam:TextureFormat=Color
 /build:MockUpBackground.png
 
+#begin testFontForUI.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:testFontForUI.spritefont
+

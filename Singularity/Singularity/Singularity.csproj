@@ -74,6 +74,7 @@
     <Compile Include="Platform\Action.cs" />
     <Compile Include="Platform\PlatformBlank.cs" />
     <Compile Include="Screen\Slider.cs" />
+    <Compile Include="Screen\UserInterfaceScreen.cs" />
     <Compile Include="Screen\WindowItem.cs" />
     <Compile Include="Serialization\CyclicDummy.cs" />
     <Compile Include="Serialization\XSerializer.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Utils\Triple.cs" />
     <Compile Include="Platform\PlatformActionState.cs" />
     <Compile Include="Platform\ProduceResource.cs" />
+    <Compile Include="Screen\WindowObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
