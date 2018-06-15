@@ -24,8 +24,8 @@ namespace Singularity.Screen
             mWindowList = new List<WindowObject>();
 
 
-            var windowColor = new Color(0, 0, 255, 1f);
-            var borderColor = new Color(50, 50, 255, 1f);
+            var windowColor = new Color(0, 0, 0, 0.8f);
+            var borderColor = new Color(50, 50, 50, 0.8f);
 
             // set position- and size-values for all windows of the userinterface
             var topBarHeight = currentScreenHeight / 30;
@@ -48,10 +48,10 @@ namespace Singularity.Screen
 
             // create windowObjects for all windows of the userinterface
             // INFO: parameters are: NAME, POSITION-vector, SIZE-vector, COLOR of border, COLOR of filling, opacity of everything that gets drawn, borderPadding, objectPadding, minimizable, fontForText, inputmanager)
-            var civilUnitsWindow = new WindowObject("CIVIL UNITS", new Vector2(civilUnitsX, civilUnitsY), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 0.5f, 1f, 1f, true, testFontForUserI, inputManager);
+            var civilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(civilUnitsX, civilUnitsY), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 0.5f, 1f, 1f, true, testFontForUserI, inputManager);
             var topBarWindow = new WindowObject("", new Vector2(0,0), new Vector2(topBarWidth, topBarHeight), borderColor, windowColor, 0.5f, 1f, 1f, false, testFontForUserI, inputManager);
-            var resourceWindow = new WindowObject("RESOURCES", new Vector2(resourceX, resourceY), new Vector2(resourceWidth, resourceHeight), borderColor, windowColor, 0.5f, 1f, 1f, true, testFontForUserI, inputManager);
-            var eventLogWindow = new WindowObject("EVENT LOG", new Vector2(eventLogX, eventLogY), new Vector2(eventLogWidth, eventLogHeight), borderColor, windowColor, 0.5f, 1f, 1f, true, testFontForUserI, inputManager);
+            var resourceWindow = new WindowObject("// RESOURCES", new Vector2(resourceX, resourceY), new Vector2(resourceWidth, resourceHeight), borderColor, windowColor, 0.5f, 1f, 1f, true, testFontForUserI, inputManager);
+            var eventLogWindow = new WindowObject("// EVENT LOG", new Vector2(eventLogX, eventLogY), new Vector2(eventLogWidth, eventLogHeight), borderColor, windowColor, 0.5f, 1f, 1f, true, testFontForUserI, inputManager);
 
             // add all windowObjects of the userinterface
             mWindowList.Add(civilUnitsWindow);

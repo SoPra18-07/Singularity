@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
@@ -8,12 +9,11 @@ using Singularity.Property;
 
 namespace Singularity.Screen
 {
-    internal sealed class WindowObject: IDraw, IUpdate, IMouseWheelListener, IMouseClickListener
+    internal sealed class WindowObject: IDraw, IUpdate, IMouseWheelListener, IMouseClickListener, IMousePositionListener
     {
 
         private string mWindowName;
         private List<IWindowItem> mItemList;
-        private List<IWindowItem> mItemListBackup;
 
         private Rectangle mWindowRectangle;
         private Rectangle mBorderRectangle;
@@ -21,6 +21,10 @@ namespace Singularity.Screen
         private Rectangle mMinimizationLine;
         private Rectangle mMinimizedWindowRectangle;
         private Rectangle mMinimizedBorderRectangle;
+        private Rectangle mScrollBarRectangle;
+        private Rectangle mScrollBarBorderRectangle;
+        private Rectangle mTitleBarRectangle;
+
         private Rectangle mDrawWindowRectangle;
         private Rectangle mDrawBorderRectangle;
 
@@ -34,11 +38,18 @@ namespace Singularity.Screen
         private bool mBackgroundGiven;
         private bool mMinimizable;
         private bool mMinimized;
+        private bool mScrollableInWindow;
+
+        private float mMouseX;
+        private float mMouseY;
+
         private TimeSpan mGameTime;
 
         private RasterizerState mRasterizerState;
 
         private SpriteFont mTestFont;
+        private int mNameSize;
+        private int mMinimizationSize;
 
 
         // this is the constructor which gets called if the window should have a background color
@@ -69,6 +80,12 @@ namespace Singularity.Screen
             mMinimized = false;
             mBackgroundGiven = true;
 
+            var currentScreenWidth = 1080;
+            var currentScreenHeight = 720;
+
+            mMinimizationSize = (int)mSize.X / 12; //20;
+            mNameSize = currentScreenHeight / 26; // 26
+
             // TESTING
             mTestFont = testFontForUserI;
             mRasterizerState = new RasterizerState() { ScissorTestEnable = true };
@@ -82,19 +99,29 @@ namespace Singularity.Screen
             mDrawBorderRectangle = mBorderRectangle;
 
             // set the rectangle for minimization in the top right corner of the window
-            mMinimizationRectangle = new Rectangle((int) (position.X + size.X - 20), (int) (position.Y), 20, 20);
-            mMinimizationLine = new Rectangle((int)(position.X + size.X - 15), (int)(position.Y + 9), 10, 1);
+            mMinimizationRectangle = new Rectangle((int) (position.X + size.X - mMinimizationSize), (int) (position.Y), (int)mMinimizationSize, (int)mMinimizationSize);
+            mMinimizationLine = new Rectangle((int)(position.X + size.X - 3 * mMinimizationSize / 4), (int)(position.Y + (int)(mMinimizationSize / 2)), (int)(mMinimizationSize / 2), 1); // 15, 9, 10, 1
 
             // set the rectangle for the minimized window
-            mMinimizedWindowRectangle = new Rectangle((int)(position.X + 1), (int)(position.Y + 2), ((int)size.X - 2), 20);
-            mMinimizedBorderRectangle = new Rectangle((int)position.X, (int)position.Y, (int)(size.X), 22);
+            mMinimizedWindowRectangle = new Rectangle((int)(position.X + 1), (int)(position.Y + 2), ((int)size.X - 2), mNameSize + mMinimizationSize);
+            mMinimizedBorderRectangle = new Rectangle((int)position.X, (int)position.Y, (int)(mSize.X), mNameSize + mMinimizationSize);
+
+            // set the rectangle for scrolling
+            mScrollBarBorderRectangle = new Rectangle((int)(position.X + size.X - mMinimizationSize), (int)(position.Y + mNameSize + mMinimizationSize), (int)mMinimizationSize, (int)(mSize.Y - mNameSize - 2 * mMinimizationSize));
+            //mScrollBarRectangle
+
+            // title bar
+            mTitleBarRectangle = new Rectangle((int)mPosition.X + mMinimizationSize / 2, (int)mPosition.Y + mNameSize + mMinimizationSize, (int)mSize.X - 2 * mMinimizationSize, 1);
 
             // manage input -> 'enables' minimization
             if (!mMinimizable)
             {
                 return;
             }
+
             inputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            inputManager.AddMouseWheelListener(this);
+            inputManager.AddMousePositionListener(this);
             Bounds = mMinimizationRectangle;
         }
 
@@ -133,16 +160,7 @@ namespace Singularity.Screen
         /// <param name="item"></param>
         public void AddItem(IWindowItem item)
         {
-            if (!mMinimized)
-                // window is not minimized -> the windowObject currently uses it's standard list
-            {
-                mItemList.Add(item);
-            }
-            else
-                // window is minimized -> the windowObject currently uses an empty list -> add new elements to the backupList
-            {
-                mItemListBackup.Add(item);
-            }
+            mItemList.Add(item);
         }
 
         /// <summary>
@@ -152,32 +170,15 @@ namespace Singularity.Screen
         /// <returns>true, if element successfully deleted</returns>
         public bool DeleteItem(IWindowItem item)
         {
-            if (!mMinimized)
-                // the window is maximized -> delete elements from standard item-list
-            {
-                // item is not in list -> can't be removed
-                if (!mItemList.Contains(item))
-                {
-                    return false;
-                }
-
-                // item in list -> remove will be successful
-                mItemList.Remove(item);
-                return true;
-            }
-
-
-            // the window is minimized -> delete elements from backup-list
-            if (!mItemListBackup.Contains(item))
-                // item is not in list -> can't be removed
+            // item is not in list -> can't be removed
+            if (!mItemList.Contains(item))
             {
                 return false;
             }
 
-            // item in list -> remove will be successful
-            mItemListBackup.Remove(item);
+            // item in list -> remove successful
+            mItemList.Remove(item);
             return true;
-
         }
 
 
@@ -190,7 +191,7 @@ namespace Singularity.Screen
             windowTexture2D.SetData(new[] {mColorFill});
 
             // TESTING
-
+                
             var textaaa = "AAAAAAAAAA\n" +
                           "AAAAAAAAAA\n" +
                           "AAAAAAAAAA\n" +
@@ -211,7 +212,6 @@ namespace Singularity.Screen
 
             // get size of string drawing
             var textaaaSize = mTestFont.MeasureString(textaaa);
-            System.Diagnostics.Debug.WriteLine(textaaaSize);
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, mRasterizerState);
 
@@ -231,11 +231,11 @@ namespace Singularity.Screen
             // spriteBatch.DrawRectangle(mDrawBorderRectangle, mColorBorder, 2);
             spriteBatch.DrawRectangle(mDrawBorderRectangle, mColorBorder, 2);
 
-
+            // scrollable
             if (textaaaSize.Y > mDrawBorderRectangle.Height)
             {
-                spriteBatch.DrawRectangle(new Rectangle(mMinimizationRectangle.X, (int)(mMinimizationRectangle.Y + 3 * mMinimizationRectangle.Height), mMinimizationRectangle.Width, (int)(mSize.Y - 3 * mMinimizationRectangle.Height - 20)), mColorBorder, 2);
-                spriteBatch.Draw(windowTexture2D, new Rectangle(mMinimizationRectangle.X + 1, (int)(mMinimizationRectangle.Y + 3 * mMinimizationRectangle.Height + 1), mMinimizationRectangle.Width - 2, (int)(mSize.Y - 3 * mMinimizationRectangle.Height - 20 - 2)), null, new Color(255,0,0, 100), 0f, Vector2.Zero, SpriteEffects.None, 0.99f);
+                //spriteBatch.Draw(windowTexture2D, mScrollBarRectangle, null, mColorFill, 0f, Vector2.Zero, SpriteEffects.None, 0.99f);
+                spriteBatch.DrawRectangle(mScrollBarBorderRectangle, mColorBorder, 2);
             }
 
             if (mMinimizable)
@@ -245,9 +245,22 @@ namespace Singularity.Screen
                 spriteBatch.DrawRectangle(mMinimizationLine, mColorBorder, 1);
             }
 
+            // draw window title + bar
+            spriteBatch.DrawString(mTestFont, mWindowName, new Vector2(mPosition.X + mMinimizationSize / 2, mPosition.Y + mMinimizationSize / 2), new Color(255, 255, 255));
+            spriteBatch.DrawRectangle(mTitleBarRectangle, mColorBorder, 1);
+
             // TEST DRAW STRING
-            spriteBatch.DrawString(mTestFont, textaaa, new Vector2(mPosition.X, mPosition.Y + 20), new Color(255, 255, 255));
-            spriteBatch.DrawString(mTestFont, DateTime.Now.ToLongTimeString(), new Vector2(mPosition.X, mPosition.Y), new Color(255, 255, 255));
+            //spriteBatch.DrawString(mTestFont, textaaa, new Vector2(mPosition.X, mPosition.Y + 20), new Color(255, 255, 255));
+            //spriteBatch.DrawString(mTestFont, DateTime.Now.ToLongTimeString(), new Vector2(mPosition.X, mPosition.Y + mNameSize), new Color(255, 255, 255));
+
+            // add all IWindowItem + padding
+            if (!mMinimized)
+            {
+                foreach (var item in mItemList)
+                {
+                    item.Draw(spriteBatch);
+                }
+            }
 
             // restore scissor from backup - needed for other draws
             spriteBatch.GraphicsDevice.ScissorRectangle = saveRect;
@@ -257,19 +270,9 @@ namespace Singularity.Screen
 
         public void Update(GameTime gametime)
         {
-            if (!mMinimized)
+            foreach (var item in mItemList)
             {
-                foreach (var item in mItemList)
-                {
-                    item.Update(gametime);
-                }
-            }
-            else
-            {
-                foreach (var item in mItemListBackup)
-                {
-                    item.Update(gametime);
-                }
+                item.Update(gametime);
             }
 
             // TODO: GET FROM GAME1.CS ?
@@ -285,7 +288,17 @@ namespace Singularity.Screen
 
         public void MouseWheelValueChanged(EMouseAction mouseAction)
         {
-            throw new System.NotImplementedException();
+            if (mMouseX > mPosition.X && 
+                mMouseX < mPosition.X + mSize.X && 
+                mMouseY > mPosition.Y &&
+                mMouseY < mPosition.Y + mSize.Y)
+                // in bound of 'top'
+            {
+                if (mouseAction == EMouseAction.LeftClick)
+                {
+                    throw new NotImplementedException();
+                }
+            }
         }
 
         public Rectangle Bounds { get; }
@@ -298,8 +311,6 @@ namespace Singularity.Screen
             {
                 mDrawWindowRectangle = mMinimizedWindowRectangle;
                 mDrawBorderRectangle = mMinimizedBorderRectangle;
-                mItemListBackup = mItemList;
-                mItemList = new List<IWindowItem>();
 
                 mMinimized = true;
             }
@@ -309,7 +320,6 @@ namespace Singularity.Screen
             {
                 mDrawWindowRectangle = mWindowRectangle;
                 mDrawBorderRectangle = mBorderRectangle;
-                mItemList = mItemListBackup;
 
                 mMinimized = false;
             }
@@ -326,5 +336,11 @@ namespace Singularity.Screen
         }
 
         #endregion
+
+        public void MousePositionChanged(float newX, float newY)
+        {
+            mMouseX = newX;
+            mMouseY = newY;
+        }
     }
 }
