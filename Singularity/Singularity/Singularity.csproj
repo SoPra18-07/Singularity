@@ -42,14 +42,30 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\InvalidGenericArgumentException.cs" />
     <Compile Include="Exceptions\NoSuchElementException.cs" />
     <Compile Include="Exceptions\UnsupportedTextureSizeException.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Graph\EEdgeFacing.cs" />
+    <Compile Include="Graph\Graph.cs" />
+    <Compile Include="Graph\IEdge.cs" />
+    <Compile Include="Graph\INode.cs" />
+    <Compile Include="Graph\Paths\DefaultPathfinding.cs" />
+    <Compile Include="Graph\Paths\DummyPathfinding.cs" />
+    <Compile Include="Graph\Paths\IPath.cs" />
+    <Compile Include="Graph\Paths\IPathfinding.cs" />
+    <Compile Include="Graph\Paths\PathfindingFactory.cs" />
+    <Compile Include="Graph\Paths\PathManager.cs" />
+    <Compile Include="Graph\Paths\SortedPath.cs" />
+    <Compile Include="Input\InputManager2.cs" />
+    <Compile Include="Libraries\Animations.cs" />
+    <Compile Include="Libraries\Bloom Filter.cs" />
     <Compile Include="Input\EClickType.cs" />
     <Compile Include="Input\IMouseClickListener.cs" />
     <Compile Include="Input\IMousePositionListener.cs" />
     <Compile Include="Input\IMouseWheelListener.cs" />
     <Compile Include="Libraries\Primitives2D.cs" />
+    <Compile Include="Libraries\QuadRenderer.cs" />
     <Compile Include="Map\Camera.cs" />
     <Compile Include="Map\CollisionMap.cs" />
     <Compile Include="Map\FogOfWar.cs" />
@@ -69,22 +85,44 @@
     <Compile Include="Platform\Well.cs" />
     <Compile Include="Platform\IPlatformAction.cs" />
     <Compile Include="Platform\Road.cs" />
+    <Compile Include="Property\ICollider.cs" />
     <Compile Include="Property\IRevealing.cs" />
     <Compile Include="Resources\EResourceType.cs" />
     <Compile Include="Platform\Action.cs" />
     <Compile Include="Platform\PlatformBlank.cs" />
+    <Compile Include="Screen\EOptionScreenState.cs" />
+    <Compile Include="Screen\IWindowItem.cs" />
+    <Compile Include="Screen\ScreenClasses\GameScreen.cs" />
     <Compile Include="Screen\Slider.cs" />
+<<<<<<< HEAD
     <Compile Include="Screen\UserInterfaceScreen.cs" />
     <Compile Include="Screen\WindowItem.cs" />
+=======
+    <Compile Include="Screen\Button.cs" />
+>>>>>>> master
     <Compile Include="Serialization\CyclicDummy.cs" />
     <Compile Include="Serialization\XSerializer.cs" />
     <Compile Include="Serialization\SerializationDummy.cs" />
     <Compile Include="Property\ISpatial.cs" />
-    <Compile Include="Resources\IResource.cs" />
     <Compile Include="Resources\Resource.cs" />
     <Compile Include="Resources\ResourceHelper.cs" />
     <Compile Include="Property\LayerConstants.cs" />
-    <Compile Include="Screen\GameScreen.cs" />
+    <Compile Include="Screen\EScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\AchievementsScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\GameModeSelectScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\GamePauseScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\LoadingScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\LoadSelectScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\MainMenuManagerScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\MainMenuScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\MenuBackgroundScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\OptionsScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\SaveGameScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\SplashScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\StatisticsScreen.cs" />
+    <Compile Include="Sound\SoundClass.cs" />
+    <Compile Include="Sound\SoundManager.cs" />
+    <Compile Include="Sound\SoundPhase.cs" />
     <Compile Include="StoryManager\StoryManager.cs" />
     <Compile Include="Units\GeneralUnit.cs" />
     <Compile Include="Units\IUnit.cs" />
@@ -100,8 +138,8 @@
     <Compile Include="Screen\RenderLowerScreen.cs" />
     <Compile Include="Screen\StackScreenManager.cs" />
     <Compile Include="Screen\UpdateLowerScreen.cs" />
-    <Compile Include="Units\Pathfinding.cs" />
     <Compile Include="Units\Task.cs" />
+    <Compile Include="Utils\IdGenerator.cs" />
     <Compile Include="Utils\Optional.cs" />
     <Compile Include="Utils\Pair.cs" />
     <Compile Include="Utils\Triple.cs" />
@@ -123,12 +161,13 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
+    <None Include="Content\Shaders\Bloom.fx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

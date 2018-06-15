@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Singularity.Screen
@@ -23,6 +24,11 @@ namespace Singularity.Screen
         public void Update(GameTime gametime)
         {
             Debug.Write("Update Lower Screen: Update called");
+        }
+
+        public void LoadContent(ContentManager content)
+        {
+            throw new System.NotImplementedException();
         }
 
         public bool UpdateLower()

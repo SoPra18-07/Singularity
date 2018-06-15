@@ -22,8 +22,9 @@ namespace Singularity.Platform
 
         public override void Execute()
         {
-            var resource = mResourceMap.GetResources(mPlatform.GetLocation());
-            if (!resource.IsPresent() || !mPlatform.PlatformHasSpace()) return;
+            //TODO: the resources now are a list, so adjustment is needed. I tried to get the desired effect, but probably didn't
+            var resources = mResourceMap.GetResources(mPlatform.GetLocation());
+            if (resources.Count > 0 && !mPlatform.PlatformHasSpace()) return;
             var res = new Resource(EResourceType.Oil, mPlatform.AbsolutePosition, 0);
             mPlatform.StoreResource(res);
         }

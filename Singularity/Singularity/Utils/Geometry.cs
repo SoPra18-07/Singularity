@@ -32,7 +32,7 @@ namespace Singularity.Utils
         /// <returns>A new normalized vector of the given vector</returns>
         public static Vector2 NormalizeVector(Vector2 vector)
         {
-            var tempVector = Geometry.NormalizeVector(new Vector3(vector.X, vector.Y, 0));
+            var tempVector = NormalizeVector(new Vector3(vector.X, vector.Y, 0));
 
             return new Vector2(tempVector.X, tempVector.Y);
         }

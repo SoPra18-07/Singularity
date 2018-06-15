@@ -1,15 +1,22 @@
+<<<<<<< HEAD
 ﻿using System.CodeDom;
+=======
+﻿using System;
+using System.Diagnostics;
+>>>>>>> master
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Singularity.Platform;
 using Singularity.Input;
+
 using Singularity.Map;
 using Singularity.Map.Properties;
 using Singularity.Resources;
-using Singularity.screen;
 using Singularity.Screen;
+using Singularity.Screen.ScreenClasses;
+using Singularity.Sound;
 using Singularity.Units;
 
 namespace Singularity
@@ -19,6 +26,7 @@ namespace Singularity
     /// </summary>
     internal sealed class Game1 : Game
     {
+<<<<<<< HEAD
         private GraphicsDeviceManager mGraphics;
         private SpriteBatch mSpriteBatch;
         private Texture2D mPlatformBlankTexture;
@@ -37,9 +45,24 @@ namespace Singularity
 
         // roads
         private Road mRoad1;
+=======
+        internal GraphicsDeviceManager mGraphics;
+        internal GraphicsAdapter mGraphicsAdapter;
+
+        private SoundManager mSoundManager;
+
+        // Screens
+        internal GameScreen mGameScreen;
+        private MainMenuManagerScreen mMainMenuManager;
+        private readonly InputManager mInputManager;
+
+>>>>>>> master
 
         // Sprites!
+        private SpriteBatch mSpriteBatch;
+        
 
+        // Screen Manager
         private readonly IScreenManager mScreenManager;
 
         internal Game1()
@@ -47,8 +70,12 @@ namespace Singularity
             mGraphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
+            mGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
+
             mInputManager = new InputManager();
             mScreenManager = new StackScreenManager();
+
+            mInputManager = new InputManager();
 
         }
 
@@ -69,9 +96,12 @@ namespace Singularity
 
             // XSerializer.TestSerialization();
             IsMouseVisible = true;
+            mGraphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
             mGraphics.PreferredBackBufferWidth = 1080;
             mGraphics.PreferredBackBufferHeight = 720;
+            mGraphics.IsFullScreen = false;
             mGraphics.ApplyChanges();
+            mSoundManager = new SoundManager();
 
             base.Initialize();
         }
@@ -82,58 +112,26 @@ namespace Singularity
         /// </summary>
         protected override void LoadContent()
         {
+            var viewportResolution = new Vector2(GraphicsDevice.Viewport.Width,
+                GraphicsDevice.Viewport.Height);
             // Create a new SpriteBatch, which can be used to draw textures.
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            mMUnitSheet = Content.Load<Texture2D>("UnitSpriteSheet");
-            var mapBackground = Content.Load<Texture2D>("MockUpBackground");
+            mGameScreen = new GameScreen(mGraphics.GraphicsDevice, mInputManager);
 
-            // TODO: use this.Content to load your game content here
-            mPlatformBlankTexture = Content.Load<Texture2D>("PlatformBasic");
-            mPlatformDomeTexture = Content.Load<Texture2D>("Dome");
-            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformBlankTexture);
-            mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
-            mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
+            mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
 
-            var fow = new FogOfWar(mapBackground);
-
-            mMap = new Map.Map(mapBackground, mGraphics.GraphicsDevice.Viewport, fow, mInputManager, true);
-
-            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
-            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
-
-            fow.AddRevealingObject(mMUnit1);
-            fow.AddRevealingObject(mMUnit2);
-
-            mMap.AddPlatform(mPlatform);
-            mMap.AddPlatform(mPlatform2);
-            mMap.AddPlatform(mPlatform3);
-
-            mGameScreen = new GameScreen(mMap);
-
-            // load roads
-            mRoad1 = new Road(mPlatform, mPlatform2, false);
-            var road2 = new Road(mPlatform, mPlatform3, false);
-            var road3 = new Road(mPlatform2, mPlatform3, false);
-
-            mGameScreen.AddObject(mMUnit1);
-            mGameScreen.AddObject(mMUnit2);
-            mGameScreen.AddObject(mPlatform);
-            mGameScreen.AddObject(mPlatform2);
-            mGameScreen.AddObject(mPlatform3);
-            mGameScreen.AddObject(mRoad1);
-            mGameScreen.AddObject(road2);
-            mGameScreen.AddObject(road3);
-            mGameScreen.AddObject(fow);
-            mGameScreen.AddObject(ResourceHelper.GetRandomlyDistributedResources(5));
-
+            // Add the screens to the screen manager
+            // The idea is that the game screen is always at the bottom and stuff is added simply
+            // on top of it.
             mScreenManager.AddScreen(mGameScreen);
-
+            mScreenManager.AddScreen(mMainMenuManager);
+            
+            mMainMenuManager.LoadContent(Content);
+            
             // load and play Soundtrack as background music
-            sSoundtrack = Content.Load<Song>("BGMusic");
-            MediaPlayer.Play(sSoundtrack);
-            MediaPlayer.Volume = 0.1F;
-            MediaPlayer.IsRepeating = true;
+            mSoundManager.LoadContent(Content);
+            mSoundManager.PlaySoundTrack();
 
             // test windowObject
             mTestFontForUserI = Content.Load<SpriteFont>("testFontForUI");
@@ -157,11 +155,9 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-                Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
-                Exit();
-            }
+            // a new static input manager. It requires updating every tick to figure out where
+            // the mouse is.
+            InputManager2.Update(gameTime);
 
             mInputManager.Update(gameTime);
             mScreenManager.Update(gameTime);
@@ -174,7 +170,7 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
 
