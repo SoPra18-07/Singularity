@@ -434,56 +434,57 @@ namespace Singularity.Libraries
         /// <param name="y2">The Y coord of the second point</param>
         /// <param name="color">The color to use</param>
         public static void DrawLine(this SpriteBatch spriteBatch, float x1, float y1, float x2, float y2, Color color)
-		{
-			DrawLine(spriteBatch, new Vector2(x1, y1), new Vector2(x2, y2), color, 1.0f);
-		}
+
+        {
+            DrawLine(spriteBatch, new Vector2(x1, y1), new Vector2(x2, y2), color, 1.0f);
+        }
 
 
-		/// <summary>
-		/// Draws a line from point1 to point2 with an offset
-		/// </summary>
-		/// <param name="spriteBatch">The destination drawing surface</param>
-		/// <param name="x1">The X coord of the first point</param>
-		/// <param name="y1">The Y coord of the first point</param>
-		/// <param name="x2">The X coord of the second point</param>
-		/// <param name="y2">The Y coord of the second point</param>
-		/// <param name="color">The color to use</param>
-		/// <param name="thickness">The thickness of the line</param>
-		public static void DrawLine(this SpriteBatch spriteBatch, float x1, float y1, float x2, float y2, Color color, float thickness)
-		{
-			DrawLine(spriteBatch, new Vector2(x1, y1), new Vector2(x2, y2), color, thickness);
-		}
+        /// <summary>
+        /// Draws a line from point1 to point2 with an offset
+        /// </summary>
+        /// <param name="spriteBatch">The destination drawing surface</param>
+        /// <param name="x1">The X coord of the first point</param>
+        /// <param name="y1">The Y coord of the first point</param>
+        /// <param name="x2">The X coord of the second point</param>
+        /// <param name="y2">The Y coord of the second point</param>
+        /// <param name="color">The color to use</param>
+        /// <param name="thickness">The thickness of the line</param>
+        public static void DrawLine(this SpriteBatch spriteBatch, float x1, float y1, float x2, float y2, Color color, float thickness)
+        {
+            DrawLine(spriteBatch, new Vector2(x1, y1), new Vector2(x2, y2), color, thickness);
+        }
 
 
-		/// <summary>
-		/// Draws a line from point1 to point2 with an offset
-		/// </summary>
-		/// <param name="spriteBatch">The destination drawing surface</param>
-		/// <param name="point1">The first point</param>
-		/// <param name="point2">The second point</param>
-		/// <param name="color">The color to use</param>
-		public static void DrawLine(this SpriteBatch spriteBatch, Vector2 point1, Vector2 point2, Color color)
-		{
-			DrawLine(spriteBatch, point1, point2, color, 1.0f);
-		}
+        /// <summary>
+        /// Draws a line from point1 to point2 with an offset
+        /// </summary>
+        /// <param name="spriteBatch">The destination drawing surface</param>
+        /// <param name="point1">The first point</param>
+        /// <param name="point2">The second point</param>
+        /// <param name="color">The color to use</param>
+        public static void DrawLine(this SpriteBatch spriteBatch, Vector2 point1, Vector2 point2, Color color)
+        {
+            DrawLine(spriteBatch, point1, point2, color, 1.0f);
+        }
 
 
-		/// <summary>
-		/// Draws a line from point1 to point2 with an offset
-		/// </summary>
-		/// <param name="spriteBatch">The destination drawing surface</param>
-		/// <param name="point1">The first point</param>
-		/// <param name="point2">The second point</param>
-		/// <param name="color">The color to use</param>
-		/// <param name="thickness">The thickness of the line</param>
-		/// <param name="layerDepth">The depth of the layer this gets drawn to</param>
-		public static void DrawLine(this SpriteBatch spriteBatch, Vector2 point1, Vector2 point2, Color color, float thickness, float layerDepth = 0)
-		{
-			// calculate the distance between the two vectors
-			float distance = Vector2.Distance(point1, point2);
+        /// <summary>
+        /// Draws a line from point1 to point2 with an offset
+        /// </summary>
+        /// <param name="spriteBatch">The destination drawing surface</param>
+        /// <param name="point1">The first point</param>
+        /// <param name="point2">The second point</param>
+        /// <param name="color">The color to use</param>
+        /// <param name="thickness">The thickness of the line</param>
+        /// <param name="layerDepth">The depth of the layer this gets drawn to</param>
+        public static void DrawLine(this SpriteBatch spriteBatch, Vector2 point1, Vector2 point2, Color color, float thickness, float layerDepth = 0)
+        {
+            // calculate the distance between the two vectors
+            float distance = Vector2.Distance(point1, point2);
 
-			// calculate the angle between the two vectors
-			float angle = (float)Math.Atan2(point2.Y - point1.Y, point2.X - point1.X);
+            // calculate the angle between the two vectors
+            float angle = (float)Math.Atan2(point2.Y - point1.Y, point2.X - point1.X);
 
 			DrawLine(spriteBatch, point1, distance, angle, color, thickness, layerDepth);
 		}
@@ -501,7 +502,6 @@ namespace Singularity.Libraries
 		{
 			DrawLine(spriteBatch, point, length, angle, color, 1.0f);
 		}
-
 
         /// <summary>
         /// Draws a line from point1 to point2 with an offset
@@ -610,9 +610,9 @@ namespace Singularity.Libraries
         /// <param name="sides">The number of sides to generate</param>
         /// <param name="color">The color of the circle</param>
         /// <param name="thickness">The thickness of the lines used</param>
-        public static void DrawCircle(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, Color color, float thickness)
+        public static void DrawCircle(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, Color color, float thickness, float layerDepth = 0)
         {
-            DrawPoints(spriteBatch, center, CreateCircle(radius, sides), color, thickness);
+            DrawPoints(spriteBatch, center, CreateCircle(radius, sides), color, thickness, layerDepth);
         }
 
 

@@ -3,18 +3,18 @@ using System.ComponentModel;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Graph;
 using Singularity.Libraries;
 using Singularity.Map.Properties;
 using Singularity.Property;
 
 namespace Singularity.Platform
 {
-    public sealed class Road : IDraw, ISpatial, IStructure, IUpdate
+    internal sealed class Road : ISpatial, IEdge
     {
-        private float mLayer;
+        private PlatformBlank Source { get; }
 
-        private Vector2 Source { get; }
-        private Vector2 Destination { get; }
+        private PlatformBlank Destination { get; }
 
         private bool mBlueprint;
 
@@ -54,28 +54,45 @@ namespace Singularity.Platform
         /// <param name="source">The source ISpatial object from which this road gets drawn</param>
         /// <param name="destination">The destinaion ISpatial object to which this road gets drawn</param>
         /// <param name="blueprint">Whether this road is a blueprint or not</param>
-        public Road(PlatformBlank source, PlatformBlank destination, bool blueprint, bool isPlaced = true)
+        public Road(PlatformBlank source, PlatformBlank destination, bool blueprint)
         {
             IsPlaced = isPlaced;
             IsSemiPlaced = isPlaced;
             IsAdded = false;
 
             // the hardcoded values need some changes for different platforms, ill wait until those are implemented to find a good solution.
-            Source = new Vector2(source.AbsolutePosition.X + source.AbsoluteSize.X / 2, source.AbsolutePosition.Y + 109);
-            Destination = new Vector2(destination.AbsolutePosition.X + destination.AbsoluteSize.X / 2, destination.AbsolutePosition.Y + 109);
+            Source = source;
+            Destination = destination;
             Blueprint = blueprint;
 
-            AbsolutePosition = destination.Center;
+            source.AddEdge(this, EEdgeFacing.Outwards);
+            destination.AddEdge(this, EEdgeFacing.Inwards);
+
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawLine(Source, Destination, mBlueprint ? new Color(new Vector3(.1804f, .2078f, .3804f)) : new Color(new Vector4(.776f, .776f, .776f, 255)), 5f, LayerConstants.RoadLayer);
+            spriteBatch.DrawLine(((IRevealing)Source).Center, ((IRevealing)Destination).Center, mBlueprint ? new Color(new Vector3(46, 53, 97)) : new Color(new Vector4(0, 40, 40, 255)), 5f, LayerConstants.RoadLayer);
         }
 
         public void Update(GameTime gametime)
         {
             mLayer = (IsPlaced ? LayerConstants.RoadLayer : LayerConstants.RoadBuildingLayer);
+        }
+
+        public INode GetParent()
+        {
+            return Source;
+        }
+
+        public INode GetChild()
+        {
+            return Destination;
+        }
+
+        public float GetCost()
+        {
+            return Vector2.Distance(((IRevealing) Source).Center, ((IRevealing) Destination).Center);
         }
     }
 }
