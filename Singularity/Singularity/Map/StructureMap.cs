@@ -44,6 +44,15 @@ namespace Singularity.Map
         }
 
         /// <summary>
+        /// A method existing so the DistributionManager has access to all platforms.
+        /// </summary>
+        /// <returns></returns>
+        public LinkedList<PlatformBlank> GetPlatformList()
+        {
+            return mPlatforms;
+        }
+
+        /// <summary>
         /// Adds the specified platform to this map.
         /// </summary>
         /// <param name="platform">The platform to be added</param>

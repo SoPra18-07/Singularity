@@ -147,6 +147,7 @@ namespace Singularity.Screen.ScreenClasses
         public void LoadContent(ContentManager content)
         {
             var pathManager = new PathManager();
+            var dist = new DistributionManager.DistributionManager();
             var mapBackground = content.Load<Texture2D>("MockUpBackground");
 
             mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
@@ -161,8 +162,8 @@ namespace Singularity.Screen.ScreenClasses
             mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
-            var genUnit2 = new GeneralUnit(mPlatform2, pathManager);
-            var genUnit3 = new GeneralUnit(mPlatform3, pathManager);
+            var genUnit2 = new GeneralUnit(mPlatform2, pathManager, dist);
+            var genUnit3 = new GeneralUnit(mPlatform3, pathManager, dist);
 
 
             mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, mInputManager, pathManager, true);
@@ -171,9 +172,9 @@ namespace Singularity.Screen.ScreenClasses
             var platform4 = new Well(new Vector2(1000, 200), mPlatformDomeTexture, mMap.GetResourceMap());
             var platform5 = new Quarry(new Vector2(1300, 400), mPlatformDomeTexture, mMap.GetResourceMap());
 
-            var genUnit = new GeneralUnit(mPlatform, pathManager);
-            var genUnit4 = new GeneralUnit(platform4, pathManager);
-            var genUnit5 = new GeneralUnit(platform5, pathManager);
+            var genUnit = new GeneralUnit(mPlatform, pathManager, dist);
+            var genUnit4 = new GeneralUnit(platform4, pathManager, dist);
+            var genUnit5 = new GeneralUnit(platform5, pathManager, dist);
 
             mFow = new FogOfWar(mCamera, mGraphicsDevice);
 

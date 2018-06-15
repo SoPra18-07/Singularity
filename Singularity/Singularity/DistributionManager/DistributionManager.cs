@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Singularity.Exceptions;
 using Singularity.Platform;
 using Singularity.Resources;
 using Singularity.Units;
@@ -18,6 +20,8 @@ namespace Singularity.DistributionManager
         [DataMember()]
         private List<GeneralUnit> mIdle;
         [DataMember()]
+        private List<GeneralUnit> mLogistics;
+        [DataMember()]
         private List<GeneralUnit> mConstruction;
         [DataMember()]
         private List<GeneralUnit> mProduction;
@@ -27,11 +31,13 @@ namespace Singularity.DistributionManager
         private List<GeneralUnit> mManual;
 
         [DataMember()]
-        private Queue<Pair<EResourceType, IPlatformAction>> mBuildingResources;
+        private Queue<Task> mBuildingResources;
         [DataMember()]
-        private Queue<Pair<EResourceType, IPlatformAction>> mRefiningOrStoringResources;
+        private Queue<Task> mRefiningOrStoringResources;
         [DataMember()]
-        private Queue<Pair<GeneralUnit, IPlatformAction>> mRequestedUnits;
+        private Queue<Task> mRequestedUnitsProduce;
+        [DataMember()]
+        private Queue<Task> mRequestedUnitsDefense;
 
         // An Felix: Vielleicht BuildBluePrint nicht in "ProduceResourceAction.cs" reinhauen (da hätte ich nicht danach gesucht) - muss ich eh nochmal refactorn mit PlatformBlank und jz dem hier
         [DataMember()]
@@ -53,29 +59,35 @@ namespace Singularity.DistributionManager
         public DistributionManager()
         {
             mIdle = new List<GeneralUnit>();
+            mLogistics = new List<GeneralUnit>();
             mConstruction = new List<GeneralUnit>();
             mProduction = new List<GeneralUnit>();
             mDefense = new List<GeneralUnit>();
             mManual = new List<GeneralUnit>();
 
-            mBuildingResources = new Queue<Pair<EResourceType, IPlatformAction>>();
-            mRefiningOrStoringResources = new Queue<Pair<EResourceType, IPlatformAction>>();
+            mBuildingResources = new Queue<Task>();
+            mRefiningOrStoringResources = new Queue<Task>();
+            mRequestedUnitsProduce = new Queue<Task>();
+            mRequestedUnitsDefense = new Queue<Task>();
             mBlueprintBuilds = new List<BuildBluePrint>();
         }
 
         /// <summary>
         /// This is called by the player, when he wants to distribute the units to certain jobs.
         /// </summary>
-        /// <param name="oldj"></param>
-        /// <param name="newj"></param>
-        /// <param name="change"></param>
-        public void DistributeJobs(JobType oldj, JobType newj, int change)
+        /// <param name="oldj">The old job of the units</param>
+        /// <param name="newj">The new job of the units</param>
+        /// <param name="amount">The amount of units to be transferred</param>
+        public void DistributeJobs(JobType oldj, JobType newj, int amount)
         {
             List<GeneralUnit> oldlist;
             switch (oldj)
             {
                 case JobType.Construction:
                     oldlist = mConstruction;
+                    break;
+                case JobType.Logistics:
+                    oldlist = mLogistics;
                     break;
                 case JobType.Idle:
                     oldlist = mIdle;
@@ -86,6 +98,9 @@ namespace Singularity.DistributionManager
                 case JobType.Defense:
                     oldlist = mProduction;
                     break;
+                default:
+                    throw new InvalidGenericArgumentException("You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
+
             }
             List<GeneralUnit> newlist;
             switch (newj)
@@ -96,14 +111,19 @@ namespace Singularity.DistributionManager
                 case JobType.Idle:
                     newlist = mIdle;
                     break;
+                case JobType.Logistics:
+                    newlist = mLogistics;
+                    break;
                 case JobType.Production:
                     newlist = mDefense;
                     break;
                 case JobType.Defense:
                     newlist = mProduction;
                     break;
+                default:
+                    throw new InvalidGenericArgumentException("You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
             }
-            for (int i = change; i >= 0; i++)
+            for (var i = amount; i >= 0; i--)
             {
                 if (oldlist.Count == 0)
                 {
@@ -114,12 +134,17 @@ namespace Singularity.DistributionManager
                 newlist.Add(unassigned);
             }
         }
-        public void ManualAssign(GeneralUnit unit, IPlatformAction action, JobType job)
+
+        /// <summary>
+        /// Manually Assign Units to a certain PlatformAction.
+        /// </summary>
+        /// <param name="amount">The amount of units to be assigned</param>
+        /// <param name="action">The action to which the units shall be assigned</param>
+        /// <param name="job">The Job the units are supposed to have.</param>
+        public void ManualAssign(int amount, IPlatformAction action, JobType job)
         {
-            throw new NotImplementedException();
-            var ujob = unit.Job;
             List<GeneralUnit> oldlist;
-            switch (ujob)
+            switch (job)
             {
                 case JobType.Construction:
                     oldlist = mConstruction;
@@ -133,72 +158,62 @@ namespace Singularity.DistributionManager
                 case JobType.Defense:
                     oldlist = mProduction;
                     break;
+                case JobType.Logistics:
+                    oldlist = mLogistics;
+                    break;
+                default:
+                    throw new InvalidGenericArgumentException("You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
             }
 
-            var removeit = oldlist.Find(x => x.Equals(unit));
-            oldlist.Remove(removeit);
-            mManual.Add(removeit);
-            action.AssignUnit(unit, job);
-
+            for (var i = amount; i >= 0; i--)
+            {
+                var removeit = oldlist.First();
+                oldlist.Remove(removeit);
+                mManual.Add(removeit);
+                action.AssignUnit(removeit, job);
+            }
         }
 
-        public void ManualUnassign(JobType job, int i)
+        /// <summary>
+        /// Manually Unassign some units of a Platformaction.
+        /// </summary>
+        /// <param name="job">The Job they are having</param>
+        /// <param name="amount">The amount of units to be unassigned</param>
+        /// <param name="action">The platformaction of which they shall be unassigned</param>
+        public void ManualUnassign(JobType job, int amount, IPlatformAction action)
         {
-            throw new NotImplementedException();
-            // I guess we need an extra method for that.
-            // regarding that: actually we might want to have only the JobType and an integer .. I think I've refactored that somewhere else as well before (Platforms?)
-            // I guess it was PlatformActions.
+            action.UnAssignUnits(amount, job);
         }
 
         // Okay yes you're right. We want a PlatformAction here instead of a platform.
-        public void RequestResource(PlatformBlank platform, Resource resource, bool isbuilding = false) 
-            // explain what 'isbuilding' is for, I got confused for a sec
-            // I guessed isbuilding is wether the resource requested, has been requested for building or for producing/Storing
+        public void RequestResource(PlatformBlank platform, EResourceType resource, IPlatformAction action, bool isbuilding = false) 
         {
-            throw new NotImplementedException();
             // Will repair request ressources or units? And what unit will be used?
             // We do not have repair yet or anytime soon.
             // In that case I guess Ill ignore it for now.
-            Pair<EResourceType, IPlatformAction> request;
+            //TODO: Create Action references, when interfaces were created.
             if (isbuilding)
             {
-                request = mBuildingResources.Dequeue();
-                // GeneralUnit has to be changed (Because wrong implemented).
-                // I will do that later,
-                // to not mess with svn
-                // var assignee = mConstruction.Find(x => x.GetTask() == Task.Idle); // no, this is wrong. you need to keep track of units with 'JobType: Idle', as well as those with 'JobType: Construction' but with nothing to do !! (they are supposed to ask for tasks frequently - but easy to get confused here :D
-                // assignee.AssignedTask(Task.BuildPlatform, Pair.GetFirst(), Pair.GetSecond().Platform);
+                mBuildingResources.Enqueue(new Task(JobType.Construction, platform, resource, action));
             }
             else
             {
-                request = mRefiningOrStoringResources.Dequeue();
-                // GeneralUnit has to be changed (Because wrong implemented).
-                // I will do that later,
-                // to not mess with svn
-                // var assignee = mConstruction.Find(x => x.GetTask() == Task.Idle); // <- careful with Idle here. They're not assigned to do anything! (we can make that optional later on though)
-                // assignee.AssignedTask(Task.BuildPlatform, Pair.GetFirst(), Pair.GetSecond().Platform);
+                mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, platform, resource, action));
             }
         }
 
-        public void RequestUnits(PlatformBlank platform, JobType job)
+        public void RequestUnits(PlatformBlank platform, JobType job, IPlatformAction action, bool isdefending = false)
         {
-            throw new NotImplementedException();
-            var request = mRequestedUnits.Dequeue();
-            // Here again a reminder that a platformactionproduce interface would be nice
-            // Produce, and which others? Defense and Construction also ask for units, with different JobTypes. Still, we might want the PlatformAction instead of the platform for pausing later on ...
-            //
-            // So, the way this is supposed to work is the following; each platformAction once(!) while being active requests units of the required JobTypes here (Logistics cannot be requested for, it's resulting from ResourceRequests). Now if the PlatformAction pauses it's refernce is getting deleted (it's asked-for units and resources) - and if it's unpaused again it's again requesting once(!) the required units. This can actually be a List with the PlatformActions-id as index or sth ...
-            //
-            // if (request.GetSecond().GetType() == PlatformActionProduce)
-            // {
-            //     var assignee = mProduction.Find(x => x.GetTask() == Task.Idle());
-            // A new type of task, produce, has to be implemented
-            //     assignee.AssignedTask(Task.Produce, request.GetSecond().Platform);
-            // }elsif (request.GetSecond().GetType() == PlatformActionDefend)
-            // {
-            //     var assignee = mDefense.Find(x => x.GetTask() == Task.Idle);
-            //     assignee.AssignedTask(Task.Defend, request.GetSecond().Platform);
-            // }
+            //TODO: Create Action references, when interfaces were created.
+            EResourceType? resource = null;
+            if (isdefending)
+            {
+                mRequestedUnitsDefense.Enqueue(new Task(JobType.Construction, platform, resource, action));
+            }
+            else
+            {
+                mRequestedUnitsProduce.Enqueue(new Task(JobType.Logistics, platform, resource, action));
+            }
         }
 
         // Do we even need that? I think the units should do that - huh? no this was supposed to be from platformId to Resources on that platform, primarily for internal use when searching resources ... if you have actual platform-references all the better (you could probably get them from the producing (and factory) PlatformActions ...)

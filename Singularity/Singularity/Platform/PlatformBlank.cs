@@ -336,7 +336,7 @@ namespace Singularity.Platform
         public PlatformBlank(Vector2 position, Texture2D spritesheet, Vector2 center = new Vector2())
         {
 
-            Id = IdGenerator.NextID();
+            Id = IdGenerator.NextiD();
 
             mInwardsEdges = new List<IEdge>();
             mOutwardsEdges = new List<IEdge>();

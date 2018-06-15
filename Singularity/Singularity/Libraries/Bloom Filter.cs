@@ -32,7 +32,7 @@ namespace Libraries
     /// Then we downscale this extraction layer to the next mip map.
     /// While doing that we sample several pixels around the origin.
     /// We continue to downsample a few more times, defined in
-    ///     BloomDownsamplePasses = 5 ( default is 5)
+    ///     mBloomDownsamplePasses = 5 ( default is 5)
     /// 
     /// Afterwards we upsample again, but blur in this step, too.
     /// The final output should be a blur with a very large kernel and smooth gradient.
@@ -95,7 +95,7 @@ namespace Libraries
         private float mBloomStrength4 = 1.0f;
         private float mBloomStrength5 = 1.0f;
 
-        public float BloomStrengthMultiplier = 1.0f;
+        private float BloomStrengthMultiplier = 1.0f;
         
         private float mRadiusMultiplier = 1.0f;
 
@@ -104,8 +104,8 @@ namespace Libraries
 
         #region public fields + enums
 
-        public bool BloomUseLuminance = true;
-        public int BloomDownsamplePasses = 5;
+        private bool BloomUseLuminance = true;
+        private int mBloomDownsamplePasses = 5;
 
         //enums
         public enum BloomPresets
@@ -298,7 +298,7 @@ namespace Libraries
                         mBloomRadius2 = 2.0f;
                         mBloomRadius1 = 1.0f;
                         BloomStreakLength = 1;
-                        BloomDownsamplePasses = 5;
+                        mBloomDownsamplePasses = 5;
                         break;
                 }
                 case BloomPresets.SuperWide:
@@ -314,7 +314,7 @@ namespace Libraries
                         mBloomRadius2 = 2.0f;
                         mBloomRadius1 = 2.0f;
                         BloomStreakLength = 1;
-                        BloomDownsamplePasses = 5;
+                        mBloomDownsamplePasses = 5;
                         break;
                     }
                 case BloomPresets.Focussed:
@@ -330,7 +330,7 @@ namespace Libraries
                         mBloomRadius2 = 2.0f;
                         mBloomRadius1 = 2.0f;
                         BloomStreakLength = 1;
-                        BloomDownsamplePasses = 5;
+                        mBloomDownsamplePasses = 5;
                         break;
                     }
                 case BloomPresets.Small:
@@ -346,7 +346,7 @@ namespace Libraries
                         mBloomRadius2 = 1;
                         mBloomRadius1 = 1;
                         BloomStreakLength = 1;
-                        BloomDownsamplePasses = 5;
+                        mBloomDownsamplePasses = 5;
                         break;
                     }
                 case BloomPresets.Cheap:
@@ -356,7 +356,7 @@ namespace Libraries
                         mBloomRadius2 = 2;
                         mBloomRadius1 = 2;
                         BloomStreakLength = 1;
-                        BloomDownsamplePasses = 2;
+                        mBloomDownsamplePasses = 2;
                         break;
                     }
                 case BloomPresets.One:
@@ -372,7 +372,7 @@ namespace Libraries
                         mBloomRadius2 = 1.0f;
                         mBloomRadius1 = 1.0f;
                         BloomStreakLength = 1;
-                        BloomDownsamplePasses = 5;
+                        mBloomDownsamplePasses = 5;
                         break;
                     }
             }
@@ -431,7 +431,7 @@ namespace Libraries
             mQuadRenderer.RenderQuad(mGraphicsDevice, Vector2.One * -1, Vector2.One);
             
             //Now downsample to the next lower mip texture
-            if (BloomDownsamplePasses > 0)
+            if (mBloomDownsamplePasses > 0)
             {
                 //DOWNSAMPLE TO MIP1
                 mGraphicsDevice.SetRenderTarget(mBloomRenderTarget2DMip1);
@@ -441,7 +441,7 @@ namespace Libraries
                 mBloomPassDownsample.Apply();
                 mQuadRenderer.RenderQuad(mGraphicsDevice, Vector2.One * -1, Vector2.One);
 
-                if (BloomDownsamplePasses > 1)
+                if (mBloomDownsamplePasses > 1)
                 {
                     //Our input resolution is halfed, so our inverse 1/res. must be doubled
                     BloomInverseResolution *= 2;
@@ -454,7 +454,7 @@ namespace Libraries
                     mBloomPassDownsample.Apply();
                     mQuadRenderer.RenderQuad(mGraphicsDevice, Vector2.One * -1, Vector2.One);
 
-                    if (BloomDownsamplePasses > 2)
+                    if (mBloomDownsamplePasses > 2)
                     {
                         BloomInverseResolution *= 2;
 
@@ -466,7 +466,7 @@ namespace Libraries
                         mBloomPassDownsample.Apply();
                         mQuadRenderer.RenderQuad(mGraphicsDevice, Vector2.One * -1, Vector2.One);
                         
-                        if (BloomDownsamplePasses > 3)
+                        if (mBloomDownsamplePasses > 3)
                         {
                             BloomInverseResolution *= 2;
 
@@ -478,7 +478,7 @@ namespace Libraries
                             mBloomPassDownsample.Apply();
                             mQuadRenderer.RenderQuad(mGraphicsDevice, Vector2.One * -1, Vector2.One);
 
-                            if (BloomDownsamplePasses > 4)
+                            if (mBloomDownsamplePasses > 4)
                             {
                                 BloomInverseResolution *= 2;
 

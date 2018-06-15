@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using Singularity.Platform;
 using Singularity.Resources;
 using Singularity.Units;
 using Singularity.Utils;
@@ -18,20 +20,20 @@ namespace Singularity.DistributionManager
         public JobType Job { get; set; }
         
         [DataMember()]
-        public int? StartId { get; set; }
+        public PlatformBlank End { get; set; }
 
         [DataMember()]
-        public int? EndId { get; set; }
-        
-        [DataMember()]
-        public Optional<ResourceType> Getres { get; set; }
+        public IPlatformAction Action { get; set; }
 
-        public Task(JobType job, int? start, int? end, Optional<ResourceType> res)
+        [DataMember()]
+        public EResourceType? Getres { get; set; }
+
+        public Task(JobType job, PlatformBlank end, EResourceType? res, IPlatformAction action)
         {
             Job = job;
-            StartId = start;
-            EndId = end;
+            End = end;
             Getres = res;
+            Action = action;
         }
     }
 }
