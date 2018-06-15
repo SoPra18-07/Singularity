@@ -1,8 +1,11 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
 using Singularity.Libraries;
+using Singularity.Map.Properties;
 using Singularity.Property;
 
 namespace Singularity.Platform
@@ -33,19 +36,30 @@ namespace Singularity.Platform
             set
             {
                 mBlueprint = value;
-                if (!value) { // add road to graph
-                           }
+                if (!value)
+                { // add road to graph
+                }
             }
         }
+
+        public bool IsPlaced { get; set; }
+
+        public bool IsAdded { get; set; }
+
+        public bool IsSemiPlaced { get; set; }
 
         /// <summary>
         /// Road is simply an edge between two platforms.
         /// </summary>
-        /// <param name="source">The source IRevealing object from which this road gets drawn</param>
-        /// <param name="destination">The destinaion IRevealing object to which this road gets drawn</param>
+        /// <param name="source">The source ISpatial object from which this road gets drawn</param>
+        /// <param name="destination">The destinaion ISpatial object to which this road gets drawn</param>
         /// <param name="blueprint">Whether this road is a blueprint or not</param>
         public Road(PlatformBlank source, PlatformBlank destination, bool blueprint)
         {
+            IsPlaced = isPlaced;
+            IsSemiPlaced = isPlaced;
+            IsAdded = false;
+
             // the hardcoded values need some changes for different platforms, ill wait until those are implemented to find a good solution.
             Source = source;
             Destination = destination;
@@ -56,7 +70,6 @@ namespace Singularity.Platform
 
         }
 
-
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.DrawLine(((IRevealing)Source).Center, ((IRevealing)Destination).Center, mBlueprint ? new Color(new Vector3(46, 53, 97)) : new Color(new Vector4(0, 40, 40, 255)), 5f, LayerConstants.RoadLayer);
@@ -64,7 +77,7 @@ namespace Singularity.Platform
 
         public void Update(GameTime gametime)
         {
-
+            mLayer = (IsPlaced ? LayerConstants.RoadLayer : LayerConstants.RoadBuildingLayer);
         }
 
         public INode GetParent()

@@ -14,7 +14,7 @@ namespace Singularity.Map
     /// <remarks>
     /// The camera object is used to move and zoom the map and all its components.
     /// </remarks>
-    internal sealed class Camera : IUpdate, IKeyListener, IMouseWheelListener
+    public sealed class Camera : IUpdate, IKeyListener, IMouseWheelListener
     {
 
         /// <summary>
@@ -52,6 +52,10 @@ namespace Singularity.Map
         /// </summary>
         private readonly Rectangle mBounds;
 
+        /// <summary>
+        /// The scroll wheel value which is always 1 update behind the actual update.
+        /// </summary>
+        private int mOldScrollWheelValue;
 
         /// <summary>
         /// Creates a new Camera object which provides a transform matrix to adjust
@@ -60,7 +64,7 @@ namespace Singularity.Map
         /// <param name="viewport">The viewport of the window</param>
         /// <param name="x">The initial x position of the camera</param>
         /// <param name="y">the initial y position of the camera</param>
-        public Camera(Viewport viewport, InputManager inputManager, int x = 0, int y = 0)
+        public Camera(Viewport viewport, int x = 0, int y = 0)
         {
             if (x < 0)
             {
@@ -76,10 +80,8 @@ namespace Singularity.Map
             mY = y;
             mViewport = viewport;
             mZoom = 1.0f;
+            mOldScrollWheelValue = 0;
             mBounds = new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight);
-
-            inputManager.AddKeyListener(this);
-            inputManager.AddMouseWheelListener(this);
 
             mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
 
@@ -252,17 +254,10 @@ namespace Singularity.Map
             }
         }
 
-        public Matrix GetStencilProjection()
+        public void SetInputManager(InputManager inputManager)
         {
-
-            var cameraWorldMin = Vector2.Transform(Vector2.Zero, Matrix.Invert(mTransform));
-
-            return Matrix.CreateOrthographicOffCenter(cameraWorldMin.X,
-                cameraWorldMin.X + (mViewport.Width / mZoom),
-                cameraWorldMin.Y + (mViewport.Height / mZoom),
-                cameraWorldMin.Y,
-                0,
-                1);
+            inputManager.AddKeyListener(this);
+            inputManager.AddMouseWheelListener(this);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,13 +13,39 @@ using Singularity.Utils;
 namespace Singularity.Platform
 {
     [DataContract()]
-    public class PlatformBlank : IRevealing, INode, ICollider
+        public class PlatformBlank : IRevealing, INode, ICollider
 
     {
 
         private List<IEdge> mInwardsEdges;
 
         private List<IEdge> mOutwardsEdges;
+
+        private bool mIsSemiPlaced;
+
+        public bool IsPlaced { get; set; }
+
+        public bool IsAdded { get; set; }
+
+        public bool IsSemiPlaced 
+        {
+            get { return mIsSemiPlaced; }
+            set
+            {
+                if (!value || !Map.Map.IsOnTop(new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y)))
+                {
+                    return;
+                }
+
+                mIsSemiPlaced = true;
+                RevelationRadius = (int)AbsoluteSize.Y;
+                Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+                AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
+            }
+          }
+    
+
+        private float mLayer;
 
         [DataMember()]
         protected EPlatformType mType = EPlatformType.Blank;
@@ -293,7 +318,7 @@ namespace Singularity.Platform
                         0f,
                         Vector2.Zero,
                         SpriteEffects.None,
-                        LayerConstants.PlatformLayer);
+                        mLayer);
                     break;
                 case "d":
                     spritebatch.Draw(mSpritesheet,
@@ -307,7 +332,7 @@ namespace Singularity.Platform
                         0f,
                         Vector2.Zero,
                         SpriteEffects.None,
-                        LayerConstants.PlatformLayer);
+                        mLayer);
                     break;
                 case "c":
                     spritebatch.Draw(mSpritesheet,
@@ -321,7 +346,7 @@ namespace Singularity.Platform
                         0f,
                         Vector2.Zero,
                         SpriteEffects.None,
-                        LayerConstants.PlatformLayer);
+                        mLayer);
                     break;
                 
             }
@@ -330,13 +355,16 @@ namespace Singularity.Platform
         /// <inheritdoc cref="Singularity.Property.IUpdate"/>
         public void Update(GameTime t)
         {
-
+            mLayer = (IsPlaced ? LayerConstants.PlatformLayer : LayerConstants.PlatformBuildingLayer);
         }
 
-        public PlatformBlank(Vector2 position, Texture2D spritesheet, Vector2 center = new Vector2())
+        public PlatformBlank(Vector2 position, Texture2D spritesheet, bool isPlaced = true)
         {
+            Id = IdGenerator.NextId();
 
-            Id = IdGenerator.NextID();
+            IsAdded = false;
+            IsPlaced = isPlaced;
+            IsSemiPlaced = isPlaced;
 
             mInwardsEdges = new List<IEdge>();
             mOutwardsEdges = new List<IEdge>();
@@ -367,18 +395,12 @@ namespace Singularity.Platform
             mRequested = new Dictionary<EResourceType, int>();
 
             RevelationRadius = (int)AbsoluteSize.Y;
-            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
             Moved = false;
 
-            if (center == Vector2.Zero)
+            if (isPlaced)
             {
-                // no value was specified so just use the platform blank implementation.
-                Center = new Vector2(AbsolutePosition.X + PlatformWidth / 2, AbsolutePosition.Y + PlatformHeight - 36);
-            }
-            else
-            {
-                //value was given by subclass thus take that
-                Center = center;
+                AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
             }
 
         }

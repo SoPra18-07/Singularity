@@ -104,6 +104,7 @@
 /build:Glow.png
 
 #begin Dome.png
+
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -126,6 +127,7 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:HoloProjection.png
+
 
 #begin PlatformBasic.png
 /importer:TextureImporter
@@ -207,7 +209,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:SelectorTriangle.png
-
 #begin Sound/Tutorial_Build.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
@@ -225,16 +226,4 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sound/UI/ButtonPress.wav
-
-#begin backgroundGrid.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:backgroundGrid.png
 

@@ -15,7 +15,7 @@ namespace Singularity.Units
         private const int DefaultWidth = 150;
         private const int DefaultHeight = 75;
 
-        private static readonly Color sSelectedColor = Color.Gainsboro;
+        private static readonly Color sSelectedColor = Color.Gray;
         private static readonly Color sNotSelectedColor = Color.White;
 
         private const double Speed = 4;
@@ -65,7 +65,7 @@ namespace Singularity.Units
 
         public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, InputManager manager)
         {
-            Id = IdGenerator.NextID(); // TODO this will later use a random number generator to create a unique
+            Id = IdGenerator.NextId(); // TODO this will later use a random number generator to create a unique
                     // id for the specific unit.
             Health = 10; //TODO
             
@@ -174,7 +174,6 @@ namespace Singularity.Units
 
         public void Update(GameTime gameTime)
         {
-
             //make sure to update the relative bounds rectangle enclosing this unit.
             Bounds = new Rectangle(
                 (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
@@ -274,10 +273,10 @@ namespace Singularity.Units
            
         }
 
-        public void MousePositionChanged(float newX, float newY)
+        public void MousePositionChanged(float relX, float relY, float absX, float absY)
         {
-            mMouseX = newX;
-            mMouseY = newY;
+            mMouseX = relX;
+            mMouseY = relY;
         }
     }
 }

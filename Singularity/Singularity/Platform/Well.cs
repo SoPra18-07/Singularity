@@ -7,21 +7,20 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Map;
-using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
 
 namespace Singularity.Platform
 {
     [DataContract()]
-    class Well: PlatformBlank, IRevealing
+    class Well: PlatformBlank
     {
         [DataMember()]
         private const int PlatformWidth = 144;
         [DataMember()]
         private const int PlatformHeight = 127;
 
-        public Well(Vector2 position, Texture2D spritesheet, ResourceMap resource): base(position, spritesheet, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
+        public Well(Vector2 position, Texture2D spritesheet, ResourceMap resource, bool isPlaced = true): base(position, spritesheet, isPlaced)
         {
             mIPlatformActions = new IPlatformAction[2];
             //mActions[0] = BuildWellBlueprint(this);
