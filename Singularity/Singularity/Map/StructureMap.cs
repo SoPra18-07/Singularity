@@ -11,7 +11,7 @@ namespace Singularity.Map
     /// <summary>
     /// A Structure map holds all the structures currently in the game.
     /// </summary>
-    internal sealed class StructureMap
+    public sealed class StructureMap
     {
         /// <summary>
         /// A list of all the platforms currently in the game

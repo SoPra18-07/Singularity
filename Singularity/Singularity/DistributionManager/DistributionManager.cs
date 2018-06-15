@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.Eventing;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Singularity.Exceptions;
+using Singularity.Map;
 using Singularity.Platform;
 using Singularity.Resources;
 using Singularity.Units;
@@ -31,6 +33,9 @@ namespace Singularity.DistributionManager
         private List<GeneralUnit> mManual;
 
         [DataMember()]
+        private StructureMap mStructure;
+
+        [DataMember()]
         private Queue<Task> mBuildingResources;
         [DataMember()]
         private Queue<Task> mRefiningOrStoringResources;
@@ -47,16 +52,13 @@ namespace Singularity.DistributionManager
         // F:Mhm weiß nicht ob das wirklich notwendig ist ... ich mach mir mal gedanken
         // L:Zumindest ein interface würde benötigt, ich denke nicht dass der sinn hinter der sache ist für jede produzierende plattform ne extra liste mit
         // List<PlatformnamehiereinsetzenActionProduce> zu erstellen. Das gleiche mit mDefensivePlatforms
-        // [DataMember()]
-        // private List<PlatformActionProduce> mProducingPlatforms;
-
-        // [DataMember()]
-        // private List<PlatformActionDefend> mDefensivePlatforms;
+        [DataMember()]
+        private List<IPlatformAction> mPlatformActions;
 
         // Alternativ könnte man auch bei den beiden Listen direkt die Platformen einsetzen?
         // Momentan ja, aber wenn du ne plattform haben willst die (rein theoretisch) verteidigen und Produzieren gleichzeitig kann? Oder gleichzeitig KineticDefense und LaserDefense ist?
         // Aber wollen wir das? also entweder so, oder halt wie oben vorgeschlagen.
-        public DistributionManager()
+        public DistributionManager(StructureMap structure)
         {
             mIdle = new List<GeneralUnit>();
             mLogistics = new List<GeneralUnit>();
@@ -65,13 +67,24 @@ namespace Singularity.DistributionManager
             mDefense = new List<GeneralUnit>();
             mManual = new List<GeneralUnit>();
 
+            mStructure = structure;
+
             mBuildingResources = new Queue<Task>();
             mRefiningOrStoringResources = new Queue<Task>();
             mRequestedUnitsProduce = new Queue<Task>();
             mRequestedUnitsDefense = new Queue<Task>();
             mBlueprintBuilds = new List<BuildBluePrint>();
+            mPlatformActions = new List<IPlatformAction>();
         }
 
+        /// <summary>
+        /// Is called by the unit when it is created.
+        /// </summary>
+        /// <param name="unit">the unit that has been created</param>
+        public void Register(GeneralUnit unit)
+        {
+            mIdle.Add(unit);
+        }
         /// <summary>
         /// This is called by the player, when he wants to distribute the units to certain jobs.
         /// </summary>
@@ -233,14 +246,23 @@ namespace Singularity.DistributionManager
         // - The units (with nothing to do (idle, but not 'JobType: Idle') ask for new Tasks here. So what is needed is ... actually yes, unit is not required. So the JobType is required, to return a Task of that JobType. Also, if this unit is assigned to some specific PlatformAction (like building a Blueprint, Logistics for a certain Factory, ...), it is supposed to only get Tasks involving this PlatformAction. However, if a unit is not manually assigned somewhere, what action do you want to get here? 
         public Task RequestNewTask(JobType job, Optional<IPlatformAction> assignedAction)
         {
-            throw new NotImplementedException();
-            /*switch(job)
-
+            switch(job)
+            //TODO: Implement other Job cases.
             {
                 case JobType.Idle:
-                    var random = Generator.randomId;
-                    return new Pair<Task, int>(Task.Move, random);
-            }*/
+                    //TODO:
+                    //Find a more efficient way to determine the random platform to go to. It has to be Platformreferences (Julian requested it)
+                    //but the List of Platforms currently used is a linkedlist which is not very efficient with ELementAt();
+                    //Maybe use the Graph somehow in the future
+                    var plist = mStructure.GetPlatformList();
+                    var random = new Random();
+                    var rndnmbr = random.Next(1, plist.Count - 1);
+                    //Just give them the inside of the Optional action witchout checking because
+                    //it doesnt matter anyway if its null if the unit is idle.
+                    return new Task(job, plist.ElementAt(rndnmbr), null, assignedAction.Get());
+            }
+            //TODO: Make this disappear when the rest is implemented, since its only a placeholder
+            return new Task(job, mStructure.GetPlatformList().ElementAt(0), null, assignedAction.Get());
         }
 
         public void PausePlatformAction(IPlatformAction action)

@@ -147,8 +147,10 @@ namespace Singularity.Screen.ScreenClasses
         public void LoadContent(ContentManager content)
         {
             var pathManager = new PathManager();
-            var dist = new DistributionManager.DistributionManager();
             var mapBackground = content.Load<Texture2D>("MockUpBackground");
+            mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, mInputManager, pathManager, true);
+            mCamera = mMap.GetCamera();
+            var dist = new DistributionManager.DistributionManager(mMap.mStructureMap);
 
             mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
 
@@ -164,10 +166,6 @@ namespace Singularity.Screen.ScreenClasses
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
             var genUnit2 = new GeneralUnit(mPlatform2, pathManager, dist);
             var genUnit3 = new GeneralUnit(mPlatform3, pathManager, dist);
-
-
-            mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, mInputManager, pathManager, true);
-            mCamera = mMap.GetCamera();
 
             var platform4 = new Well(new Vector2(1000, 200), mPlatformDomeTexture, mMap.GetResourceMap());
             var platform5 = new Quarry(new Vector2(1300, 400), mPlatformDomeTexture, mMap.GetResourceMap());

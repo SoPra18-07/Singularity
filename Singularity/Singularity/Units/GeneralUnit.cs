@@ -97,6 +97,8 @@ namespace Singularity.Units
             mIsMoving = false;
             mPathManager = pathManager;
             mDistrManager = distrManager;
+            distrManager.Register(this);
+            mDone = true;
         }
         /// <summary>
         /// Used to pick the Task that the unit does. It assigns the unit to a job which the update method uses
@@ -108,7 +110,7 @@ namespace Singularity.Units
         public void AssignedTask(Task assignedTask, int? targetId = null)
         {
             throw new NotImplementedException();
-            switch (assignedTask)
+            /*switch (assignedTask)
             {
                 case Task.Idle:
                     Job = JobType.Idle;
@@ -159,9 +161,10 @@ namespace Singularity.Units
 
                 //The idea is to use this task to move while your jobtype is idle (since we want these units to move around)
                 //case Task.Move:
-                    //Move(targetId);
-            }
+                    //Move(targetId); 
+            }*/
         }
+
         /// <summary>
         /// Moves the unit to the target position by its given speed.
         /// </summary>
@@ -251,8 +254,24 @@ namespace Singularity.Units
             */
 
         }
+
+        /// <summary>
+        /// Only contains implementation for the Idle case so far
+        /// </summary>
+        /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
+            if (!mIsMoving && mDone)
+            {
+                mDone = false;
+                if (Job == JobType.Idle)
+                {
+                    //Care!!! DO NOT UNDER ANY CIRCUMSTANCES USE THIS PLACEHOLDER
+                    IPlatformAction action = new ProduceMineResource(null, null);
+                    mAssignedTask = mDistrManager.RequestNewTask(Job, Optional<IPlatformAction>.Of(action));
+                    mDestination = mAssignedTask.End;
+                }
+            }
             // if this if clause is fulfilled we get a new path to move to.
             // we only do this if we're not moving, have no destination and our
             // current nodequeue is empty (the path)
@@ -292,6 +311,10 @@ namespace Singularity.Units
             //since we're operating with float values we just want the distance to be smaller than 2 pixels.
             if (Vector2.Distance(AbsolutePosition, target) < 2)
             {
+                if (Job == JobType.Idle)
+                {
+                    mDone = true;
+                }
                 CurrentNode = mCurrentNode;
                 mDestination = null;
                 mIsMoving = false;
