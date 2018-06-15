@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Graph;
 using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
@@ -13,9 +14,14 @@ using Singularity.Utils;
 namespace Singularity.Platform
 {
     [DataContract()]
-    public class PlatformBlank : IDraw, IUpdate, ICollider, IRevealing
+    public class PlatformBlank : IRevealing, INode, ICollider
 
     {
+
+        private List<IEdge> mInwardsEdges;
+
+        private List<IEdge> mOutwardsEdges;
+
         [DataMember()]
         protected EPlatformType mType = EPlatformType.Blank;
         [DataMember()]
@@ -42,7 +48,7 @@ namespace Singularity.Platform
         [DataMember()]
         protected Dictionary<EResourceType, int> mRequested;
 
-        public Vector2 Center { get; private set; }
+        public Vector2 Center { get; set; }
 
         public int RevelationRadius { get; private set; }
 
@@ -332,6 +338,9 @@ namespace Singularity.Platform
 
             Id = IdGenerator.NextID();
 
+            mInwardsEdges = new List<IEdge>();
+            mOutwardsEdges = new List<IEdge>();
+
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
 
@@ -377,6 +386,38 @@ namespace Singularity.Platform
         public bool PlatformHasSpace()
         {
             return mResources.Count < 10;
+        }
+
+        public void AddEdge(IEdge edge, EEdgeFacing facing)
+        {
+            if (facing == EEdgeFacing.Inwards)
+            {
+                mInwardsEdges.Add(edge);
+                return;
+            }
+            mOutwardsEdges.Add(edge);
+
+        }
+
+        public void RemoveEdge(IEdge edge, EEdgeFacing facing)
+        {
+            if (facing == EEdgeFacing.Inwards)
+            {
+                mInwardsEdges.Remove(edge);
+                return;
+            }
+            mOutwardsEdges.Remove(edge);
+
+        }
+
+        public IEnumerable<IEdge> GetOutwardsEdges()
+        {
+            return mOutwardsEdges;
+        }
+
+        public IEnumerable<IEdge> GetInwardsEdges()
+        {
+            return mInwardsEdges;
         }
     }
 }

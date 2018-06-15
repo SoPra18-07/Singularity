@@ -485,8 +485,8 @@ namespace Singularity.Libraries
             // calculate the angle between the two vectors
             float angle = (float)Math.Atan2(point2.Y - point1.Y, point2.X - point1.X);
 
-            DrawLine(spriteBatch, point1, distance, angle, color, thickness);
-        }
+			DrawLine(spriteBatch, point1, distance, angle, color, thickness, layerDepth);
+		}
 
 
         /// <summary>
@@ -610,9 +610,9 @@ namespace Singularity.Libraries
         /// <param name="sides">The number of sides to generate</param>
         /// <param name="color">The color of the circle</param>
         /// <param name="thickness">The thickness of the lines used</param>
-        public static void DrawCircle(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, Color color, float thickness)
+        public static void DrawCircle(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, Color color, float thickness, float layerDepth = 0)
         {
-            DrawPoints(spriteBatch, center, CreateCircle(radius, sides), color, thickness);
+            DrawPoints(spriteBatch, center, CreateCircle(radius, sides), color, thickness, layerDepth);
         }
 
 

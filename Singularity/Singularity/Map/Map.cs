@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Exceptions;
+using Singularity.Graph.Paths;
 using Singularity.Input;
 using Singularity.Libraries;
 using Singularity.Map.Properties;
@@ -36,13 +37,8 @@ namespace Singularity.Map
         /// <param name="debug">Whether the debug grid lines are drawn or not</param>
         /// <param name="initialResources">The initial resources of this map, if not specified there will not be any on the map</param>
         /// <param name="fow">The fog of war for this map</param>
-        public Map(Texture2D backgroundTexture, Viewport viewport, InputManager inputManager, bool debug = false, IEnumerable<Resource> initialResources = null)
+        public Map(Texture2D backgroundTexture, Viewport viewport, InputManager inputManager, PathManager pathManager, bool debug = false, IEnumerable<Resource> initialResources = null)
         {
-            if (backgroundTexture.Width != MapConstants.MapWidth && backgroundTexture.Height != MapConstants.MapHeight)
-            {
-                // i'm limited to the options i'm given. This needs to be done so i can achieve consistency with the fog of war
-                throw new UnsupportedTextureSizeException(backgroundTexture.Width, backgroundTexture.Height, MapConstants.MapWidth, MapConstants.MapHeight);
-            }
 
             mBackgroundTexture = backgroundTexture;
             mDebug = debug;
@@ -50,7 +46,7 @@ namespace Singularity.Map
             mCamera = new Camera(viewport, inputManager, 0, 0);
 
             mCollisionMap = new CollisionMap();
-            mStructureMap = new StructureMap();
+            mStructureMap = new StructureMap(pathManager);
             mResourceMap = new ResourceMap(initialResources);
         }
 
@@ -131,9 +127,29 @@ namespace Singularity.Map
             mStructureMap.RemovePlatform(platform);
         }
 
-        public void RemoveResource(Resource resource)
+        public void AddRoad(Road road)
         {
-            mResourceMap.RemoveResource(resource);
+            mStructureMap.AddRoad(road);
+        }
+
+        public void RemoveRoad(Road road)
+        {
+            mStructureMap.RemoveRoad(road);
+        }
+
+        public StructureMap GetStructureMap()
+        {
+            return mStructureMap;
+        }
+        
+        public CollisionMap GetCollisionMap()
+        {
+            return mCollisionMap;
+        }
+
+        public ResourceMap GetResourceMap()
+        {
+            return mResourceMap;
         }
 
         public Camera GetCamera()
