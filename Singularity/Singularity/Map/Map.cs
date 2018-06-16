@@ -162,7 +162,7 @@ namespace Singularity.Map
             {
                 for (var j = 0; j < colMap.GetLength(dimension: 1); j ++)
                 {
-                    if (colMap[i, j].IsPresent())
+                    if (!colMap[i, j].IsWalkable())
                     {
 
                         spriteBatch.FillRectangle(rect: new Rectangle(x: i * MapConstants.GridWidth, y: j * MapConstants.GridHeight, width: MapConstants.GridWidth, height: MapConstants.GridHeight), 
