@@ -27,8 +27,8 @@ namespace Singularity.Libraries
         /// <returns>The current value of the easing animation</returns>
         public static double Easing(float startValue,
             float endValue,
-            int startTime,
-            int duration,
+            double startTime,
+            double duration,
             GameTime gameTime)
         {
             // range is a separate var to make it easier to read.
