@@ -74,8 +74,10 @@ namespace Singularity.Graph.Paths
 
                 openList.Remove(current);
                 closedList.Add(current);
-
-                foreach (var outgoing in current.GetOutwardsEdges())
+                var edges = new List<IEdge>();
+                edges.AddRange(current.GetOutwardsEdges());
+                edges.AddRange(current.GetInwardsEdges());
+                foreach (var outgoing in edges)
                 {
                     var neighbor = outgoing.GetChild();
 
