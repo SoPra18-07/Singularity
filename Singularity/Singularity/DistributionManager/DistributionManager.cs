@@ -258,7 +258,7 @@ namespace Singularity.DistributionManager
                     //but the List of Platforms currently used is a linkedlist which is not very efficient with ELementAt();
                     //Maybe use the Graph somehow in the future
                     var plist = mStructure.GetPlatformList();
-                    var rndnmbr = mRandom.Next(1, plist.Count - 1);
+                    var rndnmbr = mRandom.Next(0, plist.Count);
                     //Just give them the inside of the Optional action witchout checking because
                     //it doesnt matter anyway if its null if the unit is idle.
                     return new Task(job, plist.ElementAt(rndnmbr), null, assignedAction.Get());

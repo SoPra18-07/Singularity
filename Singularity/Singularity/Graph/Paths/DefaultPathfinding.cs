@@ -74,12 +74,37 @@ namespace Singularity.Graph.Paths
 
                 openList.Remove(current);
                 closedList.Add(current);
-                var edges = new List<IEdge>();
-                edges.AddRange(current.GetOutwardsEdges());
-                edges.AddRange(current.GetInwardsEdges());
-                foreach (var outgoing in edges)
+                //var edges = new List<IEdge>();
+                //edges.AddRange(current.GetOutwardsEdges());
+                //edges.AddRange(current.GetInwardsEdges());
+                foreach (var outgoing in current.GetOutwardsEdges())
                 {
                     var neighbor = outgoing.GetChild();
+
+                    if (closedList.Contains(neighbor))
+                    {
+                        continue;
+                    }
+
+                    if (!openList.Contains(neighbor))
+                    {
+                        openList.Add(neighbor);
+                    }
+
+                    var tentativeGScore = gScore[current] + outgoing.GetCost();
+
+                    if (tentativeGScore >= gScore[neighbor])
+                    {
+                        continue;
+                    }
+
+                    cameFrom[neighbor] = current;
+                    gScore[neighbor] = tentativeGScore;
+                    fScore[neighbor] = gScore[neighbor] + HeuristicCostEstimate(neighbor, destination);
+                }
+                foreach (var outgoing in current.GetInwardsEdges())
+                {
+                    var neighbor = outgoing.GetParent();
 
                     if (closedList.Contains(neighbor))
                     {
