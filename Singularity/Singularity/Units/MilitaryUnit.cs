@@ -44,6 +44,8 @@ namespace Singularity.Units
 
         private float mMouseY;
 
+        private float mScale;
+
 
         public Vector2 AbsolutePosition { get; set; }
 
@@ -68,12 +70,14 @@ namespace Singularity.Units
             Id = IdGenerator.NextID(); // TODO this will later use a random number generator to create a unique
                     // id for the specific unit.
             Health = 10; //TODO
-            
+
+            mScale = 0.4f;
+
             AbsolutePosition = position;
-            AbsoluteSize = new Vector2(DefaultWidth, DefaultHeight);
+            AbsoluteSize = new Vector2(DefaultWidth * mScale, DefaultHeight * mScale);
 
             RevelationRadius = (int) AbsoluteSize.X;
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X  / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * mScale / 2, AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
 
             Moved = false;
             mIsMoving = false;
@@ -160,11 +164,11 @@ namespace Singularity.Units
             spriteBatch.Draw(
                 mMilSheet, 
                 AbsolutePosition, 
-                new Rectangle((150 * mColumn), (75 * mRow), (int) AbsoluteSize.X, (int) AbsoluteSize.Y), 
+                new Rectangle((150 * mColumn), (75 * mRow), (int) (AbsoluteSize.X / mScale), (int) (AbsoluteSize.Y / mScale)), 
                 mColor, 
                 0f, 
                 Vector2.Zero, 
-                Vector2.One, 
+                new Vector2(mScale), 
                 SpriteEffects.None, 
                 LayerConstants.MilitaryUnitLayer
                 );
@@ -203,7 +207,7 @@ namespace Singularity.Units
             //finally select the appropriate color for selected/deselected units.
             mColor = mSelected ? sSelectedColor : sNotSelectedColor;
 
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * mScale / 2, AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
             AbsBounds = new Rectangle((int)AbsolutePosition.X, (int) AbsolutePosition.Y, (int)AbsoluteSize.X, (int) AbsoluteSize.Y);
             Moved = mIsMoving;
         }
