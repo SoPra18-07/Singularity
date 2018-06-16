@@ -35,9 +35,6 @@ namespace Singularity.DistributionManager
         private List<GeneralUnit> mManual;
 
         [DataMember()]
-        private PathManager mPathManager;
-
-        [DataMember()]
         private Queue<Task> mBuildingResources;
         [DataMember()]
         private Queue<Task> mRefiningOrStoringResources;
@@ -62,7 +59,7 @@ namespace Singularity.DistributionManager
         // Alternativ könnte man auch bei den beiden Listen direkt die Platformen einsetzen?
         // Momentan ja, aber wenn du ne plattform haben willst die (rein theoretisch) verteidigen und Produzieren gleichzeitig kann? Oder gleichzeitig KineticDefense und LaserDefense ist?
         // Aber wollen wir das? also entweder so, oder halt wie oben vorgeschlagen.
-        public DistributionManager(PathManager pm)
+        public DistributionManager()
         {
             mIdle = new List<GeneralUnit>();
             mLogistics = new List<GeneralUnit>();
@@ -70,8 +67,6 @@ namespace Singularity.DistributionManager
             mProduction = new List<GeneralUnit>();
             mDefense = new List<GeneralUnit>();
             mManual = new List<GeneralUnit>();
-
-            mPathManager = pm;
 
             mBuildingResources = new Queue<Task>();
             mRefiningOrStoringResources = new Queue<Task>();

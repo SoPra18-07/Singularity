@@ -153,7 +153,7 @@ namespace Singularity.Screen.ScreenClasses
             mCamera = mMap.GetCamera();
             //Give the Distributionmanager the Graph he is operating on. 
             //TODO: Talk about whether the DistributionManager should operate on all Graphs or if we want to make additional DMs.
-            var dist = new DistributionManager.DistributionManager(pathManager);
+            var dist = new DistributionManager.DistributionManager();
 
             mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
 
