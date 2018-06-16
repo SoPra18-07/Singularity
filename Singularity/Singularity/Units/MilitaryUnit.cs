@@ -76,7 +76,7 @@ namespace Singularity.Units
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(DefaultWidth * mScale, DefaultHeight * mScale);
 
-            RevelationRadius = (int) AbsoluteSize.X;
+            RevelationRadius = (int) AbsoluteSize.X * 3;
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * mScale / 2, AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
 
             Moved = false;
@@ -98,7 +98,7 @@ namespace Singularity.Units
         private void Rotate(Vector2 target)
         {
             // form a triangle from unit location to mouse location
-            // adjust to be at center of sprite 150x75
+            // adjust to be at center of sprite
             var x = (target.X - (RelativePosition.X + RelativeSize.X / 2));
             var y = (target.Y - (RelativePosition.Y + RelativeSize.Y / 2));
             var hypot = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
@@ -208,7 +208,7 @@ namespace Singularity.Units
             mColor = mSelected ? sSelectedColor : sNotSelectedColor;
 
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * mScale / 2, AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
-            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int) AbsolutePosition.Y, (int)AbsoluteSize.X, (int) AbsoluteSize.Y);
+            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int) AbsolutePosition.Y, (int)(AbsoluteSize.X * mScale), (int) (AbsoluteSize.Y * mScale));
             Moved = mIsMoving;
         }
 

@@ -147,7 +147,7 @@ namespace Singularity.Screen.ScreenClasses
         public void LoadContent(ContentManager content)
         {
             var pathManager = new PathManager();
-            var mapBackground = content.Load<Texture2D>("MockUpBackground");
+            var mapBackground = content.Load<Texture2D>("backgroundGrid");
 
             mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
 
@@ -164,8 +164,17 @@ namespace Singularity.Screen.ScreenClasses
             var genUnit2 = new GeneralUnit(mPlatform2, pathManager);
             var genUnit3 = new GeneralUnit(mPlatform3, pathManager);
 
+            var libSans12 = content.Load<SpriteFont>("LibSans12");
 
-            mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, mInputManager, pathManager, true);
+
+            mMap = new Map.Map(mapBackground,
+                20, // changing map size requires changing constants in MapConstants.cs
+                20,
+                mGraphicsDevice.Viewport,
+                mInputManager,
+                pathManager,
+                libSans12,
+                true);
             mCamera = mMap.GetCamera();
 
             var platform4 = new Well(new Vector2(1000, 200), mPlatformDomeTexture, mMap.GetResourceMap());
