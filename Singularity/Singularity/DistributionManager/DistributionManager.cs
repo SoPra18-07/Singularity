@@ -8,6 +8,8 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Singularity.Exceptions;
+using Singularity.Graph;
+using Singularity.Graph.Paths;
 using Singularity.Map;
 using Singularity.Platform;
 using Singularity.Resources;
@@ -33,7 +35,7 @@ namespace Singularity.DistributionManager
         private List<GeneralUnit> mManual;
 
         [DataMember()]
-        private StructureMap mStructure;
+        private PathManager mPathManager;
 
         [DataMember()]
         private Queue<Task> mBuildingResources;
@@ -60,7 +62,7 @@ namespace Singularity.DistributionManager
         // Alternativ könnte man auch bei den beiden Listen direkt die Platformen einsetzen?
         // Momentan ja, aber wenn du ne plattform haben willst die (rein theoretisch) verteidigen und Produzieren gleichzeitig kann? Oder gleichzeitig KineticDefense und LaserDefense ist?
         // Aber wollen wir das? also entweder so, oder halt wie oben vorgeschlagen.
-        public DistributionManager(StructureMap structure)
+        public DistributionManager(PathManager pm)
         {
             mIdle = new List<GeneralUnit>();
             mLogistics = new List<GeneralUnit>();
@@ -69,7 +71,7 @@ namespace Singularity.DistributionManager
             mDefense = new List<GeneralUnit>();
             mManual = new List<GeneralUnit>();
 
-            mStructure = structure;
+            mPathManager = pm;
 
             mBuildingResources = new Queue<Task>();
             mRefiningOrStoringResources = new Queue<Task>();
@@ -247,24 +249,31 @@ namespace Singularity.DistributionManager
         //
         // Okay, so how was it supposed to work (in my version, if you want to implement it is for you to decide):
         // - The units (with nothing to do (idle, but not 'JobType: Idle') ask for new Tasks here. So what is needed is ... actually yes, unit is not required. So the JobType is required, to return a Task of that JobType. Also, if this unit is assigned to some specific PlatformAction (like building a Blueprint, Logistics for a certain Factory, ...), it is supposed to only get Tasks involving this PlatformAction. However, if a unit is not manually assigned somewhere, what action do you want to get here? 
-        public Task RequestNewTask(JobType job, Optional<IPlatformAction> assignedAction)
+        public Task RequestNewTask(GeneralUnit unit, JobType job, Optional<IPlatformAction> assignedAction)
         {
-            switch(job)
+            var nodes = new List<INode>();
+            switch (job)
             //TODO: Implement other Job cases.
             {
                 case JobType.Idle:
-                    //TODO:
-                    //Find a more efficient way to determine the random platform to go to. It has to be Platformreferences (Julian requested it)
-                    //but the List of Platforms currently used is a linkedlist which is not very efficient with ELementAt();
-                    //Maybe use the Graph somehow in the future
-                    var plist = mStructure.GetPlatformList();
-                    var rndnmbr = mRandom.Next(0, plist.Count);
+                    //It looks inefficient but I think its okay, the
+                    //Platforms got not that much connections (or at least they are supposed to have not that much connections).
+                    //That way the unit will only travel one node per task, but that makes it more reactive.
+                    foreach (var edge in unit.CurrentNode.GetInwardsEdges())
+                    {
+                        nodes.Add(edge.GetParent());
+                    }
+                    foreach (var edge in unit.CurrentNode.GetOutwardsEdges())
+                    {
+                        nodes.Add(edge.GetChild());
+                    }
+                    var rndnmbr = mRandom.Next(0, nodes.Count);
                     //Just give them the inside of the Optional action witchout checking because
                     //it doesnt matter anyway if its null if the unit is idle.
-                    return new Task(job, plist.ElementAt(rndnmbr), null, assignedAction.Get());
+                    return new Task(job, (PlatformBlank) nodes.ElementAt(rndnmbr), null, assignedAction.Get());
             }
             //TODO: Make this disappear when the rest is implemented, since its only a placeholder
-            return new Task(job, mStructure.GetPlatformList().ElementAt(0), null, assignedAction.Get());
+            return new Task(job, (PlatformBlank) nodes.ElementAt(0), null, assignedAction.Get());
         }
 
         public void PausePlatformAction(IPlatformAction action)

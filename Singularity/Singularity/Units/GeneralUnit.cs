@@ -266,7 +266,7 @@ namespace Singularity.Units
                 {
                     //Care!!! DO NOT UNDER ANY CIRCUMSTANCES USE THIS PLACEHOLDER
                     IPlatformAction action = new ProduceMineResource(null, null);
-                    mAssignedTask = mDistrManager.RequestNewTask(Job, Optional<IPlatformAction>.Of(action));
+                    mAssignedTask = mDistrManager.RequestNewTask(this, Job, Optional<IPlatformAction>.Of(action));
                     mDestination = mAssignedTask.End;
                 }
             }

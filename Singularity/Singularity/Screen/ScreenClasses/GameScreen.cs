@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO.MemoryMappedFiles;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -150,7 +151,9 @@ namespace Singularity.Screen.ScreenClasses
             var mapBackground = content.Load<Texture2D>("MockUpBackground");
             mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, mInputManager, pathManager, true);
             mCamera = mMap.GetCamera();
-            var dist = new DistributionManager.DistributionManager(mMap.mStructureMap);
+            //Give the Distributionmanager the Graph he is operating on. 
+            //TODO: Talk about whether the DistributionManager should operate on all Graphs or if we want to make additional DMs.
+            var dist = new DistributionManager.DistributionManager(pathManager);
 
             mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
 
@@ -164,6 +167,9 @@ namespace Singularity.Screen.ScreenClasses
             mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
+
+
+
             var genUnit2 = new GeneralUnit(mPlatform2, pathManager, dist);
             var genUnit3 = new GeneralUnit(mPlatform3, pathManager, dist);
 
