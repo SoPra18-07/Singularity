@@ -18,7 +18,9 @@ namespace Singularity.Platform
         private const int PlatformWidth = 144;
         [DataMember()]
         private const int PlatformHeight = 127;
-        public Junkyard(Vector2 position, Texture2D spritesheet): base(position, spritesheet, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
+        [DataMember()]
+        private StoryManager.StoryManager mStory;
+        public Junkyard(Vector2 position, Texture2D spritesheet, StoryManager.StoryManager story): base(position, spritesheet, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
         {
             //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[1];
@@ -28,6 +30,7 @@ namespace Singularity.Platform
             mType = EPlatformType.Junkyard;
             mSpritename = "Dome";
             AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
+            mStory = story;
         }
 
         public void BurnTrash()
@@ -37,6 +40,7 @@ namespace Singularity.Platform
                 if (resource.Type == EResourceType.Trash)
                 {
                     mResources.Remove(resource);
+                    mStory.Trash();
                 }
             }
         }

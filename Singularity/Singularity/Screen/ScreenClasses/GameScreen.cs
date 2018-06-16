@@ -148,6 +148,7 @@ namespace Singularity.Screen.ScreenClasses
         public void LoadContent(ContentManager content)
         {
             var pathManager = new PathManager();
+            var storyManager = new StoryManager.StoryManager();
             var mapBackground = content.Load<Texture2D>("MockUpBackground");
             mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, mInputManager, pathManager, true);
             mCamera = mMap.GetCamera();
@@ -164,7 +165,7 @@ namespace Singularity.Screen.ScreenClasses
             mPlatformBlankTexture = content.Load<Texture2D>("PlatformBasic");
             mPlatformDomeTexture = content.Load<Texture2D>("Dome");
             mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformBlankTexture);
-            mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
+            mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture, storyManager);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
 

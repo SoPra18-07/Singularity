@@ -125,6 +125,7 @@
     <Compile Include="Sound\SoundClass.cs" />
     <Compile Include="Sound\SoundManager.cs" />
     <Compile Include="Sound\SoundPhase.cs" />
+    <Compile Include="StoryManager\Achievements.cs" />
     <Compile Include="StoryManager\StoryManager.cs" />
     <Compile Include="Units\GeneralUnit.cs" />
     <Compile Include="Units\IUnit.cs" />
