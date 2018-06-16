@@ -18,7 +18,7 @@ namespace Singularity.Map
     internal sealed class Map : IDraw, IUpdate
     {   
         private readonly CollisionMap mCollisionMap;
-        private readonly StructureMap mStructureMap;
+        public readonly StructureMap mStructureMap;
         private readonly ResourceMap mResourceMap;
 
         private readonly Camera mCamera;

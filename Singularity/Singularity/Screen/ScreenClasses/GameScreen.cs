@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO.MemoryMappedFiles;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -148,6 +149,11 @@ namespace Singularity.Screen.ScreenClasses
         {
             var pathManager = new PathManager();
             var mapBackground = content.Load<Texture2D>("MockUpBackground");
+            mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, mInputManager, pathManager, true);
+            mCamera = mMap.GetCamera();
+            //Give the Distributionmanager the Graph he is operating on. 
+            //TODO: Talk about whether the DistributionManager should operate on all Graphs or if we want to make additional DMs.
+            var dist = new DistributionManager.DistributionManager();
 
             mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
 
@@ -161,19 +167,18 @@ namespace Singularity.Screen.ScreenClasses
             mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
-            var genUnit2 = new GeneralUnit(mPlatform2, pathManager);
-            var genUnit3 = new GeneralUnit(mPlatform3, pathManager);
 
 
-            mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, mInputManager, pathManager, true);
-            mCamera = mMap.GetCamera();
+
+            var genUnit2 = new GeneralUnit(mPlatform2, pathManager, dist);
+            var genUnit3 = new GeneralUnit(mPlatform3, pathManager, dist);
 
             var platform4 = new Well(new Vector2(1000, 200), mPlatformDomeTexture, mMap.GetResourceMap());
             var platform5 = new Quarry(new Vector2(1300, 400), mPlatformDomeTexture, mMap.GetResourceMap());
 
-            var genUnit = new GeneralUnit(mPlatform, pathManager);
-            var genUnit4 = new GeneralUnit(platform4, pathManager);
-            var genUnit5 = new GeneralUnit(platform5, pathManager);
+            var genUnit = new GeneralUnit(mPlatform, pathManager, dist);
+            var genUnit4 = new GeneralUnit(platform4, pathManager, dist);
+            var genUnit5 = new GeneralUnit(platform5, pathManager, dist);
 
             mFow = new FogOfWar(mCamera, mGraphicsDevice);
 

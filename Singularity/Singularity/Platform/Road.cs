@@ -7,7 +7,7 @@ using Singularity.Property;
 
 namespace Singularity.Platform
 {
-    internal sealed class Road : ISpatial, IEdge
+    public sealed class Road : ISpatial, IEdge
     {
         private PlatformBlank Source { get; }
 
