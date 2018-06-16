@@ -24,8 +24,6 @@ namespace Singularity.Units
         [DataMember()]
         private int mPositionId;
         [DataMember()]
-        public string Assignment { get; set; } // TODO change to an enum type
-        [DataMember()]
         public Optional<Resource> Carrying { get; set; } // TODO change resource into a nullable type
         [DataMember()]
         private int? mTargetId;
@@ -297,6 +295,10 @@ namespace Singularity.Units
 
             // check whether we have reached the target after our move call.
             ReachedTarget(((PlatformBlank)mCurrentNode).Center);
+            if (mNodeQueue.Count == 0 && Job == JobType.Idle)
+            {
+                mDone = true;
+            }
 
         }
 
@@ -311,10 +313,6 @@ namespace Singularity.Units
             //since we're operating with float values we just want the distance to be smaller than 2 pixels.
             if (Vector2.Distance(AbsolutePosition, target) < 2)
             {
-                if (Job == JobType.Idle)
-                {
-                    mDone = true;
-                }
                 CurrentNode = mCurrentNode;
                 mDestination = null;
                 mIsMoving = false;
