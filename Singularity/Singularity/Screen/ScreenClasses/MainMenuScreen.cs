@@ -74,7 +74,7 @@ namespace Singularity.Screen.ScreenClasses
             
             mPlayString = "New Game";
             mLoadSelectString = "Load Game";
-            mAchievementsString = "Achivements";
+            mAchievementsString = "Achievements";
             mOptionsString = "Options";
             mQuitString = "Quit";
             mTitle = "Singularity";
