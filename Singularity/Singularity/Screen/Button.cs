@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
+using Singularity.Libraries;
 using Singularity.Property;
 
 
@@ -38,6 +39,12 @@ namespace Singularity.Screen
 
         private Rectangle mBounds;
         private bool mClicked;
+        private bool mWithBorder;
+
+        /// <summary>
+        /// Opacity of the button useful for transitions or transparent buttons
+        /// </summary>
+        public float Opacity { private get; set; }
 
         // these events are sent out when they occur to an 
         // instance of a button
@@ -60,7 +67,7 @@ namespace Singularity.Screen
         /// <param name="scale"> scale of the texture</param>
         /// <param name="buttonTexture"></param>
         /// <param name="position"></param>
-        public Button(float scale, Texture2D buttonTexture, Vector2 position)
+        public Button(float scale, Texture2D buttonTexture, Vector2 position, bool withBorder)
         {
             mIsText = false;
             mScale = scale;
@@ -70,6 +77,7 @@ namespace Singularity.Screen
             mHeight = mButtonTexture.Height;
             mColor = Color.White;
             CreateRectangularBounds();
+
         }
 
         /// <summary>
@@ -87,6 +95,18 @@ namespace Singularity.Screen
             mWidth = (int)mFont.MeasureString(mButtonText).X;
             mHeight = (int)mFont.MeasureString(mButtonText).Y;
             mColor = Color.White;
+            CreateRectangularBounds();
+        }
+
+        public Button(string buttonText, SpriteFont font, Vector2 position, Color color)
+        {
+            mIsText = true;
+            mButtonText = buttonText;
+            mFont = font;
+            mPosition = position;
+            mWidth = (int)mFont.MeasureString(mButtonText).X;
+            mHeight = (int)mFont.MeasureString(mButtonText).Y;
+            mColor = color;
             CreateRectangularBounds();
         }
 
@@ -110,7 +130,6 @@ namespace Singularity.Screen
             }
 
         }
-
 
         /// <summary>
         /// Sends out event that mouse is hovering over the button
@@ -145,12 +164,16 @@ namespace Singularity.Screen
                 spriteBatch.Draw(mButtonTexture,
                     mPosition,
                     null,
-                    mColor,
+                    mColor * Opacity,
                     0f,
                     new Vector2(0, 0),
                     mScale,
                     SpriteEffects.None,
                     0f);
+                if (mWithBorder)
+                {
+                    spriteBatch.DrawRectangle(new Vector2(mPosition.X - 1, mPosition.Y - 1), new Vector2(mButtonTexture.Width + 1, mButtonTexture.Height + 1), Color.White, 1);
+                }
 
             }
 
@@ -160,7 +183,7 @@ namespace Singularity.Screen
                 spriteBatch.DrawString(mFont,
                     origin: Vector2.Zero,
                     position: mPosition,
-                    color: mColor,
+                    color: mColor * Opacity,
                     text: mButtonText,
                     rotation: 0f,
                     scale: 1f,
