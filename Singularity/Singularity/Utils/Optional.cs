@@ -8,7 +8,7 @@ namespace Singularity.Utils
     /// and Get() will return the value.
     /// </summary>
     /// <typeparam name="T">The type of this optional</typeparam>
-    internal sealed class Optional<T>
+    public sealed class Optional<T>
     {
         private readonly T mValue;
 

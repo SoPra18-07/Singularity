@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -40,6 +41,7 @@ namespace Singularity.Screen
             // formerly "top" item in the stack is now the first item in the linked list. This
             // removes the "reverse-list" effort.
             var screens = new LinkedList<IScreen>(mScreenStack);
+
             foreach (var currentScreen in screens)
             {
                 currentScreen.Update(gameTime);
@@ -56,6 +58,7 @@ namespace Singularity.Screen
         {
             // Same as the comment in Update.
             var screens = new LinkedList<IScreen>(mScreenStack);
+
             foreach (var currentScreen in screens)
             {
                 currentScreen.Draw(spriteBatch);
@@ -66,6 +69,7 @@ namespace Singularity.Screen
 
                 }
             }
+            Debug.WriteLine("");
         }
     }
 }

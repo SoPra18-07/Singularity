@@ -10,7 +10,7 @@ namespace Singularity.Property
     /// thus store the "actual position on the current screen in relation to the camera". Those
     /// should be used when checking for the current position of this object.
     /// </summary>
-    internal interface ISpatial
+    internal interface ISpatial : IDraw, IUpdate
     {
         /// <summary>
         /// The relative position of this object. Relative to the camera that is. These

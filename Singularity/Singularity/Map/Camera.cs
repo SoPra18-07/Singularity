@@ -1,6 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Singularity.Input;
 using Singularity.Map.Properties;
 using Singularity.Property;
 
@@ -11,7 +14,7 @@ namespace Singularity.Map
     /// <remarks>
     /// The camera object is used to move and zoom the map and all its components.
     /// </remarks>
-    internal sealed class Camera : IUpdate
+    internal sealed class Camera : IUpdate, IKeyListener, IMouseWheelListener
     {
 
         /// <summary>
@@ -49,10 +52,6 @@ namespace Singularity.Map
         /// </summary>
         private readonly Rectangle mBounds;
 
-        /// <summary>
-        /// The scroll wheel value which is always 1 update behind the actual update.
-        /// </summary>
-        private int mOldScrollWheelValue;
 
         /// <summary>
         /// Creates a new Camera object which provides a transform matrix to adjust
@@ -61,7 +60,7 @@ namespace Singularity.Map
         /// <param name="viewport">The viewport of the window</param>
         /// <param name="x">The initial x position of the camera</param>
         /// <param name="y">the initial y position of the camera</param>
-        public Camera(Viewport viewport, int x = 0, int y = 0)
+        public Camera(Viewport viewport, InputManager inputManager, int x = 0, int y = 0)
         {
             if (x < 0)
             {
@@ -77,8 +76,10 @@ namespace Singularity.Map
             mY = y;
             mViewport = viewport;
             mZoom = 1.0f;
-            mOldScrollWheelValue = 0;
             mBounds = new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight);
+
+            inputManager.AddKeyListener(this);
+            inputManager.AddMouseWheelListener(this);
 
             mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
 
@@ -97,14 +98,6 @@ namespace Singularity.Map
         //TODO: remove this when input manager is there, since we don't need to fetch it anymore
         public void Update(GameTime gametime)
         {
-
-            //make sure to validate positional values (not moving out of bounds) after moving the camera.
-            if (ApplyMovement())
-            {
-                ValidatePosition();
-            }
-
-            UpdateZoom();
 
             //finally update the matrix to all the fitting values.    
             UpdateTransformMatrix();
@@ -190,69 +183,86 @@ namespace Singularity.Map
             mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
         }
 
-        /// <summary>
-        /// Fetches key presses and updates the current absolute camera location. 
-        /// </summary>
-        /// <returns>True if the camera got moved, false otherwise</returns>
-        private bool ApplyMovement()
+        public void KeyTyped(KeyEvent keyEvent)
+        {
+            
+        }
+
+        public void KeyPressed(KeyEvent keyEvent)
         {
             var moved = false;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.W))
+            foreach (var key in keyEvent.CurrentKeys)
             {
-                mY -= CameraMovementSpeed;
-                moved = true;
+
+                switch (key)
+                {
+                    case Keys.W:
+                        mY -= CameraMovementSpeed;
+                        moved = true;
+                        break;
+
+                    case Keys.S:
+                        mY += CameraMovementSpeed;
+                        moved = true;
+                        break;
+
+                    case Keys.A:
+                        mX -= CameraMovementSpeed;
+                        moved = true;
+                        break;
+
+                    case Keys.D:
+                        mX += CameraMovementSpeed;
+                        moved = true;
+                        break;
+                }
             }
 
-            else if (Keyboard.GetState().IsKeyDown(Keys.S))
+            if (moved)
             {
-                mY += CameraMovementSpeed;
-                moved = true;
+                ValidatePosition();
             }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                mX -= CameraMovementSpeed;
-                moved = true;
-            }
-
-            else if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                mX += CameraMovementSpeed;
-                moved = true;
-            }
-
-            return moved;
         }
 
-        /// <summary>
-        /// Updates the current zoom member variable.
-        /// </summary>
-        /// <returns>True if the zoom got changed, false otherwise</returns>
-        private bool UpdateZoom()
+        public void KeyReleased(KeyEvent keyEvent)
         {
-            var zoomed = false;
-            var scaleChange = 0f;
+            
+        }
 
-            if (Mouse.GetState().ScrollWheelValue - mOldScrollWheelValue < 0)
+        public void MouseWheelValueChanged(EMouseAction mouseAction)
+        {
+            var scrollChange = 0f;
+
+            switch (mouseAction)
             {
-                scaleChange = -0.1f;
+                case EMouseAction.ScrollUp:
+                    scrollChange = 0.1f;
+                    break;
+
+                case EMouseAction.ScrollDown:
+                    scrollChange = -0.1f;
+                    break;
             }
-            else if (Mouse.GetState().ScrollWheelValue - mOldScrollWheelValue > 0)
+
+            if (!((mZoom + scrollChange) * MapConstants.MapWidth < mViewport.Width ||
+                  (mZoom + scrollChange) * MapConstants.MapHeight < mViewport.Height))
             {
-                scaleChange = 0.1f;
+                mZoom += scrollChange;
             }
+        }
 
-            if (!((mZoom + scaleChange) * MapConstants.MapWidth < mViewport.Width ||
-                  (mZoom + scaleChange) * MapConstants.MapHeight < mViewport.Height))
-            {
-                mZoom += scaleChange;
-                zoomed = true;
-            }
+        public Matrix GetStencilProjection()
+        {
 
-            mOldScrollWheelValue = Mouse.GetState().ScrollWheelValue;
+            var cameraWorldMin = Vector2.Transform(Vector2.Zero, Matrix.Invert(mTransform));
 
-            return zoomed;
+            return Matrix.CreateOrthographicOffCenter(cameraWorldMin.X,
+                cameraWorldMin.X + (mViewport.Width / mZoom),
+                cameraWorldMin.Y + (mViewport.Height / mZoom),
+                cameraWorldMin.Y,
+                0,
+                1);
         }
     }
 }

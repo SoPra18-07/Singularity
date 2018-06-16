@@ -6,7 +6,17 @@ namespace Singularity.Map.Properties
     /// Provides constants which are predetermined before the game. May needs tweaks.
     /// </summary>
     internal static class MapConstants
-    {   
+    {
+        /// <summary>
+        /// The width of the Grid used for collision detection in pixels.
+        /// </summary>
+        public const int FogOfWarGridWidth = 10;
+
+        /// <summary>
+        /// The height of the Grid used for collision detection in pixels.
+        /// </summary>
+        public const int FogOfWarGridHeight = 10;
+
         /// <summary>
         /// The width of the Grid used for collision detection in pixels.
         /// </summary>

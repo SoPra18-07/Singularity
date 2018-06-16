@@ -30,14 +30,34 @@
         public const float RoadLayer = 0.3f;
 
         /// <summary>
-        /// A float depicting the layer for platforms
-        /// </summary>
-        public const float PlatformLayer = 0.4f;
-
-        /// <summary>
         /// A float depicting the layer for general units
         /// </summary>
-        public const float GeneralUnitLayer = 0.5f;
+        public const float GeneralUnitLayer = 0.4f;
+
+        /// <summary>
+        /// A float depicting the layer for platforms
+        /// </summary>
+        public const float PlatformLayer = 0.5f;
+
+        /// <summary>
+        /// A float depciting the layer of the map that is layered above the objects to smooth the fog of war appearance
+        /// </summary>
+        public const float FogOfWarMapLayer = 0.9f;
+
+        /// <summary>
+        /// A float depicting the layer for the fog of war
+        /// </summary>
+        public const float FogOfWarLayer = 0.91f;
+
+        /// <summary>
+        /// A float depicting the layer for the collision debug
+        /// </summary>
+        public const float CollisionDebugLayer = 0.95f;
+
+        /// <summary>
+        /// A float depicting the layer for the grid debug of the map
+        /// </summary>
+        public const float GridDebugLayer = 0.99f;
 
     }
 }

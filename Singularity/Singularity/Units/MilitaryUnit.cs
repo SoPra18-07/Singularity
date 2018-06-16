@@ -1,28 +1,50 @@
 ﻿using System;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Singularity.Input;
+using Singularity.Map;
 using Singularity.Property;
+using Singularity.Utils;
 
 namespace Singularity.Units
 {
-    internal sealed class MilitaryUnit : IUnit, IDraw, IUpdate
+    internal sealed class MilitaryUnit : ICollider, IUnit, IDraw, IUpdate, IRevealing, IMouseClickListener, IMousePositionListener
     {
+        private const int DefaultWidth = 150;
+        private const int DefaultHeight = 75;
+
+        private static readonly Color sSelectedColor = Color.Gainsboro;
+        private static readonly Color sNotSelectedColor = Color.White;
+
+        private const double Speed = 4;
+
+        private Color mColor;
+
+        private int mColumn;
+        private int mRow;
+
+        private bool mIsMoving;
+        private Rectangle mBoundsSnapshot;
+        private Vector2 mToAdd;
+        private double mZoomSnapshot;
+
+        private Vector2 mMovementVector;
+
+        private readonly Camera mCamera;
+
         private Vector2 mTargetPosition;
         private int mRotation;
         private readonly Texture2D mMilSheet;
-        private double mXstep;
-        private double mYstep;
-        private bool mSelected;
-        private bool mTargetReached;
 
-        /*
-         * TODO: Needs some major code changes in its movement and stuff. A lot of hardcoded values won't do
-         * TODO: with zoom. Thus needs to implement to use its own size (relative) to get those values.
-         * TODO: When there are hardcoded numbers it will normally not work with a camera.
-         * TODO: One can easily see that it currently only works with inital zoom and camera in top left corner
-         */
-         
+        private bool mSelected;
+
+        private float mMouseX;
+
+        private float mMouseY;
+
+
         public Vector2 AbsolutePosition { get; set; }
 
         public Vector2 AbsoluteSize { get; set; }
@@ -31,14 +53,34 @@ namespace Singularity.Units
 
         public Vector2 RelativeSize { get; set; }
 
-        public MilitaryUnit(Vector2 position, Texture2D spriteSheet)
+        public Vector2 Center { get; private set; }
+
+        public bool Moved { get; private set; }
+
+        public int RevelationRadius { get; private set; }
+
+        public Rectangle Bounds { get; private set; }
+
+        public Rectangle AbsBounds { get; private set; }
+
+        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, InputManager manager)
         {
-            Id = 0; // TODO this will later use a random number generator to create a unique
+            Id = IdGenerator.NextiD(); // TODO this will later use a random number generator to create a unique
                     // id for the specific unit.
             Health = 10; //TODO
             
             AbsolutePosition = position;
-            mTargetReached = true;
+            AbsoluteSize = new Vector2(DefaultWidth, DefaultHeight);
+
+            RevelationRadius = (int) AbsoluteSize.X;
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X  / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+
+            Moved = false;
+            mIsMoving = false;
+            mCamera = camera;
+
+            manager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            manager.AddMousePositionListener(this);
 
             mMilSheet = spriteSheet;
         }
@@ -53,9 +95,9 @@ namespace Singularity.Units
         {
             // form a triangle from unit location to mouse location
             // adjust to be at center of sprite 150x75
-            double x = (target.X - (AbsolutePosition.X + 75));
-            double y = (target.Y - (AbsolutePosition.Y + 37.5));
-            double hypot = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+            var x = (target.X - (RelativePosition.X + RelativeSize.X / 2));
+            var y = (target.Y - (RelativePosition.Y + RelativeSize.Y / 2));
+            var hypot = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
 
             // calculate degree between formed triangle
             double degree;
@@ -114,128 +156,128 @@ namespace Singularity.Units
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            // calculate correct sprite on spritesheet to use based on angle
-            // direction that unit is meant to be faceing
-            int rowNumber = (mRotation / 18);
-            int columnNumber = ((mRotation - (rowNumber * 18)) / 3);
-
-            // darken color if unit is selected
-            Color color;
-            if (!mSelected) { color = Color.White; }
-            else { color = Color.Gainsboro; }
             
-            spriteBatch.Draw(mMilSheet, AbsolutePosition, new Rectangle((150 * columnNumber), (75 * rowNumber), 150, 75), color, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, LayerConstants.MilitaryUnitLayer);
+            spriteBatch.Draw(
+                mMilSheet, 
+                AbsolutePosition, 
+                new Rectangle((150 * mColumn), (75 * mRow), (int) AbsoluteSize.X, (int) AbsoluteSize.Y), 
+                mColor, 
+                0f, 
+                Vector2.Zero, 
+                Vector2.One, 
+                SpriteEffects.None, 
+                LayerConstants.MilitaryUnitLayer
+                );
 
         }
 
 
         public void Update(GameTime gameTime)
         {
-            Selected();
 
-            // rotate to face mouse
-            if (mSelected && mTargetReached)
+            //make sure to update the relative bounds rectangle enclosing this unit.
+            Bounds = new Rectangle(
+                (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
+
+            // this makes the unit rotate according to the mouse position when its selected and not moving.
+            if (mSelected && !mIsMoving)
             {
-                Rotate(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
+                Rotate(new Vector2(mMouseX, mMouseY));
+            }
+
+            if (HasReachedTarget())
+            {
+                mIsMoving = false;
             }
 
             // calculate path to target position
-            if (mSelected && Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                ((Math.Abs((AbsolutePosition.X + 75) - Mouse.GetState().X) > 60) ||
-                 (Math.Abs((AbsolutePosition.Y + 37.5) - Mouse.GetState().Y) > 45)))
+            if (mIsMoving && !HasReachedTarget())
             {
-                Steps(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
+                MoveToTarget(mTargetPosition);
             }
 
-            // move unit until target reached
-            if (!mTargetReached)
-            {
-                Move();
-            }
-        }
+            // these are values needed to properly get the current sprite out of the spritesheet.
+            mRow = (mRotation / 18);
+            mColumn = ((mRotation - (mRow * 18)) / 3);
 
+            //finally select the appropriate color for selected/deselected units.
+            mColor = mSelected ? sSelectedColor : sNotSelectedColor;
 
-        /// <summary>
-        /// determines if the the military unit is currently selected by user
-        /// left click within area is select
-        /// right click anywhere else is deselect
-        /// </summary>
-        private void Selected()
-        {
-            // if left click within unit area : selected
-            if ((Math.Abs((AbsolutePosition.X + 75) - Mouse.GetState().X) < 60) &&
-                (Math.Abs((AbsolutePosition.Y + 37.5) - Mouse.GetState().Y) < 45) &&
-                Mouse.GetState().LeftButton == ButtonState.Pressed)
-            {
-                mSelected = true;
-            }
-
-            // right click deselects unit
-            if (Mouse.GetState().RightButton == ButtonState.Pressed)
-            {
-                mSelected = false;
-            }
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int) AbsolutePosition.Y, (int)AbsoluteSize.X, (int) AbsoluteSize.Y);
+            Moved = mIsMoving;
         }
 
         /// <summary>
-        /// determine x and y movement of unit in order to
-        /// reach target destination. This will then be used
-        /// by the Move method
+        /// Calculates the direction the unit should be moving and moves it into that direction. 
         /// </summary>
-        /// <param name="target"></param>
-        private void Steps(Vector2 target)
+        /// <param name="target">The target to which to move</param>
+        private void MoveToTarget(Vector2 target)
         {
-            // set new unit target, and face target position
-            mTargetPosition = target;
-            Rotate(mTargetPosition);
-            mTargetReached = false;
 
-            // travel along the hypotenuse of triangle formed by start and target position
-            double hypot = (Math.Sqrt(Math.Pow((AbsolutePosition.X - mTargetPosition.X + 75), 2) +
-                                      Math.Pow((AbsolutePosition.Y - mTargetPosition.Y + 37.5), 2)));
+            mMovementVector = new Vector2(target.X - mBoundsSnapshot.Center.X, target.Y - mBoundsSnapshot.Center.Y);
+            mMovementVector.Normalize();
+            mToAdd += mMovementVector * (float) (mZoomSnapshot *  Speed);
 
-            // calculate the x distance and y distance needed to get to target
-            if (Math.Abs(hypot) < 0.01)
-            {
-                mXstep = Math.Abs(AbsolutePosition.X - mTargetPosition.X + 75);
-                mYstep = Math.Abs(AbsolutePosition.Y - mTargetPosition.Y + 37.5);
-            }
-            else
-            {
-                mXstep = Math.Abs((AbsolutePosition.X - mTargetPosition.X + 75) / hypot);
-                mYstep = Math.Abs((AbsolutePosition.Y - mTargetPosition.Y + 37.5) / hypot);
-            }
-
-            // determine correct direction of x/y movement
-            if (AbsolutePosition.X - mTargetPosition.X + 75 < 0)
-            {
-                mXstep = -mXstep;
-            }
-
-            if (AbsolutePosition.Y - mTargetPosition.Y +37.5 < 0)
-            {
-                mYstep = -mYstep;
-            }
-
-            // adjusts speed of unit movement 
-            mXstep = mXstep * 3;
-            mYstep = mYstep * 3;     
+            AbsolutePosition = new Vector2((float) (AbsolutePosition.X + mMovementVector.X * Speed), (float) (AbsolutePosition.Y + mMovementVector.Y * Speed));
         }
 
         /// <summary>
-        /// Updates position of unit in order to reach
-        /// target position
+        /// Checks whether the target position is reached or not.
         /// </summary>
-        private void Move()
+        private bool HasReachedTarget()
         {
-            // move position of unit over by x/y step to reach target
-            AbsolutePosition = new Vector2(AbsolutePosition.X - (float)mXstep, AbsolutePosition.Y - (float)mYstep);
 
-            // check if target position has been reached
-            if (Math.Abs((AbsolutePosition.X) - mTargetPosition.X + 75) < 8 && Math.Abs((AbsolutePosition.Y) - mTargetPosition.Y + 37.5) < 8)
+            if (!(Math.Abs(mBoundsSnapshot.Center.X + mToAdd.X -
+                           mTargetPosition.X) < 8 &&
+                  Math.Abs(mBoundsSnapshot.Center.Y + mToAdd.Y -
+                           mTargetPosition.Y) < 8))
             {
-                mTargetReached = true;
+                return false;
             }
+            mToAdd = Vector2.Zero;
+            return true;
+
+        }
+
+        public void MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
+        {
+            switch (mouseAction)
+            {
+                case EMouseAction.LeftClick:
+                    if (mSelected && !mIsMoving && !withinBounds && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f), (int)(mMouseY - RelativeSize.Y / 2f), (int)RelativeSize.X, (int)RelativeSize.Y), mCamera))
+                    {
+                        mIsMoving = true;
+                        mTargetPosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+                        mBoundsSnapshot = Bounds;
+                        mZoomSnapshot = mCamera.GetZoom();
+                    }
+
+                    if (withinBounds) { 
+                        mSelected = true;
+                    }
+                    return;
+
+                case EMouseAction.RightClick:
+                    mSelected = false;
+                    return;
+            }
+        }
+
+        public void MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
+        {
+            
+        }
+
+        public void MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
+        {
+           
+        }
+
+        public void MousePositionChanged(float newX, float newY)
+        {
+            mMouseX = newX;
+            mMouseY = newY;
         }
     }
 }

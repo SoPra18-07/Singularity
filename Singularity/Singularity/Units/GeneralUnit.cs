@@ -1,44 +1,108 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.DistributionManager;
+using Singularity.Platform;
+using Singularity.Graph;
+using Singularity.Graph.Paths;
+using Singularity.Libraries;
 using Singularity.Property;
 using Singularity.Resources;
+using Singularity.Units;
+using Singularity.Utils;
 
 namespace Singularity.Units
 {
-    public class GeneralUnit : IUnit, IUpdate, IDraw
+    [DataContract()]
+    public class GeneralUnit : IUnit, IUpdate, IDraw, ISpatial
     {
+        [DataMember()]
         public int Id { get; }
-        private int mPositionId;
-        public string Assignment { get; set; } // TODO change to an enum type
-        public EResourceType Carrying { get; set; } // TODO change resource into a nullable type
-        private int? mTargetId;
-        private Stack<int> mPathQueue; // the queue of platform and edges the unit has to traverse to get to its target
+        [DataMember()]
+        public Optional<Resource> Carrying { get; set; } // TODO change resource into a nullable type
+        [DataMember()]
+        private Queue<Vector2> mPathQueue; // the queue of platform center locations
+        [DataMember()]
+        private Queue<INode> mNodeQueue;
+
+        [DataMember()]
         private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
+        
+        [DataMember()]
+        //These are the assigned task and a flag, wether the unit is done with it.
+        private Task mAssignedTask;
+        [DataMember()]
+        private bool mDone;
+        [DataMember()]
+        private DistributionManager.DistributionManager mDistrManager;
+        [DataMember()]
+        public INode CurrentNode { get; private set; }
 
         // TODO: also use the size for the units representation since we someday need to draw rectangles over units (bounding box)
 
+        [DataMember()]
         public Vector2 AbsolutePosition { get; set; }
-
+        [DataMember()]
         public Vector2 AbsoluteSize { get; set; }
-
+        [DataMember()]
         public Vector2 RelativePosition { get; set; }
-
+        [DataMember()]
         public Vector2 RelativeSize { get; set; }
+        [DataMember()]
+        private readonly PathManager mPathManager;
 
+        /// <summary>
+        /// whether the unit is moving or currently standing still,
+        /// this is used so the unit can ask for a new path if it
+        /// doesn't move
+        /// </summary>
+        [DataMember()]
+        private bool mIsMoving;
+
+        /// <summary>
+        /// The node the unit started from. Changes when the unit reaches its destination (to the destination).
+        /// </summary>
+        [DataMember()]
+        private INode mCurrentNode;
+
+        /// <summary>
+        /// The node the unit moves to. Null if the unit doesn't move anywhere
+        /// </summary>
+        [DataMember()]
+        private INode mDestination;
+
+        /// <summary>
+        /// The speed the unit moves at.
+        /// </summary>
+        [DataMember()]
+        private const float Speed = 3f;
+
+        [DataMember()]
         internal JobType Job { get; set; } = JobType.Idle;
 
         //If a Command center controlling this unit is destroyed or turned off, this unit will also be turned off
+        [DataMember()]
         public bool Active { get; set; }
 
-        public GeneralUnit(int spawnPositionId)
+
+        public GeneralUnit(PlatformBlank platform, PathManager pathManager, DistributionManager.DistributionManager distrManager)
         {
-            Id = 0; // TODO make this randomized or simply ascending
-            AbsolutePosition = Vector2.Zero; // TODO figure out how to search platform by ID and get its position
-            mPositionId = spawnPositionId;
-            Carrying = EResourceType.Trash; // TODO change this to a nullable type or some other implementation after dist manager is implemented
-            mPathQueue = null;
+            mDestination = null;
+
+            CurrentNode = platform;
+
+            AbsolutePosition = ((IRevealing) platform).Center; // TODO figure out how to search platform by ID and get its position
+            mPathQueue = new Queue<Vector2>();
+            mNodeQueue = new Queue<INode>();
+
+            mIsMoving = false;
+            mPathManager = pathManager;
+            mDistrManager = distrManager;
+            distrManager.Register(this);
+            mDone = true;
         }
         /// <summary>
         /// Used to pick the Task that the unit does. It assigns the unit to a job which the update method uses
@@ -49,7 +113,8 @@ namespace Singularity.Units
         /// which it should do the Task on.</param>
         public void AssignedTask(Task assignedTask, int? targetId = null)
         {
-            switch (assignedTask)
+            throw new NotImplementedException();
+            /*switch (assignedTask)
             {
                 case Task.Idle:
                     Job = JobType.Idle;
@@ -97,19 +162,35 @@ namespace Singularity.Units
                         Job = JobType.Idle;
                     }
                     break;
-            }
+
+                //The idea is to use this task to move while your jobtype is idle (since we want these units to move around)
+                //case Task.Move:
+                    //Move(targetId); 
+            }*/
         }
+
         /// <summary>
-        /// Calculates where the unit should move to next
+        /// Moves the unit to the target position by its given speed.
         /// </summary>
         /// <param name="targetPosition">The target the unit should move towards</param>
         /// <returns></returns>
-        private Vector2 Move(int targetPosition)
+        private void Move(Vector2 targetPosition)
         {
-            // first get the target position Vector2 position
-            // then move x distance in that direction or until above the coordinate of the position
-            // TODO
-            return Vector2.Zero;
+
+            mIsMoving = true;
+
+            var movementVector = Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y));
+
+            AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X * Speed, AbsolutePosition.Y + movementVector.Y * Speed);
+        }
+
+        /// <summary>
+        /// Used to change the job. Is usually only called if the player wants more/less Units working in a certain job.
+        /// </summary>
+        /// <param name="job">The job the unit should do.</param>
+        public void ChangeJob(JobType job)
+        {
+            Job = job;
         }
 
         /// <summary>
@@ -118,6 +199,7 @@ namespace Singularity.Units
         /// <param name="targetPlatformId">The target platform that is to be constructed or repaired.</param>
         private void Build(int? targetPlatformId)
         {
+            throw new NotImplementedException();
             // pop out the required resource from the required resource list of the target platform
             // then goes and finds the nearest storage platform with that resource
             // does this by finding (using BFS) closest storage platform and querying it
@@ -129,6 +211,7 @@ namespace Singularity.Units
             // travel back to original target using Move()
             // once it has arrived, drops the resource onto the platform
 
+            /*
             if (targetPlatformId != null)
             {
                 mConstructionResourceFound = false; // sets flag to false first
@@ -167,41 +250,88 @@ namespace Singularity.Units
                     }
                     // drop the resource.
                 }
+                
 
 
 
+            }
+            */
+
+        }
+
+        /// <summary>
+        /// Only contains implementation for the Idle case so far
+        /// </summary>
+        /// <inheritdoc cref="Singularity.Property.IUpdate"/>
+        /// <param name="gametime"></param>
+        public void Update(GameTime gametime)
+        {
+            if (!mIsMoving && mDone)
+            {
+                mDone = false;
+                if (Job == JobType.Idle)
+                {
+                    //Care!!! DO NOT UNDER ANY CIRCUMSTANCES USE THIS PLACEHOLDER
+                    IPlatformAction action = new ProduceMineResource(null, null);
+                    mAssignedTask = mDistrManager.RequestNewTask(this, Job, Optional<IPlatformAction>.Of(action));
+                    mDestination = mAssignedTask.End;
+                }
+            }
+            // if this if clause is fulfilled we get a new path to move to.
+            // we only do this if we're not moving, have no destination and our
+            // current nodequeue is empty (the path)
+            if (mDestination != null && mNodeQueue.Count <= 0 && !mIsMoving)
+            {
+                mNodeQueue = mPathManager.GetPath(this, mDestination).GetNodePath();
+
+                mCurrentNode = mNodeQueue.Dequeue();
+            }
+
+            if (mCurrentNode == null)
+            {
+                return;
+            }
+
+            // update the current node to move to after the last one got reached.
+            if (ReachedTarget(((PlatformBlank)mCurrentNode).Center) && mNodeQueue.Count > 0)
+            {
+                mCurrentNode = mNodeQueue.Dequeue();
+            }
+            // finally move to the current node.
+            Move(((PlatformBlank)mCurrentNode).Center);
+
+            // check whether we have reached the target after our move call.
+            ReachedTarget(((PlatformBlank)mCurrentNode).Center);
+            if (mNodeQueue.Count == 0 && Job == JobType.Idle)
+            {
+                mDone = true;
             }
 
         }
 
-        public void Update(GameTime gametime)
+        /// <summary>
+        /// Checks whether the target has been reached.
+        /// </summary>
+        /// <param name="target">The target which is checked against</param>
+        /// <returns></returns>
+        private bool ReachedTarget(Vector2 target)
         {
-            // use switch to change between jobs
-            switch (Job)
+
+            //since we're operating with float values we just want the distance to be smaller than 2 pixels.
+            if (Vector2.Distance(AbsolutePosition, target) < 2)
             {
-                case JobType.Idle:
-                    // does nothing
-                    break;
-                case JobType.Construction:
-                    // runs build()
-                    Build(mTargetId);
-                    break;
-                case JobType.Logistics:
-                    // TODO unclear how this should be implmented
-                    break;
-                case JobType.Defense:
-                    // basically the same as the construction one
-                    Build(mTargetId);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                CurrentNode = mCurrentNode;
+                mDestination = null;
+                mIsMoving = false;
+                return true;
             }
-            throw new NotImplementedException();
+
+            return false;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            throw new NotImplementedException();
+            spriteBatch.DrawCircle(AbsolutePosition, 10, 20, Color.Green, 10, LayerConstants.GeneralUnitLayer);
         }
     }
 }
