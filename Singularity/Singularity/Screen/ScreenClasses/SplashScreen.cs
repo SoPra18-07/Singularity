@@ -161,7 +161,7 @@ namespace Singularity.Screen.ScreenClasses
                         throw new ArgumentOutOfRangeException();
 
                 }
-
+                
             }
         }
 

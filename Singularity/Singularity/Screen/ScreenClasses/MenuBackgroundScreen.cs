@@ -41,8 +41,8 @@ namespace Singularity.Screen.ScreenClasses
         private float mTargetHoloOpacity;
         private float mFlickerStep;
         private bool mFlickering;
-
-
+        
+        
         /// <summary>
         /// Creates the MenuBackgroundScreen class.
         /// </summary>
@@ -77,6 +77,7 @@ namespace Singularity.Screen.ScreenClasses
             {
                 mHoloProjectionScaling = new Vector2(mScreenResolutionScaling.Y);
             }
+
             mHoloProjectionScaling = Vector2.Multiply(mHoloProjectionScaling, new Vector2(widthScaling, 1f));
         }
         */
@@ -148,7 +149,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             // code for transitioning
             Transition(gameTime);
-
+            
             Flicker();
         }
 
@@ -163,7 +164,7 @@ namespace Singularity.Screen.ScreenClasses
                 var rnd = new Random();
 
                 // choose target opacity and flicker duration
-                var limit = (int)(mHoloOpacity * 100);
+                var limit = (int) (mHoloOpacity * 100);
                 if (mFlickerDirectionUp)
                 {
                     if (limit <= 50)
@@ -200,7 +201,7 @@ namespace Singularity.Screen.ScreenClasses
             else
             {
                 mHoloOpacity += mFlickerStep;
-
+                
                 // "Finish flicker" state set
                 if (mFlickerStep > 0)
                 {
@@ -246,7 +247,7 @@ namespace Singularity.Screen.ScreenClasses
                     }
                     else
                     {
-                        mHoloProjectionWidthScaling = (float)Animations.Easing(mTransitionInitialValue,
+                        mHoloProjectionWidthScaling = (float) Animations.Easing(mTransitionInitialValue,
                             mTransitionTargetValue,
                             mTransitionStartTime,
                             mTransitionDuration,
@@ -261,7 +262,7 @@ namespace Singularity.Screen.ScreenClasses
                 }
                 else
                 {
-                    mHoloProjectionWidthScaling = (float)Animations.Easing(mTransitionInitialValue,
+                    mHoloProjectionWidthScaling = (float) Animations.Easing(mTransitionInitialValue,
                         mTransitionTargetValue,
                         mTransitionStartTime,
                         mTransitionDuration,
@@ -298,7 +299,7 @@ namespace Singularity.Screen.ScreenClasses
                 Color.White * mHoloOpacity,
                 0f,
                 new Vector2(367, 1033),
-                new Vector2(mHoloProjectionWidthScaling, mHoloProjectionHeightScaling),
+                new Vector2(mHoloProjectionWidthScaling, mHoloProjectionHeightScaling), 
                 SpriteEffects.None,
                 0f);
 
@@ -326,7 +327,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             return true;
         }
-
+        
         /// <summary>
         /// Determines whether or not the screen below this on the stack should be drawn.
         /// </summary>

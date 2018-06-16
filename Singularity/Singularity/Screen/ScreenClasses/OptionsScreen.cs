@@ -62,7 +62,7 @@ namespace Singularity.Screen.ScreenClasses
         private Button mResolution1; // todo replace with a better system
         private Button mResolution2; // todo replace with a better system
         private Button mAntialiasing; // todo replace with a toggle
-
+        
         // Audio tab
         // todo add the following:
         private readonly List<Button> mAudioButtons;
@@ -211,7 +211,7 @@ namespace Singularity.Screen.ScreenClasses
             switch (mScreenState)
             {
                 case EOptionScreenState.Gameplay:
-
+                    
                     break;
                 case EOptionScreenState.Graphics:
                     foreach (Button button in mGraphicsButtons)
@@ -250,7 +250,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // line in the middle
             spriteBatch.DrawLine(point: mLinePosition,
-                angle: (float)Math.PI / 2,
+                angle: (float) Math.PI / 2,
                 length: 301,
                 color: new Color(new Vector4(1, 1, 1, 0.5f)) * mMenuOpacity,
                 thickness: 1);
@@ -308,7 +308,7 @@ namespace Singularity.Screen.ScreenClasses
                         mBoxPosition = new Vector2(mScreenResolution.X / 2 - 204, mScreenResolution.Y / 4);
                     }
 
-                    var width = (float)Animations.Easing(612,
+                    var width = (float) Animations.Easing(612,
                         408,
                         mTransitionStartTime,
                         mTransitionDuration,
@@ -327,7 +327,7 @@ namespace Singularity.Screen.ScreenClasses
                     }
 
                     mMenuOpacity =
-                        (float)Animations.Easing(0, 1f, mTransitionStartTime, mTransitionDuration, gameTime);
+                        (float) Animations.Easing(0, 1f, mTransitionStartTime, mTransitionDuration, gameTime);
 
                     break;
                 default:
@@ -451,7 +451,7 @@ namespace Singularity.Screen.ScreenClasses
             mTransitionDuration = 350f;
             mTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
             TransitionRunning = true;
-
+        
         }
     }
 }

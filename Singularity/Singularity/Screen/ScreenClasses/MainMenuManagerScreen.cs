@@ -25,7 +25,7 @@ namespace Singularity.Screen.ScreenClasses
         private ITransitionableMenu mSplashScreen;
         private ITransitionableMenu mMainMenuScreen;
         private ITransitionableMenu mLoadingScreen;
-
+        
         // Background
         private MenuBackgroundScreen mMenuBackgroundScreen;
 
@@ -35,7 +35,7 @@ namespace Singularity.Screen.ScreenClasses
 
         // The game itself (to allow for quitting)
         private readonly Game1 mGame;
-
+        
         // viewport resolution changes
         private static Vector2 sViewportResolution;
         private static bool sResolutionChanged;
@@ -54,9 +54,9 @@ namespace Singularity.Screen.ScreenClasses
         {
             mScreenManager = screenManager;
             mGame = game;
-
+            
             Initialize(screenResolution, false, game);
-
+            
             mScreenState = showSplash ? EScreen.SplashScreen : EScreen.MainMenuScreen;
 
             sPressed = "None";
@@ -185,7 +185,7 @@ namespace Singularity.Screen.ScreenClasses
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
+            
         }
 
         /// <summary>
@@ -246,6 +246,7 @@ namespace Singularity.Screen.ScreenClasses
                     if (mMenuBackgroundScreen.CurrentScreen != eScreen)
                     {
                         mCurrentScreen.TransitionTo(origin, eScreen, gameTime);
+
                         mMenuBackgroundScreen.TransitionTo(origin, eScreen, gameTime);
                     }
                     // if it is finish, "reset" the transition states.
@@ -272,6 +273,7 @@ namespace Singularity.Screen.ScreenClasses
                 mScreenManager.AddScreen(targetScreen);
                 targetScreen.TransitionTo(origin, eScreen, gameTime);
                 mCurrentScreen = targetScreen;
+
             }
             */
         }
@@ -301,7 +303,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>Bool. If true, then the screen below this will be drawn.</returns>
         public bool DrawLower()
         {
-            return mScreenState == EScreen.GameScreen ? true : false;
+            return mScreenState == EScreen.GameScreen? true : false;
         }
 
         public static void SetResolution(Vector2 viewportResolution)
@@ -414,7 +416,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO: implement start game with story
             throw new NotImplementedException("No story yet unfortunately");
 
-
+            
         }
 
         /// <summary>

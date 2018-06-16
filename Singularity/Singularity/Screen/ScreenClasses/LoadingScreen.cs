@@ -50,7 +50,7 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.Begin();
 
             spriteBatch.Draw(mLogo, mLogoPosition, null, Color.White, 0f, Vector2.Zero, 0.14f, SpriteEffects.None, 0f);
-
+            
             spriteBatch.End();
         }
 
@@ -81,7 +81,7 @@ namespace Singularity.Screen.ScreenClasses
             return false;
         }
 
-
+        
         public void TransitionTo(EScreen originScreen, EScreen targetScreen, GameTime gameTime)
         {
             // transition not necessary
