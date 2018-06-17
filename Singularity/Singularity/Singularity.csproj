@@ -94,12 +94,8 @@
     <Compile Include="Screen\IWindowItem.cs" />
     <Compile Include="Screen\ScreenClasses\GameScreen.cs" />
     <Compile Include="Screen\Slider.cs" />
-<<<<<<< HEAD
-    <Compile Include="Screen\UserInterfaceScreen.cs" />
-    <Compile Include="Screen\WindowItem.cs" />
-=======
+    <Compile Include="Screen\ScreenClasses\UserInterfaceScreen.cs" />
     <Compile Include="Screen\Button.cs" />
->>>>>>> master
     <Compile Include="Serialization\CyclicDummy.cs" />
     <Compile Include="Serialization\XSerializer.cs" />
     <Compile Include="Serialization\SerializationDummy.cs" />

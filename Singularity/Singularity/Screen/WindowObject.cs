@@ -100,7 +100,7 @@ namespace Singularity.Screen
 
             // set the rectangle for minimization in the top right corner of the window
             mMinimizationRectangle = new Rectangle((int) (position.X + size.X - mMinimizationSize), (int) (position.Y), (int)mMinimizationSize, (int)mMinimizationSize);
-            mMinimizationLine = new Rectangle((int)(position.X + size.X - 3 * mMinimizationSize / 4), (int)(position.Y + (int)(mMinimizationSize / 2)), (int)(mMinimizationSize / 2), 1); // 15, 9, 10, 1
+            mMinimizationLine = new Rectangle((int)(position.X + size.X - 3 * mMinimizationSize / 4), (int)(position.Y + (int)(mMinimizationSize / 2)), (int)(mMinimizationSize / 2), 1);
 
             // set the rectangle for the minimized window
             mMinimizedWindowRectangle = new Rectangle((int)(position.X + 1), (int)(position.Y + 2), ((int)size.X - 2), mNameSize + mMinimizationSize);
@@ -213,30 +213,54 @@ namespace Singularity.Screen
             // get size of string drawing
             var textaaaSize = mTestFont.MeasureString(textaaa);
 
+
+
+
+
+
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, mRasterizerState);
 
             // backup current scissor so we can restore later
             var saveRect = spriteBatch.GraphicsDevice.ScissorRectangle;
 
             // set up current scissor rectangle
-            spriteBatch.GraphicsDevice.ScissorRectangle = mDrawBorderRectangle;
+            spriteBatch.GraphicsDevice.ScissorRectangle = mBorderRectangle;
 
-            if (mBackgroundGiven)
-                // if a background was given -> draw filled rectangle
+            // TEST DRAW STRING
+            //spriteBatch.DrawString(mTestFont, textaaa, new Vector2(mPosition.X, mPosition.Y + 20), new Color(255, 255, 255));
+            //spriteBatch.DrawString(mTestFont, DateTime.Now.ToLongTimeString(), new Vector2(mPosition.X, mPosition.Y + mNameSize), new Color(255, 255, 255));
+
+            if (!mMinimized)
             {
-                spriteBatch.Draw(windowTexture2D, mDrawWindowRectangle, null, mColorFill, 0f, Vector2.Zero, SpriteEffects.None, 0.99f);
-                //spriteBatch.FillRectangle(mWindowRectangle, mColorFill, 0f, mOpacity);
+                // draw items
+                foreach (var item in mItemList)
+                {
+                    item.Draw(spriteBatch);
+                }
+
+                // scrollable
+                if (textaaaSize.Y > mBorderRectangle.Height)
+                {
+                    //spriteBatch.Draw(windowTexture2D, mScrollBarRectangle, null, mColorFill, 0f, Vector2.Zero, SpriteEffects.None, 0.99f);
+                    spriteBatch.DrawRectangle(mScrollBarBorderRectangle, mColorBorder, 2);
+                }
+
+                if (mBackgroundGiven)
+                    // if a background was given -> draw filled rectangle
+                {
+                    spriteBatch.Draw(windowTexture2D, mWindowRectangle, null, mColorFill, 0f, Vector2.Zero, SpriteEffects.None, 0.99f);
+                    //spriteBatch.FillRectangle(mWindowRectangle, mColorFill, 0f, mOpacity);
+                }
+
+                spriteBatch.DrawRectangle(mBorderRectangle, mColorBorder, 2);
+            }
+            else
+            {
+
             }
 
-            // spriteBatch.DrawRectangle(mDrawBorderRectangle, mColorBorder, 2);
-            spriteBatch.DrawRectangle(mDrawBorderRectangle, mColorBorder, 2);
-
-            // scrollable
-            if (textaaaSize.Y > mDrawBorderRectangle.Height)
-            {
-                //spriteBatch.Draw(windowTexture2D, mScrollBarRectangle, null, mColorFill, 0f, Vector2.Zero, SpriteEffects.None, 0.99f);
-                spriteBatch.DrawRectangle(mScrollBarBorderRectangle, mColorBorder, 2);
-            }
+            // restore scissor from backup - needed for other draws
+            spriteBatch.GraphicsDevice.ScissorRectangle = saveRect;
 
             if (mMinimizable)
                 // if the window should be minimizable -> draw tiny rectangle for minimization to click on
@@ -249,23 +273,9 @@ namespace Singularity.Screen
             spriteBatch.DrawString(mTestFont, mWindowName, new Vector2(mPosition.X + mMinimizationSize / 2, mPosition.Y + mMinimizationSize / 2), new Color(255, 255, 255));
             spriteBatch.DrawRectangle(mTitleBarRectangle, mColorBorder, 1);
 
-            // TEST DRAW STRING
-            //spriteBatch.DrawString(mTestFont, textaaa, new Vector2(mPosition.X, mPosition.Y + 20), new Color(255, 255, 255));
-            //spriteBatch.DrawString(mTestFont, DateTime.Now.ToLongTimeString(), new Vector2(mPosition.X, mPosition.Y + mNameSize), new Color(255, 255, 255));
-
-            // add all IWindowItem + padding
-            if (!mMinimized)
-            {
-                foreach (var item in mItemList)
-                {
-                    item.Draw(spriteBatch);
-                }
-            }
-
-            // restore scissor from backup - needed for other draws
-            spriteBatch.GraphicsDevice.ScissorRectangle = saveRect;
-
             spriteBatch.End();
+
+
         }
 
         public void Update(GameTime gametime)

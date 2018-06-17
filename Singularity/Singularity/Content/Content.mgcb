@@ -163,9 +163,6 @@
 /processorParam:TextureFormat=Color
 /build:MockUpBackground.png
 
-<<<<<<< HEAD
-#begin testFontForUI.spritefont
-=======
 #begin SingularityText.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -186,14 +183,10 @@
 /build:LibSans20.spritefont
 
 #begin LibSans12.spritefont
->>>>>>> master
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-<<<<<<< HEAD
-/build:testFontForUI.spritefont
-=======
 /build:LibSans12.spritefont
 
 #begin LibSans36.spritefont
@@ -244,5 +237,4 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:backgroundGrid.png
->>>>>>> master
 

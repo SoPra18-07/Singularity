@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-﻿using System.CodeDom;
-=======
-﻿using System;
+using System;
 using System.Diagnostics;
->>>>>>> master
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -26,26 +22,6 @@ namespace Singularity
     /// </summary>
     internal sealed class Game1 : Game
     {
-<<<<<<< HEAD
-        private GraphicsDeviceManager mGraphics;
-        private SpriteBatch mSpriteBatch;
-        private Texture2D mPlatformBlankTexture;
-        private Texture2D mPlatformDomeTexture;
-        private PlatformBlank mPlatform;
-        private Texture2D mMUnitSheet;
-        private MilitaryUnit mMUnit1;
-        private MilitaryUnit mMUnit2;
-        private Junkyard mPlatform2;
-        private EnergyFacility mPlatform3;
-        private Map.Map mMap;
-        private static Song sSoundtrack;
-        private GameScreen mGameScreen;
-        private InputManager mInputManager;
-        private SpriteFont mTestFontForUserI;
-
-        // roads
-        private Road mRoad1;
-=======
         internal GraphicsDeviceManager mGraphics;
         internal GraphicsAdapter mGraphicsAdapter;
 
@@ -54,13 +30,13 @@ namespace Singularity
         // Screens
         internal GameScreen mGameScreen;
         private MainMenuManagerScreen mMainMenuManager;
+        private UserInterfaceScreen mUserInterfaceScreen;
         private readonly InputManager mInputManager;
 
->>>>>>> master
 
         // Sprites!
         private SpriteBatch mSpriteBatch;
-        
+
 
         // Screen Manager
         private readonly IScreenManager mScreenManager;
@@ -121,22 +97,22 @@ namespace Singularity
 
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
 
+            mUserInterfaceScreen = new UserInterfaceScreen(mInputManager);
+
             // Add the screens to the screen manager
             // The idea is that the game screen is always at the bottom and stuff is added simply
             // on top of it.
             mScreenManager.AddScreen(mGameScreen);
             mScreenManager.AddScreen(mMainMenuManager);
-            
+            mScreenManager.AddScreen(mUserInterfaceScreen);
+
             mMainMenuManager.LoadContent(Content);
-            
+            mUserInterfaceScreen.LoadContent(Content);
+
             // load and play Soundtrack as background music
             mSoundManager.LoadContent(Content);
             mSoundManager.PlaySoundTrack();
 
-            // test windowObject
-            mTestFontForUserI = Content.Load<SpriteFont>("testFontForUI");
-            var userI = new UserInterfaceScreen(mInputManager, mTestFontForUserI);
-            mScreenManager.AddScreen(userI);
         }
 
         /// <summary>
