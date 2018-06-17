@@ -64,14 +64,14 @@ namespace Singularity.Graph.Paths
             }
 
             throw new InvalidGenericArgumentException(
-                "The given argument was not one for which pathes are meant to be calculated. The following are" +
+                "The given argument was not one for which paths are meant to be calculated. The following are" +
                 "supported: MilitaryUnit and GeneralUnit.");
 
         }
         
         private IPath GetPathForGeneralUnits(GeneralUnit unit, INode destination)
         {
-            //todo: know which units are on which graph
+            //todo: know which units are on which graph.
             return PathfindingFactory.GetPathfinding().AStar(mGraphs[0], unit.CurrentNode, destination);
         }
 

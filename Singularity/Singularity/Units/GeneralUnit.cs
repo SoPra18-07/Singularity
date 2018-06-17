@@ -1,29 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.DistributionManager;
+using Singularity.Platform;
 using Singularity.Graph;
 using Singularity.Graph.Paths;
 using Singularity.Libraries;
-using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
+using Singularity.Units;
 using Singularity.Utils;
 
 namespace Singularity.Units
 {
+    [DataContract()]
     public class GeneralUnit : IUnit, IUpdate, IDraw, ISpatial
     {
+        [DataMember()]
         public int Id { get; }
+        [DataMember()]
         private int mPositionId;
-        public string Assignment { get; set; } // TODO change to an enum type
-        public EResourceType Carrying { get; set; } // TODO change resource into a nullable type
+        [DataMember()]
+        public Optional<Resource> Carrying { get; set; } // TODO change resource into a nullable type
+        [DataMember()]
         private int? mTargetId;
+        [DataMember()]
         private Queue<Vector2> mPathQueue; // the queue of platform center locations
+        [DataMember()]
         private Queue<INode> mNodeQueue;
 
         private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
+        
+
+        //These are the assigned task and a flag, wether the unit is done with it.
+        private Task mAssignedTask;
+
+        private bool mDone;
+
+        private DistributionManager.DistributionManager mDistrManager;
+
+        private IPlatformAction AssignedAction;
 
         public INode CurrentNode { get; private set; }
 
@@ -63,20 +82,21 @@ namespace Singularity.Units
 
         internal JobType Job { get; set; } = JobType.Idle;
 
-        public GeneralUnit(PlatformBlank platform, PathManager pathManager)
+        public GeneralUnit(PlatformBlank platform, PathManager pathManager, DistributionManager.DistributionManager distrManager)
         {
             mDestination = null;
 
             CurrentNode = platform;
 
-            Id = 0; // TODO make this randomized or simply ascending
             AbsolutePosition = ((IRevealing) platform).Center; // TODO figure out how to search platform by ID and get its position
-            Carrying = EResourceType.Trash; // TODO change this to a nullable type or some other implementation after dist manager is implemented
             mPathQueue = new Queue<Vector2>();
             mNodeQueue = new Queue<INode>();
 
             mIsMoving = false;
             mPathManager = pathManager;
+            mDistrManager = distrManager;
+            distrManager.Register(this);
+            mDone = true;
         }
         /// <summary>
         /// Used to pick the Task that the unit does. It assigns the unit to a job which the update method uses
@@ -87,7 +107,8 @@ namespace Singularity.Units
         /// which it should do the Task on.</param>
         public void AssignedTask(Task assignedTask, int? targetId = null)
         {
-            switch (assignedTask)
+            throw new NotImplementedException();
+            /*switch (assignedTask)
             {
                 case Task.Idle:
                     Job = JobType.Idle;
@@ -135,8 +156,13 @@ namespace Singularity.Units
                         Job = JobType.Idle;
                     }
                     break;
-            }
+
+                //The idea is to use this task to move while your jobtype is idle (since we want these units to move around)
+                //case Task.Move:
+                    //Move(targetId); 
+            }*/
         }
+
         /// <summary>
         /// Moves the unit to the target position by its given speed.
         /// </summary>
@@ -150,7 +176,15 @@ namespace Singularity.Units
             var movementVector = Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y));
 
             AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X * Speed, AbsolutePosition.Y + movementVector.Y * Speed);
+        }
 
+        /// <summary>
+        /// Used to change the job. Is usually only called if the player wants more/less Units working in a certain job.
+        /// </summary>
+        /// <param name="job">The job the unit should do.</param>
+        public void ChangeJob(JobType job)
+        {
+            Job = job;
         }
 
         /// <summary>
@@ -159,6 +193,7 @@ namespace Singularity.Units
         /// <param name="targetPlatformId">The target platform that is to be constructed or repaired.</param>
         private void Build(int? targetPlatformId)
         {
+            throw new NotImplementedException();
             // pop out the required resource from the required resource list of the target platform
             // then goes and finds the nearest storage platform with that resource
             // does this by finding (using BFS) closest storage platform and querying it
@@ -217,9 +252,24 @@ namespace Singularity.Units
             */
 
         }
+
+        /// <summary>
+        /// Only contains implementation for the Idle case so far
+        /// </summary>
+        /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
-
+            if (!mIsMoving && mDone)
+            {
+                mDone = false;
+                if (Job == JobType.Idle)
+                {
+                    //Care!!! DO NOT UNDER ANY CIRCUMSTANCES USE THIS PLACEHOLDER
+                    IPlatformAction action = new ProduceMineResource(null, null);
+                    mAssignedTask = mDistrManager.RequestNewTask(this, Job, Optional<IPlatformAction>.Of(action));
+                    mDestination = mAssignedTask.End;
+                }
+            }
             // if this if clause is fulfilled we get a new path to move to.
             // we only do this if we're not moving, have no destination and our
             // current nodequeue is empty (the path)
@@ -228,27 +278,6 @@ namespace Singularity.Units
                 mNodeQueue = mPathManager.GetPath(this, mDestination).GetNodePath();
 
                 mCurrentNode = mNodeQueue.Dequeue();
-            }
-
-            // use switch to change between jobs
-            switch (Job)
-            {
-                case JobType.Idle:
-                    // does nothing
-                    break;
-                case JobType.Construction:
-                    // runs build()
-                    Build(mTargetId);
-                    break;
-                case JobType.Logistics:
-                    // TODO unclear how this should be implmented
-                    break;
-                case JobType.Defense:
-                    // basically the same as the construction one
-                    Build(mTargetId);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
 
             if (mCurrentNode == null)
@@ -266,6 +295,10 @@ namespace Singularity.Units
 
             // check whether we have reached the target after our move call.
             ReachedTarget(((PlatformBlank)mCurrentNode).Center);
+            if (mNodeQueue.Count == 0 && Job == JobType.Idle)
+            {
+                mDone = true;
+            }
 
         }
 

@@ -12,16 +12,14 @@ using Singularity.Resources;
 namespace Singularity.Platform
 {
     [DataContract()]
-    class EnergyFacility : PlatformBlank, IRevealing
+    class EnergyFacility : PlatformBlank
     {
         [DataMember()]
         private const int PlatformWidth = 144;
         [DataMember()]
         private const int PlatformHeight = 127;
 
-        public new Vector2 Center => new Vector2(AbsolutePosition.X + PlatformWidth / 2, AbsolutePosition.Y + PlatformHeight - 36);
-
-        public EnergyFacility(Vector2 position, Texture2D spritesheet): base(position, spritesheet)
+        public EnergyFacility(Vector2 position, Texture2D spritesheet): base(position, spritesheet, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
         {
             mIPlatformActions = new IPlatformAction[2];
             //mActions[0] = BuildPlatformBlueprint(this);

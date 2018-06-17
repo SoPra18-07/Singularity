@@ -11,7 +11,7 @@ namespace Singularity.Map
     /// <summary>
     /// A Structure map holds all the structures currently in the game.
     /// </summary>
-    internal sealed class StructureMap
+    public sealed class StructureMap
     {
         /// <summary>
         /// A list of all the platforms currently in the game
@@ -41,6 +41,15 @@ namespace Singularity.Map
 
             mPlatforms = new LinkedList<PlatformBlank>();
             mRoads = new LinkedList<Road>();
+        }
+
+        /// <summary>
+        /// A method existing so the DistributionManager has access to all platforms.
+        /// </summary>
+        /// <returns></returns>
+        public LinkedList<PlatformBlank> GetPlatformList()
+        {
+            return mPlatforms;
         }
 
         /// <summary>
