@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Dynamic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Singularity.Graph.Paths;
 using Singularity.Platform;
 using Singularity.Input;
-
+using Singularity.Levels;
 using Singularity.Map;
 using Singularity.Map.Properties;
 using Singularity.Resources;
@@ -32,6 +34,9 @@ namespace Singularity
         internal GameScreen mGameScreen;
         private MainMenuManagerScreen mMainMenuManager;
         private readonly InputManager mInputManager;
+        private readonly StoryManager.StoryManager mStoryManager;
+        private readonly PathManager mPathManager;
+        private readonly DistributionManager.DistributionManager mDistributionManager;
 
         // Sprites!
         private SpriteBatch mSpriteBatch;
@@ -48,9 +53,10 @@ namespace Singularity
             mGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
 
             mInputManager = new InputManager();
+            mStoryManager = new StoryManager.StoryManager();
+            mPathManager = new PathManager();
+            mDistributionManager = new DistributionManager.DistributionManager();
             mScreenManager = new StackScreenManager();
-
-            mInputManager = new InputManager();
 
         }
 
@@ -91,8 +97,9 @@ namespace Singularity
                 GraphicsDevice.Viewport.Height);
             // Create a new SpriteBatch, which can be used to draw textures.
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
+            
 
-            mGameScreen = new GameScreen(mGraphics.GraphicsDevice, mInputManager);
+            mGameScreen = new Tutorial(mGraphics.GraphicsDevice, mInputManager, mPathManager, mStoryManager, mDistributionManager, Content).GetGameScreen();
 
 
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);

@@ -47,6 +47,12 @@ namespace Singularity.Screen.ScreenClasses
         private readonly InputManager mInputManager;
         private readonly GraphicsDevice mGraphicsDevice;
 
+        //Other managers
+        private PathManager mPathManager;
+
+        private StoryManager.StoryManager mStoryManager;
+
+        private DistributionManager.DistributionManager mDistributionManager;
         // roads
         private Road mRoad1;
 
@@ -72,7 +78,7 @@ namespace Singularity.Screen.ScreenClasses
         private Camera mCamera;
 
 
-        public GameScreen(GraphicsDevice graphicsDevice, InputManager inputManager)
+        public GameScreen(GraphicsDevice graphicsDevice, InputManager inputManager, PathManager path, StoryManager.StoryManager story, DistributionManager.DistributionManager dist, Map.Map map, Camera camera, FogOfWar fow)
         {
             mGraphicsDevice = graphicsDevice;
 
@@ -81,6 +87,12 @@ namespace Singularity.Screen.ScreenClasses
             mSpatialObjects = new LinkedList<ISpatial>();
 
             mInputManager = inputManager;
+            mPathManager = path;
+            mStoryManager = story;
+            mDistributionManager = dist;
+            mMap = map;
+            mCamera = camera;
+            mFow = fow;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -120,12 +132,6 @@ namespace Singularity.Screen.ScreenClasses
         public void Update(GameTime gametime)
         {
 
-            foreach (var updateable in mUpdateables)
-            {
-                updateable.Update(gametime);
-
-            }
-
             foreach (var spatial in mSpatialObjects)
             {
                 var collidingObject = spatial as ICollider;
@@ -142,46 +148,37 @@ namespace Singularity.Screen.ScreenClasses
             }
             mFow.Update(gametime);
 
+            foreach (var updateable in mUpdateables)
+            {
+                updateable?.Update(gametime);
+            }
 
         }
 
         public void LoadContent(ContentManager content)
         {
-            var pathManager = new PathManager();
-            var storyManager = new StoryManager.StoryManager();
-            var mapBackground = content.Load<Texture2D>("MockUpBackground");
-            mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, mInputManager, pathManager, true);
-            mCamera = mMap.GetCamera();
-            //Give the Distributionmanager the Graph he is operating on. 
-            //TODO: Talk about whether the DistributionManager should operate on all Graphs or if we want to make additional DMs.
-            var dist = new DistributionManager.DistributionManager();
+            //Load content. Not sure if it should be removed when the levels are implemented.
+            /*
+            mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");*/
+            /*mPlatformBlankTexture = content.Load<Texture2D>("PlatformBasic");
+            mPlatformDomeTexture = content.Load<Texture2D>("Dome");*/
 
-            mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
-
-            mPlatformSheet = content.Load<Texture2D>("PlatformSpriteSheet");
-            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet);
+            /*mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet);
             mPlatform2 = new PlatformBlank(new Vector2(800, 600), mPlatformSheet);
-            // TODO: use this.Content to load your game content here
-            mPlatformBlankTexture = content.Load<Texture2D>("PlatformBasic");
-            mPlatformDomeTexture = content.Load<Texture2D>("Dome");
             mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformBlankTexture);
-            mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture, storyManager);
+            mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture, mStoryManager);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
-
-
-
-            var genUnit2 = new GeneralUnit(mPlatform2, pathManager, dist);
-            var genUnit3 = new GeneralUnit(mPlatform3, pathManager, dist);
-
             var platform4 = new Well(new Vector2(1000, 200), mPlatformDomeTexture, mMap.GetResourceMap());
             var platform5 = new Quarry(new Vector2(1300, 400), mPlatformDomeTexture, mMap.GetResourceMap());
 
-            var genUnit = new GeneralUnit(mPlatform, pathManager, dist);
-            var genUnit4 = new GeneralUnit(platform4, pathManager, dist);
-            var genUnit5 = new GeneralUnit(platform5, pathManager, dist);
+            var genUnit2 = new GeneralUnit(mPlatform2, mPathManager, mDistributionManager);
+            var genUnit3 = new GeneralUnit(mPlatform3, mPathManager, mDistributionManager);
 
-            mFow = new FogOfWar(mCamera, mGraphicsDevice);
+            var genUnit = new GeneralUnit(mPlatform, mPathManager, mDistributionManager);
+            var genUnit4 = new GeneralUnit(platform4, mPathManager, mDistributionManager);
+            var genUnit5 = new GeneralUnit(platform5, mPathManager, mDistributionManager);
+
 
             mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
             mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
@@ -193,10 +190,11 @@ namespace Singularity.Screen.ScreenClasses
             var road4 = new Road(platform4, platform5, false);
             var road5 = new Road(platform5, mPlatform, false);
             var road6 = new Road(mPlatform, platform4, false);
+            */
 
             AddObject(mMap);
 
-            mFow.AddRevealingObject(mMUnit1);
+            /*mFow.AddRevealingObject(mMUnit1);
             mFow.AddRevealingObject(mMUnit2);
             mFow.AddRevealingObject(mPlatform);
             mFow.AddRevealingObject(mPlatform2);
@@ -234,7 +232,7 @@ namespace Singularity.Screen.ScreenClasses
             AddObject(genUnit2);
             AddObject(genUnit3);
             AddObject(genUnit4);
-            AddObject(genUnit5);
+            AddObject(genUnit5);*/
   
             AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
 

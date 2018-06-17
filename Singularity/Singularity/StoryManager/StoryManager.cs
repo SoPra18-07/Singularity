@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Singularity.Levels;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.serialization;
@@ -30,10 +32,14 @@ namespace Singularity.StoryManager
         [DataMember()]
         private Dictionary<string, int> mPlatforms;
 
+        [DataMember()]
+        private LevelType mLevelType;
+
         private Achievements mAchievements;
 
         public StoryManager()
         {
+            mLevelType = LevelType.None;
             mEnergyLevel = 0;
             mTime = new TimeSpan(0, 0, 0, 0, 0);
             LoadAchievements();
@@ -70,6 +76,10 @@ namespace Singularity.StoryManager
             };
         }
 
+        public void SetLevelType(LevelType leveltype)
+        {
+            mLevelType = leveltype;
+        }
         public void LoadAchievements()
         {
             var path = @"%USERPROFILE%\Saved Games\Singularity";

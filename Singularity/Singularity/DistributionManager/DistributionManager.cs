@@ -262,6 +262,13 @@ namespace Singularity.DistributionManager
                     {
                         nodes.Add(edge.GetChild());
                     }
+
+                    if (nodes.Count == 0)
+                    {
+                        //Could be very inefficient, since the Units will bombard the DistributionManager with asks for tasks when there is only one platform
+                        //connected to theirs
+                        nodes.Add(unit.CurrentNode);
+                    }
                     var rndnmbr = mRandom.Next(0, nodes.Count);
                     //Just give them the inside of the Optional action witchout checking because
                     //it doesnt matter anyway if its null if the unit is idle.
