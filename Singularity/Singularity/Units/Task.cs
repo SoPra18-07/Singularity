@@ -3,7 +3,7 @@ using Singularity.Platform;
 using Singularity.Resources;
 using Singularity.Units;
 
-namespace Singularity.DistributionManager
+namespace Singularity.Units
 {
     [DataContract()]
     public class Task

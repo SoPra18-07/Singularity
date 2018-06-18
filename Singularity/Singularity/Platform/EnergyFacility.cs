@@ -2,6 +2,7 @@
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Manager;
 using Singularity.Resources;
 
 namespace Singularity.Platform
@@ -28,12 +29,12 @@ namespace Singularity.Platform
             AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
         }
 
-        public void TurnOn(StoryManager.StoryManager story)
+        public void TurnOn(StoryManager story)
         {
             story.AddEnergy(20);
         }
 
-        public void TurnOff(StoryManager.StoryManager story)
+        public void TurnOff(StoryManager story)
         {
             story.AddEnergy(-20);
         }

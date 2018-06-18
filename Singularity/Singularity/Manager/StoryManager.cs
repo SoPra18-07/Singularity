@@ -1,6 +1,6 @@
-﻿namespace Singularity.StoryManager
+﻿namespace Singularity.Manager
 {
-    class StoryManager
+    public class StoryManager
     {
         private int _mEnergyLevel;
 

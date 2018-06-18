@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
+using Singularity.Manager;
 using Singularity.Map.Properties;
 using Singularity.Property;
 
@@ -58,7 +59,7 @@ namespace Singularity.Map
         /// <param name="viewport">The viewport of the window</param>
         /// <param name="x">The initial x position of the camera</param>
         /// <param name="y">the initial y position of the camera</param>
-        public Camera(Viewport viewport, InputManager inputManager, int x = 0, int y = 0)
+        public Camera(Viewport viewport, Director director, int x = 0, int y = 0)
         {
             if (x < 0)
             {
@@ -76,8 +77,8 @@ namespace Singularity.Map
             _mZoom = 1.0f;
             _mBounds = new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight);
 
-            inputManager.AddKeyListener(this);
-            inputManager.AddMouseWheelListener(this);
+            director.GetInputManager.AddKeyListener(this);
+            director.GetInputManager.AddMouseWheelListener(this);
 
             _mTransform = Matrix.CreateScale(new Vector3(_mZoom, _mZoom, 1)) * Matrix.CreateTranslation(-_mX, -_mY, 0);
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.DistributionManager;
 using Singularity.Platform;
 using Singularity.Graph;
 using Singularity.Graph.Paths;
@@ -11,6 +10,7 @@ using Singularity.Libraries;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Utils;
+using Singularity.Manager;
 
 namespace Singularity.Units
 {
@@ -38,7 +38,7 @@ namespace Singularity.Units
 
         private bool _mDone;
 
-        private DistributionManager.DistributionManager _mDistrManager;
+        private Manager.DistributionManager _mDistrManager;
 
         private IPlatformAction _assignedAction;
 
@@ -80,7 +80,7 @@ namespace Singularity.Units
 
         internal JobType Job { get; set; } = JobType.Idle;
 
-        public GeneralUnit(PlatformBlank platform, PathManager pathManager, DistributionManager.DistributionManager distrManager)
+        public GeneralUnit(PlatformBlank platform, PathManager pathManager, DistributionManager distrManager)
         {
             _mDestination = null;
 

@@ -4,10 +4,12 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph.Paths;
 using Singularity.Input;
+using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
+using Singularity.Sound;
 using Singularity.Units;
 
 namespace Singularity.Screen.ScreenClasses
@@ -38,7 +40,8 @@ namespace Singularity.Screen.ScreenClasses
         private Map.Map _mMap;
         private FogOfWar _mFow;
 
-        // input manager and viewport
+        // director for Managing all the Managers
+        private readonly Director director;
         private readonly InputManager _mInputManager;
         private readonly GraphicsDevice _mGraphicsDevice;
 
@@ -76,6 +79,9 @@ namespace Singularity.Screen.ScreenClasses
             _mSpatialObjects = new LinkedList<ISpatial>();
 
             _mInputManager = inputManager;
+
+            // TODO: This is actually the wrong place to initialize the Director. Move it.
+            director = new Director(inputManager, new StoryManager(), new PathManager(), new SoundManager(), new MilitaryManager());
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -142,13 +148,12 @@ namespace Singularity.Screen.ScreenClasses
 
         public void LoadContent(ContentManager content)
         {
-            var pathManager = new PathManager();
             var mapBackground = content.Load<Texture2D>("MockUpBackground");
-            _mMap = new Map.Map(mapBackground, _mGraphicsDevice.Viewport, _mInputManager, pathManager, true);
+            _mMap = new Map.Map(mapBackground, _mGraphicsDevice.Viewport, director, true);
             _mCamera = _mMap.GetCamera();
             //Give the Distributionmanager the Graph he is operating on. 
             //TODO: Talk about whether the DistributionManager should operate on all Graphs or if we want to make additional DMs.
-            var dist = new DistributionManager.DistributionManager();
+            var dist = new Manager.DistributionManager();
 
             _mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
 
@@ -163,17 +168,15 @@ namespace Singularity.Screen.ScreenClasses
             _mPlatform3 = new EnergyFacility(new Vector2(600, 200), _mPlatformDomeTexture);
             _mPlatform3 = new EnergyFacility(new Vector2(600, 200), _mPlatformDomeTexture);
 
-
-
-            var genUnit2 = new GeneralUnit(_mPlatform2, pathManager, dist);
-            var genUnit3 = new GeneralUnit(_mPlatform3, pathManager, dist);
+            var genUnit2 = new GeneralUnit(_mPlatform2, director.GetPathManager, dist);
+            var genUnit3 = new GeneralUnit(_mPlatform3, director.GetPathManager, dist);
 
             var platform4 = new Well(new Vector2(1000, 200), _mPlatformDomeTexture, _mMap.GetResourceMap());
             var platform5 = new Quarry(new Vector2(1300, 400), _mPlatformDomeTexture, _mMap.GetResourceMap());
 
-            var genUnit = new GeneralUnit(_mPlatform, pathManager, dist);
-            var genUnit4 = new GeneralUnit(platform4, pathManager, dist);
-            var genUnit5 = new GeneralUnit(platform5, pathManager, dist);
+            var genUnit = new GeneralUnit(_mPlatform, director.GetPathManager, dist);
+            var genUnit4 = new GeneralUnit(platform4, director.GetPathManager, dist);
+            var genUnit5 = new GeneralUnit(platform5, director.GetPathManager, dist);
 
             _mFow = new FogOfWar(_mCamera, _mGraphicsDevice);
 
@@ -281,7 +284,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>True if all given objects could be added to the screen, false otherwise</returns>
         public bool AddObjects<T>(IEnumerable<T> toAdd)
         {
-            var isSuccessful = true;
+            bool isSuccessful = true;
    
             foreach (var t in toAdd)
             {

@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph.Paths;
 using Singularity.Input;
 using Singularity.Libraries;
+using Singularity.Manager;
 using Singularity.Map.Properties;
 using Singularity.Platform;
 using Singularity.Property;
@@ -34,16 +35,16 @@ namespace Singularity.Map
         /// <param name="debug">Whether the debug grid lines are drawn or not</param>
         /// <param name="initialResources">The initial resources of this map, if not specified there will not be any on the map</param>
         /// <param name="fow">The fog of war for this map</param>
-        public Map(Texture2D backgroundTexture, Viewport viewport, InputManager inputManager, PathManager pathManager, bool debug = false, IEnumerable<Resource> initialResources = null)
+        public Map(Texture2D backgroundTexture, Viewport viewport, Director director, bool debug = false, IEnumerable<Resource> initialResources = null)
         {
 
             _mBackgroundTexture = backgroundTexture;
             _mDebug = debug;
 
-            _mCamera = new Camera(viewport, inputManager, 0, 0);
+            _mCamera = new Camera(viewport, director, 0, 0);
 
             _mCollisionMap = new CollisionMap();
-            MStructureMap = new StructureMap(pathManager);
+            MStructureMap = new StructureMap(director);
             _mResourceMap = new ResourceMap(initialResources);
         }
 

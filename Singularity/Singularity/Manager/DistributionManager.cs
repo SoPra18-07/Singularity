@@ -9,7 +9,7 @@ using Singularity.Resources;
 using Singularity.Units;
 using Singularity.Utils;
 
-namespace Singularity.DistributionManager
+namespace Singularity.Manager
 {
     [DataContract()]
     public class DistributionManager
@@ -51,7 +51,8 @@ namespace Singularity.DistributionManager
 
         // Alternativ könnte man auch bei den beiden Listen direkt die Platformen einsetzen?
         // Momentan ja, aber wenn du ne plattform haben willst die (rein theoretisch) verteidigen und Produzieren gleichzeitig kann? Oder gleichzeitig KineticDefense und LaserDefense ist?
-        // Aber wollen wir das? also entweder so, oder halt wie oben vorgeschlagen.
+        // Aber wollen wir das? also entweder so, oder halt wie oben vorgeschlagen
+
         public DistributionManager()
         {
             _mIdle = new List<GeneralUnit>();

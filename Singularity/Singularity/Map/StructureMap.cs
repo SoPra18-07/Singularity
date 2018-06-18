@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Singularity.Graph.Paths;
+using Singularity.Manager;
 using Singularity.Platform;
 
 namespace Singularity.Map
@@ -19,7 +20,7 @@ namespace Singularity.Map
         /// </summary>
         private readonly LinkedList<Road> _mRoads;
 
-        private readonly PathManager _mPathManager;
+        private readonly Director _mDirector;
 
         private readonly List<Graph.Graph> _mGraphs;
 
@@ -28,12 +29,12 @@ namespace Singularity.Map
         /// <summary>
         /// Creates a new structure map which holds all the structures currently in the game.
         /// </summary>
-        public StructureMap(PathManager pathManager)
+        public StructureMap(Director director)
         {
             _mCurrentGraphIndex = 0;
 
             _mGraphs = new List<Graph.Graph>();
-            _mPathManager = pathManager;
+            _mDirector = director;
 
             _mPlatforms = new LinkedList<PlatformBlank>();
             _mRoads = new LinkedList<Road>();
@@ -97,7 +98,7 @@ namespace Singularity.Map
             }
 
             _mGraphs.Add(new Graph.Graph());
-            _mPathManager.AddGraph(_mGraphs[_mGraphs.Count - 1]);
+            _mDirector.GetPathManager.AddGraph(_mGraphs[_mGraphs.Count - 1]);
         }
 
     }

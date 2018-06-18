@@ -42,8 +42,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DistributionManager\DistributionManager.cs" />
-    <Compile Include="DistributionManager\Task.cs" />
+    <Compile Include="Manager\DistributionManager.cs" />
+    <Compile Include="Manager\MilitaryManager.cs" />
+    <Compile Include="Units\Task.cs" />
     <Compile Include="Exceptions\InvalidGenericArgumentException.cs" />
     <Compile Include="Exceptions\NoSuchElementException.cs" />
     <Compile Include="Exceptions\UnsupportedTextureSizeException.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Input\IMouseWheelListener.cs" />
     <Compile Include="Libraries\Primitives2D.cs" />
     <Compile Include="Libraries\QuadRenderer.cs" />
+    <Compile Include="Manager\Director.cs" />
     <Compile Include="Map\Camera.cs" />
     <Compile Include="Map\CollisionMap.cs" />
     <Compile Include="Map\FogOfWar.cs" />
@@ -121,7 +123,7 @@
     <Compile Include="Sound\SoundClass.cs" />
     <Compile Include="Sound\SoundManager.cs" />
     <Compile Include="Sound\SoundPhase.cs" />
-    <Compile Include="StoryManager\StoryManager.cs" />
+    <Compile Include="Manager\StoryManager.cs" />
     <Compile Include="Units\GeneralUnit.cs" />
     <Compile Include="Units\JobType.cs" />
     <Compile Include="Units\MilitaryUnit.cs" />
