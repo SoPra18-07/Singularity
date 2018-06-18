@@ -102,9 +102,10 @@ namespace Singularity
             // Add the screens to the screen manager
             // The idea is that the game screen is always at the bottom and stuff is added simply
             // on top of it.
+            mScreenManager.AddScreen(mUserInterfaceScreen);
             mScreenManager.AddScreen(mGameScreen);
             mScreenManager.AddScreen(mMainMenuManager);
-            mScreenManager.AddScreen(mUserInterfaceScreen);
+
 
             mMainMenuManager.LoadContent(Content);
             mUserInterfaceScreen.LoadContent(Content);
