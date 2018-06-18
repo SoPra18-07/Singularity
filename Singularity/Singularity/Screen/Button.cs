@@ -50,6 +50,11 @@ namespace Singularity.Screen
         /// </summary>
         public Vector2 Position { get; set; }
 
+        /// <summary>
+        /// Size of the button, needed by the WindowObject to calculate it's position in it's window
+        /// </summary>
+        public Vector2 Size { get; set; }
+
         // these events are sent out when they occur to an 
         // instance of a button
         // HOW TO USE:
@@ -79,6 +84,7 @@ namespace Singularity.Screen
             Position = position;
             mWidth = mButtonTexture.Width;
             mHeight = mButtonTexture.Height;
+            Size = new Vector2(mWidth, mHeight);
             mColor = Color.White;
             CreateRectangularBounds();
 
@@ -98,6 +104,7 @@ namespace Singularity.Screen
             Position = position;
             mWidth = (int)mFont.MeasureString(mButtonText).X;
             mHeight = (int)mFont.MeasureString(mButtonText).Y;
+            Size = new Vector2(mWidth, mHeight);
             mColor = Color.White;
             CreateRectangularBounds();
         }
@@ -110,6 +117,7 @@ namespace Singularity.Screen
             Position = position;
             mWidth = (int)mFont.MeasureString(mButtonText).X;
             mHeight = (int)mFont.MeasureString(mButtonText).Y;
+            Size = new Vector2(mWidth, mHeight);
             mColor = color;
             CreateRectangularBounds();
         }
@@ -247,15 +255,6 @@ namespace Singularity.Screen
                 // reset to not clicked
                 mClicked = false;
             }
-        }
-
-        /// <summary>
-        /// Get the Button size
-        /// </summary>
-        /// <returns>Vector2 with width, height</returns>
-        public Vector2 GetButtonSize()
-        {
-            return new Vector2(mWidth, mHeight);
         }
     }
 }

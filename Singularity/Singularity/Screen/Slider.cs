@@ -47,6 +47,8 @@ namespace Singularity.Screen
             mMin = postion.X;
             mMax = mMin + length;
             mPositionY = postion.Y;
+            Position = postion;
+            Size = new Vector2(sliderSize, sliderSize);
             mCurrentX = mMin;
             mSliderSize = sliderSize;
         }
@@ -119,5 +121,8 @@ namespace Singularity.Screen
            spriteBatch.DrawRectangle(new Vector2(mCurrentX - ((float)mSliderSize/2), mPositionY - ((float)mSliderSize / 2)), 
                new Vector2(mSliderSize, mSliderSize), Color.Black);
         }
+
+        public Vector2 Position { get; set; }
+        public Vector2 Size { get; }
     }
 }
