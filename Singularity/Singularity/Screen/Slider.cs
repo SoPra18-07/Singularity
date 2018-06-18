@@ -41,8 +41,12 @@ namespace Singularity.Screen
         private SpriteFont mFont;
 
         // value as stringb of the slider position
-        private String mValue;
+        private String mStringValue;
 
+        // current value of slider and previous value of slider to only send out 
+        // changes in slider value when slave to mouse
+        private float mValueCurrent;
+        private float mValuePrevious;
 
 
 
@@ -61,6 +65,8 @@ namespace Singularity.Screen
             mPositionY = postion.Y;
             mCurrentX = mMin;
             mSliderSize = sliderSize;
+            mValueCurrent = 0;
+            mValuePrevious = 0;
         }
 
         /// <summary>
@@ -79,9 +85,11 @@ namespace Singularity.Screen
             mCurrentX = mMin;
             mSliderSize = sliderSize;
             mWithValue = true;
+            mValueCurrent = 0;
+            mValuePrevious = 0;
             mFont = font;
             // start off value at 0
-            mValue = 0.ToString();
+            mStringValue = 0.ToString();
         }
 
 
@@ -125,6 +133,8 @@ namespace Singularity.Screen
             // slider bar however
             if (mSlave)
             {
+
+                
                 if (Mouse.GetState().X < mMin)
                 {
                     mCurrentX = mMin;
@@ -137,13 +147,20 @@ namespace Singularity.Screen
                 {
                     mCurrentX = Mouse.GetState().X;
                 }
-                OnSliderMoving();
+
+                mValuePrevious = mValueCurrent;
+                mValueCurrent = mCurrentX;
+
+                if (Math.Abs(mValueCurrent - mValuePrevious) > 0.009)
+                {
+                    OnSliderMoving();
+                }    
             }
 
             // calculate int value of slider and convert to string
             if (mWithValue)
             {
-                mValue = ((int)(((mCurrentX - mMin) / (mMax - mMin)) * 100)).ToString();
+                mStringValue = ((int)(((mCurrentX - mMin) / (mMax - mMin)) * 100)).ToString();
             }
         }
 
@@ -168,9 +185,9 @@ namespace Singularity.Screen
                 // draws in value of slider in the center of display window
                 spriteBatch.DrawString(mFont,
                     origin: Vector2.Zero,
-                    position: new Vector2((mMax + mSliderSize + 30) - (mFont.MeasureString(mValue).X / 2), mPositionY - 12),
+                    position: new Vector2((mMax + mSliderSize + 30) - (mFont.MeasureString(mStringValue).X / 2), mPositionY - 12),
                     color: Color.White,
-                    text: mValue.ToString(),
+                    text: mStringValue.ToString(),
                     rotation: 0f,
                     scale: 1f,
                     effects: SpriteEffects.None,
