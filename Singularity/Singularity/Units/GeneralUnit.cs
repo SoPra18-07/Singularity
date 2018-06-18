@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.DistributionManager;
@@ -15,32 +14,33 @@ using Singularity.Utils;
 
 namespace Singularity.Units
 {
-	public class GeneralUnit : ISpatial
+    [DataContract()]
+    public class GeneralUnit : ISpatial
     {
         [DataMember()]
         public int Id { get; }
         [DataMember()]
-        private int mPositionId;
+        private int _mPositionId;
         [DataMember()]
-        public Optional<Resource> Carrying { get; set; } // TODO change resource into a nullable type
+        public Optional<Resource> Carrying { get; set; }
         [DataMember()]
-        private int? mTargetId;
+        private int? _mTargetId;
         [DataMember()]
-        private Queue<Vector2> mPathQueue; // the queue of platform center locations
+        private Queue<Vector2> _mPathQueue; // the queue of platform center locations
         [DataMember()]
-        private Queue<INode> mNodeQueue;
+        private Queue<INode> _mNodeQueue;
 
-        private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
+        private bool _mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
         
 
         //These are the assigned task and a flag, wether the unit is done with it.
-        private Task mAssignedTask;
+        private Task _mAssignedTask;
 
-        private bool mDone;
+        private bool _mDone;
 
-        private DistributionManager.DistributionManager mDistrManager;
+        private DistributionManager.DistributionManager _mDistrManager;
 
-        private IPlatformAction AssignedAction;
+        private IPlatformAction _assignedAction;
 
         public INode CurrentNode { get; private set; }
 
@@ -54,24 +54,24 @@ namespace Singularity.Units
 
         public Vector2 RelativeSize { get; set; }
 
-        private readonly PathManager mPathManager;
+        private readonly PathManager _mPathManager;
 
         /// <summary>
         /// whether the unit is moving or currently standing still,
         /// this is used so the unit can ask for a new path if it
         /// doesn't move
         /// </summary>
-        private bool mIsMoving;
+        private bool _mIsMoving;
 
         /// <summary>
         /// The node the unit started from. Changes when the unit reaches its destination (to the destination).
         /// </summary>
-        private INode mCurrentNode;
+        private INode _mCurrentNode;
 
         /// <summary>
         /// The node the unit moves to. Null if the unit doesn't move anywhere
         /// </summary>
-        private INode mDestination;
+        private INode _mDestination;
 
         /// <summary>
         /// The speed the unit moves at.
@@ -82,19 +82,19 @@ namespace Singularity.Units
 
         public GeneralUnit(PlatformBlank platform, PathManager pathManager, DistributionManager.DistributionManager distrManager)
         {
-            mDestination = null;
+            _mDestination = null;
 
             CurrentNode = platform;
 
             AbsolutePosition = ((IRevealing) platform).Center; // TODO figure out how to search platform by ID and get its position
-            mPathQueue = new Queue<Vector2>();
-            mNodeQueue = new Queue<INode>();
+            _mPathQueue = new Queue<Vector2>();
+            _mNodeQueue = new Queue<INode>();
 
-            mIsMoving = false;
-            mPathManager = pathManager;
-            mDistrManager = distrManager;
+            _mIsMoving = false;
+            _mPathManager = pathManager;
+            _mDistrManager = distrManager;
             distrManager.Register(this);
-            mDone = true;
+            _mDone = true;
         }
         /// <summary>
         /// Used to pick the Task that the unit does. It assigns the unit to a job which the update method uses
@@ -169,7 +169,7 @@ namespace Singularity.Units
         private void Move(Vector2 targetPosition)
         {
 
-            mIsMoving = true;
+            _mIsMoving = true;
 
             var movementVector = Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y));
 
@@ -257,45 +257,45 @@ namespace Singularity.Units
         /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
-            if (!mIsMoving && mDone)
+            if (!_mIsMoving && _mDone)
             {
-                mDone = false;
+                _mDone = false;
                 if (Job == JobType.Idle)
                 {
                     //Care!!! DO NOT UNDER ANY CIRCUMSTANCES USE THIS PLACEHOLDER
                     IPlatformAction action = new ProduceMineResource(null, null);
-                    mAssignedTask = mDistrManager.RequestNewTask(this, Job, Optional<IPlatformAction>.Of(action));
-                    mDestination = mAssignedTask.End;
+                    _mAssignedTask = _mDistrManager.RequestNewTask(this, Job, Optional<IPlatformAction>.Of(action));
+                    _mDestination = _mAssignedTask.End;
                 }
             }
             // if this if clause is fulfilled we get a new path to move to.
             // we only do this if we're not moving, have no destination and our
             // current nodequeue is empty (the path)
-            if (mDestination != null && mNodeQueue.Count <= 0 && !mIsMoving)
+            if (_mDestination != null && _mNodeQueue.Count <= 0 && !_mIsMoving)
             {
-                mNodeQueue = mPathManager.GetPath(this, mDestination).GetNodePath();
+                _mNodeQueue = _mPathManager.GetPath(this, _mDestination).GetNodePath();
 
-                mCurrentNode = mNodeQueue.Dequeue();
+                _mCurrentNode = _mNodeQueue.Dequeue();
             }
 
-            if (mCurrentNode == null)
+            if (_mCurrentNode == null)
             {
                 return;
             }
 
             // update the current node to move to after the last one got reached.
-            if (ReachedTarget(((PlatformBlank)mCurrentNode).Center) && mNodeQueue.Count > 0)
+            if (ReachedTarget(((PlatformBlank)_mCurrentNode).Center) && _mNodeQueue.Count > 0)
             {
-                mCurrentNode = mNodeQueue.Dequeue();
+                _mCurrentNode = _mNodeQueue.Dequeue();
             }
             // finally move to the current node.
-            Move(((PlatformBlank)mCurrentNode).Center);
+            Move(((PlatformBlank)_mCurrentNode).Center);
 
             // check whether we have reached the target after our move call.
-            ReachedTarget(((PlatformBlank)mCurrentNode).Center);
-            if (mNodeQueue.Count == 0 && Job == JobType.Idle)
+            ReachedTarget(((PlatformBlank)_mCurrentNode).Center);
+            if (_mNodeQueue.Count == 0 && Job == JobType.Idle)
             {
-                mDone = true;
+                _mDone = true;
             }
 
         }
@@ -311,9 +311,9 @@ namespace Singularity.Units
             //since we're operating with float values we just want the distance to be smaller than 2 pixels.
             if (Vector2.Distance(AbsolutePosition, target) < 2)
             {
-                CurrentNode = mCurrentNode;
-                mDestination = null;
-                mIsMoving = false;
+                CurrentNode = _mCurrentNode;
+                _mDestination = null;
+                _mIsMoving = false;
                 return true;
             }
 

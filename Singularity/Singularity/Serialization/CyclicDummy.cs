@@ -9,16 +9,16 @@ namespace Singularity.serialization
     internal class CyclicDummy
     {
         [DataMember()]
-        private object mCyclicReference;
+        private object _mCyclicReference;
 
         public CyclicDummy(object reference)
         {
-            mCyclicReference = reference;
+            _mCyclicReference = reference;
         }
 
         public object GetCyclicReference()
         {
-            return mCyclicReference;
+            return _mCyclicReference;
         }
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -17,8 +12,8 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     class LoadingScreen : ITransitionableMenu
     {
-        private Texture2D mLogo;
-        private readonly Vector2 mLogoPosition;
+        private Texture2D _mLogo;
+        private readonly Vector2 _mLogoPosition;
         public bool TransitionRunning { get; }
 
         /// <summary>
@@ -27,7 +22,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="screenResolution">Viewport resolution for scaling</param>
         public LoadingScreen(Vector2 screenResolution)
         {
-            mLogoPosition = Vector2.Add(screenResolution, new Vector2(-106, -97));
+            _mLogoPosition = Vector2.Add(screenResolution, new Vector2(-106, -97));
             TransitionRunning = false;
 
         }
@@ -49,7 +44,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             spriteBatch.Begin();
 
-            spriteBatch.Draw(mLogo, mLogoPosition, null, Color.White, 0f, Vector2.Zero, 0.14f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(_mLogo, _mLogoPosition, null, Color.White, 0f, Vector2.Zero, 0.14f, SpriteEffects.None, 0f);
             
             spriteBatch.End();
         }
@@ -60,7 +55,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="content">Content Manager that should handle the content loading</param>
         public void LoadContent(ContentManager content)
         {
-            mLogo = content.Load<Texture2D>("Logo");
+            _mLogo = content.Load<Texture2D>("Logo");
         }
 
         /// <summary>

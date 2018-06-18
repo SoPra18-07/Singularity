@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Singularity.Graph.Paths
+﻿namespace Singularity.Graph.Paths
 {
 
     /// <summary>
@@ -14,11 +8,11 @@ namespace Singularity.Graph.Paths
     /// </summary>
     public static class PathfindingFactory
     {
-        private static IPathfinding sPathfinding;
+        private static IPathfinding _sPathfinding;
 
         public static IPathfinding GetPathfinding()
         {
-            return sPathfinding ?? (sPathfinding = new DefaultPathfinding());
+            return _sPathfinding ?? (_sPathfinding = new DefaultPathfinding());
         }
 
     }

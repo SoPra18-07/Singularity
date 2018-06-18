@@ -14,32 +14,32 @@ namespace Singularity.Screen.ScreenClasses
         /// and loads all the other main menu screens. Also handles button events which involve switching
         /// between menu screens.
         /// </summary>
-        private readonly IScreenManager mScreenManager;
-        private EScreen mScreenState;
+        private readonly IScreenManager _mScreenManager;
+        private EScreen _mScreenState;
 
         // All connecting screens
-        private ITransitionableMenu mGameModeSelectScreen;
-        private ITransitionableMenu mLoadSelectScreen;
-        private ITransitionableMenu mAchievementsScreen;
-        private ITransitionableMenu mOptionsScreen;
-        private ITransitionableMenu mSplashScreen;
-        private ITransitionableMenu mMainMenuScreen;
-        private ITransitionableMenu mLoadingScreen;
+        private ITransitionableMenu _mGameModeSelectScreen;
+        private ITransitionableMenu _mLoadSelectScreen;
+        private ITransitionableMenu _mAchievementsScreen;
+        private ITransitionableMenu _mOptionsScreen;
+        private ITransitionableMenu _mSplashScreen;
+        private ITransitionableMenu _mMainMenuScreen;
+        private ITransitionableMenu _mLoadingScreen;
         
         // Background
-        private MenuBackgroundScreen mMenuBackgroundScreen;
+        private MenuBackgroundScreen _mMenuBackgroundScreen;
 
         // Screen transition variables
-        private static string sPressed;
-        private int mTransitionState;
+        private static string _sPressed;
+        private int _mTransitionState;
 
         // The game itself (to allow for quitting)
-        private readonly Game1 mGame;
+        private readonly Game1 _mGame;
         
         // viewport resolution changes
-        private static Vector2 sViewportResolution;
-        private static bool sResolutionChanged;
-        private ContentManager mContent;
+        private static Vector2 _sViewportResolution;
+        private static bool _sResolutionChanged;
+        private ContentManager _mContent;
 
         /// <summary>
         /// Creates an instance of the MainMenuManagerScreen class
@@ -52,16 +52,16 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="game">Used to pass on to the options screen to change game settings</param>
         public MainMenuManagerScreen(Vector2 screenResolution, IScreenManager screenManager, bool showSplash, Game1 game)
         {
-            mScreenManager = screenManager;
-            mGame = game;
+            _mScreenManager = screenManager;
+            _mGame = game;
             
             Initialize(screenResolution, false, game);
             
-            mScreenState = showSplash ? EScreen.SplashScreen : EScreen.MainMenuScreen;
+            _mScreenState = showSplash ? EScreen.SplashScreen : EScreen.MainMenuScreen;
 
-            sPressed = "None";
-            sResolutionChanged = false;
-            mTransitionState = 0;
+            _sPressed = "None";
+            _sResolutionChanged = false;
+            _mTransitionState = 0;
         }
 
         /// <summary>
@@ -71,18 +71,18 @@ namespace Singularity.Screen.ScreenClasses
         public void LoadContent(ContentManager content)
         {
             LoadScreenContents(content);
-            mContent = content;
+            _mContent = content;
 
             // Add screen to screen manager
-            mScreenManager.AddScreen(mMenuBackgroundScreen);
+            _mScreenManager.AddScreen(_mMenuBackgroundScreen);
 
-            if (mScreenState == EScreen.SplashScreen)
+            if (_mScreenState == EScreen.SplashScreen)
             {
-                mScreenManager.AddScreen(mSplashScreen);
+                _mScreenManager.AddScreen(_mSplashScreen);
             }
-            else if (mScreenState == EScreen.MainMenuScreen)
+            else if (_mScreenState == EScreen.MainMenuScreen)
             {
-                mScreenManager.AddScreen(mMainMenuScreen);
+                _mScreenManager.AddScreen(_mMainMenuScreen);
             }
             else
             {
@@ -99,33 +99,33 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
-            if (sResolutionChanged)
+            if (_sResolutionChanged)
             {
-                Initialize(sViewportResolution, sResolutionChanged, mGame);
-                LoadScreenContents(mContent);
-                mScreenManager.RemoveScreen();
-                mScreenManager.RemoveScreen();
-                mMenuBackgroundScreen.TransitionTo(EScreen.OptionsScreen, EScreen.OptionsScreen, gametime);
-                mScreenManager.AddScreen(mMenuBackgroundScreen);
-                mScreenManager.AddScreen(mOptionsScreen);
-                sResolutionChanged = false;
+                Initialize(_sViewportResolution, _sResolutionChanged, _mGame);
+                LoadScreenContents(_mContent);
+                _mScreenManager.RemoveScreen();
+                _mScreenManager.RemoveScreen();
+                _mMenuBackgroundScreen.TransitionTo(EScreen.OptionsScreen, EScreen.OptionsScreen, gametime);
+                _mScreenManager.AddScreen(_mMenuBackgroundScreen);
+                _mScreenManager.AddScreen(_mOptionsScreen);
+                _sResolutionChanged = false;
             }
-            switch (mScreenState)
+            switch (_mScreenState)
             {
                 case EScreen.AchievementsScreen:
                     break;
                 case EScreen.GameModeSelectScreen:
-                    if (sPressed == "Free Play")
+                    if (_sPressed == "Free Play")
                     {
-                        mScreenManager.RemoveScreen();
-                        mScreenManager.RemoveScreen();
-                        mScreenManager.AddScreen(mLoadingScreen);
-                        mScreenState = EScreen.LoadingScreen;
+                        _mScreenManager.RemoveScreen();
+                        _mScreenManager.RemoveScreen();
+                        _mScreenManager.AddScreen(_mLoadingScreen);
+                        _mScreenState = EScreen.LoadingScreen;
                     }
 
-                    if (sPressed == "Back")
+                    if (_sPressed == "Back")
                     {
-                        SwitchScreen(EScreen.MainMenuScreen, mGameModeSelectScreen, mMainMenuScreen, gametime);
+                        SwitchScreen(EScreen.MainMenuScreen, _mGameModeSelectScreen, _mMainMenuScreen, gametime);
                     }
                     break;
                 case EScreen.GameScreen:
@@ -133,40 +133,40 @@ namespace Singularity.Screen.ScreenClasses
                 case EScreen.LoadSelectScreen:
                     break;
                 case EScreen.LoadingScreen:
-                    mGame.mGameScreen.LoadContent(mContent);
-                    mScreenManager.RemoveScreen();
-                    mScreenState = EScreen.GameScreen;
+                    _mGame.MGameScreen.LoadContent(_mContent);
+                    _mScreenManager.RemoveScreen();
+                    _mScreenState = EScreen.GameScreen;
                     break;
                 case EScreen.MainMenuScreen:
-                    if (sPressed == "Play")
+                    if (_sPressed == "Play")
                     {
-                        SwitchScreen(EScreen.GameModeSelectScreen, mMainMenuScreen, mGameModeSelectScreen, gametime);
+                        SwitchScreen(EScreen.GameModeSelectScreen, _mMainMenuScreen, _mGameModeSelectScreen, gametime);
                     }
 
-                    if (sPressed == "Load")
+                    if (_sPressed == "Load")
                     {
-                        SwitchScreen(EScreen.LoadSelectScreen, mMainMenuScreen, mLoadSelectScreen, gametime);
+                        SwitchScreen(EScreen.LoadSelectScreen, _mMainMenuScreen, _mLoadSelectScreen, gametime);
                     }
 
-                    if (sPressed == "Options")
+                    if (_sPressed == "Options")
                     {
-                        SwitchScreen(EScreen.OptionsScreen, mMainMenuScreen, mOptionsScreen, gametime);
+                        SwitchScreen(EScreen.OptionsScreen, _mMainMenuScreen, _mOptionsScreen, gametime);
                     }
 
-                    if (sPressed == "Achievments")
+                    if (_sPressed == "Achievments")
                     {
-                        SwitchScreen(EScreen.AchievementsScreen, mMainMenuScreen, mAchievementsScreen, gametime);
+                        SwitchScreen(EScreen.AchievementsScreen, _mMainMenuScreen, _mAchievementsScreen, gametime);
                     }
 
-                    if (sPressed == "Quit")
+                    if (_sPressed == "Quit")
                     {
-                        mGame.Exit();
+                        _mGame.Exit();
                     }
                     break;
                 case EScreen.OptionsScreen:
-                    if (sPressed == "Back")
+                    if (_sPressed == "Back")
                     {
-                        SwitchScreen(EScreen.MainMenuScreen, mOptionsScreen, mMainMenuScreen, gametime);
+                        SwitchScreen(EScreen.MainMenuScreen, _mOptionsScreen, _mMainMenuScreen, gametime);
                     }
                     break;
                 case EScreen.SplashScreen:
@@ -174,12 +174,12 @@ namespace Singularity.Screen.ScreenClasses
                         || Mouse.GetState().LeftButton == ButtonState.Pressed
                         || Mouse.GetState().RightButton == ButtonState.Pressed)
                     {
-                        sPressed = "Pressed";
+                        _sPressed = "Pressed";
                     }
 
-                    if (sPressed == "Pressed")
+                    if (_sPressed == "Pressed")
                     {
-                        SwitchScreen(EScreen.MainMenuScreen, mSplashScreen, mMainMenuScreen, gametime);
+                        SwitchScreen(EScreen.MainMenuScreen, _mSplashScreen, _mMainMenuScreen, gametime);
                     }
 
                     break;
@@ -199,13 +199,13 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="gameTime">Used for animations</param>
         private void SwitchScreen(EScreen targetEScreen, ITransitionableMenu originScreen, ITransitionableMenu targetScreen, GameTime gameTime)
         {
-            switch (mTransitionState)
+            switch (_mTransitionState)
             {
                 case (0):
                     // start the necessary transitions
-                    originScreen.TransitionTo(mScreenState, targetEScreen, gameTime);
-                    mMenuBackgroundScreen.TransitionTo(mScreenState, targetEScreen, gameTime);
-                    mTransitionState = 1;
+                    originScreen.TransitionTo(_mScreenState, targetEScreen, gameTime);
+                    _mMenuBackgroundScreen.TransitionTo(_mScreenState, targetEScreen, gameTime);
+                    _mTransitionState = 1;
                     break;
 
                 case (1):
@@ -213,11 +213,11 @@ namespace Singularity.Screen.ScreenClasses
                     if (!originScreen.TransitionRunning)
                     {
                         // once it is done transitioning out, remove it and add the target screen
-                        mScreenManager.RemoveScreen();
-                        mScreenManager.AddScreen(targetScreen);
+                        _mScreenManager.RemoveScreen();
+                        _mScreenManager.AddScreen(targetScreen);
                         // then start transitioning the target screen
-                        targetScreen.TransitionTo(mScreenState, targetEScreen, gameTime);
-                        mTransitionState = 2;
+                        targetScreen.TransitionTo(_mScreenState, targetEScreen, gameTime);
+                        _mTransitionState = 2;
                     }
                     break;
                 case (2):
@@ -225,9 +225,9 @@ namespace Singularity.Screen.ScreenClasses
                     if (!targetScreen.TransitionRunning)
                     {
                         // once it is done transitioning in, change the states of everyone to reflect the new state
-                        mScreenState = targetEScreen;
-                        sPressed = "None";
-                        mTransitionState = 0;
+                        _mScreenState = targetEScreen;
+                        _sPressed = "None";
+                        _mTransitionState = 0;
                     }
                     break;
                 default:
@@ -295,7 +295,7 @@ namespace Singularity.Screen.ScreenClasses
         public bool UpdateLower()
         {
             // below this screen is the game so it shouldn't update the game
-            return mScreenState == EScreen.GameScreen;
+            return _mScreenState == EScreen.GameScreen;
         }
 
         /// <summary>
@@ -304,13 +304,13 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>Bool. If true, then the screen below this will be drawn.</returns>
         public bool DrawLower()
         {
-            return mScreenState == EScreen.GameScreen? true : false;
+            return _mScreenState == EScreen.GameScreen? true : false;
         }
 
         public static void SetResolution(Vector2 viewportResolution)
         {
-            sResolutionChanged = true;
-            sViewportResolution = viewportResolution;
+            _sResolutionChanged = true;
+            _sViewportResolution = viewportResolution;
         }
 
         /// <summary>
@@ -320,14 +320,14 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="game"></param>
         private void Initialize(Vector2 screenResolution, bool screenResolutionChanged, Game1 game)
         {
-            mGameModeSelectScreen = new GameModeSelectScreen(screenResolution);
-            mLoadSelectScreen = new LoadSelectScreen();
-            mAchievementsScreen = new AchievementsScreen();
-            mOptionsScreen = new OptionsScreen(screenResolution, screenResolutionChanged, game);
-            mMenuBackgroundScreen = new MenuBackgroundScreen(screenResolution);
-            mSplashScreen = new SplashScreen(screenResolution);
-            mMainMenuScreen = new MainMenuScreen(screenResolution);
-            mLoadingScreen = new LoadingScreen(screenResolution);
+            _mGameModeSelectScreen = new GameModeSelectScreen(screenResolution);
+            _mLoadSelectScreen = new LoadSelectScreen();
+            _mAchievementsScreen = new AchievementsScreen();
+            _mOptionsScreen = new OptionsScreen(screenResolution, screenResolutionChanged, game);
+            _mMenuBackgroundScreen = new MenuBackgroundScreen(screenResolution);
+            _mSplashScreen = new SplashScreen(screenResolution);
+            _mMainMenuScreen = new MainMenuScreen(screenResolution);
+            _mLoadingScreen = new LoadingScreen(screenResolution);
         }
 
         /// <summary>
@@ -337,14 +337,14 @@ namespace Singularity.Screen.ScreenClasses
         private void LoadScreenContents(ContentManager content)
         {
             // Load content for all the other menu screens
-            mMenuBackgroundScreen.LoadContent(content);
-            mSplashScreen.LoadContent(content);
-            mMainMenuScreen.LoadContent(content);
-            mGameModeSelectScreen.LoadContent(content);
-            mLoadSelectScreen.LoadContent(content);
-            mAchievementsScreen.LoadContent(content);
-            mOptionsScreen.LoadContent(content);
-            mLoadingScreen.LoadContent(content);
+            _mMenuBackgroundScreen.LoadContent(content);
+            _mSplashScreen.LoadContent(content);
+            _mMainMenuScreen.LoadContent(content);
+            _mGameModeSelectScreen.LoadContent(content);
+            _mLoadSelectScreen.LoadContent(content);
+            _mAchievementsScreen.LoadContent(content);
+            _mOptionsScreen.LoadContent(content);
+            _mLoadingScreen.LoadContent(content);
         }
 
 
@@ -359,7 +359,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="eventArg"></param>
         public static void OnPlayButtonReleased(Object sender, EventArgs eventArg)
         {
-            sPressed = "Play";
+            _sPressed = "Play";
         }
 
         /// <summary>
@@ -370,7 +370,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="eventArgs"></param>
         public static void OnLoadButtonReleased(Object sender, EventArgs eventArgs)
         {
-            sPressed = "Load";
+            _sPressed = "Load";
         }
 
         /// <summary>
@@ -381,7 +381,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="eventArgs"></param>
         public static void OnOptionsButtonReleased(Object sender, EventArgs eventArgs)
         {
-            sPressed = "Options";
+            _sPressed = "Options";
 
         }
 
@@ -393,7 +393,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="eventArgs"></param>
         public static void OnAchievementsButtonReleased(Object sender, EventArgs eventArgs)
         {
-            sPressed = "Achievements";
+            _sPressed = "Achievements";
         }
 
         /// <summary>
@@ -404,7 +404,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="eventArgs"></param>
         public static void OnQuitButtonReleased(Object sender, EventArgs eventArgs)
         {
-            sPressed = "Quit";
+            _sPressed = "Quit";
         }
 
         /// <summary>
@@ -427,7 +427,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="eventArgs"></param>
         public static void OnFreePlayButtonReleased(Object sender, EventArgs eventArgs)
         {
-            sPressed = "Free Play";
+            _sPressed = "Free Play";
         }
 
         /// <summary>
@@ -437,7 +437,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="eventArgs"></param>
         public static void OnBackButtonReleased(Object sender, EventArgs eventArgs)
         {
-            sPressed = "Back";
+            _sPressed = "Back";
         }
         #endregion
 

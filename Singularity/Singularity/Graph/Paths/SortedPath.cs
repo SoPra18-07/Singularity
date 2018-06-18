@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Singularity.Property;
 
@@ -20,26 +16,26 @@ namespace Singularity.Graph.Paths
     public sealed class SortedPath : IPath
     {
 
-        private readonly Queue<Vector2> mPath;
+        private readonly Queue<Vector2> _mPath;
 
-        private readonly Queue<INode> mNodePath;
+        private readonly Queue<INode> _mNodePath;
 
 
         public SortedPath()
         {
-            mNodePath = new Queue<INode>();
-            mPath = new Queue<Vector2>();
+            _mNodePath = new Queue<INode>();
+            _mPath = new Queue<Vector2>();
 
         }
 
         public Queue<Vector2> GetVectorPath()
         {
-            return mPath;
+            return _mPath;
         }
 
         public Queue<INode> GetNodePath()
         {
-            return mNodePath;
+            return _mNodePath;
         }
 
         /// <summary>
@@ -48,8 +44,8 @@ namespace Singularity.Graph.Paths
         /// <param name="node">The node to add</param>
         public void AddNode(INode node)
         {
-            mNodePath.Enqueue(node);
-            mPath.Enqueue(((IRevealing)node).Center);
+            _mNodePath.Enqueue(node);
+            _mPath.Enqueue(((IRevealing)node).Center);
         }
     }
 }

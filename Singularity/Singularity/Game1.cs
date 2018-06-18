@@ -1,19 +1,9 @@
-﻿using System;
-using System.Diagnostics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
-using Singularity.Platform;
 using Singularity.Input;
-
-using Singularity.Map;
-using Singularity.Map.Properties;
-using Singularity.Resources;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Sound;
-using Singularity.Units;
 
 namespace Singularity
 {
@@ -22,35 +12,35 @@ namespace Singularity
     /// </summary>
     internal sealed class Game1 : Game
     {
-        internal GraphicsDeviceManager mGraphics;
-        internal GraphicsAdapter mGraphicsAdapter;
+        internal GraphicsDeviceManager MGraphics;
+        internal GraphicsAdapter MGraphicsAdapter;
 
-        private SoundManager mSoundManager;
+        private SoundManager _mSoundManager;
 
         // Screens
-        internal GameScreen mGameScreen;
-        private MainMenuManagerScreen mMainMenuManager;
-        private readonly InputManager mInputManager;
+        internal GameScreen MGameScreen;
+        private MainMenuManagerScreen _mMainMenuManager;
+        private readonly InputManager _mInputManager;
 
 
         // Sprites!
-        private SpriteBatch mSpriteBatch;
+        private SpriteBatch _mSpriteBatch;
         
 
         // Screen Manager
-        private readonly IScreenManager mScreenManager;
+        private readonly IScreenManager _mScreenManager;
 
         internal Game1()
         {
-            mGraphics = new GraphicsDeviceManager(this);
+            MGraphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            mGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
+            MGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
 
-            mInputManager = new InputManager();
-            mScreenManager = new StackScreenManager();
+            _mInputManager = new InputManager();
+            _mScreenManager = new StackScreenManager();
 
-            mInputManager = new InputManager();
+            _mInputManager = new InputManager();
 
         }
 
@@ -71,12 +61,12 @@ namespace Singularity
 
             // XSerializer.TestSerialization();
             IsMouseVisible = true;
-            mGraphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
-            mGraphics.PreferredBackBufferWidth = 1080;
-            mGraphics.PreferredBackBufferHeight = 720;
-            mGraphics.IsFullScreen = false;
-            mGraphics.ApplyChanges();
-            mSoundManager = new SoundManager();
+            MGraphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
+            MGraphics.PreferredBackBufferWidth = 1080;
+            MGraphics.PreferredBackBufferHeight = 720;
+            MGraphics.IsFullScreen = false;
+            MGraphics.ApplyChanges();
+            _mSoundManager = new SoundManager();
 
             base.Initialize();
         }
@@ -90,23 +80,23 @@ namespace Singularity
             var viewportResolution = new Vector2(GraphicsDevice.Viewport.Width,
                 GraphicsDevice.Viewport.Height);
             // Create a new SpriteBatch, which can be used to draw textures.
-            mSpriteBatch = new SpriteBatch(GraphicsDevice);
+            _mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            mGameScreen = new GameScreen(mGraphics.GraphicsDevice, mInputManager);
+            MGameScreen = new GameScreen(MGraphics.GraphicsDevice, _mInputManager);
 
-            mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
+            _mMainMenuManager = new MainMenuManagerScreen(viewportResolution, _mScreenManager, true, this);
 
             // Add the screens to the screen manager
             // The idea is that the game screen is always at the bottom and stuff is added simply
             // on top of it.
-            mScreenManager.AddScreen(mGameScreen);
-            mScreenManager.AddScreen(mMainMenuManager);
+            _mScreenManager.AddScreen(MGameScreen);
+            _mScreenManager.AddScreen(_mMainMenuManager);
             
-            mMainMenuManager.LoadContent(Content);
+            _mMainMenuManager.LoadContent(Content);
             
             // load and play Soundtrack as background music
-            mSoundManager.LoadContent(Content);
-            mSoundManager.PlaySoundTrack();
+            _mSoundManager.LoadContent(Content);
+            _mSoundManager.PlaySoundTrack();
 
         }
 
@@ -130,8 +120,8 @@ namespace Singularity
             // the mouse is.
             InputManager2.Update(gameTime);
 
-            mInputManager.Update(gameTime);
-            mScreenManager.Update(gameTime);
+            _mInputManager.Update(gameTime);
+            _mScreenManager.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -145,7 +135,7 @@ namespace Singularity
 
             // TODO: Add your drawing code here
 
-            mScreenManager.Draw(mSpriteBatch);
+            _mScreenManager.Draw(_mSpriteBatch);
             base.Draw(gameTime);
         }
     }

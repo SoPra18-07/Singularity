@@ -1,10 +1,6 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph.Paths;
 using Singularity.Platform;
-using Singularity.Property;
-using Singularity.Utils;
 
 namespace Singularity.Map
 {
@@ -16,31 +12,31 @@ namespace Singularity.Map
         /// <summary>
         /// A list of all the platforms currently in the game
         /// </summary>
-        private readonly LinkedList<PlatformBlank> mPlatforms;
+        private readonly LinkedList<PlatformBlank> _mPlatforms;
 
         /// <summary>
         /// A list of all the roads in the game, identified by a source and destination platform.
         /// </summary>
-        private readonly LinkedList<Road> mRoads;
+        private readonly LinkedList<Road> _mRoads;
 
-        private readonly PathManager mPathManager;
+        private readonly PathManager _mPathManager;
 
-        private readonly List<Graph.Graph> mGraphs;
+        private readonly List<Graph.Graph> _mGraphs;
 
-        private int mCurrentGraphIndex;
+        private int _mCurrentGraphIndex;
 
         /// <summary>
         /// Creates a new structure map which holds all the structures currently in the game.
         /// </summary>
         public StructureMap(PathManager pathManager)
         {
-            mCurrentGraphIndex = 0;
+            _mCurrentGraphIndex = 0;
 
-            mGraphs = new List<Graph.Graph>();
-            mPathManager = pathManager;
+            _mGraphs = new List<Graph.Graph>();
+            _mPathManager = pathManager;
 
-            mPlatforms = new LinkedList<PlatformBlank>();
-            mRoads = new LinkedList<Road>();
+            _mPlatforms = new LinkedList<PlatformBlank>();
+            _mRoads = new LinkedList<Road>();
         }
 
         /// <summary>
@@ -49,7 +45,7 @@ namespace Singularity.Map
         /// <returns></returns>
         public LinkedList<PlatformBlank> GetPlatformList()
         {
-            return mPlatforms;
+            return _mPlatforms;
         }
 
         /// <summary>
@@ -60,8 +56,8 @@ namespace Singularity.Map
         {
             CreateNewGraph();
 
-            mPlatforms.AddLast(platform);
-            mGraphs[mCurrentGraphIndex].AddNode(platform);
+            _mPlatforms.AddLast(platform);
+            _mGraphs[_mCurrentGraphIndex].AddNode(platform);
         }
 
         /// <summary>
@@ -72,36 +68,36 @@ namespace Singularity.Map
         {
             CreateNewGraph();
 
-            mPlatforms.Remove(platform);
-            mGraphs[mCurrentGraphIndex].RemoveNode(platform);
+            _mPlatforms.Remove(platform);
+            _mGraphs[_mCurrentGraphIndex].RemoveNode(platform);
         }
         public void AddRoad(Road road)
         {
             CreateNewGraph();
 
-            mRoads.AddLast(road);
-            mGraphs[mCurrentGraphIndex].AddEdge(road);
+            _mRoads.AddLast(road);
+            _mGraphs[_mCurrentGraphIndex].AddEdge(road);
         }
 
         public void RemoveRoad(Road road)
         {
             CreateNewGraph();
 
-            mRoads.Remove(road);
-            mGraphs[mCurrentGraphIndex].RemoveEdge(road);
+            _mRoads.Remove(road);
+            _mGraphs[_mCurrentGraphIndex].RemoveEdge(road);
 
         }
 
         private void CreateNewGraph() 
         {
 
-            if (mGraphs.Count > mCurrentGraphIndex)
+            if (_mGraphs.Count > _mCurrentGraphIndex)
             {
                 return;
             }
 
-            mGraphs.Add(new Graph.Graph());
-            mPathManager.AddGraph(mGraphs[mGraphs.Count - 1]);
+            _mGraphs.Add(new Graph.Graph());
+            _mPathManager.AddGraph(_mGraphs[_mGraphs.Count - 1]);
         }
 
     }

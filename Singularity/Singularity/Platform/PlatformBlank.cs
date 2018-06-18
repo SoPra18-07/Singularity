@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
-using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
@@ -18,35 +16,35 @@ namespace Singularity.Platform
 
     {
 
-        private List<IEdge> mInwardsEdges;
+        private List<IEdge> _mInwardsEdges;
 
-        private List<IEdge> mOutwardsEdges;
+        private List<IEdge> _mOutwardsEdges;
 
         [DataMember()]
-        protected EPlatformType mType = EPlatformType.Blank;
+        protected EPlatformType MType = EPlatformType.Blank;
         [DataMember()]
         private const int PlatformWidth = 148;
         [DataMember()]
         private const int PlatformHeight = 172;
         [DataMember()]
-        private int mHealth;
+        private int _mHealth;
         [DataMember()]
-        private int mId;
+        private int _mId;
         [DataMember()]
-        protected bool mIsBlueprint;
+        protected bool MIsBlueprint;
         [DataMember()]
-        protected Dictionary<EResourceType, int> mCost;
+        protected Dictionary<EResourceType, int> MCost;
         [DataMember()]
-        protected IPlatformAction[] mIPlatformActions;
-        private readonly Texture2D mSpritesheet;
+        protected IPlatformAction[] MiPlatformActions;
+        private readonly Texture2D _mSpritesheet;
         [DataMember()]
-        protected string mSpritename;
+        protected string MSpritename;
         [DataMember()]
-        protected Dictionary<GeneralUnit, JobType> mAssignedUnits;
+        protected Dictionary<GeneralUnit, JobType> MAssignedUnits;
         [DataMember()]
-        protected List<MapResource> mResources;
+        protected List<Resource> MResources;
         [DataMember()]
-        protected Dictionary<EResourceType, int> mRequested;
+        protected Dictionary<EResourceType, int> MRequested;
 
         public Vector2 Center { get; set; }
 
@@ -79,7 +77,7 @@ namespace Singularity.Platform
         /// <returns> a list containing references of the units</returns>
         public Dictionary<GeneralUnit, JobType> GetAssignedUnits()
         {
-            return mAssignedUnits;
+            return MAssignedUnits;
         }
 
         /// <summary>
@@ -89,7 +87,7 @@ namespace Singularity.Platform
         /// <param name="job">The Job to be done by the unit</param>
         public void AssignUnits(GeneralUnit unit, JobType job)
         {
-            mAssignedUnits.Add(unit, job);
+            MAssignedUnits.Add(unit, job);
         }
 
         /// <summary>
@@ -98,7 +96,7 @@ namespace Singularity.Platform
         /// <param name="unit">The unit to unassign.</param>
         public void UnAssignUnits(GeneralUnit unit)
         {
-            mAssignedUnits.Remove(unit);
+            MAssignedUnits.Remove(unit);
         }
 
         /// <summary>
@@ -107,7 +105,7 @@ namespace Singularity.Platform
         /// <returns> an array with the available IPlatformActions.</returns>
         public IPlatformAction[] GetIPlatformActions()
         {
-            return mIPlatformActions;
+            return MiPlatformActions;
         }
 
         /// <summary>
@@ -136,16 +134,16 @@ namespace Singularity.Platform
         /// <returns> a dictionary of the resources with a number telling how much of it is required</returns>
         public Dictionary<EResourceType, int> GetResourcesRequired()
         {
-            return mCost;
+            return MCost;
         }
 
         /// <summary>
         /// Get the Resources on the platform.
         /// </summary>
         /// <returns> a List containing the references to the resource-objects</returns>
-        public List<MapResource> GetPlatformResources()
+        public List<Resource> GetPlatformResources()
         {
-            return mResources;
+            return MResources;
         }
 
         /// <summary>
@@ -154,7 +152,7 @@ namespace Singularity.Platform
         /// <returns> the health points as integer</returns>
         public int GetHealth()
         {
-            return mHealth;
+            return _mHealth;
         }
 
         /// <summary>
@@ -163,8 +161,8 @@ namespace Singularity.Platform
         /// <param name="damage">Negative values for healing, positive for damage</param>
         public void TakeHealDamage(int damage)
         {
-            mHealth += damage;
-            if (mHealth <= 0)
+            _mHealth += damage;
+            if (_mHealth <= 0)
             {
                 //destroyplatform
             }
@@ -174,9 +172,9 @@ namespace Singularity.Platform
         /// Add a new resource to the platform.
         /// </summary>
         /// <param name="resource"> the resource to be added to the platform </param>
-        public void StoreResource(MapResource resource)
+        public void StoreResource(Resource resource)
         {
-            mResources.Add(resource);
+            MResources.Add(resource);
         }
 
         /// <summary>
@@ -204,7 +202,7 @@ namespace Singularity.Platform
         /// <returns>A dictionary containing this information.</returns>
         public Dictionary<EResourceType, int> GetmRequested()
         {
-            return mRequested;
+            return MRequested;
         }
 
         /// <summary>
@@ -214,7 +212,7 @@ namespace Singularity.Platform
         /// <param name="number">the number of that resource</param>
         public void SetmRequested(EResourceType resource, int number)
         {
-            mRequested.Add(resource, number);
+            MRequested.Add(resource, number);
         }
 
         public virtual void Produce()
@@ -228,7 +226,7 @@ namespace Singularity.Platform
         {
             var position = 0;
             var sheet = "b"; // b stands for blank, c for cone or cylindrical and d for Dome
-            switch (mType)
+            switch (MType)
             {
                 case EPlatformType.Blank:
                     break;
@@ -282,7 +280,7 @@ namespace Singularity.Platform
             switch (sheet)
             {
                 case "b":
-                    spritebatch.Draw(mSpritesheet,
+                    spritebatch.Draw(_mSpritesheet,
                         new Rectangle(
                             (int) AbsolutePosition.X,
                             (int) AbsolutePosition.Y,
@@ -296,7 +294,7 @@ namespace Singularity.Platform
                         LayerConstants.PlatformLayer);
                     break;
                 case "d":
-                    spritebatch.Draw(mSpritesheet,
+                    spritebatch.Draw(_mSpritesheet,
                         new Rectangle(
                             (int)AbsolutePosition.X,
                             (int)AbsolutePosition.Y,
@@ -310,7 +308,7 @@ namespace Singularity.Platform
                         LayerConstants.PlatformLayer);
                     break;
                 case "c":
-                    spritebatch.Draw(mSpritesheet,
+                    spritebatch.Draw(_mSpritesheet,
                         new Rectangle(
                             (int)AbsolutePosition.X,
                             (int)AbsolutePosition.Y,
@@ -338,33 +336,33 @@ namespace Singularity.Platform
 
             Id = IdGenerator.NextiD();
 
-            mInwardsEdges = new List<IEdge>();
-            mOutwardsEdges = new List<IEdge>();
+            _mInwardsEdges = new List<IEdge>();
+            _mOutwardsEdges = new List<IEdge>();
 
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
 
             //default?
-            mHealth = 100;
+            _mHealth = 100;
 
             //Waiting for PlatformActions to be completed.
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //The only IPlatformAction available so far is BlueprintBuild.
-            mIPlatformActions = new IPlatformAction[1];
+            MiPlatformActions = new IPlatformAction[1];
             //mIPlatformActions[0] = IPlatformAction.BlueprintBuild;
 
-            mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
+            MAssignedUnits = new Dictionary<GeneralUnit, JobType>();
 
             //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<EResourceType, int>();
+            MCost = new Dictionary<EResourceType, int>();
+            
+            MResources = new List<Resource>();
 
-            mResources = new List<MapResource>();
+            _mSpritesheet = spritesheet;
+            MSpritename = "PlatformBasic";
 
-            mSpritesheet = spritesheet;
-            mSpritename = "PlatformBasic";
-
-            mIsBlueprint = true;
-            mRequested = new Dictionary<EResourceType, int>();
+            MIsBlueprint = true;
+            MRequested = new Dictionary<EResourceType, int>();
 
             RevelationRadius = (int)AbsoluteSize.Y;
             AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
@@ -385,17 +383,17 @@ namespace Singularity.Platform
 
         public bool PlatformHasSpace()
         {
-            return mResources.Count < 10;
+            return MResources.Count < 10;
         }
 
         public void AddEdge(IEdge edge, EEdgeFacing facing)
         {
             if (facing == EEdgeFacing.Inwards)
             {
-                mInwardsEdges.Add(edge);
+                _mInwardsEdges.Add(edge);
                 return;
             }
-            mOutwardsEdges.Add(edge);
+            _mOutwardsEdges.Add(edge);
 
         }
 
@@ -403,21 +401,21 @@ namespace Singularity.Platform
         {
             if (facing == EEdgeFacing.Inwards)
             {
-                mInwardsEdges.Remove(edge);
+                _mInwardsEdges.Remove(edge);
                 return;
             }
-            mOutwardsEdges.Remove(edge);
+            _mOutwardsEdges.Remove(edge);
 
         }
 
         public IEnumerable<IEdge> GetOutwardsEdges()
         {
-            return mOutwardsEdges;
+            return _mOutwardsEdges;
         }
 
         public IEnumerable<IEdge> GetInwardsEdges()
         {
-            return mInwardsEdges;
+            return _mInwardsEdges;
         }
     }
 }

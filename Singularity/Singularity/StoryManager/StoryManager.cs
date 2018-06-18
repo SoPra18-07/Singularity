@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Singularity.StoryManager
+﻿namespace Singularity.StoryManager
 {
     class StoryManager
     {
-        private int mEnergyLevel;
+        private int _mEnergyLevel;
 
         public int GetEnergyLevel()
         {
-            return mEnergyLevel;
+            return _mEnergyLevel;
         }
 
         public void AddEnergy(int energy)
         {
-            mEnergyLevel += energy;
+            _mEnergyLevel += energy;
         }
     }
 }

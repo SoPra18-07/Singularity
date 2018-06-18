@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Singularity.Resources;
-using Singularity.Utils;
 
 namespace Singularity.Map
 {
@@ -13,12 +12,12 @@ namespace Singularity.Map
     public sealed class ResourceMap
     {
 
-        private readonly Dictionary<Vector2, List<Resource>> mLocationCache;
+        private readonly Dictionary<Vector2, List<Resource>> _mLocationCache;
 
         /// <summary>
         /// The internal resource map used to store said resources.
         /// </summary>
-        private readonly List<Resource> mResourceMap;
+        private readonly List<Resource> _mResourceMap;
 
         /// <summary>
         /// Creates a new resource map with the given initial resources.
@@ -31,8 +30,8 @@ namespace Singularity.Map
                 return;
             }
 
-            mLocationCache = new Dictionary<Vector2, List<Resource>>();
-            mResourceMap = new List<Resource>(initialResources);
+            _mLocationCache = new Dictionary<Vector2, List<Resource>>();
+            _mResourceMap = new List<Resource>(initialResources);
         }
 
         /// <summary>
@@ -45,14 +44,14 @@ namespace Singularity.Map
             // note, the location cache is probably reason number 1 if bugs occur with resources being there even though they shouldn't be,
             // we need to take care, that the resources are getting properly removed.
 
-            if (mLocationCache[location] != null)
+            if (_mLocationCache[location] != null)
             {
-                return mLocationCache[location];
+                return _mLocationCache[location];
             }
 
             var foundResources = new List<Resource>();
 
-            foreach (var resource in mResourceMap)
+            foreach (var resource in _mResourceMap)
             {
                 if (new Rectangle((int) resource.RelativePosition.X,
                     (int)resource.RelativePosition.Y,
@@ -63,7 +62,7 @@ namespace Singularity.Map
                 }
             }
 
-            mLocationCache[location] = foundResources;
+            _mLocationCache[location] = foundResources;
 
             return foundResources;
         }
@@ -74,8 +73,8 @@ namespace Singularity.Map
         /// <param name="toRemove">The resource to remove</param>
         public void RemoveResource(Resource toRemove)
         {
-            mResourceMap.Remove(toRemove);
-            mLocationCache.Clear();
+            _mResourceMap.Remove(toRemove);
+            _mLocationCache.Clear();
         }
     }
 }

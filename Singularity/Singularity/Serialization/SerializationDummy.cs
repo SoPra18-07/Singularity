@@ -12,32 +12,32 @@ namespace Singularity.serialization
     internal class SerializationDummy
     {
         [DataMember()]
-        private static int sCount = 0;
+        private static int _sCount; // defaults to 0
         [DataMember()]
-        private CyclicDummy mCDummy;
+        private CyclicDummy _mCDummy;
         [DataMember()]
-        private int mId;
+        private int _mId;
         [DataMember()]
-        private List<SerializationDummy> mDummyList;
+        private List<SerializationDummy> _mDummyList;
         [DataMember()]
-        public Vector2 mVector = new Vector2(1,2);
+        public Vector2 MVector = new Vector2(1,2);
 
 
         public SerializationDummy(int randomvalue, List<SerializationDummy> list)
         {
-            mId = randomvalue;
-            mDummyList = list;
-            mCDummy = new CyclicDummy(this);
+            _mId = randomvalue;
+            _mDummyList = list;
+            _mCDummy = new CyclicDummy(this);
         }
 
         public CyclicDummy GetDummy()
         {
-            return mCDummy;
+            return _mCDummy;
         }
 
         public List<SerializationDummy> GetList()
         {
-            return mDummyList;
+            return _mDummyList;
         }
 
         /// <summary>
@@ -46,25 +46,25 @@ namespace Singularity.serialization
         public void PrintFields()
         {
             Console.WriteLine("This is the PrintFields method.");
-            Console.WriteLine("My mId: " + mId);
-            Console.WriteLine("The static count: " + sCount);
-            Console.WriteLine("The List that was given to me: " + mDummyList);
+            Console.WriteLine("My mId: " + _mId);
+            Console.WriteLine("The static count: " + _sCount);
+            Console.WriteLine("The List that was given to me: " + _mDummyList);
             Console.WriteLine("The content of the List: ");
-            for (var i = 0; i < mDummyList.Count; i++)
+            for (var i = 0; i < _mDummyList.Count; i++)
             {
-                Console.WriteLine(mDummyList[i]);
+                Console.WriteLine(_mDummyList[i]);
             }
             Console.WriteLine("End PrintFields method.");
         }
 
         public override string ToString()
         {
-            return "My Id: " + mId;
+            return "My Id: " + _mId;
         }
 
         public void Increment()
         {
-            sCount++;
+            _sCount++;
         }
     }
 }

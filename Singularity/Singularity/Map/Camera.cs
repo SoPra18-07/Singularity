@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
@@ -25,32 +23,32 @@ namespace Singularity.Map
         /// <summary>
         /// The viewport of the window, e.g. the current size of it.
         /// </summary>
-        private readonly Viewport mViewport;
+        private readonly Viewport _mViewport;
 
         /// <summary>
         /// The x location of the camera unzoomed. Could also be called the "true" or "absolute" x location.
         /// </summary>
-        private float mX;
+        private float _mX;
 
         /// <summary>
         /// The y location of the camera unzoomed. Could also be called the "true" or "absolute" y location.
         /// </summary>
-        private float mY;
+        private float _mY;
 
         /// <summary>
         /// The current zoom value of the camera.
         /// </summary>
-        private float mZoom;
+        private float _mZoom;
 
         /// <summary>
         /// The matrix used to transform every position to the actual camera view.
         /// </summary>
-        private Matrix mTransform;
+        private Matrix _mTransform;
 
         /// <summary>
         /// The bounding box of the map used, so the camera cannot move out of bounds.
         /// </summary>
-        private readonly Rectangle mBounds;
+        private readonly Rectangle _mBounds;
 
 
         /// <summary>
@@ -72,16 +70,16 @@ namespace Singularity.Map
                 y = 0;
             }
 
-            mX = x;
-            mY = y;
-            mViewport = viewport;
-            mZoom = 1.0f;
-            mBounds = new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight);
+            _mX = x;
+            _mY = y;
+            _mViewport = viewport;
+            _mZoom = 1.0f;
+            _mBounds = new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight);
 
             inputManager.AddKeyListener(this);
             inputManager.AddMouseWheelListener(this);
 
-            mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
+            _mTransform = Matrix.CreateScale(new Vector3(_mZoom, _mZoom, 1)) * Matrix.CreateTranslation(-_mX, -_mY, 0);
 
         }
 
@@ -92,7 +90,7 @@ namespace Singularity.Map
         /// <returns>The mentioned matrix</returns>
         public Matrix GetTransform()
         {
-            return mTransform;
+            return _mTransform;
         }
 
         //TODO: remove this when input manager is there, since we don't need to fetch it anymore
@@ -109,7 +107,7 @@ namespace Singularity.Map
         /// <returns>The zoom mentioned</returns>
         public float GetZoom()
         {
-            return mZoom;
+            return _mZoom;
         }
 
         // TODO: update this method such that rounding will not cause slight out of map clipping when zoomed in
@@ -129,23 +127,23 @@ namespace Singularity.Map
              * multiplication for the point we want to know, thus multiplying by the inverse matrix.
              * vector zero is simply the origin point of the camera view. (top-left).
              */
-            var cameraWorldMin = Vector2.Transform(Vector2.Zero, Matrix.Invert(mTransform));
+            var cameraWorldMin = Vector2.Transform(Vector2.Zero, Matrix.Invert(_mTransform));
 
             //The current scope of the camera which gets changed by the zoom
-            var cameraSize = new Vector2(mViewport.Width, mViewport.Height) / mZoom;
+            var cameraSize = new Vector2(_mViewport.Width, _mViewport.Height) / _mZoom;
 
             //The vectors which represents the (top left)/(right bottom) corner of the bounding box, used to not move over
-            var limitWorldMin = new Vector2(mBounds.Left, mBounds.Top);
-            var limitWorldMax = new Vector2(mBounds.Right, mBounds.Bottom);
+            var limitWorldMin = new Vector2(_mBounds.Left, _mBounds.Top);
+            var limitWorldMax = new Vector2(_mBounds.Right, _mBounds.Bottom);
 
             //The offset created by zooming.
-            var positionOffsetX = mX - cameraWorldMin.X;
-            var positionOffsetY = mY - cameraWorldMin.Y;
+            var positionOffsetX = _mX - cameraWorldMin.X;
+            var positionOffsetY = _mY - cameraWorldMin.Y;
 
             //finally adjust the values by the given bounds.
-            mX = (int) (MathHelper.Clamp(cameraWorldMin.X, limitWorldMin.X, limitWorldMax.X - cameraSize.X) +
+            _mX = (int) (MathHelper.Clamp(cameraWorldMin.X, limitWorldMin.X, limitWorldMax.X - cameraSize.X) +
                         positionOffsetX);
-            mY = (int) (MathHelper.Clamp(cameraWorldMin.Y, limitWorldMin.Y, limitWorldMax.Y - cameraSize.Y) +
+            _mY = (int) (MathHelper.Clamp(cameraWorldMin.Y, limitWorldMin.Y, limitWorldMax.Y - cameraSize.Y) +
                         positionOffsetY);
 
         }
@@ -180,7 +178,7 @@ namespace Singularity.Map
         ///</summary>
         private void UpdateTransformMatrix()
         {
-            mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
+            _mTransform = Matrix.CreateScale(new Vector3(_mZoom, _mZoom, 1)) * Matrix.CreateTranslation(-_mX, -_mY, 0);
         }
 
         public void KeyTyped(KeyEvent keyEvent)
@@ -198,22 +196,22 @@ namespace Singularity.Map
                 switch (key)
                 {
                     case Keys.W:
-                        mY -= CameraMovementSpeed;
+                        _mY -= CameraMovementSpeed;
                         moved = true;
                         break;
 
                     case Keys.S:
-                        mY += CameraMovementSpeed;
+                        _mY += CameraMovementSpeed;
                         moved = true;
                         break;
 
                     case Keys.A:
-                        mX -= CameraMovementSpeed;
+                        _mX -= CameraMovementSpeed;
                         moved = true;
                         break;
 
                     case Keys.D:
-                        mX += CameraMovementSpeed;
+                        _mX += CameraMovementSpeed;
                         moved = true;
                         break;
                 }
@@ -245,21 +243,21 @@ namespace Singularity.Map
                     break;
             }
 
-            if (!((mZoom + scrollChange) * MapConstants.MapWidth < mViewport.Width ||
-                  (mZoom + scrollChange) * MapConstants.MapHeight < mViewport.Height))
+            if (!((_mZoom + scrollChange) * MapConstants.MapWidth < _mViewport.Width ||
+                  (_mZoom + scrollChange) * MapConstants.MapHeight < _mViewport.Height))
             {
-                mZoom += scrollChange;
+                _mZoom += scrollChange;
             }
         }
 
         public Matrix GetStencilProjection()
         {
 
-            var cameraWorldMin = Vector2.Transform(Vector2.Zero, Matrix.Invert(mTransform));
+            var cameraWorldMin = Vector2.Transform(Vector2.Zero, Matrix.Invert(_mTransform));
 
             return Matrix.CreateOrthographicOffCenter(cameraWorldMin.X,
-                cameraWorldMin.X + (mViewport.Width / mZoom),
-                cameraWorldMin.Y + (mViewport.Height / mZoom),
+                cameraWorldMin.X + (_mViewport.Width / _mZoom),
+                cameraWorldMin.Y + (_mViewport.Height / _mZoom),
                 cameraWorldMin.Y,
                 0,
                 1);

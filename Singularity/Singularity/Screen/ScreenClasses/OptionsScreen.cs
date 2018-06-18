@@ -16,70 +16,70 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     internal sealed class OptionsScreen : ITransitionableMenu
     {
-        private readonly Game1 mGame;
+        private readonly Game1 _mGame;
 
         // layout. Made only once to reduce unnecssary calculations at draw time
-        private Vector2 mBoxPosition;
-        private readonly Vector2 mWindowTitlePosition;
-        private readonly Vector2 mLinePosition;
-        private readonly float mTabPadding;
-        private readonly float mContentPadding;
-        private readonly float mTopContentPadding;
-        private readonly Vector2 mScreenResolution;
+        private Vector2 _mBoxPosition;
+        private readonly Vector2 _mWindowTitlePosition;
+        private readonly Vector2 _mLinePosition;
+        private readonly float _mTabPadding;
+        private readonly float _mContentPadding;
+        private readonly float _mTopContentPadding;
+        private readonly Vector2 _mScreenResolution;
 
         // All strings are variables to allow for easy editing and localization
-        private readonly string mWindowTitleString;
-        private readonly string mGameplayString;
-        private readonly string mGraphicsString;
-        private readonly string mAudioString;
-        private readonly string mSaveChangesString;
-        private readonly string mBackString;
+        private readonly string _mWindowTitleString;
+        private readonly string _mGameplayString;
+        private readonly string _mGraphicsString;
+        private readonly string _mAudioString;
+        private readonly string _mSaveChangesString;
+        private readonly string _mBackString;
 
-        private readonly string mFullScreenString;
-        private readonly string mResolutionString; // used later
-        private readonly string mAntialiasingString;
+        private readonly string _mFullScreenString;
+        private readonly string _mResolutionString; // used later
+        private readonly string _mAntialiasingString;
 
-        private readonly string mMuteString;
+        private readonly string _mMuteString;
 
         // fonts
-        private SpriteFont mLibSans36;
-        private SpriteFont mLibSans20;
+        private SpriteFont _mLibSans36;
+        private SpriteFont _mLibSans20;
 
         // Button colors
-        private readonly Color mTextColor;
+        private readonly Color _mTextColor;
 
         // tab buttons
-        private readonly List<Button> mTabButtons;
-        private Button mGameplayButton;
-        private Button mGraphicsButton;
-        private Button mAudioButton;
-        private Button mSaveButton;
-        private Button mBackButton;
+        private readonly List<Button> _mTabButtons;
+        private Button _mGameplayButton;
+        private Button _mGraphicsButton;
+        private Button _mAudioButton;
+        private Button _mSaveButton;
+        private Button _mBackButton;
 
         // Graphics tab
-        private readonly List<Button> mGraphicsButtons;
-        private Button mFullScreen; // todo replace with a toggle
-        private Button mResolution1; // todo replace with a better system
-        private Button mResolution2; // todo replace with a better system
-        private Button mAntialiasing; // todo replace with a toggle
+        private readonly List<Button> _mGraphicsButtons;
+        private Button _mFullScreen; // todo replace with a toggle
+        private Button _mResolution1; // todo replace with a better system
+        private Button _mResolution2; // todo replace with a better system
+        private Button _mAntialiasing; // todo replace with a toggle
         
         // Audio tab
         // todo add the following:
-        private readonly List<Button> mAudioButtons;
-        private Button mMuteButton; // add slider once completed
+        private readonly List<Button> _mAudioButtons;
+        private Button _mMuteButton; // add slider once completed
         // Background volume and toggle
         // Sound effect volume and toggle
         // 3D sound effect toggle
 
         // Transitions variables
-        private float mMenuOpacity;
-        private Vector2 mMenuBoxSize;
-        private double mTransitionStartTime;
-        private double mTransitionDuration;
-        private EScreen mTargetScreen;
+        private float _mMenuOpacity;
+        private Vector2 _mMenuBoxSize;
+        private double _mTransitionStartTime;
+        private double _mTransitionDuration;
+        private EScreen _mTargetScreen;
         public bool TransitionRunning { get; private set; }
 
-        private EOptionScreenState mScreenState;
+        private EOptionScreenState _mScreenState;
 
         /// <summary>
         /// Creates an instance of the Options screen.
@@ -89,39 +89,39 @@ namespace Singularity.Screen.ScreenClasses
         public OptionsScreen(Vector2 screenResolution, bool screenResolutionChanged, Game1 game)
         {
             // scaling of all positions according to viewport size
-            mScreenResolution = screenResolution;
-            mBoxPosition = new Vector2(mScreenResolution.X / 2 - 306, mScreenResolution.Y / 4);
-            mMenuBoxSize = new Vector2(612, 420);
+            _mScreenResolution = screenResolution;
+            _mBoxPosition = new Vector2(_mScreenResolution.X / 2 - 306, _mScreenResolution.Y / 4);
+            _mMenuBoxSize = new Vector2(612, 420);
 
-            mTabPadding = mBoxPosition.X + 36;
-            mContentPadding = mBoxPosition.X + 204;
-            mTopContentPadding = mBoxPosition.Y + 84;
-            mWindowTitlePosition = new Vector2(mBoxPosition.X + 20, mBoxPosition.Y + 20);
-            mLinePosition = new Vector2(mBoxPosition.X + 180, mBoxPosition.Y + 85);
+            _mTabPadding = _mBoxPosition.X + 36;
+            _mContentPadding = _mBoxPosition.X + 204;
+            _mTopContentPadding = _mBoxPosition.Y + 84;
+            _mWindowTitlePosition = new Vector2(_mBoxPosition.X + 20, _mBoxPosition.Y + 20);
+            _mLinePosition = new Vector2(_mBoxPosition.X + 180, _mBoxPosition.Y + 85);
 
-            mTextColor = new Color(new Vector3(.9137f, .9058f, .8314f));
+            _mTextColor = new Color(new Vector3(.9137f, .9058f, .8314f));
 
-            mWindowTitleString = "Options";
-            mGameplayString = "Gameplay";
-            mGraphicsString = "Graphics";
-            mAudioString = "Audio";
-            mSaveChangesString = "Apply";
-            mBackString = "Back";
+            _mWindowTitleString = "Options";
+            _mGameplayString = "Gameplay";
+            _mGraphicsString = "Graphics";
+            _mAudioString = "Audio";
+            _mSaveChangesString = "Apply";
+            _mBackString = "Back";
 
-            mFullScreenString = "Full Screen";
-            mResolutionString = "Resolution:";
-            mAntialiasingString = "Anti-Aliasing";
+            _mFullScreenString = "Full Screen";
+            _mResolutionString = "Resolution:";
+            _mAntialiasingString = "Anti-Aliasing";
 
-            mMuteString = "Mute";
+            _mMuteString = "Mute";
 
-            mTabButtons = new List<Button>(5);
-            mGraphicsButtons = new List<Button>(4);
-            mAudioButtons = new List<Button>(1);
+            _mTabButtons = new List<Button>(5);
+            _mGraphicsButtons = new List<Button>(4);
+            _mAudioButtons = new List<Button>(1);
 
-            mScreenState = EOptionScreenState.Gameplay;
-            mGame = game;
+            _mScreenState = EOptionScreenState.Gameplay;
+            _mGame = game;
 
-            mMenuOpacity = screenResolutionChanged ? 1 : 0;
+            _mMenuOpacity = screenResolutionChanged ? 1 : 0;
 
         }
 
@@ -131,63 +131,63 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="content">Content Manager that should handle the content loading</param>
         public void LoadContent(ContentManager content)
         {
-            mLibSans36 = content.Load<SpriteFont>("LibSans36");
-            mLibSans20 = content.Load<SpriteFont>("LibSans20");
+            _mLibSans36 = content.Load<SpriteFont>("LibSans36");
+            _mLibSans20 = content.Load<SpriteFont>("LibSans20");
 
             // make the tab select buttons
-            mGameplayButton = new Button(mGameplayString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding), mTextColor);
-            mGraphicsButton = new Button(mGraphicsString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding + 40), mTextColor);
-            mAudioButton = new Button(mAudioString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding + 80), mTextColor);
-            mSaveButton = new Button(mSaveChangesString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding + 120), mTextColor);
-            mBackButton = new Button(mBackString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding + 160), mTextColor);
+            _mGameplayButton = new Button(_mGameplayString, _mLibSans20, new Vector2(_mTabPadding, _mTopContentPadding), _mTextColor);
+            _mGraphicsButton = new Button(_mGraphicsString, _mLibSans20, new Vector2(_mTabPadding, _mTopContentPadding + 40), _mTextColor);
+            _mAudioButton = new Button(_mAudioString, _mLibSans20, new Vector2(_mTabPadding, _mTopContentPadding + 80), _mTextColor);
+            _mSaveButton = new Button(_mSaveChangesString, _mLibSans20, new Vector2(_mTabPadding, _mTopContentPadding + 120), _mTextColor);
+            _mBackButton = new Button(_mBackString, _mLibSans20, new Vector2(_mTabPadding, _mTopContentPadding + 160), _mTextColor);
 
-            mTabButtons.Add(mGameplayButton);
-            mTabButtons.Add(mGraphicsButton);
-            mTabButtons.Add(mAudioButton);
-            mTabButtons.Add(mSaveButton);
-            mTabButtons.Add(mBackButton);
+            _mTabButtons.Add(_mGameplayButton);
+            _mTabButtons.Add(_mGraphicsButton);
+            _mTabButtons.Add(_mAudioButton);
+            _mTabButtons.Add(_mSaveButton);
+            _mTabButtons.Add(_mBackButton);
 
-            foreach (Button tabButton in mTabButtons)
+            foreach (Button tabButton in _mTabButtons)
             {
-                tabButton.Opacity = mMenuOpacity;
+                tabButton.Opacity = _mMenuOpacity;
             }
 
             // Gameplay settings
             // TODO figure out what settings can be implemented in here
 
             // Graphics settings
-            mFullScreen = new Button(mFullScreenString, mLibSans20, new Vector2(mContentPadding, mTopContentPadding), mTextColor);
-            mResolution1 = new Button("800 x 600", mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 40), mTextColor);
-            mResolution2 = new Button("960 x 720", mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 80));
-            mAntialiasing = new Button(mAntialiasingString, mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 120), mTextColor);
+            _mFullScreen = new Button(_mFullScreenString, _mLibSans20, new Vector2(_mContentPadding, _mTopContentPadding), _mTextColor);
+            _mResolution1 = new Button("800 x 600", _mLibSans20, new Vector2(_mContentPadding, _mTopContentPadding + 40), _mTextColor);
+            _mResolution2 = new Button("960 x 720", _mLibSans20, new Vector2(_mContentPadding, _mTopContentPadding + 80));
+            _mAntialiasing = new Button(_mAntialiasingString, _mLibSans20, new Vector2(_mContentPadding, _mTopContentPadding + 120), _mTextColor);
 
-            mGraphicsButtons.Add(mFullScreen);
-            mGraphicsButtons.Add(mResolution1);
-            mGraphicsButtons.Add(mResolution2);
-            mGraphicsButtons.Add(mAntialiasing);
+            _mGraphicsButtons.Add(_mFullScreen);
+            _mGraphicsButtons.Add(_mResolution1);
+            _mGraphicsButtons.Add(_mResolution2);
+            _mGraphicsButtons.Add(_mAntialiasing);
 
-            foreach (Button graphicsButton in mGraphicsButtons)
+            foreach (Button graphicsButton in _mGraphicsButtons)
             {
-                graphicsButton.Opacity = mMenuOpacity;
+                graphicsButton.Opacity = _mMenuOpacity;
             }
 
             // Audio settings
-            mMuteButton = new Button(mMuteString, mLibSans20, new Vector2(mContentPadding, mTopContentPadding), mTextColor);
+            _mMuteButton = new Button(_mMuteString, _mLibSans20, new Vector2(_mContentPadding, _mTopContentPadding), _mTextColor);
 
-            mAudioButtons.Add(mMuteButton);
+            _mAudioButtons.Add(_mMuteButton);
 
             // Button handler bindings
-            mGameplayButton.ButtonReleased += OnGameplayReleased;
-            mGraphicsButton.ButtonReleased += OnGraphicsReleased;
-            mAudioButton.ButtonReleased += OnAudioReleased;
-            mBackButton.ButtonReleased += MainMenuManagerScreen.OnBackButtonReleased;
+            _mGameplayButton.ButtonReleased += OnGameplayReleased;
+            _mGraphicsButton.ButtonReleased += OnGraphicsReleased;
+            _mAudioButton.ButtonReleased += OnAudioReleased;
+            _mBackButton.ButtonReleased += MainMenuManagerScreen.OnBackButtonReleased;
 
-            mFullScreen.ButtonReleased += OnFullScreenReleased;
-            mResolution1.ButtonReleased += OnResoOneReleased;
-            mResolution2.ButtonReleased += OnResoTwoReleased;
-            mAntialiasing.ButtonReleased += OnAntialiasingReleased;
+            _mFullScreen.ButtonReleased += OnFullScreenReleased;
+            _mResolution1.ButtonReleased += OnResoOneReleased;
+            _mResolution2.ButtonReleased += OnResoTwoReleased;
+            _mAntialiasing.ButtonReleased += OnAntialiasingReleased;
 
-            mMuteButton.ButtonReleased += OnMuteReleased;
+            _mMuteButton.ButtonReleased += OnMuteReleased;
         }
 
         /// <summary>
@@ -202,29 +202,29 @@ namespace Singularity.Screen.ScreenClasses
                 Transition(gametime);
             }
 
-            foreach (Button button in mTabButtons)
+            foreach (Button button in _mTabButtons)
             {
                 button.Update(gametime);
-                button.Opacity = mMenuOpacity;
+                button.Opacity = _mMenuOpacity;
             }
 
-            switch (mScreenState)
+            switch (_mScreenState)
             {
                 case EOptionScreenState.Gameplay:
                     
                     break;
                 case EOptionScreenState.Graphics:
-                    foreach (Button button in mGraphicsButtons)
+                    foreach (Button button in _mGraphicsButtons)
                     {
                         button.Update(gametime);
-                        button.Opacity = mMenuOpacity;
+                        button.Opacity = _mMenuOpacity;
                     }
                     break;
                 case EOptionScreenState.Audio:
-                    foreach (Button button in mAudioButtons)
+                    foreach (Button button in _mAudioButtons)
                     {
                         button.Update(gametime);
-                        button.Opacity = mMenuOpacity;
+                        button.Opacity = _mMenuOpacity;
                     }
                     break;
                 default:
@@ -241,46 +241,46 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.Begin();
 
             // background window
-            spriteBatch.StrokedRectangle(mBoxPosition,
-                mMenuBoxSize,
+            spriteBatch.StrokedRectangle(_mBoxPosition,
+                _mMenuBoxSize,
                 Color.White,
                 Color.White,
                 0.5f,
                 0.21f);
 
             // line in the middle
-            spriteBatch.DrawLine(point: mLinePosition,
+            spriteBatch.DrawLine(point: _mLinePosition,
                 angle: (float) Math.PI / 2,
                 length: 301,
-                color: new Color(new Vector4(1, 1, 1, 0.5f)) * mMenuOpacity,
+                color: new Color(new Vector4(1, 1, 1, 0.5f)) * _mMenuOpacity,
                 thickness: 1);
 
             // window title
-            spriteBatch.DrawString(mLibSans36,
-                text: mWindowTitleString,
-                position: mWindowTitlePosition,
-                color: mTextColor * mMenuOpacity);
+            spriteBatch.DrawString(_mLibSans36,
+                text: _mWindowTitleString,
+                position: _mWindowTitlePosition,
+                color: _mTextColor * _mMenuOpacity);
 
             // tab buttons
-            foreach (Button button in mTabButtons)
+            foreach (Button button in _mTabButtons)
             {
                 button.Draw(spriteBatch);
             }
 
             // actual options
-            switch (mScreenState)
+            switch (_mScreenState)
             {
                 case EOptionScreenState.Gameplay:
-                    spriteBatch.DrawString(mLibSans20, "Difficulty", new Vector2(mContentPadding, mTopContentPadding), Color.White * mMenuOpacity);
+                    spriteBatch.DrawString(_mLibSans20, "Difficulty", new Vector2(_mContentPadding, _mTopContentPadding), Color.White * _mMenuOpacity);
                     break;
                 case EOptionScreenState.Graphics:
-                    foreach (Button button in mGraphicsButtons)
+                    foreach (Button button in _mGraphicsButtons)
                     {
                         button.Draw(spriteBatch);
                     }
                     break;
                 case EOptionScreenState.Audio:
-                    foreach (var button in mAudioButtons)
+                    foreach (var button in _mAudioButtons)
                     {
                         button.Draw(spriteBatch);
                     }
@@ -297,41 +297,41 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="gameTime">Current gametime</param>
         private void Transition(GameTime gameTime)
         {
-            switch (mTargetScreen)
+            switch (_mTargetScreen)
             {
                 case EScreen.MainMenuScreen:
-                    if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
+                    if (gameTime.TotalGameTime.TotalMilliseconds >= _mTransitionStartTime + _mTransitionDuration)
                     {
                         TransitionRunning = false;
-                        mMenuOpacity = 0f;
-                        mMenuBoxSize = new Vector2(408, 420);
-                        mBoxPosition = new Vector2(mScreenResolution.X / 2 - 204, mScreenResolution.Y / 4);
+                        _mMenuOpacity = 0f;
+                        _mMenuBoxSize = new Vector2(408, 420);
+                        _mBoxPosition = new Vector2(_mScreenResolution.X / 2 - 204, _mScreenResolution.Y / 4);
                     }
 
                     var width = (float) Animations.Easing(612,
                         408,
-                        mTransitionStartTime,
-                        mTransitionDuration,
+                        _mTransitionStartTime,
+                        _mTransitionDuration,
                         gameTime);
 
-                    mBoxPosition = new Vector2(mScreenResolution.X / 2 - (int)Math.Floor(width / 2), mScreenResolution.Y / 4);
-                    mMenuBoxSize = new Vector2(width, 420);
+                    _mBoxPosition = new Vector2(_mScreenResolution.X / 2 - (int)Math.Floor(width / 2), _mScreenResolution.Y / 4);
+                    _mMenuBoxSize = new Vector2(width, 420);
 
-                    mMenuOpacity = (float)Animations.Easing(1f, 0f, mTransitionStartTime, mTransitionDuration, gameTime);
+                    _mMenuOpacity = (float)Animations.Easing(1f, 0f, _mTransitionStartTime, _mTransitionDuration, gameTime);
                     break;
                 case EScreen.OptionsScreen:
-                    if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
+                    if (gameTime.TotalGameTime.TotalMilliseconds >= _mTransitionStartTime + _mTransitionDuration)
                     {
                         TransitionRunning = false;
-                        mMenuOpacity = 1f;
+                        _mMenuOpacity = 1f;
                     }
 
-                    mMenuOpacity =
-                        (float) Animations.Easing(0, 1f, mTransitionStartTime, mTransitionDuration, gameTime);
+                    _mMenuOpacity =
+                        (float) Animations.Easing(0, 1f, _mTransitionStartTime, _mTransitionDuration, gameTime);
 
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(mTargetScreen), mTargetScreen, null);
+                    throw new ArgumentOutOfRangeException(nameof(_mTargetScreen), _mTargetScreen, null);
             }
         }
 
@@ -362,7 +362,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="eventArgs"></param>
         private void OnGameplayReleased(Object sender, EventArgs eventArgs)
         {
-            mScreenState = EOptionScreenState.Gameplay;
+            _mScreenState = EOptionScreenState.Gameplay;
         }
 
         /// <summary>
@@ -372,7 +372,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="eventArgs"></param>
         private void OnGraphicsReleased(Object sender, EventArgs eventArgs)
         {
-            mScreenState = EOptionScreenState.Graphics;
+            _mScreenState = EOptionScreenState.Graphics;
         }
 
         /// <summary>
@@ -382,7 +382,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="eventArgs"></param>
         private void OnAudioReleased(Object sender, EventArgs eventArgs)
         {
-            mScreenState = EOptionScreenState.Audio;
+            _mScreenState = EOptionScreenState.Audio;
         }
 
         /// <summary>
@@ -392,10 +392,10 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="eventArgs"></param>
         private void OnFullScreenReleased(Object sender, EventArgs eventArgs)
         {
-            var width = mGame.mGraphicsAdapter.CurrentDisplayMode.Width;
-            var height = mGame.mGraphicsAdapter.CurrentDisplayMode.Height;
+            var width = _mGame.MGraphicsAdapter.CurrentDisplayMode.Width;
+            var height = _mGame.MGraphicsAdapter.CurrentDisplayMode.Height;
             var truth = false;
-            if (mGame.mGraphics.IsFullScreen)
+            if (_mGame.MGraphics.IsFullScreen)
             {
                 width = 1080;
                 height = 720;
@@ -404,26 +404,26 @@ namespace Singularity.Screen.ScreenClasses
             {
                 truth = true;
             }
-            mGame.mGraphics.PreferredBackBufferWidth = width;
-            mGame.mGraphics.PreferredBackBufferHeight = height;
-            mGame.mGraphics.IsFullScreen = truth;
-            mGame.mGraphics.ApplyChanges();
+            _mGame.MGraphics.PreferredBackBufferWidth = width;
+            _mGame.MGraphics.PreferredBackBufferHeight = height;
+            _mGame.MGraphics.IsFullScreen = truth;
+            _mGame.MGraphics.ApplyChanges();
             MainMenuManagerScreen.SetResolution(new Vector2(width, height));
         }
 
         private void OnResoOneReleased(Object sender, EventArgs eventArgs)
         {
-            mGame.mGraphics.PreferredBackBufferWidth = 800;
-            mGame.mGraphics.PreferredBackBufferHeight = 600;
-            mGame.mGraphics.ApplyChanges();
+            _mGame.MGraphics.PreferredBackBufferWidth = 800;
+            _mGame.MGraphics.PreferredBackBufferHeight = 600;
+            _mGame.MGraphics.ApplyChanges();
             MainMenuManagerScreen.SetResolution(new Vector2(800, 600));
         }
 
         private void OnResoTwoReleased(Object sender, EventArgs eventArgs)
         {
-            mGame.mGraphics.PreferredBackBufferWidth = 960;
-            mGame.mGraphics.PreferredBackBufferHeight = 720;
-            mGame.mGraphics.ApplyChanges();
+            _mGame.MGraphics.PreferredBackBufferWidth = 960;
+            _mGame.MGraphics.PreferredBackBufferHeight = 720;
+            _mGame.MGraphics.ApplyChanges();
             MainMenuManagerScreen.SetResolution(new Vector2(960, 720));
         }
 
@@ -443,13 +443,13 @@ namespace Singularity.Screen.ScreenClasses
         {
             if (originScreen == EScreen.MainMenuScreen)
             {
-                mMenuOpacity = 0f;
+                _mMenuOpacity = 0f;
             }
-            mBoxPosition = new Vector2(mScreenResolution.X / 2 - 306, mScreenResolution.Y / 4);
-            mMenuBoxSize = new Vector2(612, 420);
-            mTargetScreen = targetScreen;
-            mTransitionDuration = 350f;
-            mTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
+            _mBoxPosition = new Vector2(_mScreenResolution.X / 2 - 306, _mScreenResolution.Y / 4);
+            _mMenuBoxSize = new Vector2(612, 420);
+            _mTargetScreen = targetScreen;
+            _mTransitionDuration = 350f;
+            _mTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
             TransitionRunning = true;
         
         }

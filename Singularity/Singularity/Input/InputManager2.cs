@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics.PackedVector;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace Singularity.Input
 {
     static class InputManager2
     {
-        private static MouseState sPrevMouseState;
-        private static MouseState sCurrentMouseState;
+        private static MouseState _sPrevMouseState;
+        private static MouseState _sCurrentMouseState;
 
-        private static KeyboardState sPrevKeyboardState;
-        private static KeyboardState sCurrentKeyboardState;
+        private static KeyboardState _sPrevKeyboardState;
+        private static KeyboardState _sCurrentKeyboardState;
 
         #region Left Button
 
@@ -27,8 +21,8 @@ namespace Singularity.Input
         /// <returns></returns>
         public static bool LeftClicked(Rectangle bounds)
         {
-            if (sPrevMouseState.LeftButton == ButtonState.Released
-                && sCurrentMouseState.LeftButton == ButtonState.Pressed)
+            if (_sPrevMouseState.LeftButton == ButtonState.Released
+                && _sCurrentMouseState.LeftButton == ButtonState.Pressed)
             {
                 // if the rectangle that is the cursor intersects the bounds of the region,
                 // then it can be considered to have clicked the region.
@@ -46,8 +40,8 @@ namespace Singularity.Input
         /// <returns></returns>
         public static bool LeftReleased(Rectangle bounds)
         {
-            if (sPrevMouseState.LeftButton == ButtonState.Pressed
-                && sCurrentMouseState.LeftButton == ButtonState.Released)
+            if (_sPrevMouseState.LeftButton == ButtonState.Pressed
+                && _sCurrentMouseState.LeftButton == ButtonState.Released)
             {
                 // if the rectangle that is the cursor intersects the bounds of the region,
                 // then it can be considered to have clicked the region.
@@ -69,8 +63,8 @@ namespace Singularity.Input
         /// <returns></returns>
         public static bool RightClicked(Rectangle bounds)
         {
-            if (sPrevMouseState.RightButton == ButtonState.Released
-                && sCurrentMouseState.RightButton == ButtonState.Pressed)
+            if (_sPrevMouseState.RightButton == ButtonState.Released
+                && _sCurrentMouseState.RightButton == ButtonState.Pressed)
             {
                 // if the rectangle that is the cursor intersects the bounds of the region,
                 // then it can be considered to have clicked the region.
@@ -88,8 +82,8 @@ namespace Singularity.Input
         /// <returns></returns>
         public static bool RightReleased(Rectangle bounds)
         {
-            if (sPrevMouseState.RightButton == ButtonState.Pressed
-                && sCurrentMouseState.RightButton == ButtonState.Released)
+            if (_sPrevMouseState.RightButton == ButtonState.Pressed
+                && _sCurrentMouseState.RightButton == ButtonState.Released)
             {
                 // if the rectangle that is the cursor intersects the bounds of the region,
                 // then it can be considered to have clicked the region.
@@ -111,8 +105,8 @@ namespace Singularity.Input
         /// <returns></returns>
         public static bool MiddleClicked(Rectangle bounds)
         {
-            if (sPrevMouseState.MiddleButton == ButtonState.Released
-                && sCurrentMouseState.MiddleButton == ButtonState.Pressed)
+            if (_sPrevMouseState.MiddleButton == ButtonState.Released
+                && _sCurrentMouseState.MiddleButton == ButtonState.Pressed)
             {
                 // if the rectangle that is the cursor intersects the bounds of the region,
                 // then it can be considered to have clicked the region.
@@ -130,8 +124,8 @@ namespace Singularity.Input
         /// <returns></returns>
         public static bool MiddleReleased(Rectangle bounds)
         {
-            if (sPrevMouseState.MiddleButton == ButtonState.Pressed
-                && sCurrentMouseState.MiddleButton == ButtonState.Released)
+            if (_sPrevMouseState.MiddleButton == ButtonState.Pressed
+                && _sCurrentMouseState.MiddleButton == ButtonState.Released)
             {
                 // if the rectangle that is the cursor intersects the bounds of the region,
                 // then it can be considered to have clicked the region.
@@ -148,7 +142,7 @@ namespace Singularity.Input
         private static Rectangle MakeRectangleAtCursor()
         {
             // create a rectangle around the center of the mouse button
-            return new Rectangle(sCurrentMouseState.Position, new Point(1, 1));
+            return new Rectangle(_sCurrentMouseState.Position, new Point(1, 1));
         }
 
         #endregion
@@ -160,11 +154,11 @@ namespace Singularity.Input
         /// <param name="gameTime">Gives the current gametime to the class</param>
         public static void Update(GameTime gameTime)
         {
-            sPrevMouseState = sCurrentMouseState;
-            sCurrentMouseState = Mouse.GetState();
+            _sPrevMouseState = _sCurrentMouseState;
+            _sCurrentMouseState = Mouse.GetState();
 
-            sPrevKeyboardState = sCurrentKeyboardState;
-            sCurrentKeyboardState = Keyboard.GetState();
+            _sPrevKeyboardState = _sCurrentKeyboardState;
+            _sCurrentKeyboardState = Keyboard.GetState();
 
         }
     }

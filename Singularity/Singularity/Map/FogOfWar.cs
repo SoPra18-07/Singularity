@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
@@ -36,37 +35,37 @@ namespace Singularity.Map
         /// <summary>
         /// This array holds bit values of whether the position (tile) was visited or not. Where 1 = visited and 0 = unvisited.
         /// </summary>
-        private bool[,] mToDraw;
+        private bool[,] _mToDraw;
 
         /// <summary>
         /// A list of all the objects which are able to reveal the fog of war.
         /// </summary>
-        private readonly LinkedList<IRevealing> mRevealingObjects;
+        private readonly LinkedList<IRevealing> _mRevealingObjects;
 
         /// <summary>
         /// A stencil state which is used to initialize the stencil buffer
         /// with ones for every non transparent pixel, and 0 for every
         /// transparent pixel.
         /// </summary>
-        private readonly DepthStencilState mInitializeMaskStencilState;
+        private readonly DepthStencilState _mInitializeMaskStencilState;
 
         /// <summary>
         /// A stencil state which is used to draw outside of every mask
         /// currently applied in the stencil buffer.
         /// </summary>
-        private readonly DepthStencilState mApplyInvertedMaskStencilState;
+        private readonly DepthStencilState _mApplyInvertedMaskStencilState;
 
-        private DepthStencilState mApplyMaskStencilState;
+        private DepthStencilState _mApplyMaskStencilState;
 
         /// <summary>
         /// The AlphaTestEffect compares alpha values of pixels and sets them given certain restraints.
         /// </summary>
-        private readonly AlphaTestEffect mAlphaComparator;
+        private readonly AlphaTestEffect _mAlphaComparator;
 
         /// <summary>
         /// The camera object of the game used for screen coordinae calculation.
         /// </summary>
-        private readonly Camera mCamera;
+        private readonly Camera _mCamera;
 
         /// <summary>
         /// Creates a new FogOfWar object for the given mapTexture.
@@ -77,11 +76,11 @@ namespace Singularity.Map
         public FogOfWar(Camera camera, GraphicsDevice graphicsDevice)
         {
 
-            mCamera = camera;
+            _mCamera = camera;
 
-            mRevealingObjects = new LinkedList<IRevealing>();
+            _mRevealingObjects = new LinkedList<IRevealing>();
 
-            mInitializeMaskStencilState = new DepthStencilState()
+            _mInitializeMaskStencilState = new DepthStencilState()
             {
                 StencilEnable = true,
                 StencilFunction = CompareFunction.Always,
@@ -91,7 +90,7 @@ namespace Singularity.Map
             };
 
 
-            mApplyMaskStencilState = new DepthStencilState()
+            _mApplyMaskStencilState = new DepthStencilState()
             {
                 StencilEnable = true,
                 StencilFunction = CompareFunction.LessEqual,
@@ -100,7 +99,7 @@ namespace Singularity.Map
                 DepthBufferEnable = false,
             };
 
-            mApplyInvertedMaskStencilState = new DepthStencilState()
+            _mApplyInvertedMaskStencilState = new DepthStencilState()
             {
                 StencilEnable = true,
                 StencilFunction = CompareFunction.Greater,
@@ -110,9 +109,9 @@ namespace Singularity.Map
             };
 
 
-            mAlphaComparator = new AlphaTestEffect(graphicsDevice)
+            _mAlphaComparator = new AlphaTestEffect(graphicsDevice)
             {
-                Projection = mCamera.GetStencilProjection(),
+                Projection = _mCamera.GetStencilProjection(),
                 VertexColorEnabled = true,
                 DiffuseColor = Color.White.ToVector3(),
                 AlphaFunction = CompareFunction.Always,
@@ -127,9 +126,9 @@ namespace Singularity.Map
         /// <param name="spriteBatch"></param>
         public void DrawMasks(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, mInitializeMaskStencilState, null, mAlphaComparator, mCamera.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, _mInitializeMaskStencilState, null, _mAlphaComparator, _mCamera.GetTransform());
 
-            foreach (var revealing in mRevealingObjects)
+            foreach (var revealing in _mRevealingObjects)
             {
                 spriteBatch.DrawCircle(revealing.Center, revealing.RevelationRadius, 100, Color.Transparent, revealing.RevelationRadius);
             }
@@ -144,7 +143,7 @@ namespace Singularity.Map
         /// <param name="spriteBatch"></param>
         public void FillInvertedMask(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, mApplyInvertedMaskStencilState, null, null, mCamera.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, _mApplyInvertedMaskStencilState, null, null, _mCamera.GetTransform());
 
             spriteBatch.FillRectangle(new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight), new Color(Color.Black, 0.5f));
 
@@ -157,7 +156,7 @@ namespace Singularity.Map
         /// <param name="revealingObject">The object which can reveal the fog of war.</param>
         public void AddRevealingObject(IRevealing revealingObject)
         {
-            mRevealingObjects.AddLast(revealingObject);
+            _mRevealingObjects.AddLast(revealingObject);
         }
 
         /// <summary>
@@ -166,17 +165,17 @@ namespace Singularity.Map
         /// <param name="revealingObject">The object which can reveal the fog of war.</param>
         public void RemoveRevealingObject(IRevealing revealingObject)
         {
-            mRevealingObjects.Remove(revealingObject);
+            _mRevealingObjects.Remove(revealingObject);
         }
 
         public void Update(GameTime gametime)
         {
-            mAlphaComparator.Projection = mCamera.GetStencilProjection();
+            _mAlphaComparator.Projection = _mCamera.GetStencilProjection();
         }
 
         public DepthStencilState GetApplyMaskStencilState()
         {
-            return mApplyMaskStencilState;
+            return _mApplyMaskStencilState;
         }
     }
 }

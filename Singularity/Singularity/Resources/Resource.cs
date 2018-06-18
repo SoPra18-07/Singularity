@@ -7,17 +7,36 @@ namespace Singularity.Resources
 {
 	public class Resource : ISpatial
     {
+
+
+        public Vector2 RelativePosition { get; set; }
+
+        public Vector2 RelativeSize { get; set; }
+
+        public Vector2 AbsolutePosition { get; set; }
+
+        public Vector2 AbsoluteSize { get; set; }
+
+
+        private EResourceType _type;
+        private Vector2 _absolutePosition;
+        private int _v;
+
         public Resource()
         {
-			
         }
 
-		public Vector2 RelativePosition { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-		public Vector2 RelativeSize { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-		public Vector2 AbsolutePosition { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-		public Vector2 AbsoluteSize { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Resource(EResourceType type, Vector2 position, int width)
+        {
 
-		public void Draw(SpriteBatch spriteBatch)
+            Type = type;
+            AbsolutePosition = position;
+            AbsoluteSize = new Vector2(width, width * 0.6f);
+        }
+
+public EResourceType Type { get; internal set; }
+
+        public void Draw(SpriteBatch spriteBatch)
 		{
 			throw new NotImplementedException();
 		}

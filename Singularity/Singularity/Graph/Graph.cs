@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Singularity.Graph
 {
@@ -11,35 +7,35 @@ namespace Singularity.Graph
     /// </summary>
     public class Graph
     {
-        private readonly List<INode> mNodes;
+        private readonly List<INode> _mNodes;
 
-        private readonly List<IEdge> mEdges;
+        private readonly List<IEdge> _mEdges;
 
         public Graph(List<INode> nodes = null, List<IEdge> edges = null)
         {
-            mNodes = new List<INode>();
-            mEdges = new List<IEdge>();
+            _mNodes = new List<INode>();
+            _mEdges = new List<IEdge>();
 
             if (nodes != null)
             {
-                mNodes = nodes;
+                _mNodes = nodes;
             }
 
             if (edges != null)
             {
-                mEdges = edges;
+                _mEdges = edges;
             }
             
         }
 
         public void AddNode(INode node)
         {
-            mNodes.Add(node);
+            _mNodes.Add(node);
         }
 
         public void AddEdge(IEdge edge)
         {
-            mEdges.Remove(edge);
+            _mEdges.Remove(edge);
         }
 
         public void AddNodes(IEnumerable<INode> nodes)
@@ -60,12 +56,12 @@ namespace Singularity.Graph
 
         public void RemoveNode(INode node)
         {
-            mNodes.Remove(node);
+            _mNodes.Remove(node);
         }
 
         public void RemoveEdge(IEdge edge)
         {
-            mEdges.Remove(edge);
+            _mEdges.Remove(edge);
         }
 
         public void RemoveNodes(IEnumerable<INode> nodes)
@@ -86,12 +82,12 @@ namespace Singularity.Graph
 
         public List<INode> GetNodes()
         {
-            return mNodes;
+            return _mNodes;
         }
 
         public List<IEdge> GetEdges()
         {
-            return mEdges;
+            return _mEdges;
         }
 
     }

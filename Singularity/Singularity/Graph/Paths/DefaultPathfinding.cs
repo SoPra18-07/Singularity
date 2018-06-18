@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Singularity.Property;
 
@@ -67,6 +62,7 @@ namespace Singularity.Graph.Paths
 
                 // current can never be null from my short amount of thinking about it (if actual arguments are given)
 
+                Debug.Assert(current != null, "PathFinding failed");
                 if (current.Equals(destination))
                 {
                     return ReconstructPath(cameFrom, current);

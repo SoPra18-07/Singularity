@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Singularity.Property;
 using Singularity.Libraries;
 
 namespace Singularity.Screen
@@ -14,21 +9,21 @@ namespace Singularity.Screen
     class Slider: IWindowItem
     {
         // minimum and maximum position that slider can reach
-        private readonly float mMin;
-        private readonly float mMax;
+        private readonly float _mMin;
+        private readonly float _mMax;
 
         // current x position of the slider (from the middle)
-        private float mCurrentX;
+        private float _mCurrentX;
 
         // y position of the line
-        private readonly float mPositionY;
+        private readonly float _mPositionY;
 
         // bool on whether the slider is currently being moved by 
         // left mouse select
-        private bool mSlave;
+        private bool _mSlave;
 
         // size of slider in pixels (will be represented as a square)
-        private readonly int mSliderSize;
+        private readonly int _mSliderSize;
 
         // custom delegate in order to be able to send out the percentage moved along slider bar
         public delegate void SliderMovingEventHandler(object source, EventArgs args, float percentMoved);
@@ -44,11 +39,11 @@ namespace Singularity.Screen
         /// <param name="sliderSize"></param>
         public Slider(Vector2 postion, int length, int sliderSize)
         {
-            mMin = postion.X;
-            mMax = mMin + length;
-            mPositionY = postion.Y;
-            mCurrentX = mMin;
-            mSliderSize = sliderSize;
+            _mMin = postion.X;
+            _mMax = _mMin + length;
+            _mPositionY = postion.Y;
+            _mCurrentX = _mMin;
+            _mSliderSize = sliderSize;
         }
 
         /// <summary>
@@ -59,7 +54,7 @@ namespace Singularity.Screen
         {
             if (SliderMoving != null)
             {
-                SliderMoving(this, EventArgs.Empty, (mCurrentX/(mMax-mMin)));
+                SliderMoving(this, EventArgs.Empty, (_mCurrentX/(_mMax-_mMin)));
             }
         }
         
@@ -72,36 +67,36 @@ namespace Singularity.Screen
         {
             // if slider is left click them make it slave to the mouse
             if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                Mouse.GetState().X >= mCurrentX - ((float)mSliderSize / 2) &&
-                Mouse.GetState().X <= mCurrentX + ((float)mSliderSize / 2) &&
-                Mouse.GetState().Y >= mPositionY - ((float)mSliderSize / 2) &&
-                Mouse.GetState().Y <= mPositionY + ((float)mSliderSize / 2))
+                Mouse.GetState().X >= _mCurrentX - ((float)_mSliderSize / 2) &&
+                Mouse.GetState().X <= _mCurrentX + ((float)_mSliderSize / 2) &&
+                Mouse.GetState().Y >= _mPositionY - ((float)_mSliderSize / 2) &&
+                Mouse.GetState().Y <= _mPositionY + ((float)_mSliderSize / 2))
             {
-                mSlave = true;
+                _mSlave = true;
             }
 
             // if slider is left button released then unslave from mouse
             if (Mouse.GetState().LeftButton == ButtonState.Released)
             {
-                mSlave = false;
+                _mSlave = false;
             }
 
             // if button is slaved to mouse than adjust coordinates of slider
             // based on position of mouse. do not exceed min or max position of 
             // slider bar however
-            if (mSlave)
+            if (_mSlave)
             {
-                if (Mouse.GetState().X < mMin)
+                if (Mouse.GetState().X < _mMin)
                 {
-                    mCurrentX = mMin;
+                    _mCurrentX = _mMin;
                 }
-                else if (Mouse.GetState().X > mMax)
+                else if (Mouse.GetState().X > _mMax)
                 {
-                    mCurrentX = mMax;
+                    _mCurrentX = _mMax;
                 }
                 else
                 {
-                    mCurrentX = Mouse.GetState().X;
+                    _mCurrentX = Mouse.GetState().X;
                 }
                 OnSliderMoving();
             }
@@ -113,11 +108,11 @@ namespace Singularity.Screen
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-           spriteBatch.DrawLine(mMin, mPositionY, mMax, mPositionY, Color.Gray);
+           spriteBatch.DrawLine(_mMin, _mPositionY, _mMax, _mPositionY, Color.Gray);
            
            // slider based on current position
-           spriteBatch.DrawRectangle(new Vector2(mCurrentX - ((float)mSliderSize/2), mPositionY - ((float)mSliderSize / 2)), 
-               new Vector2(mSliderSize, mSliderSize), Color.Black);
+           spriteBatch.DrawRectangle(new Vector2(_mCurrentX - ((float)_mSliderSize/2), _mPositionY - ((float)_mSliderSize / 2)), 
+               new Vector2(_mSliderSize, _mSliderSize), Color.Black);
         }
     }
 }

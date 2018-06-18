@@ -16,22 +16,22 @@ namespace Singularity.Screen
         /// <summary>
         /// The stack holding all the currently added screens.
         /// </summary>
-        private readonly Stack<IScreen> mScreenStack;
+        private readonly Stack<IScreen> _mScreenStack;
 
         public StackScreenManager()
         {
-            mScreenStack = new Stack<IScreen>();
+            _mScreenStack = new Stack<IScreen>();
 
         }
 
         public void AddScreen(IScreen screen)
         {
-            mScreenStack.Push(screen);
+            _mScreenStack.Push(screen);
         }
 
         public void RemoveScreen()
         {
-            mScreenStack.Pop();
+            _mScreenStack.Pop();
         }
 
         public void Update(GameTime gameTime)
@@ -40,7 +40,7 @@ namespace Singularity.Screen
             // LinkedList.addLast(mScreenStack.pop()) for every element in the stack, thus the
             // formerly "top" item in the stack is now the first item in the linked list. This
             // removes the "reverse-list" effort.
-            var screens = new LinkedList<IScreen>(mScreenStack);
+            var screens = new LinkedList<IScreen>(_mScreenStack);
 
             foreach (var currentScreen in screens)
             {
@@ -57,7 +57,7 @@ namespace Singularity.Screen
         public void Draw(SpriteBatch spriteBatch)
         {
             // Same as the comment in Update.
-            var screens = new LinkedList<IScreen>(mScreenStack);
+            var screens = new LinkedList<IScreen>(_mScreenStack);
 
             foreach (var currentScreen in screens)
             {

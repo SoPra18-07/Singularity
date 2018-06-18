@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Singularity.Exceptions;
 using Singularity.Units;
 
@@ -19,21 +14,21 @@ namespace Singularity.Graph.Paths
         /// <summary>
         /// All the graphs currently in the game
         /// </summary>
-        private readonly List<Graph> mGraphs;
+        private readonly List<Graph> _mGraphs;
         
         public PathManager()
         {
-            mGraphs = new List<Graph>();
+            _mGraphs = new List<Graph>();
         }
 
         public void AddGraph(Graph graph)
         {
-            mGraphs.Add(graph);
+            _mGraphs.Add(graph);
         }
 
         public void RemoveGraph(Graph graph)
         {
-            mGraphs.Remove(graph);
+            _mGraphs.Remove(graph);
         }
 
 
@@ -72,7 +67,7 @@ namespace Singularity.Graph.Paths
         private IPath GetPathForGeneralUnits(GeneralUnit unit, INode destination)
         {
             //todo: know which units are on which graph.
-            return PathfindingFactory.GetPathfinding().AStar(mGraphs[0], unit.CurrentNode, destination);
+            return PathfindingFactory.GetPathfinding().AStar(_mGraphs[0], unit.CurrentNode, destination);
         }
 
         private IPath GetPathForMilitaryUnits(MilitaryUnit unit, INode destination)

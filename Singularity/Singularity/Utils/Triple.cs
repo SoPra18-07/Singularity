@@ -9,20 +9,21 @@
     /// <typeparam name="T3">The type of the third value of the tuple</typeparam>
     internal sealed class Triple<T1, T2, T3>
     {
-        private readonly T1 mFirstValue;
-        private readonly T2 mSecondValue;
-        private readonly T3 mThirdValue;
+        private readonly T1 _mFirstValue;
+        private readonly T2 _mSecondValue;
+        private readonly T3 _mThirdValue;
 
         /// <summary>
         /// Creates a new 2-Tuple with the given values at their specified location.
         /// </summary>
-        /// <param name="firstValue">The first value of the tuple</param>
-        /// <param name="secondValue">The second value of the tuple</param>
+        /// <param name="firstValue">The first value of the Triple</param>
+        /// <param name="secondValue">The second value of the Triple</param>
+        /// <param name="thirdValue">The third value of the Triple </param>
         public Triple(T1 firstValue, T2 secondValue, T3 thirdValue)
         {
-            mFirstValue = firstValue;
-            mSecondValue = secondValue;
-            mThirdValue = thirdValue;
+            _mFirstValue = firstValue;
+            _mSecondValue = secondValue;
+            _mThirdValue = thirdValue;
 
         }
 
@@ -32,7 +33,7 @@
         /// <returns>The first value of this triple</returns>
         public T1 GetFirst()
         {
-            return mFirstValue;
+            return _mFirstValue;
         }
 
         /// <summary>
@@ -41,7 +42,7 @@
         /// <returns>The second value of this triple</returns>
         public T2 GetSecond()
         {
-            return mSecondValue;
+            return _mSecondValue;
         }
 
         /// <summary>
@@ -50,17 +51,12 @@
         /// <returns>The third value of this triple</returns>
         public T3 GetThird()
         {
-            return mThirdValue;
+            return _mThirdValue;
         }
 
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
             if (!(obj is Triple<T1, T2, T3>))
             {
                 return false;
@@ -68,13 +64,13 @@
 
             var objAsTriple = (Triple<T1, T2, T3>)obj;
 
-            return (objAsTriple.GetFirst().Equals(mFirstValue) && objAsTriple.GetSecond().Equals(mSecondValue) && objAsTriple.GetThird().Equals(mThirdValue));
+            return (objAsTriple.GetFirst().Equals(_mFirstValue) && objAsTriple.GetSecond().Equals(_mSecondValue) && objAsTriple.GetThird().Equals(_mThirdValue));
 
         }
 
         public override int GetHashCode()
         {
-            return mThirdValue.GetHashCode() * mFirstValue.GetHashCode() ^ mSecondValue.GetHashCode();
+            return _mThirdValue.GetHashCode() * _mFirstValue.GetHashCode() ^ _mSecondValue.GetHashCode();
         }
     }
 }

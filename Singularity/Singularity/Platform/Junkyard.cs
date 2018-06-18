@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Property;
 using Singularity.Resources;
 
 namespace Singularity.Platform
@@ -20,23 +15,23 @@ namespace Singularity.Platform
         private const int PlatformHeight = 127;
         public Junkyard(Vector2 position, Texture2D spritesheet): base(position, spritesheet, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
         {
-            mIPlatformActions = new IPlatformAction[1];
+            MiPlatformActions = new IPlatformAction[1];
             //mActions[0] = BuildBlueprintJunkyard(this);
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<EResourceType, int>();
-            mType = EPlatformType.Junkyard;
-            mSpritename = "Dome";
+            MCost = new Dictionary<EResourceType, int>();
+            MType = EPlatformType.Junkyard;
+            MSpritename = "Dome";
             AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
         }
 
         public void BurnTrash()
         {
-            foreach (var resource in mResources)
+            foreach (var resource in MResources)
             {
                 if (resource.Type == EResourceType.Trash)
                 {
-                    mResources.Remove(resource);
+                    MResources.Remove(resource);
                 }
             }
         }
