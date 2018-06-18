@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,6 +13,14 @@ namespace Singularity.Screen.ScreenClasses
         private SpriteFont mLibSans20;
         private InputManager mInputManager;
 
+        // TODO: DELETE TESTING
+        private Button mBlankPlatformButton;
+        private Button mMinePlatformButton;
+        private Button mJunkyardPlatformButton;
+        private Button mQuarryPlatformButton;
+        private Texture2D mPlatformBlankTexture;
+        private Texture2D mPlatformDomeTexture;
+
         public UserInterfaceScreen(InputManager inputManager)
         {
             mInputManager = inputManager;
@@ -23,6 +32,8 @@ namespace Singularity.Screen.ScreenClasses
             {
                 window.Update(gametime);
             }
+
+            mBlankPlatformButton.Update(gametime);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -72,9 +83,25 @@ namespace Singularity.Screen.ScreenClasses
             var resourceWindow = new WindowObject("// RESOURCES", new Vector2(resourceX, resourceY), new Vector2(resourceWidth, resourceHeight), borderColor, windowColor, 0.5f, 1f, 1f, true, mLibSans20, mInputManager);
             var eventLogWindow = new WindowObject("// EVENT LOG", new Vector2(eventLogX, eventLogY), new Vector2(eventLogWidth, eventLogHeight), borderColor, windowColor, 0.5f, 1f, 1f, true, mLibSans20, mInputManager);
 
+            // platform textures
+            mPlatformBlankTexture = content.Load<Texture2D>("PlatformBasic");
+            mPlatformDomeTexture = content.Load<Texture2D>("Dome");
+
+
+            // buttons PlatformWindow
+            mBlankPlatformButton = new Button(0.2f, mPlatformBlankTexture, Vector2.Zero, true) {Opacity = 1f}; // opacity is crucial or it won't be drawn since it's default value seems to be 0
+            mMinePlatformButton = new Button("Mine", mLibSans20, Vector2.Zero) { Opacity = 1f };
+            mJunkyardPlatformButton = new Button("Junkyard", mLibSans20, Vector2.Zero) { Opacity = 1f };
+            mQuarryPlatformButton = new Button("Quarry", mLibSans20, Vector2.Zero) { Opacity = 1f };
+
+            civilUnitsWindow.AddItem(mBlankPlatformButton);
+            civilUnitsWindow.AddItem(mMinePlatformButton);
+            civilUnitsWindow.AddItem(mJunkyardPlatformButton);
+            civilUnitsWindow.AddItem(mQuarryPlatformButton);
+
             // add all windowObjects of the userinterface
             mWindowList.Add(civilUnitsWindow);
-            mWindowList.Add(topBarWindow);
+            //mWindowList.Add(topBarWindow);
             mWindowList.Add(resourceWindow);
             mWindowList.Add(eventLogWindow);
         }
@@ -88,5 +115,6 @@ namespace Singularity.Screen.ScreenClasses
         {
             return true;
         }
+
     }
 }

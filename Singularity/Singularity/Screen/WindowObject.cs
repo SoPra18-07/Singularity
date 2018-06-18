@@ -11,23 +11,24 @@ namespace Singularity.Screen
 {
     internal sealed class WindowObject: IDraw, IUpdate, IMouseWheelListener, IMouseClickListener, IMousePositionListener
     {
+        private List<IWindowItem> mItemList = new List<IWindowItem>();
 
-        private string mWindowName;
-        private List<IWindowItem> mItemList;
-
+        // basic window rectangle
         private Rectangle mWindowRectangle;
         private Rectangle mBorderRectangle;
+        private Rectangle mTitleBarRectangle;
+
+        // minimization rectangle
         private Rectangle mMinimizationRectangle;
         private Rectangle mMinimizationLine;
         private Rectangle mMinimizedWindowRectangle;
         private Rectangle mMinimizedBorderRectangle;
         private Rectangle mScrollBarRectangle;
         private Rectangle mScrollBarBorderRectangle;
-        private Rectangle mTitleBarRectangle;
+        private Rectangle mScissorRectangle;
 
-        private Rectangle mDrawWindowRectangle;
-        private Rectangle mDrawBorderRectangle;
-
+        // parameters
+        private string mWindowName;
         private Vector2 mPosition;
         private Vector2 mSize;
         private Color mColorBorder;
@@ -35,20 +36,28 @@ namespace Singularity.Screen
         private float mOpacity;
         private float mBorderPadding;
         private float mObjectPadding;
-        private bool mBackgroundGiven;
         private bool mMinimizable;
-        private bool mMinimized;
+
+        private bool mBackgroundGiven;
+        private bool mMinimized; // = false as default value
+
         private bool mScrollableInWindow;
+
+        // TODO: TESTING
+        private bool mClicked;
 
         private float mMouseX;
         private float mMouseY;
+
+        private float mMouseStartX;
+        private float mMouseStartY;
 
         private TimeSpan mGameTime;
 
         private RasterizerState mRasterizerState;
 
         private SpriteFont mTestFont;
-        private int mNameSize;
+        private int mNameSizeY;
         private int mMinimizationSize;
 
 
@@ -65,6 +74,7 @@ namespace Singularity.Screen
             SpriteFont testFontForUserI,
             InputManager inputManager)
         {
+            // set parameter-variables
             mWindowName = windowName;
             mPosition = position;
             mSize = size;
@@ -75,54 +85,62 @@ namespace Singularity.Screen
             mObjectPadding = objectPadding;
             mMinimizable = minimizable;
 
-            mItemList = new List<IWindowItem>();
-
-            mMinimized = false;
-            mBackgroundGiven = true;
-
+            // TODO : REPLACE WITH PARAMETER of type Vector2
             var currentScreenWidth = 1080;
             var currentScreenHeight = 720;
 
-            mMinimizationSize = (int)mSize.X / 12; //20;
-            mNameSize = currentScreenHeight / 26; // 26
+            // calculate resizing by screensize
+            mMinimizationSize = (int)mSize.X / 12;
+            mNameSizeY = currentScreenHeight / 26;
 
-            // TESTING
+            // TODO : TESTING
             mTestFont = testFontForUserI;
+
+            // TODO : order
             mRasterizerState = new RasterizerState() { ScissorTestEnable = true };
 
-            // drawRectangle and FillRectangle draw differently -> match position and size values
-            mWindowRectangle = new Rectangle((int)(position.X + 1), (int)(position.Y + 2), (int)(size.X - 2), (int)(size.Y - 2));
-            mBorderRectangle = new Rectangle((int)position.X, (int)position.Y, (int)(size.X), ((int)size.Y));
+            // set start values
+            mBackgroundGiven = true;
 
-            // set the rectangles which should be drawn -> these can change later on when minimized
-            mDrawWindowRectangle = mWindowRectangle;
-            mDrawBorderRectangle = mBorderRectangle;
+
+            #region defineRectangles commented
+            // DEFINE ALL RECTANGLES
+            /*
+            // drawRectangle and FillRectangle draw differently -> match position and size values
+            mWindowRectangle = new Rectangle((int)(this.mPosition.X + 1), (int)(this.mPosition.Y + 2), (int)(mSize.X - 2), (int)(mSize.Y - 2));
+            mBorderRectangle = new Rectangle((int)this.mPosition.X, (int)this.mPosition.Y, (int)(mSize.X), ((int)mSize.Y));
+            // ScissorRectangle will cut everything drawn outside of this rectangle
+            mScissorRectangle = new Rectangle((int)(this.mPosition.X - 1), (int)(mPosition.Y), (int)(mSize.X + 2), (int)(mSize.Y + 2));
 
             // set the rectangle for minimization in the top right corner of the window
-            mMinimizationRectangle = new Rectangle((int) (position.X + size.X - mMinimizationSize), (int) (position.Y), (int)mMinimizationSize, (int)mMinimizationSize);
-            mMinimizationLine = new Rectangle((int)(position.X + size.X - 3 * mMinimizationSize / 4), (int)(position.Y + (int)(mMinimizationSize / 2)), (int)(mMinimizationSize / 2), 1);
+            mMinimizationRectangle = new Rectangle((int)(mPosition.X + mSize.X - mMinimizationSize), (int)(mPosition.Y), (int)mMinimizationSize, (int)mMinimizationSize);
+            mMinimizationLine = new Rectangle((int)(mPosition.X + mSize.X - 3 * mMinimizationSize / 4), (int)(mPosition.Y + (int)(mMinimizationSize / 2)), (int)(mMinimizationSize / 2), 1);
 
             // set the rectangle for the minimized window
-            mMinimizedWindowRectangle = new Rectangle((int)(position.X + 1), (int)(position.Y + 2), ((int)size.X - 2), mNameSize + mMinimizationSize);
-            mMinimizedBorderRectangle = new Rectangle((int)position.X, (int)position.Y, (int)(mSize.X), mNameSize + mMinimizationSize);
+            mMinimizedWindowRectangle = new Rectangle((int)(mPosition.X + 1), (int)(mPosition.Y + 2), ((int)mSize.X - 2), mNameSizeY + mMinimizationSize);
+            mMinimizedBorderRectangle = new Rectangle((int)mPosition.X, (int)mPosition.Y, (int)(mSize.X), mNameSizeY + mMinimizationSize);
 
             // set the rectangle for scrolling
-            mScrollBarBorderRectangle = new Rectangle((int)(position.X + size.X - mMinimizationSize), (int)(position.Y + mNameSize + mMinimizationSize), (int)mMinimizationSize, (int)(mSize.Y - mNameSize - 2 * mMinimizationSize));
-            //mScrollBarRectangle
+            mScrollBarBorderRectangle = new Rectangle((int)(mPosition.X + mSize.X - mMinimizationSize), (int)(mPosition.Y + mNameSizeY + mMinimizationSize), (int)mMinimizationSize, (int)(mSize.Y - mNameSizeY - 2 * mMinimizationSize));
+            mScrollBarRectangle = new Rectangle();
 
             // title bar
-            mTitleBarRectangle = new Rectangle((int)mPosition.X + mMinimizationSize / 2, (int)mPosition.Y + mNameSize + mMinimizationSize, (int)mSize.X - 2 * mMinimizationSize, 1);
+            mTitleBarRectangle = new Rectangle((int)this.mPosition.X + mMinimizationSize / 2, (int)this.mPosition.Y + mNameSizeY + mMinimizationSize, (int)mSize.X - 2 * mMinimizationSize, 1);
+            */
+            #endregion
+
+            inputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            inputManager.AddMouseWheelListener(this);
+            inputManager.AddMousePositionListener(this);
+
+            // TODO: MAKE CONNECTED TO mBorderRectangle, so that if one gets changed both get changed
+            Bounds = new Rectangle((int)mPosition.X, (int)mPosition.Y, (int)(mSize.X), ((int)mSize.Y));
 
             // manage input -> 'enables' minimization
             if (!mMinimizable)
             {
                 return;
             }
-
-            inputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
-            inputManager.AddMouseWheelListener(this);
-            inputManager.AddMousePositionListener(this);
-            Bounds = mMinimizationRectangle;
         }
 
 
@@ -136,6 +154,7 @@ namespace Singularity.Screen
             bool minimizable,
             InputManager inputManager)
         {
+            // set parameter-variables
             mWindowName = windowName;
             mPosition = position;
             mSize = size;
@@ -146,12 +165,9 @@ namespace Singularity.Screen
 
             mItemList = new List<IWindowItem>();
 
-            mMinimized = false;
             mBackgroundGiven = false;
 
-            mBorderRectangle = new Rectangle((int)position.X, (int)position.Y, (int)(size.X), ((int)size.Y));
-
-            mDrawBorderRectangle = mBorderRectangle;
+            mBorderRectangle = new Rectangle((int)mPosition.X, (int)mPosition.Y, (int)(size.X), ((int)size.Y));
         }
 
         /// <summary>
@@ -190,7 +206,7 @@ namespace Singularity.Screen
             var windowTexture2D = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
             windowTexture2D.SetData(new[] {mColorFill});
 
-            // TESTING
+            // TODO: DELETE TESTING STUFF - STRING SETTING
                 
             var textaaa = "AAAAAAAAAA\n" +
                           "AAAAAAAAAA\n" +
@@ -224,43 +240,47 @@ namespace Singularity.Screen
             var saveRect = spriteBatch.GraphicsDevice.ScissorRectangle;
 
             // set up current scissor rectangle
-            spriteBatch.GraphicsDevice.ScissorRectangle = mBorderRectangle;
+            spriteBatch.GraphicsDevice.ScissorRectangle = mScissorRectangle;
 
-            // TEST DRAW STRING
+            // TODO: DELETE TESTING STUFF - STRING DRAWING
             //spriteBatch.DrawString(mTestFont, textaaa, new Vector2(mPosition.X, mPosition.Y + 20), new Color(255, 255, 255));
-            //spriteBatch.DrawString(mTestFont, DateTime.Now.ToLongTimeString(), new Vector2(mPosition.X, mPosition.Y + mNameSize), new Color(255, 255, 255));
+            //spriteBatch.DrawString(mTestFont, DateTime.Now.ToLongTimeString(), new Vector2(mPosition.X, mPosition.Y + mNameSizeY), new Color(255, 255, 255));
 
             if (!mMinimized)
             {
-                // draw items
-                foreach (var item in mItemList)
-                {
-                    item.Draw(spriteBatch);
-                }
-
-                // scrollable
+                // TODO: DELETE TEST STUFF - testing the scissor rectangle
                 if (textaaaSize.Y > mBorderRectangle.Height)
                 {
-                    //spriteBatch.Draw(windowTexture2D, mScrollBarRectangle, null, mColorFill, 0f, Vector2.Zero, SpriteEffects.None, 0.99f);
-                    spriteBatch.DrawRectangle(mScrollBarBorderRectangle, mColorBorder, 2);
+                    spriteBatch.Draw(windowTexture2D, mScrollBarRectangle, null, mColorFill, 0f, Vector2.Zero, SpriteEffects.None, 0.99f);
+                    //spriteBatch.DrawRectangle(mScrollBarBorderRectangle, mColorBorder, 2);
                 }
 
                 if (mBackgroundGiven)
                     // if a background was given -> draw filled rectangle
                 {
                     spriteBatch.Draw(windowTexture2D, mWindowRectangle, null, mColorFill, 0f, Vector2.Zero, SpriteEffects.None, 0.99f);
-                    //spriteBatch.FillRectangle(mWindowRectangle, mColorFill, 0f, mOpacity);
+                    //spriteBatch.FillRectangle(mWindowRectangle, mColorFill, 0f, 0.99f);
                 }
 
                 spriteBatch.DrawRectangle(mBorderRectangle, mColorBorder, 2);
+
+                // restore scissor from backup - AFTER DRAW
+                spriteBatch.GraphicsDevice.ScissorRectangle = saveRect;
             }
             else
             {
+                // restore scissor from backup - BEFORE DRAW
+                spriteBatch.GraphicsDevice.ScissorRectangle = saveRect;
 
+                if (mBackgroundGiven)
+                    // if a background was given -> draw filled rectangle
+                {
+                    spriteBatch.Draw(windowTexture2D, mMinimizedWindowRectangle, null, mColorFill, 0f, Vector2.Zero, SpriteEffects.None, 0.99f);
+                    //spriteBatch.FillRectangle(mWindowRectangle, mColorFill, 0f, mOpacity);
+                }
+
+                spriteBatch.DrawRectangle(mMinimizedBorderRectangle, mColorBorder, 2);
             }
-
-            // restore scissor from backup - needed for other draws
-            spriteBatch.GraphicsDevice.ScissorRectangle = saveRect;
 
             if (mMinimizable)
                 // if the window should be minimizable -> draw tiny rectangle for minimization to click on
@@ -272,6 +292,12 @@ namespace Singularity.Screen
             // draw window title + bar
             spriteBatch.DrawString(mTestFont, mWindowName, new Vector2(mPosition.X + mMinimizationSize / 2, mPosition.Y + mMinimizationSize / 2), new Color(255, 255, 255));
             spriteBatch.DrawRectangle(mTitleBarRectangle, mColorBorder, 1);
+
+            // draw IWindowItems
+            foreach (var item in mItemList)
+            {
+                item.Draw(spriteBatch);
+            }
 
             spriteBatch.End();
 
@@ -287,70 +313,142 @@ namespace Singularity.Screen
 
             // TODO: GET FROM GAME1.CS ?
             mGameTime = gametime.TotalGameTime;
+
+            // DEFINE ALL RECTANGLES
+
+            // drawRectangle and FillRectangle draw differently -> match position and size values
+            mWindowRectangle = new Rectangle((int)(mPosition.X + 1), (int)(mPosition.Y + 2), (int)(mSize.X - 2), (int)(mSize.Y - 2));
+            mBorderRectangle = new Rectangle((int)mPosition.X, (int)mPosition.Y, (int)(mSize.X), ((int)mSize.Y));
+            // ScissorRectangle will cut everything drawn outside of this rectangle
+            mScissorRectangle = new Rectangle((int)(mPosition.X - 1), (int)(mPosition.Y), (int)(mSize.X + 2), (int)(mSize.Y + 2));
+
+            // set the rectangle for minimization in the top right corner of the window
+            mMinimizationRectangle = new Rectangle((int)(mPosition.X + mSize.X - mMinimizationSize), (int)(mPosition.Y), (int)mMinimizationSize, (int)mMinimizationSize);
+            mMinimizationLine = new Rectangle((int)(mPosition.X + mSize.X - 3 * mMinimizationSize / 4), (int)(mPosition.Y + (int)(mMinimizationSize / 2)), (int)(mMinimizationSize / 2), 1);
+
+            // set the rectangle for the minimized window
+            mMinimizedWindowRectangle = new Rectangle((int)(mPosition.X + 1), (int)(mPosition.Y + 2), ((int)mSize.X - 2), mNameSizeY + mMinimizationSize);
+            mMinimizedBorderRectangle = new Rectangle((int)mPosition.X, (int)mPosition.Y, (int)(mSize.X), mNameSizeY + mMinimizationSize);
+
+            // set the rectangle for scrolling
+            mScrollBarBorderRectangle = new Rectangle((int)(mPosition.X + mSize.X - mMinimizationSize), (int)(mPosition.Y + mNameSizeY + mMinimizationSize), (int)mMinimizationSize, (int)(mSize.Y - mNameSizeY - 2 * mMinimizationSize));
+            mScrollBarRectangle = new Rectangle();
+
+            // title bar
+            mTitleBarRectangle = new Rectangle((int)mPosition.X + mMinimizationSize / 2, (int)mPosition.Y + mNameSizeY + mMinimizationSize, (int)mSize.X - 2 * mMinimizationSize, 1);
         }
 
 
         #endregion
 
 
-        #region InputManagemend
+        #region InputManagement
 
 
         public void MouseWheelValueChanged(EMouseAction mouseAction)
         {
-            if (mMouseX > mPosition.X && 
-                mMouseX < mPosition.X + mSize.X && 
-                mMouseY > mPosition.Y &&
-                mMouseY < mPosition.Y + mSize.Y)
-                // in bound of 'top'
+            if (!(mMouseX > mPosition.X) || !(mMouseX < mPosition.X + mSize.X) || !(mMouseY > mPosition.Y) ||
+                !(mMouseY < mPosition.Y + mSize.Y))
             {
-                if (mouseAction == EMouseAction.LeftClick)
-                {
-                    throw new NotImplementedException();
-                }
+                return;
+            }
+
+            switch (mouseAction)
+            {
+                case EMouseAction.ScrollUp:
+                    Console.Out.WriteLine("ScrollUp");
+                    break;
+                case EMouseAction.ScrollDown:
+                    Console.Out.WriteLine("ScrollDown");
+                    break;
             }
         }
 
-        public Rectangle Bounds { get; }
+        public Rectangle Bounds { get; set; }
+
 
         public void MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
-            if (mouseAction == EMouseAction.LeftClick && withinBounds && !mMinimized && mMinimizable)
-                // LeftClick on Minimize-Button, window IS NOT minimized and it's minimizable
-                // -> use minimized rectangles + empty itemList for draw
+            if (mouseAction == EMouseAction.LeftClick && withinBounds)
             {
-                mDrawWindowRectangle = mMinimizedWindowRectangle;
-                mDrawBorderRectangle = mMinimizedBorderRectangle;
+                mMouseStartX = mMouseX;
+                mMouseStartY = mMouseY;
 
-                mMinimized = true;
-            }
-            else if (mouseAction == EMouseAction.LeftClick && withinBounds && mMinimized)
-                // LeftClick on Minimize-Button, window IS minimized
-                // -> use regular rectangles + actual itemList for draw
-            {
-                mDrawWindowRectangle = mWindowRectangle;
-                mDrawBorderRectangle = mBorderRectangle;
+                // mouse on minimization-rectangle
+                if (mMouseX >= mMinimizationRectangle.X &&
+                    mMouseX < mMinimizationRectangle.X + mMinimizationSize &&
+                    mMouseY >= mMinimizationRectangle.Y &&
+                    mMouseY < mMinimizationRectangle.Y + mMinimizationSize)
+                {
+                    if (!mMinimized && mMinimizable)
+                    // LeftClick on Minimize-Button, window IS NOT minimized and it's minimizable
+                    // -> use minimized rectangles + empty itemList for draw
+                    {
+                        mMinimized = true;
+                    }
+                    else if (mMinimized)
+                    // LeftClick on Minimize-Button, window IS minimized
+                    // -> use regular rectangles + actual itemList for draw
+                    {
+                        mMinimized = false;
+                    }
+                }
 
-                mMinimized = false;
+                // set 'clicked' for moving to prevent other windows from being dragged along this moving window when moving above their 'bounds'
+                if (mMouseX > mPosition.X &&
+                    mMouseX < mPosition.X + mPosition.X + mSize.X &&
+                    mMouseY > mPosition.Y &&
+                    mMouseY < mPosition.Y + mNameSizeY + mMinimizationSize)
+                {
+                    mClicked = true;
+                }
             }
         }
 
         public void MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {
-            // no effect
+            // move the window by pressing the left mouse button above the title line TODO: add to 'controls'
+
+            if (mMouseX > mPosition.X &&
+                mMouseX < mPosition.X + mSize.X &&
+                mMouseY > mPosition.Y &&
+                mMouseY < mPosition.Y + mNameSizeY + mMinimizationSize &&
+                mClicked)
+            // mouse in bounds of title rectangle
+            {
+                if (mouseAction == EMouseAction.LeftClick)
+                {
+                    Console.Out.WriteLine("move window");
+                    mPosition.X += mMouseX - mMouseStartX;
+                    mPosition.Y += mMouseY - mMouseStartY;
+
+                    mMouseStartX = mMouseX;
+                    mMouseStartY = mMouseY;
+
+                    Bounds = new Rectangle((int)mPosition.X, (int)mPosition.Y, (int)(mSize.X), ((int)mSize.Y));
+                }
+            }
+            else
+            {
+                Console.Out.WriteLine("Out of bounds");
+            }
         }
 
         public void MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
-            // no effect
+            mClicked = false;
         }
-
-        #endregion
 
         public void MousePositionChanged(float newX, float newY)
         {
             mMouseX = newX;
             mMouseY = newY;
+        }
+        #endregion
+
+        private Rectangle CalculateScrollbarRectangle()
+        {
+            return new Rectangle();
         }
     }
 }
