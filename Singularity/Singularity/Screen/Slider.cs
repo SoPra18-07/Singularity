@@ -34,6 +34,9 @@ namespace Singularity.Screen
         public delegate void SliderMovingEventHandler(object source, EventArgs args, float percentMoved);
         public event SliderMovingEventHandler SliderMoving;
 
+        // whether to add window on side that indicates value of slider postion
+        private bool mWithValue;
+
 
         /// <summary>
         /// Creates an instance of a slide where the square size of the
@@ -42,14 +45,19 @@ namespace Singularity.Screen
         /// <param name="postion"></param>
         /// <param name="length"></param>
         /// <param name="sliderSize"></param>
-        public Slider(Vector2 postion, int length, int sliderSize)
+        public Slider(Vector2 postion, int length, int sliderSize, bool withValue)
         {
             mMin = postion.X;
             mMax = mMin + length;
             mPositionY = postion.Y;
             mCurrentX = mMin;
             mSliderSize = sliderSize;
+            mWithValue = withValue;
         }
+
+
+
+
 
         /// <summary>
         /// sends out event that slider is being moved as well
