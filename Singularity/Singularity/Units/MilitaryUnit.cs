@@ -10,7 +10,7 @@ using Singularity.Utils;
 
 namespace Singularity.Units
 {
-    internal sealed class MilitaryUnit : ICollider, IUnit, IDraw, IUpdate, IRevealing, IMouseClickListener, IMousePositionListener
+    internal sealed class MilitaryUnit : ICollider, IRevealing, IMouseClickListener, IMousePositionListener
     {
         private const int DefaultWidth = 150;
         private const int DefaultHeight = 75;

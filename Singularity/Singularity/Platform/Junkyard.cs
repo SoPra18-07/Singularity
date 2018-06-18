@@ -12,7 +12,7 @@ using Singularity.Resources;
 namespace Singularity.Platform
 {
     [DataContract()]
-    class Junkyard : PlatformBlank, IRevealing
+    class Junkyard : PlatformBlank
     {
         [DataMember()]
         private const int PlatformWidth = 144;

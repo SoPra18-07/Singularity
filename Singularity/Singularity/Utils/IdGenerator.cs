@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 
 namespace Singularity.Utils
 {
+	public interface IID
+	{
+		int mId { get; }
+	}
+	
     public static class IdGenerator
     {
-        private static int sId = 0;
+        static int sId = 0;
 
         public static int NextiD()
         {

@@ -102,7 +102,7 @@
     <Compile Include="Serialization\XSerializer.cs" />
     <Compile Include="Serialization\SerializationDummy.cs" />
     <Compile Include="Property\ISpatial.cs" />
-    <Compile Include="Resources\Resource.cs" />
+    <Compile Include="Resources\MapResource.cs" />
     <Compile Include="Resources\ResourceHelper.cs" />
     <Compile Include="Property\LayerConstants.cs" />
     <Compile Include="Screen\EScreen.cs" />
@@ -123,7 +123,6 @@
     <Compile Include="Sound\SoundPhase.cs" />
     <Compile Include="StoryManager\StoryManager.cs" />
     <Compile Include="Units\GeneralUnit.cs" />
-    <Compile Include="Units\IUnit.cs" />
     <Compile Include="Units\JobType.cs" />
     <Compile Include="Units\MilitaryUnit.cs" />
     <Compile Include="Property\IDraw.cs" />
@@ -142,6 +141,7 @@
     <Compile Include="Utils\Triple.cs" />
     <Compile Include="Platform\PlatformActionState.cs" />
     <Compile Include="Platform\ProduceResource.cs" />
+    <Compile Include="Resources\Resource.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

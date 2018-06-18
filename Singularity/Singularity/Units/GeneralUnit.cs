@@ -11,13 +11,11 @@ using Singularity.Graph.Paths;
 using Singularity.Libraries;
 using Singularity.Property;
 using Singularity.Resources;
-using Singularity.Units;
 using Singularity.Utils;
 
 namespace Singularity.Units
 {
-    [DataContract()]
-    public class GeneralUnit : IUnit, IUpdate, IDraw, ISpatial
+	public class GeneralUnit : ISpatial
     {
         [DataMember()]
         public int Id { get; }

@@ -1,4 +1,5 @@
-﻿using Singularity.Exceptions;
+﻿using System.Diagnostics.Contracts;
+using Singularity.Exceptions;
 
 namespace Singularity.Utils
 {
@@ -13,7 +14,7 @@ namespace Singularity.Utils
         private readonly T mValue;
 
         /// <summary>
-        /// Returns a new Optinal for the given value.
+        /// Returns a new Optional for the given value.
         /// </summary>
         /// <param name="value">The value this Optional is holding</param>
         /// <returns>A new Optional with the value given</returns>
@@ -30,7 +31,7 @@ namespace Singularity.Utils
         /// <returns>The value if not null</returns>
         public T Get()
         {
-            if (mValue == null)
+			if (mValue == null)
             {
                 throw new NoSuchElementException();
             }
@@ -52,5 +53,5 @@ namespace Singularity.Utils
             mValue = value;
 
         }
-    }
+	}
 }

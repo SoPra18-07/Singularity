@@ -71,7 +71,9 @@ namespace Singularity.Map
         /// <summary>
         /// Creates a new FogOfWar object for the given mapTexture.
         /// </summary>
-        /// <param name="mapTexture">The texture of the map mentioned</param>
+		/// <param name="camera">The Camera of the game</param>
+		/// <param name="graphicsDevice">The graphical Device (System-util)</param>
+		// @Ativolex: update your comments. :)
         public FogOfWar(Camera camera, GraphicsDevice graphicsDevice)
         {
 

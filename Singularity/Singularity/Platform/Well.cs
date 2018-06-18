@@ -14,7 +14,7 @@ using Singularity.Units;
 namespace Singularity.Platform
 {
     [DataContract()]
-    class Well: PlatformBlank, IRevealing
+    class Well: PlatformBlank
     {
         [DataMember()]
         private const int PlatformWidth = 144;

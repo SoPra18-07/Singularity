@@ -13,7 +13,7 @@ using Singularity.Resources;
 namespace Singularity.Platform
 {
     [DataContract()]
-    class Quarry : PlatformBlank, IRevealing
+    class Quarry : PlatformBlank
     {
         [DataMember()]
         private const int PlatformWidth = 144;

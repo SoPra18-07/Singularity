@@ -44,7 +44,7 @@ namespace Singularity.Platform
         [DataMember()]
         protected Dictionary<GeneralUnit, JobType> mAssignedUnits;
         [DataMember()]
-        protected List<Resource> mResources;
+        protected List<MapResource> mResources;
         [DataMember()]
         protected Dictionary<EResourceType, int> mRequested;
 
@@ -143,7 +143,7 @@ namespace Singularity.Platform
         /// Get the Resources on the platform.
         /// </summary>
         /// <returns> a List containing the references to the resource-objects</returns>
-        public List<Resource> GetPlatformResources()
+        public List<MapResource> GetPlatformResources()
         {
             return mResources;
         }
@@ -174,7 +174,7 @@ namespace Singularity.Platform
         /// Add a new resource to the platform.
         /// </summary>
         /// <param name="resource"> the resource to be added to the platform </param>
-        public void StoreResource(Resource resource)
+        public void StoreResource(MapResource resource)
         {
             mResources.Add(resource);
         }
@@ -184,7 +184,7 @@ namespace Singularity.Platform
         /// </summary>
         /// <param name="resourcetype">The resource you ask for</param>
         /// <returns>the resource you asked for, null otherwise.</returns>
-        public Resource GetResource(EResourceType resourcetype)
+        public MapResource GetResource(EResourceType resourcetype)
         {
             // var index = mResources.FindIndex(x => x.isType(resourcetype));
             // if (index < 0)
@@ -358,7 +358,7 @@ namespace Singularity.Platform
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
 
-            mResources = new List<Resource>();
+            mResources = new List<MapResource>();
 
             mSpritesheet = spritesheet;
             mSpritename = "PlatformBasic";
