@@ -37,26 +37,52 @@ namespace Singularity.Screen
         // whether to add window on side that indicates value of slider postion
         private bool mWithValue;
 
+        // font used to show slider value 
+        private SpriteFont mFont;
+
+        // value as stringb of the slider position
+        private String mValue;
+
+
+
 
         /// <summary>
         /// Creates an instance of a slide where the square size of the
-        /// slider can be specified in pixels 
+        /// slider can be specified in pixels. without any information on value,
+        /// no page jumps 
         /// </summary>
-        /// <param name="postion"></param>
-        /// <param name="length"></param>
-        /// <param name="sliderSize"></param>
-        public Slider(Vector2 postion, int length, int sliderSize, bool withValue)
+        /// <param name="postion"> position of slider (left corner)</param>
+        /// <param name="length"> length of slider</param>
+        /// <param name="sliderSize"> size of movable slider</param>
+        public Slider(Vector2 postion, int length, int sliderSize)
         {
             mMin = postion.X;
             mMax = mMin + length;
             mPositionY = postion.Y;
             mCurrentX = mMin;
             mSliderSize = sliderSize;
-            mWithValue = withValue;
         }
 
-
-
+        /// <summary>
+        /// creates slider with a window on the right side that displays the
+        /// current value of the slider as an integer
+        /// </summary>
+        /// <param name="postion"> position of slider (left corner)</param>
+        /// <param name="length"> length of slider</param>
+        /// <param name="sliderSize"> size of movable slider</param>
+        /// <param name="font"> font in which to displaye slider value in</param>
+        public Slider(Vector2 postion, int length, int sliderSize, SpriteFont font)
+        {
+            mMin = postion.X;
+            mMax = mMin + length;
+            mPositionY = postion.Y;
+            mCurrentX = mMin;
+            mSliderSize = sliderSize;
+            mWithValue = true;
+            mFont = font;
+            // start off value at 0
+            mValue = 0.ToString();
+        }
 
 
         /// <summary>
@@ -113,6 +139,12 @@ namespace Singularity.Screen
                 }
                 OnSliderMoving();
             }
+
+            // calculate int value of slider and convert to string
+            if (mWithValue)
+            {
+                mValue = ((int)(((mCurrentX - mMin) / (mMax - mMin)) * 100)).ToString();
+            }
         }
 
         /// <summary>
@@ -121,11 +153,31 @@ namespace Singularity.Screen
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-           spriteBatch.DrawLine(mMin, mPositionY, mMax, mPositionY, Color.Gray);
-           
-           // slider based on current position
-           spriteBatch.DrawRectangle(new Vector2(mCurrentX - ((float)mSliderSize/2), mPositionY - ((float)mSliderSize / 2)), 
-               new Vector2(mSliderSize, mSliderSize), Color.Black);
+            spriteBatch.DrawLine(mMin, mPositionY, mMax, mPositionY, (Color.White * (float)0.6), 3);
+
+            // slider based on current position
+            spriteBatch.StrokedRectangle(new Vector2(mCurrentX - ((float)mSliderSize / 2), mPositionY - ((float)mSliderSize / 2)), 
+                new Vector2(mSliderSize, mSliderSize), Color.Gray, Color.Black, (float).5, (float)0.8);
+
+            // add value display
+            if (mWithValue)
+            {
+                // draws rectangle to the right side of slider
+                spriteBatch.StrokedRectangle(new Vector2(mMax + mSliderSize, mPositionY - 30), new Vector2(60, 60), Color.Gray, Color.Black, 1, (float)0.8);
+
+                // draws in value of slider in the center of display window
+                spriteBatch.DrawString(mFont,
+                    origin: Vector2.Zero,
+                    position: new Vector2((mMax + mSliderSize + 30) - (mFont.MeasureString(mValue).X / 2), mPositionY - 12),
+                    color: Color.White,
+                    text: mValue.ToString(),
+                    rotation: 0f,
+                    scale: 1f,
+                    effects: SpriteEffects.None,
+                    layerDepth: 0.2f);
+
+            }
         }
+
     }
 }
