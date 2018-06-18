@@ -39,6 +39,7 @@ namespace Singularity.Levels
             mPath = path;
             mStory = story;
             story.SetLevelType(LevelType.Tutorial);
+            story.LoadAchievements();
             mDist = dist;
             mGraphics = graphics;
             LoadContent(content);

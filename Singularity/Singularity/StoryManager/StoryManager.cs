@@ -138,6 +138,21 @@ namespace Singularity.StoryManager
         public void Update(GameTime time)
         {
             mTime = mTime.Add(time.ElapsedGameTime);
+            switch (mLevelType)
+            {
+                case LevelType.None:
+                    break;
+                case LevelType.Tutorial:
+                    HandleTutorial();
+                    break;
+
+            }
+        }
+
+        public void HandleTutorial()
+        {
+            //Trigger Infoboxes.
+            //Trigger Events for tutorial.
         }
 
         public TimeSpan GetIngameTime()
