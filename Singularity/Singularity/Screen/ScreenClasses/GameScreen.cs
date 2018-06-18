@@ -4,6 +4,7 @@ using System.IO.MemoryMappedFiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Singularity.Graph.Paths;
 using Singularity.Input;
 using Singularity.Libraries;
@@ -104,11 +105,10 @@ namespace Singularity.Screen.ScreenClasses
             {
                 spatial.Draw(spriteBatch);
             }
+
             spriteBatch.End();
 
             mFow.FillInvertedMask(spriteBatch);
-           
-
         }
 
         public bool DrawLower()
@@ -118,6 +118,12 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Update(GameTime gametime)
         {
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            {
+                Point mousePosition = Mouse.GetState().Position;
+
+                Node node = mMap.GetCollisionMap().NodeAt(new Vector2(mousePosition.X, mousePosition.Y));
+            }
 
             foreach (var updateable in mUpdateables)
             {

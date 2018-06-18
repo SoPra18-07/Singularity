@@ -16,8 +16,6 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     internal sealed class MainMenuScreen : ITransitionableMenu
     {
-        private EScreen mScreenState;
-
         // Fonts
         private SpriteFont mLibSans36;
         private SpriteFont mLibSans20;
@@ -216,7 +214,6 @@ namespace Singularity.Screen.ScreenClasses
 
                         var opacity =
                             (float) Animations.Easing(0, 1f, mTransitionStartTime, mTransitionDuration, gameTime);
-                        Debug.WriteLine(mMenuOpacity);
                         mMenuOpacity = opacity;
                         mWindowOpacity = opacity;
                     }

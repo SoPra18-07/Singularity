@@ -208,7 +208,7 @@ namespace Singularity.Units
             mColor = mSelected ? sSelectedColor : sNotSelectedColor;
 
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * mScale / 2, AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
-            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int) AbsolutePosition.Y, (int)(AbsoluteSize.X * mScale), (int) (AbsoluteSize.Y * mScale));
+            AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * mScale), (int) (AbsoluteSize.Y * mScale));
             Moved = mIsMoving;
         }
 

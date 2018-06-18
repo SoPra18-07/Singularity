@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Singularity.Map.Properties;
@@ -84,12 +85,22 @@ namespace Singularity.Map
         }
 
         /// <summary>
-        /// Returns the contents of the node x, y. Usage: NodeAt(x, y).Get();
+        /// Gets the node at a given absolute map coordinate.
         /// </summary>
-        /// <param name="x">x coordinate of the node</param>
-        /// <param name="y">y coordinate of the node</param>
-        /// <returns>An Optional object containing either the contents or none</returns>
-        public Node NodeAt(int x, int y)
+        /// <param name="position">Map coordinate whose node is being asked for.</param>
+        /// <returns>Node at the given position.</returns>
+        public Node NodeAt(Vector2 position)
+        {
+            return mCollisionMap[(int) Math.Floor(position.X / MapConstants.GridWidth), (int) Math.Floor(position.Y / MapConstants.GridHeight)];
+        }
+
+        /// <summary>
+        /// Gets the node at a given grid coordinate.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns>Note at the given position.</returns>
+        public Node GetNode(int x, int y)
         {
             return mCollisionMap[x, y];
         }
@@ -105,7 +116,9 @@ namespace Singularity.Map
             return mCollisionMap[x, y].IsWalkable();
         }
 
-        public List<Node> GetNeighbors(Node node)
+
+
+        public List<Node> GetNeighbors(Node node, bool diagonal)
         {
             var neighbors = new List<Node>();
             var x = node.X;
@@ -127,6 +140,7 @@ namespace Singularity.Map
             var s2 = false;
             var s3 = false;
 
+            // First figure out if the orthogonal neighbors are walkable
             // ↑
             if (IsWalkableAt(x, y - 1))
             {
@@ -156,7 +170,7 @@ namespace Singularity.Map
             var d1 = s0 || s1;
             var d2 = s1 || s2;
             var d3 = s2 || s3;
-            
+
             // ↖
             if (d0 && IsWalkableAt(x - 1, y - 1))
             {
