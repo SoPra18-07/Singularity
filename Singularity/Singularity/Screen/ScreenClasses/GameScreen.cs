@@ -13,6 +13,7 @@ using Singularity.Map.Properties;
 using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
+using Singularity.Sound;
 using Singularity.Units;
 
 namespace Singularity.Screen.ScreenClasses
@@ -24,6 +25,9 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     internal sealed class GameScreen : IScreen
     {
+
+        public bool Loaded { get; set; }
+
         // sprite textures
         private Texture2D mPlatformSheet;
         private Texture2D mMUnitSheet;
@@ -66,13 +70,17 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         private readonly LinkedList<ISpatial> mSpatialObjects;
 
+        private readonly SoundManager mSoundManager;
+
+        private Matrix mTransformMatrix;
+
         /// <summary>
         /// The camera object which holds transformation values.
         /// </summary>
         private Camera mCamera;
 
 
-        public GameScreen(GraphicsDevice graphicsDevice, InputManager inputManager)
+        public GameScreen(GraphicsDevice graphicsDevice, InputManager inputManager, SoundManager soundManager)
         {
             mGraphicsDevice = graphicsDevice;
 
@@ -80,6 +88,9 @@ namespace Singularity.Screen.ScreenClasses
             mUpdateables = new LinkedList<IUpdate>();
             mSpatialObjects = new LinkedList<ISpatial>();
 
+            mTransformMatrix = Matrix.Identity;
+
+            mSoundManager = soundManager;
             mInputManager = inputManager;
         }
 
@@ -88,7 +99,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // if you're interested in whats going on here, refer to the documentation of the FogOfWar class. 
 
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mCamera.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mTransformMatrix);
 
             foreach (var drawable in mDrawables)
             {
@@ -99,7 +110,7 @@ namespace Singularity.Screen.ScreenClasses
 
             mFow.DrawMasks(spriteBatch);
 
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, mFow.GetApplyMaskStencilState(), null, null, mCamera.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, mFow.GetApplyMaskStencilState(), null, null, mTransformMatrix);
 
             foreach (var spatial in mSpatialObjects)
             {
@@ -142,14 +153,17 @@ namespace Singularity.Screen.ScreenClasses
             }
             mFow.Update(gametime);
 
+            mTransformMatrix = mCamera.GetTransform();
+
 
         }
 
         public void LoadContent(ContentManager content)
         {
+
             var pathManager = new PathManager();
             var mapBackground = content.Load<Texture2D>("MockUpBackground");
-            mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, mInputManager, pathManager, true);
+            mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, mInputManager, pathManager);
             mCamera = mMap.GetCamera();
             //Give the Distributionmanager the Graph he is operating on. 
             //TODO: Talk about whether the DistributionManager should operate on all Graphs or if we want to make additional DMs.
@@ -167,8 +181,6 @@ namespace Singularity.Screen.ScreenClasses
             mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
-
-
 
             var genUnit2 = new GeneralUnit(mPlatform2, pathManager, dist);
             var genUnit3 = new GeneralUnit(mPlatform3, pathManager, dist);
@@ -236,9 +248,9 @@ namespace Singularity.Screen.ScreenClasses
             AddObject(genUnit5);
   
             AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
-
-            // artificially adding wait to test loading screen
-            System.Threading.Thread.Sleep(500);
+            
+            mSoundManager.SetLevelThemeMusic("Tutorial");
+            mSoundManager.SetSoundPhase(SoundPhase.Build);
         }
 
         public bool UpdateLower()

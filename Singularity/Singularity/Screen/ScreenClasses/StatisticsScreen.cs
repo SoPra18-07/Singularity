@@ -19,6 +19,8 @@ namespace Singularity.Screen.ScreenClasses
 
     class Statistics : IScreen
     {
+        public bool Loaded { get; set; }
+
         /// <summary>
         /// Updates the contents of the screen.
         /// </summary>

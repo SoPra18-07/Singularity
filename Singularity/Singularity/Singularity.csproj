@@ -133,9 +133,7 @@
     <Compile Include="Utils\Geometry.cs" />
     <Compile Include="Screen\IScreen.cs" />
     <Compile Include="Screen\IScreenManager.cs" />
-    <Compile Include="Screen\RenderLowerScreen.cs" />
     <Compile Include="Screen\StackScreenManager.cs" />
-    <Compile Include="Screen\UpdateLowerScreen.cs" />
     <Compile Include="Utils\IdGenerator.cs" />
     <Compile Include="Utils\Optional.cs" />
     <Compile Include="Utils\Pair.cs" />

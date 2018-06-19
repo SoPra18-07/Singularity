@@ -48,7 +48,8 @@ namespace Singularity
             mGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
 
             mInputManager = new InputManager();
-            mScreenManager = new StackScreenManager();
+
+            mScreenManager = new StackScreenManager(Content);
 
             mInputManager = new InputManager();
 
@@ -92,7 +93,7 @@ namespace Singularity
             // Create a new SpriteBatch, which can be used to draw textures.
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            mGameScreen = new GameScreen(mGraphics.GraphicsDevice, mInputManager);
+            mGameScreen = new GameScreen(mGraphics.GraphicsDevice, mInputManager, mSoundManager);
 
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
 
@@ -102,11 +103,10 @@ namespace Singularity
             mScreenManager.AddScreen(mGameScreen);
             mScreenManager.AddScreen(mMainMenuManager);
             
-            mMainMenuManager.LoadContent(Content);
-            
             // load and play Soundtrack as background music
             mSoundManager.LoadContent(Content);
-            mSoundManager.PlaySoundTrack();
+            mSoundManager.SetLevelThemeMusic("Singularity");
+            mSoundManager.SetSoundPhase(SoundPhase.Menu);
 
         }
 
