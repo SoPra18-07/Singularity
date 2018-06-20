@@ -16,6 +16,8 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     internal sealed class OptionsScreen : ITransitionableMenu
     {
+        public bool Loaded { get; set; }
+
         private readonly Game1 mGame;
 
         // layout. Made only once to reduce unnecssary calculations at draw time
