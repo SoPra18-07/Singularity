@@ -118,13 +118,6 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Update(GameTime gametime)
         {
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-            {
-                Point mousePosition = Mouse.GetState().Position;
-
-                Node node = mMap.GetCollisionMap().NodeAt(new Vector2(mousePosition.X, mousePosition.Y));
-            }
-
             foreach (var updateable in mUpdateables)
             {
                 updateable.Update(gametime);
@@ -192,8 +185,8 @@ namespace Singularity.Screen.ScreenClasses
 
             mFow = new FogOfWar(mCamera, mGraphicsDevice);
 
-            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
-            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), mInputManager);
+            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera(), mInputManager, mMap);
+            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), mInputManager, mMap);
 
             // load roads
             mRoad1 = new Road(mPlatform, mPlatform2, false);

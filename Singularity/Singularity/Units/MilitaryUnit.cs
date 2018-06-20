@@ -44,8 +44,9 @@ namespace Singularity.Units
 
         private float mMouseY;
 
-        private float mScale;
+        private readonly float mScale;
 
+        private Map.Map mMap;
 
         public Vector2 AbsolutePosition { get; set; }
 
@@ -65,7 +66,7 @@ namespace Singularity.Units
 
         public Rectangle AbsBounds { get; private set; }
 
-        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, InputManager manager)
+        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, InputManager manager, Map.Map map)
         {
             Id = IdGenerator.NextID(); // TODO this will later use a random number generator to create a unique
                     // id for the specific unit.
@@ -87,6 +88,8 @@ namespace Singularity.Units
             manager.AddMousePositionListener(this);
 
             mMilSheet = spriteSheet;
+
+            mMap = map;
         }
 
 

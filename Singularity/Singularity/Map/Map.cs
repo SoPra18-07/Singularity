@@ -135,27 +135,32 @@ namespace Singularity.Map
 
             }
             //draw the collision map grid.
+            for (int column = 0; column < mWidth; column++)
+            {
+                for (var i = 0; i < 5; i++)
+                {
+                    int xseparator = 20 * i;
+                    int yseparator = 10 * i;
+                    int xpos = column + mWidth;
+                    int ypos = column;
+                    int xpos2 = mWidth - column;
+                    spriteBatch.DrawLine(
+                        point: new Vector2(x: xpos * 100 + xseparator, y: ypos * 50 + yseparator),
+                        length: 2236.0679775f,
+                        angle: -0.463647609f + (float) Math.PI,
+                        color: Color.Blue,
+                        thickness: 1,
+                        layerDepth: LayerConstants.GridDebugLayer);
+                    spriteBatch.DrawLine(
+                        point: new Vector2(x: xpos2 * 100 - xseparator, y: ypos * 50 + yseparator),
+                        length: 2236.0679775f,
+                        angle: 0.463647609f,
+                        color: Color.Yellow,
+                        thickness: 1,
+                        layerDepth: LayerConstants.GridDebugLayer);
+                }
+            }
             /*
-            var collisionMap = mCollisionMap.GetCollisionMap();
-
-            for (var columnCount = collisionMap.GetLength(0); columnCount >= 0; columnCount--)
-            {
-                spriteBatch.DrawLine(
-                    point: new Vector2(x: columnCount * MapConstants.GridWidth, y: 0),
-                    length: MapConstants.MapHeight,
-                    angle: 0.463647609f,
-                    color: Color.Blue,
-                    thickness: 1,
-                    layerDepth: LayerConstants.GridDebugLayer);
-            }
-
-            for (var rowCount = collisionMap.GetLength(0); rowCount >= 0; rowCount--)
-            {
-                spriteBatch.DrawLine(
-                    point: new Vector2(x: 0, y: rowCount * MapConstants.GridHeight), length: MapConstants.MapWidth, angle: 0, color: Color.Yellow, thickness: 1, layerDepth: LayerConstants.GridDebugLayer);
-            }
-            */
-
             var colMap = mCollisionMap.GetCollisionMap();
 
             for(var i = 0; i < colMap.GetLength(dimension: 0); i++)
@@ -170,6 +175,7 @@ namespace Singularity.Map
                     }
                 }
             }
+            */
         }
 
         //TODO: remove if input manager is available since we only use this to pass an update to the camera.

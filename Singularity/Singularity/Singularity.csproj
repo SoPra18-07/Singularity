@@ -68,9 +68,9 @@
     <Compile Include="Libraries\QuadRenderer.cs" />
     <Compile Include="Map\Camera.cs" />
     <Compile Include="Map\CollisionMap.cs" />
+    <Compile Include="Map\CollisionNode.cs" />
     <Compile Include="Map\FogOfWar.cs" />
     <Compile Include="Map\Map.cs" />
-    <Compile Include="Map\Node.cs" />
     <Compile Include="Map\Properties\MapConstants.cs" />
     <Compile Include="Map\ResourceMap.cs" />
     <Compile Include="Map\StructureMap.cs" />
@@ -124,7 +124,6 @@
     <Compile Include="Units\GeneralUnit.cs" />
     <Compile Include="Units\IUnit.cs" />
     <Compile Include="Units\JobType.cs" />
-    <Compile Include="Units\MilitaryPathfinding.cs" />
     <Compile Include="Units\MilitaryUnit.cs" />
     <Compile Include="Property\IDraw.cs" />
     <Compile Include="Property\IUpdate.cs" />
@@ -145,6 +144,14 @@
     <Compile Include="Platform\ProduceResource.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="C5, Version=2.4.5947.17248, Culture=neutral, PublicKeyToken=282361b99ded7e8e, processorArchitecture=MSIL">
+      <HintPath>..\packages\C5.2.4.5947.17249\lib\net45\C5.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EpPathFinding.cs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EpPathFinding.cs.1.4.2\lib\EpPathFinding.cs.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using EpPathFinding.cs;
 using Microsoft.Xna.Framework;
 using Singularity.Map.Properties;
 using Singularity.Property;
@@ -12,7 +13,10 @@ namespace Singularity.Map
     /// The collision map is used to store all the colliding objects in a grid like fashion.
     /// </summary>
     internal sealed class CollisionMap
-    {   
+    {
+        // Number of cells in the grid
+        private readonly int mGridXLength;
+        private readonly int mGridYLength;
         /// <summary>
         /// The look up table is used to check whether a given collider is already present in the collision map
         /// </summary>
@@ -21,7 +25,7 @@ namespace Singularity.Map
         /// <summary>
         /// The collision map is used to store the position and the id of every object which is able to collide.
         /// </summary>
-        private readonly Node[,] mCollisionMap;
+        private readonly CollisionNode[,] mCollisionMap;
 
         /// <summary>
         /// Creates a new Collision map used to store and update all colliding objects.
@@ -30,17 +34,19 @@ namespace Singularity.Map
         {
             mLookUpTable = new Dictionary<int, Rectangle>();
 
+            mGridXLength = MapConstants.MapWidth / MapConstants.GridWidth;
+            mGridYLength = MapConstants.MapHeight / MapConstants.GridHeight;
 
-            mCollisionMap = new Node
+            mCollisionMap = new CollisionNode
             [
-                (MapConstants.MapWidth / MapConstants.GridWidth), 
-                (MapConstants.MapHeight / MapConstants.GridHeight)
+                mGridXLength, 
+                mGridYLength
             ];
             for (var i = 0; i < mCollisionMap.GetLength(0); i++)
             {
                 for (var j = 0; j < mCollisionMap.GetLength(1); j++)
                 {
-                    mCollisionMap[i, j] = new Node(i, j, Optional<ICollider>.Of(null));
+                    mCollisionMap[i, j] = new CollisionNode(i, j, Optional<ICollider>.Of(null));
 
                 }
             }
@@ -63,10 +69,10 @@ namespace Singularity.Map
 
                 for (var x = oldBounds.X / MapConstants.GridWidth; x <= (oldBounds.X + oldBounds.Width) / MapConstants.GridWidth; x++)
                 {
-                    for (var y = (oldBounds.Y / MapConstants.GridHeight); y <= ((oldBounds.Y + oldBounds.Height) / MapConstants.GridHeight); y++)
+                    for (var y = oldBounds.Y / MapConstants.GridHeight; y <= (oldBounds.Y + oldBounds.Height) / MapConstants.GridHeight; y++)
                     {
-
-                        mCollisionMap[x, y] = new Node(x, y, Optional<ICollider>.Of(null));
+                        // TODO: convert orthogonal position to an isometric position
+                        mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(null));
                     }
                 }
             }
@@ -77,7 +83,8 @@ namespace Singularity.Map
             {
                 for (var y = (collider.AbsBounds.Y / MapConstants.GridHeight); y <= ((collider.AbsBounds.Y + collider.AbsBounds.Height) / MapConstants.GridHeight) ; y++)
                 {
-                    mCollisionMap[x, y] = new Node(x, y, Optional<ICollider>.Of(collider));Optional<ICollider>.Of(collider);
+                    // TODO: convert orthogonal position to an isometric position
+                    mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(collider));Optional<ICollider>.Of(collider);
                 }
             }
 
@@ -85,122 +92,19 @@ namespace Singularity.Map
         }
 
         /// <summary>
-        /// Gets the node at a given absolute map coordinate.
-        /// </summary>
-        /// <param name="position">Map coordinate whose node is being asked for.</param>
-        /// <returns>Node at the given position.</returns>
-        public Node NodeAt(Vector2 position)
-        {
-            return mCollisionMap[(int) Math.Floor(position.X / MapConstants.GridWidth), (int) Math.Floor(position.Y / MapConstants.GridHeight)];
-        }
-
-        /// <summary>
-        /// Gets the node at a given grid coordinate.
+        /// Converts the orthogonal coordinates of a position to an isometric coordinate on the collision map
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        /// <returns>Note at the given position.</returns>
-        public Node GetNode(int x, int y)
+        /// <returns></returns>
+        private GridPos ToIsometricCoordinates(int x, int y)
         {
-            return mCollisionMap[x, y];
-        }
-
-        /// <summary>
-        /// Returns whether a node is walkable
-        /// </summary>
-        /// <param name="x">x coordinate of the node</param>
-        /// <param name="y">y coordinate of the node</param>
-        /// <returns>True if the node is walkable</returns>
-        public bool IsWalkableAt(int x, int y)
-        {
-            return mCollisionMap[x, y].IsWalkable();
-        }
-
-
-
-        public List<Node> GetNeighbors(Node node, bool diagonal)
-        {
-            var neighbors = new List<Node>();
-            var x = node.X;
-            var y = node.Y;
-
-            /**
-             * map of neighbors is like so:
-             * +----+----+----+
-             * | d0 | s0 | d1 |
-             * +----+----+----+
-             * | s3 |    | s1 |
-             * +----+----+----+
-             * | d3 | s2 | d2 |
-             * +----+----+----+
-             *
-             */
-            var s0 = false;
-            var s1 = false;
-            var s2 = false;
-            var s3 = false;
-
-            // First figure out if the orthogonal neighbors are walkable
-            // ↑
-            if (IsWalkableAt(x, y - 1))
-            {
-                neighbors.Add(mCollisionMap[x, y-1]);
-                s0 = true;
-            }
-            // →
-            if (IsWalkableAt(x + 1, y))
-            {
-                neighbors.Add(mCollisionMap[x + 1, y]);
-                s1 = true;
-            }
-            // ↓
-            if (IsWalkableAt(x, y + 1))
-            {
-                neighbors.Add(mCollisionMap[x, y + 1]);
-                s2 = true;
-            }
-            // ←
-            if (IsWalkableAt(x-1, y))
-            {
-                neighbors.Add(mCollisionMap[x-1, y]);
-                s3 = true;
-            }
-
-            var d0 = s3 || s0;
-            var d1 = s0 || s1;
-            var d2 = s1 || s2;
-            var d3 = s2 || s3;
-
-            // ↖
-            if (d0 && IsWalkableAt(x - 1, y - 1))
-            {
-                neighbors.Add(mCollisionMap[x - 1, y - 1]);
-            }
-
-            // ↗
-            if (d1 && IsWalkableAt(x + 1, y - 1))
-            {
-                neighbors.Add(mCollisionMap[x + 1, y - 1]);
-            }
-
-            // ↘
-            if (d2 && IsWalkableAt(x + 1, y + 1))
-            {
-                neighbors.Add(mCollisionMap[x + 1, y + 1]);
-            }
-
-            // ↙
-            if (d3 && IsWalkableAt(x - 1, y + 1))
-            {
-                neighbors.Add(mCollisionMap[x - 1, y + 1]);
-            }
-
-            return neighbors;
+            throw new NotImplementedException(); 
         }
 
 
         //TODO: this method exists solely for debugging purposes, so the map can draw a representation of the current collision map.
-        public Node[,] GetCollisionMap()
+        public CollisionNode[,] GetCollisionMap()
         {
             return mCollisionMap;
         }
