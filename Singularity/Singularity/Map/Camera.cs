@@ -7,7 +7,7 @@ using Singularity.Map.Properties;
 using Singularity.Property;
 
 namespace Singularity.Map
-{   
+{
     //TODO: update in such a way that zoom is centered on the current mouse position
     /// <inheritdoc/>
     /// <remarks>
@@ -98,7 +98,7 @@ namespace Singularity.Map
         public void Update(GameTime gametime)
         {
 
-            //finally update the matrix to all the fitting values.    
+            //finally update the matrix to all the fitting values.
             UpdateTransformMatrix();
         }
 
@@ -117,7 +117,7 @@ namespace Singularity.Map
         /// clip to the edge if its the case.
         /// </summary>
         private void ValidatePosition()
-        {   
+        {
             // first of all we need to update our matrix with the new values, since they got changed by moving.
             UpdateTransformMatrix();
 
@@ -184,7 +184,7 @@ namespace Singularity.Map
 
         public void KeyTyped(KeyEvent keyEvent)
         {
-            
+
         }
 
         public void KeyPressed(KeyEvent keyEvent)
@@ -226,7 +226,7 @@ namespace Singularity.Map
 
         public void KeyReleased(KeyEvent keyEvent)
         {
-            
+
         }
 
         public void MouseWheelValueChanged(EMouseAction mouseAction)

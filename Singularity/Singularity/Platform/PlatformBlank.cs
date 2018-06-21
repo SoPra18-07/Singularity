@@ -321,7 +321,7 @@ namespace Singularity.Platform
                         SpriteEffects.None,
                         LayerConstants.PlatformLayer);
                     break;
-                
+
             }
         }
 
@@ -355,7 +355,7 @@ namespace Singularity.Platform
 
             //Add Costs of the platform here if you got them.
             MCost = new Dictionary<EResourceType, int>();
-            
+
             MResources = new List<Resource>();
 
             _mSpritesheet = spritesheet;

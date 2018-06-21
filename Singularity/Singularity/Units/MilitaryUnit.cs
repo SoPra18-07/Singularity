@@ -70,7 +70,7 @@ namespace Singularity.Units
             Id = IdGenerator.NextiD(); // TODO this will later use a random number generator to create a unique
                     // id for the specific unit.
             Health = 10; //TODO
-            
+
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(DefaultWidth, DefaultHeight);
 
@@ -160,16 +160,16 @@ namespace Singularity.Units
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            
+
             spriteBatch.Draw(
-                _mMilSheet, 
-                AbsolutePosition, 
-                new Rectangle((150 * _mColumn), (75 * _mRow), (int) AbsoluteSize.X, (int) AbsoluteSize.Y), 
-                _mColor, 
-                0f, 
-                Vector2.Zero, 
-                Vector2.One, 
-                SpriteEffects.None, 
+                _mMilSheet,
+                AbsolutePosition,
+                new Rectangle((150 * _mColumn), (75 * _mRow), (int) AbsoluteSize.X, (int) AbsoluteSize.Y),
+                _mColor,
+                0f,
+                Vector2.Zero,
+                Vector2.One,
+                SpriteEffects.None,
                 LayerConstants.MilitaryUnitLayer
                 );
 
@@ -213,7 +213,7 @@ namespace Singularity.Units
         }
 
         /// <summary>
-        /// Calculates the direction the unit should be moving and moves it into that direction. 
+        /// Calculates the direction the unit should be moving and moves it into that direction.
         /// </summary>
         /// <param name="target">The target to which to move</param>
         private void MoveToTarget(Vector2 target)
@@ -257,7 +257,7 @@ namespace Singularity.Units
                         _mZoomSnapshot = _mCamera.GetZoom();
                     }
 
-                    if (withinBounds) { 
+                    if (withinBounds) {
                         _mSelected = true;
                     }
                     return;
@@ -270,12 +270,12 @@ namespace Singularity.Units
 
         public void MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {
-            
+
         }
 
         public void MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
-           
+
         }
 
         public void MousePositionChanged(float newX, float newY)

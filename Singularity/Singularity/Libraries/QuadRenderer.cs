@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Singularity.Libraries
 {
     /// <summary>
-    /// Renders a simple quad to the screen. Uncomment the Vertex / Index buffers to make it a static fullscreen quad. 
+    /// Renders a simple quad to the screen. Uncomment the Vertex / Index buffers to make it a static fullscreen quad.
     /// The performance effect is barely measurable though and you need to dispose of the buffers when finished!
     /// </summary>
     public class QuadRenderer
@@ -36,7 +36,7 @@ namespace Singularity.Libraries
 
             //_vBuffer.SetData(_vertexBuffer);
             //_iBuffer.SetData(_indexBuffer);
-            
+
         }
 
         public void RenderQuad(GraphicsDevice graphicsDevice, Vector2 v1, Vector2 v2)
@@ -58,7 +58,7 @@ namespace Singularity.Libraries
 
             //graphicsDevice.SetVertexBuffer(_vBuffer);
             //graphicsDevice.Indices = (_iBuffer);
-            
+
             //graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0,
             //    0, 2);
         }

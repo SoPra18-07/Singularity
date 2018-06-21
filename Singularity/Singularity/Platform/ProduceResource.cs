@@ -75,7 +75,7 @@ namespace Singularity.Platform
         public BuildBluePrint(PlatformBlank platform, PlatformBlank toBeBuilt) : base(platform)
         {
             _mRequiredResources = toBeBuilt.GetResourcesRequired();
-        }   
+        }
 
         public override List<JobType> UnitsRequired { get; } = new List<JobType>{ JobType.Construction };
 

@@ -332,7 +332,7 @@ namespace Singularity.Sound
         }
 
         /// <summary>
-        /// Pause the currently playing sounds of the given class. 
+        /// Pause the currently playing sounds of the given class.
         /// </summary>
         /// <param name="soundClass">The SoundClass to pause.</param>
 		public void PauseSoundClass(SoundClass soundClass)

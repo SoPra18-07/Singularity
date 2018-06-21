@@ -10,7 +10,7 @@ namespace Singularity.Libraries
     /// Website: http://jcpmcdonald.com/2d-xna-primitives
     /// Copyright (c) 2012 John McDonald and Gary Texmo
     ///
-    /// This library enables the drawing of 2D primitives in XNA using a fast 
+    /// This library enables the drawing of 2D primitives in XNA using a fast
     /// </summary>
     public static class Primitives2D
     {
@@ -108,7 +108,7 @@ namespace Singularity.Libraries
             const double precision = 0.001;
 
             // The reason for the double the two different for loops is so the points are "sorted" correctly. We want to draw lines
-            // between all of the vectors we add, so we need to make sure that "neighbours" are added next to each other. 
+            // between all of the vectors we add, so we need to make sure that "neighbours" are added next to each other.
 
             // this is EXTREMELY inefficient. This is the most naive way to calculate and has the highest resolution (according to precision) that can
             // be shown on screen. This will definitely need some kind of rework.
@@ -736,7 +736,7 @@ namespace Singularity.Libraries
         /// <param name="opacityCenter">opacity of the circle center</param>
 	    public static void StrokedCircle(this SpriteBatch spriteBatch, Vector2 center, int radius, Color colorBorder, Color colorCenter, float opacityBorder, float opacityCenter)
         {
-            // 3 pixel wide border of the circle 
+            // 3 pixel wide border of the circle
             DrawCircle(spriteBatch, center, radius, 100, colorBorder * opacityBorder, 1);
             // fills the circle
             DrawCircle(spriteBatch, center, radius - 1, 100, colorCenter * opacityCenter, radius - 1);
@@ -752,7 +752,7 @@ namespace Singularity.Libraries
         /// <param name="colorCenter"> color of the center of circle</param>
         public static void StrokedCircle(this SpriteBatch spriteBatch, Vector2 center, int radius, Color colorBorder, Color colorCenter)
         {
-            // 3 pixel wide border of the circle 
+            // 3 pixel wide border of the circle
             DrawCircle(spriteBatch, center, radius, 100, colorBorder, 1);
             // fills the circle
             DrawCircle(spriteBatch, center, radius - 1, 100, colorCenter, radius - 1);

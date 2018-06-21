@@ -13,7 +13,7 @@ namespace Singularity
     {
         internal readonly GraphicsDeviceManager MGraphics;
         internal readonly GraphicsAdapter MGraphicsAdapter;
-        
+
 
         // Screens
         internal GameScreen MGameScreen;
@@ -28,7 +28,7 @@ namespace Singularity
         private readonly IScreenManager _mScreenManager;
 
 
-        // 
+        //
         private readonly Director _director;
 
 
@@ -38,7 +38,7 @@ namespace Singularity
             Content.RootDirectory = "Content";
 
             MGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
-            
+
             _mScreenManager = new StackScreenManager(Content);
             _director = new Director(Content);
 
@@ -84,7 +84,7 @@ namespace Singularity
             _mScreenManager.AddScreen(_mMainMenuManager);
 
             _mMainMenuManager.LoadContent(Content);
-            
+
             // load and play Soundtrack as background music
             // todo this
             // director.GetSoundManager.LoadContent(Content);

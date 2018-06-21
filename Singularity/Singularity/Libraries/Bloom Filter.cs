@@ -7,39 +7,39 @@ using Singularity.Libraries;
 namespace Libraries
 {
     /// <summary>
-    /// 
+    ///
     /// Version 1.1, 16. Dez. 2016
-    /// 
+    ///
     /// Bloom / Blur, 2016 TheKosmonaut
-    /// 
+    ///
     /// High-Quality Bloom filter for high-performance applications
-    /// 
+    ///
     /// Based largely on the implementations in Unreal Engine 4 and Call of Duty AW
     /// For more information look for
     /// "Next Generation Post Processing in Call of Duty Advanced Warfare" by Jorge Jimenez
     /// http://www.iryoku.com/downloads/Next-Generation-Post-Processing-in-Call-of-Duty-Advanced-Warfare-v18.pptx
-    /// 
+    ///
     /// The idea is to have several rendertargets or one rendertarget with several mip maps
     /// so each mip has half resolution (1/2 width and 1/2 height) of the previous one.
-    /// 
+    ///
     /// 32, 16, 8, 4, 2
-    /// 
+    ///
     /// In the first step we extract the bright spots from the original image. If not specified otherwise thsi happens in full resolution.
     /// We can do that based on the average RGB value or Luminance and check whether this value is higher than our Threshold.
     ///     BloomUseLuminance = true / false (default is true)
     ///     BloomThreshold = 0.8f;
-    /// 
+    ///
     /// Then we downscale this extraction layer to the next mip map.
     /// While doing that we sample several pixels around the origin.
     /// We continue to downsample a few more times, defined in
     ///     mBloomDownsamplePasses = 5 ( default is 5)
-    /// 
+    ///
     /// Afterwards we upsample again, but blur in this step, too.
     /// The final output should be a blur with a very large kernel and smooth gradient.
-    /// 
-    /// The output in the draw is only the blurred extracted texture. 
+    ///
+    /// The output in the draw is only the blurred extracted texture.
     /// It can be drawn on top of / merged with the original image with an additive operation for example.
-    /// 
+    ///
     /// If you use ToneMapping you should apply Bloom before that step.
     /// </summary>
     public class BloomFilter : IDisposable
@@ -96,7 +96,7 @@ namespace Libraries
         private float _mBloomStrength5 = 1.0f;
 
         private float _bloomStrengthMultiplier = 1.0f;
-        
+
         private float _mRadiusMultiplier = 1.0f;
 
 
@@ -233,7 +233,7 @@ namespace Libraries
         {
             _mGraphicsDevice = graphicsDevice;
             UpdateResolution(width, height);
-    
+
             //if quadRenderer == null -> new, otherwise not
             _mQuadRenderer = quadRenderer ?? new QuadRenderer(graphicsDevice);
 
@@ -390,7 +390,7 @@ namespace Libraries
         /// <param name="height">see: width</param>
         /// <returns></returns>
         public Texture2D Draw(Texture2D inputTexture, int width, int height)
-        { 
+        {
             //Check if we are initialized
             if(_mGraphicsDevice==null)
             {
@@ -404,7 +404,7 @@ namespace Libraries
 
                 //Adjust the blur so it looks consistent across diferrent scalings
                 _mRadiusMultiplier = (float)width / inputTexture.Width;
-                
+
                 //Update our variables with the multiplier
                 SetBloomPreset(BloomPreset);
             }
@@ -418,7 +418,7 @@ namespace Libraries
 
             BloomScreenTexture = inputTexture;
             BloomInverseResolution = new Vector2(1.0f / _mWidth, 1.0f / _mHeight);
-            
+
             if (_bloomUseLuminance)
             {
                 _mBloomPassExtractLuminance.Apply();
@@ -429,7 +429,7 @@ namespace Libraries
             }
 
             _mQuadRenderer.RenderQuad(_mGraphicsDevice, Vector2.One * -1, Vector2.One);
-            
+
             //Now downsample to the next lower mip texture
             if (_mBloomDownsamplePasses > 0)
             {
@@ -465,7 +465,7 @@ namespace Libraries
                         //Pass
                         _mBloomPassDownsample.Apply();
                         _mQuadRenderer.RenderQuad(_mGraphicsDevice, Vector2.One * -1, Vector2.One);
-                        
+
                         if (_mBloomDownsamplePasses > 3)
                         {
                             BloomInverseResolution *= 2;
@@ -491,7 +491,7 @@ namespace Libraries
                                 _mQuadRenderer.RenderQuad(_mGraphicsDevice, Vector2.One * -1, Vector2.One);
 
                                 ChangeBlendState();
-                                
+
                                 //UPSAMPLE TO MIP4
                                 _mGraphicsDevice.SetRenderTarget(_mBloomRenderTarget2DMip4);
                                 BloomScreenTexture = _mBloomRenderTarget2DMip5;
@@ -511,7 +511,7 @@ namespace Libraries
 
                                 BloomInverseResolution /= 2;
                             }
-                            
+
                             ChangeBlendState();
 
                             //UPSAMPLE TO MIP3
@@ -602,7 +602,7 @@ namespace Libraries
             }
 
             //Note the final step could be done as a blend to the final texture.
-            
+
             return _mBloomRenderTarget2DMip0;
         }
 

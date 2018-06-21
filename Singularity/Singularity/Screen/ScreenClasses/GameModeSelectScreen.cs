@@ -50,7 +50,7 @@ namespace Singularity.Screen.ScreenClasses
         // Layout Variables
         private readonly float _mButtonTopPadding;
         private readonly float _mButtonLeftPadding;
-        
+
 
         public GameModeSelectScreen(Vector2 screenResolution)
         {
