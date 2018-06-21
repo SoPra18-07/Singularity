@@ -37,14 +37,14 @@ namespace Singularity.Screen
         /// </summary>
         public float Opacity { private get; set; }
 
-        // these events are sent out when they occur to an 
+        // these events are sent out when they occur to an
         // instance of a button
         // HOW TO USE:
         // put this in the class where an instance of a button is generated:
         // NameOfButtonInsance.Event += ClassToReceiveEvent.NameOfMethodInWhichClassReceivesEvent;
-        // the above subscribes the "ClassToReceiveEvent" to the button event (it activate the "NameOfMethodInWhichClassReceivesEvent"
+        // the above subscribes the "ClassToReceiveEvent" to the button event (it activate the "NameOfMethodInWhichClassReceivesEvent")
         // when the event occurs
-        // In the ClassToReceiveEvent create the method NameOfMethodInWhichClassReceivesEvent and write in the 
+        // In the ClassToReceiveEvent create the method NameOfMethodInWhichClassReceivesEvent and write in the
         // code you which to be executed when Event occurs
         // public static void NameOfMethodInWhichClassReceivesEvent(Object sender, EventArgs eventArg){ .....}
         public event EventHandler ButtonReleased;
@@ -64,12 +64,15 @@ namespace Singularity.Screen
             _mScale = scale;
             _mButtonTexture = buttonTexture;
             _mPosition = position;
-            _mWidth = _mButtonTexture.Width;
-            _mHeight = _mButtonTexture.Height;
+            _mWidth = (int)(_mButtonTexture.Width * scale);
+            _mHeight = (int)(_mButtonTexture.Height * scale);
             _mColor = Color.White;
             CreateRectangularBounds();
+            Opacity = 1;
 
         }
+
+
 
         /// <summary>
         /// Creates a Button made of text
@@ -144,7 +147,7 @@ namespace Singularity.Screen
 
         /// <summary>
         /// Draws either ther Texture2D or string representation of
-        /// the button. 
+        /// the button.
         /// </summary>
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
@@ -163,7 +166,8 @@ namespace Singularity.Screen
                     0f);
                 if (_mWithBorder)
                 {
-                    spriteBatch.DrawRectangle(new Vector2(_mPosition.X - 1, _mPosition.Y - 1), new Vector2(_mButtonTexture.Width + 1, _mButtonTexture.Height + 1), Color.White, 1);
+                    // draw border around texture if feauture selected
+                    spriteBatch.DrawRectangle(mPosition, new Vector2(mWidth, mHeight), Color.White, 1);
                 }
 
             }

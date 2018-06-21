@@ -27,5 +27,11 @@ namespace Singularity.Screen
         /// </summary>
         /// <returns>true if the lower screen should be drawn, false otherwise</returns>
         bool DrawLower();
+
+        /// <summary>
+        /// Determines whether the screen is already loaded or not
+        /// </summary>
+        /// <returns>true if the screen has once been loaded, false otherwise</returns>
+        bool Loaded { get; set; }
     }
 }

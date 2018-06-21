@@ -8,6 +8,8 @@ namespace Singularity.Screen.ScreenClasses
 {
     internal sealed class MainMenuManagerScreen : IScreen
     {
+        public bool Loaded { get; set; }
+
         /// <inheritdoc cref="IScreen"/>
         /// <summary>
         /// Manages the main menu. This is the screen that is first loaded into the stack screen manager
@@ -25,7 +27,7 @@ namespace Singularity.Screen.ScreenClasses
         private ITransitionableMenu _mSplashScreen;
         private ITransitionableMenu _mMainMenuScreen;
         private ITransitionableMenu _mLoadingScreen;
-        
+
         // Background
         private MenuBackgroundScreen _mMenuBackgroundScreen;
 
@@ -35,7 +37,7 @@ namespace Singularity.Screen.ScreenClasses
 
         // The game itself (to allow for quitting)
         private readonly Game1 _mGame;
-        
+
         // viewport resolution changes
         private static Vector2 _sViewportResolution;
         private static bool _sResolutionChanged;
@@ -54,9 +56,9 @@ namespace Singularity.Screen.ScreenClasses
         {
             _mScreenManager = screenManager;
             _mGame = game;
-            
+
             Initialize(screenResolution, false, game);
-            
+
             _mScreenState = showSplash ? EScreen.SplashScreen : EScreen.MainMenuScreen;
 
             _sPressed = "None";
@@ -186,7 +188,7 @@ namespace Singularity.Screen.ScreenClasses
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
+
         }
 
         /// <summary>
@@ -295,7 +297,7 @@ namespace Singularity.Screen.ScreenClasses
         public bool UpdateLower()
         {
             // below this screen is the game so it shouldn't update the game
-            return _mScreenState == EScreen.GameScreen;
+            return false;
         }
 
         /// <summary>
@@ -304,7 +306,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>Bool. If true, then the screen below this will be drawn.</returns>
         public bool DrawLower()
         {
-            return _mScreenState == EScreen.GameScreen? true : false;
+            return false;
         }
 
         public static void SetResolution(Vector2 viewportResolution)
@@ -417,7 +419,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO: implement start game with story
             throw new NotImplementedException("No story yet unfortunately");
 
-            
+
         }
 
         /// <summary>

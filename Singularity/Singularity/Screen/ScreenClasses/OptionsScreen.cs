@@ -16,6 +16,8 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     internal sealed class OptionsScreen : ITransitionableMenu
     {
+        public bool Loaded { get; set; }
+
         private readonly Game1 _mGame;
 
         // layout. Made only once to reduce unnecssary calculations at draw time
@@ -62,7 +64,7 @@ namespace Singularity.Screen.ScreenClasses
         private Button _mResolution1; // todo replace with a better system
         private Button _mResolution2; // todo replace with a better system
         private Button _mAntialiasing; // todo replace with a toggle
-        
+
         // Audio tab
         // todo add the following:
         private readonly List<Button> _mAudioButtons;
@@ -211,7 +213,7 @@ namespace Singularity.Screen.ScreenClasses
             switch (_mScreenState)
             {
                 case EOptionScreenState.Gameplay:
-                    
+
                     break;
                 case EOptionScreenState.Graphics:
                     foreach (Button button in _mGraphicsButtons)
@@ -451,7 +453,7 @@ namespace Singularity.Screen.ScreenClasses
             _mTransitionDuration = 350f;
             _mTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
             TransitionRunning = true;
-        
+
         }
     }
 }

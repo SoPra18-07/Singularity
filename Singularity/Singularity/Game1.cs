@@ -24,8 +24,13 @@ namespace Singularity
 
 
         // Sprites!
+<<<<<<< HEAD
         private SpriteBatch _mSpriteBatch;
-        
+
+=======
+        private SpriteBatch mSpriteBatch;
+
+>>>>>>> master
 
         // Screen Manager
         private readonly IScreenManager _mScreenManager;
@@ -37,8 +42,14 @@ namespace Singularity
 
             MGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
 
+<<<<<<< HEAD
             _mInputManager = new InputManager();
             _mScreenManager = new StackScreenManager();
+=======
+            mInputManager = new InputManager();
+
+            mScreenManager = new StackScreenManager(Content);
+>>>>>>> master
 
             _mInputManager = new InputManager();
 
@@ -82,7 +93,7 @@ namespace Singularity
             // Create a new SpriteBatch, which can be used to draw textures.
             _mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            MGameScreen = new GameScreen(MGraphics.GraphicsDevice, _mInputManager);
+            mGameScreen = new GameScreen(mGraphics.GraphicsDevice, _mInputManager, _mSoundManager);
 
             _mMainMenuManager = new MainMenuManagerScreen(viewportResolution, _mScreenManager, true, this);
 
@@ -91,9 +102,9 @@ namespace Singularity
             // on top of it.
             _mScreenManager.AddScreen(MGameScreen);
             _mScreenManager.AddScreen(_mMainMenuManager);
-            
+
             _mMainMenuManager.LoadContent(Content);
-            
+
             // load and play Soundtrack as background music
             _mSoundManager.LoadContent(Content);
             _mSoundManager.PlaySoundTrack();
@@ -116,9 +127,6 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // a new static input manager. It requires updating every tick to figure out where
-            // the mouse is.
-            InputManager2.Update(gameTime);
 
             _mInputManager.Update(gameTime);
             _mScreenManager.Update(gameTime);

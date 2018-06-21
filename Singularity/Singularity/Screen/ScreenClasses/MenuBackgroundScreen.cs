@@ -15,6 +15,8 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     class MenuBackgroundScreen : ITransitionableMenu
     {
+        public bool Loaded { get; set; }
+
         private Texture2D _mGlowTexture2D;
         private Texture2D _mHoloProjectionTexture2D;
         private Vector2 _mScreenCenter;
@@ -40,8 +42,8 @@ namespace Singularity.Screen.ScreenClasses
         private float _mTargetHoloOpacity;
         private float _mFlickerStep;
         private bool _mFlickering;
-        
-        
+
+
         /// <summary>
         /// Creates the MenuBackgroundScreen class.
         /// </summary>
@@ -148,7 +150,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             // code for transitioning
             Transition(gameTime);
-            
+
             Flicker();
         }
 
@@ -200,7 +202,7 @@ namespace Singularity.Screen.ScreenClasses
             else
             {
                 _mHoloOpacity += _mFlickerStep;
-                
+
                 // "Finish flicker" state set
                 if (_mFlickerStep > 0)
                 {
@@ -298,7 +300,7 @@ namespace Singularity.Screen.ScreenClasses
                 Color.White * _mHoloOpacity,
                 0f,
                 new Vector2(367, 1033),
-                new Vector2(_mHoloProjectionWidthScaling, _mHoloProjectionHeightScaling), 
+                new Vector2(_mHoloProjectionWidthScaling, _mHoloProjectionHeightScaling),
                 SpriteEffects.None,
                 0f);
 
@@ -326,7 +328,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             return true;
         }
-        
+
         /// <summary>
         /// Determines whether or not the screen below this on the stack should be drawn.
         /// </summary>

@@ -17,6 +17,8 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     class SplashScreen : ITransitionableMenu
     {
+        public bool Loaded { get; set; }
+
         // TODO either add bloom to the text or make it a sprite
         private Texture2D _mLogoTexture2D;
         private Texture2D _mSingularityText;

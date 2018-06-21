@@ -12,6 +12,9 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     class LoadingScreen : ITransitionableMenu
     {
+
+        public bool Loaded { get; set; }
+
         private Texture2D _mLogo;
         private readonly Vector2 _mLogoPosition;
         public bool TransitionRunning { get; }
@@ -45,7 +48,7 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.Begin();
 
             spriteBatch.Draw(_mLogo, _mLogoPosition, null, Color.White, 0f, Vector2.Zero, 0.14f, SpriteEffects.None, 0f);
-            
+
             spriteBatch.End();
         }
 
@@ -76,7 +79,7 @@ namespace Singularity.Screen.ScreenClasses
             return false;
         }
 
-        
+
         public void TransitionTo(EScreen originScreen, EScreen targetScreen, GameTime gameTime)
         {
             // transition not necessary

@@ -17,6 +17,8 @@ namespace Singularity.Screen.ScreenClasses
 
     internal sealed class GameModeSelectScreen : ITransitionableMenu
     {
+        public bool Loaded { get; set; }
+
 
         private readonly string _mStoryString;
         private readonly string _mFreePlayString;

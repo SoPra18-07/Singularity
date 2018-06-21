@@ -21,6 +21,9 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     internal sealed class GameScreen : IScreen
     {
+
+        public bool Loaded { get; set; }
+
         // sprite textures
         private Texture2D _mPlatformSheet;
         private Texture2D _mMUnitSheet;
@@ -64,13 +67,17 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         private readonly LinkedList<ISpatial> _mSpatialObjects;
 
+        private readonly SoundManager mSoundManager;
+
+        private Matrix mTransformMatrix;
+
         /// <summary>
         /// The camera object which holds transformation values.
         /// </summary>
         private Camera _mCamera;
 
 
-        public GameScreen(GraphicsDevice graphicsDevice, InputManager inputManager)
+        public GameScreen(GraphicsDevice graphicsDevice, InputManager inputManager, SoundManager soundManager)
         {
             _mGraphicsDevice = graphicsDevice;
 
@@ -87,9 +94,9 @@ namespace Singularity.Screen.ScreenClasses
         public void Draw(SpriteBatch spriteBatch)
         {
 
-            // if you're interested in whats going on here, refer to the documentation of the FogOfWar class. 
+            // if you're interested in whats going on here, refer to the documentation of the FogOfWar class.
 
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, _mCamera.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mTransformMatrix);
 
             foreach (var drawable in _mDrawables)
             {
@@ -100,7 +107,7 @@ namespace Singularity.Screen.ScreenClasses
 
             _mFow.DrawMasks(spriteBatch);
 
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, _mFow.GetApplyMaskStencilState(), null, null, _mCamera.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, _mFow.GetApplyMaskStencilState(), null, null, mTransformMatrix);
 
             foreach (var spatial in _mSpatialObjects)
             {
@@ -109,7 +116,7 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.End();
 
             _mFow.FillInvertedMask(spriteBatch);
-           
+
 
         }
 
@@ -143,15 +150,19 @@ namespace Singularity.Screen.ScreenClasses
             }
             _mFow.Update(gametime);
 
+            mTransformMatrix = mCamera.GetTransform();
+
 
         }
 
         public void LoadContent(ContentManager content)
         {
+
             var mapBackground = content.Load<Texture2D>("MockUpBackground");
-            _mMap = new Map.Map(mapBackground, _mGraphicsDevice.Viewport, director, true);
+            _mMap = new Map.Map(mapBackground, _mGraphicsDevice.Viewport, director);
             _mCamera = _mMap.GetCamera();
-            //Give the Distributionmanager the Graph he is operating on. 
+
+            //Give the Distributionmanager the Graph he is operating on.
             //TODO: Talk about whether the DistributionManager should operate on all Graphs or if we want to make additional DMs.
             var dist = new Manager.DistributionManager();
 
@@ -168,15 +179,15 @@ namespace Singularity.Screen.ScreenClasses
             _mPlatform3 = new EnergyFacility(new Vector2(600, 200), _mPlatformDomeTexture);
             _mPlatform3 = new EnergyFacility(new Vector2(600, 200), _mPlatformDomeTexture);
 
-            var genUnit2 = new GeneralUnit(_mPlatform2, director.GetPathManager, dist);
-            var genUnit3 = new GeneralUnit(_mPlatform3, director.GetPathManager, dist);
+            var genUnit2 = new GeneralUnit(_mPlatform2, director);
+            var genUnit3 = new GeneralUnit(_mPlatform3, director);
 
             var platform4 = new Well(new Vector2(1000, 200), _mPlatformDomeTexture, _mMap.GetResourceMap());
             var platform5 = new Quarry(new Vector2(1300, 400), _mPlatformDomeTexture, _mMap.GetResourceMap());
 
-            var genUnit = new GeneralUnit(_mPlatform, director.GetPathManager, dist);
-            var genUnit4 = new GeneralUnit(platform4, director.GetPathManager, dist);
-            var genUnit5 = new GeneralUnit(platform5, director.GetPathManager, dist);
+            var genUnit = new GeneralUnit(_mPlatform, director);
+            var genUnit4 = new GeneralUnit(platform4, director);
+            var genUnit5 = new GeneralUnit(platform5, director);
 
             _mFow = new FogOfWar(_mCamera, _mGraphicsDevice);
 
@@ -232,11 +243,11 @@ namespace Singularity.Screen.ScreenClasses
             AddObject(genUnit3);
             AddObject(genUnit4);
             AddObject(genUnit5);
-  
+
             AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
 
-            // artificially adding wait to test loading screen
-            System.Threading.Thread.Sleep(500);
+            mSoundManager.SetLevelThemeMusic("Tutorial");
+            mSoundManager.SetSoundPhase(SoundPhase.Build);
         }
 
         public bool UpdateLower()
@@ -285,14 +296,14 @@ namespace Singularity.Screen.ScreenClasses
         public bool AddObjects<T>(IEnumerable<T> toAdd)
         {
             bool isSuccessful = true;
-   
+
             foreach (var t in toAdd)
             {
                 isSuccessful = isSuccessful && AddObject<T>(t);
             }
-   
+
             return isSuccessful;
-   
+
         }
 
         /// <summary>

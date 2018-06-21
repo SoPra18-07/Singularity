@@ -16,6 +16,8 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     internal sealed class MainMenuScreen : ITransitionableMenu
     {
+        public bool Loaded { get; set; }
+
         private EScreen _mScreenState;
 
         // Fonts
@@ -316,6 +318,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             return true;
         }
+
 
         #region Button Hover Handlers
 

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Singularity.Exceptions;
 using Singularity.Graph.Paths;
 using Singularity.Input;
 using Singularity.Libraries;
@@ -12,9 +14,9 @@ using Singularity.Property;
 using Singularity.Resources;
 
 namespace Singularity.Map
-{   
-    internal sealed class Map : IDraw, IUpdate
-    {   
+{
+    internal sealed class Map : IDraw, IUpdate, IKeyListener
+    {
         private readonly CollisionMap _mCollisionMap;
         public readonly StructureMap MStructureMap;
         private readonly ResourceMap _mResourceMap;
@@ -41,6 +43,7 @@ namespace Singularity.Map
             _mBackgroundTexture = backgroundTexture;
             _mDebug = debug;
 
+
             _mCamera = new Camera(viewport, director, 0, 0);
 
             _mCollisionMap = new CollisionMap();
@@ -55,7 +58,7 @@ namespace Singularity.Map
         }
 
         public void Draw(SpriteBatch spriteBatch)
-        {   
+        {
 
             //draw the background texture
             spriteBatch.Draw(_mBackgroundTexture,
@@ -66,7 +69,7 @@ namespace Singularity.Map
                 Vector2.Zero,
                 SpriteEffects.None,
                 LayerConstants.MapLayer);
-            
+
 
 
             //make sure to only draw the grid if a texture is given.
@@ -100,7 +103,7 @@ namespace Singularity.Map
                     if (colMap[i, j].IsPresent())
                     {
 
-                        spriteBatch.FillRectangle(new Rectangle(i * MapConstants.GridWidth, j * MapConstants.GridHeight, MapConstants.GridWidth, MapConstants.GridHeight), 
+                        spriteBatch.FillRectangle(new Rectangle(i * MapConstants.GridWidth, j * MapConstants.GridHeight, MapConstants.GridWidth, MapConstants.GridHeight),
                             new Color(new Vector4(1, 0, 0, 0.2f)), 0f, LayerConstants.CollisionDebugLayer);
                     }
                 }
@@ -139,7 +142,7 @@ namespace Singularity.Map
         {
             return MStructureMap;
         }
-        
+
         public CollisionMap GetCollisionMap()
         {
             return _mCollisionMap;
@@ -218,13 +221,33 @@ namespace Singularity.Map
             // simple logic, this yields true if all of them are true and false if one is false. One can easily convince himself,
             // that if all the "edge" points of the rectangle are on the map then the rectangle is on the map.
 
-            return (IsOnTop(new Vector2(rect.X, rect.Y), camera) && 
+            return (IsOnTop(new Vector2(rect.X, rect.Y), camera) &&
                     IsOnTop(new Vector2(rect.X + rect.Width, rect.Y), camera) &&
                     IsOnTop(new Vector2(rect.X, rect.Y + rect.Height), camera) &&
                     IsOnTop(new Vector2(rect.X + rect.Width, rect.Y + rect.Height), camera));
 
         }
 
+        public void KeyTyped(KeyEvent keyEvent)
+        {
+            foreach (var key in keyEvent.CurrentKeys)
+            {
+                if (key == Keys.F4)
+                {
+                    mDebug = !mDebug;
+                }
+            }
+        }
+
+        public void KeyPressed(KeyEvent keyEvent)
+        {
+
+        }
+
+        public void KeyReleased(KeyEvent keyEvent)
+        {
+
+        }
     }
 }
 
