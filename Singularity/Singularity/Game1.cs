@@ -24,13 +24,8 @@ namespace Singularity
 
 
         // Sprites!
-<<<<<<< HEAD
         private SpriteBatch _mSpriteBatch;
 
-=======
-        private SpriteBatch mSpriteBatch;
-
->>>>>>> master
 
         // Screen Manager
         private readonly IScreenManager _mScreenManager;
@@ -42,14 +37,8 @@ namespace Singularity
 
             MGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
 
-<<<<<<< HEAD
             _mInputManager = new InputManager();
-            _mScreenManager = new StackScreenManager();
-=======
-            mInputManager = new InputManager();
-
-            mScreenManager = new StackScreenManager(Content);
->>>>>>> master
+            _mScreenManager = new StackScreenManager(Content);
 
             _mInputManager = new InputManager();
 
