@@ -1,7 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using Singularity.Platform;
 using Singularity.Resources;
-using Singularity.Units;
 
 namespace Singularity.Units
 {

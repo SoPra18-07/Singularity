@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
+using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
 using Singularity.Utils;
@@ -43,6 +44,8 @@ namespace Singularity.Units
 
         private float _mMouseY;
 
+        private Director _director;
+
 
         public Vector2 AbsolutePosition { get; set; }
 
@@ -62,7 +65,7 @@ namespace Singularity.Units
 
         public Rectangle AbsBounds { get; private set; }
 
-        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, InputManager manager)
+        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, Director director)
         {
             Id = IdGenerator.NextiD(); // TODO this will later use a random number generator to create a unique
                     // id for the specific unit.
@@ -78,8 +81,10 @@ namespace Singularity.Units
             _mIsMoving = false;
             _mCamera = camera;
 
-            manager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
-            manager.AddMousePositionListener(this);
+            _director = director;
+
+            _director.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            _director.GetInputManager.AddMousePositionListener(this);
 
             _mMilSheet = spriteSheet;
         }

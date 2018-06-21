@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Singularity.Graph.Paths;
 using Singularity.Manager;
 using Singularity.Platform;
 

@@ -167,7 +167,7 @@ namespace Singularity.Screen
                 if (_mWithBorder)
                 {
                     // draw border around texture if feauture selected
-                    spriteBatch.DrawRectangle(mPosition, new Vector2(mWidth, mHeight), Color.White, 1);
+                    spriteBatch.DrawRectangle(_mPosition, new Vector2(_mWidth, _mHeight), Color.White, 1);
                 }
 
             }

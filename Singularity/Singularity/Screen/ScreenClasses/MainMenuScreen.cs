@@ -272,31 +272,31 @@ namespace Singularity.Screen.ScreenClasses
 
             foreach (Button button in _mButtonList)
             {
-                button.Draw(spriteBatch);
+                button.Draw(spriteBatch: spriteBatch);
             }
 
             // draw selector triangle
-            spriteBatch.Draw(_mSelectorTriangle,
+            spriteBatch.Draw(texture: _mSelectorTriangle,
                 position: _mSelectorPosition,
                 sourceRectangle: null,
                 color: Color.White * _mMenuOpacity,
                 rotation: 0f,
-                origin: new Vector2(0, 11),
+                origin: new Vector2(x: 0, y: 11),
                 scale: 1f, 
                 effects: SpriteEffects.None,
                 layerDepth: 0f);
 
             // Draw menu window
-            spriteBatch.StrokedRectangle(_mMenuBoxPosition,
-                _mMenuBoxSize,
-                Color.White * _mWindowOpacity,
-                Color.White * _mWindowOpacity,
-                .5f,
-                .20f);
-            spriteBatch.DrawString(_mLibSans36,
-                _mTitle,
-                new Vector2(_mMenuBoxPosition.X + 20, _mMenuBoxPosition.Y + 10),
-                new Color(new Vector3(.9137f, .9058f, .8314f)) * _mMenuOpacity);
+            spriteBatch.StrokedRectangle(location: _mMenuBoxPosition,
+                size: _mMenuBoxSize,
+                colorBorder: Color.White * _mWindowOpacity,
+                colorCenter: Color.White * _mWindowOpacity,
+                opacityBorder: .5f,
+                opacityCenter: .20f);
+            spriteBatch.DrawString(spriteFont: _mLibSans36,
+                text: _mTitle,
+                position: new Vector2(x: _mMenuBoxPosition.X + 20, y: _mMenuBoxPosition.Y + 10),
+                color: new Color(color: new Vector3(x: .9137f, y: .9058f, z: .8314f)) * _mMenuOpacity);
 
             spriteBatch.End();
         }

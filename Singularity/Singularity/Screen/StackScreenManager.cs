@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -20,31 +19,31 @@ namespace Singularity.Screen
         /// </summary>
         private readonly Stack<IScreen> _mScreenStack;
 
-        private readonly LinkedList<IScreen> mScreensToAdd;
+        private readonly LinkedList<IScreen> _mScreensToAdd;
 
-        private int mScreenRemovalCounter;
+        private int _mScreenRemovalCounter;
 
-        private readonly ContentManager mContentManager;
+        private readonly ContentManager _mContentManager;
 
         public StackScreenManager(ContentManager contentManager)
         {
-            mContentManager = contentManager;
+            _mContentManager = contentManager;
 
             //these are used to savely add new screens without changing the stack size while iterating.
-            mScreensToAdd = new LinkedList<IScreen>();
-            mScreenRemovalCounter = 0;
+            _mScreensToAdd = new LinkedList<IScreen>();
+            _mScreenRemovalCounter = 0;
             _mScreenStack = new Stack<IScreen>();
 
         }
 
         public void AddScreen(IScreen screen)
         {
-            _mScreenStack.AddLast(screen);
+            _mScreensToAdd.AddLast(screen);
         }
 
         public void RemoveScreen()
         {
-            mScreenRemovalCounter++;
+            _mScreenRemovalCounter++;
         }
 
         public void Update(GameTime gameTime)
@@ -71,7 +70,7 @@ namespace Singularity.Screen
                 if (!currentScreen.Loaded)
                 {
                     //make sure to load the content as soon as we want to do something with the screen
-                    currentScreen.LoadContent(mContentManager);
+                    currentScreen.LoadContent(_mContentManager);
                     currentScreen.Loaded = true;
                 }
 
@@ -91,20 +90,20 @@ namespace Singularity.Screen
                 currentScreen.Update(gameTime);
             }
 
-            for (var i = 0; i < mScreenRemovalCounter; i++)
+            for (var i = 0; i < _mScreenRemovalCounter; i++)
             {
-                mScreenStack.Pop();
+                _mScreenStack.Pop();
             }
 
-            mScreenRemovalCounter = 0;
+            _mScreenRemovalCounter = 0;
 
 
-            foreach (var screen in mScreensToAdd)
+            foreach (var screen in _mScreensToAdd)
             {
-                mScreenStack.Push(screen);
+                _mScreenStack.Push(screen);
             }
 
-            mScreensToAdd.Clear();
+            _mScreensToAdd.Clear();
         }
 
         public void Draw(SpriteBatch spriteBatch)

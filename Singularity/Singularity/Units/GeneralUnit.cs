@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Platform;
 using Singularity.Graph;
-using Singularity.Graph.Paths;
 using Singularity.Libraries;
 using Singularity.Property;
 using Singularity.Resources;
@@ -37,9 +36,7 @@ namespace Singularity.Units
         private Task _mAssignedTask;
 
         private bool _mDone;
-
-        private Manager.DistributionManager _mDistrManager;
-
+        
         private IPlatformAction _assignedAction;
 
         public INode CurrentNode { get; private set; }
@@ -54,7 +51,7 @@ namespace Singularity.Units
 
         public Vector2 RelativeSize { get; set; }
 
-        private readonly PathManager _mPathManager;
+        private readonly Director _director;
 
         /// <summary>
         /// whether the unit is moving or currently standing still,
@@ -80,7 +77,7 @@ namespace Singularity.Units
 
         internal JobType Job { get; set; } = JobType.Idle;
 
-        public GeneralUnit(PlatformBlank platform, PathManager pathManager, DistributionManager distrManager)
+        public GeneralUnit(PlatformBlank platform, Director director)
         {
             _mDestination = null;
 
@@ -91,9 +88,8 @@ namespace Singularity.Units
             _mNodeQueue = new Queue<INode>();
 
             _mIsMoving = false;
-            _mPathManager = pathManager;
-            _mDistrManager = distrManager;
-            distrManager.Register(this);
+            _director = director;
+            _director.GetDistributionManager.Register(this);
             _mDone = true;
         }
         /// <summary>
@@ -264,7 +260,7 @@ namespace Singularity.Units
                 {
                     //Care!!! DO NOT UNDER ANY CIRCUMSTANCES USE THIS PLACEHOLDER
                     IPlatformAction action = new ProduceMineResource(null, null);
-                    _mAssignedTask = _mDistrManager.RequestNewTask(this, Job, Optional<IPlatformAction>.Of(action));
+                    _mAssignedTask = _director.GetDistributionManager.RequestNewTask(this, Job, Optional<IPlatformAction>.Of(action));
                     _mDestination = _mAssignedTask.End;
                 }
             }
@@ -273,7 +269,7 @@ namespace Singularity.Units
             // current nodequeue is empty (the path)
             if (_mDestination != null && _mNodeQueue.Count <= 0 && !_mIsMoving)
             {
-                _mNodeQueue = _mPathManager.GetPath(this, _mDestination).GetNodePath();
+                _mNodeQueue = _director.GetPathManager.GetPath(this, _mDestination).GetNodePath();
 
                 _mCurrentNode = _mNodeQueue.Dequeue();
             }

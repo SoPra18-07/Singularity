@@ -30,18 +30,18 @@ namespace Singularity.Screen
         public event SliderMovingEventHandler SliderMoving;
 
         // whether to add window on side that indicates value of slider postion
-        private bool mWithValue;
+        private bool _mWithValue;
 
         // font used to show slider value
-        private SpriteFont mFont;
+        private SpriteFont _mFont;
 
         // value as stringb of the slider position
-        private String mStringValue;
+        private String _mStringValue;
 
         // current value of slider and previous value of slider to only send out
         // changes in slider value when slave to mouse
-        private float mValueCurrent;
-        private float mValuePrevious;
+        private float _mValueCurrent;
+        private float _mValuePrevious;
 
 
 
@@ -60,8 +60,8 @@ namespace Singularity.Screen
             _mPositionY = postion.Y;
             _mCurrentX = _mMin;
             _mSliderSize = sliderSize;
-            mValueCurrent = 0;
-            mValuePrevious = 0;
+            _mValueCurrent = 0;
+            _mValuePrevious = 0;
         }
 
         /// <summary>
@@ -79,12 +79,12 @@ namespace Singularity.Screen
             _mPositionY = postion.Y;
             _mCurrentX = _mMin;
             _mSliderSize = sliderSize;
-            mWithValue = true;
-            mValueCurrent = 0;
-            mValuePrevious = 0;
-            mFont = font;
+            _mWithValue = true;
+            _mValueCurrent = 0;
+            _mValuePrevious = 0;
+            _mFont = font;
             // start off value at 0
-            mStringValue = 0.ToString();
+            _mStringValue = 0.ToString();
         }
 
 
@@ -141,19 +141,19 @@ namespace Singularity.Screen
                     _mCurrentX = Mouse.GetState().X;
                 }
 
-                mValuePrevious = mValueCurrent;
-                mValueCurrent = mCurrentX;
+                _mValuePrevious = _mValueCurrent;
+                _mValueCurrent = _mCurrentX;
 
-                if (Math.Abs(mValueCurrent - mValuePrevious) > 0.009)
+                if (Math.Abs(_mValueCurrent - _mValuePrevious) > 0.009)
                 {
                     OnSliderMoving();
                 }
             }
 
             // calculate int value of slider and convert to string
-            if (mWithValue)
+            if (_mWithValue)
             {
-                mStringValue = ((int)(((mCurrentX - mMin) / (mMax - mMin)) * 100)).ToString();
+                _mStringValue = ((int)(((_mCurrentX - _mMin) / (_mMax - _mMin)) * 100)).ToString();
             }
         }
 
@@ -163,24 +163,24 @@ namespace Singularity.Screen
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawLine(mMin, mPositionY, mMax, mPositionY, (Color.White * (float)0.6), 3);
+            spriteBatch.DrawLine(_mMin, _mPositionY, _mMax, _mPositionY, (Color.White * (float)0.6), 3);
 
             // slider based on current position
-            spriteBatch.StrokedRectangle(new Vector2(mCurrentX - ((float)mSliderSize / 2), mPositionY - ((float)mSliderSize / 2)),
-                new Vector2(mSliderSize, mSliderSize), Color.Gray, Color.Black, (float).5, (float)0.8);
+            spriteBatch.StrokedRectangle(new Vector2(_mCurrentX - ((float)_mSliderSize / 2), _mPositionY - ((float)_mSliderSize / 2)),
+                new Vector2(_mSliderSize, _mSliderSize), Color.Gray, Color.Black, (float).5, (float)0.8);
 
             // add value display
-            if (mWithValue)
+            if (_mWithValue)
             {
                 // draws rectangle to the right side of slider
-                spriteBatch.StrokedRectangle(new Vector2(mMax + mSliderSize, mPositionY - 30), new Vector2(60, 60), Color.Gray, Color.Black, 1, (float)0.8);
+                spriteBatch.StrokedRectangle(new Vector2(_mMax + _mSliderSize, _mPositionY - 30), new Vector2(60, 60), Color.Gray, Color.Black, 1, (float)0.8);
 
                 // draws in value of slider in the center of display window
-                spriteBatch.DrawString(mFont,
+                spriteBatch.DrawString(_mFont,
                     origin: Vector2.Zero,
-                    position: new Vector2((mMax + mSliderSize + 30) - (mFont.MeasureString(mStringValue).X / 2), mPositionY - 12),
+                    position: new Vector2((_mMax + _mSliderSize + 30) - (_mFont.MeasureString(_mStringValue).X / 2), _mPositionY - 12),
                     color: Color.White,
-                    text: mStringValue.ToString(),
+                    text: _mStringValue.ToString(),
                     rotation: 0f,
                     scale: 1f,
                     effects: SpriteEffects.None,

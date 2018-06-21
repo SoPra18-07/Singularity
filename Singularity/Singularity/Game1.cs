@@ -1,9 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Input;
+using Singularity.Manager;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
-using Singularity.Sound;
 
 namespace Singularity
 {
@@ -12,15 +11,13 @@ namespace Singularity
     /// </summary>
     internal sealed class Game1 : Game
     {
-        internal GraphicsDeviceManager MGraphics;
-        internal GraphicsAdapter MGraphicsAdapter;
-
-        private SoundManager _mSoundManager;
+        internal readonly GraphicsDeviceManager MGraphics;
+        internal readonly GraphicsAdapter MGraphicsAdapter;
+        
 
         // Screens
         internal GameScreen MGameScreen;
         private MainMenuManagerScreen _mMainMenuManager;
-        private readonly InputManager _mInputManager;
 
 
         // Sprites!
@@ -30,17 +27,20 @@ namespace Singularity
         // Screen Manager
         private readonly IScreenManager _mScreenManager;
 
+
+        // 
+        private readonly Director _director;
+
+
         internal Game1()
         {
             MGraphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
             MGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
-
-            _mInputManager = new InputManager();
+            
             _mScreenManager = new StackScreenManager(Content);
-
-            _mInputManager = new InputManager();
+            _director = new Director(Content);
 
         }
 
@@ -52,21 +52,12 @@ namespace Singularity
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-            // can be used to debug the screen manager
-            /*
-               mScreenManager.AddScreen(new RenderLowerScreen());
-               mScreenManager.AddScreen(new UpdateLowerScreen());
-            */
-
-            // XSerializer.TestSerialization();
             IsMouseVisible = true;
             MGraphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
             MGraphics.PreferredBackBufferWidth = 1080;
             MGraphics.PreferredBackBufferHeight = 720;
             MGraphics.IsFullScreen = false;
             MGraphics.ApplyChanges();
-            _mSoundManager = new SoundManager();
 
             base.Initialize();
         }
@@ -82,7 +73,7 @@ namespace Singularity
             // Create a new SpriteBatch, which can be used to draw textures.
             _mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            mGameScreen = new GameScreen(mGraphics.GraphicsDevice, _mInputManager, _mSoundManager);
+            MGameScreen = new GameScreen(MGraphics.GraphicsDevice, _director);
 
             _mMainMenuManager = new MainMenuManagerScreen(viewportResolution, _mScreenManager, true, this);
 
@@ -93,10 +84,11 @@ namespace Singularity
             _mScreenManager.AddScreen(_mMainMenuManager);
 
             _mMainMenuManager.LoadContent(Content);
-
+            
             // load and play Soundtrack as background music
-            _mSoundManager.LoadContent(Content);
-            _mSoundManager.PlaySoundTrack();
+            // todo this
+            // director.GetSoundManager.LoadContent(Content);
+            //_mSoundManager.PlaySoundTrack();
 
         }
 
@@ -116,8 +108,7 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-
-            _mInputManager.Update(gameTime);
+            _director.Update(gameTime);
             _mScreenManager.Update(gameTime);
             base.Update(gameTime);
         }

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.Design.Serialization;
-
-namespace Singularity.Utils
+﻿namespace Singularity.Utils
 {
 	public interface IId
 	{

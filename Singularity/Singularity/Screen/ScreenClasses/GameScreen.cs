@@ -2,8 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Graph.Paths;
-using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platform;
@@ -44,8 +42,7 @@ namespace Singularity.Screen.ScreenClasses
         private FogOfWar _mFow;
 
         // director for Managing all the Managers
-        private readonly Director director;
-        private readonly InputManager _mInputManager;
+        private readonly Director _director;
         private readonly GraphicsDevice _mGraphicsDevice;
 
         // roads
@@ -67,9 +64,7 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         private readonly LinkedList<ISpatial> _mSpatialObjects;
 
-        private readonly SoundManager mSoundManager;
-
-        private Matrix mTransformMatrix;
+        private Matrix _mTransformMatrix;
 
         /// <summary>
         /// The camera object which holds transformation values.
@@ -77,7 +72,7 @@ namespace Singularity.Screen.ScreenClasses
         private Camera _mCamera;
 
 
-        public GameScreen(GraphicsDevice graphicsDevice, InputManager inputManager, SoundManager soundManager)
+        public GameScreen(GraphicsDevice graphicsDevice, Director director)
         {
             _mGraphicsDevice = graphicsDevice;
 
@@ -85,10 +80,7 @@ namespace Singularity.Screen.ScreenClasses
             _mUpdateables = new LinkedList<IUpdate>();
             _mSpatialObjects = new LinkedList<ISpatial>();
 
-            _mInputManager = inputManager;
-
-            // TODO: This is actually the wrong place to initialize the Director. Move it.
-            director = new Director(inputManager, new StoryManager(), new PathManager(), new SoundManager(), new MilitaryManager());
+            _director = director;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -96,7 +88,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // if you're interested in whats going on here, refer to the documentation of the FogOfWar class.
 
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mTransformMatrix);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, _mTransformMatrix);
 
             foreach (var drawable in _mDrawables)
             {
@@ -107,7 +99,7 @@ namespace Singularity.Screen.ScreenClasses
 
             _mFow.DrawMasks(spriteBatch);
 
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, _mFow.GetApplyMaskStencilState(), null, null, mTransformMatrix);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, _mFow.GetApplyMaskStencilState(), null, null, _mTransformMatrix);
 
             foreach (var spatial in _mSpatialObjects)
             {
@@ -150,7 +142,7 @@ namespace Singularity.Screen.ScreenClasses
             }
             _mFow.Update(gametime);
 
-            mTransformMatrix = mCamera.GetTransform();
+            _mTransformMatrix = _mCamera.GetTransform();
 
 
         }
@@ -159,7 +151,7 @@ namespace Singularity.Screen.ScreenClasses
         {
 
             var mapBackground = content.Load<Texture2D>("MockUpBackground");
-            _mMap = new Map.Map(mapBackground, _mGraphicsDevice.Viewport, director);
+            _mMap = new Map.Map(mapBackground, _mGraphicsDevice.Viewport, _director);
             _mCamera = _mMap.GetCamera();
 
             //Give the Distributionmanager the Graph he is operating on.
@@ -179,20 +171,20 @@ namespace Singularity.Screen.ScreenClasses
             _mPlatform3 = new EnergyFacility(new Vector2(600, 200), _mPlatformDomeTexture);
             _mPlatform3 = new EnergyFacility(new Vector2(600, 200), _mPlatformDomeTexture);
 
-            var genUnit2 = new GeneralUnit(_mPlatform2, director);
-            var genUnit3 = new GeneralUnit(_mPlatform3, director);
+            var genUnit2 = new GeneralUnit(_mPlatform2, _director);
+            var genUnit3 = new GeneralUnit(_mPlatform3, _director);
 
             var platform4 = new Well(new Vector2(1000, 200), _mPlatformDomeTexture, _mMap.GetResourceMap());
             var platform5 = new Quarry(new Vector2(1300, 400), _mPlatformDomeTexture, _mMap.GetResourceMap());
 
-            var genUnit = new GeneralUnit(_mPlatform, director);
-            var genUnit4 = new GeneralUnit(platform4, director);
-            var genUnit5 = new GeneralUnit(platform5, director);
+            var genUnit = new GeneralUnit(_mPlatform, _director);
+            var genUnit4 = new GeneralUnit(platform4, _director);
+            var genUnit5 = new GeneralUnit(platform5, _director);
 
             _mFow = new FogOfWar(_mCamera, _mGraphicsDevice);
 
-            _mMUnit1 = new MilitaryUnit(new Vector2(600, 600), _mMUnitSheet, _mMap.GetCamera(), _mInputManager);
-            _mMUnit2 = new MilitaryUnit(new Vector2(100, 600), _mMUnitSheet, _mMap.GetCamera(), _mInputManager);
+            _mMUnit1 = new MilitaryUnit(new Vector2(600, 600), _mMUnitSheet, _mMap.GetCamera(), _director);
+            _mMUnit2 = new MilitaryUnit(new Vector2(100, 600), _mMUnitSheet, _mMap.GetCamera(), _director);
 
             // load roads
             _mRoad1 = new Road(_mPlatform, _mPlatform2, false);
@@ -246,8 +238,8 @@ namespace Singularity.Screen.ScreenClasses
 
             AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
 
-            mSoundManager.SetLevelThemeMusic("Tutorial");
-            mSoundManager.SetSoundPhase(SoundPhase.Build);
+            _director.GetSoundManager.SetLevelThemeMusic("Tutorial");
+            _director.GetSoundManager.SetSoundPhase(SoundPhase.Build);
         }
 
         public bool UpdateLower()

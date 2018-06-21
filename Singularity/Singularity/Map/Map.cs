@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Singularity.Exceptions;
-using Singularity.Graph.Paths;
 using Singularity.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
@@ -25,7 +23,7 @@ namespace Singularity.Map
 
         private readonly Texture2D _mBackgroundTexture;
 
-        private readonly bool _mDebug;
+        private bool _mDebug;
 
         /// <summary>
         /// Creates a new Map object, which solely draws its background
@@ -234,7 +232,7 @@ namespace Singularity.Map
             {
                 if (key == Keys.F4)
                 {
-                    mDebug = !mDebug;
+                    _mDebug = !_mDebug;
                 }
             }
         }
