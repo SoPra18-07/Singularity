@@ -17,6 +17,8 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     internal sealed class LoadSelectScreen : ITransitionableMenu
     {
+
+        public bool Loaded { get; set; }
         public bool TransitionRunning { get; private set; }
         /// <summary>
         /// Updates the contents of the screen.

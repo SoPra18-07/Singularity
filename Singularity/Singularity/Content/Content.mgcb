@@ -238,3 +238,9 @@
 /processorParam:TextureFormat=Color
 /build:backgroundGrid.png
 
+#begin Sound/Singularity_Menu.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sound/Singularity_Menu.mp3
+
