@@ -35,7 +35,7 @@ namespace Singularity
 
         // Sprites!
         private SpriteBatch mSpriteBatch;
-        
+
 
         // Screen Manager
         private readonly IScreenManager mScreenManager;
@@ -102,7 +102,7 @@ namespace Singularity
             // on top of it.
             mScreenManager.AddScreen(mGameScreen);
             mScreenManager.AddScreen(mMainMenuManager);
-            
+
             // load and play Soundtrack as background music
             mSoundManager.LoadContent(Content);
             mSoundManager.SetLevelThemeMusic("Singularity");
@@ -126,9 +126,6 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // a new static input manager. It requires updating every tick to figure out where
-            // the mouse is.
-            InputManager2.Update(gameTime);
 
             mInputManager.Update(gameTime);
             mScreenManager.Update(gameTime);
