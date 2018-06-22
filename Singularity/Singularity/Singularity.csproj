@@ -83,9 +83,9 @@
     <Compile Include="Libraries\QuadRenderer.cs" />
     <Compile Include="Map\Camera.cs" />
     <Compile Include="Map\CollisionMap.cs" />
+    <Compile Include="Map\CollisionNode.cs" />
     <Compile Include="Map\FogOfWar.cs" />
     <Compile Include="Map\Map.cs" />
-    <Compile Include="Map\Node.cs" />
     <Compile Include="Map\Properties\MapConstants.cs" />
     <Compile Include="Map\ResourceMap.cs" />
     <Compile Include="Map\StructureMap.cs" />
@@ -139,7 +139,6 @@
     <Compile Include="Units\GeneralUnit.cs" />
     <Compile Include="Units\IUnit.cs" />
     <Compile Include="Units\JobType.cs" />
-    <Compile Include="Units\MilitaryPathfinding.cs" />
     <Compile Include="Units\MilitaryUnit.cs" />
     <Compile Include="Property\IDraw.cs" />
     <Compile Include="Property\IUpdate.cs" />
