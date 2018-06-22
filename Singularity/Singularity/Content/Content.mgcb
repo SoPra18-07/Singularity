@@ -13,6 +13,18 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin PlatformSpriteSheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:PlatformSpriteSheet.png
+
 #begin UnitSpriteSheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -29,7 +41,31 @@
 /importer:Mp3Importer
 /processor:SongProcessor
 /processorParam:Quality=Best
-/build:Sound/BGMusic.mp3
+/build:BGMusic.mp3
+
+#begin graphics/exampleUnit.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:graphics/exampleUnit.png
+
+#begin graphics/landscape.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:graphics/landscape.png
 
 #begin Cones.png
 /importer:TextureImporter
@@ -41,7 +77,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Graphics/Cones.png
+/build:Cones.png
 
 #begin Cylinders.png
 /importer:TextureImporter
@@ -53,7 +89,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Graphics/Cylinders.png
+/build:Cylinders.png
 
 #begin Glow.png
 /importer:TextureImporter
@@ -65,7 +101,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Graphics/Glow.png
+/build:Glow.png
 
 #begin Dome.png
 /importer:TextureImporter
@@ -77,7 +113,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Graphics/Dome.png
+/build:Dome.png
 
 #begin HoloProjection.png
 /importer:TextureImporter
@@ -89,7 +125,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Graphics/HoloProjection.png
+/build:HoloProjection.png
 
 #begin PlatformBasic.png
 /importer:TextureImporter
@@ -101,7 +137,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Graphics/PlatformBasic.png
+/build:PlatformBasic.png
 
 #begin Logo.png
 /importer:TextureImporter
@@ -113,7 +149,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Graphics/Logo.png
+/build:Logo.png
+
+#begin MockUpBackground.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:MockUpBackground.png
 
 #begin SingularityText.png
 /importer:TextureImporter
@@ -125,28 +173,28 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Graphics/SingularityText.png
+/build:SingularityText.png
 
 #begin LibSans20.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:Fonts/LibSans20.spritefont
+/build:LibSans20.spritefont
 
 #begin LibSans12.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:Fonts/LibSans12.spritefont
+/build:LibSans12.spritefont
 
 #begin LibSans36.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:Fonts/LibSans36.spritefont
+/build:LibSans36.spritefont
 
 #begin SelectorTriangle.png
 /importer:TextureImporter
@@ -158,7 +206,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Graphics/SelectorTriangle.png
+/build:SelectorTriangle.png
 
 #begin Sound/Tutorial_Build.mp3
 /importer:Mp3Importer
@@ -188,7 +236,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Graphics/backgroundGrid.png
+/build:backgroundGrid.png
 
 #begin Sound/Singularity_Menu.mp3
 /importer:Mp3Importer
