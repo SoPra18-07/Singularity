@@ -172,21 +172,21 @@ namespace Singularity.Screen.ScreenClasses
             mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
 
             mPlatformSheet = content.Load<Texture2D>("PlatformSpriteSheet");
-            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet);
-            mPlatform2 = new PlatformBlank(new Vector2(800, 600), mPlatformSheet);
+            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet, mPlatformBlankTexture);
+            mPlatform2 = new PlatformBlank(new Vector2(800, 600), mPlatformSheet, mPlatformBlankTexture);
             // TODO: use this.Content to load your game content here
             mPlatformBlankTexture = content.Load<Texture2D>("PlatformBasic");
             mPlatformDomeTexture = content.Load<Texture2D>("Dome");
-            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformBlankTexture);
-            mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
-            mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
-            mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
+            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformBlankTexture, mPlatformBlankTexture);
+            mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture, mPlatformBlankTexture);
+            mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture, mPlatformBlankTexture);
+            mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture, mPlatformBlankTexture);
 
             var genUnit2 = new GeneralUnit(mPlatform2, pathManager, dist);
             var genUnit3 = new GeneralUnit(mPlatform3, pathManager, dist);
 
-            var platform4 = new Well(new Vector2(1000, 200), mPlatformDomeTexture, mMap.GetResourceMap());
-            var platform5 = new Quarry(new Vector2(1300, 400), mPlatformDomeTexture, mMap.GetResourceMap());
+            var platform4 = new Well(new Vector2(1000, 200), mPlatformDomeTexture, mPlatformBlankTexture, mMap.GetResourceMap());
+            var platform5 = new Quarry(new Vector2(1300, 400), mPlatformDomeTexture, mPlatformBlankTexture, mMap.GetResourceMap());
 
             var genUnit = new GeneralUnit(mPlatform, pathManager, dist);
             var genUnit4 = new GeneralUnit(platform4, pathManager, dist);
