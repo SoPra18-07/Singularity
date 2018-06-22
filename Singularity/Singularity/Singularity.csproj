@@ -59,7 +59,6 @@
     <Compile Include="Graph\Paths\PathfindingFactory.cs" />
     <Compile Include="Graph\Paths\PathManager.cs" />
     <Compile Include="Graph\Paths\SortedPath.cs" />
-    <Compile Include="Input\InputManager2.cs" />
     <Compile Include="Libraries\Animations.cs" />
     <Compile Include="Libraries\Bloom Filter.cs" />
     <Compile Include="Input\EClickType.cs" />
