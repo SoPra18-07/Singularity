@@ -57,6 +57,7 @@ namespace Singularity.Map
         /// objects to the camera view.
         /// </summary>
         /// <param name="viewport">The viewport of the window</param>
+        /// <param name="director">The director</param>
         /// <param name="x">The initial x position of the camera</param>
         /// <param name="y">the initial y position of the camera</param>
         public Camera(Viewport viewport, Director director, int x = 0, int y = 0)

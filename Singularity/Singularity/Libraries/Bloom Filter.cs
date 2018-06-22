@@ -2,9 +2,8 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Libraries;
 
-namespace Libraries
+namespace Singularity.Libraries
 {
     /// <summary>
     /// 

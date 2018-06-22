@@ -160,8 +160,6 @@ namespace Singularity.Screen.ScreenClasses
             mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
 
             mPlatformSheet = content.Load<Texture2D>("PlatformSpriteSheet");
-            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet);
-            mPlatform2 = new PlatformBlank(new Vector2(800, 600), mPlatformSheet);
             // TODO: use this.Content to load your game content here
             mPlatformBlankTexture = content.Load<Texture2D>("PlatformBasic");
             mPlatformDomeTexture = content.Load<Texture2D>("Dome");

@@ -43,6 +43,7 @@ namespace Singularity.Libraries
         /// <param name="points">The points to connect with lines</param>
         /// <param name="color">The color to use</param>
         /// <param name="thickness">The thickness of the lines</param>
+        /// <param name="layer">The layer the ponits should be drawn at</param>
         private static void DrawPoints(SpriteBatch spriteBatch, Vector2 position, List<Vector2> points, Color color, float thickness, float layer = 0f)
         {
             if (points.Count < 2)
@@ -563,6 +564,7 @@ namespace Singularity.Libraries
         /// <param name="spriteBatch">The destination drawing surface</param>
         /// <param name="rect">The rectangle which desribes the ellipse</param>
         /// <param name="color">The color of the ellipse</param>
+        /// <param name="layer">The layer to draw the ellipse on</param>
         public static void DrawEllipse(this SpriteBatch spriteBatch, Rectangle rect, Color color, float layer)
         {
             DrawPoints(spriteBatch, Vector2.Zero, CreateEllipse(rect), color, 1.0f, layer);
@@ -576,6 +578,7 @@ namespace Singularity.Libraries
         /// <param name="rect">The rectangle which desribes the ellipse</param>
         /// <param name="color">The color of the ellipse</param>
         /// <param name="thickness">The thickness of the lines used</param>
+        /// <param name="layer">todo: @Ativolex </param>
         public static void DrawEllipse(this SpriteBatch spriteBatch, Rectangle rect, Color color, float thickness, float layer)
         {
             DrawPoints(spriteBatch, Vector2.Zero, CreateEllipse(rect), color, thickness, layer);
@@ -609,6 +612,7 @@ namespace Singularity.Libraries
         /// <param name="sides">The number of sides to generate</param>
         /// <param name="color">The color of the circle</param>
         /// <param name="thickness">The thickness of the lines used</param>
+        /// <param name="layerDepth">todo: @Ativolex</param>
         public static void DrawCircle(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, Color color, float thickness, float layerDepth = 0)
         {
             DrawPoints(spriteBatch, center, CreateCircle(radius, sides), color, thickness, layerDepth);
