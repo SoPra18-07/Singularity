@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 
 namespace Singularity.Map.Properties
-{   
+{
     /// <summary>
     /// Provides constants which are predetermined before the game. May needs tweaks.
     /// </summary>

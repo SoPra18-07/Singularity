@@ -31,7 +31,7 @@ namespace Singularity.Map
     /// </remarks>
     internal sealed class FogOfWar : IUpdate
     {
-        
+
         /// <summary>
         /// This array holds bit values of whether the position (tile) was visited or not. Where 1 = visited and 0 = unvisited.
         /// </summary>

@@ -5,12 +5,12 @@ using Singularity.Property;
 using Singularity.Utils;
 
 namespace Singularity.Map
-{   
+{
     /// <summary>
     /// The collision map is used to store all the colliding objects in a grid like fashion.
     /// </summary>
     internal sealed class CollisionMap
-    {   
+    {
         /// <summary>
         /// The look up table is used to check whether a given collider is already present in the collision map
         /// </summary>
@@ -30,7 +30,7 @@ namespace Singularity.Map
 
             mCollisionMap = new Optional<ICollider>
             [
-                (MapConstants.MapWidth / MapConstants.GridWidth), 
+                (MapConstants.MapWidth / MapConstants.GridWidth),
                 (MapConstants.MapHeight / MapConstants.GridHeight)
             ];
             for (var i = 0; i < mCollisionMap.GetLength(0); i++)

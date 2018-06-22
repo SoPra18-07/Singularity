@@ -57,7 +57,7 @@ namespace Singularity.Graph.Paths
                         minValue = fScore[node];
                         current = node;
                     }
-                    
+
                 }
 
                 // current can never be null from my short amount of thinking about it (if actual arguments are given)

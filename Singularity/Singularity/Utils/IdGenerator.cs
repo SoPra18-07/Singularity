@@ -4,7 +4,7 @@
 	{
 		int MId { get; }
 	}
-	
+
     public static class IdGenerator
     {
         private static int sId; // (defaults to 0)

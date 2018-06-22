@@ -25,7 +25,7 @@ namespace Singularity.Graph
             {
                 mEdges = edges;
             }
-            
+
         }
 
         public void AddNode(INode node)

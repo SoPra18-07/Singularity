@@ -88,7 +88,7 @@ namespace Singularity.Map
 
         }
 
-        private void CreateNewGraph() 
+        private void CreateNewGraph()
         {
 
             if (mGraphs.Count > mCurrentGraphIndex)
