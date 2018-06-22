@@ -60,7 +60,7 @@ namespace Singularity.Map
         /// <param name="director">The director</param>
         /// <param name="x">The initial x position of the camera</param>
         /// <param name="y">the initial y position of the camera</param>
-        public Camera(Viewport viewport, Director director, int x = 0, int y = 0)
+        public Camera(Viewport viewport, ref Director director, int x = 0, int y = 0)
         {
             if (x < 0)
             {
@@ -94,8 +94,7 @@ namespace Singularity.Map
         {
             return mTransform;
         }
-
-        //TODO: remove this when input manager is there, since we don't need to fetch it anymore
+        
         public void Update(GameTime gametime)
         {
 

@@ -11,7 +11,7 @@ namespace Singularity.Resources
     /// <summary>
     /// Represents a resource in the game. Written in such a fashion that it can represent any resource there is and will be.
     /// </summary>
-    public sealed class MapResource : ISpatial, IDraw, IUpdate
+    public sealed class MapResource : ISpatial
     {
 
         /// <summary>

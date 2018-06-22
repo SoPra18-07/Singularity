@@ -32,20 +32,20 @@ namespace Singularity.Map
         /// </summary>
         /// <param name="backgroundTexture">The background texture of the map</param>
         /// <param name="viewport">The viewport of the window</param>
+        /// <param name="director">A reference to the Director</param>
         /// <param name="debug">Whether the debug grid lines are drawn or not</param>
         /// <param name="initialResources">The initial resources of this map, if not specified there will not be any on the map</param>
-        /// <param name="fow">The fog of war for this map</param>
-        public Map(Texture2D backgroundTexture, Viewport viewport, Director director, bool debug = false, IEnumerable<Resource> initialResources = null)
+        public Map(Texture2D backgroundTexture, Viewport viewport, ref Director director, bool debug = false, IEnumerable<Resource> initialResources = null)
         {
 
             mBackgroundTexture = backgroundTexture;
             mDebug = debug;
 
 
-            mCamera = new Camera(viewport, director, 0, 0);
+            mCamera = new Camera(viewport, ref director);
 
             mCollisionMap = new CollisionMap();
-            mStructureMap = new StructureMap(director);
+            mStructureMap = new StructureMap(ref director);
             mResourceMap = new ResourceMap(initialResources);
         }
 

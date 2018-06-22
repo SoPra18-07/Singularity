@@ -28,7 +28,7 @@ namespace Singularity.Map
         /// <summary>
         /// Creates a new structure map which holds all the structures currently in the game.
         /// </summary>
-        public StructureMap(Director director)
+        public StructureMap(ref Director director)
         {
             mCurrentGraphIndex = 0;
 

@@ -38,7 +38,7 @@ namespace Singularity.Screen.ScreenClasses
         private readonly string mBackString;
 
         private readonly string mFullScreenString;
-        private readonly string mResolutionString; // used later
+        private readonly string mResolutionString; // used later .. apparently
         private readonly string mAntialiasingString;
 
         private readonly string mMuteString;

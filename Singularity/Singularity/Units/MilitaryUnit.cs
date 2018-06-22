@@ -44,8 +44,7 @@ namespace Singularity.Units
 
         private float mMouseY;
 
-        private Director mDirector;
-
+        private readonly Director mDirector;
 
         public Vector2 AbsolutePosition { get; set; }
 
@@ -65,7 +64,7 @@ namespace Singularity.Units
 
         public Rectangle AbsBounds { get; private set; }
 
-        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, Director director)
+        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director)
         {
             Id = IdGenerator.NextiD(); // TODO this will later use a random number generator to create a unique
                     // id for the specific unit.

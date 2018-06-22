@@ -54,9 +54,11 @@ namespace Singularity.Screen
         /// <summary>
         /// Creates a button using a Texture2D
         /// </summary>
+        /// todo: @N @yvan write comments ... everywhere, at least some.
         /// <param name="scale"> scale of the texture</param>
         /// <param name="buttonTexture"></param>
         /// <param name="position"></param>
+        /// <param name="withBorder"></param>
         public Button(float scale, Texture2D buttonTexture, Vector2 position, bool withBorder)
         {
             mIsText = false;

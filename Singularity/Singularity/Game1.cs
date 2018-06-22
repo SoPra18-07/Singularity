@@ -29,7 +29,7 @@ namespace Singularity
 
 
         // 
-        private readonly Director mDirector;
+        private Director mDirector;
 
 
         internal Game1()
@@ -73,7 +73,7 @@ namespace Singularity
             // Create a new SpriteBatch, which can be used to draw textures.
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            mGameScreen = new GameScreen(mGraphics.GraphicsDevice, mDirector);
+            mGameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector);
 
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
 

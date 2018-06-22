@@ -10,7 +10,6 @@ using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Utils;
-using System.Diagnostics;
 
 namespace Singularity.Units
 {

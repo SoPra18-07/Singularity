@@ -72,7 +72,7 @@ namespace Singularity.Screen.ScreenClasses
         private Camera mCamera;
 
 
-        public GameScreen(GraphicsDevice graphicsDevice, Director director)
+        public GameScreen(GraphicsDevice graphicsDevice, ref Director director)
         {
             mGraphicsDevice = graphicsDevice;
 
@@ -151,7 +151,7 @@ namespace Singularity.Screen.ScreenClasses
         {
 
             var mapBackground = content.Load<Texture2D>("MockUpBackground");
-            mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, mDirector);
+            mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, ref mDirector);
             mCamera = mMap.GetCamera();
 
             //Give the Distributionmanager the Graph he is operating on.
@@ -175,8 +175,8 @@ namespace Singularity.Screen.ScreenClasses
 
             mFow = new FogOfWar(mCamera, mGraphicsDevice);
 
-            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera(), mDirector);
-            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), mDirector);
+            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector);
+            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector);
 
             // load roads
             mRoad1 = new Road(mPlatform, mPlatform2, false);
