@@ -35,37 +35,37 @@ namespace Singularity.Map
         /// <summary>
         /// This array holds bit values of whether the position (tile) was visited or not. Where 1 = visited and 0 = unvisited.
         /// </summary>
-        private bool[,] _mToDraw;
+        private bool[,] mToDraw;
 
         /// <summary>
         /// A list of all the objects which are able to reveal the fog of war.
         /// </summary>
-        private readonly LinkedList<IRevealing> _mRevealingObjects;
+        private readonly LinkedList<IRevealing> mRevealingObjects;
 
         /// <summary>
         /// A stencil state which is used to initialize the stencil buffer
         /// with ones for every non transparent pixel, and 0 for every
         /// transparent pixel.
         /// </summary>
-        private readonly DepthStencilState _mInitializeMaskStencilState;
+        private readonly DepthStencilState mInitializeMaskStencilState;
 
         /// <summary>
         /// A stencil state which is used to draw outside of every mask
         /// currently applied in the stencil buffer.
         /// </summary>
-        private readonly DepthStencilState _mApplyInvertedMaskStencilState;
+        private readonly DepthStencilState mApplyInvertedMaskStencilState;
 
-        private DepthStencilState _mApplyMaskStencilState;
+        private DepthStencilState mApplyMaskStencilState;
 
         /// <summary>
         /// The AlphaTestEffect compares alpha values of pixels and sets them given certain restraints.
         /// </summary>
-        private readonly AlphaTestEffect _mAlphaComparator;
+        private readonly AlphaTestEffect mAlphaComparator;
 
         /// <summary>
         /// The camera object of the game used for screen coordinae calculation.
         /// </summary>
-        private readonly Camera _mCamera;
+        private readonly Camera mCamera;
 
         /// <summary>
         /// Creates a new FogOfWar object for the given mapTexture.
@@ -76,46 +76,46 @@ namespace Singularity.Map
         public FogOfWar(Camera camera, GraphicsDevice graphicsDevice)
         {
 
-            _mCamera = camera;
+            mCamera = camera;
 
-            _mRevealingObjects = new LinkedList<IRevealing>();
+            mRevealingObjects = new LinkedList<IRevealing>();
 
-            _mInitializeMaskStencilState = new DepthStencilState()
+            mInitializeMaskStencilState = new DepthStencilState
             {
                 StencilEnable = true,
                 StencilFunction = CompareFunction.Always,
                 StencilPass = StencilOperation.Replace,
                 ReferenceStencil = 1,
-                DepthBufferEnable = false,
+                DepthBufferEnable = false
             };
 
 
-            _mApplyMaskStencilState = new DepthStencilState()
+            mApplyMaskStencilState = new DepthStencilState
             {
                 StencilEnable = true,
                 StencilFunction = CompareFunction.LessEqual,
                 StencilPass = StencilOperation.Replace,
                 ReferenceStencil = 1,
-                DepthBufferEnable = false,
+                DepthBufferEnable = false
             };
 
-            _mApplyInvertedMaskStencilState = new DepthStencilState()
+            mApplyInvertedMaskStencilState = new DepthStencilState
             {
                 StencilEnable = true,
                 StencilFunction = CompareFunction.Greater,
                 StencilPass = StencilOperation.Replace,
                 ReferenceStencil = 1,
-                DepthBufferEnable = false,
+                DepthBufferEnable = false
             };
 
 
-            _mAlphaComparator = new AlphaTestEffect(graphicsDevice)
+            mAlphaComparator = new AlphaTestEffect(graphicsDevice)
             {
-                Projection = _mCamera.GetStencilProjection(),
+                Projection = mCamera.GetStencilProjection(),
                 VertexColorEnabled = true,
                 DiffuseColor = Color.White.ToVector3(),
                 AlphaFunction = CompareFunction.Always,
-                ReferenceAlpha = 0,
+                ReferenceAlpha = 0
             };
 
         }
@@ -126,9 +126,9 @@ namespace Singularity.Map
         /// <param name="spriteBatch"></param>
         public void DrawMasks(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, _mInitializeMaskStencilState, null, _mAlphaComparator, _mCamera.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, mInitializeMaskStencilState, null, mAlphaComparator, mCamera.GetTransform());
 
-            foreach (var revealing in _mRevealingObjects)
+            foreach (var revealing in mRevealingObjects)
             {
                 spriteBatch.DrawCircle(revealing.Center, revealing.RevelationRadius, 100, Color.Transparent, revealing.RevelationRadius);
             }
@@ -143,7 +143,7 @@ namespace Singularity.Map
         /// <param name="spriteBatch"></param>
         public void FillInvertedMask(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, _mApplyInvertedMaskStencilState, null, null, _mCamera.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, mApplyInvertedMaskStencilState, null, null, mCamera.GetTransform());
 
             spriteBatch.FillRectangle(new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight), new Color(Color.Black, 0.5f));
 
@@ -156,7 +156,7 @@ namespace Singularity.Map
         /// <param name="revealingObject">The object which can reveal the fog of war.</param>
         public void AddRevealingObject(IRevealing revealingObject)
         {
-            _mRevealingObjects.AddLast(revealingObject);
+            mRevealingObjects.AddLast(revealingObject);
         }
 
         /// <summary>
@@ -165,17 +165,17 @@ namespace Singularity.Map
         /// <param name="revealingObject">The object which can reveal the fog of war.</param>
         public void RemoveRevealingObject(IRevealing revealingObject)
         {
-            _mRevealingObjects.Remove(revealingObject);
+            mRevealingObjects.Remove(revealingObject);
         }
 
         public void Update(GameTime gametime)
         {
-            _mAlphaComparator.Projection = _mCamera.GetStencilProjection();
+            mAlphaComparator.Projection = mCamera.GetStencilProjection();
         }
 
         public DepthStencilState GetApplyMaskStencilState()
         {
-            return _mApplyMaskStencilState;
+            return mApplyMaskStencilState;
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Singularity.Graph.Paths
 
             var closedList = new List<INode>();
 
-            var openList = new List<INode>() {start};
+            var openList = new List<INode> {start};
 
             var cameFrom = new Dictionary<INode, INode>();
 

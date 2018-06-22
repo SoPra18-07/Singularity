@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 
-
 namespace Singularity.Screen.ScreenClasses
 {
     /// <inheritdoc cref="ITransitionableMenu"/>
@@ -20,24 +19,24 @@ namespace Singularity.Screen.ScreenClasses
         public bool Loaded { get; set; }
 
         // TODO either add bloom to the text or make it a sprite
-        private Texture2D _mLogoTexture2D;
-        private Texture2D _mSingularityText;
-        private readonly Vector2 _mLogoPosition;
-        private readonly float _mScaleMultiplier;
-        private readonly Vector2 _mSingularityTextPosition;
-        private readonly Vector2 _mTextPosition;
-        private SpriteFont _mLibSans20;
-        private Vector2 _mStringCenter;
-        private readonly string _mContinueString;
+        private Texture2D mMLogoTexture2D;
+        private Texture2D mMSingularityText;
+        private readonly Vector2 mMLogoPosition;
+        private readonly float mMScaleMultiplier;
+        private readonly Vector2 mMSingularityTextPosition;
+        private readonly Vector2 mMTextPosition;
+        private SpriteFont mMLibSans20;
+        private Vector2 mMStringCenter;
+        private readonly string mMContinueString;
 
         // Transition variables
         public bool TransitionRunning { get; private set; }
-        private int _mTransitionStep;
-        private double _mTransitionStartTime;
-        private double _mTransitionDuration;
-        private float _mHoloOpacity;
-        private float _mTextOpacity;
-        private bool _mSecondFrame;
+        private int mMTransitionStep;
+        private double mMTransitionStartTime;
+        private double mMTransitionDuration;
+        private float mMHoloOpacity;
+        private float mMTextOpacity;
+        private bool mMSecondFrame;
 
         /// <summary>
         /// Creates an instance of the splash screen.
@@ -45,20 +44,20 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="screenResolution">Viewport resolution used for scaling.</param>
         public SplashScreen(Vector2 screenResolution)
         {
-            _mLogoPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 3);
-            _mSingularityTextPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 + 150);
-            _mTextPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 + 250);
+            mMLogoPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 3);
+            mMSingularityTextPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 + 150);
+            mMTextPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 + 250);
 
             // logo should fill 0.42 * screen height
-            _mScaleMultiplier = screenResolution.Y * 0.42f / 557f;
+            mMScaleMultiplier = screenResolution.Y * 0.42f / 557f;
 
-            _mContinueString = "Press any key to continue";
+            mMContinueString = "Press any key to continue";
 
             TransitionRunning = false;
-            _mHoloOpacity = 1f;
-            _mTextOpacity = 1f;
-            _mTransitionStep = 0;
-            _mSecondFrame = false;
+            mMHoloOpacity = 1f;
+            mMTextOpacity = 1f;
+            mMTransitionStep = 0;
+            mMSecondFrame = false;
         }
 
         public void TransitionTo(EScreen originScreen, EScreen targetScreen, GameTime gameTime)
@@ -69,9 +68,9 @@ namespace Singularity.Screen.ScreenClasses
                 {
                     case EScreen.MainMenuScreen:
                         TransitionRunning = true;
-                        _mTransitionStep = 1;
-                        _mTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
-                        _mTransitionDuration = 500d;
+                        mMTransitionStep = 1;
+                        mMTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
+                        mMTransitionDuration = 500d;
                         break;
 
                     default:
@@ -87,10 +86,10 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="content">Content Manager that should handle the content loading</param>
         public void LoadContent(ContentManager content)
         {
-            _mLogoTexture2D = content.Load<Texture2D>("Logo");
-            _mSingularityText = content.Load<Texture2D>("SingularityText");
-            _mLibSans20 = content.Load<SpriteFont>("LibSans20");
-            _mStringCenter = new Vector2(_mLibSans20.MeasureString(_mContinueString).X / 2, _mLibSans20.MeasureString(_mContinueString).Y / 2);
+            mMLogoTexture2D = content.Load<Texture2D>("Logo");
+            mMSingularityText = content.Load<Texture2D>("SingularityText");
+            mMLibSans20 = content.Load<SpriteFont>("LibSans20");
+            mMStringCenter = new Vector2(mMLibSans20.MeasureString(mMContinueString).X / 2, mMLibSans20.MeasureString(mMContinueString).Y / 2);
         }
 
         /// <summary>
@@ -102,7 +101,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             if (TransitionRunning)
             {
-                switch (_mTransitionStep)
+                switch (mMTransitionStep)
                 {
                     // the steps of the transition:
                     // step 0: initial pre animation
@@ -112,52 +111,52 @@ namespace Singularity.Screen.ScreenClasses
                     // step 4: text becomes visible
                     // step 5: start fade out
                     case (1):
-                        _mTextOpacity = 0f;
-                        if (_mSecondFrame)
+                        mMTextOpacity = 0f;
+                        if (mMSecondFrame)
                         {
-                            _mTransitionStep = 2;
+                            mMTransitionStep = 2;
                         }
 
-                        _mSecondFrame = !_mSecondFrame;
+                        mMSecondFrame = !mMSecondFrame;
 
                         break;
                     case (2):
-                        _mTextOpacity = 1f;
-                        if (_mSecondFrame)
+                        mMTextOpacity = 1f;
+                        if (mMSecondFrame)
                         {
-                            _mTransitionStep = 3;
+                            mMTransitionStep = 3;
                         }
 
-                        _mSecondFrame = !_mSecondFrame;
+                        mMSecondFrame = !mMSecondFrame;
                         break;
                     case (3):
-                        _mTextOpacity = 0f;
-                        if (_mSecondFrame)
+                        mMTextOpacity = 0f;
+                        if (mMSecondFrame)
                         {
-                            _mTransitionStep = 4;
+                            mMTransitionStep = 4;
                         }
 
-                        _mSecondFrame = !_mSecondFrame;
+                        mMSecondFrame = !mMSecondFrame;
                         break;
                     case (4):
-                        _mTextOpacity = 1f;
-                        if (_mSecondFrame)
+                        mMTextOpacity = 1f;
+                        if (mMSecondFrame)
                         {
-                            _mTransitionStep = 5;
+                            mMTransitionStep = 5;
                         }
 
-                        _mSecondFrame = !_mSecondFrame;
+                        mMSecondFrame = !mMSecondFrame;
                         break;
                     case (5):
-                        _mHoloOpacity = (float)Animations.Easing(1f, 0f, _mTransitionStartTime, _mTransitionDuration, gametime);
+                        mMHoloOpacity = (float)Animations.Easing(1f, 0f, mMTransitionStartTime, mMTransitionDuration, gametime);
 
-                        if (gametime.TotalGameTime.TotalMilliseconds >= _mTransitionStartTime + _mTransitionDuration)
+                        if (gametime.TotalGameTime.TotalMilliseconds >= mMTransitionStartTime + mMTransitionDuration)
                         {
                             TransitionRunning = false;
-                            _mHoloOpacity = 0f;
+                            mMHoloOpacity = 0f;
                         }
 
-                        _mTransitionStep = 5;
+                        mMTransitionStep = 5;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -176,35 +175,35 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.Begin();
 
             // Draw the logo
-            spriteBatch.Draw(_mLogoTexture2D,
+            spriteBatch.Draw(mMLogoTexture2D,
                 origin: new Vector2(308, 279),
-                position: _mLogoPosition,
-                color: Color.AliceBlue * _mHoloOpacity,
+                position: mMLogoPosition,
+                color: Color.AliceBlue * mMHoloOpacity,
                 rotation: 0f,
-                scale: _mScaleMultiplier,
+                scale: mMScaleMultiplier,
                 sourceRectangle: null,
                 layerDepth: 0f,
                 effects: SpriteEffects.None);
 
             // Draw the mSingularityText
-            spriteBatch.Draw(_mSingularityText,
+            spriteBatch.Draw(mMSingularityText,
                 origin: new Vector2(322, 41),
-                position: _mSingularityTextPosition,
-                color: Color.AliceBlue * _mHoloOpacity,
+                position: mMSingularityTextPosition,
+                color: Color.AliceBlue * mMHoloOpacity,
                 rotation: 0f,
-                scale: _mScaleMultiplier,
+                scale: mMScaleMultiplier,
                 sourceRectangle: null,
                 layerDepth: 0.1f,
                 effects: SpriteEffects.None);
 
             // Draw the text
-            spriteBatch.DrawString(_mLibSans20,
-                origin: _mStringCenter,
-                position: _mTextPosition,
-                color: new Color(new Vector3(.9137f, .9058f, .8314f)) * _mHoloOpacity * _mTextOpacity,
-                text: _mContinueString,
+            spriteBatch.DrawString(mMLibSans20,
+                origin: mMStringCenter,
+                position: mMTextPosition,
+                color: new Color(new Vector3(.9137f, .9058f, .8314f)) * mMHoloOpacity * mMTextOpacity,
+                text: mMContinueString,
                 rotation: 0f,
-                scale: _mScaleMultiplier,
+                scale: mMScaleMultiplier,
                 effects: SpriteEffects.None,
                 layerDepth: 0.2f);
 

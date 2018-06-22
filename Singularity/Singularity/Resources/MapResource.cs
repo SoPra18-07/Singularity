@@ -17,7 +17,7 @@ namespace Singularity.Resources
         /// <summary>
         /// The color of this resource.
         /// </summary>
-        private readonly Color _mColor;
+        private readonly Color mColor;
 
         public Vector2 AbsolutePosition { get; set; }
 
@@ -45,15 +45,15 @@ namespace Singularity.Resources
 
             // maybe needs some tweaks, it was mentioned that more resources is in a relation with bigger resource representation
             // this needs adjustment as soon as we actually do something with resources.
-            Amount = (int) width / 10;
+            Amount = width / 10;
 
-            _mColor = ResourceHelper.GetColor(type);
+            mColor = ResourceHelper.GetColor(type);
 
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawEllipse(new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y), _mColor, 4f, LayerConstants.ResourceLayer);
+            spriteBatch.DrawEllipse(new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y), mColor, 4f, LayerConstants.ResourceLayer);
         }
 
         public void Update(GameTime gametime)

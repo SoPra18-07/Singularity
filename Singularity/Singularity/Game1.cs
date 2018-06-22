@@ -11,36 +11,36 @@ namespace Singularity
     /// </summary>
     internal sealed class Game1 : Game
     {
-        internal readonly GraphicsDeviceManager MGraphics;
-        internal readonly GraphicsAdapter MGraphicsAdapter;
+        internal readonly GraphicsDeviceManager mGraphics;
+        internal readonly GraphicsAdapter mGraphicsAdapter;
         
 
         // Screens
-        internal GameScreen MGameScreen;
-        private MainMenuManagerScreen _mMainMenuManager;
+        internal GameScreen mGameScreen;
+        private MainMenuManagerScreen mMainMenuManager;
 
 
         // Sprites!
-        private SpriteBatch _mSpriteBatch;
+        private SpriteBatch mSpriteBatch;
 
 
         // Screen Manager
-        private readonly IScreenManager _mScreenManager;
+        private readonly IScreenManager mScreenManager;
 
 
         // 
-        private readonly Director _director;
+        private readonly Director mDirector;
 
 
         internal Game1()
         {
-            MGraphics = new GraphicsDeviceManager(this);
+            mGraphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            MGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
+            mGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
             
-            _mScreenManager = new StackScreenManager(Content);
-            _director = new Director(Content);
+            mScreenManager = new StackScreenManager(Content);
+            mDirector = new Director(Content);
 
         }
 
@@ -53,11 +53,11 @@ namespace Singularity
         protected override void Initialize()
         {
             IsMouseVisible = true;
-            MGraphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
-            MGraphics.PreferredBackBufferWidth = 1080;
-            MGraphics.PreferredBackBufferHeight = 720;
-            MGraphics.IsFullScreen = false;
-            MGraphics.ApplyChanges();
+            mGraphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
+            mGraphics.PreferredBackBufferWidth = 1080;
+            mGraphics.PreferredBackBufferHeight = 720;
+            mGraphics.IsFullScreen = false;
+            mGraphics.ApplyChanges();
 
             base.Initialize();
         }
@@ -71,19 +71,19 @@ namespace Singularity
             var viewportResolution = new Vector2(GraphicsDevice.Viewport.Width,
                 GraphicsDevice.Viewport.Height);
             // Create a new SpriteBatch, which can be used to draw textures.
-            _mSpriteBatch = new SpriteBatch(GraphicsDevice);
+            mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            MGameScreen = new GameScreen(MGraphics.GraphicsDevice, _director);
+            mGameScreen = new GameScreen(mGraphics.GraphicsDevice, mDirector);
 
-            _mMainMenuManager = new MainMenuManagerScreen(viewportResolution, _mScreenManager, true, this);
+            mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
 
             // Add the screens to the screen manager
             // The idea is that the game screen is always at the bottom and stuff is added simply
             // on top of it.
-            _mScreenManager.AddScreen(MGameScreen);
-            _mScreenManager.AddScreen(_mMainMenuManager);
+            mScreenManager.AddScreen(mGameScreen);
+            mScreenManager.AddScreen(mMainMenuManager);
 
-            _mMainMenuManager.LoadContent(Content);
+
             
             // load and play Soundtrack as background music
             // todo this
@@ -108,8 +108,8 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            _director.Update(gameTime);
-            _mScreenManager.Update(gameTime);
+            mDirector.Update(gameTime);
+            mScreenManager.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -123,7 +123,7 @@ namespace Singularity
 
             // TODO: Add your drawing code here
 
-            _mScreenManager.Draw(_mSpriteBatch);
+            mScreenManager.Draw(mSpriteBatch);
             base.Draw(gameTime);
         }
     }

@@ -12,7 +12,7 @@ namespace Singularity.Platform
 
         private PlatformBlank Destination { get; }
 
-        private bool _mBlueprint;
+        private bool mBlueprint;
 
         public Vector2 AbsolutePosition { get; set; }
 
@@ -28,11 +28,11 @@ namespace Singularity.Platform
         /// </summary>
         public bool Blueprint
         {
-            get { return _mBlueprint; }
+            get { return mBlueprint; }
             set
             {
-                _mBlueprint = value;
-                if (!value) { // add road to graph
+                mBlueprint = value;
+                if (!value) { // todo: add road to graph
                            }
             }
         }
@@ -58,7 +58,7 @@ namespace Singularity.Platform
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawLine(((IRevealing)Source).Center, ((IRevealing)Destination).Center, _mBlueprint ? new Color(new Vector3(46, 53, 97)) : new Color(new Vector4(0, 40, 40, 255)), 5f, LayerConstants.RoadLayer);
+            spriteBatch.DrawLine(((IRevealing)Source).Center, ((IRevealing)Destination).Center, mBlueprint ? new Color(new Vector3(46, 53, 97)) : new Color(new Vector4(0, 40, 40, 255)), 5f, LayerConstants.RoadLayer);
         }
 
         public void Update(GameTime gametime)

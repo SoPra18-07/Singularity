@@ -4,16 +4,16 @@ namespace Singularity.Manager
 {
     public class StoryManager
     {
-        private int _mEnergyLevel;
+        private int mEnergyLevel;
 
         public int GetEnergyLevel()
         {
-            return _mEnergyLevel;
+            return mEnergyLevel;
         }
 
         public void AddEnergy(int energy)
         {
-            _mEnergyLevel += energy;
+            mEnergyLevel += energy;
         }
 
         internal void Update(GameTime gametime)

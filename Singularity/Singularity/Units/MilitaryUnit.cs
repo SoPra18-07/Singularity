@@ -15,36 +15,36 @@ namespace Singularity.Units
         private const int DefaultWidth = 150;
         private const int DefaultHeight = 75;
 
-        private static readonly Color SSelectedColor = Color.Gainsboro;
-        private static readonly Color SNotSelectedColor = Color.White;
+        private static readonly Color sSelectedColor = Color.Gainsboro;
+        private static readonly Color sNotSelectedColor = Color.White;
 
         private const double Speed = 4;
 
-        private Color _mColor;
+        private Color mColor;
 
-        private int _mColumn;
-        private int _mRow;
+        private int mColumn;
+        private int mRow;
 
-        private bool _mIsMoving;
-        private Rectangle _mBoundsSnapshot;
-        private Vector2 _mToAdd;
-        private double _mZoomSnapshot;
+        private bool mIsMoving;
+        private Rectangle mBoundsSnapshot;
+        private Vector2 mToAdd;
+        private double mZoomSnapshot;
 
-        private Vector2 _mMovementVector;
+        private Vector2 mMovementVector;
 
-        private readonly Camera _mCamera;
+        private readonly Camera mCamera;
 
-        private Vector2 _mTargetPosition;
-        private int _mRotation;
-        private readonly Texture2D _mMilSheet;
+        private Vector2 mTargetPosition;
+        private int mRotation;
+        private readonly Texture2D mMilSheet;
 
-        private bool _mSelected;
+        private bool mSelected;
 
-        private float _mMouseX;
+        private float mMouseX;
 
-        private float _mMouseY;
+        private float mMouseY;
 
-        private Director _director;
+        private Director mDirector;
 
 
         public Vector2 AbsolutePosition { get; set; }
@@ -78,15 +78,15 @@ namespace Singularity.Units
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X  / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
 
             Moved = false;
-            _mIsMoving = false;
-            _mCamera = camera;
+            mIsMoving = false;
+            mCamera = camera;
 
-            _director = director;
+            mDirector = director;
 
-            _director.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
-            _director.GetInputManager.AddMousePositionListener(this);
+            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            mDirector.GetInputManager.AddMousePositionListener(this);
 
-            _mMilSheet = spriteSheet;
+            mMilSheet = spriteSheet;
         }
 
 
@@ -117,15 +117,15 @@ namespace Singularity.Units
             // calculate rotation with increased degrees going counterclockwise
             if (x >= 0)
             {
-                _mRotation = (int) (Math.Round(270 - degree, MidpointRounding.AwayFromZero));
+                mRotation = (int) (Math.Round(270 - degree, MidpointRounding.AwayFromZero));
             }
             else
             {
-                _mRotation = (int) (Math.Round(90 + degree, MidpointRounding.AwayFromZero));
+                mRotation = (int) (Math.Round(90 + degree, MidpointRounding.AwayFromZero));
             }
 
             // add 42 degrees since sprite sheet starts at sprite -42d not 0
-            _mRotation = (_mRotation + 42) % 360;
+            mRotation = (mRotation + 42) % 360;
 
         }
 
@@ -162,10 +162,10 @@ namespace Singularity.Units
         {
             
             spriteBatch.Draw(
-                _mMilSheet, 
+                mMilSheet, 
                 AbsolutePosition, 
-                new Rectangle((150 * _mColumn), (75 * _mRow), (int) AbsoluteSize.X, (int) AbsoluteSize.Y), 
-                _mColor, 
+                new Rectangle((150 * mColumn), (75 * mRow), (int) AbsoluteSize.X, (int) AbsoluteSize.Y), 
+                mColor, 
                 0f, 
                 Vector2.Zero, 
                 Vector2.One, 
@@ -184,32 +184,32 @@ namespace Singularity.Units
                 (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
 
             // this makes the unit rotate according to the mouse position when its selected and not moving.
-            if (_mSelected && !_mIsMoving)
+            if (mSelected && !mIsMoving)
             {
-                Rotate(new Vector2(_mMouseX, _mMouseY));
+                Rotate(new Vector2(mMouseX, mMouseY));
             }
 
             if (HasReachedTarget())
             {
-                _mIsMoving = false;
+                mIsMoving = false;
             }
 
             // calculate path to target position
-            if (_mIsMoving && !HasReachedTarget())
+            if (mIsMoving && !HasReachedTarget())
             {
-                MoveToTarget(_mTargetPosition);
+                MoveToTarget(mTargetPosition);
             }
 
             // these are values needed to properly get the current sprite out of the spritesheet.
-            _mRow = (_mRotation / 18);
-            _mColumn = ((_mRotation - (_mRow * 18)) / 3);
+            mRow = (mRotation / 18);
+            mColumn = ((mRotation - (mRow * 18)) / 3);
 
             //finally select the appropriate color for selected/deselected units.
-            _mColor = _mSelected ? SSelectedColor : SNotSelectedColor;
+            mColor = mSelected ? sSelectedColor : sNotSelectedColor;
 
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
             AbsBounds = new Rectangle((int)AbsolutePosition.X, (int) AbsolutePosition.Y, (int)AbsoluteSize.X, (int) AbsoluteSize.Y);
-            Moved = _mIsMoving;
+            Moved = mIsMoving;
         }
 
         /// <summary>
@@ -219,11 +219,11 @@ namespace Singularity.Units
         private void MoveToTarget(Vector2 target)
         {
 
-            _mMovementVector = new Vector2(target.X - _mBoundsSnapshot.Center.X, target.Y - _mBoundsSnapshot.Center.Y);
-            _mMovementVector.Normalize();
-            _mToAdd += _mMovementVector * (float) (_mZoomSnapshot *  Speed);
+            mMovementVector = new Vector2(target.X - mBoundsSnapshot.Center.X, target.Y - mBoundsSnapshot.Center.Y);
+            mMovementVector.Normalize();
+            mToAdd += mMovementVector * (float) (mZoomSnapshot *  Speed);
 
-            AbsolutePosition = new Vector2((float) (AbsolutePosition.X + _mMovementVector.X * Speed), (float) (AbsolutePosition.Y + _mMovementVector.Y * Speed));
+            AbsolutePosition = new Vector2((float) (AbsolutePosition.X + mMovementVector.X * Speed), (float) (AbsolutePosition.Y + mMovementVector.Y * Speed));
         }
 
         /// <summary>
@@ -232,14 +232,14 @@ namespace Singularity.Units
         private bool HasReachedTarget()
         {
 
-            if (!(Math.Abs(_mBoundsSnapshot.Center.X + _mToAdd.X -
-                           _mTargetPosition.X) < 8 &&
-                  Math.Abs(_mBoundsSnapshot.Center.Y + _mToAdd.Y -
-                           _mTargetPosition.Y) < 8))
+            if (!(Math.Abs(mBoundsSnapshot.Center.X + mToAdd.X -
+                           mTargetPosition.X) < 8 &&
+                  Math.Abs(mBoundsSnapshot.Center.Y + mToAdd.Y -
+                           mTargetPosition.Y) < 8))
             {
                 return false;
             }
-            _mToAdd = Vector2.Zero;
+            mToAdd = Vector2.Zero;
             return true;
 
         }
@@ -249,21 +249,21 @@ namespace Singularity.Units
             switch (mouseAction)
             {
                 case EMouseAction.LeftClick:
-                    if (_mSelected && !_mIsMoving && !withinBounds && Map.Map.IsOnTop(new Rectangle((int)(_mMouseX - RelativeSize.X / 2f), (int)(_mMouseY - RelativeSize.Y / 2f), (int)RelativeSize.X, (int)RelativeSize.Y), _mCamera))
+                    if (mSelected && !mIsMoving && !withinBounds && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f), (int)(mMouseY - RelativeSize.Y / 2f), (int)RelativeSize.X, (int)RelativeSize.Y), mCamera))
                     {
-                        _mIsMoving = true;
-                        _mTargetPosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
-                        _mBoundsSnapshot = Bounds;
-                        _mZoomSnapshot = _mCamera.GetZoom();
+                        mIsMoving = true;
+                        mTargetPosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+                        mBoundsSnapshot = Bounds;
+                        mZoomSnapshot = mCamera.GetZoom();
                     }
 
                     if (withinBounds) { 
-                        _mSelected = true;
+                        mSelected = true;
                     }
                     return;
 
                 case EMouseAction.RightClick:
-                    _mSelected = false;
+                    mSelected = false;
                     return;
             }
         }
@@ -280,8 +280,8 @@ namespace Singularity.Units
 
         public void MousePositionChanged(float newX, float newY)
         {
-            _mMouseX = newX;
-            _mMouseY = newY;
+            mMouseX = newX;
+            mMouseY = newY;
         }
     }
 }

@@ -6,32 +6,32 @@ using Singularity.Resources;
 
 namespace Singularity.Platform
 {
-    [DataContract()]
+    [DataContract]
     class Junkyard : PlatformBlank
     {
-        [DataMember()]
+        [DataMember]
         private const int PlatformWidth = 144;
-        [DataMember()]
+        [DataMember]
         private const int PlatformHeight = 127;
         public Junkyard(Vector2 position, Texture2D spritesheet): base(position, spritesheet, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
         {
-            MiPlatformActions = new IPlatformAction[1];
+            mIPlatformActions = new IPlatformAction[1];
             //mActions[0] = BuildBlueprintJunkyard(this);
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
-            MCost = new Dictionary<EResourceType, int>();
-            MType = EPlatformType.Junkyard;
-            MSpritename = "Dome";
+            mCost = new Dictionary<EResourceType, int>();
+            mType = EPlatformType.Junkyard;
+            mSpritename = "Dome";
             AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
         }
 
         public void BurnTrash()
         {
-            foreach (var resource in MResources)
+            foreach (var resource in mResources)
             {
                 if (resource.Type == EResourceType.Trash)
                 {
-                    MResources.Remove(resource);
+                    mResources.Remove(resource);
                 }
             }
         }

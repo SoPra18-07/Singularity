@@ -9,9 +9,9 @@
     /// <typeparam name="T3">The type of the third value of the tuple</typeparam>
     internal sealed class Triple<T1, T2, T3>
     {
-        private readonly T1 _mFirstValue;
-        private readonly T2 _mSecondValue;
-        private readonly T3 _mThirdValue;
+        private readonly T1 mFirstValue;
+        private readonly T2 mSecondValue;
+        private readonly T3 mThirdValue;
 
         /// <summary>
         /// Creates a new 2-Tuple with the given values at their specified location.
@@ -21,9 +21,9 @@
         /// <param name="thirdValue">The third value of the Triple </param>
         public Triple(T1 firstValue, T2 secondValue, T3 thirdValue)
         {
-            _mFirstValue = firstValue;
-            _mSecondValue = secondValue;
-            _mThirdValue = thirdValue;
+            mFirstValue = firstValue;
+            mSecondValue = secondValue;
+            mThirdValue = thirdValue;
 
         }
 
@@ -33,7 +33,7 @@
         /// <returns>The first value of this triple</returns>
         public T1 GetFirst()
         {
-            return _mFirstValue;
+            return mFirstValue;
         }
 
         /// <summary>
@@ -42,7 +42,7 @@
         /// <returns>The second value of this triple</returns>
         public T2 GetSecond()
         {
-            return _mSecondValue;
+            return mSecondValue;
         }
 
         /// <summary>
@@ -51,7 +51,7 @@
         /// <returns>The third value of this triple</returns>
         public T3 GetThird()
         {
-            return _mThirdValue;
+            return mThirdValue;
         }
 
 
@@ -64,13 +64,13 @@
 
             var objAsTriple = (Triple<T1, T2, T3>)obj;
 
-            return (objAsTriple.GetFirst().Equals(_mFirstValue) && objAsTriple.GetSecond().Equals(_mSecondValue) && objAsTriple.GetThird().Equals(_mThirdValue));
+            return (objAsTriple.GetFirst().Equals(mFirstValue) && objAsTriple.GetSecond().Equals(mSecondValue) && objAsTriple.GetThird().Equals(mThirdValue));
 
         }
 
         public override int GetHashCode()
         {
-            return _mThirdValue.GetHashCode() * _mFirstValue.GetHashCode() ^ _mSecondValue.GetHashCode();
+            return mThirdValue.GetHashCode() * mFirstValue.GetHashCode() ^ mSecondValue.GetHashCode();
         }
     }
 }

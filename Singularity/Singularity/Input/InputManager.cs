@@ -12,64 +12,64 @@ namespace Singularity.Input
     /// </summary>
     public sealed class InputManager : IUpdate
     {
-        private readonly List<IKeyListener> _mKeyListener;
-        private readonly List<IMousePositionListener> _mMousePositionListener;
-        private readonly List<IMouseClickListener> _mMouseClickListener;
-        private readonly List<IMouseWheelListener> _mMouseWheelListener;
+        private readonly List<IKeyListener> mKeyListener;
+        private readonly List<IMousePositionListener> mMousePositionListener;
+        private readonly List<IMouseClickListener> mMouseClickListener;
+        private readonly List<IMouseWheelListener> mMouseWheelListener;
 
-        private readonly Dictionary<IMouseClickListener, EClickType> _mLeftClickType;
-        private readonly Dictionary<IMouseClickListener, EClickType> _mRightClickType;
+        private readonly Dictionary<IMouseClickListener, EClickType> mLeftClickType;
+        private readonly Dictionary<IMouseClickListener, EClickType> mRightClickType;
 
-        private MouseState _mCurrentMouseState;
-        private MouseState _mPreviousMouseState;
+        private MouseState mCurrentMouseState;
+        private MouseState mPreviousMouseState;
 
-        private KeyboardState _mCurrentKeyboardState;
-        private KeyboardState _mPreviousKeyboardState;
+        private KeyboardState mCurrentKeyboardState;
+        private KeyboardState mPreviousKeyboardState;
 
         public InputManager()
         {
-            _mKeyListener = new List<IKeyListener>();
-            _mMousePositionListener = new List<IMousePositionListener>();
-            _mMouseClickListener = new List<IMouseClickListener>();
-            _mMouseWheelListener = new List<IMouseWheelListener>();
+            mKeyListener = new List<IKeyListener>();
+            mMousePositionListener = new List<IMousePositionListener>();
+            mMouseClickListener = new List<IMouseClickListener>();
+            mMouseWheelListener = new List<IMouseWheelListener>();
 
-            _mLeftClickType = new Dictionary<IMouseClickListener, EClickType>();
-            _mRightClickType = new Dictionary<IMouseClickListener, EClickType>();
+            mLeftClickType = new Dictionary<IMouseClickListener, EClickType>();
+            mRightClickType = new Dictionary<IMouseClickListener, EClickType>();
 
             // get states for later
-            _mPreviousMouseState = Mouse.GetState();
-            _mPreviousKeyboardState = Keyboard.GetState();
+            mPreviousMouseState = Mouse.GetState();
+            mPreviousKeyboardState = Keyboard.GetState();
         }
 
         public void AddKeyListener(IKeyListener iKeyListener)
         {
-            _mKeyListener.Add(iKeyListener);
+            mKeyListener.Add(iKeyListener);
         }
 
         public bool RemoveKeyListener(IKeyListener iKeyListener)
         {
-            if (!_mKeyListener.Contains(iKeyListener))
+            if (!mKeyListener.Contains(iKeyListener))
             {
                 return false;
             }
 
-            _mKeyListener.Remove(iKeyListener);
+            mKeyListener.Remove(iKeyListener);
             return true;
         }
 
         public void AddMousePositionListener(IMousePositionListener iMouseListener)
         {
-            _mMousePositionListener.Add(iMouseListener);
+            mMousePositionListener.Add(iMouseListener);
         }
 
         public bool RemoveMousePositionListener(IMousePositionListener iMouseListener)
         {
-            if (!_mMousePositionListener.Contains(iMouseListener))
+            if (!mMousePositionListener.Contains(iMouseListener))
             {
                 return false;
             }
 
-            _mMousePositionListener.Remove(iMouseListener);
+            mMousePositionListener.Remove(iMouseListener);
             return true;
         }
 
@@ -82,62 +82,62 @@ namespace Singularity.Input
         /// <param name="rightClickType">The RightClickType</param>
         public void AddMouseClickListener(IMouseClickListener iMouseClickListener, EClickType leftClickType, EClickType rightClickType)
         {
-            _mMouseClickListener.Add(iMouseClickListener);
-            _mLeftClickType.Add(iMouseClickListener, leftClickType);
-            _mRightClickType.Add(iMouseClickListener, rightClickType);
+            mMouseClickListener.Add(iMouseClickListener);
+            mLeftClickType.Add(iMouseClickListener, leftClickType);
+            mRightClickType.Add(iMouseClickListener, rightClickType);
         }
 
         public bool RemoveMouseClickListener(IMouseClickListener iMouseClickListener)
         {
-            if (!_mMouseClickListener.Contains(iMouseClickListener))
+            if (!mMouseClickListener.Contains(iMouseClickListener))
             {
                 return false;
             }
 
-            _mMouseClickListener.Remove(iMouseClickListener);
-            _mLeftClickType.Remove(iMouseClickListener);
-            _mRightClickType.Remove(iMouseClickListener);
+            mMouseClickListener.Remove(iMouseClickListener);
+            mLeftClickType.Remove(iMouseClickListener);
+            mRightClickType.Remove(iMouseClickListener);
             return true;
         }
 
         public void AddMouseWheelListener(IMouseWheelListener iMouseWheelListener)
         {
-            _mMouseWheelListener.Add(iMouseWheelListener);
+            mMouseWheelListener.Add(iMouseWheelListener);
         }
 
         public bool RemoveMouseWheelListener(IMouseWheelListener iMouseWheelListener)
         {
-            if (!_mMouseWheelListener.Contains(iMouseWheelListener))
+            if (!mMouseWheelListener.Contains(iMouseWheelListener))
             {
                 return false;
             }
 
-            _mMouseWheelListener.Remove(iMouseWheelListener);
+            mMouseWheelListener.Remove(iMouseWheelListener);
             return true;
         }
 
         public void Update(GameTime gametime)
         {
             // update 'current' values
-            _mCurrentMouseState = Mouse.GetState();
-            _mCurrentKeyboardState = Keyboard.GetState();
+            mCurrentMouseState = Mouse.GetState();
+            mCurrentKeyboardState = Keyboard.GetState();
 
 
             // # BEGIN - mouse wheel events
 
 
-            if (_mCurrentMouseState.ScrollWheelValue < _mPreviousMouseState.ScrollWheelValue)
+            if (mCurrentMouseState.ScrollWheelValue < mPreviousMouseState.ScrollWheelValue)
             // mouse wheel has been scrolled downwards -> create event 'ScrollDown'
             {
-                foreach (var mouseWheelListener in _mMouseWheelListener)
+                foreach (var mouseWheelListener in mMouseWheelListener)
                 {
                     mouseWheelListener.MouseWheelValueChanged(EMouseAction.ScrollDown);
                 }
             }
-            else if (_mCurrentMouseState.ScrollWheelValue > _mPreviousMouseState.ScrollWheelValue)
+            else if (mCurrentMouseState.ScrollWheelValue > mPreviousMouseState.ScrollWheelValue)
             // mouse wheel has been scrolled upwards -> create event 'ScrollUp'
             {
-                foreach (var mouseWheelListener in _mMouseWheelListener)
+                foreach (var mouseWheelListener in mMouseWheelListener)
                 {
                     mouseWheelListener.MouseWheelValueChanged(EMouseAction.ScrollUp);
                 }
@@ -151,20 +151,20 @@ namespace Singularity.Input
 
 
             // process left mouse button changes
-            switch (_mCurrentMouseState.LeftButton)
+            switch (mCurrentMouseState.LeftButton)
                 // switch-case for left mouse button-state
             {
                 case ButtonState.Pressed:
                     // left mouse button is pressed
-                    if (_mPreviousMouseState.LeftButton != ButtonState.Pressed)
+                    if (mPreviousMouseState.LeftButton != ButtonState.Pressed)
                     // left mouse button just pressed -> create events 'typed' + 'pressed'
                     {
-                        foreach (var mouseListener in _mMouseClickListener)
+                        foreach (var mouseListener in mMouseClickListener)
                         {
-                            var doesIntersect = RectAtPosition(_mCurrentMouseState.X, _mCurrentMouseState.Y)
+                            var doesIntersect = RectAtPosition(mCurrentMouseState.X, mCurrentMouseState.Y)
                                 .Intersects(mouseListener.Bounds);
 
-                            switch (_mLeftClickType[mouseListener])
+                            switch (mLeftClickType[mouseListener])
                             {
                                 case EClickType.InBoundsOnly:
                                     if (doesIntersect)
@@ -192,12 +192,12 @@ namespace Singularity.Input
                     else
                     // left mouse button was already pressed -> create event 'pressed'
                     {
-                        foreach (var mouseListener in _mMouseClickListener)
+                        foreach (var mouseListener in mMouseClickListener)
                         {
-                            var doesIntersect = RectAtPosition(_mCurrentMouseState.X, _mCurrentMouseState.Y)
+                            var doesIntersect = RectAtPosition(mCurrentMouseState.X, mCurrentMouseState.Y)
                                 .Intersects(mouseListener.Bounds);
 
-                            switch (_mLeftClickType[mouseListener])
+                            switch (mLeftClickType[mouseListener])
                             {
                                 case EClickType.InBoundsOnly:
                                     if (doesIntersect)
@@ -222,15 +222,15 @@ namespace Singularity.Input
 
                     break;
                 case ButtonState.Released:
-                    if (_mPreviousMouseState.LeftButton == ButtonState.Pressed)
+                    if (mPreviousMouseState.LeftButton == ButtonState.Pressed)
                     // left mouse button was released -> create event 'released'
                     {
-                        foreach (var mouseListener in _mMouseClickListener)
+                        foreach (var mouseListener in mMouseClickListener)
                         {
-                            var doesIntersect = RectAtPosition(_mCurrentMouseState.X, _mCurrentMouseState.Y)
+                            var doesIntersect = RectAtPosition(mCurrentMouseState.X, mCurrentMouseState.Y)
                                 .Intersects(mouseListener.Bounds);
 
-                            switch (_mLeftClickType[mouseListener])
+                            switch (mLeftClickType[mouseListener])
                             {
                                 case EClickType.InBoundsOnly:
                                     if (doesIntersect)
@@ -256,19 +256,19 @@ namespace Singularity.Input
                     break;
             }
 
-            switch (_mCurrentMouseState.RightButton)
+            switch (mCurrentMouseState.RightButton)
             // switch-case for right mouse button-state
             {
                 case ButtonState.Pressed:
-                    if (_mPreviousMouseState.RightButton != ButtonState.Pressed)
+                    if (mPreviousMouseState.RightButton != ButtonState.Pressed)
                     // right mouse button was just pressed -> create events 'typed' + 'pressed'
                     {
-                        foreach (var mouseListener in _mMouseClickListener)
+                        foreach (var mouseListener in mMouseClickListener)
                         {
-                            var doesIntersect = RectAtPosition(_mCurrentMouseState.X, _mCurrentMouseState.Y)
+                            var doesIntersect = RectAtPosition(mCurrentMouseState.X, mCurrentMouseState.Y)
                                 .Intersects(mouseListener.Bounds);
 
-                            switch (_mRightClickType[mouseListener])
+                            switch (mRightClickType[mouseListener])
                             {
                                 case EClickType.InBoundsOnly:
                                     if (doesIntersect)
@@ -296,12 +296,12 @@ namespace Singularity.Input
                     else
                     // right mouse button was already pressed -> create event 'pressed'
                     {
-                        foreach (var mouseListener in _mMouseClickListener)
+                        foreach (var mouseListener in mMouseClickListener)
                         {
-                            var doesIntersect = RectAtPosition(_mCurrentMouseState.X, _mCurrentMouseState.Y)
+                            var doesIntersect = RectAtPosition(mCurrentMouseState.X, mCurrentMouseState.Y)
                                 .Intersects(mouseListener.Bounds);
 
-                            switch (_mRightClickType[mouseListener])
+                            switch (mRightClickType[mouseListener])
                             {
                                 case EClickType.InBoundsOnly:
                                     if (doesIntersect)
@@ -327,15 +327,15 @@ namespace Singularity.Input
 
                     break;
                 case ButtonState.Released:
-                    if (_mPreviousMouseState.RightButton == ButtonState.Pressed)
+                    if (mPreviousMouseState.RightButton == ButtonState.Pressed)
                     // right mouse button was released -> create event 'released'
                     {
-                        foreach (var mouseListener in _mMouseClickListener)
+                        foreach (var mouseListener in mMouseClickListener)
                         {
-                            var doesIntersect = RectAtPosition(_mCurrentMouseState.X, _mCurrentMouseState.Y)
+                            var doesIntersect = RectAtPosition(mCurrentMouseState.X, mCurrentMouseState.Y)
                                 .Intersects(mouseListener.Bounds);
 
-                            switch (_mRightClickType[mouseListener])
+                            switch (mRightClickType[mouseListener])
                             {
                                 case EClickType.InBoundsOnly:
                                     if (doesIntersect)
@@ -365,11 +365,11 @@ namespace Singularity.Input
 
             // # BEGIN - mouse position changed events
 
-            if (_mCurrentMouseState.X != _mPreviousMouseState.X || _mCurrentMouseState.Y != _mPreviousMouseState.Y)
+            if (mCurrentMouseState.X != mPreviousMouseState.X || mCurrentMouseState.Y != mPreviousMouseState.Y)
             {
-                foreach (var mousePositionListener in _mMousePositionListener)
+                foreach (var mousePositionListener in mMousePositionListener)
                 {
-                   mousePositionListener.MousePositionChanged(_mCurrentMouseState.X, _mCurrentMouseState.Y);
+                   mousePositionListener.MousePositionChanged(mCurrentMouseState.X, mCurrentMouseState.Y);
                 }
             }
 
@@ -379,15 +379,15 @@ namespace Singularity.Input
 
             var createPressed = false;
 
-            foreach (var pressedKey in _mCurrentKeyboardState.GetPressedKeys())
+            foreach (var pressedKey in mCurrentKeyboardState.GetPressedKeys())
             // go through all pressed keys and create events accordingly
             {
-                if (!_mPreviousKeyboardState.GetPressedKeys().Contains(pressedKey))
+                if (!mPreviousKeyboardState.GetPressedKeys().Contains(pressedKey))
                 // new key was pressed -> create events 'typed' + 'pressed'
                 {
-                    foreach (var keyListener in _mKeyListener)
+                    foreach (var keyListener in mKeyListener)
                     {
-                        keyListener.KeyTyped(new KeyEvent(_mCurrentKeyboardState.GetPressedKeys()));
+                        keyListener.KeyTyped(new KeyEvent(mCurrentKeyboardState.GetPressedKeys()));
                     }
                 }
                 else
@@ -399,18 +399,18 @@ namespace Singularity.Input
 
             if (createPressed)
             {
-                foreach (var keyListener in _mKeyListener)
+                foreach (var keyListener in mKeyListener)
                 {
-                    keyListener.KeyPressed(new KeyEvent(_mCurrentKeyboardState.GetPressedKeys()));
+                    keyListener.KeyPressed(new KeyEvent(mCurrentKeyboardState.GetPressedKeys()));
                 }
             }
 
             var releasedKeys = new List<Keys>();
 
-            foreach (var previouslyPressedKey in _mPreviousKeyboardState.GetPressedKeys())
+            foreach (var previouslyPressedKey in mPreviousKeyboardState.GetPressedKeys())
             // go through all previously pressed keys and create events if they are no longer pressed
             {
-                if (_mCurrentKeyboardState.GetPressedKeys().Contains(previouslyPressedKey))
+                if (mCurrentKeyboardState.GetPressedKeys().Contains(previouslyPressedKey))
                 // the key was already pressed -> no event
                 {
                     continue;
@@ -422,7 +422,7 @@ namespace Singularity.Input
             {
 
                 // the key was released -> create event 'release'
-                foreach (var keyListener in _mKeyListener)
+                foreach (var keyListener in mKeyListener)
                 {
                     keyListener.KeyReleased(new KeyEvent(releasedKeys.ToArray()));
                 }
@@ -432,8 +432,8 @@ namespace Singularity.Input
 
 
             // update 'previous'-values
-            _mPreviousMouseState = _mCurrentMouseState;
-            _mPreviousKeyboardState = _mCurrentKeyboardState;
+            mPreviousMouseState = mCurrentMouseState;
+            mPreviousKeyboardState = mCurrentKeyboardState;
 
         }
 

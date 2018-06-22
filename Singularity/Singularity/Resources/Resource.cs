@@ -7,6 +7,7 @@ namespace Singularity.Resources
 {
 	public class Resource : ISpatial
     {
+        // TODO: fkarg implement
 
 
         public Vector2 RelativePosition { get; set; }
@@ -18,9 +19,9 @@ namespace Singularity.Resources
         public Vector2 AbsoluteSize { get; set; }
 
 
-        private EResourceType _type;
-        private Vector2 _absolutePosition;
-        private int _v;
+        private EResourceType mType;
+        private Vector2 mAbsolutePosition;
+        private int mV; // velocity 
 
         public Resource()
         {

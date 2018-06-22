@@ -5,20 +5,20 @@ namespace Singularity.serialization
     /// <summary>
     /// A dummy class to create a cyclic reference in SerializationDummy.cs.
     /// </summary>
-    [DataContract()]
+    [DataContract]
     internal class CyclicDummy
     {
-        [DataMember()]
-        private object _mCyclicReference;
+        [DataMember]
+        private object mMCyclicReference;
 
         public CyclicDummy(object reference)
         {
-            _mCyclicReference = reference;
+            mMCyclicReference = reference;
         }
 
         public object GetCyclicReference()
         {
-            return _mCyclicReference;
+            return mMCyclicReference;
         }
     }
 }

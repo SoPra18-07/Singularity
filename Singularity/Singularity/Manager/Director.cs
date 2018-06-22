@@ -11,7 +11,7 @@ namespace Singularity.Manager
     {
 
         
-        public Director(ContentManager Content)
+        public Director(ContentManager content)
         {
             GetInputManager = new InputManager();
             GetStoryManager = new StoryManager();
@@ -21,7 +21,7 @@ namespace Singularity.Manager
             GetMilitaryManager = new MilitaryManager(); // TODO: Update this code if the MilitaryManager is not getting everything from the StructureMap or sth ... 
                                                         // (like units telling it they exist and the like)
 
-            GetSoundManager.LoadContent(Content);
+            GetSoundManager.LoadContent(content);
             GetSoundManager.PlaySoundTrack();
 
 

@@ -16,26 +16,26 @@ namespace Singularity.Graph.Paths
     public sealed class SortedPath : IPath
     {
 
-        private readonly Queue<Vector2> _mPath;
+        private readonly Queue<Vector2> mPath;
 
-        private readonly Queue<INode> _mNodePath;
+        private readonly Queue<INode> mNodePath;
 
 
         public SortedPath()
         {
-            _mNodePath = new Queue<INode>();
-            _mPath = new Queue<Vector2>();
+            mNodePath = new Queue<INode>();
+            mPath = new Queue<Vector2>();
 
         }
 
         public Queue<Vector2> GetVectorPath()
         {
-            return _mPath;
+            return mPath;
         }
 
         public Queue<INode> GetNodePath()
         {
-            return _mNodePath;
+            return mNodePath;
         }
 
         /// <summary>
@@ -44,8 +44,8 @@ namespace Singularity.Graph.Paths
         /// <param name="node">The node to add</param>
         public void AddNode(INode node)
         {
-            _mNodePath.Enqueue(node);
-            _mPath.Enqueue(((IRevealing)node).Center);
+            mNodePath.Enqueue(node);
+            mPath.Enqueue(((IRevealing)node).Center);
         }
     }
 }

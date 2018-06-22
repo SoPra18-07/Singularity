@@ -15,15 +15,15 @@ namespace Singularity.Map
 {
     internal sealed class Map : IDraw, IUpdate, IKeyListener
     {
-        private readonly CollisionMap _mCollisionMap;
-        public readonly StructureMap MStructureMap;
-        private readonly ResourceMap _mResourceMap;
+        private readonly CollisionMap mCollisionMap;
+        public readonly StructureMap mStructureMap;
+        private readonly ResourceMap mResourceMap;
 
-        private readonly Camera _mCamera;
+        private readonly Camera mCamera;
 
-        private readonly Texture2D _mBackgroundTexture;
+        private readonly Texture2D mBackgroundTexture;
 
-        private bool _mDebug;
+        private bool mDebug;
 
         /// <summary>
         /// Creates a new Map object, which solely draws its background
@@ -38,28 +38,28 @@ namespace Singularity.Map
         public Map(Texture2D backgroundTexture, Viewport viewport, Director director, bool debug = false, IEnumerable<Resource> initialResources = null)
         {
 
-            _mBackgroundTexture = backgroundTexture;
-            _mDebug = debug;
+            mBackgroundTexture = backgroundTexture;
+            mDebug = debug;
 
 
-            _mCamera = new Camera(viewport, director, 0, 0);
+            mCamera = new Camera(viewport, director, 0, 0);
 
-            _mCollisionMap = new CollisionMap();
-            MStructureMap = new StructureMap(director);
-            _mResourceMap = new ResourceMap(initialResources);
+            mCollisionMap = new CollisionMap();
+            mStructureMap = new StructureMap(director);
+            mResourceMap = new ResourceMap(initialResources);
         }
 
         /// <see cref="CollisionMap.UpdateCollider(ICollider)"/>
         public void UpdateCollider(ICollider collider)
         {
-            _mCollisionMap.UpdateCollider(collider);
+            mCollisionMap.UpdateCollider(collider);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
 
             //draw the background texture
-            spriteBatch.Draw(_mBackgroundTexture,
+            spriteBatch.Draw(mBackgroundTexture,
                 new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight),
                 null,
                 Color.White,
@@ -71,13 +71,13 @@ namespace Singularity.Map
 
 
             //make sure to only draw the grid if a texture is given.
-            if (!_mDebug)
+            if (!mDebug)
             {
                 return;
 
             }
             //draw the collision map grid.
-            var collisonMap = _mCollisionMap.GetCollisionMap();
+            var collisonMap = mCollisionMap.GetCollisionMap();
 
             for (var columnCount = 0; columnCount <= collisonMap.GetLength(0); columnCount++)
             {
@@ -92,7 +92,7 @@ namespace Singularity.Map
                     new Vector2(0, rowCount * MapConstants.GridHeight), MapConstants.MapWidth, 0, Color.Yellow, 1, LayerConstants.GridDebugLayer);
             }
 
-            var colMap = _mCollisionMap.GetCollisionMap();
+            var colMap = mCollisionMap.GetCollisionMap();
 
             for(var i = 0; i < colMap.GetLength(0); i++)
             {
@@ -111,49 +111,49 @@ namespace Singularity.Map
         //TODO: remove if input manager is available since we only use this to pass an update to the camera.
         public void Update(GameTime gametime)
         {
-            _mCamera.Update(gametime);
+            mCamera.Update(gametime);
         }
 
         /// <see cref="StructureMap.AddPlatform(PlatformBlank)"/>
         public void AddPlatform(PlatformBlank platform)
         {
-            MStructureMap.AddPlatform(platform);
+            mStructureMap.AddPlatform(platform);
         }
 
         /// <see cref="StructureMap.RemovePlatform(PlatformBlank)"/>
         public void RemovePlatform(PlatformBlank platform)
         {
-            MStructureMap.RemovePlatform(platform);
+            mStructureMap.RemovePlatform(platform);
         }
 
         public void AddRoad(Road road)
         {
-            MStructureMap.AddRoad(road);
+            mStructureMap.AddRoad(road);
         }
 
         public void RemoveRoad(Road road)
         {
-            MStructureMap.RemoveRoad(road);
+            mStructureMap.RemoveRoad(road);
         }
 
         public StructureMap GetStructureMap()
         {
-            return MStructureMap;
+            return mStructureMap;
         }
 
         public CollisionMap GetCollisionMap()
         {
-            return _mCollisionMap;
+            return mCollisionMap;
         }
 
         public ResourceMap GetResourceMap()
         {
-            return _mResourceMap;
+            return mResourceMap;
         }
 
         public Camera GetCamera()
         {
-            return _mCamera;
+            return mCamera;
         }
 
         /// <summary>
@@ -184,23 +184,23 @@ namespace Singularity.Map
 
 
             var sign = Math.Sign(
-                (MapConstants.STop.X - MapConstants.SLeft.X) * (worldSpacePosition.Y - MapConstants.SLeft.Y) -
-                (MapConstants.STop.Y - MapConstants.SLeft.Y) * (worldSpacePosition.X - MapConstants.SLeft.X)
+                (MapConstants.sTop.X - MapConstants.sLeft.X) * (worldSpacePosition.Y - MapConstants.sLeft.Y) -
+                (MapConstants.sTop.Y - MapConstants.sLeft.Y) * (worldSpacePosition.X - MapConstants.sLeft.X)
             );
 
             var sign2 = Math.Sign(
-                (MapConstants.SLeft.X - MapConstants.SBottom.X) * (worldSpacePosition.Y - MapConstants.SBottom.Y) -
-                (MapConstants.SLeft.Y - MapConstants.SBottom.Y) * (worldSpacePosition.X - MapConstants.SBottom.X)
+                (MapConstants.sLeft.X - MapConstants.sBottom.X) * (worldSpacePosition.Y - MapConstants.sBottom.Y) -
+                (MapConstants.sLeft.Y - MapConstants.sBottom.Y) * (worldSpacePosition.X - MapConstants.sBottom.X)
             );
 
             var sign3 = Math.Sign(
-                (MapConstants.SRight.X - MapConstants.STop.X) * (worldSpacePosition.Y - MapConstants.STop.Y) -
-                (MapConstants.SRight.Y - MapConstants.STop.Y) * (worldSpacePosition.X - MapConstants.STop.X)
+                (MapConstants.sRight.X - MapConstants.sTop.X) * (worldSpacePosition.Y - MapConstants.sTop.Y) -
+                (MapConstants.sRight.Y - MapConstants.sTop.Y) * (worldSpacePosition.X - MapConstants.sTop.X)
             );
 
             var sign4 = Math.Sign(
-                (MapConstants.SBottom.X - MapConstants.SRight.X) * (worldSpacePosition.Y - MapConstants.SRight.Y) -
-                (MapConstants.SBottom.Y - MapConstants.SRight.Y) * (worldSpacePosition.X - MapConstants.SRight.X)
+                (MapConstants.sBottom.X - MapConstants.sRight.X) * (worldSpacePosition.Y - MapConstants.sRight.Y) -
+                (MapConstants.sBottom.Y - MapConstants.sRight.Y) * (worldSpacePosition.X - MapConstants.sRight.X)
             );
 
             return (sign == 1 && sign2 == 1 && sign3 == 1 && sign4 == 1);
@@ -232,7 +232,7 @@ namespace Singularity.Map
             {
                 if (key == Keys.F4)
                 {
-                    _mDebug = !_mDebug;
+                    mDebug = !mDebug;
                 }
             }
         }

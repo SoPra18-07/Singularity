@@ -8,11 +8,11 @@
     /// </summary>
     public static class PathfindingFactory
     {
-        private static IPathfinding _sPathfinding;
+        private static IPathfinding sPathfinding;
 
         public static IPathfinding GetPathfinding()
         {
-            return _sPathfinding ?? (_sPathfinding = new DefaultPathfinding());
+            return sPathfinding ?? (sPathfinding = new DefaultPathfinding());
         }
 
     }

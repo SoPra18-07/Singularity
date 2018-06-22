@@ -18,10 +18,10 @@ namespace Singularity.Libraries
 
         #region Private Members
 
-        private static readonly Dictionary<String, List<Vector2>> SCircleCache = new Dictionary<string, List<Vector2>>();
-        private static readonly Dictionary<Rectangle, List<Vector2>> SEllipseCache = new Dictionary<Rectangle, List<Vector2>>();
+        private static readonly Dictionary<String, List<Vector2>> sCircleCache = new Dictionary<string, List<Vector2>>();
+        private static readonly Dictionary<Rectangle, List<Vector2>> sEllipseCache = new Dictionary<Rectangle, List<Vector2>>();
         //private static readonly Dictionary<String, List<Vector2>> arcCache = new Dictionary<string, List<Vector2>>();
-        private static Texture2D _sPixel;
+        private static Texture2D sPixel;
 
         #endregion
 
@@ -30,8 +30,8 @@ namespace Singularity.Libraries
 
         private static void CreateThePixel(SpriteBatch spriteBatch)
         {
-            _sPixel = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
-            _sPixel.SetData(new[] { Color.White });
+            sPixel = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+            sPixel.SetData(new[] { Color.White });
         }
 
 
@@ -69,9 +69,9 @@ namespace Singularity.Libraries
         {
             // Look for a cached version of this circle
             String circleKey = radius + "x" + sides;
-            if (SCircleCache.ContainsKey(circleKey))
+            if (sCircleCache.ContainsKey(circleKey))
             {
-                return SCircleCache[circleKey];
+                return sCircleCache[circleKey];
             }
 
             List<Vector2> vectors = new List<Vector2>();
@@ -88,16 +88,16 @@ namespace Singularity.Libraries
             vectors.Add(new Vector2((float)(radius * Math.Cos(0)), (float)(radius * Math.Sin(0))));
 
             // Cache this circle so that it can be quickly drawn next time
-            SCircleCache.Add(circleKey, vectors);
+            sCircleCache.Add(circleKey, vectors);
 
             return vectors;
         }
 
         private static List<Vector2> CreateEllipse(Rectangle rect)
         {
-            if (SEllipseCache.ContainsKey(rect))
+            if (sEllipseCache.ContainsKey(rect))
             {
-                return SEllipseCache[rect];
+                return sEllipseCache[rect];
             }
 
             var vectors = new List<Vector2>();
@@ -152,7 +152,7 @@ namespace Singularity.Libraries
 
                 }
             }
-            SEllipseCache.Add(rect, vectors);
+            sEllipseCache.Add(rect, vectors);
             return vectors;
 
         }
@@ -209,13 +209,13 @@ namespace Singularity.Libraries
         /// <param name="color">The color to draw the rectangle in</param>
         public static void FillRectangle(this SpriteBatch spriteBatch, Rectangle rect, Color color)
         {
-            if (_sPixel == null)
+            if (sPixel == null)
             {
                 CreateThePixel(spriteBatch);
             }
 
             // Simply use the function already there
-            spriteBatch.Draw(_sPixel, rect, color);
+            spriteBatch.Draw(sPixel, rect, color);
         }
 
 
@@ -229,12 +229,12 @@ namespace Singularity.Libraries
         /// <param name="layer">The depth of the layer this gets drawn on</param>
         public static void FillRectangle(this SpriteBatch spriteBatch, Rectangle rect, Color color, float angle, float layer)
         {
-            if (_sPixel == null)
+            if (sPixel == null)
             {
                 CreateThePixel(spriteBatch);
             }
 
-            spriteBatch.Draw(_sPixel, rect, null, color, angle, Vector2.Zero, SpriteEffects.None, layer);
+            spriteBatch.Draw(sPixel, rect, null, color, angle, Vector2.Zero, SpriteEffects.None, layer);
         }
 
 
@@ -261,13 +261,13 @@ namespace Singularity.Libraries
         /// <param name="color">The color to draw the rectangle in</param>
         public static void FillRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float angle)
         {
-            if (_sPixel == null)
+            if (sPixel == null)
             {
                 CreateThePixel(spriteBatch);
             }
 
             // stretch the pixel between the two vectors
-            spriteBatch.Draw(_sPixel,
+            spriteBatch.Draw(sPixel,
                              location,
                              null,
                              color,
@@ -324,13 +324,13 @@ namespace Singularity.Libraries
             Color color,
             float angle, float opacity)
         {
-            if (_sPixel == null)
+            if (sPixel == null)
             {
                 CreateThePixel(spriteBatch);
             }
 
             // stretch the pixel between the two vectors
-            spriteBatch.Draw(_sPixel,
+            spriteBatch.Draw(sPixel,
                 location,
                 null,
                 color * opacity,
@@ -514,13 +514,13 @@ namespace Singularity.Libraries
         /// <param name="layerDepth">The depth of the layer this gets drawn to</param>
         public static void DrawLine(this SpriteBatch spriteBatch, Vector2 point, float length, float angle, Color color, float thickness, float layerDepth = 0)
         {
-            if (_sPixel == null)
+            if (sPixel == null)
             {
                 CreateThePixel(spriteBatch);
             }
 
             // stretch the pixel between the two vectors
-            spriteBatch.Draw(_sPixel,
+            spriteBatch.Draw(sPixel,
                              point,
                              null,
                              color,
@@ -544,12 +544,12 @@ namespace Singularity.Libraries
 
         public static void PutPixel(this SpriteBatch spriteBatch, Vector2 position, Color color)
         {
-            if (_sPixel == null)
+            if (sPixel == null)
             {
                 CreateThePixel(spriteBatch);
             }
 
-            spriteBatch.Draw(_sPixel, position, color);
+            spriteBatch.Draw(sPixel, position, color);
         }
 
         #endregion

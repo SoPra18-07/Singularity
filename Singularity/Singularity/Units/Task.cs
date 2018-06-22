@@ -4,19 +4,19 @@ using Singularity.Resources;
 
 namespace Singularity.Units
 {
-    [DataContract()]
+    [DataContract]
     public class Task
     {
-        [DataMember()]
+        [DataMember]
         public JobType Job { get; set; }
         
-        [DataMember()]
+        [DataMember]
         public PlatformBlank End { get; set; }
 
-        [DataMember()]
+        [DataMember]
         public IPlatformAction Action { get; set; }
 
-        [DataMember()]
+        [DataMember]
         public EResourceType? GetResource { get; set; }
 
         public Task(JobType job, PlatformBlank end, EResourceType? res, IPlatformAction action)

@@ -17,31 +17,30 @@ namespace Singularity.Screen.ScreenClasses
     {
         public bool Loaded { get; set; }
 
-        private Texture2D _mGlowTexture2D;
-        private Texture2D _mHoloProjectionTexture2D;
-        private Vector2 _mScreenCenter;
-        private Vector2 _mScreenResolutionScaling;
-        private float _mHoloProjectionWidthScaling;
-        private float _mHoloProjectionHeightScaling;
-        private Vector2 _mHoloProjectionScaling;
+        private Texture2D mGlowTexture2D;
+        private Texture2D mHoloProjectionTexture2D;
+        private Vector2 mScreenCenter;
+        private Vector2 mScreenResolutionScaling;
+        private float mHoloProjectionWidthScaling;
+        private float mHoloProjectionHeightScaling;
 
         public EScreen CurrentScreen { get; private set; }
-        private double _mTransitionStartTime;
-        private double _mTransitionDuration;
-        private float _mTransitionInitialValue;
-        private float _mTransitionTargetValue;
-        private EScreen _mTargetScreen;
-        private int _mFrameCounter;
+        private double mTransitionStartTime;
+        private double mTransitionDuration;
+        private float mTransitionInitialValue;
+        private float mTransitionTargetValue;
+        private EScreen mTargetScreen;
+        private int mFrameCounter;
 
         public bool TransitionRunning { get; private set; }
 
         // Variables for flickering light
-        private float _mFlickerDuration;
-        private bool _mFlickerDirectionUp;
-        private float _mHoloOpacity;
-        private float _mTargetHoloOpacity;
-        private float _mFlickerStep;
-        private bool _mFlickering;
+        private float mFlickerDuration;
+        private bool mFlickerDirectionUp;
+        private float mHoloOpacity;
+        private float mTargetHoloOpacity;
+        private float mFlickerStep;
+        private bool mFlickering;
 
 
         /// <summary>
@@ -50,15 +49,15 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="screenResolution">Current screen resolution.</param>
         public MenuBackgroundScreen(Vector2 screenResolution)
         {
-            _mHoloProjectionWidthScaling = 1f;
-            _mHoloProjectionHeightScaling = screenResolution.Y / 1024;
+            mHoloProjectionWidthScaling = 1f;
+            mHoloProjectionHeightScaling = screenResolution.Y / 1024;
             SetResolution(screenResolution);
             CurrentScreen = EScreen.SplashScreen;
 
             TransitionRunning = false;
-            _mHoloOpacity = 1;
-            _mFlickerDirectionUp = true;
-            _mFrameCounter = 0;
+            mHoloOpacity = 1;
+            mFlickerDirectionUp = true;
+            mFrameCounter = 0;
         }
 
         /*
@@ -89,8 +88,8 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="screenResolution">Current viewport screen resolution</param>
         private void SetResolution(Vector2 screenResolution)
         {
-            _mScreenCenter = new Vector2(screenResolution.X / 2, screenResolution.Y / 2);
-            _mScreenResolutionScaling = new Vector2(screenResolution.X / 1280, screenResolution.Y / 1024);
+            mScreenCenter = new Vector2(screenResolution.X / 2, screenResolution.Y / 2);
+            mScreenResolutionScaling = new Vector2(screenResolution.X / 1280, screenResolution.Y / 1024);
             //SetHoloProjectionScaling(mHoloProjectionWidthScaling);
         }
 
@@ -104,7 +103,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="gameTime">gameTime used to calculate animations</param>
         public void TransitionTo(EScreen originSscreen, EScreen targetScreen, GameTime gameTime)
         {
-            _mTargetScreen = targetScreen;
+            mTargetScreen = targetScreen;
             switch (targetScreen)
             {
                 case EScreen.AchievementsScreen:
@@ -114,12 +113,12 @@ namespace Singularity.Screen.ScreenClasses
                 case EScreen.LoadSelectScreen:
                     break;
                 case EScreen.MainMenuScreen:
-                    _mTransitionTargetValue = 2f;
-                    _mTransitionDuration = 500;
+                    mTransitionTargetValue = 2f;
+                    mTransitionDuration = 500;
                     break;
                 case EScreen.OptionsScreen:
-                    _mTransitionTargetValue = 4f;
-                    _mTransitionDuration = 300;
+                    mTransitionTargetValue = 4f;
+                    mTransitionDuration = 300;
                     break;
 
                 default:
@@ -127,8 +126,8 @@ namespace Singularity.Screen.ScreenClasses
             }
             // SetHoloProjectionScaling(mHoloProjectionWidthScaling);
             TransitionRunning = true;
-            _mTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
-            _mTransitionInitialValue = _mHoloProjectionWidthScaling;
+            mTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
+            mTransitionInitialValue = mHoloProjectionWidthScaling;
         }
 
         /// <summary>
@@ -137,8 +136,8 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="content">ContentManager for the entire game</param>
         public void LoadContent(ContentManager content)
         {
-            _mGlowTexture2D = content.Load<Texture2D>("Glow");
-            _mHoloProjectionTexture2D = content.Load<Texture2D>("HoloProjection");
+            mGlowTexture2D = content.Load<Texture2D>("Glow");
+            mHoloProjectionTexture2D = content.Load<Texture2D>("HoloProjection");
         }
 
         /// <summary>
@@ -159,14 +158,14 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         private void Flicker()
         {
-            if (!_mFlickering)
+            if (!mFlickering)
             {
                 // create a new random number generator
                 var rnd = new Random();
 
                 // choose target opacity and flicker duration
-                var limit = (int) (_mHoloOpacity * 100);
-                if (_mFlickerDirectionUp)
+                var limit = (int) (mHoloOpacity * 100);
+                if (mFlickerDirectionUp)
                 {
                     if (limit <= 50)
                     {
@@ -177,7 +176,7 @@ namespace Singularity.Screen.ScreenClasses
                         limit = limit - 10;
                     }
 
-                    _mTargetHoloOpacity = rnd.Next(40, limit) / 100f;
+                    mTargetHoloOpacity = rnd.Next(40, limit) / 100f;
                 }
                 else
                 {
@@ -190,37 +189,37 @@ namespace Singularity.Screen.ScreenClasses
                         limit = limit + 10;
                     }
 
-                    _mTargetHoloOpacity = rnd.Next(limit, 100) / 100f;
+                    mTargetHoloOpacity = rnd.Next(limit, 100) / 100f;
                 }
 
-                _mFlickerDirectionUp = !_mFlickerDirectionUp;
+                mFlickerDirectionUp = !mFlickerDirectionUp;
 
-                _mFlickerDuration = rnd.Next(10, 30);
-                _mFlickerStep = (_mTargetHoloOpacity - _mHoloOpacity) / _mFlickerDuration;
-                _mFlickering = true;
+                mFlickerDuration = rnd.Next(10, 30);
+                mFlickerStep = (mTargetHoloOpacity - mHoloOpacity) / mFlickerDuration;
+                mFlickering = true;
             }
             else
             {
-                _mHoloOpacity += _mFlickerStep;
+                mHoloOpacity += mFlickerStep;
 
                 // "Finish flicker" state set
-                if (_mFlickerStep > 0)
+                if (mFlickerStep > 0)
                 {
-                    if (_mHoloOpacity >= _mTargetHoloOpacity)
+                    if (mHoloOpacity >= mTargetHoloOpacity)
                     {
-                        _mFlickering = false;
+                        mFlickering = false;
                     }
                 }
-                else if (_mFlickerStep < 0)
+                else if (mFlickerStep < 0)
                 {
-                    if (_mHoloOpacity <= _mTargetHoloOpacity)
+                    if (mHoloOpacity <= mTargetHoloOpacity)
                     {
-                        _mFlickering = false;
+                        mFlickering = false;
                     }
                 }
                 else
                 {
-                    _mFlickering = false;
+                    mFlickering = false;
                 }
             }
 
@@ -237,42 +236,42 @@ namespace Singularity.Screen.ScreenClasses
                 // to delay the transition by 20 frames to allow for the animation in the splash screen
                 if (CurrentScreen == EScreen.SplashScreen)
                 {
-                    if (_mFrameCounter < 20)
+                    if (mFrameCounter < 20)
                     {
-                        _mFrameCounter += 1;
+                        mFrameCounter += 1;
                     }
-                    else if (_mFrameCounter == 20)
+                    else if (mFrameCounter == 20)
                     {
-                        _mTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
-                        _mFrameCounter += 1;
+                        mTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
+                        mFrameCounter += 1;
                     }
                     else
                     {
-                        _mHoloProjectionWidthScaling = (float) Animations.Easing(_mTransitionInitialValue,
-                            _mTransitionTargetValue,
-                            _mTransitionStartTime,
-                            _mTransitionDuration,
+                        mHoloProjectionWidthScaling = (float) Animations.Easing(mTransitionInitialValue,
+                            mTransitionTargetValue,
+                            mTransitionStartTime,
+                            mTransitionDuration,
                             gameTime);
 
-                        if (gameTime.TotalGameTime.TotalMilliseconds >= _mTransitionStartTime + _mTransitionDuration)
+                        if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
                         {
                             TransitionRunning = false;
-                            CurrentScreen = _mTargetScreen;
+                            CurrentScreen = mTargetScreen;
                         }
                     }
                 }
                 else
                 {
-                    _mHoloProjectionWidthScaling = (float) Animations.Easing(_mTransitionInitialValue,
-                        _mTransitionTargetValue,
-                        _mTransitionStartTime,
-                        _mTransitionDuration,
+                    mHoloProjectionWidthScaling = (float) Animations.Easing(mTransitionInitialValue,
+                        mTransitionTargetValue,
+                        mTransitionStartTime,
+                        mTransitionDuration,
                         gameTime);
 
-                    if (gameTime.TotalGameTime.TotalMilliseconds >= _mTransitionStartTime + _mTransitionDuration)
+                    if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
                     {
                         TransitionRunning = false;
-                        CurrentScreen = _mTargetScreen;
+                        CurrentScreen = mTargetScreen;
                     }
                 }
             }
@@ -283,24 +282,24 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
 
             // Draw glow
-            spriteBatch.Draw(_mGlowTexture2D,
-                _mScreenCenter,
+            spriteBatch.Draw(mGlowTexture2D,
+                mScreenCenter,
                 null,
                 Color.AliceBlue,
                 0f,
                 new Vector2(609, 553),
-                _mScreenResolutionScaling.X < _mScreenResolutionScaling.Y ? _mScreenResolutionScaling.X : _mScreenResolutionScaling.Y, // Scales based on smaller scalar between height and width,
+                mScreenResolutionScaling.X < mScreenResolutionScaling.Y ? mScreenResolutionScaling.X : mScreenResolutionScaling.Y, // Scales based on smaller scalar between height and width,
                 SpriteEffects.None,
                 1f);
 
             // draw holoProjection texture without scaling
-            spriteBatch.Draw(_mHoloProjectionTexture2D,
-                new Vector2(_mScreenCenter.X, _mScreenCenter.Y * 2 - 20),
+            spriteBatch.Draw(mHoloProjectionTexture2D,
+                new Vector2(mScreenCenter.X, mScreenCenter.Y * 2 - 20),
                 null,
-                Color.White * _mHoloOpacity,
+                Color.White * mHoloOpacity,
                 0f,
                 new Vector2(367, 1033),
-                new Vector2(_mHoloProjectionWidthScaling, _mHoloProjectionHeightScaling),
+                new Vector2(mHoloProjectionWidthScaling, mHoloProjectionHeightScaling),
                 SpriteEffects.None,
                 0f);
 

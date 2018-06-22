@@ -7,12 +7,12 @@
 	
     public static class IdGenerator
     {
-        private static int _sId; // (defaults to 0)
+        private static int sId; // (defaults to 0)
 
         public static int NextiD()
         {
-            _sId++;
-            return _sId;
+            sId++;
+            return sId;
         }
 
     }

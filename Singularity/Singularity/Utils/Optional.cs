@@ -10,7 +10,7 @@ namespace Singularity.Utils
     /// <typeparam name="T">The type of this optional</typeparam>
     public sealed class Optional<T>
     {
-        private readonly T _mValue;
+        private readonly T mValue;
 
         /// <summary>
         /// Returns a new Optional for the given value.
@@ -30,11 +30,11 @@ namespace Singularity.Utils
         /// <returns>The value if not null</returns>
         public T Get()
         {
-            if (_mValue == null)
+            if (mValue == null)
             {
                 throw new NoSuchElementException();
             }
-            return _mValue;
+            return mValue;
 
         }
 
@@ -44,12 +44,12 @@ namespace Singularity.Utils
         /// <returns>True if the value is not null, false otherwise</returns>
         public bool IsPresent()
         {
-            return _mValue != null;
+            return mValue != null;
         }
 
         private Optional(T value)
         {
-            _mValue = value;
+            mValue = value;
 
         }
 	}

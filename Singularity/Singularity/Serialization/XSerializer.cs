@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Xml;
 
 namespace Singularity.serialization
@@ -161,7 +161,7 @@ namespace Singularity.serialization
             }
 
             //Check allegedly not Serializable Object Vector2
-            Console.WriteLine("X and Y Coordinate of Vector2: " + dummyd.MVector.X + " " + dummyd.MVector.Y);
+            Console.WriteLine("X and Y Coordinate of Vector2: " + dummyd.mMVector.X + " " + dummyd.mMVector.Y);
         }
     }
 }

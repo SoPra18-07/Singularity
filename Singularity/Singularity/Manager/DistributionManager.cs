@@ -11,43 +11,43 @@ using Singularity.Utils;
 
 namespace Singularity.Manager
 {
-    [DataContract()]
+    [DataContract]
     public class DistributionManager
     {
-        [DataMember()]
-        private List<GeneralUnit> _mIdle;
-        [DataMember()]
-        private List<GeneralUnit> _mLogistics;
-        [DataMember()]
-        private List<GeneralUnit> _mConstruction;
-        [DataMember()]
-        private List<GeneralUnit> _mProduction;
-        [DataMember()]
-        private List<GeneralUnit> _mDefense;
-        [DataMember()]
-        private List<GeneralUnit> _mManual;
+        [DataMember]
+        private List<GeneralUnit> mIdle;
+        [DataMember]
+        private List<GeneralUnit> mLogistics;
+        [DataMember]
+        private List<GeneralUnit> mConstruction;
+        [DataMember]
+        private List<GeneralUnit> mProduction;
+        [DataMember]
+        private List<GeneralUnit> mDefense;
+        [DataMember]
+        private List<GeneralUnit> mManual;
 
-        [DataMember()]
-        private Queue<Task> _mBuildingResources;
-        [DataMember()]
-        private Queue<Task> _mRefiningOrStoringResources;
-        [DataMember()]
-        private Queue<Task> _mRequestedUnitsProduce;
-        [DataMember()]
-        private Queue<Task> _mRequestedUnitsDefense;
+        [DataMember]
+        private Queue<Task> mBuildingResources;
+        [DataMember]
+        private Queue<Task> mRefiningOrStoringResources;
+        [DataMember]
+        private Queue<Task> mRequestedUnitsProduce;
+        [DataMember]
+        private Queue<Task> mRequestedUnitsDefense;
 
-        [DataMember()]
-        private Random _mRandom;
+        [DataMember]
+        private Random mRandom;
         // An Felix: Vielleicht BuildBluePrint nicht in "ProduceResourceAction.cs" reinhauen (da hätte ich nicht danach gesucht) - muss ich eh nochmal refactorn mit PlatformBlank und jz dem hier
-        [DataMember()]
-        private List<BuildBluePrint> _mBlueprintBuilds;
+        [DataMember]
+        private List<BuildBluePrint> mBlueprintBuilds;
 
         // L:An der Stelle mit Felix reden, PlatformActionProduce als abstrakte Klasse würde helfen?
         // F:Mhm weiß nicht ob das wirklich notwendig ist ... ich mach mir mal gedanken
         // L:Zumindest ein interface würde benötigt, ich denke nicht dass der sinn hinter der sache ist für jede produzierende plattform ne extra liste mit
         // List<PlatformnamehiereinsetzenActionProduce> zu erstellen. Das gleiche mit mDefensivePlatforms
-        [DataMember()]
-        private List<IPlatformAction> _mPlatformActions;
+        [DataMember]
+        private List<IPlatformAction> mPlatformActions;
 
         // Alternativ könnte man auch bei den beiden Listen direkt die Platformen einsetzen?
         // Momentan ja, aber wenn du ne plattform haben willst die (rein theoretisch) verteidigen und Produzieren gleichzeitig kann? Oder gleichzeitig KineticDefense und LaserDefense ist?
@@ -55,20 +55,20 @@ namespace Singularity.Manager
 
         public DistributionManager()
         {
-            _mIdle = new List<GeneralUnit>();
-            _mLogistics = new List<GeneralUnit>();
-            _mConstruction = new List<GeneralUnit>();
-            _mProduction = new List<GeneralUnit>();
-            _mDefense = new List<GeneralUnit>();
-            _mManual = new List<GeneralUnit>();
+            mIdle = new List<GeneralUnit>();
+            mLogistics = new List<GeneralUnit>();
+            mConstruction = new List<GeneralUnit>();
+            mProduction = new List<GeneralUnit>();
+            mDefense = new List<GeneralUnit>();
+            mManual = new List<GeneralUnit>();
 
-            _mBuildingResources = new Queue<Task>();
-            _mRefiningOrStoringResources = new Queue<Task>();
-            _mRequestedUnitsProduce = new Queue<Task>();
-            _mRequestedUnitsDefense = new Queue<Task>();
-            _mBlueprintBuilds = new List<BuildBluePrint>();
-            _mPlatformActions = new List<IPlatformAction>();
-            _mRandom = new Random();
+            mBuildingResources = new Queue<Task>();
+            mRefiningOrStoringResources = new Queue<Task>();
+            mRequestedUnitsProduce = new Queue<Task>();
+            mRequestedUnitsDefense = new Queue<Task>();
+            mBlueprintBuilds = new List<BuildBluePrint>();
+            mPlatformActions = new List<IPlatformAction>();
+            mRandom = new Random();
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Singularity.Manager
         /// <param name="unit">the unit that has been created</param>
         public void Register(GeneralUnit unit)
         {
-            _mIdle.Add(unit);
+            mIdle.Add(unit);
         }
         /// <summary>
         /// This is called by the player, when he wants to distribute the units to certain jobs.
@@ -91,19 +91,19 @@ namespace Singularity.Manager
             switch (oldj)
             {
                 case JobType.Construction:
-                    oldlist = _mConstruction;
+                    oldlist = mConstruction;
                     break;
                 case JobType.Logistics:
-                    oldlist = _mLogistics;
+                    oldlist = mLogistics;
                     break;
                 case JobType.Idle:
-                    oldlist = _mIdle;
+                    oldlist = mIdle;
                     break;
                 case JobType.Production:
-                    oldlist = _mDefense;
+                    oldlist = mDefense;
                     break;
                 case JobType.Defense:
-                    oldlist = _mProduction;
+                    oldlist = mProduction;
                     break;
                 default:
                     throw new InvalidGenericArgumentException("You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
@@ -113,19 +113,19 @@ namespace Singularity.Manager
             switch (newj)
             {
                 case JobType.Construction:
-                    newlist = _mConstruction;
+                    newlist = mConstruction;
                     break;
                 case JobType.Idle:
-                    newlist = _mIdle;
+                    newlist = mIdle;
                     break;
                 case JobType.Logistics:
-                    newlist = _mLogistics;
+                    newlist = mLogistics;
                     break;
                 case JobType.Production:
-                    newlist = _mDefense;
+                    newlist = mDefense;
                     break;
                 case JobType.Defense:
-                    newlist = _mProduction;
+                    newlist = mProduction;
                     break;
                 default:
                     throw new InvalidGenericArgumentException("You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
@@ -154,19 +154,19 @@ namespace Singularity.Manager
             switch (job)
             {
                 case JobType.Construction:
-                    oldlist = _mConstruction;
+                    oldlist = mConstruction;
                     break;
                 case JobType.Idle:
-                    oldlist = _mIdle;
+                    oldlist = mIdle;
                     break;
                 case JobType.Production:
-                    oldlist = _mDefense;
+                    oldlist = mDefense;
                     break;
                 case JobType.Defense:
-                    oldlist = _mProduction;
+                    oldlist = mProduction;
                     break;
                 case JobType.Logistics:
-                    oldlist = _mLogistics;
+                    oldlist = mLogistics;
                     break;
                 default:
                     throw new InvalidGenericArgumentException("You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
@@ -176,7 +176,7 @@ namespace Singularity.Manager
             {
                 var removeit = oldlist.First();
                 oldlist.Remove(removeit);
-                _mManual.Add(removeit);
+                mManual.Add(removeit);
                 action.AssignUnit(removeit, job);
             }
         }
@@ -201,11 +201,11 @@ namespace Singularity.Manager
             //TODO: Create Action references, when interfaces were created.
             if (isbuilding)
             {
-                _mBuildingResources.Enqueue(new Task(JobType.Construction, platform, resource, action));
+                mBuildingResources.Enqueue(new Task(JobType.Construction, platform, resource, action));
             }
             else
             {
-                _mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, platform, resource, action));
+                mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, platform, resource, action));
             }
         }
 
@@ -215,11 +215,11 @@ namespace Singularity.Manager
             
             if (isdefending)
             {
-                _mRequestedUnitsDefense.Enqueue(new Task(JobType.Construction, platform, null, action));
+                mRequestedUnitsDefense.Enqueue(new Task(JobType.Construction, platform, null, action));
             }
             else
             {
-                _mRequestedUnitsProduce.Enqueue(new Task(JobType.Logistics, platform, null, action));
+                mRequestedUnitsProduce.Enqueue(new Task(JobType.Logistics, platform, null, action));
             }
         }
 
@@ -256,7 +256,7 @@ namespace Singularity.Manager
                     {
                         nodes.Add(edge.GetChild());
                     }
-                    var rndnmbr = _mRandom.Next(0, nodes.Count);
+                    var rndnmbr = mRandom.Next(0, nodes.Count);
                     //Just give them the inside of the Optional action witchout checking because
                     //it doesnt matter anyway if its null if the unit is idle.
                     return new Task(job, (PlatformBlank) nodes.ElementAt(rndnmbr), null, assignedAction.Get());

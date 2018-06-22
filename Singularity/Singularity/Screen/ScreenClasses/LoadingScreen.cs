@@ -15,8 +15,8 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool Loaded { get; set; }
 
-        private Texture2D _mLogo;
-        private readonly Vector2 _mLogoPosition;
+        private Texture2D mLogo;
+        private readonly Vector2 mLogoPosition;
         public bool TransitionRunning { get; }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="screenResolution">Viewport resolution for scaling</param>
         public LoadingScreen(Vector2 screenResolution)
         {
-            _mLogoPosition = Vector2.Add(screenResolution, new Vector2(-106, -97));
+            mLogoPosition = Vector2.Add(screenResolution, new Vector2(-106, -97));
             TransitionRunning = false;
 
         }
@@ -47,7 +47,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             spriteBatch.Begin();
 
-            spriteBatch.Draw(_mLogo, _mLogoPosition, null, Color.White, 0f, Vector2.Zero, 0.14f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(mLogo, mLogoPosition, null, Color.White, 0f, Vector2.Zero, 0.14f, SpriteEffects.None, 0f);
 
             spriteBatch.End();
         }
@@ -58,7 +58,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="content">Content Manager that should handle the content loading</param>
         public void LoadContent(ContentManager content)
         {
-            _mLogo = content.Load<Texture2D>("Logo");
+            mLogo = content.Load<Texture2D>("Logo");
         }
 
         /// <summary>

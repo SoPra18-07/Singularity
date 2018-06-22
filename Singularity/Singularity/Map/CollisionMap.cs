@@ -14,30 +14,30 @@ namespace Singularity.Map
         /// <summary>
         /// The look up table is used to check whether a given collider is already present in the collision map
         /// </summary>
-        private readonly Dictionary<int, Rectangle> _mLookUpTable;
+        private readonly Dictionary<int, Rectangle> mLookUpTable;
 
         /// <summary>
         /// The collision map is used to store the position and the id of every object which is able to collide.
         /// </summary>
-        private readonly Optional<ICollider>[,] _mCollisionMap;
+        private readonly Optional<ICollider>[,] mCollisionMap;
 
         /// <summary>
         /// Creates a new Collision map used to store and update all colliding objects.
         /// </summary>
         public CollisionMap()
         {
-            _mLookUpTable = new Dictionary<int, Rectangle>();
+            mLookUpTable = new Dictionary<int, Rectangle>();
 
-            _mCollisionMap = new Optional<ICollider>
+            mCollisionMap = new Optional<ICollider>
             [
                 (MapConstants.MapWidth / MapConstants.GridWidth), 
                 (MapConstants.MapHeight / MapConstants.GridHeight)
             ];
-            for (var i = 0; i < _mCollisionMap.GetLength(0); i++)
+            for (var i = 0; i < mCollisionMap.GetLength(0); i++)
             {
-                for (var j = 0; j < _mCollisionMap.GetLength(1); j++)
+                for (var j = 0; j < mCollisionMap.GetLength(1); j++)
                 {
-                    _mCollisionMap[i, j] = Optional<ICollider>.Of(null);
+                    mCollisionMap[i, j] = Optional<ICollider>.Of(null);
 
                 }
             }
@@ -54,16 +54,16 @@ namespace Singularity.Map
         {
 
             //Check if the location of an already existing collider needs to be updated.
-            if (_mLookUpTable.ContainsKey(collider.Id) && collider.Moved)
+            if (mLookUpTable.ContainsKey(collider.Id) && collider.Moved)
             {
-                var oldBounds = _mLookUpTable[collider.Id];
+                var oldBounds = mLookUpTable[collider.Id];
 
                 for (var x = oldBounds.X / MapConstants.GridWidth; x <= (oldBounds.X + oldBounds.Width) / MapConstants.GridWidth; x++)
                 {
                     for (var y = (oldBounds.Y / MapConstants.GridHeight); y <= ((oldBounds.Y + oldBounds.Height) / MapConstants.GridHeight); y++)
                     {
 
-                        _mCollisionMap[x, y] = Optional<ICollider>.Of(null);
+                        mCollisionMap[x, y] = Optional<ICollider>.Of(null);
                     }
                 }
             }
@@ -74,17 +74,17 @@ namespace Singularity.Map
             {
                 for (var y = (collider.AbsBounds.Y / MapConstants.GridHeight); y <= ((collider.AbsBounds.Y + collider.AbsBounds.Height) / MapConstants.GridHeight) ; y++)
                 {
-                    _mCollisionMap[x, y] = Optional<ICollider>.Of(collider);
+                    mCollisionMap[x, y] = Optional<ICollider>.Of(collider);
                 }
             }
 
-            _mLookUpTable[collider.Id] = collider.AbsBounds;
+            mLookUpTable[collider.Id] = collider.AbsBounds;
         }
 
         //TODO: this method exists solely for debugging purposes, so the map can draw a representation of the current collision map.
         public Optional<ICollider>[,] GetCollisionMap()
         {
-            return _mCollisionMap;
+            return mCollisionMap;
         }
     }
 }

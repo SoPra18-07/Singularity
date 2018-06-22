@@ -14,21 +14,21 @@ namespace Singularity.Graph.Paths
         /// <summary>
         /// All the graphs currently in the game
         /// </summary>
-        private readonly List<Graph> _mGraphs;
+        private readonly List<Graph> mGraphs;
         
         public PathManager()
         {
-            _mGraphs = new List<Graph>();
+            mGraphs = new List<Graph>();
         }
 
         public void AddGraph(Graph graph)
         {
-            _mGraphs.Add(graph);
+            mGraphs.Add(graph);
         }
 
         public void RemoveGraph(Graph graph)
         {
-            _mGraphs.Remove(graph);
+            mGraphs.Remove(graph);
         }
 
 
@@ -67,7 +67,7 @@ namespace Singularity.Graph.Paths
         private IPath GetPathForGeneralUnits(GeneralUnit unit, INode destination)
         {
             //todo: know which units are on which graph.
-            return PathfindingFactory.GetPathfinding().AStar(_mGraphs[0], unit.CurrentNode, destination);
+            return PathfindingFactory.GetPathfinding().AStar(mGraphs[0], unit.CurrentNode, destination);
         }
 
         private IPath GetPathForMilitaryUnits(MilitaryUnit unit, INode destination)

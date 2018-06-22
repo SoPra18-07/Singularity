@@ -5,37 +5,37 @@ namespace Singularity.Graph
     /// <summary>
     /// Provides a basic Graph object, holding a list of nodes and edges. Self explanatory
     /// </summary>
-    public class Graph
+    public sealed class Graph
     {
-        private readonly List<INode> _mNodes;
+        private readonly List<INode> mNodes;
 
-        private readonly List<IEdge> _mEdges;
+        private readonly List<IEdge> mEdges;
 
         public Graph(List<INode> nodes = null, List<IEdge> edges = null)
         {
-            _mNodes = new List<INode>();
-            _mEdges = new List<IEdge>();
+            mNodes = new List<INode>();
+            mEdges = new List<IEdge>();
 
             if (nodes != null)
             {
-                _mNodes = nodes;
+                mNodes = nodes;
             }
 
             if (edges != null)
             {
-                _mEdges = edges;
+                mEdges = edges;
             }
             
         }
 
         public void AddNode(INode node)
         {
-            _mNodes.Add(node);
+            mNodes.Add(node);
         }
 
         public void AddEdge(IEdge edge)
         {
-            _mEdges.Remove(edge);
+            mEdges.Remove(edge);
         }
 
         public void AddNodes(IEnumerable<INode> nodes)
@@ -56,12 +56,12 @@ namespace Singularity.Graph
 
         public void RemoveNode(INode node)
         {
-            _mNodes.Remove(node);
+            mNodes.Remove(node);
         }
 
         public void RemoveEdge(IEdge edge)
         {
-            _mEdges.Remove(edge);
+            mEdges.Remove(edge);
         }
 
         public void RemoveNodes(IEnumerable<INode> nodes)
@@ -82,12 +82,12 @@ namespace Singularity.Graph
 
         public List<INode> GetNodes()
         {
-            return _mNodes;
+            return mNodes;
         }
 
         public List<IEdge> GetEdges()
         {
-            return _mEdges;
+            return mEdges;
         }
 
     }
