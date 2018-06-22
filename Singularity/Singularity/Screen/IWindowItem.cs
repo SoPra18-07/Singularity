@@ -15,5 +15,7 @@ namespace Singularity.Screen
         Vector2 Position { get; set; }
 
         Vector2 Size { get; }
+
+        bool Active { get; set; }
     }
 }

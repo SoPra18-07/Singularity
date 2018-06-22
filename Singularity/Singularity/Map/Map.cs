@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Singularity.Exceptions;
 using Singularity.Graph.Paths;
 using Singularity.Input;
@@ -15,7 +16,7 @@ using Singularity.Utils;
 
 namespace Singularity.Map
 {   
-    internal sealed class Map : IDraw, IUpdate
+    internal sealed class Map : IDraw, IUpdate, IKeyListener
     {   
         private readonly CollisionMap mCollisionMap;
         public readonly StructureMap mStructureMap;
@@ -25,7 +26,7 @@ namespace Singularity.Map
 
         private readonly Texture2D mBackgroundTexture;
 
-        private readonly bool mDebug;
+        private bool mDebug;
 
         /// <summary>
         /// Creates a new Map object, which solely draws its background
@@ -39,6 +40,8 @@ namespace Singularity.Map
         /// <param name="fow">The fog of war for this map</param>
         public Map(Texture2D backgroundTexture, Viewport viewport, InputManager inputManager, PathManager pathManager, bool debug = false, IEnumerable<Resource> initialResources = null)
         {
+
+            inputManager.AddKeyListener(this);
 
             mBackgroundTexture = backgroundTexture;
             mDebug = debug;
@@ -227,6 +230,26 @@ namespace Singularity.Map
 
         }
 
+        public void KeyTyped(KeyEvent keyEvent)
+        {
+            foreach (var key in keyEvent.CurrentKeys)
+            {
+                if (key == Keys.F4)
+                {
+                    mDebug = !mDebug;
+                }
+            }
+        }
+
+        public void KeyPressed(KeyEvent keyEvent)
+        {
+            
+        }
+
+        public void KeyReleased(KeyEvent keyEvent)
+        {
+            
+        }
     }
 }
 

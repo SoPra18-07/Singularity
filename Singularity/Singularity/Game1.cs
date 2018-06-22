@@ -49,7 +49,8 @@ namespace Singularity
             mGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
 
             mInputManager = new InputManager();
-            mScreenManager = new StackScreenManager();
+
+            mScreenManager = new StackScreenManager(Content);
 
             mInputManager = new InputManager();
 
@@ -93,27 +94,26 @@ namespace Singularity
             // Create a new SpriteBatch, which can be used to draw textures.
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            mGameScreen = new GameScreen(mGraphics.GraphicsDevice, mInputManager);
+            mGameScreen = new GameScreen(mGraphics.GraphicsDevice, mInputManager, mSoundManager);
 
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
 
-            mUserInterfaceScreen = new UserInterfaceScreen(mInputManager, mGameScreen, mGraphics);
+            mUserInterfaceScreen = new UserInterfaceScreen(mInputManager, mGraphics);
 
             // Add the screens to the screen manager
             // The idea is that the game screen is always at the bottom and stuff is added simply
             // on top of it.
-            mScreenManager.AddScreen(mUserInterfaceScreen);
             mScreenManager.AddScreen(mGameScreen);
+            mScreenManager.AddScreen(mUserInterfaceScreen);
             mScreenManager.AddScreen(mMainMenuManager);
-
-
-            mMainMenuManager.LoadContent(Content);
-            mUserInterfaceScreen.LoadContent(Content);
 
             // load and play Soundtrack as background music
             mSoundManager.LoadContent(Content);
-            mSoundManager.PlaySoundTrack();
+            mSoundManager.SetLevelThemeMusic("Singularity");
+            mSoundManager.SetSoundPhase(SoundPhase.Menu);
 
+            // load fonts to UserInterface
+            mUserInterfaceScreen.LoadContent(Content);
         }
 
         /// <summary>
@@ -132,9 +132,6 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // a new static input manager. It requires updating every tick to figure out where
-            // the mouse is.
-            InputManager2.Update(gameTime);
 
             mInputManager.Update(gameTime);
             mScreenManager.Update(gameTime);

@@ -29,3 +29,9 @@ This game is being created as a part of the practical software course at the Uni
 Look forward to the launch of this exciting new game!
 
 More information can be found in the [Software Praktikum Wiki](https://sopra.informatik.uni-freiburg.de).
+
+
+
+Progress:
+
+[![Throughput Graph](https://graphs.waffle.io/SoPra18-07/Singularity/throughput.svg)](https://waffle.io/SoPra18-07/Singularity/metrics/throughput)

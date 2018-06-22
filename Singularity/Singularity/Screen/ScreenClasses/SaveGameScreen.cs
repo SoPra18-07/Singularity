@@ -18,6 +18,8 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     class SaveGameScreen : IScreen
     {
+        public bool Loaded { get; set; }
+
         /// <summary>
         /// Updates the contents of the screen.
         /// </summary>

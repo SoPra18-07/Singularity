@@ -8,6 +8,8 @@ namespace Singularity.Screen.ScreenClasses
 {
     internal sealed class MainMenuManagerScreen : IScreen
     {
+        public bool Loaded { get; set; }
+
         /// <inheritdoc cref="IScreen"/>
         /// <summary>
         /// Manages the main menu. This is the screen that is first loaded into the stack screen manager
@@ -133,7 +135,7 @@ namespace Singularity.Screen.ScreenClasses
                 case EScreen.LoadSelectScreen:
                     break;
                 case EScreen.LoadingScreen:
-                    mGame.mGameScreen.LoadContent(mContent);
+                    mScreenManager.RemoveScreen();
                     mScreenManager.RemoveScreen();
                     mScreenState = EScreen.GameScreen;
                     break;
@@ -295,7 +297,7 @@ namespace Singularity.Screen.ScreenClasses
         public bool UpdateLower()
         {
             // below this screen is the game so it shouldn't update the game
-            return mScreenState == EScreen.GameScreen;
+            return false;
         }
 
         /// <summary>
@@ -304,7 +306,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>Bool. If true, then the screen below this will be drawn.</returns>
         public bool DrawLower()
         {
-            return mScreenState == EScreen.GameScreen? true : false;
+            return false;
         }
 
         public static void SetResolution(Vector2 viewportResolution)

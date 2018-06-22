@@ -14,7 +14,6 @@ namespace Singularity.Screen.ScreenClasses
         private List<WindowObject> mWindowList;
         private SpriteFont mLibSans20;
         private InputManager mInputManager;
-        private GameScreen mGameScreen;
 
         // TODO: DELETE TESTING
         private Button mBlankPlatformButton;
@@ -46,10 +45,9 @@ namespace Singularity.Screen.ScreenClasses
 
         private GraphicsDeviceManager mGraphics;
 
-        public UserInterfaceScreen(InputManager inputManager, GameScreen gameScreen, GraphicsDeviceManager mgraphics)
+        public UserInterfaceScreen(InputManager inputManager, GraphicsDeviceManager mgraphics)
         {
             mInputManager = inputManager;
-            mGameScreen = gameScreen;
             mGraphics = mgraphics;
 
             inputManager.AddMousePositionListener(this);
@@ -191,6 +189,8 @@ namespace Singularity.Screen.ScreenClasses
         {
             return true;
         }
+
+        public bool Loaded { get; set; }
 
         /*        private void OnButtonReleaseBlank(object sender, EventArgs eventArgs)
                 {
