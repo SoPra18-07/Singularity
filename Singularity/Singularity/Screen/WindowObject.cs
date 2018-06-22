@@ -48,6 +48,7 @@ namespace Singularity.Screen
         private Vector2 mItemPosVector2Top;
         private Vector2 mItemPosVector2Bottom;
         private float mCombinedItemsSize;
+        private Vector2 mWindowDragPos;
 
         private float mMouseX;
         private float mMouseY;
@@ -77,7 +78,8 @@ namespace Singularity.Screen
             float objectPadding,
             bool minimizable,
             SpriteFont testFontForUserI,
-            InputManager inputManager)
+            InputManager inputManager,
+            GraphicsDeviceManager mgraphics)
         {
             // set parameter-variables
             mWindowName = windowName;
@@ -90,8 +92,8 @@ namespace Singularity.Screen
             mMinimizable = minimizable;
 
             // TODO : REPLACE WITH PARAMETER of type Vector2
-            mCurrentScreenWidth = 1080;
-            mCurrentScreenHeight = 720;
+            mCurrentScreenWidth = mgraphics.PreferredBackBufferWidth;
+            mCurrentScreenHeight = mgraphics.PreferredBackBufferHeight;
 
             // calculate resizing by screensize
             mMinimizationSize = (int)mSize.X / 12;
@@ -327,11 +329,7 @@ namespace Singularity.Screen
             mItemPosVector2Bottom = new Vector2(localItemPosVector2.X, localItemPosVector2.Y);
 
             // check if the window is overflowed with items
-            mScrollable = false;
-            if (mCombinedItemsSize > mSize.Y)
-            {
-                mScrollable = true;
-            }
+            mScrollable = false || mCombinedItemsSize > mSize.Y;
 
 
             // TODO: GET FROM GAME1.CS ?
@@ -343,7 +341,7 @@ namespace Singularity.Screen
             mWindowRectangle = new Rectangle((int)(mPosition.X + 1), (int)(mPosition.Y + 2), (int)(mSize.X - 2), (int)(mSize.Y - 2));
             mBorderRectangle = new Rectangle((int)mPosition.X, (int)mPosition.Y, (int)(mSize.X), ((int)mSize.Y));
             // ScissorRectangle will cut everything drawn outside of this rectangle
-            mScissorRectangle = new Rectangle((int)(mPosition.X - 1), (int)(mPosition.Y + mNameSizeY + 2 * mMinimizationSize), (int)(mSize.X + 2), (int)(mSize.Y + 2));
+            mScissorRectangle = new Rectangle((int)(mPosition.X - 1), (int)(mPosition.Y + mNameSizeY + 2 * mMinimizationSize), (int)(mSize.X + 2), (int)(mSize.Y + 2 - mNameSizeY - 2 * mMinimizationSize));
 
             // set the rectangle for minimization in the top right corner of the window
             mMinimizationRectangle = new Rectangle((int)(mPosition.X + mSize.X - mMinimizationSize), (int)(mPosition.Y), (int)mMinimizationSize, (int)mMinimizationSize);
@@ -367,6 +365,7 @@ namespace Singularity.Screen
 
         #region InputManagement
 
+        public Rectangle Bounds { get; set; }
 
         public void MouseWheelValueChanged(EMouseAction mouseAction)
         {
@@ -399,8 +398,6 @@ namespace Singularity.Screen
             }
         }
 
-        public Rectangle Bounds { get; set; }
-
 
         public void MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
@@ -429,18 +426,23 @@ namespace Singularity.Screen
                     }
                 }
 
-                // set 'clicked' for moving to prevent other windows from being dragged along this moving window when moving above their 'bounds'
+                // prepare window dragging
                 if ((mMouseX > mPosition.X &&
                     mMouseX < mPosition.X + mPosition.X + mSize.X &&
                     mMouseY > mPosition.Y &&
-                    mMouseY < mPosition.Y + mNameSizeY + mMinimizationSize))
+                    mMouseY < mPosition.Y + mNameSizeY + mMinimizationSize) &&
+                    !mClicked)
                 {
                     if (!(mMouseX >= mMinimizationRectangle.X &&
                           mMouseX < mMinimizationRectangle.X + mMinimizationSize &&
                           mMouseY >= mMinimizationRectangle.Y &&
                           mMouseY < mMinimizationRectangle.Y + mMinimizationSize))
                         // mouse not on minimization rectangle
-                    mClicked = true;
+                    {
+                        mClicked = true;
+                        mWindowDragPos = new Vector2(mMouseX - mPosition.X, mMouseY - mPosition.Y);
+                        Bounds = new Rectangle(0,0,mCurrentScreenWidth, mCurrentScreenHeight);
+                    }
                 }
             }
         }
@@ -448,34 +450,42 @@ namespace Singularity.Screen
         public void MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {
             // move the window by pressing the left mouse button above the title line TODO: add to 'controls'
-
-            if (mMouseX > mPosition.X &&
-                mMouseX < mPosition.X + mSize.X &&
-                mMouseY > mPosition.Y &&
-                mMouseY < mPosition.Y + mNameSizeY + mMinimizationSize &&
-                mClicked)
-            // mouse in bounds of title rectangle
+            if (!mClicked)
             {
-                if (mouseAction == EMouseAction.LeftClick)
-                {
-                    if (!(mPosition.X < 0 && mPosition.X + mSize.X > mCurrentScreenWidth && mPosition.Y < 0 &&
-                          mPosition.Y + mSize.Y > mCurrentScreenHeight))
-                    {
-                        mPosition.X += mMouseX - mMouseStartX;
-                        mPosition.Y += mMouseY - mMouseStartY;
-
-                        Bounds = new Rectangle((int)mPosition.X, (int)mPosition.Y, (int)(mSize.X), ((int)mSize.Y));
-                        mItemPosVector2Top = new Vector2(mPosition.X + mBorderPadding, mPosition.Y + mNameSizeY + 2 * mMinimizationSize);
-                    }
-                    mMouseStartX = mMouseX;
-                    mMouseStartY = mMouseY;
-                }
+                return;
             }
+
+            mPosition.X = (mMouseX - mWindowDragPos.X);
+            mPosition.Y = (mMouseY - mWindowDragPos.Y);
+
+            #region catch window moving out of screen
+            if (mPosition.X < 0)
+            {
+                mPosition.X = 0;
+            }
+            else if (mPosition.X + mSize.X > mCurrentScreenWidth)
+            {
+                mPosition.X = mCurrentScreenWidth - mSize.X;
+            }
+
+            if (mPosition.Y < 0)
+            {
+                mPosition.Y = 0;
+            }
+            else if (mPosition.Y + mSize.Y > mCurrentScreenHeight)
+            {
+                mPosition.Y = mCurrentScreenHeight - mSize.Y;
+            }
+#endregion
+
+            mItemPosVector2Top = new Vector2(mPosition.X + mBorderPadding, mPosition.Y + mNameSizeY + 2 * mMinimizationSize);
+
         }
 
         public void MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
             mClicked = false;
+            Bounds = new Rectangle((int)mPosition.X, (int)mPosition.Y, (int)(mSize.X), ((int)mSize.Y));
         }
 
         public void MousePositionChanged(float newX, float newY)

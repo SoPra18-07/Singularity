@@ -41,10 +41,16 @@ namespace Singularity.Screen.ScreenClasses
         private Button mSprintButton8;
         private Button mSprintButton9;
 
-        public UserInterfaceScreen(InputManager inputManager, GameScreen gameScreen)
+        private int mCurrentScreenWidth;
+        private int mCurrentScreenHeight;
+
+        private GraphicsDeviceManager mGraphics;
+
+        public UserInterfaceScreen(InputManager inputManager, GameScreen gameScreen, GraphicsDeviceManager mgraphics)
         {
             mInputManager = inputManager;
             mGameScreen = gameScreen;
+            mGraphics = mgraphics;
 
             inputManager.AddMousePositionListener(this);
             inputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
@@ -60,6 +66,9 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mBlankPlatformButton.Update(gametime);
+
+            mCurrentScreenWidth = mGraphics.PreferredBackBufferWidth;
+            mCurrentScreenHeight = mGraphics.PreferredBackBufferHeight;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -84,38 +93,38 @@ namespace Singularity.Screen.ScreenClasses
             // test windows object
             mWindowList = new List<WindowObject>();
 
-            var currentScreenWidth = 1080;
-            var currentScreenHeight = 720;
+            mCurrentScreenWidth = mGraphics.PreferredBackBufferWidth;
+            mCurrentScreenHeight = mGraphics.PreferredBackBufferHeight;
 
             // change color for the border or the filling of all userinterface windows here
-            var windowColor = new Color(255, 0, 0, .8f);
-            var borderColor = new Color(50, 50, 50, .8f);
+            var windowColor = new Color(0.27f, 0.5f, 0.7f, 0.8f);
+            var borderColor = new Color(0.68f, 0.933f, 0.933f, .8f);
 
             // set position- and size-values for all windows of the userinterface
-            var topBarHeight = currentScreenHeight / 30;
-            var topBarWidth = currentScreenWidth;
+            var topBarHeight = mCurrentScreenHeight / 30;
+            var topBarWidth = mCurrentScreenWidth;
 
             var civilUnitsX = topBarHeight / 2;
             var civilUnitsY = topBarHeight / 2 + topBarHeight;
-            var civilUnitsWidth = (int)(currentScreenWidth / 4.5);
-            var civilUnitsHeight = (int)(currentScreenHeight / 1.8);
+            var civilUnitsWidth = (int)(mCurrentScreenWidth / 4.5);
+            var civilUnitsHeight = (int)(mCurrentScreenHeight / 1.8);
 
             var resourceX = topBarHeight / 2;
             var resourceY = 2 * (topBarHeight / 2) + topBarHeight + civilUnitsHeight;
             var resourceWidth = civilUnitsWidth;
-            var resourceHeight = (int)(currentScreenHeight / 2.75);
+            var resourceHeight = (int)(mCurrentScreenHeight / 2.75);
 
             var eventLogX = civilUnitsX + civilUnitsWidth + 50; // TODO
             var eventLogY = civilUnitsY;
             var eventLogWidth = civilUnitsWidth;
-            var eventLogHeight = (int)(currentScreenHeight / 2.5);
+            var eventLogHeight = (int)(mCurrentScreenHeight / 2.5);
 
             // create windowObjects for all windows of the userinterface
             // INFO: parameters are: NAME, POSITION-vector, SIZE-vector, COLOR of border, COLOR of filling, opacity of everything that gets drawn, borderPadding, objectPadding, minimizable, fontForText, inputmanager)
-            var civilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(civilUnitsX, civilUnitsY), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 10f, 10f, true, mLibSans20, mInputManager);
-            var topBarWindow = new WindowObject("", new Vector2(0, 0), new Vector2(topBarWidth, topBarHeight), borderColor, windowColor, 10f, 10f, false, mLibSans20, mInputManager);
-            var resourceWindow = new WindowObject("// RESOURCES", new Vector2(resourceX, resourceY), new Vector2(resourceWidth, resourceHeight), borderColor, windowColor, 10f, 10f, true, mLibSans20, mInputManager);
-            var eventLogWindow = new WindowObject("// EVENT LOG", new Vector2(eventLogX, eventLogY), new Vector2(eventLogWidth, eventLogHeight), borderColor, windowColor, 10f, 10f, true, mLibSans20, mInputManager);
+            var civilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(civilUnitsX, civilUnitsY), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 10f, 10f, true, mLibSans20, mInputManager, mGraphics);
+            var topBarWindow = new WindowObject("", new Vector2(0, 0), new Vector2(topBarWidth, topBarHeight), borderColor, windowColor, 10f, 10f, false, mLibSans20, mInputManager, mGraphics);
+            var resourceWindow = new WindowObject("// RESOURCES", new Vector2(resourceX, resourceY), new Vector2(resourceWidth, resourceHeight), borderColor, windowColor, 10f, 10f, true, mLibSans20, mInputManager, mGraphics);
+            var eventLogWindow = new WindowObject("// EVENT LOG", new Vector2(eventLogX, eventLogY), new Vector2(eventLogWidth, eventLogHeight), borderColor, windowColor, 10f, 10f, true, mLibSans20, mInputManager, mGraphics);
 
             // platform textures
             mPlatformBlankTexture = content.Load<Texture2D>("PlatformBasic");
@@ -143,6 +152,9 @@ namespace Singularity.Screen.ScreenClasses
             civilUnitsWindow.AddItem(mEnergyFacilityButton);
 
             // TODO: DELETE TESTING - JUST FOR SPRINT
+
+            Console.Out.WriteLine("testing");
+
             mSprintButton1 = new Button("button1", mLibSans20, Vector2.Zero) { Opacity = 1f };
             mSprintButton2 = new Button("button2", mLibSans20, Vector2.Zero) { Opacity = 1f };
             mSprintButton3 = new Button("button3", mLibSans20, Vector2.Zero) { Opacity = 1f };
