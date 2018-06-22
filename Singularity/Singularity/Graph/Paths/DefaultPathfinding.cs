@@ -38,7 +38,10 @@ namespace Singularity.Graph.Paths
             {
                 gScore[node] = int.MaxValue;
                 fScore[node] = int.MaxValue;
+
+                Debug.WriteLine(node);
             }
+            Debug.WriteLine("");
 
             gScore[start] = 0f;
 
@@ -65,6 +68,7 @@ namespace Singularity.Graph.Paths
                 Debug.Assert(current != null, "PathFinding failed");
                 if (current.Equals(destination))
                 {
+                    Debug.WriteLine("");
                     return ReconstructPath(cameFrom, current);
                 }
 
@@ -88,6 +92,8 @@ namespace Singularity.Graph.Paths
                     }
 
                     var tentativeGScore = gScore[current] + outgoing.GetCost();
+
+                    Debug.WriteLine(neighbor);
 
                     if (tentativeGScore >= gScore[neighbor])
                     {
@@ -122,6 +128,7 @@ namespace Singularity.Graph.Paths
                     cameFrom[neighbor] = current;
                     gScore[neighbor] = tentativeGScore;
                     fScore[neighbor] = gScore[neighbor] + HeuristicCostEstimate(neighbor, destination);
+
                 }
             }
             return null;

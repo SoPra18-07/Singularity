@@ -161,7 +161,7 @@ namespace Singularity.serialization
             }
 
             //Check allegedly not Serializable Object Vector2
-            Console.WriteLine("X and Y Coordinate of Vector2: " + dummyd.mMVector.X + " " + dummyd.mMVector.Y);
+            Console.WriteLine("X and Y Coordinate of Vector2: " + dummyd.mVector.X + " " + dummyd.mVector.Y);
         }
     }
 }

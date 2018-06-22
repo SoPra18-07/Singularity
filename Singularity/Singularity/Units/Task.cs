@@ -1,6 +1,8 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 using Singularity.Platform;
 using Singularity.Resources;
+using Singularity.Utils;
 
 namespace Singularity.Units
 {
@@ -11,20 +13,23 @@ namespace Singularity.Units
         public JobType Job { get; set; }
         
         [DataMember]
-        public PlatformBlank End { get; set; }
+        public Optional<PlatformBlank> Begin { get; set; }
 
         [DataMember]
-        public IPlatformAction Action { get; set; }
+        public Optional<PlatformBlank> End { get; set; }
+
+        [DataMember]
+        public Optional<IPlatformAction> Action { get; set; }
 
         [DataMember]
         public EResourceType? GetResource { get; set; }
 
-        public Task(JobType job, PlatformBlank end, EResourceType? res, IPlatformAction action)
+        public Task(JobType job, PlatformBlank? end, EResourceType? res, IPlatformAction? action)
         {
             Job = job;
-            End = end;
+            End = Optional<PlatformBlank>.Of(end);
             GetResource = res;
-            Action = action;
+            Action = Optional<IPlatformAction>.Of(action);
         }
     }
 }

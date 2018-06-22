@@ -42,7 +42,7 @@ namespace Singularity.Screen.ScreenClasses
         private FogOfWar mFow;
 
         // director for Managing all the Managers
-        private readonly Director mDirector;
+        private Director mDirector;
         private readonly GraphicsDevice mGraphicsDevice;
 
         // roads
@@ -156,7 +156,6 @@ namespace Singularity.Screen.ScreenClasses
 
             //Give the Distributionmanager the Graph he is operating on.
             //TODO: Talk about whether the DistributionManager should operate on all Graphs or if we want to make additional DMs.
-            var dist = new DistributionManager();
 
             mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
 
@@ -171,15 +170,15 @@ namespace Singularity.Screen.ScreenClasses
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
 
-            var genUnit2 = new GeneralUnit(mPlatform2, mDirector);
-            var genUnit3 = new GeneralUnit(mPlatform3, mDirector);
+            var genUnit2 = new GeneralUnit(mPlatform2, ref mDirector);
+            var genUnit3 = new GeneralUnit(mPlatform3, ref mDirector);
 
             var platform4 = new Well(new Vector2(1000, 200), mPlatformDomeTexture, mMap.GetResourceMap());
             var platform5 = new Quarry(new Vector2(1300, 400), mPlatformDomeTexture, mMap.GetResourceMap());
 
-            var genUnit = new GeneralUnit(mPlatform, mDirector);
-            var genUnit4 = new GeneralUnit(platform4, mDirector);
-            var genUnit5 = new GeneralUnit(platform5, mDirector);
+            var genUnit = new GeneralUnit(mPlatform, ref mDirector);
+            var genUnit4 = new GeneralUnit(platform4, ref mDirector);
+            var genUnit5 = new GeneralUnit(platform5, ref mDirector);
 
             mFow = new FogOfWar(mCamera, mGraphicsDevice);
 
@@ -231,10 +230,10 @@ namespace Singularity.Screen.ScreenClasses
             AddObject(road6);
 
             AddObject(genUnit);
-            AddObject(genUnit2);
-            AddObject(genUnit3);
-            AddObject(genUnit4);
-            AddObject(genUnit5);
+            // AddObject(genUnit2);
+            // AddObject(genUnit3);
+            // AddObject(genUnit4);
+            // AddObject(genUnit5);
 
             AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
 

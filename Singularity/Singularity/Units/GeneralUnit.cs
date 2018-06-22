@@ -77,7 +77,7 @@ namespace Singularity.Units
 
         internal JobType Job { get; set; } = JobType.Idle;
 
-        public GeneralUnit(PlatformBlank platform, Director director)
+        public GeneralUnit(PlatformBlank platform, ref Director director)
         {
             mDestination = null;
 
@@ -269,7 +269,7 @@ namespace Singularity.Units
             // current nodequeue is empty (the path)
             if (mDestination != null && mNodeQueue.Count <= 0 && !mIsMoving)
             {
-                mNodeQueue = mDirector.GetPathManager.GetPath(this, mDestination).GetNodePath();
+                mNodeQueue = mDirector.GetPathManager().GetPath(this, mDestination).GetNodePath();
 
                 mCurrentNode = mNodeQueue.Dequeue();
             }

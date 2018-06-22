@@ -201,11 +201,11 @@ namespace Singularity.Manager
             //TODO: Create Action references, when interfaces were created.
             if (isbuilding)
             {
-                mBuildingResources.Enqueue(new Task(JobType.Construction, platform, resource, action));
+                mBuildingResources.Enqueue(new Task(JobType.Construction, platform as PlatformBlank?, resource, action as IPlatformAction?));
             }
             else
             {
-                mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, platform, resource, action));
+                mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, platform as PlatformBlank?, resource, action as IPlatformAction?));
             }
         }
 
@@ -215,11 +215,11 @@ namespace Singularity.Manager
             
             if (isdefending)
             {
-                mRequestedUnitsDefense.Enqueue(new Task(JobType.Construction, platform, null, action));
+                mRequestedUnitsDefense.Enqueue(new Task(JobType.Defense, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(action)));
             }
             else
             {
-                mRequestedUnitsProduce.Enqueue(new Task(JobType.Logistics, platform, null, action));
+                mRequestedUnitsProduce.Enqueue(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(action)));
             }
         }
 

@@ -66,7 +66,8 @@ namespace Singularity.Graph.Paths
         
         private IPath GetPathForGeneralUnits(GeneralUnit unit, INode destination)
         {
-            //todo: know which units are on which graph.
+            // todo: know which units are on which graph.
+            // todo: fix. @Ativolex @fkarg
             return PathfindingFactory.GetPathfinding().AStar(mGraphs[0], unit.CurrentNode, destination);
         }
 
