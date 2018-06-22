@@ -10,6 +10,7 @@ using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Utils;
+using System.Diagnostics;
 
 namespace Singularity.Units
 {
@@ -269,7 +270,7 @@ namespace Singularity.Units
             // current nodequeue is empty (the path)
             if (mDestination.IsPresent() && mNodeQueue.Count <= 0 && !mIsMoving)
             {
-                mNodeQueue = mDirector.GetPathManager().GetPath(this, mDestination.Get()).GetNodePath();
+                mNodeQueue = mDirector.GetPathManager.GetPath(this, mDestination.Get()).GetNodePath();
 
                 mCurrentNode = mNodeQueue.Dequeue();
             }
@@ -308,7 +309,7 @@ namespace Singularity.Units
             if (Vector2.Distance(AbsolutePosition, target) < 2)
             {
                 CurrentNode = mCurrentNode;
-                mDestination = null;
+                mDestination = Optional<INode>.Of(null);
                 mIsMoving = false;
                 return true;
             }

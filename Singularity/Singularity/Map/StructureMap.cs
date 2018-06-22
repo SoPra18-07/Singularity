@@ -97,7 +97,7 @@ namespace Singularity.Map
             }
 
             mGraphs.Add(new Graph.Graph());
-            mDirector.GetPathManager().AddGraph(mGraphs[mGraphs.Count - 1]);
+            mDirector.GetPathManager.AddGraph(mGraphs[mGraphs.Count - 1]);
         }
 
     }

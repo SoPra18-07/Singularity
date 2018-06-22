@@ -9,13 +9,12 @@ namespace Singularity.Manager
 {
     public class Director : IUpdate
     {
-        private PathManager mPathManager;
         
         public Director(ContentManager content)
         {
             GetInputManager = new InputManager();
             GetStoryManager = new StoryManager();
-            mPathManager = new PathManager();
+            GetPathManager = new PathManager();
             GetSoundManager = new SoundManager();
             GetDistributionManager = new DistributionManager();
             GetMilitaryManager = new MilitaryManager(); // TODO: Update this code if the MilitaryManager is not getting everything from the StructureMap or sth ... 
@@ -31,10 +30,7 @@ namespace Singularity.Manager
         public InputManager GetInputManager { get; }
         public StoryManager GetStoryManager { get; }
 
-        public PathManager GetPathManager()
-        {
-            return mPathManager;
-        }
+        public PathManager GetPathManager { get; }
 
         public SoundManager GetSoundManager { get; }
         public MilitaryManager GetMilitaryManager { get; }

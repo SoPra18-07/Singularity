@@ -22,6 +22,7 @@ namespace Singularity.Platform
 
         [DataMember]
         protected EPlatformType mType = EPlatformType.Blank;
+
         [DataMember]
         private const int PlatformWidth = 148;
         [DataMember]
@@ -331,6 +332,11 @@ namespace Singularity.Platform
 
         }
 
+        public EPlatformType GetMyType()
+        {
+            return mType;
+        }
+
         public PlatformBlank(Vector2 position, Texture2D spritesheet, Vector2 center = new Vector2())
         {
 
@@ -416,6 +422,38 @@ namespace Singularity.Platform
         public IEnumerable<IEdge> GetInwardsEdges()
         {
             return mInwardsEdges;
+        }
+
+        
+        public override bool Equals(Object other)
+        {
+            var b = other as PlatformBlank;
+
+            if(b == null)
+            {
+                return false;
+            }
+
+            if(AbsolutePosition != b.AbsolutePosition)
+            {
+                return false;
+            }
+
+            if(AbsoluteSize != b.AbsoluteSize)
+            {
+                return false;
+            }
+            if(mType != b.GetMyType())
+            {
+                return false;
+            }
+            return true;
+
+        }
+
+        public override int GetHashCode()
+        {
+            return AbsoluteSize.GetHashCode() * 17 + AbsolutePosition.GetHashCode() + mType.GetHashCode();
         }
     }
 }
