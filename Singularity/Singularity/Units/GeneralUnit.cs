@@ -68,7 +68,7 @@ namespace Singularity.Units
         /// <summary>
         /// The node the unit moves to. Null if the unit doesn't move anywhere
         /// </summary>
-        private INode mDestination;
+        private Optional<INode> mDestination;
 
         /// <summary>
         /// The speed the unit moves at.
@@ -79,7 +79,7 @@ namespace Singularity.Units
 
         public GeneralUnit(PlatformBlank platform, ref Director director)
         {
-            mDestination = null;
+            mDestination = Optional<INode>.Of(null);
 
             CurrentNode = platform;
 
@@ -261,15 +261,15 @@ namespace Singularity.Units
                     //Care!!! DO NOT UNDER ANY CIRCUMSTANCES USE THIS PLACEHOLDER
                     IPlatformAction action = new ProduceMineResource(null, null);
                     mAssignedTask = mDirector.GetDistributionManager.RequestNewTask(this, Job, Optional<IPlatformAction>.Of(action));
-                    mDestination = mAssignedTask.End;
+                    mDestination = Optional<INode>.Of(mAssignedTask.End.Get());
                 }
             }
             // if this if clause is fulfilled we get a new path to move to.
             // we only do this if we're not moving, have no destination and our
             // current nodequeue is empty (the path)
-            if (mDestination != null && mNodeQueue.Count <= 0 && !mIsMoving)
+            if (mDestination.IsPresent() && mNodeQueue.Count <= 0 && !mIsMoving)
             {
-                mNodeQueue = mDirector.GetPathManager().GetPath(this, mDestination).GetNodePath();
+                mNodeQueue = mDirector.GetPathManager().GetPath(this, mDestination.Get()).GetNodePath();
 
                 mCurrentNode = mNodeQueue.Dequeue();
             }

@@ -201,11 +201,11 @@ namespace Singularity.Manager
             //TODO: Create Action references, when interfaces were created.
             if (isbuilding)
             {
-                mBuildingResources.Enqueue(new Task(JobType.Construction, platform as PlatformBlank?, resource, action as IPlatformAction?));
+                mBuildingResources.Enqueue(new Task(JobType.Construction, Optional<PlatformBlank>.Of(platform), resource, Optional<IPlatformAction>.Of(action)));
             }
             else
             {
-                mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, platform as PlatformBlank?, resource, action as IPlatformAction?));
+                mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, Optional<PlatformBlank>.Of(platform), resource, Optional<IPlatformAction>.Of(action)));
             }
         }
 
@@ -259,10 +259,10 @@ namespace Singularity.Manager
                     var rndnmbr = mRandom.Next(0, nodes.Count);
                     //Just give them the inside of the Optional action witchout checking because
                     //it doesnt matter anyway if its null if the unit is idle.
-                    return new Task(job, (PlatformBlank) nodes.ElementAt(rndnmbr), null, assignedAction.Get());
+                    return new Task(job, Optional<PlatformBlank>.Of(nodes.ElementAt(rndnmbr) as PlatformBlank), null, Optional<IPlatformAction>.Of(assignedAction.Get()));
             }
             //TODO: Make this disappear when the rest is implemented, since its only a placeholder
-            return new Task(job, (PlatformBlank) nodes.ElementAt(0), null, assignedAction.Get());
+            return new Task(job, Optional<PlatformBlank>.Of((PlatformBlank) nodes.ElementAt(0)), null, Optional<IPlatformAction>.Of(assignedAction.Get()));
         }
 
         public void PausePlatformAction(IPlatformAction action)

@@ -24,12 +24,12 @@ namespace Singularity.Units
         [DataMember]
         public EResourceType? GetResource { get; set; }
 
-        public Task(JobType job, PlatformBlank? end, EResourceType? res, IPlatformAction? action)
+        public Task(JobType job, Optional<PlatformBlank> end, EResourceType? res, Optional<IPlatformAction> action)
         {
             Job = job;
-            End = Optional<PlatformBlank>.Of(end);
+            End = end;
             GetResource = res;
-            Action = Optional<IPlatformAction>.Of(action);
+            Action = action;
         }
     }
 }
