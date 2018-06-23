@@ -140,13 +140,11 @@ namespace Singularity.Screen.ScreenClasses
             mGameplayButton = new Button(mGameplayString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding), mTextColor);
             mGraphicsButton = new Button(mGraphicsString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding + 40), mTextColor);
             mAudioButton = new Button(mAudioString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding + 80), mTextColor);
-            mSaveButton = new Button(mSaveChangesString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding + 120), mTextColor);
             mBackButton = new Button(mBackString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding + 160), mTextColor);
 
             mTabButtons.Add(mGameplayButton);
             mTabButtons.Add(mGraphicsButton);
             mTabButtons.Add(mAudioButton);
-            mTabButtons.Add(mSaveButton);
             mTabButtons.Add(mBackButton);
 
             foreach (Button tabButton in mTabButtons)
@@ -161,12 +159,12 @@ namespace Singularity.Screen.ScreenClasses
             mFullScreen = new Button(mFullScreenString, mLibSans20, new Vector2(mContentPadding, mTopContentPadding), mTextColor);
             mResolution1 = new Button("800 x 600", mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 40), mTextColor);
             mResolution2 = new Button("960 x 720", mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 80));
-            mAntialiasing = new Button(mAntialiasingString, mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 120), mTextColor);
+            mSaveButton = new Button(mSaveChangesString, mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 120), mTextColor);
 
             mGraphicsButtons.Add(mFullScreen);
             mGraphicsButtons.Add(mResolution1);
             mGraphicsButtons.Add(mResolution2);
-            mGraphicsButtons.Add(mAntialiasing);
+            mGraphicsButtons.Add(mSaveButton);
 
             foreach (Button graphicsButton in mGraphicsButtons)
             {
@@ -187,7 +185,6 @@ namespace Singularity.Screen.ScreenClasses
             mFullScreen.ButtonReleased += OnFullScreenReleased;
             mResolution1.ButtonReleased += OnResoOneReleased;
             mResolution2.ButtonReleased += OnResoTwoReleased;
-            mAntialiasing.ButtonReleased += OnAntialiasingReleased;
 
             mMuteButton.ButtonReleased += OnMuteReleased;
         }
