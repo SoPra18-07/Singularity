@@ -28,6 +28,11 @@ namespace Singularity.Map
         private readonly CollisionNode[,] mCollisionMap;
 
         /// <summary>
+        /// Stores the walkability information of the map to be used by the pathfinder
+        /// </summary>
+        private readonly BaseGrid mWalkableGrid;
+
+        /// <summary>
         /// Creates a new Collision map used to store and update all colliding objects.
         /// </summary>
         public CollisionMap()
@@ -42,14 +47,22 @@ namespace Singularity.Map
                 mGridXLength, 
                 mGridYLength
             ];
+            bool[][] movableMatrix = new bool[mGridXLength][];
+             
+            
+
+
             for (var i = 0; i < mCollisionMap.GetLength(0); i++)
             {
+                movableMatrix[i] = new bool[mGridYLength];
+
                 for (var j = 0; j < mCollisionMap.GetLength(1); j++)
                 {
                     mCollisionMap[i, j] = new CollisionNode(i, j, Optional<ICollider>.Of(null));
-
+                    movableMatrix[i][j] = true;
                 }
             }
+            mWalkableGrid = new StaticGrid(mGridXLength, mGridYLength, movableMatrix);
 
         }
 
@@ -71,8 +84,9 @@ namespace Singularity.Map
                 {
                     for (var y = oldBounds.Y / MapConstants.GridHeight; y <= (oldBounds.Y + oldBounds.Height) / MapConstants.GridHeight; y++)
                     {
-                        // TODO: convert orthogonal position to an isometric position
                         mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(null));
+                        mWalkableGrid.SetWalkableAt(x, y, true);
+
                     }
                 }
             }
@@ -83,30 +97,23 @@ namespace Singularity.Map
             {
                 for (var y = (collider.AbsBounds.Y / MapConstants.GridHeight); y <= ((collider.AbsBounds.Y + collider.AbsBounds.Height) / MapConstants.GridHeight) ; y++)
                 {
-                    // TODO: convert orthogonal position to an isometric position
                     mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(collider));Optional<ICollider>.Of(collider);
+                    mWalkableGrid.SetWalkableAt(x, y, false);
                 }
             }
 
             mLookUpTable[collider.Id] = collider.AbsBounds;
         }
 
-        /// <summary>
-        /// Converts the orthogonal coordinates of a position to an isometric coordinate on the collision map
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        private GridPos ToIsometricCoordinates(int x, int y)
-        {
-            throw new NotImplementedException(); 
-        }
-
-
         //TODO: this method exists solely for debugging purposes, so the map can draw a representation of the current collision map.
         public CollisionNode[,] GetCollisionMap()
         {
             return mCollisionMap;
+        }
+
+        public BaseGrid GetWalkabilityGrid()
+        {
+            return mWalkableGrid;
         }
     }
 }

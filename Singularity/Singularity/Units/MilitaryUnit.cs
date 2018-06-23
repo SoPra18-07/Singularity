@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -46,7 +47,7 @@ namespace Singularity.Units
 
         private readonly float mScale;
 
-        private Map.Map mMap;
+        private readonly Map.Map mMap;
 
         public Vector2 AbsolutePosition { get; set; }
 
@@ -66,11 +67,13 @@ namespace Singularity.Units
 
         public Rectangle AbsBounds { get; private set; }
 
+        private Stack<Vector2> mPath;
+
         public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, InputManager manager, Map.Map map)
         {
             Id = IdGenerator.NextID(); // TODO this will later use a random number generator to create a unique
                     // id for the specific unit.
-            Health = 10; //TODO
+            Health = 10;
 
             mScale = 0.4f;
 
@@ -95,7 +98,7 @@ namespace Singularity.Units
 
         /// <summary>
         /// Rotates unit in order when selected in order to face
-        /// user mouse and eventually target destination
+        /// user mouse and eventually target destination.
         /// </summary>
         /// <param name="target"></param>
         private void Rotate(Vector2 target)
@@ -133,7 +136,7 @@ namespace Singularity.Units
         }
 
         /// <summary>
-        /// The property which defines the health of the unit
+        /// Defines the health of the unit, defaults to 10.
         /// </summary>
         private int Health { get; set; }
 
@@ -198,9 +201,19 @@ namespace Singularity.Units
             }
 
             // calculate path to target position
-            if (mIsMoving && !HasReachedTarget())
+            else if (mIsMoving)
             {
-                MoveToTarget(mTargetPosition);
+                if (!HasReachedWaypoint())
+                {
+                    MoveToTarget(mPath.Peek());
+                    Debug.WriteLine("Current Position: " + Center.X + ", " + Center.Y);
+                    Debug.WriteLine("Moving to: " + mPath.Peek().X + ", " + mPath.Peek().Y);
+                }
+                else
+                {
+                    mPath.Pop();
+                    MoveToTarget(mPath.Peek());
+                }
             }
 
             // these are values needed to properly get the current sprite out of the spritesheet.
@@ -222,11 +235,12 @@ namespace Singularity.Units
         private void MoveToTarget(Vector2 target)
         {
 
-            mMovementVector = new Vector2(target.X - mBoundsSnapshot.Center.X, target.Y - mBoundsSnapshot.Center.Y);
-            mMovementVector.Normalize();
+            var movementVector = new Vector2(target.X - Center.X, target.Y - Center.Y);
+            movementVector.Normalize();
+            Debug.WriteLine("Direction: " + movementVector.X + ", " + movementVector.Y);
             mToAdd += mMovementVector * (float) (mZoomSnapshot *  Speed);
 
-            AbsolutePosition = new Vector2((float) (AbsolutePosition.X + mMovementVector.X * Speed), (float) (AbsolutePosition.Y + mMovementVector.Y * Speed));
+            AbsolutePosition = new Vector2((float) (AbsolutePosition.X + movementVector.X * Speed), (float) (AbsolutePosition.Y + movementVector.Y * Speed));
         }
 
         /// <summary>
@@ -235,16 +249,23 @@ namespace Singularity.Units
         private bool HasReachedTarget()
         {
 
-            if (!(Math.Abs(mBoundsSnapshot.Center.X + mToAdd.X -
+            if (!(Math.Abs(Center.X + mToAdd.X -
                            mTargetPosition.X) < 8 &&
-                  Math.Abs(mBoundsSnapshot.Center.Y + mToAdd.Y -
+                  Math.Abs(Center.Y + mToAdd.Y -
                            mTargetPosition.Y) < 8))
             {
                 return false;
             }
             mToAdd = Vector2.Zero;
             return true;
+        }
 
+        private bool HasReachedWaypoint()
+        {
+            return Math.Abs(Center.X + mToAdd.X -
+                            mPath.Peek().X) < 8 &&
+                   Math.Abs(Center.Y + mToAdd.Y -
+                            mPath.Peek().Y) < 8;
         }
 
         public void MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
@@ -256,6 +277,13 @@ namespace Singularity.Units
                     {
                         mIsMoving = true;
                         mTargetPosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+                        var currentPosition = Center;
+                        Debug.WriteLine("Starting path finding at: " + currentPosition.X +", " + currentPosition.Y);
+                        Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
+                        mPath = MilitaryPathfinder.FindPath(currentPosition,
+                            mTargetPosition,
+                            mMap);
+
                         mBoundsSnapshot = Bounds;
                         mZoomSnapshot = mCamera.GetZoom();
                     }

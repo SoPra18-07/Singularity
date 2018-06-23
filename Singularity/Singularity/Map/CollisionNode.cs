@@ -22,5 +22,10 @@ namespace Singularity.Map
             Y = y;
             Collider = iCollider;
         }
+
+        public bool IsWalkable()
+        {
+            return !Collider.IsPresent();
+        }
     }
 }

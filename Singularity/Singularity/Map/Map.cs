@@ -160,14 +160,15 @@ namespace Singularity.Map
                         layerDepth: LayerConstants.GridDebugLayer);
                 }
             }
-            /*
+            
             var colMap = mCollisionMap.GetCollisionMap();
+            var walkabilityGrid = mCollisionMap.GetWalkabilityGrid();
 
             for(var i = 0; i < colMap.GetLength(dimension: 0); i++)
             {
                 for (var j = 0; j < colMap.GetLength(dimension: 1); j ++)
                 {
-                    if (!colMap[i, j].IsWalkable())
+                    if (!walkabilityGrid.IsWalkableAt(i, j))
                     {
 
                         spriteBatch.FillRectangle(rect: new Rectangle(x: i * MapConstants.GridWidth, y: j * MapConstants.GridHeight, width: MapConstants.GridWidth, height: MapConstants.GridHeight), 
@@ -175,7 +176,7 @@ namespace Singularity.Map
                     }
                 }
             }
-            */
+            
         }
 
         //TODO: remove if input manager is available since we only use this to pass an update to the camera.
