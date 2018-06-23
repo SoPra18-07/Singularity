@@ -126,8 +126,11 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if (IsActive) // Make is so that the input manager doesn't capture clicks when the game isn't in focus
+            {
+                mInputManager.Update(gameTime);
+            }
 
-            mInputManager.Update(gameTime);
             mScreenManager.Update(gameTime);
             base.Update(gameTime);
         }
