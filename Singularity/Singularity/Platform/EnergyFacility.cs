@@ -19,7 +19,7 @@ namespace Singularity.Platform
         [DataMember()]
         private const int PlatformHeight = 127;
 
-        public EnergyFacility(Vector2 position, Texture2D spritesheet): base(position, spritesheet, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
+        public EnergyFacility(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite) : base(position, platformSpriteSheet, baseSprite , new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
         {
             mIPlatformActions = new IPlatformAction[2];
             //mActions[0] = BuildPlatformBlueprint(this);
@@ -30,7 +30,7 @@ namespace Singularity.Platform
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Energy;
             mSpritename = "Dome";
-            AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
+            AbsoluteSize = SetPlatfromDrawParameters();
         }
 
         public void TurnOn(StoryManager.StoryManager story)

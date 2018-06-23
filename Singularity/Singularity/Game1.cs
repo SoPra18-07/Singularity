@@ -35,7 +35,7 @@ namespace Singularity
 
         // Sprites!
         private SpriteBatch mSpriteBatch;
-        
+
 
         // Screen Manager
         private readonly IScreenManager mScreenManager;
@@ -102,7 +102,7 @@ namespace Singularity
             // on top of it.
             mScreenManager.AddScreen(mGameScreen);
             mScreenManager.AddScreen(mMainMenuManager);
-            
+
             // load and play Soundtrack as background music
             mSoundManager.LoadContent(Content);
             mSoundManager.SetLevelThemeMusic("Singularity");
