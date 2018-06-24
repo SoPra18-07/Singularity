@@ -98,6 +98,7 @@
     <Compile Include="Screen\ITransitionableMenu.cs" />
     <Compile Include="Screen\IWindowItem.cs" />
     <Compile Include="Screen\ScreenClasses\GameScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\PopupWindow.cs" />
     <Compile Include="Screen\Slider.cs" />
     <Compile Include="Screen\ScreenClasses\UserInterfaceScreen.cs" />
     <Compile Include="Screen\Button.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Sound\SoundManager.cs" />
     <Compile Include="Sound\SoundPhase.cs" />
     <Compile Include="StoryManager\StoryManager.cs" />
+    <Compile Include="Screen\TextField.cs" />
     <Compile Include="Units\GeneralUnit.cs" />
     <Compile Include="Units\IUnit.cs" />
     <Compile Include="Units\JobType.cs" />

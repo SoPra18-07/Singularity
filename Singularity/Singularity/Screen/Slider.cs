@@ -63,7 +63,7 @@ namespace Singularity.Screen
             Position = position;
             mMin = Position.X;
             mMax = Position.X + length;
-            Size = new Vector2(0, length);
+            Size = new Vector2(length, sliderSize);
             mCurrentX = mMin;
             mSliderSize = sliderSize;
             mSliderLength = length;
@@ -85,7 +85,7 @@ namespace Singularity.Screen
             Position = position;
             mMin = Position.X;
             mMax = Position.X + length;
-            Size = new Vector2(0, length);
+            Size = new Vector2(length, sliderSize);
             mCurrentX = mMin;
             mSliderSize = sliderSize;
             mSliderLength = length;
@@ -120,9 +120,9 @@ namespace Singularity.Screen
         {
             if (Active)
             {
-                // move slider if 
                 mMin = Position.X;
                 mMax = Position.X + mSliderLength;
+                mCurrentX = Position.X;
 
 
                 // if slider is left click them make it slave to the mouse

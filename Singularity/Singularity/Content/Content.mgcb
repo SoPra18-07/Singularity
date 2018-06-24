@@ -244,3 +244,10 @@
 /processorParam:Quality=Best
 /build:Sound/Singularity_Menu.mp3
 
+#begin LibSans14.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:LibSans14.spritefont
+
