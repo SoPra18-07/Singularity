@@ -260,7 +260,7 @@ namespace Singularity.Platform
                     // then draw what's on top of that
                     spritebatch.Draw(mPlatformBaseTexture,
                         AbsolutePosition,
-                        new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 148),
+                        new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 148),
                         Color.White,
                         0f,
                         Vector2.Zero,
@@ -283,7 +283,7 @@ namespace Singularity.Platform
                     // then draw what's on top of that
                     spritebatch.Draw(mPlatformBaseTexture,
                         AbsolutePosition,
-                        new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 153),
+                        new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 153),
                         Color.White,
                         0f,
                         Vector2.Zero,
