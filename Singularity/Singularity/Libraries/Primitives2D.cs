@@ -319,7 +319,7 @@ namespace Singularity.Libraries
         /// <param name="color"></param>
         /// <param name="angle"></param>
         /// <param name="opacity"></param>
-	    public static void FillRectangle(this SpriteBatch spriteBatch,
+        public static void FillRectangle(this SpriteBatch spriteBatch,
             Vector2 location,
             Vector2 size,
             Color color,
@@ -414,7 +414,7 @@ namespace Singularity.Libraries
         /// <param name="color"></param>
         /// <param name="thickness"></param>
         /// <param name="opacity"></param>
-	    public static void DrawRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float thickness, float opacity)
+        public static void DrawRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float thickness, float opacity)
         {
             DrawRectangle(spriteBatch, new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y), color * opacity, thickness);
         }
@@ -485,8 +485,8 @@ namespace Singularity.Libraries
             // calculate the angle between the two vectors
             float angle = (float)Math.Atan2(point2.Y - point1.Y, point2.X - point1.X);
 
-			DrawLine(spriteBatch, point1, distance, angle, color, thickness, layerDepth);
-		}
+            DrawLine(spriteBatch, point1, distance, angle, color, thickness, layerDepth);
+        }
 
 
         /// <summary>
@@ -738,7 +738,7 @@ namespace Singularity.Libraries
         /// <param name="colorCenter"> color of the center of circle</param>
         /// <param name="opacityBorder"> opacity of the circle border</param>
         /// <param name="opacityCenter">opacity of the circle center</param>
-	    public static void StrokedCircle(this SpriteBatch spriteBatch, Vector2 center, int radius, Color colorBorder, Color colorCenter, float opacityBorder, float opacityCenter)
+        public static void StrokedCircle(this SpriteBatch spriteBatch, Vector2 center, int radius, Color colorBorder, Color colorCenter, float opacityBorder, float opacityCenter)
         {
             // 3 pixel wide border of the circle
             DrawCircle(spriteBatch, center, radius, 100, colorBorder * opacityBorder, 1);

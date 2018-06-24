@@ -1,9 +1,9 @@
 ﻿namespace Singularity.Utils
 {
-	public interface IId
-	{
-		int MId { get; }
-	}
+    public interface IId
+    {
+        int MId { get; }
+    }
 
     public static class IdGenerator
     {

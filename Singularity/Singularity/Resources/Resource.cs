@@ -5,7 +5,7 @@ using Singularity.Property;
 
 namespace Singularity.Resources
 {
-	public class Resource : ISpatial
+    public class Resource : ISpatial
     {
         // TODO: fkarg implement
 
@@ -35,16 +35,18 @@ namespace Singularity.Resources
             AbsoluteSize = new Vector2(width, width * 0.6f);
         }
 
-public EResourceType Type { get; internal set; }
+        public EResourceType Type { get; internal set; }
 
         public void Draw(SpriteBatch spriteBatch)
-		{
-			throw new NotImplementedException();
-		}
 
-		public void Update(GameTime gametime)
-		{
-			throw new NotImplementedException();
-		}
-	}
+            spriteBatch.DrawCircle(AbsolutePosition, 10, 20, Color.Black, 10, LayerConstants.GeneralUnitLayer);
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(GameTime gametime)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

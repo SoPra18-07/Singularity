@@ -232,7 +232,7 @@ namespace Singularity.Sound
         /// <param name="id">The gloabl id of the sound effect instance.</param>
         /// <param name="x">The new x coordinate.</param>
         /// <param name="y">The new y coordinate.</param>
-		public void SetSoundPosition(int id, float x, float y)
+        public void SetSoundPosition(int id, float x, float y)
         {
             if (mInstanceMap.ContainsKey(id))
             {
@@ -256,7 +256,7 @@ namespace Singularity.Sound
         /// </summary>
         /// <param name="id">The gloabl id of the sound effect instance.</param>
         /// <param name="pitch">The new pitch.</param>
-	    public void SetSoundPitch(int id, float pitch)
+        public void SetSoundPitch(int id, float pitch)
         {
             if (mInstanceMap.ContainsKey(id))
             {
@@ -332,7 +332,7 @@ namespace Singularity.Sound
         /// Pause the currently playing sounds of the given class.
         /// </summary>
         /// <param name="soundClass">The SoundClass to pause.</param>
-		public void PauseSoundClass(SoundClass soundClass)
+        public void PauseSoundClass(SoundClass soundClass)
         {
             if (soundClass == SoundClass.Music)
             {
@@ -367,7 +367,7 @@ namespace Singularity.Sound
         /// Resume playing the paused sounds of the given Sound Class.
         /// </summary>
         /// <param name="soundClass">The Sound Class to resume playing.</param>
-		public void ResumeSoundClass(SoundClass soundClass)
+        public void ResumeSoundClass(SoundClass soundClass)
         {
             if (MediaPlayer.State == MediaState.Paused)
             {
@@ -422,7 +422,7 @@ namespace Singularity.Sound
         /// Setting the theme song for the current level by specifying the current level. String.Empty() for random music from pool.
         /// </summary>
         /// <param name="name">The level name.</param>
-		public void SetLevelThemeMusic(string name)
+        public void SetLevelThemeMusic(string name)
         {
             mLevel = name;
         }
@@ -430,7 +430,7 @@ namespace Singularity.Sound
         /// <summary>
         /// To be called within a level or menu. Deletes all the stopped (disposable) instances.
         /// </summary>
-	    public void CleanUpStoppedInstances()
+        public void CleanUpStoppedInstances()
         {
             Dictionary<int, SoundEffectInstance>[] dicts = { mEffectInstances, mUiInstances };
             foreach (Dictionary<int, SoundEffectInstance> dict in dicts)
@@ -465,7 +465,7 @@ namespace Singularity.Sound
         /// Set the z coordinate for all 3D sounds (effectivly the distance of the sound plane from the listener).
         /// </summary>
         /// <param name="z">The desired z coordinate.</param>
-	    public void SetSoundPlaneDepth(float z)
+        public void SetSoundPlaneDepth(float z)
         {
             mSoundPlaneDepth = z;
         }
