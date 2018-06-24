@@ -1,9 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using Singularity.Manager;
+using Singularity.Screen;
+using Singularity.Screen.ScreenClasses;
 using Singularity.Graph.Paths;
 using Singularity.Input;
 using Singularity.Property;
 using Singularity.Sound;
+using Singularity.Libraries;
+using System;
+using System.Windows;
 
 namespace Singularity.Manager
 {

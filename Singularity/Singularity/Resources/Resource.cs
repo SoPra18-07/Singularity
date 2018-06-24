@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Property;
+using Singularity.Libraries;
 
 namespace Singularity.Resources
 {
