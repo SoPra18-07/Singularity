@@ -59,7 +59,7 @@ namespace Singularity.Platform
 
         public int Id { get; private set; }
 
-        // the sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome 
+        // the sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome
         private int mSheet;
         private int mSheetPosition;
 
@@ -353,7 +353,7 @@ namespace Singularity.Platform
 
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
-            
+
             mResources = new List<Resource>();
 
             mPlatformSpriteSheet = platformSpriteSheet;
@@ -418,7 +418,7 @@ namespace Singularity.Platform
         {
             return mInwardsEdges;
         }
-        
+
         public override bool Equals(Object other)
         {
             var b = other as PlatformBlank;

@@ -15,7 +15,7 @@ namespace Singularity.Graph.Paths
         /// All the graphs currently in the game
         /// </summary>
         private readonly List<Graph> mGraphs;
-        
+
         public PathManager()
         {
             mGraphs = new List<Graph>();
@@ -63,7 +63,7 @@ namespace Singularity.Graph.Paths
                 "supported: MilitaryUnit and GeneralUnit.");
 
         }
-        
+
         private IPath GetPathForGeneralUnits(GeneralUnit unit, INode destination)
         {
             // todo: know which units are on which graph.

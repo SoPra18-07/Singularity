@@ -10,7 +10,7 @@ namespace Singularity.Units
     {
         [DataMember]
         public JobType Job { get; set; }
-        
+
         [DataMember]
         public Optional<PlatformBlank> Begin { get; set; }
 

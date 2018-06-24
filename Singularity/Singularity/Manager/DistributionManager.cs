@@ -193,7 +193,7 @@ namespace Singularity.Manager
         }
 
         // Okay yes you're right. We want a PlatformAction here instead of a platform.
-        public void RequestResource(PlatformBlank platform, EResourceType resource, IPlatformAction action, bool isbuilding = false) 
+        public void RequestResource(PlatformBlank platform, EResourceType resource, IPlatformAction action, bool isbuilding = false)
         {
             // Will repair request ressources or units? And what unit will be used?
             // We do not have repair yet or anytime soon.
@@ -212,7 +212,7 @@ namespace Singularity.Manager
         public void RequestUnits(PlatformBlank platform, JobType job, IPlatformAction action, bool isdefending = false)
         {
             //TODO: Create Action references, when interfaces were created.
-            
+
             if (isdefending)
             {
                 mRequestedUnitsDefense.Enqueue(new Task(JobType.Defense, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(action)));
@@ -237,7 +237,7 @@ namespace Singularity.Manager
         // Ah, I can see where your confusion is coming from. So, the version you're thinking about is absolutely valid but needs more (and better) coding. This would be the only 'bigger' function either way. Oh, and it'd absolutely need a different structure ...
         //
         // Okay, so how was it supposed to work (in my version, if you want to implement it is for you to decide):
-        // - The units (with nothing to do (idle, but not 'JobType: Idle') ask for new Tasks here. So what is needed is ... actually yes, unit is not required. So the JobType is required, to return a Task of that JobType. Also, if this unit is assigned to some specific PlatformAction (like building a Blueprint, Logistics for a certain Factory, ...), it is supposed to only get Tasks involving this PlatformAction. However, if a unit is not manually assigned somewhere, what action do you want to get here? 
+        // - The units (with nothing to do (idle, but not 'JobType: Idle') ask for new Tasks here. So what is needed is ... actually yes, unit is not required. So the JobType is required, to return a Task of that JobType. Also, if this unit is assigned to some specific PlatformAction (like building a Blueprint, Logistics for a certain Factory, ...), it is supposed to only get Tasks involving this PlatformAction. However, if a unit is not manually assigned somewhere, what action do you want to get here?
         public Task RequestNewTask(GeneralUnit unit, JobType job, Optional<IPlatformAction> assignedAction)
         {
             var nodes = new List<INode>();

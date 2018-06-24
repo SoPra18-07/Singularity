@@ -30,13 +30,13 @@ namespace Singularity.Units
         private Queue<INode> mNodeQueue;
 
         private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
-        
+
 
         //These are the assigned task and a flag, wether the unit is done with it.
         private Task mAssignedTask;
 
         private bool mDone;
-        
+
         private IPlatformAction mAssignedAction;
 
         public INode CurrentNode { get; private set; }
@@ -153,7 +153,7 @@ namespace Singularity.Units
 
                 //The idea is to use this task to move while your jobtype is idle (since we want these units to move around)
                 //case Task.Move:
-                    //Move(targetId); 
+                    //Move(targetId);
             }*/
         }
 
@@ -238,7 +238,7 @@ namespace Singularity.Units
                     }
                     // drop the resource.
                 }
-                
+
 
 
 

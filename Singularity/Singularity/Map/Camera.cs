@@ -94,7 +94,7 @@ namespace Singularity.Map
         {
             return mTransform;
         }
-        
+
         public void Update(GameTime gametime)
         {
 

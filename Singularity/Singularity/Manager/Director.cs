@@ -9,7 +9,7 @@ namespace Singularity.Manager
 {
     public class Director : IUpdate
     {
-        
+
         public Director(ContentManager content)
         {
             GetInputManager = new InputManager();
@@ -17,14 +17,14 @@ namespace Singularity.Manager
             GetPathManager = new PathManager();
             GetSoundManager = new SoundManager();
             GetDistributionManager = new DistributionManager();
-            GetMilitaryManager = new MilitaryManager(); // TODO: Update this code if the MilitaryManager is not getting everything from the StructureMap or sth ... 
+            GetMilitaryManager = new MilitaryManager(); // TODO: Update this code if the MilitaryManager is not getting everything from the StructureMap or sth ...
                                                         // (like units telling it they exist and the like)
 
             GetSoundManager.LoadContent(content);
             GetSoundManager.PlaySoundTrack();
 
 
-            // Dd}{_: 
+            // Dd}{_:
         }
 
         public InputManager GetInputManager { get; }

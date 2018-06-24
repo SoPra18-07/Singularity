@@ -21,7 +21,7 @@ namespace Singularity.Resources
 
         private EResourceType mType;
         private Vector2 mAbsolutePosition;
-        private int mV; // velocity 
+        private int mV; // velocity
 
         public Resource()
         {
