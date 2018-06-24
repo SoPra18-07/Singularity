@@ -1,12 +1,10 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
-using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
@@ -14,7 +12,7 @@ using Singularity.Utils;
 
 namespace Singularity.Platform
 {
-    [DataContract()]
+    [DataContract]
     public class PlatformBlank : IRevealing, INode, ICollider
 
     {
@@ -23,31 +21,32 @@ namespace Singularity.Platform
 
         private List<IEdge> mOutwardsEdges;
 
-        [DataMember()]
-        protected EPlatformType mType;
-        [DataMember()]
-        private const int PlatformWidth = 148;
-        [DataMember()]
-        private int mPlatformHeight;
-        [DataMember()]
+        [DataMember]
+        protected EPlatformType mType = EPlatformType.Blank;
+
+        [DataMember]
+        private const int mPlatformWidth = 148;
+        [DataMember]
+        private const int mPlatformHeight = 172;
+        [DataMember]
         private int mHealth;
-        [DataMember()]
+        [DataMember]
         private int mId;
-        [DataMember()]
+        [DataMember]
         protected bool mIsBlueprint;
-        [DataMember()]
+        [DataMember]
         protected Dictionary<EResourceType, int> mCost;
-        [DataMember()]
+        [DataMember]
         protected IPlatformAction[] mIPlatformActions;
         private readonly Texture2D mPlatformSpriteSheet;
         private readonly Texture2D mPlatformBaseTexture;
         [DataMember()]
         protected string mSpritename;
-        [DataMember()]
+        [DataMember]
         protected Dictionary<GeneralUnit, JobType> mAssignedUnits;
-        [DataMember()]
+        [DataMember]
         protected List<Resource> mResources;
-        [DataMember()]
+        [DataMember]
         protected Dictionary<EResourceType, int> mRequested;
 
         public Vector2 Center { get; set; }
@@ -69,13 +68,13 @@ namespace Singularity.Platform
             throw new NotImplementedException();
         }
 
-        [DataMember()]
+        [DataMember]
         public Vector2 AbsolutePosition { get; set; }
-        [DataMember()]
+        [DataMember]
         public Vector2 AbsoluteSize { get; set; }
-        [DataMember()]
+        [DataMember]
         public Vector2 RelativePosition { get; set; }
-        [DataMember()]
+        [DataMember]
         public Vector2 RelativeSize { get; set; }
 
 
@@ -190,7 +189,7 @@ namespace Singularity.Platform
         /// </summary>
         /// <param name="resourcetype">The resource you ask for</param>
         /// <returns>the resource you asked for, null otherwise.</returns>
-        public Resource GetResource(EResourceType resourcetype)
+        public MapResource GetResource(EResourceType resourcetype)
         {
             // var index = mResources.FindIndex(x => x.isType(resourcetype));
             // if (index < 0)
@@ -261,7 +260,7 @@ namespace Singularity.Platform
                     // then draw what's on top of that
                     spritebatch.Draw(mPlatformBaseTexture,
                         AbsolutePosition,
-                        new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 148),
+                        new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 148),
                         Color.White,
                         0f,
                         Vector2.Zero,
@@ -284,7 +283,7 @@ namespace Singularity.Platform
                     // then draw what's on top of that
                     spritebatch.Draw(mPlatformBaseTexture,
                         AbsolutePosition,
-                        new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 153),
+                        new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 153),
                         Color.White,
                         0f,
                         Vector2.Zero,
@@ -322,6 +321,11 @@ namespace Singularity.Platform
         {
         }
 
+        public EPlatformType GetMyType()
+        {
+            return mType;
+        }
+
         public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, Vector2 center = new Vector2())
         {
 
@@ -349,7 +353,7 @@ namespace Singularity.Platform
 
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
-
+            
             mResources = new List<Resource>();
 
             mPlatformSpriteSheet = platformSpriteSheet;
@@ -414,6 +418,38 @@ namespace Singularity.Platform
         {
             return mInwardsEdges;
         }
+        
+        public override bool Equals(Object other)
+        {
+            var b = other as PlatformBlank;
+
+            if(b == null)
+            {
+                return false;
+            }
+
+            if(AbsolutePosition != b.AbsolutePosition)
+            {
+                return false;
+            }
+
+            if(AbsoluteSize != b.AbsoluteSize)
+            {
+                return false;
+            }
+            if(mType != b.GetMyType())
+            {
+                return false;
+            }
+            return true;
+
+        }
+
+        public override int GetHashCode()
+        {
+            return AbsoluteSize.GetHashCode() * 17 + AbsolutePosition.GetHashCode() + mType.GetHashCode();
+        }
+
 
         /// <summary>
         /// Sets all the parameters to draw a platfrom properly and calculates the absolute size of a platform.

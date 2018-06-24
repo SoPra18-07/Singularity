@@ -1,64 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics.Eventing;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Singularity.Exceptions;
 using Singularity.Graph;
-using Singularity.Graph.Paths;
-using Singularity.Map;
 using Singularity.Platform;
 using Singularity.Resources;
 using Singularity.Units;
 using Singularity.Utils;
 
-namespace Singularity.DistributionManager
+namespace Singularity.Manager
 {
-    [DataContract()]
+    [DataContract]
     public class DistributionManager
     {
-        [DataMember()]
+        [DataMember]
         private List<GeneralUnit> mIdle;
-        [DataMember()]
+        [DataMember]
         private List<GeneralUnit> mLogistics;
-        [DataMember()]
+        [DataMember]
         private List<GeneralUnit> mConstruction;
-        [DataMember()]
+        [DataMember]
         private List<GeneralUnit> mProduction;
-        [DataMember()]
+        [DataMember]
         private List<GeneralUnit> mDefense;
-        [DataMember()]
+        [DataMember]
         private List<GeneralUnit> mManual;
 
-        [DataMember()]
+        [DataMember]
         private Queue<Task> mBuildingResources;
-        [DataMember()]
+        [DataMember]
         private Queue<Task> mRefiningOrStoringResources;
-        [DataMember()]
+        [DataMember]
         private Queue<Task> mRequestedUnitsProduce;
-        [DataMember()]
+        [DataMember]
         private Queue<Task> mRequestedUnitsDefense;
 
-        [DataMember()]
+        [DataMember]
         private Random mRandom;
         // An Felix: Vielleicht BuildBluePrint nicht in "ProduceResourceAction.cs" reinhauen (da hätte ich nicht danach gesucht) - muss ich eh nochmal refactorn mit PlatformBlank und jz dem hier
-        [DataMember()]
+        [DataMember]
         private List<BuildBluePrint> mBlueprintBuilds;
 
         // L:An der Stelle mit Felix reden, PlatformActionProduce als abstrakte Klasse würde helfen?
         // F:Mhm weiß nicht ob das wirklich notwendig ist ... ich mach mir mal gedanken
         // L:Zumindest ein interface würde benötigt, ich denke nicht dass der sinn hinter der sache ist für jede produzierende plattform ne extra liste mit
         // List<PlatformnamehiereinsetzenActionProduce> zu erstellen. Das gleiche mit mDefensivePlatforms
-        [DataMember()]
+        [DataMember]
         private List<IPlatformAction> mPlatformActions;
 
         // Alternativ könnte man auch bei den beiden Listen direkt die Platformen einsetzen?
         // Momentan ja, aber wenn du ne plattform haben willst die (rein theoretisch) verteidigen und Produzieren gleichzeitig kann? Oder gleichzeitig KineticDefense und LaserDefense ist?
-        // Aber wollen wir das? also entweder so, oder halt wie oben vorgeschlagen.
+        // Aber wollen wir das? also entweder so, oder halt wie oben vorgeschlagen
+
         public DistributionManager()
         {
             mIdle = new List<GeneralUnit>();
@@ -207,25 +201,25 @@ namespace Singularity.DistributionManager
             //TODO: Create Action references, when interfaces were created.
             if (isbuilding)
             {
-                mBuildingResources.Enqueue(new Task(JobType.Construction, platform, resource, action));
+                mBuildingResources.Enqueue(new Task(JobType.Construction, Optional<PlatformBlank>.Of(platform), resource, Optional<IPlatformAction>.Of(action)));
             }
             else
             {
-                mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, platform, resource, action));
+                mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, Optional<PlatformBlank>.Of(platform), resource, Optional<IPlatformAction>.Of(action)));
             }
         }
 
         public void RequestUnits(PlatformBlank platform, JobType job, IPlatformAction action, bool isdefending = false)
         {
             //TODO: Create Action references, when interfaces were created.
-            EResourceType? resource = null;
+            
             if (isdefending)
             {
-                mRequestedUnitsDefense.Enqueue(new Task(JobType.Construction, platform, resource, action));
+                mRequestedUnitsDefense.Enqueue(new Task(JobType.Defense, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(action)));
             }
             else
             {
-                mRequestedUnitsProduce.Enqueue(new Task(JobType.Logistics, platform, resource, action));
+                mRequestedUnitsProduce.Enqueue(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(action)));
             }
         }
 
@@ -265,10 +259,10 @@ namespace Singularity.DistributionManager
                     var rndnmbr = mRandom.Next(0, nodes.Count);
                     //Just give them the inside of the Optional action witchout checking because
                     //it doesnt matter anyway if its null if the unit is idle.
-                    return new Task(job, (PlatformBlank) nodes.ElementAt(rndnmbr), null, assignedAction.Get());
+                    return new Task(job, Optional<PlatformBlank>.Of(nodes.ElementAt(rndnmbr) as PlatformBlank), null, Optional<IPlatformAction>.Of(assignedAction.Get()));
             }
             //TODO: Make this disappear when the rest is implemented, since its only a placeholder
-            return new Task(job, (PlatformBlank) nodes.ElementAt(0), null, assignedAction.Get());
+            return new Task(job, Optional<PlatformBlank>.Of((PlatformBlank) nodes.ElementAt(0)), null, Optional<IPlatformAction>.Of(assignedAction.Get()));
         }
 
         public void PausePlatformAction(IPlatformAction action)

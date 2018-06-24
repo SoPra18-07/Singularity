@@ -1,18 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Singularity.Input;
 using Singularity.Libraries;
-using Singularity.Property;
-
 
 namespace Singularity.Screen
 {
@@ -46,14 +36,14 @@ namespace Singularity.Screen
         /// </summary>
         public float Opacity { private get; set; }
 
-        // these events are sent out when they occur to an 
+        // these events are sent out when they occur to an
         // instance of a button
         // HOW TO USE:
         // put this in the class where an instance of a button is generated:
         // NameOfButtonInsance.Event += ClassToReceiveEvent.NameOfMethodInWhichClassReceivesEvent;
-        // the above subscribes the "ClassToReceiveEvent" to the button event (it activate the "NameOfMethodInWhichClassReceivesEvent"
+        // the above subscribes the "ClassToReceiveEvent" to the button event (it activate the "NameOfMethodInWhichClassReceivesEvent")
         // when the event occurs
-        // In the ClassToReceiveEvent create the method NameOfMethodInWhichClassReceivesEvent and write in the 
+        // In the ClassToReceiveEvent create the method NameOfMethodInWhichClassReceivesEvent and write in the
         // code you which to be executed when Event occurs
         // public static void NameOfMethodInWhichClassReceivesEvent(Object sender, EventArgs eventArg){ .....}
         public event EventHandler ButtonReleased;
@@ -64,9 +54,11 @@ namespace Singularity.Screen
         /// <summary>
         /// Creates a button using a Texture2D
         /// </summary>
+        /// todo: @N @yvan write comments ... everywhere, at least some.
         /// <param name="scale"> scale of the texture</param>
         /// <param name="buttonTexture"></param>
         /// <param name="position"></param>
+        /// <param name="withBorder"></param>
         public Button(float scale, Texture2D buttonTexture, Vector2 position, bool withBorder)
         {
             mIsText = false;
@@ -156,7 +148,7 @@ namespace Singularity.Screen
 
         /// <summary>
         /// Draws either ther Texture2D or string representation of
-        /// the button. 
+        /// the button.
         /// </summary>
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)

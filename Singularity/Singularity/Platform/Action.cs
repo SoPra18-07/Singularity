@@ -5,5 +5,5 @@
         BlueprintBuild,
         UnitBuild,
         SettlerBuild
-    };
+    }
 }

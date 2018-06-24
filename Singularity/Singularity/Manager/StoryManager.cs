@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework;
 
-namespace Singularity.StoryManager
+namespace Singularity.Manager
 {
-    class StoryManager
+    public class StoryManager
     {
         private int mEnergyLevel;
 
@@ -18,6 +14,11 @@ namespace Singularity.StoryManager
         public void AddEnergy(int energy)
         {
             mEnergyLevel += energy;
+        }
+
+        internal void Update(GameTime gametime)
+        {
+            // todo this
         }
     }
 }

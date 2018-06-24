@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Singularity.Graph.Paths
+﻿namespace Singularity.Graph.Paths
 {
     /// <summary>
     /// Provides an interface for numerous different path finding algorithms. This allows for different

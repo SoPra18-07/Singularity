@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Property;
+using Singularity.Manager;
 using Singularity.Resources;
 
 namespace Singularity.Platform
 {
-    [DataContract()]
-    class EnergyFacility : PlatformBlank
+    [DataContract]
+    internal sealed class EnergyFacility : PlatformBlank
     {
-        [DataMember()]
+        [DataMember]
         private const int PlatformWidth = 144;
-        [DataMember()]
+        [DataMember]
         private const int PlatformHeight = 127;
 
         public EnergyFacility(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite) : base(position, platformSpriteSheet, baseSprite , new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
@@ -33,12 +29,12 @@ namespace Singularity.Platform
             AbsoluteSize = SetPlatfromDrawParameters();
         }
 
-        public void TurnOn(StoryManager.StoryManager story)
+        public void TurnOn(StoryManager story)
         {
             story.AddEnergy(20);
         }
 
-        public void TurnOff(StoryManager.StoryManager story)
+        public void TurnOff(StoryManager story)
         {
             story.AddEnergy(-20);
         }

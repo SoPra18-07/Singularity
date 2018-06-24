@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
 using Singularity.Libraries;
@@ -33,7 +32,7 @@ namespace Singularity.Platform
             set
             {
                 mBlueprint = value;
-                if (!value) { // add road to graph
+                if (!value) { // todo: add road to graph
                            }
             }
         }

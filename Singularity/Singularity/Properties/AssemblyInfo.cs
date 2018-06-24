@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
+
 // using System.Runtime.CompilerServices;
 
 // General Information about an assembly is controlled through the following
@@ -8,8 +9,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Singularity")]
 [assembly: AssemblyProduct("Singularity")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyDescription("Game")]
+[assembly: AssemblyCompany("SoPra18-07")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
