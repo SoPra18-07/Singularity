@@ -61,6 +61,7 @@ namespace Singularity.DistributionManager
         // Aber wollen wir das? also entweder so, oder halt wie oben vorgeschlagen.
         public DistributionManager()
         {
+            //Lists of Units of different Jobtypes
             mIdle = new List<GeneralUnit>();
             mLogistics = new List<GeneralUnit>();
             mConstruction = new List<GeneralUnit>();
@@ -68,10 +69,13 @@ namespace Singularity.DistributionManager
             mDefense = new List<GeneralUnit>();
             mManual = new List<GeneralUnit>();
 
+            //Lists for Tasks to do
             mBuildingResources = new Queue<Task>();
             mRefiningOrStoringResources = new Queue<Task>();
             mRequestedUnitsProduce = new Queue<Task>();
             mRequestedUnitsDefense = new Queue<Task>();
+
+            //Other stuff
             mBlueprintBuilds = new List<BuildBluePrint>();
             mPlatformActions = new List<IPlatformAction>();
             mRandom = new Random();
@@ -218,14 +222,13 @@ namespace Singularity.DistributionManager
         public void RequestUnits(PlatformBlank platform, JobType job, IPlatformAction action, bool isdefending = false)
         {
             //TODO: Create Action references, when interfaces were created.
-            EResourceType? resource = null;
             if (isdefending)
             {
-                mRequestedUnitsDefense.Enqueue(new Task(JobType.Construction, platform, resource, action));
+                mRequestedUnitsDefense.Enqueue(new Task(JobType.Construction, platform, null, action));
             }
             else
             {
-                mRequestedUnitsProduce.Enqueue(new Task(JobType.Logistics, platform, resource, action));
+                mRequestedUnitsProduce.Enqueue(new Task(JobType.Production, platform, null, action));
             }
         }
 
@@ -266,9 +269,22 @@ namespace Singularity.DistributionManager
                     //Just give them the inside of the Optional action witchout checking because
                     //it doesnt matter anyway if its null if the unit is idle.
                     return new Task(job, (PlatformBlank) nodes.ElementAt(rndnmbr), null, assignedAction.Get());
+
+                case JobType.Production:
+                    return mRequestedUnitsProduce.Dequeue();
+
+                case JobType.Defense:
+                    return mRequestedUnitsDefense.Dequeue();
+
+                case JobType.Construction:
+                    return mBuildingResources.Dequeue();
+
+                case JobType.Logistics:
+                    return mRefiningOrStoringResources.Dequeue();
+
+                default:
+                    throw new InvalidGenericArgumentException("Your requested JobType does not exist.");
             }
-            //TODO: Make this disappear when the rest is implemented, since its only a placeholder
-            return new Task(job, (PlatformBlank) nodes.ElementAt(0), null, assignedAction.Get());
         }
 
         public void PausePlatformAction(IPlatformAction action)
