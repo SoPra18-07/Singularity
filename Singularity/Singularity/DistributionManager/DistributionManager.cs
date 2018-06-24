@@ -251,7 +251,6 @@ namespace Singularity.DistributionManager
         {
             var nodes = new List<INode>();
             switch (job)
-            //TODO: Implement other Job cases.
             {
                 case JobType.Idle:
                     //It looks inefficient but I think its okay, the

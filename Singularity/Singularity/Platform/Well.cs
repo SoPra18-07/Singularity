@@ -34,9 +34,12 @@ namespace Singularity.Platform
             AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
         }
 
-        public override void Produce()
+        public void Produce()
         {
-            mIPlatformActions[1].Execute();
+            for (var i = 0; i < mAssignedUnits.Count; i++)
+            {
+                mIPlatformActions[1].Execute();
+            }
         }
     }
 }

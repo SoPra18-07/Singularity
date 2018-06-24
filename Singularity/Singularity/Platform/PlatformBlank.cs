@@ -217,12 +217,6 @@ namespace Singularity.Platform
             mRequested.Add(resource, number);
         }
 
-        public virtual void Produce()
-        {
-            throw new NotImplementedException();
-        }
-
-
         /// <inheritdoc cref="Singularity.Property.IDraw"/>
         public void Draw(SpriteBatch spritebatch)
         {
