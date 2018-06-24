@@ -38,10 +38,8 @@ namespace Singularity.Resources
         public EResourceType Type { get; internal set; }
 
         public void Draw(SpriteBatch spriteBatch)
-
-            spriteBatch.DrawCircle(AbsolutePosition, 10, 20, Color.Black, 10, LayerConstants.GeneralUnitLayer);
-        {
-            throw new NotImplementedException();
+		{
+			spriteBatch.DrawCircle(AbsolutePosition, 10, 20, ResourceHelper.GetColor(mType), 10, LayerConstants.GeneralUnitLayer);
         }
 
         public void Update(GameTime gametime)

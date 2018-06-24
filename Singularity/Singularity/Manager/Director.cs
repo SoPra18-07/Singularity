@@ -39,7 +39,9 @@ namespace Singularity.Manager
 
         public void Update(GameTime gametime)
         {
-            GetInputManager.Update(gametime);
+            if (IsActive) {
+                GetInputManager.Update (gametime);
+            }
             GetStoryManager.Update(gametime);
         }
     }
