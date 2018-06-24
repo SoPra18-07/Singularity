@@ -14,7 +14,7 @@ namespace Singularity.Map
     /// <remarks>
     /// The camera object is used to move and zoom the map and all its components.
     /// </remarks>
-    internal sealed class Camera : IUpdate, IKeyListener, IMouseWheelListener
+    internal sealed class Camera : IUpdate, IKeyListener, IMouseWheelListener, IMousePositionListener
     {
 
         /// <summary>
@@ -36,6 +36,10 @@ namespace Singularity.Map
         /// The y location of the camera unzoomed. Could also be called the "true" or "absolute" y location.
         /// </summary>
         private float mY;
+
+        private float mMouseX;
+
+        private float mMouseY;
 
         /// <summary>
         /// The current zoom value of the camera.
@@ -80,6 +84,7 @@ namespace Singularity.Map
 
             inputManager.AddKeyListener(this);
             inputManager.AddMouseWheelListener(this);
+            inputManager.AddMousePositionListener(this);
 
             mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
 
@@ -148,6 +153,25 @@ namespace Singularity.Map
             mY = (int) (MathHelper.Clamp(cameraWorldMin.Y, limitWorldMin.Y, limitWorldMax.Y - cameraSize.Y) +
                         positionOffsetY);
 
+        }
+
+        /// <summary>
+        /// Zooms to the given zoomTarget by the amount specified
+        /// </summary>
+        /// <param name="zoomTarget">The target to zoom to</param>
+        /// <param name="amount">The amount to zoom</param>
+        private void ZoomToTarget(Vector2 zoomTarget, float amount)
+        {
+            // the mouse position in world space with the old zoom
+            var abs = Vector2.Transform(zoomTarget, Matrix.Invert(mTransform));
+
+            mZoom += amount;
+
+            // set the cameras x, y coordinates such that the zoomTarget stays in the same spot. (screen space)
+            mX = abs.X * mZoom - zoomTarget.X;
+            mY = abs.Y * mZoom - zoomTarget.Y;
+
+            ValidatePosition();
         }
 
         ///<summary>
@@ -248,7 +272,7 @@ namespace Singularity.Map
             if (!((mZoom + scrollChange) * MapConstants.MapWidth < mViewport.Width ||
                   (mZoom + scrollChange) * MapConstants.MapHeight < mViewport.Height))
             {
-                mZoom += scrollChange;
+                ZoomToTarget(new Vector2(mMouseX, mMouseY), scrollChange);
             }
         }
 
@@ -263,6 +287,12 @@ namespace Singularity.Map
                 cameraWorldMin.Y,
                 0,
                 1);
+        }
+
+        public void MousePositionChanged(float newX, float newY)
+        {
+            mMouseX = newX;
+            mMouseY = newY;
         }
     }
 }
