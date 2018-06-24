@@ -48,8 +48,8 @@ namespace Singularity.Libraries
         #region private fields
 
         //resolution
-        private int mMWidth;
-        private int mMHeight;
+        private int mWidth;
+        private int mHeight;
 
         //RenderTargets
         private RenderTarget2D mBloomRenderTarget2DMip0;
@@ -397,7 +397,7 @@ namespace Singularity.Libraries
             }
 
             //Change renderTarget resolution if different from what we expected. If lower than the inputTexture we gain performance.
-            if (width != mMWidth || height != mMHeight)
+            if (width != mWidth || height != mHeight)
             {
                 UpdateResolution(width, height);
 
@@ -416,7 +416,7 @@ namespace Singularity.Libraries
             mGraphicsDevice.SetRenderTarget(mBloomRenderTarget2DMip0);
 
             BloomScreenTexture = inputTexture;
-            BloomInverseResolution = new Vector2(1.0f / mMWidth, 1.0f / mMHeight);
+            BloomInverseResolution = new Vector2(1.0f / mWidth, 1.0f / mHeight);
 
             if (mBloomUseLuminance)
             {
@@ -618,8 +618,8 @@ namespace Singularity.Libraries
         /// <param name="height">height of the image</param>
         public void UpdateResolution(int width, int height)
         {
-            mMWidth = width;
-            mMHeight = height;
+            mWidth = width;
+            mHeight = height;
 
             if (mBloomRenderTarget2DMip0 != null)
             {
