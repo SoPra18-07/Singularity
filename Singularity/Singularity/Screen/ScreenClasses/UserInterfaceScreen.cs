@@ -70,7 +70,7 @@ namespace Singularity.Screen.ScreenClasses
         #endregion
 
         /// <summary>
-        /// Creates a UserInterface with the UI-Windows
+        /// Creates a UserInterface with it's windows
         /// </summary>
         /// <param name="director"></param>
         /// <param name="mgraphics"></param>
