@@ -19,28 +19,18 @@ namespace Singularity.Resources
 
         public Vector2 AbsoluteSize { get; set; }
 
-
-        private EResourceType mType;
-        private Vector2 mAbsolutePosition;
-        private int mV; // velocity
-
-        public Resource()
-        {
-        }
+        public EResourceType Type { get; internal set; }
 
         public Resource(EResourceType type, Vector2 position, int width)
         {
-
             Type = type;
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(width, width * 0.6f);
         }
 
-        public EResourceType Type { get; internal set; }
-
         public void Draw(SpriteBatch spriteBatch)
 		{
-			spriteBatch.DrawCircle(AbsolutePosition, 10, 20, ResourceHelper.GetColor(mType), 10, LayerConstants.GeneralUnitLayer);
+			spriteBatch.DrawCircle(AbsolutePosition, 10, 20, ResourceHelper.GetColor(Type), 10, LayerConstants.GeneralUnitLayer);
         }
 
         public void Update(GameTime gametime)

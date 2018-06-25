@@ -25,9 +25,9 @@ namespace Singularity.Platform
         protected EPlatformType mType = EPlatformType.Blank;
 
         [DataMember]
-        private const int mPlatformWidth = 148;
+        private const int PlatformWidth = 148;
         [DataMember]
-        private const int mPlatformHeight = 172;
+        private const int PlatformHeight = 172;
         [DataMember]
         private int mHealth;
         [DataMember]
@@ -130,8 +130,7 @@ namespace Singularity.Platform
             // doBlueprintBuild
             // return true;
             // }
-
-            //return false;
+            
             return true;
         }
 
@@ -260,7 +259,7 @@ namespace Singularity.Platform
                     // then draw what's on top of that
                     spritebatch.Draw(mPlatformBaseTexture,
                         AbsolutePosition,
-                        new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 148),
+                        new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 148),
                         Color.White,
                         0f,
                         Vector2.Zero,
@@ -283,7 +282,7 @@ namespace Singularity.Platform
                     // then draw what's on top of that
                     spritebatch.Draw(mPlatformBaseTexture,
                         AbsolutePosition,
-                        new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 153),
+                        new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 153),
                         Color.White,
                         0f,
                         Vector2.Zero,
@@ -418,8 +417,8 @@ namespace Singularity.Platform
         {
             return mInwardsEdges;
         }
-
-        public override bool Equals(Object other)
+        
+        public override bool Equals(object other)
         {
             var b = other as PlatformBlank;
 

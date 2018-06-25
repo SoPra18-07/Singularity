@@ -1,20 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using Singularity.Manager;
-using Singularity.Screen;
-using Singularity.Screen.ScreenClasses;
 using Singularity.Graph.Paths;
 using Singularity.Input;
 using Singularity.Property;
 using Singularity.Sound;
-using Singularity.Libraries;
-using System;
-using System.Windows;
+using Singularity;
 
 namespace Singularity.Manager
 {
-    public class Director : IUpdate
+    public class Director
     {
 
         public Director(ContentManager content)
@@ -44,10 +38,11 @@ namespace Singularity.Manager
         public DistributionManager GetDistributionManager { get; }
 
 
-        public void Update(GameTime gametime)
+        public void Update(GameTime gametime, bool isActive)
         {
-            if (IsActive) {
-                GetInputManager.Update (gametime);
+            if (isActive)
+            {
+                GetInputManager.Update(gametime);
             }
             GetStoryManager.Update(gametime);
         }

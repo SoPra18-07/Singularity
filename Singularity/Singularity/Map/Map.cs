@@ -35,18 +35,19 @@ namespace Singularity.Map
         /// <param name="director">A reference to the Director</param>
         /// <param name="debug">Whether the debug grid lines are drawn or not</param>
         /// <param name="initialResources">The initial resources of this map, if not specified there will not be any on the map</param>
-        public Map(Texture2D backgroundTexture, Viewport viewport, ref Director director, bool debug = false, IEnumerable<Resource> initialResources = null)
+        /// <param name="neo">If the WASD-moving is in NEO-Layout</param>
+        public Map(Texture2D backgroundTexture, Viewport viewport, ref Director director, bool debug = false, IEnumerable<Resource> initialResources = null, bool neo = false)
         {
 
             mBackgroundTexture = backgroundTexture;
             mDebug = debug;
 
 
-            mCamera = new Camera(viewport, ref director);
+            mCamera = new Camera(viewport, ref director, neo: neo);
 
             mCollisionMap = new CollisionMap();
-            mStructureMap = new StructureMap(ref director);
-            mResourceMap = new ResourceMap(initialResources);
+            mStructureMap = new StructureMap(director: ref director);
+            mResourceMap = new ResourceMap(initialResources: initialResources);
         }
 
         /// <see cref="CollisionMap.UpdateCollider(ICollider)"/>

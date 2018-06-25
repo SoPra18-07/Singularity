@@ -151,7 +151,7 @@ namespace Singularity.Screen.ScreenClasses
         {
 
             var mapBackground = content.Load<Texture2D>("MockUpBackground");
-            mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, ref mDirector);
+            mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, ref mDirector, neo: true); // todo: change neo to false if map is moving weird. :)
             mCamera = mMap.GetCamera();
 
             //Give the Distributionmanager the Graph he is operating on.

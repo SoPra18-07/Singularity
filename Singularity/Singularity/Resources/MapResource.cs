@@ -54,7 +54,7 @@ namespace Singularity.Resources
         public void Draw(SpriteBatch spriteBatch)
         {
             // TODO: test how this looks like.
-            spriteBatch.DrawEllipse(new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y), mColor, 30f, LayerConstants.ResourceLayer);
+            spriteBatch.DrawEllipse(new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y), mColor, 30f, LayerConstants.MapResourceLayer);
         }
 
         public void Update(GameTime gametime)

@@ -16,7 +16,7 @@ namespace Singularity
 
 
         // Screens
-        internal GameScreen mGameScreen;
+        private GameScreen mGameScreen;
         private MainMenuManagerScreen mMainMenuManager;
 
 
@@ -108,7 +108,7 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            mDirector.Update(gameTime);
+            mDirector.Update(gameTime, IsActive);
             mScreenManager.Update(gameTime);
             base.Update(gameTime);
         }
@@ -120,9 +120,7 @@ namespace Singularity
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-
-            // TODO: Add your drawing code here
-
+            
             mScreenManager.Draw(mSpriteBatch);
             base.Draw(gameTime);
         }
