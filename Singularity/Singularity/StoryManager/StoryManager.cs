@@ -23,19 +23,20 @@ namespace Singularity.StoryManager
         [DataMember()]
         private TimeSpan mTime;
 
+
+        //The statistics
         [DataMember()]
         private Dictionary<string, int> mUnits;
-
         [DataMember()]
         private Dictionary<EResourceType, int> mResources;
-
         [DataMember()]
         private Dictionary<string, int> mPlatforms;
+        //Do not serialize this, BUT also do not forget to load the achievements again after deserialization!
+        private Achievements mAchievements;
+
 
         [DataMember()]
         private LevelType mLevelType;
-
-        private Achievements mAchievements;
 
         public StoryManager()
         {
@@ -76,11 +77,17 @@ namespace Singularity.StoryManager
             };
         }
 
+        //This will determine what the storymanager will trigger etc.
         public void SetLevelType(LevelType leveltype)
         {
             mLevelType = leveltype;
         }
-        public void LoadAchievements()
+
+        /// <summary>
+        /// The Method to load the Achievements. The Achievements file has to be at %USERPROFILE%\Saved Games\Singularity. If no one like this exists
+        /// it will just create a new one.
+        /// </summary>
+        internal void LoadAchievements()
         {
             var path = @"%USERPROFILE%\Saved Games\Singularity";
             path = Environment.ExpandEnvironmentVariables(path);
@@ -99,6 +106,10 @@ namespace Singularity.StoryManager
             }
         }
 
+        /// <summary>
+        /// Called when something happens regarding units, for example a new Unit has been created. This is for tracking the statistics.
+        /// </summary>
+        /// <param name="action">The action regarding the units that has happened. Has to be created, lost or killed</param>
         public void UpdateUnits(string action)
         {
             int a;
@@ -106,10 +117,14 @@ namespace Singularity.StoryManager
             mUnits.Add(action, a + 1);
             if (mAchievements.Replicant())
             {
-                //trigger Achievement;
+                //trigger Achievement-popup;
             }
         }
 
+        /// <summary>
+        /// Called when something happens regarding platforms, for example a new platform has been created. This is for tracking the statistics.
+        /// </summary>
+        /// <param name="action">The action regarding the platforms that has happened. Has to be created, lost or destroyed</param>
         public void UpdatePlatforms(string action)
         {
             int a;
@@ -117,10 +132,14 @@ namespace Singularity.StoryManager
             mPlatforms.Add(action, a + 1);
             if (mAchievements.Skynet())
             {
-                //trigger Achievement;
+                //trigger Achievement-popup;
             }
         }
 
+        /// <summary>
+        /// This is for tracking statistics. Has to be called when new resources have been created.
+        /// </summary>
+        /// <param name="resource">The resourcetype that has been created</param>
         public void UpdateResources(EResourceType resource)
         {
             int a;
@@ -128,13 +147,21 @@ namespace Singularity.StoryManager
             mResources.Add(resource, a + 1);
         }
 
+        /// <summary>
+        /// This is for tracking statistics. Has to be called when trash is burned.
+        /// </summary>
         public void Trash()
         {
             if (mAchievements.WallE())
             {
-                //trigger Achievement;
+                //trigger Achievement-popup;
             }
         }
+
+        /// <summary>
+        /// Calls the corresponding handle method, for the levels. These will handle Events etc.
+        /// </summary>
+        /// <param name="time"></param>
         public void Update(GameTime time)
         {
             mTime = mTime.Add(time.ElapsedGameTime);
@@ -145,26 +172,45 @@ namespace Singularity.StoryManager
                 case LevelType.Tutorial:
                     HandleTutorial();
                     break;
-
+                case LevelType.Skirmish:
+                    //Not sure if theres anything to handle in Skirmish
+                    //TODO: Make clear whether we want any events or such things in Skirmish
+                    break;
             }
         }
 
+        /// <summary>
+        /// The handle method of the Tutorial. Triggers events, like for examples infoboxes.
+        /// </summary>
         public void HandleTutorial()
         {
+            //I thought about some state-system to help the handle method track at what point we are and what to trigger next.
             //Trigger Infoboxes.
             //Trigger Events for tutorial.
         }
 
+        /// <summary>
+        /// Return the Ingame time.
+        /// </summary>
+        /// <returns>The ingame time as TimeSpan</returns>
         public TimeSpan GetIngameTime()
         {
             return mTime;
         }
 
+        /// <summary>
+        /// Return the energylevel.
+        /// </summary>
+        /// <returns>An integer representing the energy level. Can be negative if more energy is consumed than created.</returns>
         public int GetEnergyLevel()
         {
             return mEnergyLevel;
         }
 
+        /// <summary>
+        /// Is called when energy is consumed / created. For the consuming part just give a negative energy argument.
+        /// </summary>
+        /// <param name="energy">The amount of energy consumed / created. To consume/create energy this has to be negative/positive.</param>
         public void AddEnergy(int energy)
         {
             mEnergyLevel += energy;

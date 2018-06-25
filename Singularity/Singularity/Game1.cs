@@ -99,7 +99,7 @@ namespace Singularity
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
             
 
-            mGameScreen = new Tutorial(mGraphics.GraphicsDevice, mInputManager, mPathManager, mStoryManager, mDistributionManager, Content).GetGameScreen();
+            //mGameScreen = new Tutorial(mGraphics.GraphicsDevice, mInputManager, mPathManager, mStoryManager, mDistributionManager, Content).GetGameScreen();
 
 
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);

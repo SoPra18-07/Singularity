@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 
 namespace Singularity.Levels
 {
-    internal enum LevelType
+    class Skirmish
     {
-        None,
-        Tutorial,
-        Skirmish
     }
 }

@@ -61,6 +61,7 @@
     <Compile Include="Graph\Paths\SortedPath.cs" />
     <Compile Include="Input\InputManager2.cs" />
     <Compile Include="Levels\LevelType.cs" />
+    <Compile Include="Levels\Skirmish.cs" />
     <Compile Include="Levels\Tutorial.cs" />
     <Compile Include="Libraries\Animations.cs" />
     <Compile Include="Libraries\Bloom Filter.cs" />
