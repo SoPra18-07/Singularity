@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Singularity.Graph
 {
     /// <summary>
     /// Provides a basic Graph object, holding a list of nodes and edges. Self explanatory
     /// </summary>
-    public class Graph
+    public sealed class Graph
     {
         private readonly List<INode> mNodes;
 
@@ -29,7 +25,7 @@ namespace Singularity.Graph
             {
                 mEdges = edges;
             }
-            
+
         }
 
         public void AddNode(INode node)

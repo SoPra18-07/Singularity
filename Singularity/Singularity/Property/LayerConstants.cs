@@ -1,6 +1,6 @@
 ﻿namespace Singularity.Property
 {
-    
+
     /// <summary>
     /// Provides layer values for the different game objects. The smaller the value the more in the back the unit
     /// gets drawn. The idea for this class was this we can dynamically add and change values without having to

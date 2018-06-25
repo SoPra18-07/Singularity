@@ -11,7 +11,7 @@ namespace Singularity.Platform
     {
 
         // The ResourceMap is needed for actually 'producing' the resources.
-        private ResourceMap mResourceMap;
+        private readonly ResourceMap mResourceMap;
 
         public ProduceWellResource(PlatformBlank platform, ResourceMap resourceMap) : base(platform)
         {
@@ -24,6 +24,7 @@ namespace Singularity.Platform
         {
             //TODO: the resources now are a list, so adjustment is needed. I tried to get the desired effect, but probably didn't
             var resources = mResourceMap.GetResources(mPlatform.GetLocation());
+
             if (resources.Count > 0 && !mPlatform.PlatformHasSpace()) return;
             var res = new Resource(EResourceType.Oil, mPlatform.AbsolutePosition, 0);
             mPlatform.StoreResource(res);
@@ -70,10 +71,10 @@ namespace Singularity.Platform
 
     public class BuildBluePrint : APlatformAction
     {
-        private Dictionary<EResourceType, int> mRequiredResources;
+        private Dictionary<EResourceType, int> mMRequiredResources;
         public BuildBluePrint(PlatformBlank platform, PlatformBlank toBeBuilt) : base(platform)
         {
-            mRequiredResources = toBeBuilt.GetResourcesRequired();
+            mMRequiredResources = toBeBuilt.GetResourcesRequired();
         }   
 
         public override List<JobType> UnitsRequired { get; } = new List<JobType>{ JobType.Construction };
@@ -81,7 +82,7 @@ namespace Singularity.Platform
         public override void Execute()
         {
             throw new NotImplementedException();
-            // TODO: Build Blueprints!!
+            // TODO: Build Blueprints!! (fkarg)
         }
     }
 }

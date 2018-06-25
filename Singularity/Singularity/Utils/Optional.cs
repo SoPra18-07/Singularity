@@ -13,7 +13,7 @@ namespace Singularity.Utils
         private readonly T mValue;
 
         /// <summary>
-        /// Returns a new Optinal for the given value.
+        /// Returns a new Optional for the given value.
         /// </summary>
         /// <param name="value">The value this Optional is holding</param>
         /// <returns>A new Optional with the value given</returns>
@@ -52,5 +52,5 @@ namespace Singularity.Utils
             mValue = value;
 
         }
-    }
+	}
 }

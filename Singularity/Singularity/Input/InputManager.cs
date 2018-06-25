@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -81,8 +80,11 @@ namespace Singularity.Input
 
         /// <summary>
         /// Adds the given object to the objects that receive mouse click events.
+        /// EClickType is inBounds, outOfBounds or both.
         /// </summary>
         /// <param name="iMouseClickListener">The object which should receive events</param>
+        /// <param name="leftClickType">The LeftClickType</param>
+        /// <param name="rightClickType">The RightClickType</param>
         public void AddMouseClickListener(IMouseClickListener iMouseClickListener, EClickType leftClickType, EClickType rightClickType)
         {
             if (!mMouseClickListener.ContainsKey(iMouseClickListener.Screen))
