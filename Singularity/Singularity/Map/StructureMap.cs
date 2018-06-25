@@ -1,17 +1,13 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Singularity.Graph.Paths;
+using Singularity.Manager;
 using Singularity.Platform;
-using Singularity.Property;
-using Singularity.Utils;
 
 namespace Singularity.Map
 {
     /// <summary>
     /// A Structure map holds all the structures currently in the game.
     /// </summary>
-    internal sealed class StructureMap
+    public sealed class StructureMap
     {
         /// <summary>
         /// A list of all the platforms currently in the game
@@ -23,7 +19,7 @@ namespace Singularity.Map
         /// </summary>
         private readonly LinkedList<Road> mRoads;
 
-        private readonly PathManager mPathManager;
+        private readonly Director mDirector;
 
         private readonly List<Graph.Graph> mGraphs;
 
@@ -32,15 +28,24 @@ namespace Singularity.Map
         /// <summary>
         /// Creates a new structure map which holds all the structures currently in the game.
         /// </summary>
-        public StructureMap(PathManager pathManager)
+        public StructureMap(ref Director director)
         {
             mCurrentGraphIndex = 0;
 
             mGraphs = new List<Graph.Graph>();
-            mPathManager = pathManager;
+            mDirector = director;
 
             mPlatforms = new LinkedList<PlatformBlank>();
             mRoads = new LinkedList<Road>();
+        }
+
+        /// <summary>
+        /// A method existing so the DistributionManager has access to all platforms.
+        /// </summary>
+        /// <returns></returns>
+        public LinkedList<PlatformBlank> GetPlatformList()
+        {
+            return mPlatforms;
         }
 
         /// <summary>
@@ -83,7 +88,7 @@ namespace Singularity.Map
 
         }
 
-        private void CreateNewGraph() 
+        private void CreateNewGraph()
         {
 
             if (mGraphs.Count > mCurrentGraphIndex)
@@ -92,7 +97,7 @@ namespace Singularity.Map
             }
 
             mGraphs.Add(new Graph.Graph());
-            mPathManager.AddGraph(mGraphs[mGraphs.Count - 1]);
+            mDirector.GetPathManager.AddGraph(mGraphs[mGraphs.Count - 1]);
         }
 
     }

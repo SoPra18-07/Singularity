@@ -1,18 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Singularity.Input;
 using Singularity.Libraries;
-using Singularity.Property;
-
 
 namespace Singularity.Screen
 {
@@ -29,9 +19,6 @@ namespace Singularity.Screen
         private readonly float mScale;
         private readonly Texture2D mButtonTexture;
         private readonly string mButtonText;
-        private readonly Vector2 mPosition;
-        private readonly int mWidth;
-        private readonly int mHeight;
         private readonly SpriteFont mFont;
 
         // distinguish between mouse over hover or not
@@ -46,14 +33,14 @@ namespace Singularity.Screen
         /// </summary>
         public float Opacity { private get; set; }
 
-        // these events are sent out when they occur to an 
+        // these events are sent out when they occur to an
         // instance of a button
         // HOW TO USE:
         // put this in the class where an instance of a button is generated:
         // NameOfButtonInsance.Event += ClassToReceiveEvent.NameOfMethodInWhichClassReceivesEvent;
-        // the above subscribes the "ClassToReceiveEvent" to the button event (it activate the "NameOfMethodInWhichClassReceivesEvent"
+        // the above subscribes the "ClassToReceiveEvent" to the button event (it activate the "NameOfMethodInWhichClassReceivesEvent")
         // when the event occurs
-        // In the ClassToReceiveEvent create the method NameOfMethodInWhichClassReceivesEvent and write in the 
+        // In the ClassToReceiveEvent create the method NameOfMethodInWhichClassReceivesEvent and write in the
         // code you which to be executed when Event occurs
         // public static void NameOfMethodInWhichClassReceivesEvent(Object sender, EventArgs eventArg){ .....}
         public event EventHandler ButtonReleased;
@@ -64,21 +51,25 @@ namespace Singularity.Screen
         /// <summary>
         /// Creates a button using a Texture2D
         /// </summary>
+        /// todo: @N @yvan write comments ... everywhere, at least some.
         /// <param name="scale"> scale of the texture</param>
         /// <param name="buttonTexture"></param>
         /// <param name="position"></param>
+        /// <param name="withBorder"></param>
         public Button(float scale, Texture2D buttonTexture, Vector2 position, bool withBorder)
         {
             mIsText = false;
             mScale = scale;
             mButtonTexture = buttonTexture;
-            mPosition = position;
-            mWidth = mButtonTexture.Width;
-            mHeight = mButtonTexture.Height;
+            Position = position;
+            Size = new Vector2((int)(mButtonTexture.Width * scale), (int)(mButtonTexture.Height * scale));
             mColor = Color.White;
             CreateRectangularBounds();
-
+            Opacity = 1;
+            Active = true;
         }
+
+
 
         /// <summary>
         /// Creates a Button made of text
@@ -91,11 +82,11 @@ namespace Singularity.Screen
             mIsText = true;
             mButtonText = buttonText;
             mFont = font;
-            mPosition = position;
-            mWidth = (int)mFont.MeasureString(mButtonText).X;
-            mHeight = (int)mFont.MeasureString(mButtonText).Y;
+            Position = position;
+            Size = new Vector2((int)mFont.MeasureString(mButtonText).X, (int)mFont.MeasureString(mButtonText).Y);
             mColor = Color.White;
             CreateRectangularBounds();
+            Active = true;
         }
 
         public Button(string buttonText, SpriteFont font, Vector2 position, Color color)
@@ -103,11 +94,11 @@ namespace Singularity.Screen
             mIsText = true;
             mButtonText = buttonText;
             mFont = font;
-            mPosition = position;
-            mWidth = (int)mFont.MeasureString(mButtonText).X;
-            mHeight = (int)mFont.MeasureString(mButtonText).Y;
+            Position = position;
+            Size = new Vector2((int)mFont.MeasureString(mButtonText).X, (int)mFont.MeasureString(mButtonText).Y);
             mColor = color;
             CreateRectangularBounds();
+            Active = true;
         }
 
 
@@ -116,7 +107,7 @@ namespace Singularity.Screen
         /// </summary>
         private void CreateRectangularBounds()
         {
-            mBounds = new Rectangle((int)mPosition.X, (int)mPosition.Y, mWidth, mHeight);
+            mBounds = new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y);
         }
 
         /// <summary>
@@ -124,7 +115,7 @@ namespace Singularity.Screen
         /// </summary>
         protected virtual void OnButtonReleased()
         {
-            if (ButtonReleased != null)
+            if (ButtonReleased != null && Active)
             {
                 ButtonReleased(this, EventArgs.Empty);
             }
@@ -136,7 +127,7 @@ namespace Singularity.Screen
         /// </summary>
         protected virtual void OnButtonHovering()
         {
-            if (ButtonHovering != null)
+            if (ButtonHovering != null && Active)
             {
                 ButtonHovering(this, EventArgs.Empty);
             }
@@ -147,48 +138,55 @@ namespace Singularity.Screen
         /// </summary>
         protected virtual void OnButtonClicked()
         {
-            ButtonClicked?.Invoke(this, EventArgs.Empty);
+            if (Active)
+            {
+                ButtonClicked?.Invoke(this, EventArgs.Empty);
+            }
         }
 
 
         /// <summary>
         /// Draws either ther Texture2D or string representation of
-        /// the button. 
+        /// the button.
         /// </summary>
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            // draw for button that uses a Texture2D
-            if (mIsText == false)
+            if (Active)
             {
-                spriteBatch.Draw(mButtonTexture,
-                    mPosition,
-                    null,
-                    mColor * Opacity,
-                    0f,
-                    new Vector2(0, 0),
-                    mScale,
-                    SpriteEffects.None,
-                    0f);
-                if (mWithBorder)
+                // draw for button that uses a Texture2D
+                if (mIsText == false)
                 {
-                    spriteBatch.DrawRectangle(new Vector2(mPosition.X - 1, mPosition.Y - 1), new Vector2(mButtonTexture.Width + 1, mButtonTexture.Height + 1), Color.White, 1);
+                    spriteBatch.Draw(mButtonTexture,
+                        Position,
+                        null,
+                        mColor * Opacity,
+                        0f,
+                        new Vector2(0, 0),
+                        mScale,
+                        SpriteEffects.None,
+                        0f);
+                    if (mWithBorder)
+                    {
+                        // draw border around texture if feauture selected
+                        spriteBatch.DrawRectangle(Position, new Vector2(Size.X, Size.Y), Color.White, 1);
+                    }
+
                 }
 
-            }
-
-            // draw for button that uses text
-            else
-            {
-                spriteBatch.DrawString(mFont,
-                    origin: Vector2.Zero,
-                    position: mPosition,
-                    color: mColor * Opacity,
-                    text: mButtonText,
-                    rotation: 0f,
-                    scale: 1f,
-                    effects: SpriteEffects.None,
-                    layerDepth: 0.2f);
+                // draw for button that uses text
+                else
+                {
+                    spriteBatch.DrawString(mFont,
+                        origin: Vector2.Zero,
+                        position: Position,
+                        color: mColor * Opacity,
+                        text: mButtonText,
+                        rotation: 0f,
+                        scale: 1f,
+                        effects: SpriteEffects.None,
+                        layerDepth: 0.2f);
+                }
             }
         }
 
@@ -200,49 +198,61 @@ namespace Singularity.Screen
         /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
-            // if mouse is hovering over button then make draw color gray
-            if (Mouse.GetState().X >= mPosition.X &&
-                Mouse.GetState().X <= mPosition.X + mWidth &&
-                Mouse.GetState().Y > mPosition.Y &&
-                Mouse.GetState().Y <= mPosition.Y + mHeight)
+            if (Active)
             {
-                OnButtonHovering();
-                mColor = Color.Gray;
-            }
-
-            // otherwise keep draw color at white
-            else
-            {
-                mColor = Color.White;
-            }
-
-            // check if button has been left clicked
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                Mouse.GetState().X >= mPosition.X &&
-                Mouse.GetState().X <= mPosition.X + mWidth &&
-                Mouse.GetState().Y >= mPosition.Y &&
-                Mouse.GetState().Y <= mPosition.Y + mHeight)
-            {
-                OnButtonClicked();
-                mClicked = true;
-            }
-
-
-            // check if left button is also released within button bounds to send out ButtonReleased event
-
-            if (Mouse.GetState().LeftButton == ButtonState.Released && mClicked)
-            {
-                if (Mouse.GetState().X >= mPosition.X &&
-                    Mouse.GetState().X <= mPosition.X + mWidth &&
-                    Mouse.GetState().Y >= mPosition.Y &&
-                    Mouse.GetState().Y <= mPosition.Y + mHeight)
+                // if mouse is hovering over button then make draw color gray
+                if (Mouse.GetState().X >= Position.X &&
+                    Mouse.GetState().X <= Position.X + Size.X &&
+                    Mouse.GetState().Y > Position.Y &&
+                    Mouse.GetState().Y <= Position.Y + Size.Y)
                 {
-                    OnButtonReleased();
+                    OnButtonHovering();
+                    mColor = Color.Gray;
                 }
 
-                // reset to not clicked
-                mClicked = false;
+                // otherwise keep draw color at white
+                else
+                {
+                    mColor = Color.White;
+                }
+
+                // check if button has been left clicked
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
+                    Mouse.GetState().X >= Position.X &&
+                    Mouse.GetState().X <= Position.X + Size.X &&
+                    Mouse.GetState().Y >= Position.Y &&
+                    Mouse.GetState().Y <= Position.Y + Size.Y)
+                {
+                    OnButtonClicked();
+                    mClicked = true;
+                }
+
+
+                // check if left button is also released within button bounds to send out ButtonReleased event
+
+                if (Mouse.GetState().LeftButton == ButtonState.Released && mClicked)
+                {
+                    if (Mouse.GetState().X >= Position.X &&
+                        Mouse.GetState().X <= Position.X + Size.X &&
+                        Mouse.GetState().Y >= Position.Y &&
+                        Mouse.GetState().Y <= Position.Y + Size.Y)
+                    {
+                        OnButtonReleased();
+                    }
+
+                    // reset to not clicked
+                    mClicked = false;
+                }
             }
         }
+
+        // position of the button
+        public Vector2 Position { get; set; }
+
+        // Size of the button
+        public Vector2 Size { get; }
+
+        // active button <-> inactive button
+        public bool Active { get; set; }
     }
 }

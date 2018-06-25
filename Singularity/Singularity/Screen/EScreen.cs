@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Singularity.Screen
+﻿namespace Singularity.Screen
 {
-    enum EScreen
+    public enum EScreen
     {
         AchievementsScreen,
         GameModeSelectScreen,
@@ -19,6 +13,8 @@ namespace Singularity.Screen
         OptionsScreen,
         SaveGameScreen,
         SplashScreen,
-        StatisticsScreen
+        StatisticsScreen,
+        MainMenuManagerScreen,
+        UserInterfaceScreen
     }
 }

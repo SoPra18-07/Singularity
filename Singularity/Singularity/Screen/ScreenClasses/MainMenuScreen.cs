@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
-using Microsoft.Xna.Framework.Content;
-
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -16,6 +15,10 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     internal sealed class MainMenuScreen : ITransitionableMenu
     {
+
+        public EScreen Screen { get; private set; } = EScreen.MainMenuScreen;
+        public bool Loaded { get; set; }
+
         // Fonts
         private SpriteFont mLibSans36;
         private SpriteFont mLibSans20;
@@ -69,10 +72,10 @@ namespace Singularity.Screen.ScreenClasses
 
             mButtonLeftPadding = mMenuBoxPosition.X + 60;
             mButtonTopPadding = mMenuBoxPosition.Y + 90;
-            
+
             mPlayString = "New Game";
             mLoadSelectString = "Load Game";
-            mAchievementsString = "Achivements";
+            mAchievementsString = "Achievements";
             mOptionsString = "Options";
             mQuitString = "Quit";
             mTitle = "Singularity";
@@ -81,7 +84,7 @@ namespace Singularity.Screen.ScreenClasses
             mMenuOpacity = 1;
         }
 
-        
+
 
         /// <summary>
         /// Loads any content specific to this screen.
@@ -189,7 +192,7 @@ namespace Singularity.Screen.ScreenClasses
             switch (mTargetScreen)
             {
                 case EScreen.AchievementsScreen:
-                    
+
                     break;
                 case EScreen.GameModeSelectScreen:
                     if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
@@ -253,9 +256,9 @@ namespace Singularity.Screen.ScreenClasses
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mTargetScreen), mTargetScreen, null);
             }
-            
 
-            
+
+
         }
         /// <summary>
         /// Draws the content of this screen.
@@ -267,31 +270,31 @@ namespace Singularity.Screen.ScreenClasses
 
             foreach (Button button in mButtonList)
             {
-                button.Draw(spriteBatch);
+                button.Draw(spriteBatch: spriteBatch);
             }
 
             // draw selector triangle
-            spriteBatch.Draw(mSelectorTriangle,
+            spriteBatch.Draw(texture: mSelectorTriangle,
                 position: mSelectorPosition,
                 sourceRectangle: null,
                 color: Color.White * mMenuOpacity,
                 rotation: 0f,
-                origin: new Vector2(0, 11),
-                scale: 1f, 
+                origin: new Vector2(x: 0, y: 11),
+                scale: 1f,
                 effects: SpriteEffects.None,
                 layerDepth: 0f);
 
             // Draw menu window
-            spriteBatch.StrokedRectangle(mMenuBoxPosition,
-                mMenuBoxSize,
-                Color.White * mWindowOpacity,
-                Color.White * mWindowOpacity,
-                .5f,
-                .20f);
-            spriteBatch.DrawString(mLibSans36,
-                mTitle,
-                new Vector2(mMenuBoxPosition.X + 20, mMenuBoxPosition.Y + 10),
-                new Color(new Vector3(.9137f, .9058f, .8314f)) * mMenuOpacity);
+            spriteBatch.StrokedRectangle(location: mMenuBoxPosition,
+                size: mMenuBoxSize,
+                colorBorder: Color.White * mWindowOpacity,
+                colorCenter: Color.White * mWindowOpacity,
+                opacityBorder: .5f,
+                opacityCenter: .20f);
+            spriteBatch.DrawString(spriteFont: mLibSans36,
+                text: mTitle,
+                position: new Vector2(x: mMenuBoxPosition.X + 20, y: mMenuBoxPosition.Y + 10),
+                color: new Color(color: new Vector3(x: .9137f, y: .9058f, z: .8314f)) * mMenuOpacity);
 
             spriteBatch.End();
         }
@@ -313,6 +316,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             return true;
         }
+
 
         #region Button Hover Handlers
 

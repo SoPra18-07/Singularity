@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,6 +13,8 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     internal sealed class LoadSelectScreen : ITransitionableMenu
     {
+        public EScreen Screen { get; private set; } = EScreen.LoadSelectScreen;
+        public bool Loaded { get; set; }
         public bool TransitionRunning { get; private set; }
         /// <summary>
         /// Updates the contents of the screen.

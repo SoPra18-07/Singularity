@@ -1,18 +1,16 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO.MemoryMappedFiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Graph.Paths;
-using Singularity.Input;
 using Singularity.Libraries;
+using Singularity.Manager;
 using Singularity.Map;
-using Singularity.Map.Properties;
 using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
+using Singularity.Sound;
 using Singularity.Units;
 
 namespace Singularity.Screen.ScreenClasses
@@ -24,6 +22,9 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     internal sealed class GameScreen : IScreen
     {
+        public EScreen Screen { get; private set; } = EScreen.GameScreen;
+        public bool Loaded { get; set; }
+
         // sprite textures
         private Texture2D mPlatformSheet;
         private Texture2D mMUnitSheet;
@@ -43,8 +44,8 @@ namespace Singularity.Screen.ScreenClasses
         private Map.Map mMap;
         private FogOfWar mFow;
 
-        // input manager and viewport
-        private readonly InputManager mInputManager;
+        // director for Managing all the Managers
+        private Director mDirector;
         private readonly GraphicsDevice mGraphicsDevice;
 
         // roads
@@ -66,13 +67,15 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         private readonly LinkedList<ISpatial> mSpatialObjects;
 
+        private Matrix mTransformMatrix;
+
         /// <summary>
         /// The camera object which holds transformation values.
         /// </summary>
         private Camera mCamera;
 
 
-        public GameScreen(GraphicsDevice graphicsDevice, InputManager inputManager)
+        public GameScreen(GraphicsDevice graphicsDevice, ref Director director)
         {
             mGraphicsDevice = graphicsDevice;
 
@@ -80,15 +83,15 @@ namespace Singularity.Screen.ScreenClasses
             mUpdateables = new LinkedList<IUpdate>();
             mSpatialObjects = new LinkedList<ISpatial>();
 
-            mInputManager = inputManager;
+            mDirector = director;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
 
-            // if you're interested in whats going on here, refer to the documentation of the FogOfWar class. 
+            // if you're interested in whats going on here, refer to the documentation of the FogOfWar class.
 
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mCamera.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mTransformMatrix);
 
             foreach (var drawable in mDrawables)
             {
@@ -99,7 +102,7 @@ namespace Singularity.Screen.ScreenClasses
 
             mFow.DrawMasks(spriteBatch);
 
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, mFow.GetApplyMaskStencilState(), null, null, mCamera.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, mFow.GetApplyMaskStencilState(), null, null, mTransformMatrix);
 
             foreach (var spatial in mSpatialObjects)
             {
@@ -113,7 +116,7 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool DrawLower()
         {
-            return false;
+            return true;
         }
 
         public void Update(GameTime gametime)
@@ -140,6 +143,8 @@ namespace Singularity.Screen.ScreenClasses
             }
             mFow.Update(gametime);
 
+            mTransformMatrix = mCamera.GetTransform();
+
 
         }
 
@@ -151,42 +156,31 @@ namespace Singularity.Screen.ScreenClasses
             mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
 
             mPlatformSheet = content.Load<Texture2D>("PlatformSpriteSheet");
-            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformSheet);
-            mPlatform2 = new PlatformBlank(new Vector2(800, 600), mPlatformSheet);
             // TODO: use this.Content to load your game content here
             mPlatformBlankTexture = content.Load<Texture2D>("PlatformBasic");
             mPlatformDomeTexture = content.Load<Texture2D>("Dome");
-            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformBlankTexture);
-            mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture);
-            mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
-            mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture);
-            var genUnit2 = new GeneralUnit(mPlatform2, pathManager);
-            var genUnit3 = new GeneralUnit(mPlatform3, pathManager);
+            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformBlankTexture, mPlatformBlankTexture);
+            mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture, mPlatformBlankTexture);
+            mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture, mPlatformBlankTexture);
+            mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture, mPlatformBlankTexture);
 
             var libSans12 = content.Load<SpriteFont>("LibSans12");
 
 
-            mMap = new Map.Map(mapBackground,
-                20, // changing map size requires changing constants in MapConstants.cs
-                20,
-                mGraphicsDevice.Viewport,
-                mInputManager,
-                pathManager,
-                libSans12,
-                true);
+            mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, ref mDirector);
             mCamera = mMap.GetCamera();
 
             var platform4 = new Well(new Vector2(1000, 200), mPlatformDomeTexture, mMap.GetResourceMap());
             var platform5 = new Quarry(new Vector2(1300, 400), mPlatformDomeTexture, mMap.GetResourceMap());
 
-            var genUnit = new GeneralUnit(mPlatform, pathManager);
-            var genUnit4 = new GeneralUnit(platform4, pathManager);
-            var genUnit5 = new GeneralUnit(platform5, pathManager);
+            var genUnit = new GeneralUnit(mPlatform, ref mDirector);
+            var genUnit2 = new GeneralUnit(mPlatform2, ref mDirector);
+            var genUnit3 = new GeneralUnit(mPlatform3, ref mDirector);
 
             mFow = new FogOfWar(mCamera, mGraphicsDevice);
 
-            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera(), mInputManager, mMap);
-            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), mInputManager, mMap);
+            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector);
+            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector);
 
             // load roads
             mRoad1 = new Road(mPlatform, mPlatform2, false);
@@ -197,26 +191,6 @@ namespace Singularity.Screen.ScreenClasses
             var road6 = new Road(mPlatform, platform4, false);
 
             AddObject(mMap);
-
-            mFow.AddRevealingObject(mMUnit1);
-            mFow.AddRevealingObject(mMUnit2);
-            mFow.AddRevealingObject(mPlatform);
-            mFow.AddRevealingObject(mPlatform2);
-            mFow.AddRevealingObject(mPlatform3);
-            mFow.AddRevealingObject(platform4);
-            mFow.AddRevealingObject(platform5);
-
-            mMap.AddPlatform(mPlatform);
-            mMap.AddPlatform(mPlatform2);
-            mMap.AddPlatform(mPlatform3);
-            mMap.AddPlatform(platform4);
-            mMap.AddPlatform(platform5);
-            mMap.AddRoad(mRoad1);
-            mMap.AddRoad(road2);
-            mMap.AddRoad(road3);
-            mMap.AddRoad(road4);
-            mMap.AddRoad(road5);
-            mMap.AddRoad(road6);
 
             AddObject(mMUnit1);
             AddObject(mMUnit2);
@@ -235,18 +209,16 @@ namespace Singularity.Screen.ScreenClasses
             AddObject(genUnit);
             AddObject(genUnit2);
             AddObject(genUnit3);
-            AddObject(genUnit4);
-            AddObject(genUnit5);
-  
+
             AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
 
-            // artificially adding wait to test loading screen
-            System.Threading.Thread.Sleep(500);
+            mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
+            mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
         }
 
         public bool UpdateLower()
         {
-            return false;
+            return true;
         }
 
         /// <summary>
@@ -258,9 +230,27 @@ namespace Singularity.Screen.ScreenClasses
         public bool AddObject<T>(T toAdd)
         {
 
-            if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)))
+            var road = toAdd as Road;
+            var platform = toAdd as PlatformBlank;
+
+            if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
                 return false;
+            }
+
+            if (road != null)
+            {
+                mMap.AddRoad(road);
+            }
+
+            if (platform != null)
+            {
+                mMap.AddPlatform(platform);
+            }
+
+            if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
+            {
+                mFow.AddRevealingObject((IRevealing)toAdd);
             }
 
             if (typeof(ISpatial).IsAssignableFrom(typeof(T)))
@@ -289,15 +279,15 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>True if all given objects could be added to the screen, false otherwise</returns>
         public bool AddObjects<T>(IEnumerable<T> toAdd)
         {
-            var isSuccessful = true;
-   
+            bool isSuccessful = true;
+
             foreach (var t in toAdd)
             {
-                isSuccessful = isSuccessful && AddObject<T>(t);
+                isSuccessful = isSuccessful && AddObject(t);
             }
-   
+
             return isSuccessful;
-   
+
         }
 
         /// <summary>
@@ -308,9 +298,33 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>True if the given object could be removed, false otherwise</returns>
         public bool RemoveObject<T>(T toRemove)
         {
-            if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)))
+            var road = toRemove as Road;
+            var platform = toRemove as PlatformBlank;
+
+            if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
                 return false;
+            }
+
+            if (road != null)
+            {
+                mMap.RemoveRoad(road);
+            }
+
+            if (platform != null)
+            {
+                mMap.RemovePlatform(platform);
+            }
+
+            if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
+            {
+                mFow.RemoveRevealingObject((IRevealing)toRemove);
+            }
+
+            if (typeof(ISpatial).IsAssignableFrom(typeof(T)))
+            {
+                mSpatialObjects.Remove((ISpatial)toRemove);
+                return true;
             }
 
             if (typeof(IDraw).IsAssignableFrom(typeof(T)))

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Utils;
 
 namespace Singularity.Libraries
 {
@@ -11,7 +10,7 @@ namespace Singularity.Libraries
     /// Website: http://jcpmcdonald.com/2d-xna-primitives
     /// Copyright (c) 2012 John McDonald and Gary Texmo
     ///
-    /// This library enables the drawing of 2D primitives in XNA using a fast 
+    /// This library enables the drawing of 2D primitives in XNA using a fast
     /// </summary>
     public static class Primitives2D
     {
@@ -44,6 +43,7 @@ namespace Singularity.Libraries
         /// <param name="points">The points to connect with lines</param>
         /// <param name="color">The color to use</param>
         /// <param name="thickness">The thickness of the lines</param>
+        /// <param name="layer">The layer the ponits should be drawn at</param>
         private static void DrawPoints(SpriteBatch spriteBatch, Vector2 position, List<Vector2> points, Color color, float thickness, float layer = 0f)
         {
             if (points.Count < 2)
@@ -109,7 +109,7 @@ namespace Singularity.Libraries
             const double precision = 0.001;
 
             // The reason for the double the two different for loops is so the points are "sorted" correctly. We want to draw lines
-            // between all of the vectors we add, so we need to make sure that "neighbours" are added next to each other. 
+            // between all of the vectors we add, so we need to make sure that "neighbours" are added next to each other.
 
             // this is EXTREMELY inefficient. This is the most naive way to calculate and has the highest resolution (according to precision) that can
             // be shown on screen. This will definitely need some kind of rework.
@@ -366,16 +366,16 @@ namespace Singularity.Libraries
         /// <param name="rect">The rectangle to draw</param>
         /// <param name="color">The color to draw the rectangle in</param>
         /// <param name="thickness">The thickness of the lines</param>
-        public static void DrawRectangle(this SpriteBatch spriteBatch, Rectangle rect, Color color, float thickness)
+        public static void DrawRectangle(this SpriteBatch spriteBatch, Rectangle rect, Color color, float thickness, float layerDepth = 0)
         {
 
             // TODO: Handle rotations
             // TODO: Figure out the pattern for the offsets required and then handle it in the line instead of here
 
-            DrawLine(spriteBatch, new Vector2(rect.X, rect.Y), new Vector2(rect.Right, rect.Y), color, thickness); // top
-            DrawLine(spriteBatch, new Vector2(rect.X + 1f, rect.Y), new Vector2(rect.X + 1f, rect.Bottom + thickness), color, thickness); // left
-            DrawLine(spriteBatch, new Vector2(rect.X, rect.Bottom), new Vector2(rect.Right, rect.Bottom), color, thickness); // bottom
-            DrawLine(spriteBatch, new Vector2(rect.Right + 1f, rect.Y), new Vector2(rect.Right + 1f, rect.Bottom + thickness), color, thickness); // right
+            DrawLine(spriteBatch, new Vector2(rect.X, rect.Y), new Vector2(rect.Right, rect.Y), color, thickness, layerDepth); // top
+            DrawLine(spriteBatch, new Vector2(rect.X + 1f, rect.Y), new Vector2(rect.X + 1f, rect.Bottom + thickness), color, thickness, layerDepth); // left
+            DrawLine(spriteBatch, new Vector2(rect.X, rect.Bottom), new Vector2(rect.Right, rect.Bottom), color, thickness, layerDepth); // bottom
+            DrawLine(spriteBatch, new Vector2(rect.Right + 1f, rect.Y), new Vector2(rect.Right + 1f, rect.Bottom + thickness), color, thickness, layerDepth); // right
         }
 
 
@@ -564,6 +564,7 @@ namespace Singularity.Libraries
         /// <param name="spriteBatch">The destination drawing surface</param>
         /// <param name="rect">The rectangle which desribes the ellipse</param>
         /// <param name="color">The color of the ellipse</param>
+        /// <param name="layer">The layer to draw the ellipse on</param>
         public static void DrawEllipse(this SpriteBatch spriteBatch, Rectangle rect, Color color, float layer)
         {
             DrawPoints(spriteBatch, Vector2.Zero, CreateEllipse(rect), color, 1.0f, layer);
@@ -577,6 +578,7 @@ namespace Singularity.Libraries
         /// <param name="rect">The rectangle which desribes the ellipse</param>
         /// <param name="color">The color of the ellipse</param>
         /// <param name="thickness">The thickness of the lines used</param>
+        /// <param name="layer">todo: @Ativolex </param>
         public static void DrawEllipse(this SpriteBatch spriteBatch, Rectangle rect, Color color, float thickness, float layer)
         {
             DrawPoints(spriteBatch, Vector2.Zero, CreateEllipse(rect), color, thickness, layer);
@@ -610,6 +612,7 @@ namespace Singularity.Libraries
         /// <param name="sides">The number of sides to generate</param>
         /// <param name="color">The color of the circle</param>
         /// <param name="thickness">The thickness of the lines used</param>
+        /// <param name="layerDepth">todo: @Ativolex</param>
         public static void DrawCircle(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, Color color, float thickness, float layerDepth = 0)
         {
             DrawPoints(spriteBatch, center, CreateCircle(radius, sides), color, thickness, layerDepth);
@@ -697,9 +700,9 @@ namespace Singularity.Libraries
         /// <param name="radius"> radius of the circle</param>
         /// <param name="sides"> how many sides the circle is composed of</param>
         /// <param name="color"> color of the cirlce </param>
-        public static void FillCircle(this SpriteBatch spriteBatch, Vector2 center, float radius,int sides, Color color)
+        public static void FillCircle(this SpriteBatch spriteBatch, Vector2 center, float radius,int sides, Color color, float layerDepth = 0)
         {
-            spriteBatch.DrawCircle(center, radius, sides, color, radius);
+            spriteBatch.DrawCircle(center, radius, sides, color, radius, layerDepth);
         }
 
         #endregion
@@ -737,7 +740,7 @@ namespace Singularity.Libraries
         /// <param name="opacityCenter">opacity of the circle center</param>
 	    public static void StrokedCircle(this SpriteBatch spriteBatch, Vector2 center, int radius, Color colorBorder, Color colorCenter, float opacityBorder, float opacityCenter)
         {
-            // 3 pixel wide border of the circle 
+            // 3 pixel wide border of the circle
             DrawCircle(spriteBatch, center, radius, 100, colorBorder * opacityBorder, 1);
             // fills the circle
             DrawCircle(spriteBatch, center, radius - 1, 100, colorCenter * opacityCenter, radius - 1);
@@ -753,7 +756,7 @@ namespace Singularity.Libraries
         /// <param name="colorCenter"> color of the center of circle</param>
         public static void StrokedCircle(this SpriteBatch spriteBatch, Vector2 center, int radius, Color colorBorder, Color colorCenter)
         {
-            // 3 pixel wide border of the circle 
+            // 3 pixel wide border of the circle
             DrawCircle(spriteBatch, center, radius, 100, colorBorder, 1);
             // fills the circle
             DrawCircle(spriteBatch, center, radius - 1, 100, colorCenter, radius - 1);

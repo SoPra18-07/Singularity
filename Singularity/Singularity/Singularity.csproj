@@ -8,7 +8,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{34A890E2-4E4D-4B3C-914F-1316E6461513}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Singularity</RootNamespace>
     <AssemblyName>Singularity</AssemblyName>
@@ -56,7 +56,13 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Manager\DistributionManager.cs" />
+    <Compile Include="Manager\MilitaryManager.cs" />
+    <Compile Include="Units\Task.cs" />
     <Compile Include="Exceptions\InvalidGenericArgumentException.cs" />
     <Compile Include="Exceptions\NoSuchElementException.cs" />
     <Compile Include="Exceptions\UnsupportedTextureSizeException.cs" />
@@ -72,7 +78,6 @@
     <Compile Include="Graph\Paths\PathfindingFactory.cs" />
     <Compile Include="Graph\Paths\PathManager.cs" />
     <Compile Include="Graph\Paths\SortedPath.cs" />
-    <Compile Include="Input\InputManager2.cs" />
     <Compile Include="Libraries\Animations.cs" />
     <Compile Include="Libraries\Bloom Filter.cs" />
     <Compile Include="Input\EClickType.cs" />
@@ -81,6 +86,7 @@
     <Compile Include="Input\IMouseWheelListener.cs" />
     <Compile Include="Libraries\Primitives2D.cs" />
     <Compile Include="Libraries\QuadRenderer.cs" />
+    <Compile Include="Manager\Director.cs" />
     <Compile Include="Map\Camera.cs" />
     <Compile Include="Map\CollisionMap.cs" />
     <Compile Include="Map\CollisionNode.cs" />
@@ -110,13 +116,15 @@
     <Compile Include="Screen\ITransitionableMenu.cs" />
     <Compile Include="Screen\IWindowItem.cs" />
     <Compile Include="Screen\ScreenClasses\GameScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\PopupWindow.cs" />
     <Compile Include="Screen\Slider.cs" />
+    <Compile Include="Screen\ScreenClasses\UserInterfaceScreen.cs" />
     <Compile Include="Screen\Button.cs" />
     <Compile Include="Serialization\CyclicDummy.cs" />
     <Compile Include="Serialization\XSerializer.cs" />
     <Compile Include="Serialization\SerializationDummy.cs" />
     <Compile Include="Property\ISpatial.cs" />
-    <Compile Include="Resources\Resource.cs" />
+    <Compile Include="Resources\MapResource.cs" />
     <Compile Include="Resources\ResourceHelper.cs" />
     <Compile Include="Property\LayerConstants.cs" />
     <Compile Include="Screen\EScreen.cs" />
@@ -135,9 +143,9 @@
     <Compile Include="Sound\SoundClass.cs" />
     <Compile Include="Sound\SoundManager.cs" />
     <Compile Include="Sound\SoundPhase.cs" />
-    <Compile Include="StoryManager\StoryManager.cs" />
+    <Compile Include="Manager\StoryManager.cs" />
+    <Compile Include="Screen\TextField.cs" />
     <Compile Include="Units\GeneralUnit.cs" />
-    <Compile Include="Units\IUnit.cs" />
     <Compile Include="Units\JobType.cs" />
     <Compile Include="Units\MilitaryPathfinder.cs" />
     <Compile Include="Units\MilitaryUnit.cs" />
@@ -148,16 +156,15 @@
     <Compile Include="Utils\Geometry.cs" />
     <Compile Include="Screen\IScreen.cs" />
     <Compile Include="Screen\IScreenManager.cs" />
-    <Compile Include="Screen\RenderLowerScreen.cs" />
     <Compile Include="Screen\StackScreenManager.cs" />
-    <Compile Include="Screen\UpdateLowerScreen.cs" />
-    <Compile Include="Units\Task.cs" />
     <Compile Include="Utils\IdGenerator.cs" />
     <Compile Include="Utils\Optional.cs" />
     <Compile Include="Utils\Pair.cs" />
     <Compile Include="Utils\Triple.cs" />
     <Compile Include="Platform\PlatformActionState.cs" />
     <Compile Include="Platform\ProduceResource.cs" />
+    <Compile Include="Resources\Resource.cs" />
+    <Compile Include="Screen\WindowObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="C5, Version=2.4.5947.17248, Culture=neutral, PublicKeyToken=282361b99ded7e8e, processorArchitecture=MSIL">
@@ -182,7 +189,6 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
     <None Include="Content\Shaders\Bloom.fx" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Libraries\JumpPoint\" />

@@ -1,27 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Property;
+using Singularity.Manager;
 using Singularity.Resources;
 
 namespace Singularity.Platform
 {
-    [DataContract()]
-    class EnergyFacility : PlatformBlank, IRevealing
+    [DataContract]
+    internal sealed class EnergyFacility : PlatformBlank
     {
-        [DataMember()]
+        [DataMember]
         private const int PlatformWidth = 144;
-        [DataMember()]
+        [DataMember]
         private const int PlatformHeight = 127;
 
-        public new Vector2 Center => new Vector2(AbsolutePosition.X + PlatformWidth / 2, AbsolutePosition.Y + PlatformHeight - 36);
-
-        public EnergyFacility(Vector2 position, Texture2D spritesheet): base(position, spritesheet)
+        public EnergyFacility(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite) : base(position, platformSpriteSheet, baseSprite , new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
         {
             mIPlatformActions = new IPlatformAction[2];
             //mActions[0] = BuildPlatformBlueprint(this);
@@ -32,15 +26,15 @@ namespace Singularity.Platform
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Energy;
             mSpritename = "Dome";
-            AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
+            AbsoluteSize = SetPlatfromDrawParameters();
         }
 
-        public void TurnOn(StoryManager.StoryManager story)
+        public void TurnOn(Manager.StoryManager story)
         {
             story.AddEnergy(20);
         }
 
-        public void TurnOff(StoryManager.StoryManager story)
+        public void TurnOff(Manager.StoryManager story)
         {
             story.AddEnergy(-20);
         }

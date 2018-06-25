@@ -5,14 +5,18 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
+using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
+using Singularity.Screen;
 using Singularity.Utils;
 
 namespace Singularity.Units
 {
-    internal sealed class MilitaryUnit : ICollider, IUnit, IDraw, IUpdate, IRevealing, IMouseClickListener, IMousePositionListener
+    internal sealed class MilitaryUnit : ICollider, IRevealing, IMouseClickListener, IMousePositionListener
     {
+        public EScreen Screen { get; private set; } = EScreen.GameScreen;
+
         private const int DefaultWidth = 150;
         private const int DefaultHeight = 75;
 
@@ -67,11 +71,9 @@ namespace Singularity.Units
 
         public Rectangle AbsBounds { get; private set; }
 
-        private Stack<Vector2> mPath;
-
-        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, InputManager manager, Map.Map map)
+        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director)
         {
-            Id = IdGenerator.NextID(); // TODO this will later use a random number generator to create a unique
+            Id = IdGenerator.NextiD(); // TODO this will later use a random number generator to create a unique
                     // id for the specific unit.
             Health = 10;
 
@@ -87,8 +89,10 @@ namespace Singularity.Units
             mIsMoving = false;
             mCamera = camera;
 
-            manager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
-            manager.AddMousePositionListener(this);
+            mDirector = director;
+
+            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            mDirector.GetInputManager.AddMousePositionListener(this);
 
             mMilSheet = spriteSheet;
 
@@ -166,16 +170,16 @@ namespace Singularity.Units
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            
+
             spriteBatch.Draw(
-                mMilSheet, 
-                AbsolutePosition, 
-                new Rectangle((150 * mColumn), (75 * mRow), (int) (AbsoluteSize.X / mScale), (int) (AbsoluteSize.Y / mScale)), 
-                mColor, 
-                0f, 
-                Vector2.Zero, 
-                new Vector2(mScale), 
-                SpriteEffects.None, 
+                mMilSheet,
+                AbsolutePosition,
+                new Rectangle((150 * mColumn), (75 * mRow), (int) (AbsoluteSize.X / mScale), (int) (AbsoluteSize.Y / mScale)),
+                mColor,
+                0f,
+                Vector2.Zero,
+                new Vector2(mScale),
+                SpriteEffects.None,
                 LayerConstants.MilitaryUnitLayer
                 );
 
@@ -229,7 +233,7 @@ namespace Singularity.Units
         }
 
         /// <summary>
-        /// Calculates the direction the unit should be moving and moves it into that direction. 
+        /// Calculates the direction the unit should be moving and moves it into that direction.
         /// </summary>
         /// <param name="target">The target to which to move</param>
         private void MoveToTarget(Vector2 target)
@@ -268,8 +272,10 @@ namespace Singularity.Units
                             mPath.Peek().Y) < 8;
         }
 
-        public void MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
+        public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
+            var giveThrough = true;
+
             switch (mouseAction)
             {
                 case EMouseAction.LeftClick:
@@ -286,27 +292,33 @@ namespace Singularity.Units
 
                         mBoundsSnapshot = Bounds;
                         mZoomSnapshot = mCamera.GetZoom();
+                        giveThrough = true;
                     }
 
-                    if (withinBounds) { 
+                    if (withinBounds) {
                         mSelected = true;
+                        giveThrough = false;
                     }
-                    return;
+
+                    break;
 
                 case EMouseAction.RightClick:
                     mSelected = false;
-                    return;
+                    giveThrough = true;
+                    break;
             }
+
+            return giveThrough;
         }
 
-        public void MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
+        public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {
-            
+            return true;
         }
 
-        public void MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
+        public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
-           
+            return true;
         }
 
         public void MousePositionChanged(float newX, float newY)

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,13 +15,16 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     class MenuBackgroundScreen : ITransitionableMenu
     {
+
+        public EScreen Screen { get; private set; } = EScreen.MenuBackgroundScreen;
+        public bool Loaded { get; set; }
+
         private Texture2D mGlowTexture2D;
         private Texture2D mHoloProjectionTexture2D;
         private Vector2 mScreenCenter;
         private Vector2 mScreenResolutionScaling;
         private float mHoloProjectionWidthScaling;
         private float mHoloProjectionHeightScaling;
-        private Vector2 mHoloProjectionScaling;
 
         public EScreen CurrentScreen { get; private set; }
         private double mTransitionStartTime;
@@ -41,8 +43,8 @@ namespace Singularity.Screen.ScreenClasses
         private float mTargetHoloOpacity;
         private float mFlickerStep;
         private bool mFlickering;
-        
-        
+
+
         /// <summary>
         /// Creates the MenuBackgroundScreen class.
         /// </summary>
@@ -149,7 +151,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             // code for transitioning
             Transition(gameTime);
-            
+
             Flicker();
         }
 
@@ -201,7 +203,7 @@ namespace Singularity.Screen.ScreenClasses
             else
             {
                 mHoloOpacity += mFlickerStep;
-                
+
                 // "Finish flicker" state set
                 if (mFlickerStep > 0)
                 {
@@ -299,7 +301,7 @@ namespace Singularity.Screen.ScreenClasses
                 Color.White * mHoloOpacity,
                 0f,
                 new Vector2(367, 1033),
-                new Vector2(mHoloProjectionWidthScaling, mHoloProjectionHeightScaling), 
+                new Vector2(mHoloProjectionWidthScaling, mHoloProjectionHeightScaling),
                 SpriteEffects.None,
                 0f);
 
@@ -327,7 +329,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             return true;
         }
-        
+
         /// <summary>
         /// Determines whether or not the screen below this on the stack should be drawn.
         /// </summary>

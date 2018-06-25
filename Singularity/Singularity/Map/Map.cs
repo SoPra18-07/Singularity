@@ -1,24 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Exceptions;
-using Singularity.Graph.Paths;
+using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
 using Singularity.Libraries;
+using Singularity.Manager;
 using Singularity.Map.Properties;
 using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
-using Singularity.Utils;
 
 namespace Singularity.Map
-{   
-    internal sealed class Map : IDraw, IUpdate
+{
+    internal sealed class Map : IDraw, IUpdate, IKeyListener
     {
         private readonly CollisionMap mCollisionMap;
-        private readonly StructureMap mStructureMap;
+        public readonly StructureMap mStructureMap;
         private readonly ResourceMap mResourceMap;
 
         private readonly int mWidth;
@@ -29,7 +27,7 @@ namespace Singularity.Map
         private readonly Texture2D mBackgroundTexture;
         private readonly SpriteFont mLibSans12;
 
-        private readonly bool mDebug;
+        private bool mDebug;
 
 
         /// <summary>
@@ -39,19 +37,16 @@ namespace Singularity.Map
         /// </summary>
         /// <param name="backgroundTexture">The background texture of the map</param>
         /// <param name="width">The width of the map in number of tiles</param>
+        /// <param name="height">The height of the map in number of tiles</param>
         /// <param name="viewport">The viewport of the window</param>
-        /// <param name="inputManager">InputManager used by the game</param>
-        /// <param name="pathManager">PathManager used by the game</param>
+        /// <param name="director">A reference to the Director</param>
         /// <param name="debug">Whether the debug grid lines are drawn or not</param>
         /// <param name="initialResources">The initial resources of this map, if not specified there will not be any on the map</param>
-        /// <param name="height">The height of the map in number of tiles</param>
         public Map(Texture2D backgroundTexture,
-            int height,
             int width,
+            int height,
             Viewport viewport,
-            InputManager inputManager,
-            PathManager pathManager,
-            SpriteFont debugFont,
+            ref Director director,
             bool debug = false,
             IEnumerable<Resource> initialResources = null)
         {
@@ -62,10 +57,11 @@ namespace Singularity.Map
             mBackgroundTexture = backgroundTexture;
             mDebug = debug;
 
-            mCamera = new Camera(viewport, inputManager, 0, 0);
+
+            mCamera = new Camera(viewport, ref director);
 
             mCollisionMap = new CollisionMap();
-            mStructureMap = new StructureMap(pathManager);
+            mStructureMap = new StructureMap(ref director);
             mResourceMap = new ResourceMap(initialResources);
         }
 
@@ -83,7 +79,7 @@ namespace Singularity.Map
             for (int column = 0; column < mWidth; column++)
             {
                 // variables are used to choose which tile to draw
-                
+
                 if (column == 0)
                 {
                     y = 0;
@@ -160,7 +156,7 @@ namespace Singularity.Map
                         layerDepth: LayerConstants.GridDebugLayer);
                 }
             }
-            
+
             var colMap = mCollisionMap.GetCollisionMap();
             var walkabilityGrid = mCollisionMap.GetWalkabilityGrid();
 
@@ -171,12 +167,12 @@ namespace Singularity.Map
                     if (!walkabilityGrid.IsWalkableAt(i, j))
                     {
 
-                        spriteBatch.FillRectangle(rect: new Rectangle(x: i * MapConstants.GridWidth, y: j * MapConstants.GridHeight, width: MapConstants.GridWidth, height: MapConstants.GridHeight), 
+                        spriteBatch.FillRectangle(rect: new Rectangle(x: i * MapConstants.GridWidth, y: j * MapConstants.GridHeight, width: MapConstants.GridWidth, height: MapConstants.GridHeight),
                             color: new Color(color: new Vector4(x: 1, y: 0, z: 0, w: 0.2f)), angle: 0f, layer: LayerConstants.CollisionDebugLayer);
                     }
                 }
             }
-            
+
         }
 
         //TODO: remove if input manager is available since we only use this to pass an update to the camera.
@@ -211,7 +207,7 @@ namespace Singularity.Map
         {
             return mStructureMap;
         }
-        
+
         public CollisionMap GetCollisionMap()
         {
             return mCollisionMap;
@@ -290,13 +286,32 @@ namespace Singularity.Map
             // simple logic, this yields true if all of them are true and false if one is false. One can easily convince himself,
             // that if all the "edge" points of the rectangle are on the map then the rectangle is on the map.
 
-            return (IsOnTop(new Vector2(rect.X, rect.Y), camera) && 
+            return (IsOnTop(new Vector2(rect.X, rect.Y), camera) &&
                     IsOnTop(new Vector2(rect.X + rect.Width, rect.Y), camera) &&
                     IsOnTop(new Vector2(rect.X, rect.Y + rect.Height), camera) &&
                     IsOnTop(new Vector2(rect.X + rect.Width, rect.Y + rect.Height), camera));
 
         }
 
+        public void KeyTyped(KeyEvent keyEvent)
+        {
+            foreach (var key in keyEvent.CurrentKeys)
+            {
+                if (key == Keys.F4)
+                {
+                    mDebug = !mDebug;
+                }
+            }
+        }
+
+        public void KeyPressed(KeyEvent keyEvent)
+        {
+
+        }
+
+        public void KeyReleased(KeyEvent keyEvent)
+        {
+
+        }
     }
 }
-
