@@ -167,11 +167,11 @@ namespace Singularity.Screen.ScreenClasses
             var libSans12 = content.Load<SpriteFont>("LibSans12");
 
 
-            mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, ref mDirector);
+            mMap = new Map.Map(mapBackground, 20, 20, mGraphicsDevice.Viewport, ref mDirector, true);
             mCamera = mMap.GetCamera();
 
-            var platform4 = new Well(new Vector2(1000, 200), mPlatformDomeTexture, mMap.GetResourceMap());
-            var platform5 = new Quarry(new Vector2(1300, 400), mPlatformDomeTexture, mMap.GetResourceMap());
+            var platform4 = new Well(new Vector2(1000, 200), mPlatformDomeTexture, mPlatformBlankTexture, mMap.GetResourceMap());
+            var platform5 = new Quarry(new Vector2(1300, 400), mPlatformDomeTexture, mPlatformBlankTexture, mMap.GetResourceMap());
 
             var genUnit = new GeneralUnit(mPlatform, ref mDirector);
             var genUnit2 = new GeneralUnit(mPlatform2, ref mDirector);
@@ -179,8 +179,8 @@ namespace Singularity.Screen.ScreenClasses
 
             mFow = new FogOfWar(mCamera, mGraphicsDevice);
 
-            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector);
-            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector);
+            mMUnit1 = new MilitaryUnit(new Vector2(1000, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector, ref mMap);
+            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector, ref mMap);
 
             // load roads
             mRoad1 = new Road(mPlatform, mPlatform2, false);

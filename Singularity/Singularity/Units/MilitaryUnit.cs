@@ -53,6 +53,10 @@ namespace Singularity.Units
 
         private readonly Map.Map mMap;
 
+        private Stack<Vector2> mPath;
+
+        private Director mDirector;
+
         public Vector2 AbsolutePosition { get; set; }
 
         public Vector2 AbsoluteSize { get; set; }
@@ -71,7 +75,8 @@ namespace Singularity.Units
 
         public Rectangle AbsBounds { get; private set; }
 
-        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director)
+        
+        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director, ref Map.Map map)
         {
             Id = IdGenerator.NextiD(); // TODO this will later use a random number generator to create a unique
                     // id for the specific unit.
@@ -210,8 +215,6 @@ namespace Singularity.Units
                 if (!HasReachedWaypoint())
                 {
                     MoveToTarget(mPath.Peek());
-                    Debug.WriteLine("Current Position: " + Center.X + ", " + Center.Y);
-                    Debug.WriteLine("Moving to: " + mPath.Peek().X + ", " + mPath.Peek().Y);
                 }
                 else
                 {
@@ -241,7 +244,6 @@ namespace Singularity.Units
 
             var movementVector = new Vector2(target.X - Center.X, target.Y - Center.Y);
             movementVector.Normalize();
-            Debug.WriteLine("Direction: " + movementVector.X + ", " + movementVector.Y);
             mToAdd += mMovementVector * (float) (mZoomSnapshot *  Speed);
 
             AbsolutePosition = new Vector2((float) (AbsolutePosition.X + movementVector.X * Speed), (float) (AbsolutePosition.Y + movementVector.Y * Speed));
@@ -266,10 +268,17 @@ namespace Singularity.Units
 
         private bool HasReachedWaypoint()
         {
-            return Math.Abs(Center.X + mToAdd.X -
-                            mPath.Peek().X) < 8 &&
-                   Math.Abs(Center.Y + mToAdd.Y -
-                            mPath.Peek().Y) < 8;
+            if (Math.Abs(Center.X + mToAdd.X - mPath.Peek().X) < 8
+                && Math.Abs(Center.Y + mToAdd.Y - mPath.Peek().Y) < 8)
+            {
+                Debug.WriteLine("Waypoint reached.");
+                Debug.WriteLine("Next waypoint: " +  mPath.Peek());
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
@@ -282,10 +291,13 @@ namespace Singularity.Units
                     if (mSelected && !mIsMoving && !withinBounds && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f), (int)(mMouseY - RelativeSize.Y / 2f), (int)RelativeSize.X, (int)RelativeSize.Y), mCamera))
                     {
                         mIsMoving = true;
-                        mTargetPosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+                        mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
+                            Matrix.Invert(mCamera.GetTransform()));
                         var currentPosition = Center;
                         Debug.WriteLine("Starting path finding at: " + currentPosition.X +", " + currentPosition.Y);
                         Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
+                        mPath?.Clear();
+
                         mPath = MilitaryPathfinder.FindPath(currentPosition,
                             mTargetPosition,
                             mMap);

@@ -21,18 +21,17 @@ namespace Singularity.Units
         /// <returns>A list of Vector2 waypoints that the object must traverse to get to its destination</returns>
         internal static Stack<Vector2> FindPath(Vector2 startPosition, Vector2 endPosition, Map.Map map)
         {
-            var grid = map.GetCollisionMap().GetWalkabilityGrid();
-
-            var start = VectorToGridPos(startPosition);
-            var end = VectorToGridPos(endPosition);
-
-            var jPParam = new JumpPointParam(iGrid: grid,
-                                             iStartPos: start,
-                                             iEndPos: end,
-                                             iAllowEndNodeUnWalkable: EndNodeUnWalkableTreatment.DISALLOW,
+            var jPParam = new JumpPointParam(iGrid: map.GetCollisionMap().GetWalkabilityGrid(),
+                                             iStartPos: VectorToGridPos(startPosition),
+                                             iEndPos: VectorToGridPos(endPosition),
+                                             iAllowEndNodeUnWalkable: EndNodeUnWalkableTreatment.ALLOW,
                                              iMode: HeuristicMode.MANHATTAN);
 
             var pathGrid = JumpPointFinder.FindPath(jPParam);
+            foreach (var pos in pathGrid)
+            {
+                Debug.WriteLine(pos);
+            }
 
             var pathVector = new Stack<Vector2>(pathGrid.Count);
             pathVector.Push(endPosition);
