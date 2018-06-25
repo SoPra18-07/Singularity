@@ -86,7 +86,7 @@ namespace Singularity
             // on top of it.
             mScreenManager.AddScreen(mGameScreen);
             mGameScreen.LoadContent(Content); // TODO This is to debug quicker without having to go through the menu
-            // mScreenManager.AddScreen(mUserInterfaceScreen);
+            mScreenManager.AddScreen(mUserInterfaceScreen);
             // mScreenManager.AddScreen(mMainMenuManager);
 
 
