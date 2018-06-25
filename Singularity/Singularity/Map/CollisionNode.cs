@@ -14,7 +14,7 @@ namespace Singularity.Map
 
         public int Y { get; }
 
-        public Optional<ICollider> Collider { get; }
+        internal Optional<ICollider> Collider { get; }
 
         public CollisionNode(int x, int y, Optional<ICollider> iCollider)
         {

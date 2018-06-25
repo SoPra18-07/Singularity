@@ -59,7 +59,7 @@ namespace Singularity.Map
                 for (var j = 0; j < mCollisionMap.GetLength(1); j++)
                 {
                     mCollisionMap[i, j] = new CollisionNode(i, j, Optional<ICollider>.Of(null));
-                    movableMatrix[i][j] = true;
+                    movableMatrix[i][j] = Map.IsOnTop(new Vector2(i * MapConstants.GridWidth, j * MapConstants.GridHeight));
                 }
             }
             mWalkableGrid = new StaticGrid(mGridXLength, mGridYLength, movableMatrix);

@@ -52,7 +52,7 @@ namespace Singularity.Units
         /// </summary>
         /// <param name="vector">Vector2 to be converted</param>
         /// <returns>Corresponding grid positions</returns>
-        private static GridPos VectorToGridPos(Vector2 vector)
+        internal static GridPos VectorToGridPos(Vector2 vector)
         {
             return new GridPos((int) Math.Floor(vector.X / MapConstants.GridWidth),
                                (int) Math.Floor(vector.Y / MapConstants.GridHeight));
@@ -63,7 +63,7 @@ namespace Singularity.Units
         /// </summary>
         /// <param name="gridPos">GridPos to be converted</param>
         /// <returns>Corresponding Vector2 position</returns>
-        private static Vector2 GridPosToVector2(GridPos gridPos)
+        internal static Vector2 GridPosToVector2(GridPos gridPos)
         {
             return new Vector2(gridPos.x * MapConstants.GridWidth,
                                gridPos.y * MapConstants.GridHeight);

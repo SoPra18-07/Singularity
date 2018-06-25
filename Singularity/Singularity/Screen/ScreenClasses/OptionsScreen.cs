@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -192,6 +193,8 @@ namespace Singularity.Screen.ScreenClasses
             mAntialiasing.ButtonReleased += OnAntialiasingReleased;
 
             mMuteButton.ButtonReleased += OnMuteReleased;
+
+            Loaded = true;
         }
 
         /// <summary>
@@ -396,18 +399,26 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="eventArgs"></param>
         private void OnFullScreenReleased(Object sender, EventArgs eventArgs)
         {
-            var width = mGame.mGraphicsAdapter.CurrentDisplayMode.Width;
-            var height = mGame.mGraphicsAdapter.CurrentDisplayMode.Height;
-            var truth = false;
+            int width;
+            int height;
+            bool truth;
+            
+            
             if (mGame.mGraphics.IsFullScreen)
             {
-                width = 1080;
+                truth = false;
+                // if it is already full screen, reset to a smaller screen size
+                width = 960;
                 height = 720;
             }
             else
             {
+                // otherwise, do set up the game for full screen
                 truth = true;
+                width = mGame.mGraphicsAdapter.CurrentDisplayMode.Width;
+                height = mGame.mGraphicsAdapter.CurrentDisplayMode.Height;
             }
+            
             mGame.mGraphics.PreferredBackBufferWidth = width;
             mGame.mGraphics.PreferredBackBufferHeight = height;
             mGame.mGraphics.IsFullScreen = truth;

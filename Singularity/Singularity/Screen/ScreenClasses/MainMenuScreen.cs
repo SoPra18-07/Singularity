@@ -125,6 +125,7 @@ namespace Singularity.Screen.ScreenClasses
             mAchievementsButton.ButtonHovering += OnAchievementsHovering;
             mQuitButton.ButtonHovering += OnQuitHovering;
 
+            Loaded = true;
         }
 
 
