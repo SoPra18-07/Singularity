@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -179,7 +180,7 @@ namespace Singularity.Input
         {
             if (!mMouseClickListener.ContainsKey(screen))
             {
-                return false;
+                return true;
             }
 
             var giveThrough = true;
@@ -468,8 +469,6 @@ namespace Singularity.Input
             // update 'current' values
             mCurrentMouseState = Mouse.GetState();
             mCurrentKeyboardState = Keyboard.GetState();
-
-            Debug.WriteLine(mScreensToCheck.Count);
 
             var giveWheelThrough = true;
 
