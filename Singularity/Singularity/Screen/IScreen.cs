@@ -11,6 +11,8 @@ namespace Singularity.Screen
     /// </remarks>
     internal interface IScreen : IUpdate, IDraw
     {
+        EScreen Screen { get; }
+
         /// <summary>
         /// Loads any content required by a screen.
         /// </summary>

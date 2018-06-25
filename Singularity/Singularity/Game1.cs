@@ -39,8 +39,9 @@ namespace Singularity
 
             mGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
             
-            mScreenManager = new StackScreenManager(Content);
             mDirector = new Director(Content);
+
+            mScreenManager = new StackScreenManager(Content, mDirector.GetInputManager);
 
         }
 

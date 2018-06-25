@@ -19,7 +19,7 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     internal sealed class GameScreen : IScreen
     {
-
+        public EScreen Screen { get; private set; } = EScreen.GameScreen;
         public bool Loaded { get; set; }
 
         // sprite textures
@@ -196,27 +196,6 @@ namespace Singularity.Screen.ScreenClasses
 
             AddObject(mMap);
 
-            mFow.AddRevealingObject(mMUnit1);
-            mFow.AddRevealingObject(mMUnit2);
-            mFow.AddRevealingObject(mEnemy1);
-            mFow.AddRevealingObject(mPlatform);
-            mFow.AddRevealingObject(mPlatform2);
-            mFow.AddRevealingObject(mPlatform3);
-            mFow.AddRevealingObject(platform4);
-            mFow.AddRevealingObject(platform5);
-
-            mMap.AddPlatform(mPlatform);
-            mMap.AddPlatform(mPlatform2);
-            mMap.AddPlatform(mPlatform3);
-            mMap.AddPlatform(platform4);
-            mMap.AddPlatform(platform5);
-            mMap.AddRoad(mRoad1);
-            mMap.AddRoad(road2);
-            mMap.AddRoad(road3);
-            mMap.AddRoad(road4);
-            mMap.AddRoad(road5);
-            mMap.AddRoad(road6);
-
             AddObject(mMUnit1);
             AddObject(mMUnit2);
             AddObject(mEnemy1);
@@ -235,7 +214,7 @@ namespace Singularity.Screen.ScreenClasses
             AddObject(genUnit);
             AddObject(genUnit2);
             AddObject(genUnit3);
-
+  
             AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
 
             mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
@@ -256,9 +235,27 @@ namespace Singularity.Screen.ScreenClasses
         public bool AddObject<T>(T toAdd)
         {
 
-            if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)))
+            var road = toAdd as Road;
+            var platform = toAdd as PlatformBlank;
+
+            if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
                 return false;
+            }
+
+            if (road != null)
+            {
+                mMap.AddRoad(road);
+            }
+
+            if (platform != null)
+            {
+                mMap.AddPlatform(platform);
+            }
+
+            if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
+            {
+                mFow.AddRevealingObject((IRevealing)toAdd);
             }
 
             if (typeof(ISpatial).IsAssignableFrom(typeof(T)))
@@ -306,9 +303,33 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>True if the given object could be removed, false otherwise</returns>
         public bool RemoveObject<T>(T toRemove)
         {
-            if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)))
+            var road = toRemove as Road;
+            var platform = toRemove as PlatformBlank;
+
+            if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
                 return false;
+            }
+
+            if (road != null)
+            {
+                mMap.RemoveRoad(road);
+            }
+
+            if (platform != null)
+            {
+                mMap.RemovePlatform(platform);
+            }
+
+            if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
+            {
+                mFow.RemoveRevealingObject((IRevealing)toRemove);
+            }
+
+            if (typeof(ISpatial).IsAssignableFrom(typeof(T)))
+            {
+                mSpatialObjects.Remove((ISpatial)toRemove);
+                return true;
             }
 
             if (typeof(IDraw).IsAssignableFrom(typeof(T)))

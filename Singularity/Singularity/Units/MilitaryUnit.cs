@@ -6,12 +6,15 @@ using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
+using Singularity.Screen;
 using Singularity.Utils;
 
 namespace Singularity.Units
 {
     internal sealed class MilitaryUnit : ICollider, IRevealing, IMouseClickListener, IMousePositionListener
     {
+        public EScreen Screen { get; private set; } = EScreen.GameScreen;
+
         private const int DefaultWidth = 150;
         private const int DefaultHeight = 75;
 
@@ -243,8 +246,10 @@ namespace Singularity.Units
 
         }
 
-        public void MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
+        public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
+            var giveThrough = true;
+
             switch (mouseAction)
             {
                 case EMouseAction.LeftClick:
@@ -254,27 +259,33 @@ namespace Singularity.Units
                         mTargetPosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
                         mBoundsSnapshot = Bounds;
                         mZoomSnapshot = mCamera.GetZoom();
+                        giveThrough = true;
                     }
 
                     if (withinBounds) { 
                         mSelected = true;
+                        giveThrough = false;
                     }
-                    return;
+
+                    break;
 
                 case EMouseAction.RightClick:
                     mSelected = false;
-                    return;
+                    giveThrough = true;
+                    break;
             }
+
+            return giveThrough;
         }
 
-        public void MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
+        public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {
-            
+            return true;
         }
 
-        public void MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
+        public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
-           
+            return true;
         }
 
         public void MousePositionChanged(float newX, float newY)
