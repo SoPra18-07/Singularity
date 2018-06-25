@@ -40,6 +40,8 @@ namespace Singularity.Screen.ScreenClasses
         private MilitaryUnit mMUnit1;
         private MilitaryUnit mMUnit2;
 
+        private EnemyUnit mEnemy1;
+
         // map and fog of war
         private Map.Map mMap;
         private FogOfWar mFow;
@@ -182,6 +184,9 @@ namespace Singularity.Screen.ScreenClasses
             mMUnit1 = new MilitaryUnit(new Vector2(1000, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector, ref mMap);
             mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector, ref mMap);
 
+            // load an enemy unit
+            mEnemy1 = new EnemyUnit(new Vector2(300, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector);
+
             // load roads
             mRoad1 = new Road(mPlatform, mPlatform2, false);
             var road2 = new Road(mPlatform3, platform4, false);
@@ -194,6 +199,7 @@ namespace Singularity.Screen.ScreenClasses
 
             AddObject(mMUnit1);
             AddObject(mMUnit2);
+            AddObject(mEnemy1);
             AddObject(mPlatform);
             AddObject(mPlatform2);
             AddObject(mPlatform3);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -62,6 +63,8 @@ namespace Singularity.Map
             mCollisionMap = new CollisionMap();
             mStructureMap = new StructureMap(ref director);
             mResourceMap = new ResourceMap(initialResources);
+
+            director.GetInputManager.AddKeyListener(this);
         }
 
         /// <see cref="CollisionMap.UpdateCollider(ICollider)"/>
