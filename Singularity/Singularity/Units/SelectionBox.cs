@@ -30,7 +30,7 @@ namespace Singularity.Units
         public event SelectionBoxEventHandler SelectingBox;
 
         private readonly Camera mCamera;
-
+        private Director mDirector;
 
         /// <summary>
         /// Creates a selection box 
@@ -42,6 +42,8 @@ namespace Singularity.Units
         {
             mColor = color;
             mCamera = camera;
+
+            mDirector = director;
 
             director.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             director.GetInputManager.AddMousePositionListener(this);
@@ -63,18 +65,14 @@ namespace Singularity.Units
                 mXStart = mStartBox.X;
                 mYStart = mStartBox.Y;
 
-                if (Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                        Matrix.Invert(mCamera.GetTransform())).X < mStartBox.X)
+                if (MouseCoordinates().X < mStartBox.X)
                 {
-                    mXStart = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                        Matrix.Invert(mCamera.GetTransform())).X;
+                    mXStart = MouseCoordinates().X;
                 }
 
-                if (Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                        Matrix.Invert(mCamera.GetTransform())).Y < mStartBox.Y)
+                if (MouseCoordinates().Y < mStartBox.Y)
                 {
-                    mYStart = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                        Matrix.Invert(mCamera.GetTransform())).Y;
+                    mYStart = MouseCoordinates().Y;
                 }
 
                 spriteBatch.StrokedRectangle(new Vector2(mXStart, mYStart), mSizeBox, Color.White, Color.White, .8f, .5f);
@@ -84,11 +82,11 @@ namespace Singularity.Units
 
         public void Update(GameTime gameTime)
         {
-            mSizeBox = new Vector2(Math.Abs(mStartBox.X - Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y), Matrix.Invert(mCamera.GetTransform())).X),
-                Math.Abs(mStartBox.Y - Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y), Matrix.Invert(mCamera.GetTransform())).Y));
+            mSizeBox = new Vector2(Math.Abs(mStartBox.X - MouseCoordinates().X), Math.Abs(mStartBox.Y - MouseCoordinates().Y));
         }
 
         public EScreen Screen { get; }
+
         public Rectangle Bounds { get; }
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
@@ -100,13 +98,8 @@ namespace Singularity.Units
                     if (!mBoxExists)
                     {
                         mBoxExists = true;
-                        mStartBox = new Vector2(Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                            Matrix.Invert(mCamera.GetTransform())).X, Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                            Matrix.Invert(mCamera.GetTransform())).Y);
-                        mSizeBox = new Vector2(Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                                Matrix.Invert(mCamera.GetTransform())).X,
-                            Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                                Matrix.Invert(mCamera.GetTransform())).Y);
+                        mStartBox = MouseCoordinates();
+                        mSizeBox = MouseCoordinates();
                     }
                     return false;
             }
@@ -131,28 +124,34 @@ namespace Singularity.Units
                         {
                             mXStart = mStartBox.X;
                             mYStart = mStartBox.Y;
-                            if (Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                                    Matrix.Invert(mCamera.GetTransform())).X < mStartBox.X)
+                            if (MouseCoordinates().X < mStartBox.X)
                             {
-                                mXStart = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                                    Matrix.Invert(mCamera.GetTransform())).X;
+                                mXStart = MouseCoordinates().X;
                             }
 
-                            if (Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                                    Matrix.Invert(mCamera.GetTransform())).Y < mStartBox.Y)
+                            if (MouseCoordinates().Y < mStartBox.Y)
                             {
-                                mYStart = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                                    Matrix.Invert(mCamera.GetTransform())).Y;
+                                mYStart = MouseCoordinates().Y;
                             }
 
                             OnSelectingBox();
                         }
-
                     }
                     return false;
             }
-
             return true;
+        }
+
+        /// <summary>
+        /// Used to find the coordinates of the mouse based on the overall all map
+        /// instead of just the camera shot, returns Vector2 of absolute position
+        /// </summary>
+        /// <returns></returns>
+        private Vector2 MouseCoordinates()
+        {
+            return new Vector2(Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
+                Matrix.Invert(mCamera.GetTransform())).X, Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
+                Matrix.Invert(mCamera.GetTransform())).Y);
         }
 
         #region NotUsedInputMouseActions
@@ -167,5 +166,9 @@ namespace Singularity.Units
             return true;
         }
         #endregion
+
+
     }
+
+
 }
