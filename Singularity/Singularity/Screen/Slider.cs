@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Singularity.Property;
 using Singularity.Libraries;
 
 namespace Singularity.Screen
@@ -37,13 +32,13 @@ namespace Singularity.Screen
         // whether to add window on side that indicates value of slider position
         private bool mWithValue;
 
-        // font used to show slider value 
+        // font used to show slider value
         private SpriteFont mFont;
 
         // value as stringb of the slider position
         private String mStringValue;
 
-        // current value of slider and previous value of slider to only send out 
+        // current value of slider and previous value of slider to only send out
         // changes in slider value when slave to mouse
         private float mValueCurrent;
         private float mValuePrevious;
@@ -53,7 +48,7 @@ namespace Singularity.Screen
         /// <summary>
         /// Creates an instance of a slide where the square size of the
         /// slider can be specified in pixels. without any information on value,
-        /// no page jumps 
+        /// no page jumps
         /// </summary>
         /// <param name="position"> position of slider (left corner)</param>
         /// <param name="length"> length of slider</param>
@@ -101,7 +96,7 @@ namespace Singularity.Screen
 
         /// <summary>
         /// sends out event that slider is being moved as well
-        /// as the decimal of distance covered by slider 
+        /// as the decimal of distance covered by slider
         /// </summary>
         protected virtual void OnSliderMoving()
         {
@@ -110,7 +105,7 @@ namespace Singularity.Screen
                 SliderMoving(this, EventArgs.Empty, (mCurrentX/(mMax-mMin)));
             }
         }
-        
+
         /// <summary>
         /// Updates the position of the slider as well as if it
         /// is currently slave to the mouse or not
@@ -179,7 +174,7 @@ namespace Singularity.Screen
         }
 
         /// <summary>
-        /// Draws slider bar as well as slider 
+        /// Draws slider bar as well as slider
         /// </summary>
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)

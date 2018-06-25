@@ -76,5 +76,5 @@
         /// when other resources are process by factories.
         /// </summary>
         Trash
-    };
+    }
 }

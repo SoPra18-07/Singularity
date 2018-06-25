@@ -18,7 +18,6 @@ namespace Singularity.Screen.ScreenClasses
         private readonly Color mColorBorder;
         private readonly Color mColorFill;
         private readonly SpriteFont mSpriteFontTitle;
-        private readonly SpriteFont mSpriteFontButton;
 
         // list of windowItems added to the window
         private readonly List<IWindowItem> mItemList = new List<IWindowItem>();
@@ -66,8 +65,7 @@ namespace Singularity.Screen.ScreenClasses
             Vector2 size, 
             Color colorBorder, 
             Color colorFill, 
-            SpriteFont spriteFontTitle, 
-            SpriteFont spriteFontButton, 
+            SpriteFont spriteFontTitle,
             InputManager inputManager, 
             GraphicsDeviceManager graphics)
         {
@@ -78,7 +76,6 @@ namespace Singularity.Screen.ScreenClasses
             mColorFill = colorFill;
             mButton = button;
             mSpriteFontTitle = spriteFontTitle;
-            mSpriteFontButton = spriteFontButton;
 
             mCurrentScreenWidth = graphics.PreferredBackBufferWidth;
             mCurrentScreenHeight = graphics.PreferredBackBufferHeight;

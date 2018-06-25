@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Singularity.Resources;
-using Singularity.Utils;
 
 namespace Singularity.Map
 {

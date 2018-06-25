@@ -1,19 +1,8 @@
-using System;
-using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
-using Singularity.Platform;
-using Singularity.Input;
-
-using Singularity.Map;
-using Singularity.Map.Properties;
-using Singularity.Resources;
+using Singularity.Manager;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
-using Singularity.Sound;
-using Singularity.Units;
 
 namespace Singularity
 {
@@ -22,16 +11,14 @@ namespace Singularity
     /// </summary>
     internal sealed class Game1 : Game
     {
-        internal GraphicsDeviceManager mGraphics;
-        internal GraphicsAdapter mGraphicsAdapter;
-
-        private SoundManager mSoundManager;
+        internal readonly GraphicsDeviceManager mGraphics;
+        internal readonly GraphicsAdapter mGraphicsAdapter;
+        
 
         // Screens
         internal GameScreen mGameScreen;
         private MainMenuManagerScreen mMainMenuManager;
         private UserInterfaceScreen mUserInterfaceScreen;
-        private readonly InputManager mInputManager;
 
 
         // Sprites!
@@ -41,18 +28,20 @@ namespace Singularity
         // Screen Manager
         private readonly IScreenManager mScreenManager;
 
+
+        // 
+        private Director mDirector;
+
+
         internal Game1()
         {
             mGraphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
             mGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
-
-            mInputManager = new InputManager();
-
+            
             mScreenManager = new StackScreenManager(Content);
-
-            mInputManager = new InputManager();
+            mDirector = new Director(Content);
 
         }
 
@@ -64,21 +53,12 @@ namespace Singularity
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-            // can be used to debug the screen manager
-            /*
-               mScreenManager.AddScreen(new RenderLowerScreen());
-               mScreenManager.AddScreen(new UpdateLowerScreen());
-            */
-
-            // XSerializer.TestSerialization();
             IsMouseVisible = true;
             mGraphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
             mGraphics.PreferredBackBufferWidth = 1080;
             mGraphics.PreferredBackBufferHeight = 720;
             mGraphics.IsFullScreen = false;
             mGraphics.ApplyChanges();
-            mSoundManager = new SoundManager();
 
             base.Initialize();
         }
@@ -94,11 +74,11 @@ namespace Singularity
             // Create a new SpriteBatch, which can be used to draw textures.
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            mGameScreen = new GameScreen(mGraphics.GraphicsDevice, mInputManager, mSoundManager);
+            mGameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector);
 
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
 
-            mUserInterfaceScreen = new UserInterfaceScreen(mInputManager, mGraphics);
+            mUserInterfaceScreen = new UserInterfaceScreen(mDirector, mGraphics);
 
             // Add the screens to the screen manager
             // The idea is that the game screen is always at the bottom and stuff is added simply
@@ -107,10 +87,12 @@ namespace Singularity
             mScreenManager.AddScreen(mUserInterfaceScreen);
             mScreenManager.AddScreen(mMainMenuManager);
 
+
+            
             // load and play Soundtrack as background music
-            mSoundManager.LoadContent(Content);
-            mSoundManager.SetLevelThemeMusic("Singularity");
-            mSoundManager.SetSoundPhase(SoundPhase.Menu);
+            // todo this
+            // director.GetSoundManager.LoadContent(Content);
+            //_mSoundManager.PlaySoundTrack();
 
             // load fonts to UserInterface
             mUserInterfaceScreen.LoadContent(Content);
@@ -132,8 +114,7 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-
-            mInputManager.Update(gameTime);
+            mDirector.Update(gameTime);
             mScreenManager.Update(gameTime);
             base.Update(gameTime);
         }

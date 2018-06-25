@@ -38,7 +38,7 @@ namespace Singularity.Screen.ScreenClasses
         private readonly string mBackString;
 
         private readonly string mFullScreenString;
-        private readonly string mResolutionString; // used later
+        private readonly string mResolutionString; // used later .. apparently
         private readonly string mAntialiasingString;
 
         private readonly string mMuteString;
@@ -59,12 +59,12 @@ namespace Singularity.Screen.ScreenClasses
         private Button mBackButton;
 
         // Graphics tab
-        private readonly List<Button> mGraphicsButtons;
+        private readonly List<Button> mMGraphicsButtons;
         private Button mFullScreen; // todo replace with a toggle
         private Button mResolution1; // todo replace with a better system
         private Button mResolution2; // todo replace with a better system
         private Button mAntialiasing; // todo replace with a toggle
-        
+
         // Audio tab
         // todo add the following:
         private readonly List<Button> mAudioButtons;
@@ -87,6 +87,7 @@ namespace Singularity.Screen.ScreenClasses
         /// Creates an instance of the Options screen.
         /// </summary>
         /// <param name="screenResolution">Screen resolution used for scaling</param>
+        /// <param name="screenResolutionChanged"></param>
         /// <param name="game">Game1 class passed on to options to allow changing of options</param>
         public OptionsScreen(Vector2 screenResolution, bool screenResolutionChanged, Game1 game)
         {
@@ -113,11 +114,10 @@ namespace Singularity.Screen.ScreenClasses
             mFullScreenString = "Full Screen";
             mResolutionString = "Resolution:";
             mAntialiasingString = "Anti-Aliasing";
-
             mMuteString = "Mute";
 
             mTabButtons = new List<Button>(5);
-            mGraphicsButtons = new List<Button>(4);
+            mMGraphicsButtons = new List<Button>(4);
             mAudioButtons = new List<Button>(1);
 
             mScreenState = EOptionScreenState.Gameplay;
@@ -163,12 +163,12 @@ namespace Singularity.Screen.ScreenClasses
             mResolution2 = new Button("960 x 720", mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 80));
             mAntialiasing = new Button(mAntialiasingString, mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 120), mTextColor);
 
-            mGraphicsButtons.Add(mFullScreen);
-            mGraphicsButtons.Add(mResolution1);
-            mGraphicsButtons.Add(mResolution2);
-            mGraphicsButtons.Add(mAntialiasing);
+            mMGraphicsButtons.Add(mFullScreen);
+            mMGraphicsButtons.Add(mResolution1);
+            mMGraphicsButtons.Add(mResolution2);
+            mMGraphicsButtons.Add(mAntialiasing);
 
-            foreach (Button graphicsButton in mGraphicsButtons)
+            foreach (Button graphicsButton in mMGraphicsButtons)
             {
                 graphicsButton.Opacity = mMenuOpacity;
             }
@@ -213,10 +213,10 @@ namespace Singularity.Screen.ScreenClasses
             switch (mScreenState)
             {
                 case EOptionScreenState.Gameplay:
-                    
+
                     break;
                 case EOptionScreenState.Graphics:
-                    foreach (Button button in mGraphicsButtons)
+                    foreach (Button button in mMGraphicsButtons)
                     {
                         button.Update(gametime);
                         button.Opacity = mMenuOpacity;
@@ -276,7 +276,7 @@ namespace Singularity.Screen.ScreenClasses
                     spriteBatch.DrawString(mLibSans20, "Difficulty", new Vector2(mContentPadding, mTopContentPadding), Color.White * mMenuOpacity);
                     break;
                 case EOptionScreenState.Graphics:
-                    foreach (Button button in mGraphicsButtons)
+                    foreach (Button button in mMGraphicsButtons)
                     {
                         button.Draw(spriteBatch);
                     }
@@ -453,7 +453,7 @@ namespace Singularity.Screen.ScreenClasses
             mTransitionDuration = 350f;
             mTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
             TransitionRunning = true;
-        
+
         }
     }
 }

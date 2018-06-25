@@ -1,11 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mime;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -44,7 +39,7 @@ namespace Singularity.Sound
         /// <summary>
         /// Looping song used as the in-game soundtrack
         /// </summary>
-        private static Song sSoundtrack;
+        private static Song sSSoundtrack;
 
         #endregion
 
@@ -130,17 +125,17 @@ namespace Singularity.Sound
             }
 
             //sSoundtrack = contentManager.Load<Song>("BGmusic");
-            sSoundtrack = mAllSongs["Tutorial"][(int) SoundPhase.Build];
+            sSSoundtrack = mAllSongs["Tutorial"][(int) SoundPhase.Build];
         }
 
         #endregion
 
         public void PlaySoundTrack()
         {
-            if (sSoundtrack == null)
+            if (sSSoundtrack == null)
                 return;
 
-            MediaPlayer.Play(sSoundtrack);
+            MediaPlayer.Play(sSSoundtrack);
         }
 
 
@@ -179,7 +174,7 @@ namespace Singularity.Sound
                 mEffectInstanceId++;
                 return mAllInstanceId++;
             }
-            else if (soundClass == SoundClass.Ui)
+            if (soundClass == SoundClass.Ui)
             {
                 SoundEffectInstance effectInstance = mUiSounds[name].CreateInstance();
                 effectInstance.Volume = volume;
@@ -196,10 +191,7 @@ namespace Singularity.Sound
                 mUiInstanceId++;
                 return mAllInstanceId++;
             }
-            else
-            {
-                return -1;
-            }
+            return -1;
         }
 
         /// <summary>
@@ -337,7 +329,7 @@ namespace Singularity.Sound
         }
 
         /// <summary>
-        /// Pause the currently playing sounds of the given class. 
+        /// Pause the currently playing sounds of the given class.
         /// </summary>
         /// <param name="soundClass">The SoundClass to pause.</param>
 		public void PauseSoundClass(SoundClass soundClass)

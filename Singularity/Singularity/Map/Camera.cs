@@ -1,14 +1,13 @@
-﻿using System;
-using System.Diagnostics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
+using Singularity.Manager;
 using Singularity.Map.Properties;
 using Singularity.Property;
 
 namespace Singularity.Map
-{   
+{
     //TODO: update in such a way that zoom is centered on the current mouse position
     /// <inheritdoc/>
     /// <remarks>
@@ -58,9 +57,10 @@ namespace Singularity.Map
         /// objects to the camera view.
         /// </summary>
         /// <param name="viewport">The viewport of the window</param>
+        /// <param name="director">The director</param>
         /// <param name="x">The initial x position of the camera</param>
         /// <param name="y">the initial y position of the camera</param>
-        public Camera(Viewport viewport, InputManager inputManager, int x = 0, int y = 0)
+        public Camera(Viewport viewport, ref Director director, int x = 0, int y = 0)
         {
             if (x < 0)
             {
@@ -78,8 +78,8 @@ namespace Singularity.Map
             mZoom = 1.0f;
             mBounds = new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight);
 
-            inputManager.AddKeyListener(this);
-            inputManager.AddMouseWheelListener(this);
+            director.GetInputManager.AddKeyListener(this);
+            director.GetInputManager.AddMouseWheelListener(this);
 
             mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
 
@@ -94,12 +94,11 @@ namespace Singularity.Map
         {
             return mTransform;
         }
-
-        //TODO: remove this when input manager is there, since we don't need to fetch it anymore
+        
         public void Update(GameTime gametime)
         {
 
-            //finally update the matrix to all the fitting values.    
+            //finally update the matrix to all the fitting values.
             UpdateTransformMatrix();
         }
 
@@ -118,7 +117,7 @@ namespace Singularity.Map
         /// clip to the edge if its the case.
         /// </summary>
         private void ValidatePosition()
-        {   
+        {
             // first of all we need to update our matrix with the new values, since they got changed by moving.
             UpdateTransformMatrix();
 
@@ -185,7 +184,7 @@ namespace Singularity.Map
 
         public void KeyTyped(KeyEvent keyEvent)
         {
-            
+
         }
 
         public void KeyPressed(KeyEvent keyEvent)
@@ -227,7 +226,7 @@ namespace Singularity.Map
 
         public void KeyReleased(KeyEvent keyEvent)
         {
-            
+
         }
 
         public void MouseWheelValueChanged(EMouseAction mouseAction)

@@ -1,11 +1,10 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
-using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
@@ -13,7 +12,7 @@ using Singularity.Utils;
 
 namespace Singularity.Platform
 {
-    [DataContract()]
+    [DataContract]
     public class PlatformBlank : IRevealing, INode, ICollider
 
     {
@@ -22,35 +21,37 @@ namespace Singularity.Platform
 
         private List<IEdge> mOutwardsEdges;
 
-        [DataMember()]
+        [DataMember]
         protected EPlatformType mType = EPlatformType.Blank;
-        [DataMember()]
-        private const int PlatformWidth = 148;
-        [DataMember()]
-        private const int PlatformHeight = 172;
-        [DataMember()]
+
+        [DataMember]
+        private const int mPlatformWidth = 148;
+        [DataMember]
+        private const int mPlatformHeight = 172;
+        [DataMember]
         private int mHealth;
-        [DataMember()]
+        [DataMember]
         private int mId;
-        [DataMember()]
+        [DataMember]
         protected bool mIsBlueprint;
-        [DataMember()]
+        [DataMember]
         protected Dictionary<EResourceType, int> mCost;
-        [DataMember()]
+        [DataMember]
         protected IPlatformAction[] mIPlatformActions;
-        private readonly Texture2D mSpritesheet;
+        private readonly Texture2D mPlatformSpriteSheet;
+        private readonly Texture2D mPlatformBaseTexture;
         [DataMember()]
         protected string mSpritename;
-        [DataMember()]
+        [DataMember]
         protected Dictionary<GeneralUnit, JobType> mAssignedUnits;
-        [DataMember()]
+        [DataMember]
         protected List<Resource> mResources;
-        [DataMember()]
+        [DataMember]
         protected Dictionary<EResourceType, int> mRequested;
 
         public Vector2 Center { get; set; }
 
-        public int RevelationRadius { get; private set; }
+        public int RevelationRadius { get; private set; } = 200;
 
         public Rectangle AbsBounds { get; private set; }
 
@@ -58,18 +59,22 @@ namespace Singularity.Platform
 
         public int Id { get; private set; }
 
+        // the sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome 
+        private int mSheet;
+        private int mSheetPosition;
+
         internal Vector2 GetLocation()
         {
             throw new NotImplementedException();
         }
 
-        [DataMember()]
+        [DataMember]
         public Vector2 AbsolutePosition { get; set; }
-        [DataMember()]
+        [DataMember]
         public Vector2 AbsoluteSize { get; set; }
-        [DataMember()]
+        [DataMember]
         public Vector2 RelativePosition { get; set; }
-        [DataMember()]
+        [DataMember]
         public Vector2 RelativeSize { get; set; }
 
 
@@ -184,7 +189,7 @@ namespace Singularity.Platform
         /// </summary>
         /// <param name="resourcetype">The resource you ask for</param>
         /// <returns>the resource you asked for, null otherwise.</returns>
-        public Resource GetResource(EResourceType resourcetype)
+        public MapResource GetResource(EResourceType resourcetype)
         {
             // var index = mResources.FindIndex(x => x.isType(resourcetype));
             // if (index < 0)
@@ -226,123 +231,114 @@ namespace Singularity.Platform
         /// <inheritdoc cref="Singularity.Property.IDraw"/>
         public void Draw(SpriteBatch spritebatch)
         {
-            var position = 0;
-            var sheet = "b"; // b stands for blank, c for cone or cylindrical and d for Dome
-            switch (mType)
+            switch (mSheet)
             {
-                case EPlatformType.Blank:
-                    break;
-                case EPlatformType.Energy:
-                    sheet = "d";
-                    break;
-                case EPlatformType.Factory:
-                    position = 1;
-                    sheet = "d";
-                    break;
-                case EPlatformType.Junkyard:
-                    position = 2;
-                    sheet = "d";
-                    break;
-                case EPlatformType.Mine:
-                    position = 3;
-                    sheet = "d";
-                    break;
-                case EPlatformType.Packaging:
-                    position = 4;
-                    sheet = "d";
-                    break;
-                case EPlatformType.Quarry:
-                    position = 5;
-                    sheet = "d";
-                    break;
-                case EPlatformType.Storage:
-                    position = 6;
-                    sheet = "d";
-                    break;
-                case EPlatformType.Well:
-                    position = 7;
-                    sheet = "d";
-                    break;
-                case EPlatformType.Kinetic:
-                    sheet = "c";
-                    break;
-                case EPlatformType.Laser:
-                    sheet = "c";
-                    position = 1;
-                    break;
-                case EPlatformType.Barracks:
-                    sheet = "c";
-                    break;
-                case EPlatformType.Command:
-                    sheet = "c";
-                    position = 1;
-                    break;
-            }
-
-            switch (sheet)
-            {
-                case "b":
-                    spritebatch.Draw(mSpritesheet,
-                        new Rectangle(
-                            (int) AbsolutePosition.X,
-                            (int) AbsolutePosition.Y,
-                            (int) AbsoluteSize.X,
-                            (int) AbsoluteSize.Y),
-                        new Rectangle(0, 0, (int) AbsoluteSize.X, (int) AbsoluteSize.Y),
+                case 0:
+                    // Basic platform
+                    spritebatch.Draw(mPlatformBaseTexture,
+                        AbsolutePosition,
+                        new Rectangle(0, 0, (int)AbsoluteSize.X, (int)AbsoluteSize.Y),
                         Color.White,
                         0f,
                         Vector2.Zero,
+                        1f,
                         SpriteEffects.None,
-                        LayerConstants.PlatformLayer);
+                        LayerConstants.BasePlatformLayer);
                     break;
-                case "d":
-                    spritebatch.Draw(mSpritesheet,
-                        new Rectangle(
-                            (int)AbsolutePosition.X,
-                            (int)AbsolutePosition.Y,
-                            (int)AbsoluteSize.X,
-                            (int)AbsoluteSize.Y),
-                        new Rectangle(position % 4 * (int)AbsoluteSize.X, position / 4 * (int)AbsoluteSize.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y),
+                case 1:
+                    // Cone
+                    // Draw the basic platform first
+                    spritebatch.Draw(mPlatformBaseTexture,
+                        Vector2.Add(AbsolutePosition, new Vector2(-3, 73)),
+                        null,
                         Color.White,
                         0f,
                         Vector2.Zero,
+                        1f,
                         SpriteEffects.None,
-                        LayerConstants.PlatformLayer);
-                    break;
-                case "c":
-                    spritebatch.Draw(mSpritesheet,
-                        new Rectangle(
-                            (int)AbsolutePosition.X,
-                            (int)AbsolutePosition.Y,
-                            (int)AbsoluteSize.X,
-                            (int)AbsoluteSize.Y),
-                        new Rectangle((int)AbsoluteSize.X, position * (int)AbsoluteSize.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y),
+                        LayerConstants.BasePlatformLayer);
+                    // then draw what's on top of that
+                    spritebatch.Draw(mPlatformBaseTexture,
+                        AbsolutePosition,
+                        new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 148),
                         Color.White,
                         0f,
                         Vector2.Zero,
+                        1f,
                         SpriteEffects.None,
                         LayerConstants.PlatformLayer);
                     break;
-                
+                case 2:
+                    // Cylinder
+                    // Draw the basic platform first
+                    spritebatch.Draw(mPlatformBaseTexture,
+                        Vector2.Add(AbsolutePosition, new Vector2(-3, 82)),
+                        null,
+                        Color.White,
+                        0f,
+                        Vector2.Zero,
+                        1f,
+                        SpriteEffects.None,
+                        LayerConstants.BasePlatformLayer);
+                    // then draw what's on top of that
+                    spritebatch.Draw(mPlatformBaseTexture,
+                        AbsolutePosition,
+                        new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 153),
+                        Color.White,
+                        0f,
+                        Vector2.Zero,
+                        1f,
+                        SpriteEffects.None,
+                        LayerConstants.PlatformLayer);
+                    break;
+                case 3:
+                    // Draw the basic platform first
+                    spritebatch.Draw(mPlatformBaseTexture,
+                        Vector2.Add(AbsolutePosition, new Vector2(-3, 38)),
+                        null,
+                        Color.White,
+                        0f,
+                        Vector2.Zero,
+                        1f,
+                        SpriteEffects.None,
+                        LayerConstants.BasePlatformLayer);
+                    // Dome
+                    spritebatch.Draw(mPlatformSpriteSheet,
+                        AbsolutePosition,
+                        new Rectangle(148 * (mSheetPosition % 4), 109 * (int) Math.Floor(mSheetPosition / 4d), 148, 109),
+                        Color.White,
+                        0f,
+                        Vector2.Zero,
+                        1f,
+                        SpriteEffects.None,
+                        LayerConstants.PlatformLayer);
+                    break;
             }
         }
 
         /// <inheritdoc cref="Singularity.Property.IUpdate"/>
         public void Update(GameTime t)
         {
-
         }
 
-        public PlatformBlank(Vector2 position, Texture2D spritesheet, Vector2 center = new Vector2())
+        public EPlatformType GetMyType()
+        {
+            return mType;
+        }
+
+        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, Vector2 center = new Vector2())
         {
 
             Id = IdGenerator.NextiD();
+
+            mType = EPlatformType.Blank;
+
+            AbsoluteSize = SetPlatfromDrawParameters();
 
             mInwardsEdges = new List<IEdge>();
             mOutwardsEdges = new List<IEdge>();
 
             AbsolutePosition = position;
-            AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
 
             //default?
             mHealth = 100;
@@ -357,29 +353,32 @@ namespace Singularity.Platform
 
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
-
+            
             mResources = new List<Resource>();
 
-            mSpritesheet = spritesheet;
+            mPlatformSpriteSheet = platformSpriteSheet;
+            mPlatformBaseTexture = baseSprite;
             mSpritename = "PlatformBasic";
 
             mIsBlueprint = true;
             mRequested = new Dictionary<EResourceType, int>();
 
-            RevelationRadius = (int)AbsoluteSize.Y;
-            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
+            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, 148, 88);
             Moved = false;
 
             if (center == Vector2.Zero)
             {
                 // no value was specified so just use the platform blank implementation.
-                Center = new Vector2(AbsolutePosition.X + PlatformWidth / 2, AbsolutePosition.Y + PlatformHeight - 36);
+                Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y - 36);
             }
             else
             {
                 //value was given by subclass thus take that
                 Center = center;
             }
+
+            AbsoluteSize = SetPlatfromDrawParameters(); // this changes the draw parameters based on the platform type but
+                                                        // also returns the AbsoluteSize so the property can be set
 
         }
 
@@ -418,6 +417,118 @@ namespace Singularity.Platform
         public IEnumerable<IEdge> GetInwardsEdges()
         {
             return mInwardsEdges;
+        }
+        
+        public override bool Equals(Object other)
+        {
+            var b = other as PlatformBlank;
+
+            if(b == null)
+            {
+                return false;
+            }
+
+            if(AbsolutePosition != b.AbsolutePosition)
+            {
+                return false;
+            }
+
+            if(AbsoluteSize != b.AbsoluteSize)
+            {
+                return false;
+            }
+            if(mType != b.GetMyType())
+            {
+                return false;
+            }
+            return true;
+
+        }
+
+        public override int GetHashCode()
+        {
+            return AbsoluteSize.GetHashCode() * 17 + AbsolutePosition.GetHashCode() + mType.GetHashCode();
+        }
+
+
+        /// <summary>
+        /// Sets all the parameters to draw a platfrom properly and calculates the absolute size of a platform.
+        /// </summary>
+        /// <returns>Absolute Size of a platform</returns>
+        protected Vector2 SetPlatfromDrawParameters()
+        {
+            mSheetPosition = 0;
+            switch (mType)
+            {
+                case EPlatformType.Blank:
+                    mSheet = 0;
+                    break;
+                case EPlatformType.Energy:
+                    mSheet = 3;
+                    break;
+                case EPlatformType.Factory:
+                    mSheetPosition = 1;
+                    mSheet = 3;
+                    break;
+                case EPlatformType.Junkyard:
+                    mSheetPosition = 2;
+                    mSheet = 3;
+                    break;
+                case EPlatformType.Mine:
+                    mSheetPosition = 3;
+                    mSheet = 3;
+                    break;
+                case EPlatformType.Packaging:
+                    mSheetPosition = 4;
+                    mSheet = 4;
+                    break;
+                case EPlatformType.Quarry:
+                    mSheetPosition = 5;
+                    mSheet = 3;
+                    break;
+                case EPlatformType.Storage:
+                    mSheetPosition = 6;
+                    mSheet = 3;
+                    break;
+                case EPlatformType.Well:
+                    mSheetPosition = 7;
+                    mSheet = 3;
+                    break;
+                case EPlatformType.Kinetic:
+                    mSheet = 4;
+                    break;
+                case EPlatformType.Laser:
+                    mSheet = 2;
+                    mSheetPosition = 1;
+                    break;
+                case EPlatformType.Barracks:
+                    mSheet = 1;
+                    break;
+                case EPlatformType.Command:
+                    mSheet = 1;
+                    mSheetPosition = 1;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            switch (mSheet)
+            {
+                case (0):
+                    // basic platforms
+                    return new Vector2(148, 85);
+                case (1):
+                    // cones
+                    return new Vector2(148, 165);
+                case (2):
+                    // cylinders
+                    return new Vector2(148, 170);
+                case (3):
+                    // domes
+                    return new Vector2(148, 126);
+                default:
+                    return Vector2.Zero;
+            }
         }
     }
 }

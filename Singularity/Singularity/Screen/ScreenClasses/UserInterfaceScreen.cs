@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
+using Singularity.Manager;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -59,13 +60,13 @@ namespace Singularity.Screen.ScreenClasses
 
         #endregion
 
-        public UserInterfaceScreen(InputManager inputManager, GraphicsDeviceManager mgraphics)
+        public UserInterfaceScreen(Director director, GraphicsDeviceManager mgraphics)
         {
-            mInputManager = inputManager;
+            mInputManager = director.GetInputManager;
             mGraphics = mgraphics;
 
-            inputManager.AddMousePositionListener(this);
-            inputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            mInputManager.AddMousePositionListener(this);
+            mInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
 
             mCurrentPlatform = null;
 
@@ -153,13 +154,13 @@ namespace Singularity.Screen.ScreenClasses
             var resourceWidth = civilUnitsWidth;
             var resourceHeight = (int)(mCurrentScreenHeight / 2.75);
 
-            var eventLogX = civilUnitsX + civilUnitsWidth + 50; // TODO
-            var eventLogY = civilUnitsY;
             var eventLogWidth = civilUnitsWidth;
             var eventLogHeight = (int)(mCurrentScreenHeight / 2.5);
+            var eventLogX = mCurrentScreenWidth - eventLogWidth - topBarHeight / 2; //civilUnitsX + civilUnitsWidth + 50; // TODO
+            var eventLogY = civilUnitsY;
 
             // create windowObjects for all windows of the userinterface
-            var civilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(civilUnitsX, civilUnitsY), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, 10f, 10f, true, mLibSans14, mInputManager, mGraphics);
+            var civilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(civilUnitsX, civilUnitsY), new Vector2(civilUnitsWidth, civilUnitsHeight), true, mLibSans14, mInputManager, mGraphics);
             var topBarWindow = new WindowObject("", new Vector2(0, 0), new Vector2(topBarWidth, topBarHeight), borderColor, windowColor, 10f, 10f, false, mLibSans20, mInputManager, mGraphics);
             var resourceWindow = new WindowObject("// RESOURCES", new Vector2(resourceX, resourceY), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mInputManager, mGraphics);
             var eventLogWindow = new WindowObject("// EVENT LOG", new Vector2(eventLogX, eventLogY), new Vector2(eventLogWidth, eventLogHeight), borderColor, windowColor, 10f, 10f, true, mLibSans14, mInputManager, mGraphics);
@@ -199,7 +200,7 @@ namespace Singularity.Screen.ScreenClasses
 
             mOkayButton.ButtonClicked += OnButtonClickOkayButton;
 
-            mTestWindow = new PopupWindow("// POPUP", mOkayButton , new Vector2(500, 400), new Vector2(250, 250), testBorderColor, testWindowColor, mLibSans14, mLibSans12, mInputManager, mGraphics);
+            mTestWindow = new PopupWindow("// POPUP", mOkayButton , new Vector2(mCurrentScreenWidth / 2 - 250 / 2, mCurrentScreenHeight / 2 - 250 / 2), new Vector2(250, 250), testBorderColor, testWindowColor, mLibSans14, mInputManager, mGraphics);
 
             // platform textures
             mPlatformBlankTexture = content.Load<Texture2D>("PlatformBasic");
