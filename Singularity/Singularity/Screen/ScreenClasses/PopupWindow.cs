@@ -175,27 +175,36 @@ namespace Singularity.Screen.ScreenClasses
         {
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, mRasterizerState);
 
+            // TODO
+
             // draw window
-            spriteBatch.FillRectangle(mWindowRectangle, mColorFill);
-            spriteBatch.DrawRectangle(mBorderRectangle, mColorBorder, 2);
+            /*spriteBatch.FillRectangle(mWindowRectangle, mColorFill);
+            spriteBatch.DrawRectangle(mBorderRectangle, mColorBorder, 2);*/
+            spriteBatch.StrokedRectangle(new Vector2(mWindowRectangle.X, mWindowRectangle.Y), new Vector2(mWindowRectangle.Width, mWindowRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
 
             // draw window title + bar
             spriteBatch.DrawString(mSpriteFontTitle, mWindowName, new Vector2(mPosition.X + 10, mPosition.Y + 10), new Color(255, 255, 255));
-            spriteBatch.DrawRectangle(mTitleBarRectangle, mColorBorder, 1);
+            //spriteBatch.DrawRectangle(mTitleBarRectangle, mColorBorder, 1);
+            spriteBatch.StrokedRectangle(new Vector2(mTitleBarRectangle.X, mTitleBarRectangle.Y), new Vector2(mTitleBarRectangle.Width, mTitleBarRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
 
-            // draw 'button' + buttonText
-            spriteBatch.DrawRectangle(mButtonBorderRectangle, mColorBorder, 2);
-            // .DrawString(mSpriteFontButton, mButtonText, new Vector2(mButtonBorderRectangle.X + 5, mButtonBorderRectangle.Y + 5), new Color(0,0,0));
+            // draw 'button'
+            //spriteBatch.DrawRectangle(mButtonBorderRectangle, mColorBorder, 2);
+            spriteBatch.StrokedRectangle(new Vector2(mButtonBorderRectangle.X, mButtonBorderRectangle.Y), new Vector2(mButtonBorderRectangle.Width, mButtonBorderRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
+
+            // backup current scissor so we can restore later
+            var saveRect = spriteBatch.GraphicsDevice.ScissorRectangle;
 
             // Add the scrollbar if the window is scrollable
             if (mScrollable)
             {
-                spriteBatch.DrawRectangle(mScrollBarBorderRectangle, mColorBorder, 2);
+                //spriteBatch.DrawRectangle(mScrollBarBorderRectangle, mColorBorder, 2);
+                spriteBatch.StrokedRectangle(new Vector2(mScrollBarBorderRectangle.X - 1, mScrollBarBorderRectangle.Y), new Vector2(mScrollBarBorderRectangle.Width, mScrollBarBorderRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
+
+                // set up current scissor rectangle
+                spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(mScrollBarBorderRectangle.X + 1, mScrollBarBorderRectangle.Y + 1, mScrollBarBorderRectangle.Width - 2, mScrollBarBorderRectangle.Height - 2);
+
                 spriteBatch.FillRectangle(mScrollBarRectangle, mColorBorder);
             }
-
-            // backup current scissor so we can restore later
-            var saveRect = spriteBatch.GraphicsDevice.ScissorRectangle;
 
             // set up current scissor rectangle
             spriteBatch.GraphicsDevice.ScissorRectangle = mScissorRectangle;
@@ -246,15 +255,19 @@ namespace Singularity.Screen.ScreenClasses
             mButton.Update(gametime);
         }
 
-        public void MouseWheelValueChanged(EMouseAction mouseAction)
+        public EScreen Screen { get; } = EScreen.UserInterfaceScreen;
+
+        public bool MouseWheelValueChanged(EMouseAction mouseAction)
         {
+            var giveThrough = true; 
+
             // enabled only if
             //  - the mouse is above the scrollable part of the window
             //  - the window is scrollable (the number of items is too big for one window)
             if (!(mMouseX > mPosition.X) || !(mMouseX < mPosition.X + mSize.X) || !(mMouseY > mPosition.Y) ||
                 !(mMouseY < mPosition.Y + mSize.Y) || !mScrollable)
             {
-                return;
+                return giveThrough;
             }
 
             // scroll up or down
@@ -265,6 +278,7 @@ namespace Singularity.Screen.ScreenClasses
                         // stop from overflowing
                     {
                         mItemPosTop.Y += +10;
+                        giveThrough = false;
                     }
                     break;
                 case EMouseAction.ScrollDown:
@@ -272,9 +286,12 @@ namespace Singularity.Screen.ScreenClasses
                         // stop from overflowing
                     {
                         mItemPosTop.Y += -10;
+                        giveThrough = false;
                     }
                     break;
             }
+
+            return giveThrough;
         }
 
         public void MousePositionChanged(float newX, float newY)
@@ -296,7 +313,7 @@ namespace Singularity.Screen.ScreenClasses
             var sizeY = (scissorRectangle.Height / combinedItemsSize) * mScrollBarBorderRectangle.Height;
 
             // number of possible steps rounded up
-            var numberOfSteps = (combinedItemsSize - scissorRectangle.Height + 10 - 1) / 10;
+            var numberOfSteps = (combinedItemsSize - scissorRectangle.Height) / 10;
             // number of times scrolled down
             var numberOfStepsTaken = ((scissorRectangle.Y - mItemPosTop.Y) / 10);
             // step size for the scrollbar

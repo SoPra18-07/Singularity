@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -191,7 +192,10 @@ namespace Singularity.Screen
                 if (mWithValue)
                 {
                     // draws rectangle to the right side of slider
-                    spriteBatch.StrokedRectangle(new Vector2(mMax + mSliderSize, Position.Y - 30), new Vector2(60, 60), Color.Gray, Color.Black, 1, (float)0.8);
+                    // spriteBatch.StrokedRectangle(new Vector2(mMax + mSliderSize, Position.Y - 30), new Vector2(60, 60), Color.Gray, Color.Black, 1, (float)0.8);
+                    spriteBatch.StrokedRectangle(
+                        new Vector2((mMax + mSliderSize + 30) - (mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X / 2), Position.Y - 12 - mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).Y / 4), 
+                        new Vector2(mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X, mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X), Color.Gray, Color.Black, 1, (float)0.8);
 
                     // draws in value of slider in the center of display window
                     spriteBatch.DrawString(mFont,

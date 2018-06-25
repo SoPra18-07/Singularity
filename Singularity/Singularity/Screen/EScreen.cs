@@ -14,6 +14,7 @@
         SaveGameScreen,
         SplashScreen,
         StatisticsScreen,
-        MainMenuManagerScreen
+        MainMenuManagerScreen,
+        UserInterfaceScreen
     }
 }

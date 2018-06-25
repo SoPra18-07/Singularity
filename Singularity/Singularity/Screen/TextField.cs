@@ -37,7 +37,7 @@ namespace Singularity.Screen
 
         public void Update(GameTime gametime)
         {
-            // update not needed
+            // no update needed
         }
 
         public void Draw(SpriteBatch spriteBatch)

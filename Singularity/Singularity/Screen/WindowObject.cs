@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
@@ -457,8 +458,12 @@ namespace Singularity.Screen
 
         public Rectangle Bounds { get; private set; }
 
-        public void MouseWheelValueChanged(EMouseAction mouseAction)
+        public EScreen Screen { get; } = EScreen.UserInterfaceScreen;
+
+        public bool MouseWheelValueChanged(EMouseAction mouseAction)
         {
+            var giveThrough = true;
+
             // enabled only if
             //  - the mouse is above the scrollable part of the window
             //  - the window is not minimized
@@ -466,7 +471,7 @@ namespace Singularity.Screen
             if (!(mMouseX > mPosition.X) || !(mMouseX < mPosition.X + mSize.X) || !(mMouseY > mPosition.Y) ||
                 !(mMouseY < mPosition.Y + mSize.Y) || mMinimized || !mScrollable)
             {
-                return;
+                return giveThrough;
             }
 
             // scroll up or down
@@ -477,6 +482,7 @@ namespace Singularity.Screen
                         // stop from overflowing
                     {
                         mItemPosTop.Y += +10;
+                        giveThrough = false;
                     }
                     break;
                 case EMouseAction.ScrollDown:
@@ -484,16 +490,21 @@ namespace Singularity.Screen
                         // stop from overflowing
                     {
                         mItemPosTop.Y += -10;
+                        giveThrough = false;
                     }
                     break;
             }
+
+            return giveThrough;
         }
 
-        public void MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
+        public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
+            var giveThrough = true;
+
             if (mouseAction != EMouseAction.LeftClick || !withinBounds)
             {
-                return;
+                return giveThrough;
             }
 
             #region minimization
@@ -509,6 +520,7 @@ namespace Singularity.Screen
                     // -> use minimized rectangles
                 {
                     mMinimized = true;
+                    giveThrough = false;
 
                     // disable all items due to minimization
                     foreach (var item in mItemList)
@@ -521,6 +533,7 @@ namespace Singularity.Screen
                     // -> use regular rectangles
                 {
                     mMinimized = false;
+                    giveThrough = false;
 
                     // enable all items due to maximization
                     foreach (var item in mItemList)
@@ -545,8 +558,9 @@ namespace Singularity.Screen
                       mMouseX < mMinimizationRectangle.X + mMinimizationSize &&
                       mMouseY >= mMinimizationRectangle.Y &&
                       mMouseY < mMinimizationRectangle.Y + mMinimizationSize))
-                    // mouse not on minimization rectangle
+                    // mouse not on minimization rectangle (no movement when pressing the minimization rectangle)
                 {
+                    giveThrough = false;
                     mClickOnTitleBar = true;
 
                     // set 'previous mouse position'
@@ -558,15 +572,17 @@ namespace Singularity.Screen
             }
 
             #endregion
+
+            return giveThrough;
         }
 
-        public void MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
+        public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {
             #region window movement
             if (!mClickOnTitleBar)
                 // enable single window movement
             {
-                return;
+                return true;
             }
 
             // update window position
@@ -597,12 +613,16 @@ namespace Singularity.Screen
             mItemPosTop = new Vector2(mPosition.X + mBorderPadding, mPosition.Y + mTitleSizeY + 2 * mMinimizationSize);
 
             #endregion
-        }
 
-        public void MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
+            return false;
+        }   
+
+        public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
             mClickOnTitleBar = false;
             Bounds = new Rectangle((int)mPosition.X, (int)mPosition.Y, (int)(mSize.X), ((int)mSize.Y));
+
+            return false;
         }
 
         public void MousePositionChanged(float newX, float newY)
@@ -624,8 +644,8 @@ namespace Singularity.Screen
             // scrollbar to scrollbarRectangleBorder has the same ratio as scissorRectangle to combinedItemSize
             var sizeY = (scissorRectangle.Height / combinedItemsSize) * mScrollBarBorderRectangle.Height;
 
-            // number of possible steps rounded up
-            var numberOfSteps = (combinedItemsSize - scissorRectangle.Height + 10 - 1) / 10;
+            // number of possible steps
+            var numberOfSteps = (combinedItemsSize - scissorRectangle.Height) / 10;
             // number of times scrolled down
             var numberOfStepsTaken = ((scissorRectangle.Y - mItemPosTop.Y) / 10);
             // step size for the scrollbar
