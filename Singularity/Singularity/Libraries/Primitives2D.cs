@@ -366,16 +366,16 @@ namespace Singularity.Libraries
         /// <param name="rect">The rectangle to draw</param>
         /// <param name="color">The color to draw the rectangle in</param>
         /// <param name="thickness">The thickness of the lines</param>
-        public static void DrawRectangle(this SpriteBatch spriteBatch, Rectangle rect, Color color, float thickness)
+        public static void DrawRectangle(this SpriteBatch spriteBatch, Rectangle rect, Color color, float thickness, float layerDepth = 0)
         {
 
             // TODO: Handle rotations
             // TODO: Figure out the pattern for the offsets required and then handle it in the line instead of here
 
-            DrawLine(spriteBatch, new Vector2(rect.X, rect.Y), new Vector2(rect.Right, rect.Y), color, thickness); // top
-            DrawLine(spriteBatch, new Vector2(rect.X + 1f, rect.Y), new Vector2(rect.X + 1f, rect.Bottom + thickness), color, thickness); // left
-            DrawLine(spriteBatch, new Vector2(rect.X, rect.Bottom), new Vector2(rect.Right, rect.Bottom), color, thickness); // bottom
-            DrawLine(spriteBatch, new Vector2(rect.Right + 1f, rect.Y), new Vector2(rect.Right + 1f, rect.Bottom + thickness), color, thickness); // right
+            DrawLine(spriteBatch, new Vector2(rect.X, rect.Y), new Vector2(rect.Right, rect.Y), color, thickness, layerDepth); // top
+            DrawLine(spriteBatch, new Vector2(rect.X + 1f, rect.Y), new Vector2(rect.X + 1f, rect.Bottom + thickness), color, thickness, layerDepth); // left
+            DrawLine(spriteBatch, new Vector2(rect.X, rect.Bottom), new Vector2(rect.Right, rect.Bottom), color, thickness, layerDepth); // bottom
+            DrawLine(spriteBatch, new Vector2(rect.Right + 1f, rect.Y), new Vector2(rect.Right + 1f, rect.Bottom + thickness), color, thickness, layerDepth); // right
         }
 
 
@@ -700,9 +700,9 @@ namespace Singularity.Libraries
         /// <param name="radius"> radius of the circle</param>
         /// <param name="sides"> how many sides the circle is composed of</param>
         /// <param name="color"> color of the cirlce </param>
-        public static void FillCircle(this SpriteBatch spriteBatch, Vector2 center, float radius,int sides, Color color)
+        public static void FillCircle(this SpriteBatch spriteBatch, Vector2 center, float radius,int sides, Color color, float layerDepth = 0)
         {
-            spriteBatch.DrawCircle(center, radius, sides, color, radius);
+            spriteBatch.DrawCircle(center, radius, sides, color, radius, layerDepth);
         }
 
         #endregion

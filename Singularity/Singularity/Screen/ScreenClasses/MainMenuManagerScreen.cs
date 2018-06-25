@@ -8,6 +8,8 @@ namespace Singularity.Screen.ScreenClasses
 {
     internal sealed class MainMenuManagerScreen : IScreen
     {
+        public EScreen Screen { get; private set; } = EScreen.MainMenuManagerScreen;
+
         public bool Loaded { get; set; }
 
         /// <inheritdoc cref="IScreen"/>

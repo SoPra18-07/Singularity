@@ -1,6 +1,6 @@
 ﻿namespace Singularity.Screen
 {
-    enum EScreen
+    public enum EScreen
     {
         AchievementsScreen,
         GameModeSelectScreen,
@@ -13,6 +13,8 @@
         OptionsScreen,
         SaveGameScreen,
         SplashScreen,
-        StatisticsScreen
+        StatisticsScreen,
+        MainMenuManagerScreen,
+        UserInterfaceScreen
     }
 }

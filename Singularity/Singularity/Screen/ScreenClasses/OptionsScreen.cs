@@ -16,6 +16,8 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     internal sealed class OptionsScreen : ITransitionableMenu
     {
+        public EScreen Screen { get; private set; } = EScreen.OptionsScreen;
+
         public bool Loaded { get; set; }
 
         private readonly Game1 mGame;
