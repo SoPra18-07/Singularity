@@ -26,7 +26,7 @@ namespace Singularity.Platform
             var resources = mResourceMap.GetResources(mPlatform.GetLocation());
 
             if (resources.Count > 0 && !mPlatform.PlatformHasSpace()) return;
-            var res = new Resource(EResourceType.Oil, mPlatform.AbsolutePosition, 0);
+            var res = new Resource(EResourceType.Oil, mPlatform.AbsolutePosition);
             mPlatform.StoreResource(res);
         }
     }

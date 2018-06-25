@@ -166,8 +166,6 @@ namespace Singularity.Screen.ScreenClasses
             mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformBlankTexture, mPlatformBlankTexture);
             mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture, mPlatformBlankTexture);
             mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture, mPlatformBlankTexture);
-            mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture, mPlatformBlankTexture);
-
 
             var platform4 = new Well(new Vector2(1000, 200), mPlatformDomeTexture, mPlatformBlankTexture, mMap.GetResourceMap());
             var platform5 = new Quarry(new Vector2(1300, 400), mPlatformDomeTexture, mPlatformBlankTexture, mMap.GetResourceMap());
@@ -175,6 +173,14 @@ namespace Singularity.Screen.ScreenClasses
             var genUnit = new GeneralUnit(mPlatform, ref mDirector);
             var genUnit2 = new GeneralUnit(mPlatform2, ref mDirector);
             var genUnit3 = new GeneralUnit(mPlatform3, ref mDirector);
+
+            var res = new Resource(EResourceType.Oil, mPlatform.Center);
+            var res2 = new Resource(EResourceType.Water, mPlatform2.Center);
+            var res3 = new Resource(EResourceType.Sand, mPlatform3.Center);
+
+            mPlatform.StoreResource(res);
+            mPlatform2.StoreResource(res2);
+            mPlatform3.StoreResource(res3);
 
             mFow = new FogOfWar(mCamera, mGraphicsDevice);
 

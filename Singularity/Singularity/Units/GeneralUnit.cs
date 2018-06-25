@@ -14,7 +14,7 @@ using Singularity.Utils;
 namespace Singularity.Units
 {
     [DataContract]
-    public class GeneralUnit : ISpatial
+    public sealed class GeneralUnit : ISpatial
     {
         [DataMember]
         public int Id { get; }
@@ -82,6 +82,7 @@ namespace Singularity.Units
             mDestination = Optional<INode>.Of(null);
 
             CurrentNode = platform;
+            Carrying = Optional<Resource>.Of(null);
 
             AbsolutePosition = ((IRevealing) platform).Center; // TODO figure out how to search platform by ID and get its position
             mPathQueue = new Queue<Vector2>();
@@ -162,14 +163,15 @@ namespace Singularity.Units
         /// </summary>
         /// <param name="targetPosition">The target the unit should move towards</param>
         /// <returns></returns>
-        private void Move(Vector2 targetPosition)
+        private void Move(Vector2 targetPosition, GameTime time)
         {
 
             mIsMoving = true;
 
             var movementVector = Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y));
 
-            AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X * Speed, AbsolutePosition.Y + movementVector.Y * Speed);
+            AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X * Speed,
+                AbsolutePosition.Y + movementVector.Y * Speed);
         }
 
         /// <summary>
@@ -285,7 +287,7 @@ namespace Singularity.Units
                 mCurrentNode = mNodeQueue.Dequeue();
             }
             // finally move to the current node.
-            Move(((PlatformBlank)mCurrentNode).Center);
+            Move(((PlatformBlank)mCurrentNode).Center, gametime);
 
             // check whether we have reached the target after our move call.
             ReachedTarget(((PlatformBlank)mCurrentNode).Center);
@@ -294,7 +296,14 @@ namespace Singularity.Units
                 mDone = true;
             }
 
+            if (((PlatformBlank) mCurrentNode).GetPlatformResources().Count > 0)
+            {
+                // todo: fix
+                // ((PlatformBlank) mCurrentNode).GetResource()
+            }
+
         }
+        
 
         /// <summary>
         /// Checks whether the target has been reached.
@@ -319,6 +328,11 @@ namespace Singularity.Units
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.DrawCircle(AbsolutePosition, 10, 20, Color.Black, 10, LayerConstants.GeneralUnitLayer);
+
+            if (Carrying.IsPresent())
+            {
+                Carrying.Get().Draw(spriteBatch);
+            }
         }
     }
 }

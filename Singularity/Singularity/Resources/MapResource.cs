@@ -45,7 +45,7 @@ namespace Singularity.Resources
 
             // maybe needs some tweaks, it was mentioned that more resources is in a relation with bigger resource representation
             // this needs adjustment as soon as we actually do something with resources.
-            Amount = width / 10;
+            Amount = width;
 
             mColor = ResourceHelper.GetColor(type);
 
@@ -54,7 +54,7 @@ namespace Singularity.Resources
         public void Draw(SpriteBatch spriteBatch)
         {
             // TODO: test how this looks like.
-            spriteBatch.DrawEllipse(new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y), mColor, 30f, LayerConstants.MapResourceLayer);
+            spriteBatch.DrawEllipse(new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y), mColor, Amount / 2f, LayerConstants.MapResourceLayer);
         }
 
         public void Update(GameTime gametime)

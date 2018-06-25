@@ -188,13 +188,14 @@ namespace Singularity.Platform
         /// </summary>
         /// <param name="resourcetype">The resource you ask for</param>
         /// <returns>the resource you asked for, null otherwise.</returns>
-        public MapResource GetResource(EResourceType resourcetype)
+        public Resource GetResource(EResourceType resourcetype)
         {
-            // var index = mResources.FindIndex(x => x.isType(resourcetype));
-            // if (index < 0)
-            // {
-            // return null;
-            // }
+            // TODO: reservation of Resources (and stuff)
+            var index = mResources.FindIndex(x => x.Type == resourcetype);
+            if (index < 0)
+            {
+                return null;
+            }
 
             // var foundresource = mResources[index];
             // mResources.RemoveAt(index);
@@ -312,6 +313,13 @@ namespace Singularity.Platform
                         SpriteEffects.None,
                         LayerConstants.PlatformLayer);
                     break;
+            }
+
+            // also draw the resources on top
+
+            foreach (var res in mResources)
+            {
+                res.Draw(spritebatch);
             }
         }
 

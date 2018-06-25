@@ -24,6 +24,11 @@ namespace Singularity.Utils
             return length <= 1e-13 ? Vector3.Zero : new Vector3((float)(vector.X / length), (float)(vector.Y / length), (float)(vector.Z / length));
         }
 
+        public static double Length(Vector2 vec)
+        {
+            return Math.Sqrt(Math.Pow(vec.X, 2) + Math.Pow(vec.Y, 2));
+        }
+
 
         /// <summary>
         /// Normalizes the given vector.
@@ -41,16 +46,5 @@ namespace Singularity.Utils
         {
             return new Vector2(x + (width/2f), y + (height/2f));
         }
-
-        public static Vector2 GetCenter(PlatformBlank platform)
-        {
-            //TODO: change to ISpatial
-            return GetCenter(platform.AbsolutePosition.X,
-                platform.AbsolutePosition.Y,
-                platform.AbsoluteSize.X,
-                platform.AbsoluteSize.Y);
-
-        }
-
     }
 }
