@@ -227,3 +227,9 @@
 /processorParam:TextureFormat=Compressed
 /build:LibSans14.spritefont
 
+#begin Sound/SFX/LaserSound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/SFX/LaserSound.wav
+
