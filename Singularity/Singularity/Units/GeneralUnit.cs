@@ -299,7 +299,16 @@ namespace Singularity.Units
             if (((PlatformBlank) mCurrentNode).GetPlatformResources().Count > 0)
             {
                 // todo: fix
-                // ((PlatformBlank) mCurrentNode).GetResource()
+                var res = ((PlatformBlank) mCurrentNode).GetResource(EResourceType.Oil);
+                if (res.IsPresent())
+                {
+                    Carrying = res;
+                }
+            }
+
+            if (Carrying.IsPresent())
+            {
+                Carrying.Get().Follow(this, gametime);
             }
 
         }

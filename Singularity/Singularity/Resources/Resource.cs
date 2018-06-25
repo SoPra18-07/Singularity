@@ -44,8 +44,8 @@ namespace Singularity.Resources
 
                 var movementVector = Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y));
 
-                AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X * Speed * time.ElapsedGameTime.Milliseconds,
-                    AbsolutePosition.Y + movementVector.Y * Speed * time.ElapsedGameTime.Milliseconds);
+                AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X * Speed,
+                    AbsolutePosition.Y + movementVector.Y * Speed);
 
             }
         }

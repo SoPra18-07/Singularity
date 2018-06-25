@@ -188,19 +188,18 @@ namespace Singularity.Platform
         /// </summary>
         /// <param name="resourcetype">The resource you ask for</param>
         /// <returns>the resource you asked for, null otherwise.</returns>
-        public Resource GetResource(EResourceType resourcetype)
+        public Optional<Resource> GetResource(EResourceType resourcetype)
         {
             // TODO: reservation of Resources (and stuff)
             var index = mResources.FindIndex(x => x.Type == resourcetype);
             if (index < 0)
             {
-                return null;
+                return Optional<Resource>.Of(null);
             }
 
-            // var foundresource = mResources[index];
-            // mResources.RemoveAt(index);
-            // return foundresource;
-            return null;
+            var foundresource = mResources[index];
+            mResources.RemoveAt(index);
+            return Optional<Resource>.Of(foundresource);
         }
 
         /// <summary>
