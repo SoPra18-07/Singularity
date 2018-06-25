@@ -182,8 +182,8 @@ namespace Singularity.Units
             if (mElapsedTime > 4)
             { //Get a new random direction every 4 seconds
                 mElapsedTime -= 4; //Subtract the 4 seconds we've already checked
-                mMouseX = (float)mRand.NextDouble() * 2000; //Set the position to a random value within the screen
-                mMouseY = (float)mRand.NextDouble() * 1000;
+                mMouseX = (float)mRand.NextDouble() * MapConstants.MapWidth; //Set the position to a random value within the screen
+                mMouseY = (float)mRand.NextDouble() * MapConstants.MapHeight;
             }
 
             // Check if the target position is on the map.
