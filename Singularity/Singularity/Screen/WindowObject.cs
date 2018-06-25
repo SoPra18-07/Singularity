@@ -577,6 +577,9 @@ namespace Singularity.Screen
                 return true;
             }
 
+            // backup old window position to calculate the movement
+            var positionOld = mPosition;
+
             // update window position
             mPosition.X = (mMouseX - mWindowDragPos.X);
             mPosition.Y = (mMouseY - mWindowDragPos.Y);
@@ -601,8 +604,11 @@ namespace Singularity.Screen
             }
             #endregion
 
+            // calculate the movement
+            var movementVector = new Vector2(mPosition.X - positionOld.X, mPosition.Y - positionOld.Y);
+
             // item movement
-            mItemPosTop = new Vector2(mPosition.X + mBorderPadding, mPosition.Y + mTitleSizeY + 2 * mMinimizationSize);
+            mItemPosTop = new Vector2(mItemPosTop.X + movementVector.X, mItemPosTop.Y + movementVector.Y);
 
             #endregion
 
