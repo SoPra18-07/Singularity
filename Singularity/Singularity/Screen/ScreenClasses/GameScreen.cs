@@ -161,10 +161,10 @@ namespace Singularity.Screen.ScreenClasses
             // TODO: use this.Content to load your game content here
             mPlatformBlankTexture = content.Load<Texture2D>("PlatformBasic");
             mPlatformDomeTexture = content.Load<Texture2D>("Dome");
-            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformBlankTexture, mPlatformBlankTexture);
-            mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture, mPlatformBlankTexture);
-            mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture, mPlatformBlankTexture);
-            mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture, mPlatformBlankTexture);
+            mPlatform = new PlatformBlank(new Vector2(300 * 2, 400 * 2), mPlatformBlankTexture, mPlatformBlankTexture);
+             
+            mPlatform2 = new Junkyard(new Vector2(800 * 2, 600 * 2), mPlatformDomeTexture, mPlatformBlankTexture);
+            mPlatform3 = new EnergyFacility(new Vector2(600 * 2, 200 * 2), mPlatformDomeTexture, mPlatformBlankTexture);
 
             var libSans12 = content.Load<SpriteFont>("LibSans12");
 
@@ -172,8 +172,8 @@ namespace Singularity.Screen.ScreenClasses
             mMap = new Map.Map(mapBackground, 20, 20, mGraphicsDevice.Viewport, ref mDirector, true);
             mCamera = mMap.GetCamera();
 
-            var platform4 = new Well(new Vector2(1000, 200), mPlatformDomeTexture, mPlatformBlankTexture, mMap.GetResourceMap());
-            var platform5 = new Quarry(new Vector2(1300, 400), mPlatformDomeTexture, mPlatformBlankTexture, mMap.GetResourceMap());
+            var platform4 = new Well(new Vector2(1000 * 2, 200 * 2), mPlatformDomeTexture, mPlatformBlankTexture, mMap.GetResourceMap());
+            var platform5 = new Quarry(new Vector2(1300 * 2, 400 * 2), mPlatformDomeTexture, mPlatformBlankTexture, mMap.GetResourceMap());
 
             var genUnit = new GeneralUnit(mPlatform, ref mDirector);
             var genUnit2 = new GeneralUnit(mPlatform2, ref mDirector);
@@ -181,11 +181,11 @@ namespace Singularity.Screen.ScreenClasses
 
             mFow = new FogOfWar(mCamera, mGraphicsDevice);
 
-            mMUnit1 = new MilitaryUnit(new Vector2(1000, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector, ref mMap);
-            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector, ref mMap);
+            mMUnit1 = new MilitaryUnit(new Vector2(1000 * 2, 600 * 2), mMUnitSheet, mMap.GetCamera(), ref mDirector, ref mMap);
+            mMUnit2 = new MilitaryUnit(new Vector2(300 * 2, 700 * 2), mMUnitSheet, mMap.GetCamera(), ref mDirector, ref mMap);
 
             // load an enemy unit
-            mEnemy1 = new EnemyUnit(new Vector2(300, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector);
+            mEnemy1 = new EnemyUnit(new Vector2(300 * 2, 600 * 2), mMUnitSheet, mMap.GetCamera(), ref mDirector);
 
             // load roads
             mRoad1 = new Road(mPlatform, mPlatform2, false);
