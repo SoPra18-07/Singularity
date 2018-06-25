@@ -173,8 +173,6 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, mRasterizerState);
-
             // TODO
 
             // draw window
@@ -220,8 +218,6 @@ namespace Singularity.Screen.ScreenClasses
 
             // draw button
             mButton.Draw(spriteBatch);
-
-            spriteBatch.End();
         }
 
         public void Update(GameTime gametime)
@@ -259,15 +255,13 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool MouseWheelValueChanged(EMouseAction mouseAction)
         {
-            var giveThrough = true; 
-
             // enabled only if
             //  - the mouse is above the scrollable part of the window
             //  - the window is scrollable (the number of items is too big for one window)
             if (!(mMouseX > mPosition.X) || !(mMouseX < mPosition.X + mSize.X) || !(mMouseY > mPosition.Y) ||
                 !(mMouseY < mPosition.Y + mSize.Y) || !mScrollable)
             {
-                return giveThrough;
+                return true;
             }
 
             // scroll up or down
@@ -278,7 +272,6 @@ namespace Singularity.Screen.ScreenClasses
                         // stop from overflowing
                     {
                         mItemPosTop.Y += +10;
-                        giveThrough = false;
                     }
                     break;
                 case EMouseAction.ScrollDown:
@@ -286,12 +279,11 @@ namespace Singularity.Screen.ScreenClasses
                         // stop from overflowing
                     {
                         mItemPosTop.Y += -10;
-                        giveThrough = false;
                     }
                     break;
             }
 
-            return giveThrough;
+            return false;
         }
 
         public void MousePositionChanged(float newX, float newY)

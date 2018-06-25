@@ -297,8 +297,6 @@ namespace Singularity.Screen
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, mRasterizerState);
-
             // backup current scissor so we can restore later
             var saveRect = spriteBatch.GraphicsDevice.ScissorRectangle;
 
@@ -357,8 +355,6 @@ namespace Singularity.Screen
             // draw window title + bar
             spriteBatch.DrawString(mSpriteFont, mWindowName, new Vector2(mPosition.X + mMinimizationSize / 2f, mPosition.Y + mMinimizationSize / 2f), new Color(255, 255, 255));
             spriteBatch.DrawRectangle(mTitleBarRectangle, mColorBorder, 1);
-
-            spriteBatch.End();
         }
 
         public void Update(GameTime gametime)
@@ -462,8 +458,6 @@ namespace Singularity.Screen
 
         public bool MouseWheelValueChanged(EMouseAction mouseAction)
         {
-            var giveThrough = true;
-
             // enabled only if
             //  - the mouse is above the scrollable part of the window
             //  - the window is not minimized
@@ -471,7 +465,7 @@ namespace Singularity.Screen
             if (!(mMouseX > mPosition.X) || !(mMouseX < mPosition.X + mSize.X) || !(mMouseY > mPosition.Y) ||
                 !(mMouseY < mPosition.Y + mSize.Y) || mMinimized || !mScrollable)
             {
-                return giveThrough;
+                return true;
             }
 
             // scroll up or down
@@ -482,7 +476,6 @@ namespace Singularity.Screen
                         // stop from overflowing
                     {
                         mItemPosTop.Y += +10;
-                        giveThrough = false;
                     }
                     break;
                 case EMouseAction.ScrollDown:
@@ -490,12 +483,11 @@ namespace Singularity.Screen
                         // stop from overflowing
                     {
                         mItemPosTop.Y += -10;
-                        giveThrough = false;
                     }
                     break;
             }
 
-            return giveThrough;
+            return false;
         }
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)

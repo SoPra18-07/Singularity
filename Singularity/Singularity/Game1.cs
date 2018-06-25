@@ -94,9 +94,6 @@ namespace Singularity
             // todo this
             // director.GetSoundManager.LoadContent(Content);
             //_mSoundManager.PlaySoundTrack();
-
-            // load fonts to UserInterface
-            mUserInterfaceScreen.LoadContent(Content);
         }
 
         /// <summary>

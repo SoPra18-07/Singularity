@@ -35,6 +35,9 @@ namespace Singularity.Screen.ScreenClasses
         // needed to calculate screen-sizes
         private readonly GraphicsDeviceManager mGraphics;
 
+        // used by scissorrectangle to create a scrollable window by cutting everything outside specific bounds
+        private readonly RasterizerState mRasterizerState;
+
         #region civilUnits members
 
         private Slider mBuildersSlider;
@@ -86,6 +89,9 @@ namespace Singularity.Screen.ScreenClasses
 
             // create the windowList
             mWindowList = new List<WindowObject>();
+
+            // Initialize scissor window
+            mRasterizerState = new RasterizerState() { ScissorTestEnable = true };
         }
 
         public void Update(GameTime gametime)
@@ -123,6 +129,8 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, mRasterizerState);
+
             // draw all windows
             foreach (var window in mWindowList)
             {
@@ -134,6 +142,8 @@ namespace Singularity.Screen.ScreenClasses
             {
                 popupWindow.Draw(spriteBatch);
             }
+
+            spriteBatch.End();
         }
 
         public void LoadContent(ContentManager content)
@@ -311,6 +321,8 @@ namespace Singularity.Screen.ScreenClasses
         private void OnButtonClickOkayButton(object sender, EventArgs eventArgs)
         {
             mActiveWindow = false;
+            mInputManager.RemoveMousePositionListener(mTestPopupWindow);
+            mInputManager.RemoveMouseWheelListener(mTestPopupWindow);
         }
 
         #region InputManagement
