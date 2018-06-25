@@ -16,13 +16,17 @@ namespace Singularity.Platform
     [DataContract()]
     class Well: PlatformBlank, IRevealing
     {
-        [DataMember()]
+        [DataMember]
         private const int PlatformWidth = 144;
-        [DataMember()]
+        [DataMember]
         private const int PlatformHeight = 127;
+        [DataMember]
+        private DistributionManager.DistributionManager mDist;
 
-        public Well(Vector2 position, Texture2D spritesheet, ResourceMap resource): base(position, spritesheet, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
+        public Well(Vector2 position, Texture2D spritesheet, ResourceMap resource, DistributionManager.DistributionManager dist) : base(position, spritesheet, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
         {
+            mDist = dist;
+            dist.Register(this, false);
             mIPlatformActions = new IPlatformAction[2];
             //mActions[0] = BuildWellBlueprint(this);
             mIPlatformActions[1] = new ProduceWellResource(this, resource);

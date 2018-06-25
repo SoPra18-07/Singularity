@@ -22,30 +22,30 @@ namespace Singularity.Platform
 
         private List<IEdge> mOutwardsEdges;
 
-        [DataMember()]
+        [DataMember]
         protected EPlatformType mType = EPlatformType.Blank;
-        [DataMember()]
+        [DataMember]
         private const int PlatformWidth = 148;
-        [DataMember()]
+        [DataMember]
         private const int PlatformHeight = 172;
-        [DataMember()]
+        [DataMember]
         private int mHealth;
-        [DataMember()]
+        [DataMember]
         private int mId;
-        [DataMember()]
+        [DataMember]
         protected bool mIsBlueprint;
-        [DataMember()]
+        [DataMember]
         protected Dictionary<EResourceType, int> mCost;
-        [DataMember()]
+        [DataMember]
         protected IPlatformAction[] mIPlatformActions;
         private readonly Texture2D mSpritesheet;
-        [DataMember()]
+        [DataMember]
         protected string mSpritename;
-        [DataMember()]
-        protected Dictionary<GeneralUnit, JobType> mAssignedUnits;
-        [DataMember()]
+        [DataMember]
+        protected Dictionary<JobType, List<GeneralUnit>> mAssignedUnits;
+        [DataMember]
         protected List<Resource> mResources;
-        [DataMember()]
+        [DataMember]
         protected Dictionary<EResourceType, int> mRequested;
 
         public Vector2 Center { get; set; }
@@ -63,13 +63,13 @@ namespace Singularity.Platform
             throw new NotImplementedException();
         }
 
-        [DataMember()]
+        [DataMember]
         public Vector2 AbsolutePosition { get; set; }
-        [DataMember()]
+        [DataMember]
         public Vector2 AbsoluteSize { get; set; }
-        [DataMember()]
+        [DataMember]
         public Vector2 RelativePosition { get; set; }
-        [DataMember()]
+        [DataMember]
         public Vector2 RelativeSize { get; set; }
 
 
@@ -77,7 +77,7 @@ namespace Singularity.Platform
         /// Get the assigned Units of this platform.
         /// </summary>
         /// <returns> a list containing references of the units</returns>
-        public Dictionary<GeneralUnit, JobType> GetAssignedUnits()
+        public Dictionary<JobType, List<GeneralUnit>> GetAssignedUnits()
         {
             return mAssignedUnits;
         }
@@ -89,16 +89,19 @@ namespace Singularity.Platform
         /// <param name="job">The Job to be done by the unit</param>
         public void AssignUnits(GeneralUnit unit, JobType job)
         {
-            mAssignedUnits.Add(unit, job);
+            var list = mAssignedUnits[job];
+            list.Add(unit);
         }
 
         /// <summary>
         /// Remove an Assigned Unit from the Assigned List.
         /// </summary>
         /// <param name="unit">The unit to unassign.</param>
-        public void UnAssignUnits(GeneralUnit unit)
+        /// <param name="job">The Job of the unit</param>
+        public void UnAssignUnits(GeneralUnit unit, JobType job)
         {
-            mAssignedUnits.Remove(unit);
+            var list = mAssignedUnits[job];
+            list.Remove(unit);
         }
 
         /// <summary>
@@ -329,7 +332,7 @@ namespace Singularity.Platform
 
         public PlatformBlank(Vector2 position, Texture2D spritesheet, Vector2 center = new Vector2())
         {
-
+            
             Id = IdGenerator.NextiD();
 
             mInwardsEdges = new List<IEdge>();
@@ -347,7 +350,7 @@ namespace Singularity.Platform
             mIPlatformActions = new IPlatformAction[1];
             //mIPlatformActions[0] = IPlatformAction.BlueprintBuild;
 
-            mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
+            mAssignedUnits = new Dictionary<JobType, List<GeneralUnit>>();
 
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();

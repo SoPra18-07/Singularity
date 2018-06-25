@@ -20,46 +20,46 @@ namespace Singularity.Units
     [DataContract()]
     public class GeneralUnit : IUnit, IUpdate, IDraw, ISpatial
     {
-        [DataMember()]
+        [DataMember]
         public int Id { get; }
-        [DataMember()]
+        [DataMember]
         private DistributionManager.DistributionManager mDistrManager;
-        [DataMember()]
+        [DataMember]
         public Optional<Resource> Carrying { get; set; }
-        [DataMember()]
+        [DataMember]
         private Queue<Vector2> mPathQueue; // the queue of platform center locations
-        [DataMember()]
+        [DataMember]
         private Queue<INode> mNodeQueue;
-        [DataMember()]
+        [DataMember]
         internal JobType Job { get; set; } = JobType.Idle;
 
         //These are the assigned task and a flag, wether the unit is done with it.
-        [DataMember()]
+        [DataMember]
         private Task mAssignedTask;
 
         //Represent the current workstate.
-        [DataMember()]
+        [DataMember]
         private bool mDone;
-        [DataMember()]
+        [DataMember]
         private bool mAssigned;
 
-        [DataMember()]
+        [DataMember]
         private IPlatformAction mAssignedAction;
 
-        [DataMember()]
+        [DataMember]
         public INode CurrentNode { get; private set; }
 
         // TODO: also use the size for the units representation since we someday need to draw rectangles over units (bounding box)
 
-        [DataMember()]
+        [DataMember]
         public Vector2 AbsolutePosition { get; set; }
-        [DataMember()]
+        [DataMember]
         public Vector2 AbsoluteSize { get; set; }
-        [DataMember()]
+        [DataMember]
         public Vector2 RelativePosition { get; set; }
-        [DataMember()]
+        [DataMember]
         public Vector2 RelativeSize { get; set; }
-        [DataMember()]
+        [DataMember]
         private readonly PathManager mPathManager;
 
         /// <summary>
@@ -67,25 +67,25 @@ namespace Singularity.Units
         /// this is used so the unit can ask for a new path if it
         /// doesn't move
         /// </summary>
-        [DataMember()]
+        [DataMember]
         private bool mIsMoving;
 
         /// <summary>
         /// The node the unit started from. Changes when the unit reaches its destination (to the destination).
         /// </summary>
-        [DataMember()]
+        [DataMember]
         private INode mCurrentNode;
 
         /// <summary>
         /// The node the unit moves to. Null if the unit doesn't move anywhere
         /// </summary>
-        [DataMember()]
+        [DataMember]
         private INode mDestination;
 
         /// <summary>
         /// The speed the unit moves at.
         /// </summary>
-        [DataMember()]
+        [DataMember]
         private const float Speed = 3f;
 
         public GeneralUnit(PlatformBlank platform, PathManager pathManager, DistributionManager.DistributionManager distrManager)
@@ -113,10 +113,28 @@ namespace Singularity.Units
         {
             if (Job == JobType.Production && mAssigned)
             {
-                ((PlatformBlank)mDestination).UnAssignUnits(this);
+                ((PlatformBlank)mDestination).UnAssignUnits(this, Job);
                 mAssigned = false;
+                mDone = true;
             }
             Job = job;
+        }
+
+        /// <summary>
+        /// Is called when the unit should go to a new Platform, but not change jobs.
+        /// </summary>
+        public void ChangeHome(Task task)
+        {
+            if (mAssigned)
+            {
+                ((PlatformBlank)mCurrentNode).UnAssignUnits(this, Job);
+            }
+            mDone = false;
+            //Care!!! DO NOT UNDER ANY CIRCUMSTANCES USE THIS PLACEHOLDER
+            IPlatformAction action = new ProduceMineResource(null, null);
+            mAssignedTask = task;
+            mDestination = mAssignedTask.End;
+            mAssignedAction = mAssignedTask.Action;
         }
 
         /// <summary>

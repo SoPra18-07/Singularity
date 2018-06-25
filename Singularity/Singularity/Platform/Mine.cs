@@ -15,13 +15,18 @@ namespace Singularity.Platform
     [DataContract()]
     class Mine : PlatformBlank, IRevealing
     {
-        [DataMember()]
+        [DataMember]
         private const int PlatformWidth = 144;
-        [DataMember()]
+        [DataMember]
         private const int PlatformHeight = 127;
 
-        public Mine(Vector2 position, Texture2D spritesheet, ResourceMap resource): base(position, spritesheet, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
+        [DataMember]
+        private DistributionManager.DistributionManager mDist;
+
+        public Mine(Vector2 position, Texture2D spritesheet, ResourceMap resource, DistributionManager.DistributionManager dist) : base(position, spritesheet, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
         {
+            mDist = dist;
+            dist.Register(this, false);
             mIPlatformActions = new IPlatformAction[2];
             //mActions[0] = BuildPlatformBlueprint(this);
             mIPlatformActions[1] = new ProduceMineResource(this, resource);

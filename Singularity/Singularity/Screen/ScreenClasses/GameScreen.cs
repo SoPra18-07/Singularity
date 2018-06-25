@@ -173,8 +173,8 @@ namespace Singularity.Screen.ScreenClasses
             var genUnit2 = new GeneralUnit(mPlatform2, pathManager, dist);
             var genUnit3 = new GeneralUnit(mPlatform3, pathManager, dist);
 
-            var platform4 = new Well(new Vector2(1000, 200), mPlatformDomeTexture, mMap.GetResourceMap());
-            var platform5 = new Quarry(new Vector2(1300, 400), mPlatformDomeTexture, mMap.GetResourceMap());
+            var platform4 = new Well(new Vector2(1000, 200), mPlatformDomeTexture, mMap.GetResourceMap(), dist);
+            var platform5 = new Quarry(new Vector2(1300, 400), mPlatformDomeTexture, mMap.GetResourceMap(), dist);
 
             var genUnit = new GeneralUnit(mPlatform, pathManager, dist);
             var genUnit4 = new GeneralUnit(platform4, pathManager, dist);
