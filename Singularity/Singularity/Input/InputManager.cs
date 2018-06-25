@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Singularity.Map;
 using Singularity.Property;
 using Singularity.Screen;
 
@@ -510,5 +511,7 @@ namespace Singularity.Input
         {
             return new Rectangle((int) x, (int) y, 1, 1);
         }
+
+
     }
 }

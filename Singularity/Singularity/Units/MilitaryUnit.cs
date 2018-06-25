@@ -3,10 +3,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
+using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
 using Singularity.Screen;
+using Singularity.Sound;
 using Singularity.Utils;
 
 namespace Singularity.Units
@@ -48,6 +50,10 @@ namespace Singularity.Units
         private float mMouseY;
 
         private readonly Director mDirector;
+
+        private Vector2 mEnemyPosition;
+
+        private bool mShoot;
 
         public Vector2 AbsolutePosition { get; set; }
 
@@ -175,6 +181,14 @@ namespace Singularity.Units
                 LayerConstants.MilitaryUnitLayer
                 );
 
+            if (mShoot)
+            {
+                // draws a laser line a a slight glow around the line, then sets the shoot future off 
+                spriteBatch.DrawLine(Center, mEnemyPosition, Color.White, 2);
+                spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mEnemyPosition, Color.White * .2f, 6);
+                mShoot = false;
+            }
+
         }
 
 
@@ -186,9 +200,15 @@ namespace Singularity.Units
                 (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
 
             // this makes the unit rotate according to the mouse position when its selected and not moving.
-            if (mSelected && !mIsMoving)
+            if (mSelected && !mIsMoving && !mShoot)
             {
                 Rotate(new Vector2(mMouseX, mMouseY));
+            }
+
+            //TODO this might not be 100% correct when mouse isnt shoot target
+            else if (mShoot)
+            {
+                Rotate(mEnemyPosition);
             }
 
             if (HasReachedTarget())
@@ -212,6 +232,15 @@ namespace Singularity.Units
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
             AbsBounds = new Rectangle((int)AbsolutePosition.X, (int) AbsolutePosition.Y, (int)AbsoluteSize.X, (int) AbsoluteSize.Y);
             Moved = mIsMoving;
+
+            //TODO this needs to be taken out once the military manager takes control of shooting
+            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            {
+                // shoots at mouse and plays laser sound at full volume
+                Shoot(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
+                mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+
+            }
         }
 
         /// <summary>
@@ -228,6 +257,13 @@ namespace Singularity.Units
             AbsolutePosition = new Vector2((float) (AbsolutePosition.X + mMovementVector.X * Speed), (float) (AbsolutePosition.Y + mMovementVector.Y * Speed));
         }
 
+        public void Shoot(Vector2 target)
+        {
+            mShoot = true;
+            mEnemyPosition = target;
+            Rotate(target);
+
+        }
         /// <summary>
         /// Checks whether the target position is reached or not.
         /// </summary>
@@ -292,6 +328,16 @@ namespace Singularity.Units
         {
             mMouseX = newX;
             mMouseY = newY;
+        }
+
+        public void OnSelectingBox(Object sender, EventArgs eventArgs, Vector2 leftCorner, Vector2 size)
+        {
+            Rectangle selectingBox = new Rectangle((int)leftCorner.X, (int)leftCorner.Y, (int)size.X, (int)size.Y);
+            Rectangle unitBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
+            if (selectingBox.Intersects(unitBounds))
+            {
+                mSelected = true;
+            }
         }
     }
 }

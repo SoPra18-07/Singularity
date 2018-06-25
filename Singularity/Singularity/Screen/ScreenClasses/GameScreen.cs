@@ -37,6 +37,8 @@ namespace Singularity.Screen.ScreenClasses
         private MilitaryUnit mMUnit1;
         private MilitaryUnit mMUnit2;
 
+        private SelectionBox mSelBox;
+
         private EnemyUnit mEnemy1;
 
         // map and fog of war
@@ -183,6 +185,14 @@ namespace Singularity.Screen.ScreenClasses
             mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector);
             mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector);
 
+            // selection box for military unit
+            mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
+
+            //TODO the job of subscribing military units to the SelectionBox event will be taken over by
+            //TODO the militarymanager
+            mSelBox.SelectingBox += mMUnit1.OnSelectingBox;
+            mSelBox.SelectingBox += mMUnit2.OnSelectingBox;
+
             // load an enemy unit
             mEnemy1 = new EnemyUnit(new Vector2(300, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector);
 
@@ -198,6 +208,7 @@ namespace Singularity.Screen.ScreenClasses
 
             AddObject(mMUnit1);
             AddObject(mMUnit2);
+            AddObject(mSelBox);
             AddObject(mEnemy1);
             AddObject(mPlatform);
             AddObject(mPlatform2);
@@ -214,6 +225,8 @@ namespace Singularity.Screen.ScreenClasses
             AddObject(genUnit);
             AddObject(genUnit2);
             AddObject(genUnit3);
+
+            
   
             AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
 
