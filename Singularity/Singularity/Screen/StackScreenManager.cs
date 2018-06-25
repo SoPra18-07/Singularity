@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Input;
 
 namespace Singularity.Screen
 {
@@ -26,8 +27,11 @@ namespace Singularity.Screen
 
         private readonly ContentManager mContentManager;
 
-        public StackScreenManager(ContentManager contentManager)
+        private readonly InputManager mInputManager;
+
+        public StackScreenManager(ContentManager contentManager, InputManager inputManager)
         {
+            mInputManager = inputManager;
             mContentManager = contentManager;
 
             //these are used to savely add new screens without changing the stack size while iterating.
@@ -74,6 +78,8 @@ namespace Singularity.Screen
                     currentScreen.LoadContent(mContentManager);
                     currentScreen.Loaded = true;
                 }
+
+                mInputManager.AddScreen(currentScreen.Screen);
 
                 testScreens.AddLast(currentScreen);
 

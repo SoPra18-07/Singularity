@@ -16,6 +16,8 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     class GamePauseScreen : IScreen
     {
+
+        public EScreen Screen { get; private set; } = EScreen.GamePauseScreen;
         public bool Loaded { get; set; }
 
         /// <summary>

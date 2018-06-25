@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
 using Singularity.Map.Properties;
 using Singularity.Property;
+using Singularity.Screen;
 
 namespace Singularity.Map
 {   
@@ -16,6 +17,7 @@ namespace Singularity.Map
     /// </remarks>
     internal sealed class Camera : IUpdate, IKeyListener, IMouseWheelListener, IMousePositionListener
     {
+        public EScreen Screen { get; private set; } = EScreen.GameScreen;
 
         /// <summary>
         /// The speed at which the camera moves in pixels per update.
@@ -254,7 +256,7 @@ namespace Singularity.Map
             
         }
 
-        public void MouseWheelValueChanged(EMouseAction mouseAction)
+        public bool MouseWheelValueChanged(EMouseAction mouseAction)
         {
             var scrollChange = 0f;
 
@@ -274,6 +276,8 @@ namespace Singularity.Map
             {
                 ZoomToTarget(new Vector2(mMouseX, mMouseY), scrollChange);
             }
+
+            return false;
         }
 
         public Matrix GetStencilProjection()

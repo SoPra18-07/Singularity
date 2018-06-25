@@ -49,7 +49,7 @@ namespace Singularity
 
             mInputManager = new InputManager();
 
-            mScreenManager = new StackScreenManager(Content);
+            mScreenManager = new StackScreenManager(Content, mInputManager);
 
             mInputManager = new InputManager();
 

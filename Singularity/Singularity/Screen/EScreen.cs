@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Singularity.Screen
 {
-    enum EScreen
+    public enum EScreen
     {
         AchievementsScreen,
         GameModeSelectScreen,
@@ -19,6 +19,7 @@ namespace Singularity.Screen
         OptionsScreen,
         SaveGameScreen,
         SplashScreen,
-        StatisticsScreen
+        StatisticsScreen,
+        MainMenuManagerScreen
     }
 }

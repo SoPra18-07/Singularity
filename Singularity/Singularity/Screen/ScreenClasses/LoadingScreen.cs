@@ -17,7 +17,7 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     class LoadingScreen : ITransitionableMenu
     {
-
+        public EScreen Screen { get; private set; } = EScreen.LoadingScreen;
         public bool Loaded { get; set; }
 
         private Texture2D mLogo;

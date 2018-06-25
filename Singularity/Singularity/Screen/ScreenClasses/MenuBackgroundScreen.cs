@@ -16,6 +16,8 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     class MenuBackgroundScreen : ITransitionableMenu
     {
+
+        public EScreen Screen { get; private set; } = EScreen.MenuBackgroundScreen;
         public bool Loaded { get; set; }
 
         private Texture2D mGlowTexture2D;

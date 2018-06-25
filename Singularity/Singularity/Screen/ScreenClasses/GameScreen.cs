@@ -25,7 +25,7 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     internal sealed class GameScreen : IScreen
     {
-
+        public EScreen Screen { get; private set; } = EScreen.GameScreen;
         public bool Loaded { get; set; }
 
         // sprite textures
