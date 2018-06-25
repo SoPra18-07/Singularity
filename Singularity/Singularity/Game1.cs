@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Screen;
@@ -18,6 +18,7 @@ namespace Singularity
         // Screens
         internal GameScreen mGameScreen;
         private MainMenuManagerScreen mMainMenuManager;
+        private UserInterfaceScreen mUserInterfaceScreen;
 
 
         // Sprites!
@@ -78,10 +79,13 @@ namespace Singularity
 
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
 
+            mUserInterfaceScreen = new UserInterfaceScreen(mDirector, mGraphics);
+
             // Add the screens to the screen manager
             // The idea is that the game screen is always at the bottom and stuff is added simply
             // on top of it.
             mScreenManager.AddScreen(mGameScreen);
+            mScreenManager.AddScreen(mUserInterfaceScreen);
             mScreenManager.AddScreen(mMainMenuManager);
 
 
@@ -90,7 +94,6 @@ namespace Singularity
             // todo this
             // director.GetSoundManager.LoadContent(Content);
             //_mSoundManager.PlaySoundTrack();
-
         }
 
         /// <summary>
