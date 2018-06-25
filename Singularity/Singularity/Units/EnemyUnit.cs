@@ -179,30 +179,26 @@ namespace Singularity.Units
         {
             // Generate random positions for the enemy unit to move to.
             mElapsedTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (mElapsedTime > 3)
-            { //Get a new random direction every 3 seconds
-                mElapsedTime -= 3; //Subtract the 3 seconds we've already checked
+            if (mElapsedTime > 4)
+            { //Get a new random direction every 4 seconds
+                mElapsedTime -= 4; //Subtract the 4 seconds we've already checked
                 mMouseX = (float)mRand.NextDouble() * 2000; //Set the position to a random value within the screen
                 mMouseY = (float)mRand.NextDouble() * 1000;
-                // Check if the target position is on the map.
-                if (mSelected && !mIsMoving && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f), (int)(mMouseY - RelativeSize.Y / 2f), (int)RelativeSize.X, (int)RelativeSize.Y), mCamera))
-                {
-                    mIsMoving = true;
-                    mTargetPosition = new Vector2(mMouseX, mMouseY);
-                    mBoundsSnapshot = Bounds;
-                    mZoomSnapshot = mCamera.GetZoom();
-                }
+            }
+
+            // Check if the target position is on the map.
+            if (mSelected && !mIsMoving && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f), (int)(mMouseY - RelativeSize.Y / 2f), (int)RelativeSize.X, (int)RelativeSize.Y), mCamera))
+            {
+                Rotate(new Vector2(mMouseX, mMouseY));
+                mIsMoving = true;
+                mTargetPosition = new Vector2(mMouseX, mMouseY);
+                mBoundsSnapshot = Bounds;
+                mZoomSnapshot = mCamera.GetZoom();
             }
 
             //make sure to update the relative bounds rectangle enclosing this unit.
             Bounds = new Rectangle(
                 (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
-
-            // this makes the unit rotate according to the mouse position when its selected and not moving.
-            if (mSelected && !mIsMoving)
-            {
-                Rotate(new Vector2(mMouseX, mMouseY));
-            }
 
             if (HasReachedTarget())
             {
