@@ -29,12 +29,12 @@ namespace Singularity.Platform
             AbsoluteSize = SetPlatfromDrawParameters();
         }
 
-        public void TurnOn(StoryManager story)
+        public void TurnOn(Manager.StoryManager story)
         {
             story.AddEnergy(20);
         }
 
-        public void TurnOff(StoryManager story)
+        public void TurnOff(Manager.StoryManager story)
         {
             story.AddEnergy(-20);
         }
