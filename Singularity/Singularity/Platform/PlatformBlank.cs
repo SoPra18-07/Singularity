@@ -23,7 +23,7 @@ namespace Singularity.Platform
         private List<IEdge> mOutwardsEdges;
 
         [DataMember]
-        protected EPlatformType mType = EPlatformType.Blank;
+        internal EPlatformType mType = EPlatformType.Blank;
         [DataMember]
         private const int PlatformWidth = 148;
         [DataMember]

@@ -21,7 +21,7 @@ namespace Singularity.Units
     public class GeneralUnit : IUnit, IUpdate, IDraw, ISpatial
     {
         [DataMember]
-        public int Id { get; }
+        public int Id { get; set; }
         [DataMember]
         private DistributionManager.DistributionManager mDistrManager;
         [DataMember]
@@ -90,11 +90,12 @@ namespace Singularity.Units
 
         public GeneralUnit(PlatformBlank platform, PathManager pathManager, DistributionManager.DistributionManager distrManager)
         {
+            Id = IdGenerator.NextiD();
             mDestination = null;
 
             CurrentNode = platform;
 
-            AbsolutePosition = ((IRevealing) platform).Center; // TODO figure out how to search platform by ID and get its position
+            AbsolutePosition = ((IRevealing) platform).Center;
             mPathQueue = new Queue<Vector2>();
             mNodeQueue = new Queue<INode>();
 
@@ -115,9 +116,21 @@ namespace Singularity.Units
             {
                 ((PlatformBlank)mDestination).UnAssignUnits(this, Job);
                 mAssigned = false;
-                mDone = true;
             }
             Job = job;
+        }
+
+        /// <summary>
+        /// Is called if this Units Job is changed to Production or Defense. BUT NOT BY THE UNIT ITSELF. Should only be called by the DistrManager
+        /// </summary>
+        /// <param name="task">The new task for the unit</param>
+        public void AssignTask(Task task)
+        {
+            mDone = false;
+            mAssignedTask = task;
+            ChangeJob(mAssignedTask.Job);
+            mDestination = mAssignedTask.End;
+            mAssignedAction = mAssignedTask.Action;
         }
 
         /// <summary>
@@ -130,8 +143,6 @@ namespace Singularity.Units
                 ((PlatformBlank)mCurrentNode).UnAssignUnits(this, Job);
             }
             mDone = false;
-            //Care!!! DO NOT UNDER ANY CIRCUMSTANCES USE THIS PLACEHOLDER
-            IPlatformAction action = new ProduceMineResource(null, null);
             mAssignedTask = task;
             mDestination = mAssignedTask.End;
             mAssignedAction = mAssignedTask.Action;
@@ -159,26 +170,15 @@ namespace Singularity.Units
                     break;
 
                 case JobType.Production:
-                    //Get a Task
-                    if (!mIsMoving && mDone)
-                    {
-                        mDone = false;
-                        //Care!!! DO NOT UNDER ANY CIRCUMSTANCES USE THIS PLACEHOLDER
-                        IPlatformAction action = new ProduceMineResource(null, null);
-                        mAssignedTask = mDistrManager.RequestNewTask(this, Job, Optional<IPlatformAction>.Of(action));
-                        mDestination = mAssignedTask.End;
-                        mAssignedAction = mAssignedTask.Action;
-                    }
                     //You arrived at your destination and you now want to work.
-                    else if(!mIsMoving && !mDone && mCurrentNode == mDestination)
+                    //Console.Out.WriteLine(AbsolutePosition.X + " " + AbsolutePosition.Y + Id);
+                    if(!mIsMoving && !mDone && mCurrentNode == mDestination)
                     {
                         if (!mAssigned)
                         {
                             ((PlatformBlank)mDestination).AssignUnits(this, Job);
                             mAssigned = true;
                         }
-                        
-                        //Check the passed time
                     }
                     break;
             }

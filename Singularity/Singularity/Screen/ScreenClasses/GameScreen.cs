@@ -170,15 +170,15 @@ namespace Singularity.Screen.ScreenClasses
 
 
 
-            var genUnit2 = new GeneralUnit(mPlatform2, pathManager, dist);
-            var genUnit3 = new GeneralUnit(mPlatform3, pathManager, dist);
+            var genUnit2 = new GeneralUnit(mPlatform, pathManager, dist);
+            var genUnit3 = new GeneralUnit(mPlatform, pathManager, dist);
 
             var platform4 = new Well(new Vector2(1000, 200), mPlatformDomeTexture, mMap.GetResourceMap(), dist);
             var platform5 = new Quarry(new Vector2(1300, 400), mPlatformDomeTexture, mMap.GetResourceMap(), dist);
 
             var genUnit = new GeneralUnit(mPlatform, pathManager, dist);
-            var genUnit4 = new GeneralUnit(platform4, pathManager, dist);
-            var genUnit5 = new GeneralUnit(platform5, pathManager, dist);
+            var genUnit4 = new GeneralUnit(mPlatform, pathManager, dist);
+            var genUnit5 = new GeneralUnit(mPlatform, pathManager, dist);
 
             mFow = new FogOfWar(mCamera, mGraphicsDevice);
 
@@ -239,6 +239,8 @@ namespace Singularity.Screen.ScreenClasses
 
             // artificially adding wait to test loading screen
             System.Threading.Thread.Sleep(500);
+            dist.DistributeJobs(JobType.Idle, JobType.Production, 2);
+            dist.TestAttributes();
         }
 
         public bool UpdateLower()

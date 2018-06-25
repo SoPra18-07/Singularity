@@ -45,5 +45,15 @@ namespace Singularity.Platform
                 mIPlatformActions[1].Execute();
             }
         }
+
+        public new void Update(GameTime time)
+        {
+            base.Update(time);
+            if (time.TotalGameTime.TotalSeconds % 5 <= 0.5)
+            {
+                Console.Out.WriteLine("PRODUCE!!!!");
+                Produce();
+            }
+        }
     }
 }
