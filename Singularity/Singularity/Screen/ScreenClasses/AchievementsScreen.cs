@@ -16,6 +16,8 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     internal sealed class AchievementsScreen : ITransitionableMenu
     {
+        public EScreen Screen { get; private set; } = EScreen.AchievementsScreen;
+
         /// <summary>
         /// Updates the contents of the screen.
         /// </summary>

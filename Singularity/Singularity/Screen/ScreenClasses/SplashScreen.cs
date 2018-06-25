@@ -16,6 +16,8 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     class SplashScreen : ITransitionableMenu
     {
+
+        public EScreen Screen { get; private set; } = EScreen.SaveGameScreen;
         public bool Loaded { get; set; }
 
         // TODO either add bloom to the text or make it a sprite

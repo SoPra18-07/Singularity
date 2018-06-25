@@ -15,6 +15,8 @@ namespace Singularity.Screen.ScreenClasses
 
     class Statistics : IScreen
     {
+        public EScreen Screen { get; private set; } = EScreen.StatisticsScreen;
+
         public bool Loaded { get; set; }
 
         /// <summary>

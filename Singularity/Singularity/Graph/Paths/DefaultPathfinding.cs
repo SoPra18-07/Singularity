@@ -38,10 +38,7 @@ namespace Singularity.Graph.Paths
             {
                 gScore[node] = int.MaxValue;
                 fScore[node] = int.MaxValue;
-
-                Debug.WriteLine(node);
             }
-            Debug.WriteLine("");
 
             gScore[start] = 0f;
 
@@ -65,10 +62,8 @@ namespace Singularity.Graph.Paths
 
                 // current can never be null from my short amount of thinking about it (if actual arguments are given)
 
-                Debug.Assert(current != null, "PathFinding failed");
                 if (current.Equals(destination))
                 {
-                    Debug.WriteLine("");
                     return ReconstructPath(cameFrom, current);
                 }
 
@@ -92,8 +87,6 @@ namespace Singularity.Graph.Paths
                     }
 
                     var tentativeGScore = gScore[current] + outgoing.GetCost();
-
-                    Debug.WriteLine(neighbor);
 
                     if (tentativeGScore >= gScore[neighbor])
                     {
