@@ -294,6 +294,13 @@ namespace Singularity.Units
             if (mNodeQueue.Count == 0 && Job == JobType.Idle)
             {
                 mDone = true;
+
+                // todo: fixme: only if on platform where the resource should be carried from
+                if (mAssignedTask.GetResource.IsPresent())
+                {
+                    var res = ((PlatformBlank) mCurrentNode).GetResource(mAssignedTask.GetResource.Get());
+                    Carrying = res;
+                }
             }
 
             if (((PlatformBlank) mCurrentNode).GetPlatformResources().Count > 0)

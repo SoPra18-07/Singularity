@@ -40,7 +40,7 @@ namespace Singularity.Resources
             var diff = unit.AbsolutePosition - AbsolutePosition;
             if (Geometry.Length(diff) > 50)
             {
-                var targetPosition = diff - 50 * Geometry.NormalizeVector(diff) + AbsolutePosition;
+                var targetPosition = diff - 35 * Geometry.NormalizeVector(diff) + AbsolutePosition;
 
                 var movementVector = Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y));
 
