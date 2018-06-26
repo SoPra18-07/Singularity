@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
@@ -269,13 +270,13 @@ namespace Singularity.Map
                     scrollChange = -0.1f;
                     break;
             }
-
+            
             if (!((mZoom + scrollChange) * MapConstants.MapWidth < mViewport.Width ||
                   (mZoom + scrollChange) * MapConstants.MapHeight < mViewport.Height))
             {
                 ZoomToTarget(new Vector2(mMouseX, mMouseY), scrollChange);
             }
-
+            
             return false;
         }
 

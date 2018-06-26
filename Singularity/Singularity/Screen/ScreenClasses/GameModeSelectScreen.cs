@@ -189,6 +189,8 @@ namespace Singularity.Screen.ScreenClasses
             mMStoryButton.ButtonHovering += OnStoryHover;
             mMFreePlayButton.ButtonHovering += OnFreePlayHover;
             mMBackButton.ButtonHovering += OnBackHover;
+
+            Loaded = true;
         }
 
         /// <summary>

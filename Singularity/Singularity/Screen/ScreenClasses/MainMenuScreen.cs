@@ -72,7 +72,7 @@ namespace Singularity.Screen.ScreenClasses
 
             mButtonLeftPadding = mMenuBoxPosition.X + 60;
             mButtonTopPadding = mMenuBoxPosition.Y + 90;
-            
+
             mPlayString = "New Game";
             mLoadSelectString = "Load Game";
             mAchievementsString = "Achievements";
@@ -84,7 +84,7 @@ namespace Singularity.Screen.ScreenClasses
             mMenuOpacity = 1;
         }
 
-        
+
 
         /// <summary>
         /// Loads any content specific to this screen.
@@ -125,6 +125,7 @@ namespace Singularity.Screen.ScreenClasses
             mAchievementsButton.ButtonHovering += OnAchievementsHovering;
             mQuitButton.ButtonHovering += OnQuitHovering;
 
+            Loaded = true;
         }
 
 
@@ -192,7 +193,7 @@ namespace Singularity.Screen.ScreenClasses
             switch (mTargetScreen)
             {
                 case EScreen.AchievementsScreen:
-                    
+
                     break;
                 case EScreen.GameModeSelectScreen:
                     if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
@@ -217,7 +218,6 @@ namespace Singularity.Screen.ScreenClasses
 
                         var opacity =
                             (float) Animations.Easing(0, 1f, mTransitionStartTime, mTransitionDuration, gameTime);
-                        Debug.WriteLine(mMenuOpacity);
                         mMenuOpacity = opacity;
                         mWindowOpacity = opacity;
                     }
@@ -257,9 +257,9 @@ namespace Singularity.Screen.ScreenClasses
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mTargetScreen), mTargetScreen, null);
             }
-            
 
-            
+
+
         }
         /// <summary>
         /// Draws the content of this screen.
@@ -281,7 +281,7 @@ namespace Singularity.Screen.ScreenClasses
                 color: Color.White * mMenuOpacity,
                 rotation: 0f,
                 origin: new Vector2(x: 0, y: 11),
-                scale: 1f, 
+                scale: 1f,
                 effects: SpriteEffects.None,
                 layerDepth: 0f);
 

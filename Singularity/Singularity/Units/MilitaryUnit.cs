@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -49,7 +51,17 @@ namespace Singularity.Units
 
         private float mMouseY;
 
-        private readonly Director mDirector;
+        private readonly float mScale;
+
+        private Map.Map mMap;
+
+        private Stack<Vector2> mPath;
+
+        private Director mDirector;
+
+        private MilitaryPathfinder mPathfinder;
+
+        private Vector2[] mDebugPath; //TODO this is for debugging
 
         private Vector2 mEnemyPosition;
 
@@ -73,17 +85,19 @@ namespace Singularity.Units
 
         public Rectangle AbsBounds { get; private set; }
 
-        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director)
+        
+        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director, ref Map.Map map)
         {
-            Id = IdGenerator.NextiD(); // TODO this will later use a random number generator to create a unique
-                    // id for the specific unit.
-            Health = 10; //TODO
-            
-            AbsolutePosition = position;
-            AbsoluteSize = new Vector2(DefaultWidth, DefaultHeight);
+            Id = IdGenerator.NextiD(); // id for the specific unit.
+            Health = 10;
 
-            RevelationRadius = (int) AbsoluteSize.X;
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X  / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+            mScale = 0.4f;
+
+            AbsolutePosition = position;
+            AbsoluteSize = new Vector2(DefaultWidth * mScale, DefaultHeight * mScale);
+
+            RevelationRadius = (int) AbsoluteSize.X * 3;
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * mScale / 2, AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
 
             Moved = false;
             mIsMoving = false;
@@ -95,18 +109,22 @@ namespace Singularity.Units
             mDirector.GetInputManager.AddMousePositionListener(this);
 
             mMilSheet = spriteSheet;
+
+            mMap = map;
+
+            mPathfinder = new MilitaryPathfinder();
         }
 
 
         /// <summary>
         /// Rotates unit in order when selected in order to face
-        /// user mouse and eventually target destination
+        /// user mouse and eventually target destination.
         /// </summary>
         /// <param name="target"></param>
         private void Rotate(Vector2 target)
         {
             // form a triangle from unit location to mouse location
-            // adjust to be at center of sprite 150x75
+            // adjust to be at center of sprite
             var x = (target.X - (RelativePosition.X + RelativeSize.X / 2));
             var y = (target.Y - (RelativePosition.Y + RelativeSize.Y / 2));
             var hypot = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
@@ -132,13 +150,13 @@ namespace Singularity.Units
                 mRotation = (int) (Math.Round(90 + degree, MidpointRounding.AwayFromZero));
             }
 
-            // add 42 degrees since sprite sheet starts at sprite -42d not 0
+            // add 42 degrees since sprite sheet starts at sprite -42deg not 0
             mRotation = (mRotation + 42) % 360;
 
         }
 
         /// <summary>
-        /// The property which defines the health of the unit
+        /// Defines the health of the unit, defaults to 10.
         /// </summary>
         private int Health { get; set; }
 
@@ -168,18 +186,26 @@ namespace Singularity.Units
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            
             spriteBatch.Draw(
-                mMilSheet, 
-                AbsolutePosition, 
-                new Rectangle((150 * mColumn), (75 * mRow), (int) AbsoluteSize.X, (int) AbsoluteSize.Y), 
-                mColor, 
-                0f, 
-                Vector2.Zero, 
-                Vector2.One, 
-                SpriteEffects.None, 
+                mMilSheet,
+                AbsolutePosition,
+                new Rectangle((150 * mColumn), (75 * mRow), (int) (AbsoluteSize.X / mScale), (int) (AbsoluteSize.Y / mScale)),
+                mColor,
+                0f,
+                Vector2.Zero,
+                new Vector2(mScale),
+                SpriteEffects.None,
                 LayerConstants.MilitaryUnitLayer
                 );
+            
+            // TODO DEBUG REGION
+            if (mDebugPath != null)
+            {
+                for (var i = 0; i < mDebugPath.Length - 1; i++)
+                {
+                    spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
+                }
+            }
 
             if (mShoot)
             {
@@ -188,7 +214,6 @@ namespace Singularity.Units
                 spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), MapCoordinates(mEnemyPosition), Color.White * .2f, 6);
                 mShoot = false;
             }
-
         }
 
 
@@ -216,9 +241,19 @@ namespace Singularity.Units
             }
 
             // calculate path to target position
-            if (mIsMoving && !HasReachedTarget())
+            else if (mIsMoving)
             {
-                MoveToTarget(mTargetPosition);
+                if (!HasReachedWaypoint())
+                {
+                    MoveToTarget(mPath.Peek());
+                    
+
+                }
+                else
+                {
+                    mPath.Pop();
+                    MoveToTarget(mPath.Peek());
+                }
             }
 
             // these are values needed to properly get the current sprite out of the spritesheet.
@@ -228,8 +263,8 @@ namespace Singularity.Units
             //finally select the appropriate color for selected/deselected units.
             mColor = mSelected ? sSelectedColor : sNotSelectedColor;
 
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
-            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int) AbsolutePosition.Y, (int)AbsoluteSize.X, (int) AbsoluteSize.Y);
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * mScale / 2, AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
+            AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * mScale), (int) (AbsoluteSize.Y * mScale));
             Moved = mIsMoving;
 
             //TODO this needs to be taken out once the military manager takes control of shooting
@@ -251,17 +286,17 @@ namespace Singularity.Units
         }
 
         /// <summary>
-        /// Calculates the direction the unit should be moving and moves it into that direction. 
+        /// Calculates the direction the unit should be moving and moves it into that direction.
         /// </summary>
         /// <param name="target">The target to which to move</param>
         private void MoveToTarget(Vector2 target)
         {
 
-            mMovementVector = new Vector2(target.X - mBoundsSnapshot.Center.X, target.Y - mBoundsSnapshot.Center.Y);
-            mMovementVector.Normalize();
+            var movementVector = new Vector2(target.X - Center.X, target.Y - Center.Y);
+            movementVector.Normalize();
             mToAdd += mMovementVector * (float) (mZoomSnapshot *  Speed);
 
-            AbsolutePosition = new Vector2((float) (AbsolutePosition.X + mMovementVector.X * Speed), (float) (AbsolutePosition.Y + mMovementVector.Y * Speed));
+            AbsolutePosition = new Vector2((float) (AbsolutePosition.X + movementVector.X * Speed), (float) (AbsolutePosition.Y + movementVector.Y * Speed));
         }
 
         /// <summary>
@@ -270,16 +305,30 @@ namespace Singularity.Units
         private bool HasReachedTarget()
         {
 
-            if (!(Math.Abs(mBoundsSnapshot.Center.X + mToAdd.X -
+            if (!(Math.Abs(Center.X + mToAdd.X -
                            mTargetPosition.X) < 8 &&
-                  Math.Abs(mBoundsSnapshot.Center.Y + mToAdd.Y -
+                  Math.Abs(Center.Y + mToAdd.Y -
                            mTargetPosition.Y) < 8))
             {
                 return false;
             }
             mToAdd = Vector2.Zero;
             return true;
+        }
 
+        private bool HasReachedWaypoint()
+        {
+            if (Math.Abs(Center.X + mToAdd.X - mPath.Peek().X) < 8
+                && Math.Abs(Center.Y + mToAdd.Y - mPath.Peek().Y) < 8)
+            {
+                Debug.WriteLine("Waypoint reached.");
+                Debug.WriteLine("Next waypoint: " +  mPath.Peek());
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
@@ -292,13 +341,28 @@ namespace Singularity.Units
                     if (mSelected && !mIsMoving && !withinBounds && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f), (int)(mMouseY - RelativeSize.Y / 2f), (int)RelativeSize.X, (int)RelativeSize.Y), mCamera))
                     {
                         mIsMoving = true;
-                        mTargetPosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+                        mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
+                            Matrix.Invert(mCamera.GetTransform()));
+                        var currentPosition = Center;
+                        Debug.WriteLine("Starting path finding at: " + currentPosition.X +", " + currentPosition.Y);
+                        Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
+
+                        mPath = new Stack<Vector2>();
+                        mPath = mPathfinder.FindPath(currentPosition,
+                            mTargetPosition,
+                            ref mMap);
+
+                        // TODO: DEBUG REGION
+                        mDebugPath = mPath.ToArray();
+
+                        // TODO: END DEBUG REGION
+
                         mBoundsSnapshot = Bounds;
                         mZoomSnapshot = mCamera.GetZoom();
                         giveThrough = true;
                     }
 
-                    if (withinBounds) { 
+                    if (withinBounds) {
                         mSelected = true;
                         giveThrough = false;
                     }

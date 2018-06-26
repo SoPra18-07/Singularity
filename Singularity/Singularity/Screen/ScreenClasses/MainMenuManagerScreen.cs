@@ -74,7 +74,6 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="content">Content Manager that should handle the content loading</param>
         public void LoadContent(ContentManager content)
         {
-            LoadScreenContents(content);
             mContent = content;
 
             // Add screen to screen manager
@@ -106,7 +105,7 @@ namespace Singularity.Screen.ScreenClasses
             if (sResolutionChanged)
             {
                 Initialize(sViewportResolution, sResolutionChanged, mGame);
-                LoadScreenContents(mContent);
+                // LoadScreenContents(mContent);
                 mScreenManager.RemoveScreen();
                 mScreenManager.RemoveScreen();
                 mMenuBackgroundScreen.TransitionTo(EScreen.OptionsScreen, EScreen.OptionsScreen, gametime);
@@ -334,6 +333,7 @@ namespace Singularity.Screen.ScreenClasses
             mLoadingScreen = new LoadingScreen(screenResolution);
         }
 
+        /*
         /// <summary>
         /// Loads the contents of the main menu screens
         /// </summary>
@@ -350,7 +350,7 @@ namespace Singularity.Screen.ScreenClasses
             mOptionsScreen.LoadContent(content);
             mLoadingScreen.LoadContent(content);
         }
-
+        */
 
 
         #region MainMenuScreen Button Handlers
