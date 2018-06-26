@@ -10,13 +10,13 @@ namespace Singularity.Screen
     class Slider: IWindowItem
     {
         // minimum and maximum position that slider can reach
-        private float mMin; 
+        private float mMin;
         private float mMax;
 
         // current x position of the slider (from the middle)
         private float mCurrentX;
 
-        // bool on whether the slider is currently being moved by 
+        // bool on whether the slider is currently being moved by
         // left mouse select
         private bool mSlave;
 
@@ -44,7 +44,7 @@ namespace Singularity.Screen
         private float mValueCurrent;
         private float mValuePrevious;
 
-
+        //TODO: Add a limit to which every slider is movable and add a maximal value that the slider can reach
 
         /// <summary>
         /// Creates an instance of a slide where the square size of the
@@ -138,7 +138,7 @@ namespace Singularity.Screen
                 }
 
                 // if button is slaved to mouse than adjust coordinates of slider
-                // based on position of mouse. do not exceed min or max position of 
+                // based on position of mouse. do not exceed min or max position of
                 // slider bar however
                 if (mSlave)
                 {
@@ -194,7 +194,7 @@ namespace Singularity.Screen
                     // draws rectangle to the right side of slider
                     // spriteBatch.StrokedRectangle(new Vector2(mMax + mSliderSize, Position.Y - 30), new Vector2(60, 60), Color.Gray, Color.Black, 1, (float)0.8);
                     spriteBatch.StrokedRectangle(
-                        new Vector2((mMax + mSliderSize + 30) - (mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X / 2), Position.Y - 12 - mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).Y / 4), 
+                        new Vector2((mMax + mSliderSize + 30) - (mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X / 2), Position.Y - 12 - mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).Y / 4),
                         new Vector2(mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X, mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X), Color.Gray, Color.Black, 1, (float)0.8);
 
                     // draws in value of slider in the center of display window

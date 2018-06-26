@@ -8,7 +8,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{34A890E2-4E4D-4B3C-914F-1316E6461513}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Singularity</RootNamespace>
     <AssemblyName>Singularity</AssemblyName>
@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Manager\DistributionManager.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />
+    <Compile Include="Units\EnemyUnit.cs" />
     <Compile Include="Units\Task.cs" />
     <Compile Include="Exceptions\InvalidGenericArgumentException.cs" />
     <Compile Include="Exceptions\NoSuchElementException.cs" />
@@ -63,6 +64,9 @@
     <Compile Include="Graph\Paths\PathfindingFactory.cs" />
     <Compile Include="Graph\Paths\PathManager.cs" />
     <Compile Include="Graph\Paths\SortedPath.cs" />
+    <Compile Include="Levels\LevelType.cs" />
+    <Compile Include="Levels\Skirmish.cs" />
+    <Compile Include="Levels\Tutorial.cs" />
     <Compile Include="Libraries\Animations.cs" />
     <Compile Include="Libraries\Bloom Filter.cs" />
     <Compile Include="Input\EClickType.cs" />
@@ -83,11 +87,14 @@
     <Compile Include="Input\InputManager.cs" />
     <Compile Include="Input\KeyEvent.cs" />
     <Compile Include="Input\MouseAction.cs" />
+    <Compile Include="Platform\CommandCenter.cs" />
     <Compile Include="Platform\EnergyFacility.cs" />
     <Compile Include="Platform\EPlatformType.cs" />
+    <Compile Include="Platform\Factory.cs" />
     <Compile Include="Platform\Junkyard.cs" />
     <Compile Include="Platform\Mine.cs" />
     <Compile Include="Platform\Quarry.cs" />
+    <Compile Include="Platform\Storage.cs" />
     <Compile Include="Platform\Well.cs" />
     <Compile Include="Platform\IPlatformAction.cs" />
     <Compile Include="Platform\Road.cs" />
@@ -127,6 +134,7 @@
     <Compile Include="Sound\SoundClass.cs" />
     <Compile Include="Sound\SoundManager.cs" />
     <Compile Include="Sound\SoundPhase.cs" />
+    <Compile Include="StoryManager\Achievements.cs" />
     <Compile Include="Manager\StoryManager.cs" />
     <Compile Include="Screen\TextField.cs" />
     <Compile Include="Units\GeneralUnit.cs" />

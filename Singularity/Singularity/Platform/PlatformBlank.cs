@@ -22,7 +22,7 @@ namespace Singularity.Platform
         private List<IEdge> mOutwardsEdges;
 
         [DataMember]
-        protected EPlatformType mType = EPlatformType.Blank;
+        internal EPlatformType mType = EPlatformType.Blank;
 
         [DataMember]
         private const int PlatformWidth = 148;
@@ -40,10 +40,11 @@ namespace Singularity.Platform
         protected IPlatformAction[] mIPlatformActions;
         private readonly Texture2D mPlatformSpriteSheet;
         private readonly Texture2D mPlatformBaseTexture;
-        [DataMember()]
+        [DataMember]
         protected string mSpritename;
         [DataMember]
-        protected Dictionary<GeneralUnit, JobType> mAssignedUnits;
+        protected Dictionary<JobType, List<GeneralUnit>> mAssignedUnits;
+
         [DataMember]
         protected List<Resource> mResources;
         [DataMember]
@@ -72,17 +73,72 @@ namespace Singularity.Platform
         public Vector2 AbsolutePosition { get; set; }
         [DataMember]
         public Vector2 AbsoluteSize { get; set; }
+
         [DataMember]
         public Vector2 RelativePosition { get; set; }
         [DataMember]
         public Vector2 RelativeSize { get; set; }
 
 
+        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, Vector2 center = new Vector2())
+        {
+
+            Id = IdGenerator.NextiD();
+
+            mType = EPlatformType.Blank;
+
+            AbsoluteSize = SetPlatfromDrawParameters();
+
+            mInwardsEdges = new List<IEdge>();
+            mOutwardsEdges = new List<IEdge>();
+
+            AbsolutePosition = position;
+
+            //default?
+            mHealth = 100;
+
+            //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
+            //Add possible Actions in this array
+            mIPlatformActions = new IPlatformAction[1];
+
+            mAssignedUnits = new Dictionary<JobType, List<GeneralUnit>>();
+
+            //Add Costs of the platform here if you got them.
+            mCost = new Dictionary<EResourceType, int>();
+
+            mResources = new List<Resource>();
+
+            mPlatformSpriteSheet = platformSpriteSheet;
+            mPlatformBaseTexture = baseSprite;
+            mSpritename = "PlatformBasic";
+
+            mIsBlueprint = true;
+            mRequested = new Dictionary<EResourceType, int>();
+
+            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, 148, 88);
+            Moved = false;
+
+            if (center == Vector2.Zero)
+            {
+                // no value was specified so just use the platform blank implementation.
+                Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y - 36);
+            }
+            else
+            {
+                //value was given by subclass thus take that
+                Center = center;
+            }
+
+            AbsoluteSize = SetPlatfromDrawParameters(); // this changes the draw parameters based on the platform type but
+                                                        // also returns the AbsoluteSize so the property can be set
+
+        }
+
         /// <summary>
         /// Get the assigned Units of this platform.
         /// </summary>
         /// <returns> a list containing references of the units</returns>
-        public Dictionary<GeneralUnit, JobType> GetAssignedUnits()
+        public Dictionary<JobType, List<GeneralUnit>> GetAssignedUnits()
         {
             return mAssignedUnits;
         }
@@ -94,18 +150,25 @@ namespace Singularity.Platform
         /// <param name="job">The Job to be done by the unit</param>
         public void AssignUnits(GeneralUnit unit, JobType job)
         {
-            mAssignedUnits.Add(unit, job);
+            var list = mAssignedUnits[job];
+            list.Add(unit);
         }
 
         /// <summary>
         /// Remove an Assigned Unit from the Assigned List.
         /// </summary>
         /// <param name="unit">The unit to unassign.</param>
-        public void UnAssignUnits(GeneralUnit unit)
+        /// <param name="job">The Job of the unit</param>
+        public void UnAssignUnits(GeneralUnit unit, JobType job)
         {
-            mAssignedUnits.Remove(unit);
+            var list = mAssignedUnits[job];
+            list.Remove(unit);
         }
 
+        public virtual void Produce()
+        {
+            throw new NotImplementedException();
+        }
         /// <summary>
         /// Get the special IPlatformActions you can perform on this platform.
         /// </summary>
@@ -130,7 +193,7 @@ namespace Singularity.Platform
             // doBlueprintBuild
             // return true;
             // }
-            
+
             return true;
         }
 
@@ -222,12 +285,6 @@ namespace Singularity.Platform
             mRequested.Add(resource, number);
         }
 
-        public virtual void Produce()
-        {
-            throw new NotImplementedException();
-        }
-
-
         /// <inheritdoc cref="Singularity.Property.IDraw"/>
         public void Draw(SpriteBatch spritebatch)
         {
@@ -258,7 +315,7 @@ namespace Singularity.Platform
                         SpriteEffects.None,
                         LayerConstants.BasePlatformLayer);
                     // then draw what's on top of that
-                    spritebatch.Draw(mPlatformBaseTexture,
+                    spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
                         new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 148),
                         Color.White,
@@ -281,7 +338,7 @@ namespace Singularity.Platform
                         SpriteEffects.None,
                         LayerConstants.BasePlatformLayer);
                     // then draw what's on top of that
-                    spritebatch.Draw(mPlatformBaseTexture,
+                    spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
                         new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 153),
                         Color.White,
@@ -339,61 +396,6 @@ namespace Singularity.Platform
             return mType;
         }
 
-        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, Vector2 center = new Vector2())
-        {
-
-            Id = IdGenerator.NextiD();
-
-            mType = EPlatformType.Blank;
-
-            AbsoluteSize = SetPlatfromDrawParameters();
-
-            mInwardsEdges = new List<IEdge>();
-            mOutwardsEdges = new List<IEdge>();
-
-            AbsolutePosition = position;
-
-            //default?
-            mHealth = 100;
-
-            //Waiting for PlatformActions to be completed.
-            //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
-            //The only IPlatformAction available so far is BlueprintBuild.
-            mIPlatformActions = new IPlatformAction[1];
-            //mIPlatformActions[0] = IPlatformAction.BlueprintBuild;
-
-            mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
-
-            //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<EResourceType, int>();
-
-            mResources = new List<Resource>();
-
-            mPlatformSpriteSheet = platformSpriteSheet;
-            mPlatformBaseTexture = baseSprite;
-            mSpritename = "PlatformBasic";
-
-            mIsBlueprint = true;
-            mRequested = new Dictionary<EResourceType, int>();
-
-            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, 148, 88);
-            Moved = false;
-
-            if (center == Vector2.Zero)
-            {
-                // no value was specified so just use the platform blank implementation.
-                Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y - 36);
-            }
-            else
-            {
-                //value was given by subclass thus take that
-                Center = center;
-            }
-
-            AbsoluteSize = SetPlatfromDrawParameters(); // this changes the draw parameters based on the platform type but
-                                                        // also returns the AbsoluteSize so the property can be set
-
-        }
 
         public bool PlatformHasSpace()
         {
@@ -431,7 +433,7 @@ namespace Singularity.Platform
         {
             return mInwardsEdges;
         }
-        
+
         public override bool Equals(object other)
         {
             var b = other as PlatformBlank;

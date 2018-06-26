@@ -5,21 +5,19 @@ using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Map.Properties;
 using Singularity.Property;
-using Singularity.Screen;
 using Singularity.Utils;
 
 namespace Singularity.Units
 {
-    internal sealed class MilitaryUnit : ICollider, IRevealing, IMouseClickListener, IMousePositionListener
+    internal sealed class EnemyUnit : ICollider, IRevealing
     {
-        public EScreen Screen { get; private set; } = EScreen.GameScreen;
-
         private const int DefaultWidth = 150;
         private const int DefaultHeight = 75;
 
-        private static readonly Color sSelectedColor = Color.Gray;
-        private static readonly Color sNotSelectedColor = Color.DarkGray;
+        private static readonly Color sSelectedColor = Color.DarkRed;
+        private static readonly Color sNotSelectedColor = Color.Red;
 
         private const double Speed = 4;
 
@@ -41,11 +39,14 @@ namespace Singularity.Units
         private int mRotation;
         private readonly Texture2D mMilSheet;
 
-        private bool mSelected;
+        private bool mSelected = true;
 
         private float mMouseX;
 
         private float mMouseY;
+
+        private float mElapsedTime;
+        private Random mRand = new Random();
 
         private readonly Director mDirector;
 
@@ -67,26 +68,23 @@ namespace Singularity.Units
 
         public Rectangle AbsBounds { get; private set; }
 
-        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director)
+        public EnemyUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director)
         {
             Id = IdGenerator.NextiD(); // TODO this will later use a random number generator to create a unique
-                    // id for the specific unit.
+                                       // id for the specific unit.
             Health = 10; //TODO
 
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(DefaultWidth, DefaultHeight);
 
-            RevelationRadius = (int) AbsoluteSize.X;
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X  / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+            RevelationRadius = (int)AbsoluteSize.X;
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
 
             Moved = false;
             mIsMoving = false;
             mCamera = camera;
 
             mDirector = director;
-
-            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
-            mDirector.GetInputManager.AddMousePositionListener(this);
 
             mMilSheet = spriteSheet;
         }
@@ -119,11 +117,11 @@ namespace Singularity.Units
             // calculate rotation with increased degrees going counterclockwise
             if (x >= 0)
             {
-                mRotation = (int) (Math.Round(270 - degree, MidpointRounding.AwayFromZero));
+                mRotation = (int)(Math.Round(270 - degree, MidpointRounding.AwayFromZero));
             }
             else
             {
-                mRotation = (int) (Math.Round(90 + degree, MidpointRounding.AwayFromZero));
+                mRotation = (int)(Math.Round(90 + degree, MidpointRounding.AwayFromZero));
             }
 
             // add 42 degrees since sprite sheet starts at sprite -42d not 0
@@ -157,7 +155,7 @@ namespace Singularity.Units
         /// <param name="damage"></param>
         public void MakeDamage(int damage)
         {
-             Health -= damage; // TODO
+            Health -= damage; // TODO
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -166,7 +164,7 @@ namespace Singularity.Units
             spriteBatch.Draw(
                 mMilSheet,
                 AbsolutePosition,
-                new Rectangle((150 * mColumn), (75 * mRow), (int) AbsoluteSize.X, (int) AbsoluteSize.Y),
+                new Rectangle((150 * mColumn), (75 * mRow), (int)AbsoluteSize.X, (int)AbsoluteSize.Y),
                 mColor,
                 0f,
                 Vector2.Zero,
@@ -180,16 +178,28 @@ namespace Singularity.Units
 
         public void Update(GameTime gameTime)
         {
+            // Generate random positions for the enemy unit to move to.
+            mElapsedTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (mElapsedTime > 4)
+            { //Get a new random direction every 4 seconds
+                mElapsedTime -= 4; //Subtract the 4 seconds we've already checked
+                mMouseX = (float)mRand.NextDouble() * MapConstants.MapWidth; //Set the position to a random value within the screen
+                mMouseY = (float)mRand.NextDouble() * MapConstants.MapHeight;
+            }
+
+            // Check if the target position is on the map.
+            if (mSelected && !mIsMoving && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f), (int)(mMouseY - RelativeSize.Y / 2f), (int)RelativeSize.X, (int)RelativeSize.Y), mCamera))
+            {
+                Rotate(new Vector2(mMouseX, mMouseY));
+                mIsMoving = true;
+                mTargetPosition = new Vector2(mMouseX, mMouseY);
+                mBoundsSnapshot = Bounds;
+                mZoomSnapshot = mCamera.GetZoom();
+            }
 
             //make sure to update the relative bounds rectangle enclosing this unit.
             Bounds = new Rectangle(
                 (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
-
-            // this makes the unit rotate according to the mouse position when its selected and not moving.
-            if (mSelected && !mIsMoving)
-            {
-                Rotate(new Vector2(mMouseX, mMouseY));
-            }
 
             if (HasReachedTarget())
             {
@@ -210,8 +220,9 @@ namespace Singularity.Units
             mColor = mSelected ? sSelectedColor : sNotSelectedColor;
 
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
-            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int) AbsolutePosition.Y, (int)AbsoluteSize.X, (int) AbsoluteSize.Y);
+            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
             Moved = mIsMoving;
+
         }
 
         /// <summary>
@@ -223,9 +234,9 @@ namespace Singularity.Units
 
             mMovementVector = new Vector2(target.X - mBoundsSnapshot.Center.X, target.Y - mBoundsSnapshot.Center.Y);
             mMovementVector.Normalize();
-            mToAdd += mMovementVector * (float) (mZoomSnapshot *  Speed);
+            mToAdd += mMovementVector * (float)(mZoomSnapshot * Speed);
 
-            AbsolutePosition = new Vector2((float) (AbsolutePosition.X + mMovementVector.X * Speed), (float) (AbsolutePosition.Y + mMovementVector.Y * Speed));
+            AbsolutePosition = new Vector2((float)(AbsolutePosition.X + mMovementVector.X * Speed), (float)(AbsolutePosition.Y + mMovementVector.Y * Speed));
         }
 
         /// <summary>
@@ -244,54 +255,6 @@ namespace Singularity.Units
             mToAdd = Vector2.Zero;
             return true;
 
-        }
-
-        public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
-        {
-            var giveThrough = true;
-
-            switch (mouseAction)
-            {
-                case EMouseAction.LeftClick:
-                    if (mSelected && !mIsMoving && !withinBounds && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f), (int)(mMouseY - RelativeSize.Y / 2f), (int)RelativeSize.X, (int)RelativeSize.Y), mCamera))
-                    {
-                        mIsMoving = true;
-                        mTargetPosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
-                        mBoundsSnapshot = Bounds;
-                        mZoomSnapshot = mCamera.GetZoom();
-                        giveThrough = true;
-                    }
-
-                    if (withinBounds) {
-                        mSelected = true;
-                        giveThrough = false;
-                    }
-
-                    break;
-
-                case EMouseAction.RightClick:
-                    mSelected = false;
-                    giveThrough = true;
-                    break;
-            }
-
-            return giveThrough;
-        }
-
-        public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
-        {
-            return true;
-        }
-
-        public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
-        {
-            return true;
-        }
-
-        public void MousePositionChanged(float newX, float newY)
-        {
-            mMouseX = newX;
-            mMouseY = newY;
         }
     }
 }

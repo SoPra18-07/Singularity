@@ -38,16 +38,17 @@ namespace Singularity.Manager
 
         [DataMember]
         private Random mRandom;
-        // An Felix: Vielleicht BuildBluePrint nicht in "ProduceResourceAction.cs" reinhauen (da hätte ich nicht danach gesucht) - muss ich eh nochmal refactorn mit PlatformBlank und jz dem hier
+
         [DataMember]
         private List<BuildBluePrint> mBlueprintBuilds;
 
-        // L:An der Stelle mit Felix reden, PlatformActionProduce als abstrakte Klasse würde helfen?
-        // F:Mhm weiß nicht ob das wirklich notwendig ist ... ich mach mir mal gedanken
-        // L:Zumindest ein interface würde benötigt, ich denke nicht dass der sinn hinter der sache ist für jede produzierende plattform ne extra liste mit
-        // List<PlatformnamehiereinsetzenActionProduce> zu erstellen. Das gleiche mit mDefensivePlatforms
         [DataMember]
         private List<IPlatformAction> mPlatformActions;
+
+        [DataMember]
+        private List<Pair<PlatformBlank, int>> mProdPlatforms;
+        [DataMember]
+        private List<Pair<PlatformBlank, int>> mDefPlatforms;
 
         // Alternativ könnte man auch bei den beiden Listen direkt die Platformen einsetzen?
         // Momentan ja, aber wenn du ne plattform haben willst die (rein theoretisch) verteidigen und Produzieren gleichzeitig kann? Oder gleichzeitig KineticDefense und LaserDefense ist?
@@ -55,6 +56,7 @@ namespace Singularity.Manager
 
         public DistributionManager()
         {
+            //Lists of Units of different Jobtypes
             mIdle = new List<GeneralUnit>();
             mLogistics = new List<GeneralUnit>();
             mConstruction = new List<GeneralUnit>();
@@ -62,12 +64,17 @@ namespace Singularity.Manager
             mDefense = new List<GeneralUnit>();
             mManual = new List<GeneralUnit>();
 
+            //Lists for Tasks to do
             mBuildingResources = new Queue<Task>();
             mRefiningOrStoringResources = new Queue<Task>();
             mRequestedUnitsProduce = new Queue<Task>();
             mRequestedUnitsDefense = new Queue<Task>();
+
+            //Other stuff
             mBlueprintBuilds = new List<BuildBluePrint>();
             mPlatformActions = new List<IPlatformAction>();
+            mProdPlatforms = new List<Pair<PlatformBlank, int>>();
+            mDefPlatforms = new List<Pair<PlatformBlank, int>>();
             mRandom = new Random();
         }
 
@@ -79,6 +86,37 @@ namespace Singularity.Manager
         {
             mIdle.Add(unit);
         }
+
+        /// <summary>
+        /// Is called by producing and defending Platforms when they are created.
+        /// </summary>
+        /// <param name="platform">The platform itself</param>
+        /// <param name="isDef">Is true, when the platform is a defending platform, false otherwise (only producing platforms should register themselves besides defending ones)</param>
+        public void Register(PlatformBlank platform, bool isDef)
+        {
+            if (isDef)
+            {
+                mDefPlatforms.Add(new Pair<PlatformBlank, int>(platform, 0));
+                var times = mDefense.Count / mDefPlatforms.Count;
+                //Make sure the new platform gets some units
+                //NewlyDistribute(platform, true);
+            }
+            else
+            {
+                mProdPlatforms.Add(new Pair<PlatformBlank, int>(platform, 0));
+                var times = mProduction.Count / mProdPlatforms.Count;
+                //Make sure the new platform gets some units
+                //NewlyDistribute(platform, false);
+            }
+        }
+
+        public void TestAttributes()
+        {
+            Console.Out.WriteLine(mProduction.Count);
+            Console.Out.WriteLine(mIdle.Count);
+            Console.Out.WriteLine(mProdPlatforms[1].GetFirst().mType + " " + mProdPlatforms[1].GetSecond());
+        }
+
         /// <summary>
         /// This is called by the player, when he wants to distribute the units to certain jobs.
         /// </summary>
@@ -100,10 +138,10 @@ namespace Singularity.Manager
                     oldlist = mIdle;
                     break;
                 case JobType.Production:
-                    oldlist = mDefense;
+                    oldlist = mProduction;
                     break;
                 case JobType.Defense:
-                    oldlist = mProduction;
+                    oldlist = mDefense;
                     break;
                 default:
                     throw new InvalidGenericArgumentException("You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
@@ -122,23 +160,357 @@ namespace Singularity.Manager
                     newlist = mLogistics;
                     break;
                 case JobType.Production:
-                    newlist = mDefense;
+                    newlist = mProduction;
                     break;
                 case JobType.Defense:
-                    newlist = mProduction;
+                    newlist = mDefense;
                     break;
                 default:
                     throw new InvalidGenericArgumentException("You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
             }
-            for (var i = amount; i >= 0; i--)
+
+            //Production and Defense have to be distributed differently than the other jobs because we want to assure fairness
+            if (oldj == JobType.Production || oldj == JobType.Defense)
             {
-                if (oldlist.Count == 0)
+                List<GeneralUnit> list;
+                //Get the units to change jobs here
+                if (oldj == JobType.Production)
                 {
-                    break;
+                    list = GetUnitsFairly(amount, mProdPlatforms, false);
                 }
-                var unassigned = oldlist.First();
-                unassigned.ChangeJob(newj);
-                newlist.Add(unassigned);
+                else
+                {
+                    list = GetUnitsFairly(amount, mDefPlatforms, false);
+                }
+
+                //Now actually change their Jobs.
+                if (newj == JobType.Production)
+                {
+                    AssignUnitsFairly(list, false);
+                }else if (newj == JobType.Defense)
+                {
+                    AssignUnitsFairly(list, true);
+                }
+                else
+                {
+                    foreach (var unit in list)
+                    {
+                        newlist.Add(unit);
+                        unit.ChangeJob(newj);
+                    }
+                }
+            }
+            else
+            {
+                var list = new List<GeneralUnit>();
+                for (var i = amount; i > 0; i--)
+                {
+                    if (oldlist.Count == 0)
+                    {
+                        break;
+                    }
+
+                    //Pick a random Unit and change its job
+                    var rand = mRandom.Next(0, oldlist.Count);
+                    var unassigned = oldlist.ElementAt(rand);
+                    unassigned.ChangeJob(JobType.Idle);
+                    oldlist.Remove(unassigned);
+                    list.Add(unassigned);
+                }
+
+                if (newj == JobType.Production)
+                {
+                    AssignUnitsFairly(list, false);
+                }
+                else if (newj == JobType.Defense)
+                {
+                    AssignUnitsFairly(list, true);
+                }
+                else
+                {
+                    foreach (var unit in list)
+                    {
+                        newlist.Add(unit);
+                        unit.ChangeJob(newj);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Collect the Units from mProdPlatforms or mDefPlatforms and put them in a list. Change their job to idle.
+        /// </summary>
+        /// <param name="amount">the amount of units to be collected</param>
+        /// <param name="list">the list to collect from. Has to be mDefPlatforms or mProdPlatforms</param>
+        /// <param name="isDefense">Determines if its the left or the right one</param>
+        /// <returns>A list containing the collected units</returns>
+        private List<GeneralUnit> GetUnitsFairly(int amount, List<Pair<PlatformBlank, int>> list, bool isDefense)
+        {
+            var search = true;
+            var startindex = list.Count - 1;
+            var lowassign = int.MaxValue;
+            //this will always be overridden this way
+            //The idea is to search the list backwards and try to find the platform with more units than the previous platform
+            //Given that the units have been distributed fairly, we can now decrement units from there.
+            //If we reach the end that way, we have to continue decrementing the units from the end.
+            for (var i = list.Count - 1; search; i--)
+            {
+                if (i == 0)
+                {
+                    search = false;
+                    startindex = list.Count - 1;
+                }
+
+                //Relys on fairness
+                if (lowassign <= list[i].GetSecond())
+                {
+                    lowassign = list[i].GetSecond();
+                }
+                else
+                {
+                    //Found the place to decrement units
+                    search = false;
+                    startindex = i;
+                }
+            }
+
+            var units = new List<GeneralUnit>();
+
+
+            //NOW SUBSTRACT THE REQUESTED AMOUNT OF UNITS
+            for (var i = amount; i > 0; i--)
+            {
+
+                //This means there are no Units to subtract
+                if (list[startindex].GetSecond() == 0)
+                {
+                    return units;
+                }
+
+                var platUnits = list[startindex].GetFirst().GetAssignedUnits();
+
+                JobType job;
+                List<GeneralUnit> joblist;
+                if (isDefense)
+                {
+                    job = JobType.Defense;
+                    joblist = mDefense;
+                }
+                else
+                {
+                    job = JobType.Production;
+                    joblist = mProduction;
+                }
+
+                //Remove the first unit in the AssignedUnitList. The unit will unassign itself. Then add the unit to our unitslist.
+                //Also dont forget to decrement the number in the tuple, and to delete the unit from the joblist.
+                var transferunit = platUnits[job].First();
+                units.Add(transferunit);
+                joblist.Remove(transferunit);
+                var number = list[startindex].GetSecond() - 1;
+                list[startindex] = new Pair<PlatformBlank, int>(list[startindex].GetFirst(), number);
+                transferunit.ChangeJob(JobType.Idle);
+
+                //Decrement index or begin at the right end again
+                if (startindex - 1 == 0)
+                {
+                    startindex = list.Count - 1;
+                }
+                else
+                {
+                    startindex--;
+                }
+            }
+
+            return units;
+        }
+
+        /// <summary>
+        /// Is called internally by the Distributionmanager to Assign Units to the production or the defense, without destroying the balance of the numbers
+        /// of units at the platforms. The units will have the corresponding job afterwards.
+        /// </summary>
+        /// <param name="toassign">The units to assign</param>
+        /// <param name="isDefense"></param>
+        private void AssignUnitsFairly(List<GeneralUnit> toassign, bool isDefense)
+        {
+            List<Pair<PlatformBlank, int>> list;
+            JobType job;
+            if (isDefense)
+            {
+                list = mDefPlatforms;
+                job = JobType.Defense;
+            }
+            else
+            {
+                list = mProdPlatforms;
+                job = JobType.Production;
+            }
+
+            var startindex = 0;
+            var highassign = int.MinValue;
+            var search = true;
+            //SEARCH INDEX
+            //iterate through the list, from the left side this time (see GetUnitsFairly) and search the index of the platforms with less units
+            for (var i = 0; search; i++)
+            {
+                if (i == list.Count - 1)
+                {
+                    search = false;
+                    startindex = 0;
+                }
+                if (highassign <= list[i].GetSecond())
+                {
+                    highassign = list[i].GetSecond();
+                }
+                else
+                {
+                    //Found the place to increment units
+                    highassign = list[i].GetSecond();
+                    search = false;
+                    startindex = i;
+                }
+            }
+
+            //ADD THE GIVEN UNITS/GIVE THEM THE TASKS
+            foreach (var unit in toassign)
+            {
+                var goTo = list[startindex].GetFirst();
+                if (job == JobType.Defense)
+                {
+                    mDefense.Add(unit);
+                }
+                else
+                {
+                    mProduction.Add(unit);
+                }
+                //The unit will change its job when calling this
+                unit.AssignTask(new Task(job, Optional<PlatformBlank>.Of(goTo), null, null));
+                list[startindex] = new Pair<PlatformBlank, int>(goTo, list[startindex].GetSecond() + 1);
+                if (startindex == list.Count - 1)
+                {
+                    startindex = 0;
+                }
+                else
+                {
+                    startindex++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// A method called by the DistributionManager in case a new platform is registered, then it will distribute units to it.
+        /// </summary>
+        /// <param name="platform">The newly registered platform</param>
+        /// <param name="isDefense">Is true if its a DefensePlatform, false otherwise</param>
+        private void NewlyDistribute(PlatformBlank platform, bool isDefense)
+        { //TODO: Change this to use The written helpermethods
+            if (isDefense)
+            {
+                var search = true;
+                var reachend = false;
+                var startindex = 0;
+                var lowassign = mDefense.Count + 1;
+                //this will always be overridden this way
+                //The idea is to search the list backwards and try to find the platform with more units than the previous platform
+                //Given that the units have been distributed fairly, we can now decrement units from there.
+                //If we reach the end that way, we have to continue decrementing the units from the end.
+                for (var i = mDefPlatforms.Count - 2; i >= 0 && search; i--)
+                {
+                    if (i == 0)
+                    {
+                        search = false;
+                        startindex = mDefPlatforms.Count - 2;
+                    }
+
+                    //Relys on fairness
+                    if (lowassign <= mDefPlatforms[i].GetSecond())
+                    {
+                        lowassign = mDefPlatforms[i].GetSecond();
+                    }
+                    else
+                    {
+                        //Found the place to decrement units
+                        lowassign = mDefPlatforms[i].GetSecond();
+                        search = false;
+                        startindex = i + 1;
+                    }
+                }
+
+
+                int amount = mDefense.Count / mDefPlatforms.Count;
+
+                //The transfer itself starts here
+                for (var i = amount; i > 0; i--)
+                {
+                    //This means there are no Units to distribute
+                    if (mDefPlatforms[startindex].GetSecond() == 0)
+                    {
+                        return;
+                    }
+
+                    var units = mDefPlatforms[startindex].GetFirst().GetAssignedUnits();
+                    var transferunit = units[JobType.Defense].First();
+                    //Change the Home of the Unit
+                    transferunit.AssignTask(new Task(JobType.Defense, Optional<PlatformBlank>.Of(platform), null, null));
+                }
+            }
+            else
+            {
+                var search = true;
+                var reachend = false;
+                int startindex = 0;
+                var lowassign = mProduction.Count + 1;
+                //this will always be overridden this way
+                //The idea is to search the list backwards and try to find the platform with more units than the previous platform
+                //Given that the units have been distributed fairly, we can now decrement units from there.
+                //If we reach the end that way, we have to continue decrementing the units from the end.
+                for (var i = mProdPlatforms.Count - 2; i >= 0 && search; i--)
+                {
+                    if (i == 0)
+                    {
+                        search = false;
+                        startindex = mProdPlatforms.Count - 2;
+                    }
+
+                    //Relys on fairness
+                    if (lowassign <= mProdPlatforms[i].GetSecond())
+                    {
+                        lowassign = mProdPlatforms[i].GetSecond();
+                    }
+                    else
+                    {
+                        //Found the place to decrement units
+                        lowassign = mProdPlatforms[i].GetSecond();
+                        search = false;
+                        startindex = i + 1;
+                    }
+                }
+
+
+                int amount = mProduction.Count / mProdPlatforms.Count;
+
+                //The transfer itself starts here
+                for (var i = amount; i > 0; i--)
+                {
+                    //This means there are no Units to distribute
+                    if (mProdPlatforms[startindex].GetSecond() == 0)
+                    {
+                        return;
+                    }
+
+                    var units = mProdPlatforms[startindex].GetFirst().GetAssignedUnits();
+                    if (startindex - 1 == 0)
+                    {
+                        startindex = mProdPlatforms.Count - 2;
+                    }
+                    else
+                    {
+                        startindex--;
+                    }
+                    var transferunit = units[JobType.Production].First();
+                    //Change home of the unit
+                    transferunit.AssignTask(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, null));
+                }
             }
         }
 
@@ -174,8 +546,9 @@ namespace Singularity.Manager
 
             for (var i = amount; i >= 0; i--)
             {
-                var removeit = oldlist.First();
-                oldlist.Remove(removeit);
+                //Change the job of a random unit
+                var rand = mRandom.Next(0, oldlist.Count);
+                var removeit = oldlist.ElementAt(rand);
                 mManual.Add(removeit);
                 action.AssignUnit(removeit, job);
             }
@@ -189,10 +562,17 @@ namespace Singularity.Manager
         /// <param name="action">The platformaction of which they shall be unassigned</param>
         public void ManualUnassign(JobType job, int amount, IPlatformAction action)
         {
+
             action.UnAssignUnits(amount, job);
         }
 
-        // Okay yes you're right. We want a PlatformAction here instead of a platform.
+        /// <summary>
+        /// A method for Platforms/their actions to request resources.
+        /// </summary>
+        /// <param name="platform">The platform making the request</param>
+        /// <param name="resource">The wanted resource</param>
+        /// <param name="action">The corresponding platformaction</param>
+        /// <param name="isbuilding">True if the resources are for building, false otherwise</param>
         public void RequestResource(PlatformBlank platform, EResourceType resource, IPlatformAction action, bool isbuilding = false)
         {
             // Will repair request ressources or units? And what unit will be used?
@@ -209,17 +589,24 @@ namespace Singularity.Manager
             }
         }
 
+        //TODO: Think about if we still need this
         public void RequestUnits(PlatformBlank platform, JobType job, IPlatformAction action, bool isdefending = false)
         {
-            //TODO: Create Action references, when interfaces were created.
-
             if (isdefending)
             {
-                mRequestedUnitsDefense.Enqueue(new Task(JobType.Defense, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(action)));
+                //Assure fairness
+                if (platform.GetAssignedUnits().Count <= mDefense.Count / mDefPlatforms.Count)
+                {
+                    mRequestedUnitsDefense.Enqueue(new Task(JobType.Construction, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(action)));
+                }
             }
             else
             {
-                mRequestedUnitsProduce.Enqueue(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(action)));
+                //Assure fairness
+                if (platform.GetAssignedUnits().Count <= mProduction.Count / mProdPlatforms.Count)
+                {
+                    mRequestedUnitsProduce.Enqueue(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(action)));
+                }
             }
         }
 
@@ -230,19 +617,17 @@ namespace Singularity.Manager
             //return platform.GetPlatformResources();
         }
 
-        // Why does this have to return a Task? It should only take it into the queue
-        // and thats it, shouldnt it? Furthermore the platformaction shouldnt be optional. This is regarding the architecture.
-        // The unit should be optional tho, you give the unit only if there are assigned units for the platform.
-        //
-        // Ah, I can see where your confusion is coming from. So, the version you're thinking about is absolutely valid but needs more (and better) coding. This would be the only 'bigger' function either way. Oh, and it'd absolutely need a different structure ...
-        //
-        // Okay, so how was it supposed to work (in my version, if you want to implement it is for you to decide):
-        // - The units (with nothing to do (idle, but not 'JobType: Idle') ask for new Tasks here. So what is needed is ... actually yes, unit is not required. So the JobType is required, to return a Task of that JobType. Also, if this unit is assigned to some specific PlatformAction (like building a Blueprint, Logistics for a certain Factory, ...), it is supposed to only get Tasks involving this PlatformAction. However, if a unit is not manually assigned somewhere, what action do you want to get here?
+        /// <summary>
+        /// A method for the GeneralUnits to ask for a task to do.
+        /// </summary>
+        /// <param name="unit">The GeneralUnit asking</param>
+        /// <param name="job">Its Job</param>
+        /// <param name="assignedAction">The PlatformAction the unit is eventually assigned to</param>
+        /// <returns></returns>
         public Task RequestNewTask(GeneralUnit unit, JobType job, Optional<IPlatformAction> assignedAction)
         {
             var nodes = new List<INode>();
             switch (job)
-            //TODO: Implement other Job cases.
             {
                 case JobType.Idle:
                     //It looks inefficient but I think its okay, the
@@ -256,13 +641,33 @@ namespace Singularity.Manager
                     {
                         nodes.Add(edge.GetChild());
                     }
+
+                    if (nodes.Count == 0)
+                    {
+                        //Could be very inefficient, since the Units will bombard the DistributionManager with asks for tasks when there is only one platform
+                        //connected to theirs
+                        nodes.Add(unit.CurrentNode);
+                    }
                     var rndnmbr = mRandom.Next(0, nodes.Count);
                     //Just give them the inside of the Optional action witchout checking because
                     //it doesnt matter anyway if its null if the unit is idle.
-                    return new Task(job, Optional<PlatformBlank>.Of(nodes.ElementAt(rndnmbr) as PlatformBlank), null, Optional<IPlatformAction>.Of(assignedAction.Get()));
+                    return new Task(job, Optional<PlatformBlank>.Of((PlatformBlank) nodes.ElementAt(rndnmbr)), null, assignedAction);
+
+                case JobType.Production:
+                    throw new InvalidGenericArgumentException("You shouldnt ask for Production tasks, you just assign units to production.");
+
+                case JobType.Defense:
+                    throw new InvalidGenericArgumentException("You shouldnt ask for Defense tasks, you just assign units to defense.");
+
+                case JobType.Construction:
+                    return mBuildingResources.Dequeue();
+
+                case JobType.Logistics:
+                    return mRefiningOrStoringResources.Dequeue();
+
+                default:
+                    throw new InvalidGenericArgumentException("Your requested JobType does not exist.");
             }
-            //TODO: Make this disappear when the rest is implemented, since its only a placeholder
-            return new Task(job, Optional<PlatformBlank>.Of((PlatformBlank) nodes.ElementAt(0)), null, Optional<IPlatformAction>.Of(assignedAction.Get()));
         }
 
         public void PausePlatformAction(IPlatformAction action)

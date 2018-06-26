@@ -40,15 +40,17 @@ namespace Singularity.Screen.ScreenClasses
 
         #region civilUnits members
 
-        private Slider mBuildersSlider;
-        private Slider mWorkersSlider;
+        private Slider mDefSlider;
+        private Slider mBuildSlider;
         private Slider mLogisticsSlider;
-        private Slider mMaintenanceSlider;
+        private Slider mProductionSlider;
 
-        private TextField mBuilderTextField;
-        private TextField mWorkersTextField;
+        private Director mDirector;
+
+        private TextField mDefTextField;
+        private TextField mBuildTextField;
         private TextField mLogisticsTextField;
-        private TextField mMaintenanceTextField;
+        private TextField mProductionTextField;
 
         #endregion
 
@@ -77,8 +79,9 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         /// <param name="director"></param>
         /// <param name="mgraphics"></param>
-        public UserInterfaceScreen(Director director, GraphicsDeviceManager mgraphics)
+        public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics)
         {
+            mDirector = director;
             mInputManager = director.GetInputManager;
             mGraphics = mgraphics;
 
@@ -216,24 +219,33 @@ namespace Singularity.Screen.ScreenClasses
             var civilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(civilUnitsX, civilUnitsY), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 10, 20, true, mLibSans14, mInputManager, mGraphics);
 
             // create items
-            mBuilderTextField = new TextField("Builders", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
-            mBuildersSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12);
-            mWorkersTextField = new TextField("Workers", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
-            mWorkersSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12);
+            //TODO: Create an object representing the Idle units at the moment. Something like "Idle: 24" should be enough
+            mDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
+            mDefSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12);
+            mBuildTextField = new TextField("Build", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
+            mBuildSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12);
             mLogisticsTextField = new TextField("Logistics", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
             mLogisticsSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12);
-            mMaintenanceTextField = new TextField("Maintenance", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
-            mMaintenanceSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12);
+            mProductionTextField = new TextField("Production", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
+            mProductionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12);
+
+
+            //Subscribe Distr to sliders
+            //Still need to be implemented. A Container for all the sliders would be very useful!
+            //mDefSlider.SliderMoving += mDirector.GetDistributionManager.DefSlider();
+            //mBuildSlider.SliderMoving += mDirector.GetDistributionManager.BuildSlider();
+            //mLogisticsSlider.SliderMoving += mDirector.GetDistributionManager.LogisticsSlider();
+            //mProductionSlider.SliderMoving += mDirector.GetDistributionManager.ProductionSlider();
 
             // adding all items
-            civilUnitsWindow.AddItem(mBuilderTextField);
-            civilUnitsWindow.AddItem(mBuildersSlider);
-            civilUnitsWindow.AddItem(mWorkersTextField);
-            civilUnitsWindow.AddItem(mWorkersSlider);
+            civilUnitsWindow.AddItem(mDefTextField);
+            civilUnitsWindow.AddItem(mDefSlider);
+            civilUnitsWindow.AddItem(mBuildTextField);
+            civilUnitsWindow.AddItem(mBuildSlider);
             civilUnitsWindow.AddItem(mLogisticsTextField);
             civilUnitsWindow.AddItem(mLogisticsSlider);
-            civilUnitsWindow.AddItem(mMaintenanceTextField);
-            civilUnitsWindow.AddItem(mMaintenanceSlider);
+            civilUnitsWindow.AddItem(mProductionTextField);
+            civilUnitsWindow.AddItem(mProductionSlider);
 
             mWindowList.Add(civilUnitsWindow);
 
@@ -344,7 +356,7 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {
-            // 
+            //
             return true;
         }
 

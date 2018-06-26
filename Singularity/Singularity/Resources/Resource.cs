@@ -34,7 +34,7 @@ namespace Singularity.Resources
             AbsoluteSize = new Vector2(10, 10);
         }
 
-        public void Follow(GeneralUnit unit, GameTime time)
+        public void Follow(GeneralUnit unit)
         {
             // now, using an actual velocity and without abruptly stopping, this should look way better.
 
@@ -85,7 +85,7 @@ namespace Singularity.Resources
         {
             // Resoucres only update their location (if on a platform).
             AbsolutePosition += velocity;
-            velocity = Vector2.Multipyl(velocity, 0.8);
+            velocity = Vector2.Multiply(velocity, 0.8f);
         }
     }
 }
