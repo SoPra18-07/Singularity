@@ -63,6 +63,7 @@
     <Compile Include="Manager\DistributionManager.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />
     <Compile Include="Units\EnemyUnit.cs" />
+    <Compile Include="Units\SelectionBox.cs" />
     <Compile Include="Units\Task.cs" />
     <Compile Include="Exceptions\InvalidGenericArgumentException.cs" />
     <Compile Include="Exceptions\NoSuchElementException.cs" />

@@ -60,11 +60,12 @@ namespace Singularity.Levels
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
             mPlatform = new PlatformBlank(new Vector2(1000, 1000), null, platformBlankTexture);
-            var platform2 = new Well(new Vector2(800, 1000), platformDomeTexture, platformBlankTexture, mMap.GetResourceMap());
+            var platform2 = new Well(new Vector2(800, 1000), platformDomeTexture, platformBlankTexture, mMap.GetResourceMap(), ref mDirector);
             var platform3 = new Quarry(new Vector2(1200, 1200),
                 platformDomeTexture,
                 platformBlankTexture,
-                mMap.GetResourceMap());
+                mMap.GetResourceMap(),
+                ref mDirector);
             var platform4 = new EnergyFacility(new Vector2(1000, 800),
                 platformDomeTexture,
                 platformBlankTexture);
