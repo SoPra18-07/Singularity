@@ -13,6 +13,7 @@ namespace Singularity.Resources
         // TODO: fkarg implement
 
         private const float Speed = 4f;
+        private Vector2 velocity;
 
         public Vector2 RelativePosition { get; set; }
 
@@ -35,6 +36,7 @@ namespace Singularity.Resources
 
         public void Follow(GeneralUnit unit, GameTime time)
         {
+            // now, using an actual velocity and without abruptly stopping, this should look way better.
 
             // the actual targetPosition is a certain distance (usually 50) from the unit, in the direction of the unit.
             var diff = unit.AbsolutePosition - AbsolutePosition;
@@ -42,12 +44,19 @@ namespace Singularity.Resources
             {
                 var targetPosition = diff - 35 * Geometry.NormalizeVector(diff) + AbsolutePosition;
 
-                var movementVector = Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y));
+                var movementVector = Vector2.Multiply(Geometry.NormalizeVector(velocity), 0.4f) + Vector2.Multiply(Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y)), 0.6f);
 
-                AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X * Speed,
-                    AbsolutePosition.Y + movementVector.Y * Speed);
-
+                velocity = movementVector * Speed;
+            } else {
+                velocity = Vector2.Multiply(velocity, 0.6f);
             }
+            AbsolutePosition = AbsolutePosition + velocity;
+
+        }
+
+        public Vector2 GetVelocity()
+        {
+            return velocity;
         }
 
         /// <summary>
@@ -74,7 +83,9 @@ namespace Singularity.Resources
 
         public void Update(GameTime gametime)
         {
-            // this is correct. Resorces do not need an update.
+            // Resoucres only update their location (if on a platform).
+            AbsolutePosition += velocity;
+            velocity = Vector2.Multipyl(velocity, 0.8);
         }
     }
 }

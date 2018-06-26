@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Property;
+using Singularity.Utils;
 
 namespace Singularity.Resources
 {
@@ -9,7 +10,7 @@ namespace Singularity.Resources
     /// <inheritdoc cref="IDraw"/>
     /// <inheritdoc cref="IUpdate"/>
     /// <summary>
-    /// Represents a resource in the game. Written in such a fashion that it can represent any resource there is and will be.
+    /// Represents a resource-field on the Map in the game. Resources can be extraced from it using the Well, the Mine or the Quarry.
     /// </summary>
     public sealed class MapResource : ISpatial
     {
@@ -27,7 +28,7 @@ namespace Singularity.Resources
 
         public Vector2 RelativeSize { get; set; }
 
-        private EResourceType Type { get; }
+        public EResourceType Type { get; }
 
         private int Amount { get; set; }
 
@@ -49,6 +50,16 @@ namespace Singularity.Resources
 
             mColor = ResourceHelper.GetColor(type);
 
+        }
+
+        public Optional<Resource> Get(Vector2 location)
+        {
+            if (Amount > 0)
+            {
+                Amount -= 1;
+                return Optional<Resource>.Of(new Resource(Type, location));
+            }
+            return Optional<Resource>.Of(null);
         }
 
         public void Draw(SpriteBatch spriteBatch)
