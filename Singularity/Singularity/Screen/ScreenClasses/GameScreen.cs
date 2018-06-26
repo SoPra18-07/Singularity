@@ -2,9 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Singularity.Graph.Paths;
-using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platform;
@@ -50,6 +48,12 @@ namespace Singularity.Screen.ScreenClasses
         private Director mDirector;
         private readonly GraphicsDevice mGraphicsDevice;
 
+        //Other managers
+        private PathManager mPathManager;
+
+        private Manager.StoryManager mStoryManager;
+
+        private DistributionManager mDistributionManager;
         // roads
         private Road mRoad1;
 
@@ -77,7 +81,8 @@ namespace Singularity.Screen.ScreenClasses
         private Camera mCamera;
 
 
-        public GameScreen(GraphicsDevice graphicsDevice, ref Director director)
+
+        public GameScreen(GraphicsDevice graphicsDevice, ref Director director, Map.Map map, Camera camera, FogOfWar fow)
         {
             mGraphicsDevice = graphicsDevice;
 
@@ -85,7 +90,12 @@ namespace Singularity.Screen.ScreenClasses
             mUpdateables = new LinkedList<IUpdate>();
             mSpatialObjects = new LinkedList<ISpatial>();
 
+            mMap = map;
+            mCamera = camera;
+            mFow = fow;
+
             mDirector = director;
+
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -123,12 +133,6 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Update(GameTime gametime)
         {
-            foreach (var updateable in mUpdateables)
-            {
-                updateable.Update(gametime);
-
-            }
-
             foreach (var spatial in mSpatialObjects)
             {
                 var collidingObject = spatial as ICollider;
@@ -146,76 +150,13 @@ namespace Singularity.Screen.ScreenClasses
             mFow.Update(gametime);
 
             mTransformMatrix = mCamera.GetTransform();
-
-
         }
 
         public void LoadContent(ContentManager content)
         {
-            var pathManager = new PathManager();
-            var mapBackground = content.Load<Texture2D>("backgroundGrid");
-
-            mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
-
-            mPlatformSheet = content.Load<Texture2D>("PlatformSpriteSheet");
-            // TODO: use this.Content to load your game content here
-            mPlatformBlankTexture = content.Load<Texture2D>("PlatformBasic");
-            mPlatformDomeTexture = content.Load<Texture2D>("Dome");
-            mPlatform = new PlatformBlank(new Vector2(300 * 2, 400 * 2), mPlatformBlankTexture, mPlatformBlankTexture);
-             
-            mPlatform2 = new Junkyard(new Vector2(800 * 2, 600 * 2), mPlatformDomeTexture, mPlatformBlankTexture);
-            mPlatform3 = new EnergyFacility(new Vector2(600 * 2, 200 * 2), mPlatformDomeTexture, mPlatformBlankTexture);
-
-            var libSans12 = content.Load<SpriteFont>("LibSans12");
-
-
-            mMap = new Map.Map(mapBackground, 20, 20, mGraphicsDevice.Viewport, ref mDirector, true);
-            mCamera = mMap.GetCamera();
-
-            var platform4 = new Well(new Vector2(1000 * 2, 200 * 2), mPlatformDomeTexture, mPlatformBlankTexture, mMap.GetResourceMap());
-            var platform5 = new Quarry(new Vector2(1300 * 2, 400 * 2), mPlatformDomeTexture, mPlatformBlankTexture, mMap.GetResourceMap());
-
-            var genUnit = new GeneralUnit(mPlatform, ref mDirector);
-            var genUnit2 = new GeneralUnit(mPlatform2, ref mDirector);
-            var genUnit3 = new GeneralUnit(mPlatform3, ref mDirector);
-
-            mFow = new FogOfWar(mCamera, mGraphicsDevice);
-
-            mMUnit1 = new MilitaryUnit(new Vector2(1000 * 2, 600 * 2), mMUnitSheet, mMap.GetCamera(), ref mDirector, ref mMap);
-            mMUnit2 = new MilitaryUnit(new Vector2(300 * 2, 700 * 2), mMUnitSheet, mMap.GetCamera(), ref mDirector, ref mMap);
-
-            // load an enemy unit
-            mEnemy1 = new EnemyUnit(new Vector2(300 * 2, 600 * 2), mMUnitSheet, mMap.GetCamera(), ref mDirector);
-
-            // load roads
-            mRoad1 = new Road(mPlatform, mPlatform2, false);
-            var road2 = new Road(mPlatform3, platform4, false);
-            var road3 = new Road(mPlatform2, mPlatform3, false);
-            var road4 = new Road(platform4, platform5, false);
-            var road5 = new Road(platform5, mPlatform, false);
-            var road6 = new Road(mPlatform, platform4, false);
 
             AddObject(mMap);
-
-            AddObject(mMUnit1);
-            AddObject(mMUnit2);
-            AddObject(mEnemy1);
-            AddObject(mPlatform);
-            AddObject(mPlatform2);
-            AddObject(mPlatform3);
-            AddObject(platform4);
-            AddObject(platform5);
-            AddObject(mRoad1);
-            AddObject(road2);
-            AddObject(road3);
-            AddObject(road4);
-            AddObject(road5);
-            AddObject(road6);
-
-            AddObject(genUnit);
-            AddObject(genUnit2);
-            AddObject(genUnit3);
-
+  
             AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
 
             mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");

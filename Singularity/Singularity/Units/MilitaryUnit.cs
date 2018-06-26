@@ -20,8 +20,8 @@ namespace Singularity.Units
         private const int DefaultWidth = 150;
         private const int DefaultHeight = 75;
 
-        private static readonly Color sSelectedColor = Color.Gainsboro;
-        private static readonly Color sNotSelectedColor = Color.White;
+        private static readonly Color sSelectedColor = Color.Gray;
+        private static readonly Color sNotSelectedColor = Color.DarkGray;
 
         private const double Speed = 4;
 

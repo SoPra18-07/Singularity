@@ -1,5 +1,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Graph.Paths;
+using Singularity.Input;
+using Singularity.Levels;
 using Singularity.Manager;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
@@ -14,12 +17,10 @@ namespace Singularity
         internal readonly GraphicsDeviceManager mGraphics;
         internal readonly GraphicsAdapter mGraphicsAdapter;
 
-
         // Screens
         internal GameScreen mGameScreen;
         private MainMenuManagerScreen mMainMenuManager;
         private UserInterfaceScreen mUserInterfaceScreen;
-
 
         // Sprites!
         private SpriteBatch mSpriteBatch;
@@ -41,6 +42,7 @@ namespace Singularity
             mGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
 
             mDirector = new Director(Content);
+
 
             mScreenManager = new StackScreenManager(Content, mDirector.GetInputManager);
 
@@ -74,8 +76,11 @@ namespace Singularity
                 GraphicsDevice.Viewport.Height);
             // Create a new SpriteBatch, which can be used to draw textures.
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
+            
 
-            mGameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector);
+            mGameScreen = new Skirmish(mGraphics.GraphicsDevice, ref mDirector, Content).GetGameScreen();
+
+            //mGameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector);
 
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
 
