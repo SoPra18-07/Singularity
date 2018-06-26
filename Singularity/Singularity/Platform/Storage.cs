@@ -30,12 +30,6 @@ namespace Singularity.Platform
             AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
         }
 
-        public override void Produce()
-        {
-            throw new NotImplementedException();
-            //mIPlatformActions[0].Execute();
-        }
-
         /// <summary>
         /// Connects this storage to another storage to act like a portal.
         /// </summary>
