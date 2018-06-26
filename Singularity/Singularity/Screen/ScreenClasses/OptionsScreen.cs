@@ -62,7 +62,7 @@ namespace Singularity.Screen.ScreenClasses
         private Button mBackButton;
 
         // Graphics tab
-        private readonly List<Button> mMGraphicsButtons;
+        private readonly List<Button> mGraphicsButtons;
         private Button mFullScreen; // todo replace with a toggle
         private Button mResolution1; // todo replace with a better system
         private Button mResolution2; // todo replace with a better system
@@ -120,7 +120,7 @@ namespace Singularity.Screen.ScreenClasses
             mMuteString = "Mute";
 
             mTabButtons = new List<Button>(5);
-            mMGraphicsButtons = new List<Button>(4);
+            mGraphicsButtons = new List<Button>(4);
             mAudioButtons = new List<Button>(1);
 
             mScreenState = EOptionScreenState.Gameplay;
@@ -143,13 +143,11 @@ namespace Singularity.Screen.ScreenClasses
             mGameplayButton = new Button(mGameplayString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding), mTextColor);
             mGraphicsButton = new Button(mGraphicsString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding + 40), mTextColor);
             mAudioButton = new Button(mAudioString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding + 80), mTextColor);
-            mSaveButton = new Button(mSaveChangesString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding + 120), mTextColor);
             mBackButton = new Button(mBackString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding + 160), mTextColor);
 
             mTabButtons.Add(mGameplayButton);
             mTabButtons.Add(mGraphicsButton);
             mTabButtons.Add(mAudioButton);
-            mTabButtons.Add(mSaveButton);
             mTabButtons.Add(mBackButton);
 
             foreach (Button tabButton in mTabButtons)
@@ -164,14 +162,14 @@ namespace Singularity.Screen.ScreenClasses
             mFullScreen = new Button(mFullScreenString, mLibSans20, new Vector2(mContentPadding, mTopContentPadding), mTextColor);
             mResolution1 = new Button("800 x 600", mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 40), mTextColor);
             mResolution2 = new Button("960 x 720", mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 80));
-            mAntialiasing = new Button(mAntialiasingString, mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 120), mTextColor);
+            mSaveButton = new Button(mSaveChangesString, mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 120), mTextColor);
 
-            mMGraphicsButtons.Add(mFullScreen);
-            mMGraphicsButtons.Add(mResolution1);
-            mMGraphicsButtons.Add(mResolution2);
-            mMGraphicsButtons.Add(mAntialiasing);
+            mGraphicsButtons.Add(mFullScreen);
+            mGraphicsButtons.Add(mResolution1);
+            mGraphicsButtons.Add(mResolution2);
+            mGraphicsButtons.Add(mSaveButton);
 
-            foreach (Button graphicsButton in mMGraphicsButtons)
+            foreach (Button graphicsButton in mGraphicsButtons)
             {
                 graphicsButton.Opacity = mMenuOpacity;
             }
@@ -190,7 +188,6 @@ namespace Singularity.Screen.ScreenClasses
             mFullScreen.ButtonReleased += OnFullScreenReleased;
             mResolution1.ButtonReleased += OnResoOneReleased;
             mResolution2.ButtonReleased += OnResoTwoReleased;
-            mAntialiasing.ButtonReleased += OnAntialiasingReleased;
 
             mMuteButton.ButtonReleased += OnMuteReleased;
 
@@ -221,7 +218,7 @@ namespace Singularity.Screen.ScreenClasses
 
                     break;
                 case EOptionScreenState.Graphics:
-                    foreach (Button button in mMGraphicsButtons)
+                    foreach (Button button in mGraphicsButtons)
                     {
                         button.Update(gametime);
                         button.Opacity = mMenuOpacity;
@@ -281,7 +278,7 @@ namespace Singularity.Screen.ScreenClasses
                     spriteBatch.DrawString(mLibSans20, "Difficulty", new Vector2(mContentPadding, mTopContentPadding), Color.White * mMenuOpacity);
                     break;
                 case EOptionScreenState.Graphics:
-                    foreach (Button button in mMGraphicsButtons)
+                    foreach (Button button in mGraphicsButtons)
                     {
                         button.Draw(spriteBatch);
                     }

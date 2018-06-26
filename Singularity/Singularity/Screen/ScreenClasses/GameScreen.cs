@@ -155,8 +155,10 @@ namespace Singularity.Screen.ScreenClasses
         public void LoadContent(ContentManager content)
         {
 
+            // AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
+
             AddObject(mMap);
-  
+
             AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
 
             mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");

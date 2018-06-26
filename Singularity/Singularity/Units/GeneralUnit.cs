@@ -15,7 +15,7 @@ using Singularity.Utils;
 namespace Singularity.Units
 {
     [DataContract]
-    public class GeneralUnit : ISpatial
+    public sealed class GeneralUnit : ISpatial
     {
 
         public int Id { get; }
@@ -32,7 +32,8 @@ namespace Singularity.Units
 
         [DataMember]
         private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
-        
+
+
         //These are the assigned task and a flag, wether the unit is done with it.
         [DataMember]
         private Task mAssignedTask;
@@ -101,6 +102,7 @@ namespace Singularity.Units
             mDestination = Optional<INode>.Of(null);
 
             CurrentNode = platform;
+            Carrying = Optional<Resource>.Of(null);
 
             AbsolutePosition = ((IRevealing) platform).Center;
             mPathQueue = new Queue<Vector2>();
@@ -250,11 +252,28 @@ namespace Singularity.Units
             {
                 mCurrentNode = mNodeQueue.Dequeue();
             }
+
             // finally move to the current node.
             Move(((PlatformBlank)mCurrentNode).Center);
 
             // check whether we have reached the target after our move call.
             ReachedTarget(((PlatformBlank)mCurrentNode).Center);
+
+            if (((PlatformBlank) mCurrentNode).GetPlatformResources().Count > 0)
+            {
+                // todo: fix
+                var res = ((PlatformBlank) mCurrentNode).GetResource(EResourceType.Oil);
+                if (res.IsPresent())
+                {
+                    Carrying = res;
+                }
+            }
+
+            if (Carrying.IsPresent())
+            {
+                Carrying.Get().Follow(this);
+            }
+
         }
 
         /// <summary>
@@ -279,7 +298,12 @@ namespace Singularity.Units
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawCircle(AbsolutePosition, 10, 20, Color.Green, 10, LayerConstants.GeneralUnitLayer);
+            spriteBatch.DrawCircle(AbsolutePosition, 10, 20, Color.DarkOliveGreen, 10, LayerConstants.GeneralUnitLayer);
+
+            if (Carrying.IsPresent())
+            {
+                Carrying.Get().Draw(spriteBatch);
+            }
         }
     }
 }

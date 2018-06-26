@@ -476,12 +476,12 @@ namespace Singularity.Input
 
             foreach (var screen in mScreensToCheck)
             {
-                if (giveWheelThrough) { 
+                if (giveWheelThrough) {
                     giveWheelThrough = giveWheelThrough && CreateMouseWheelEvents(screen);
 
                 }
 
-                if (giveClickThrough) { 
+                if (giveClickThrough) {
                     giveClickThrough = giveClickThrough && CreateMouseClickEvents(screen);
 
                 }

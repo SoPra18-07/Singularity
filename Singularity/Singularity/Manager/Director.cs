@@ -4,12 +4,13 @@ using Singularity.Graph.Paths;
 using Singularity.Input;
 using Singularity.Property;
 using Singularity.Sound;
+using Singularity;
 
 namespace Singularity.Manager
 {
-    public class Director : IUpdate
+    public class Director
     {
-        
+
         public Director(ContentManager content)
         {
             GetInputManager = new InputManager();
@@ -17,14 +18,14 @@ namespace Singularity.Manager
             GetPathManager = new PathManager();
             GetSoundManager = new SoundManager();
             GetDistributionManager = new DistributionManager();
-            GetMilitaryManager = new MilitaryManager(); // TODO: Update this code if the MilitaryManager is not getting everything from the StructureMap or sth ... 
+            GetMilitaryManager = new MilitaryManager(); // TODO: Update this code if the MilitaryManager is not getting everything from the StructureMap or sth ...
                                                         // (like units telling it they exist and the like)
 
             GetSoundManager.LoadContent(content);
             GetSoundManager.PlaySoundTrack();
 
 
-            // Dd}{_: 
+            // Dd}{_:
         }
 
         public InputManager GetInputManager { get; }
@@ -37,9 +38,12 @@ namespace Singularity.Manager
         public DistributionManager GetDistributionManager { get; }
 
 
-        public void Update(GameTime gametime)
+        public void Update(GameTime gametime, bool isActive)
         {
-            GetInputManager.Update(gametime);
+            if (isActive)
+            {
+                GetInputManager.Update(gametime);
+            }
             GetStoryManager.Update(gametime);
         }
     }

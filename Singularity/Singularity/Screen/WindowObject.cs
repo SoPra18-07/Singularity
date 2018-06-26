@@ -54,7 +54,7 @@ namespace Singularity.Screen
         // size of the rectangle in the top right corner of the window which minimizes the window when clicked on
         private int mMinimizationSize;
 
-        // true when the window's windowItems and the padding between them 
+        // true when the window's windowItems and the padding between them
         private bool mScrollable; // = false as default value
 
         // activates the window movement after a mouse click on the title bar
@@ -371,7 +371,7 @@ namespace Singularity.Screen
 
                 localItemPos = new Vector2(localItemPos.X, localItemPos.Y + item.Size.Y + mObjectPadding);
             }
-            
+
             // bottom of all items combined
             mItemPosBottom = new Vector2(localItemPos.X, localItemPos.Y);
 
@@ -403,14 +403,14 @@ namespace Singularity.Screen
             // set the rectangle for minimization in the top right corner of the window
             mMinimizationRectangle = new Rectangle(
                 x: (int)(mPosition.X + mSize.X - mMinimizationSize),
-                y: (int)(mPosition.Y), 
+                y: (int)(mPosition.Y),
                 width: mMinimizationSize,
                 height: mMinimizationSize
                 );
             mMinimizationLine = new Rectangle(
                 x: (int)(mPosition.X + mSize.X - 3 * mMinimizationSize / 4f),
-                y: (int)(mPosition.Y + (mMinimizationSize / 2f)), 
-                width: (mMinimizationSize / 2), 
+                y: (int)(mPosition.Y + (mMinimizationSize / 2f)),
+                width: (mMinimizationSize / 2),
                 height: 1
                 );
 
@@ -422,17 +422,17 @@ namespace Singularity.Screen
                 height: mTitleSizeY + mMinimizationSize
                 );
             mMinimizedBorderRectangle = new Rectangle(
-                x: (int)mPosition.X, 
-                y: (int)mPosition.Y, 
-                width: (int)(mSize.X), 
+                x: (int)mPosition.X,
+                y: (int)mPosition.Y,
+                width: (int)(mSize.X),
                 height: mTitleSizeY + mMinimizationSize
                 );
 
             // set the rectangle for scrolling
             mScrollBarBorderRectangle = new Rectangle(
-                x: (int)(mPosition.X + mSize.X - mMinimizationSize), 
-                y: (int)(mPosition.Y + mTitleSizeY + 2 * mMinimizationSize), 
-                width: mMinimizationSize, 
+                x: (int)(mPosition.X + mSize.X - mMinimizationSize),
+                y: (int)(mPosition.Y + mTitleSizeY + 2 * mMinimizationSize),
+                width: mMinimizationSize,
                 height: (int)(mSize.Y - mTitleSizeY - 3 * mMinimizationSize)
                 );
             mScrollBarRectangle = CalcScrollbarRectangle(mScissorRectangle, mCombinedItemsSize
@@ -441,8 +441,8 @@ namespace Singularity.Screen
             // set the rectangle of the title bar
             mTitleBarRectangle = new Rectangle(
                 x: (int)mPosition.X + mMinimizationSize / 2,
-                y: (int)mPosition.Y + mTitleSizeY + mMinimizationSize, 
-                width: (int)mSize.X - 2 * mMinimizationSize, 
+                y: (int)mPosition.Y + mTitleSizeY + mMinimizationSize,
+                width: (int)mSize.X - 2 * mMinimizationSize,
                 height: 1
                 );
         }
@@ -596,7 +596,7 @@ namespace Singularity.Screen
                 mPosition.X = mCurrentScreenWidth - mSize.X;
             }
 
-            // catch top / bottom 
+            // catch top / bottom
             if (!mMinimized)
                 // full window
             {
@@ -632,7 +632,7 @@ namespace Singularity.Screen
             #endregion
 
             return false;
-        }   
+        }
 
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {

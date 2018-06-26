@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Property;
+using Singularity.Utils;
 
 namespace Singularity.Resources
 {
@@ -9,7 +10,7 @@ namespace Singularity.Resources
     /// <inheritdoc cref="IDraw"/>
     /// <inheritdoc cref="IUpdate"/>
     /// <summary>
-    /// Represents a resource in the game. Written in such a fashion that it can represent any resource there is and will be.
+    /// Represents a resource-field on the Map in the game. Resources can be extraced from it using the Well, the Mine or the Quarry.
     /// </summary>
     public sealed class MapResource : ISpatial
     {
@@ -27,7 +28,7 @@ namespace Singularity.Resources
 
         public Vector2 RelativeSize { get; set; }
 
-        private EResourceType Type { get; }
+        public EResourceType Type { get; }
 
         private int Amount { get; set; }
 
@@ -45,15 +46,26 @@ namespace Singularity.Resources
 
             // maybe needs some tweaks, it was mentioned that more resources is in a relation with bigger resource representation
             // this needs adjustment as soon as we actually do something with resources.
-            Amount = width / 10;
+            Amount = width;
 
             mColor = ResourceHelper.GetColor(type);
 
         }
 
+        public Optional<Resource> Get(Vector2 location)
+        {
+            if (Amount > 0)
+            {
+                Amount -= 1;
+                return Optional<Resource>.Of(new Resource(Type, location));
+            }
+            return Optional<Resource>.Of(null);
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawEllipse(new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y), mColor, 4f, LayerConstants.ResourceLayer);
+            // TODO: test how this looks like.
+            spriteBatch.DrawEllipse(new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y), mColor, Amount / 2f, LayerConstants.MapResourceLayer);
         }
 
         public void Update(GameTime gametime)

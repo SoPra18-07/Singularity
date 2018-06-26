@@ -18,7 +18,7 @@ namespace Singularity
         internal readonly GraphicsAdapter mGraphicsAdapter;
 
         // Screens
-        internal GameScreen mGameScreen;
+        private GameScreen mGameScreen;
         private MainMenuManagerScreen mMainMenuManager;
         private UserInterfaceScreen mUserInterfaceScreen;
 
@@ -76,7 +76,7 @@ namespace Singularity
                 GraphicsDevice.Viewport.Height);
             // Create a new SpriteBatch, which can be used to draw textures.
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
-            
+
 
             mGameScreen = new Skirmish(mGraphics.GraphicsDevice, ref mDirector, Content).GetGameScreen();
 
@@ -92,8 +92,6 @@ namespace Singularity
             mScreenManager.AddScreen(mGameScreen);
             mScreenManager.AddScreen(mUserInterfaceScreen);
             // mScreenManager.AddScreen(mMainMenuManager); // TODO: This makes it so that the main menu is bypassed
-
-
 
             // load and play Soundtrack as background music
             // todo this
@@ -117,7 +115,7 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            mDirector.Update(gameTime);
+            mDirector.Update(gameTime, IsActive);
             mScreenManager.Update(gameTime);
             base.Update(gameTime);
         }
@@ -129,8 +127,6 @@ namespace Singularity
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-
-            // TODO: Add your drawing code here
 
             mScreenManager.Draw(mSpriteBatch);
             base.Draw(gameTime);

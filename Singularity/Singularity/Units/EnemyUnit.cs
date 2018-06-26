@@ -226,7 +226,7 @@ namespace Singularity.Units
         }
 
         /// <summary>
-        /// Calculates the direction the unit should be moving and moves it into that direction. 
+        /// Calculates the direction the unit should be moving and moves it into that direction.
         /// </summary>
         /// <param name="target">The target to which to move</param>
         private void MoveToTarget(Vector2 target)

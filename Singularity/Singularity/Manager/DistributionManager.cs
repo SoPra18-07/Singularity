@@ -249,9 +249,9 @@ namespace Singularity.Manager
             var search = true;
             var startindex = list.Count - 1;
             var lowassign = int.MaxValue;
-            //this will always be overridden this way                                        
-            //The idea is to search the list backwards and try to find the platform with more units than the previous platform                 
-            //Given that the units have been distributed fairly, we can now decrement units from there.    
+            //this will always be overridden this way
+            //The idea is to search the list backwards and try to find the platform with more units than the previous platform
+            //Given that the units have been distributed fairly, we can now decrement units from there.
             //If we reach the end that way, we have to continue decrementing the units from the end.
             for (var i = list.Count - 1; search; i--)
             {
@@ -280,7 +280,7 @@ namespace Singularity.Manager
             //NOW SUBSTRACT THE REQUESTED AMOUNT OF UNITS
             for (var i = amount; i > 0; i--)
             {
-                
+
                 //This means there are no Units to subtract
                 if (list[startindex].GetSecond() == 0)
                 {
@@ -301,7 +301,7 @@ namespace Singularity.Manager
                     job = JobType.Production;
                     joblist = mProduction;
                 }
-                
+
                 //Remove the first unit in the AssignedUnitList. The unit will unassign itself. Then add the unit to our unitslist.
                 //Also dont forget to decrement the number in the tuple, and to delete the unit from the joblist.
                 var transferunit = platUnits[job].First();
@@ -410,9 +410,9 @@ namespace Singularity.Manager
                 var reachend = false;
                 var startindex = 0;
                 var lowassign = mDefense.Count + 1;
-                //this will always be overridden this way                                        
-                //The idea is to search the list backwards and try to find the platform with more units than the previous platform                 
-                //Given that the units have been distributed fairly, we can now decrement units from there.    
+                //this will always be overridden this way
+                //The idea is to search the list backwards and try to find the platform with more units than the previous platform
+                //Given that the units have been distributed fairly, we can now decrement units from there.
                 //If we reach the end that way, we have to continue decrementing the units from the end.
                 for (var i = mDefPlatforms.Count - 2; i >= 0 && search; i--)
                 {
@@ -460,9 +460,9 @@ namespace Singularity.Manager
                 var reachend = false;
                 int startindex = 0;
                 var lowassign = mProduction.Count + 1;
-                //this will always be overridden this way                                        
-                //The idea is to search the list backwards and try to find the platform with more units than the previous platform                 
-                //Given that the units have been distributed fairly, we can now decrement units from there.    
+                //this will always be overridden this way
+                //The idea is to search the list backwards and try to find the platform with more units than the previous platform
+                //Given that the units have been distributed fairly, we can now decrement units from there.
                 //If we reach the end that way, we have to continue decrementing the units from the end.
                 for (var i = mProdPlatforms.Count - 2; i >= 0 && search; i--)
                 {
@@ -573,7 +573,7 @@ namespace Singularity.Manager
         /// <param name="resource">The wanted resource</param>
         /// <param name="action">The corresponding platformaction</param>
         /// <param name="isbuilding">True if the resources are for building, false otherwise</param>
-        public void RequestResource(PlatformBlank platform, EResourceType resource, IPlatformAction action, bool isbuilding = false) 
+        public void RequestResource(PlatformBlank platform, EResourceType resource, IPlatformAction action, bool isbuilding = false)
         {
             // Will repair request ressources or units? And what unit will be used?
             // We do not have repair yet or anytime soon.
@@ -581,11 +581,11 @@ namespace Singularity.Manager
             //TODO: Create Action references, when interfaces were created.
             if (isbuilding)
             {
-                mBuildingResources.Enqueue(new Task(JobType.Construction, Optional<PlatformBlank>.Of(platform), resource, Optional<IPlatformAction>.Of(action)));
+                mBuildingResources.Enqueue(new Task(JobType.Construction, Optional<PlatformBlank>.Of(platform), Optional<EResourceType>.Of(resource), Optional<IPlatformAction>.Of(action)));
             }
             else
             {
-                mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, Optional<PlatformBlank>.Of(platform), resource, Optional<IPlatformAction>.Of(action)));
+                mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, Optional<PlatformBlank>.Of(platform), Optional<EResourceType>.Of(resource), Optional<IPlatformAction>.Of(action)));
             }
         }
 
@@ -658,7 +658,7 @@ namespace Singularity.Manager
 
                 case JobType.Defense:
                     throw new InvalidGenericArgumentException("You shouldnt ask for Defense tasks, you just assign units to defense.");
-                    
+
                 case JobType.Construction:
                     return mBuildingResources.Dequeue();
 

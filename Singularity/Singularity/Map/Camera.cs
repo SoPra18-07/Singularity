@@ -58,6 +58,8 @@ namespace Singularity.Map
         /// </summary>
         private readonly Rectangle mBounds;
 
+        private readonly bool mNeo;
+
 
         /// <summary>
         /// Creates a new Camera object which provides a transform matrix to adjust
@@ -67,7 +69,7 @@ namespace Singularity.Map
         /// <param name="director">The director</param>
         /// <param name="x">The initial x position of the camera</param>
         /// <param name="y">the initial y position of the camera</param>
-        public Camera(Viewport viewport, ref Director director, int x = 0, int y = 0)
+        public Camera(Viewport viewport, ref Director director, int x = 0, int y = 0, bool neo = false)
         {
             if (x < 0)
             {
@@ -81,6 +83,7 @@ namespace Singularity.Map
 
             mX = x;
             mY = y;
+            mNeo = neo;
             mViewport = viewport;
             mZoom = 1.0f;
             mBounds = new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight);
@@ -102,7 +105,7 @@ namespace Singularity.Map
         {
             return mTransform;
         }
-        
+
         public void Update(GameTime gametime)
         {
 
@@ -218,30 +221,60 @@ namespace Singularity.Map
         {
             var moved = false;
 
-            foreach (var key in keyEvent.CurrentKeys)
+            if (mNeo)
             {
-
-                switch (key)
+                foreach (var key in keyEvent.CurrentKeys)
                 {
-                    case Keys.W:
-                        mY -= CameraMovementSpeed;
-                        moved = true;
-                        break;
 
-                    case Keys.S:
-                        mY += CameraMovementSpeed;
-                        moved = true;
-                        break;
+                    switch (key)
+                    {
+                        case Keys.V:
+                            mY -= CameraMovementSpeed;
+                            moved = true;
+                            break;
 
-                    case Keys.A:
-                        mX -= CameraMovementSpeed;
-                        moved = true;
-                        break;
+                        case Keys.I:
+                            mY += CameraMovementSpeed;
+                            moved = true;
+                            break;
 
-                    case Keys.D:
-                        mX += CameraMovementSpeed;
-                        moved = true;
-                        break;
+                        case Keys.U:
+                            mX -= CameraMovementSpeed;
+                            moved = true;
+                            break;
+
+                        case Keys.A:
+                            mX += CameraMovementSpeed;
+                            moved = true;
+                            break;
+                    }
+                }
+            } else
+            {
+                foreach (var key in keyEvent.CurrentKeys)
+                {
+                    switch (key)
+                    {
+                        case Keys.W:
+                            mY -= CameraMovementSpeed;
+                            moved = true;
+                            break;
+
+                        case Keys.S:
+                            mY += CameraMovementSpeed;
+                            moved = true;
+                            break;
+
+                        case Keys.A:
+                            mX -= CameraMovementSpeed;
+                            moved = true;
+                            break;
+
+                        case Keys.D:
+                            mX += CameraMovementSpeed;
+                            moved = true;
+                            break;
+                    }
                 }
             }
 

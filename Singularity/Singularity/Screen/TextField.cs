@@ -111,7 +111,7 @@ namespace Singularity.Screen
 
             // add the final line
             splittedLines.Append(workingLine);
-            
+
             return splittedLines.ToString();
         }
 
@@ -126,7 +126,7 @@ namespace Singularity.Screen
         public Vector2 Size { get; }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public bool Active { get; set; }
     }

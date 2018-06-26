@@ -35,7 +35,7 @@ namespace Singularity.Screen.ScreenClasses
         // rectangles needed for the next button
         private readonly Rectangle mButtonBorderRectangle;
 
-        // true when the window's windowItems and the padding between them 
+        // true when the window's windowItems and the padding between them
         private bool mScrollable; // = false as default value
 
         // current screen size values
@@ -59,14 +59,14 @@ namespace Singularity.Screen.ScreenClasses
         #endregion
 
         public PopupWindow(
-            string windowName, 
-            Button button, 
-            Vector2 position, 
-            Vector2 size, 
-            Color colorBorder, 
-            Color colorFill, 
+            string windowName,
+            Button button,
+            Vector2 position,
+            Vector2 size,
+            Color colorBorder,
+            Color colorFill,
             SpriteFont spriteFontTitle,
-            InputManager inputManager, 
+            InputManager inputManager,
             GraphicsDeviceManager graphics)
         {
             mWindowName = windowName;
@@ -91,15 +91,15 @@ namespace Singularity.Screen.ScreenClasses
 
             // set the window rectangle
             mWindowRectangle = new Rectangle(
-                x: (int)(mPosition.X + 1), 
-                y: (int)(mPosition.Y + 2), 
-                width: (int)(mSize.X - 2), 
+                x: (int)(mPosition.X + 1),
+                y: (int)(mPosition.Y + 2),
+                width: (int)(mSize.X - 2),
                 height: (int)(mSize.Y - 2)
                 );
             mBorderRectangle = new Rectangle(
                 x: (int)mPosition.X,
-                y: (int)mPosition.Y, 
-                width: (int)(mSize.X), 
+                y: (int)mPosition.Y,
+                width: (int)(mSize.X),
                 height: ((int)mSize.Y)
                 );
 
@@ -107,14 +107,14 @@ namespace Singularity.Screen.ScreenClasses
             mScissorRectangle = new Rectangle(
                 x: (int)(mPosition.X + 10),
                 y: (int)(mPosition.Y + titleSizeY + 30),
-                width: (mWindowRectangle.Width - 20), 
+                width: (mWindowRectangle.Width - 20),
                 height: (int)(mSize.Y - titleSizeY - 3 * 10 - buttonSize.Y)
                 );
 
             // set the rectangle of the title bar
             mTitleBarRectangle = new Rectangle(
                 x: (int)mPosition.X + 10,
-                y: (int)mPosition.Y + titleSizeY + 20, 
+                y: (int)mPosition.Y + titleSizeY + 20,
                 width: (int)mSize.X - 40,
                 height: 1
                 );

@@ -10,7 +10,7 @@ namespace Singularity.Units
     {
         [DataMember]
         public JobType Job { get; set; }
-        
+
         [DataMember]
         public Optional<PlatformBlank> Begin { get; set; }
 
@@ -21,9 +21,9 @@ namespace Singularity.Units
         public Optional<IPlatformAction> Action { get; set; }
 
         [DataMember]
-        public EResourceType? GetResource { get; set; }
+        public Optional<EResourceType> GetResource { get; set; }
 
-        public Task(JobType job, Optional<PlatformBlank> end, EResourceType? res, Optional<IPlatformAction> action)
+        public Task(JobType job, Optional<PlatformBlank> end, Optional<EResourceType> res, Optional<IPlatformAction> action)
         {
             Job = job;
             End = end;

@@ -17,7 +17,7 @@
         /// <summary>
         /// A float depicting the layer for resources
         /// </summary>
-        public const float ResourceLayer = 0.1f;
+        public const float MapResourceLayer = 0.1f;
 
         /// <summary>
         /// A float depicting the layer for military units
@@ -28,6 +28,16 @@
         /// A float depicting the layer for roads
         /// </summary>
         public const float RoadLayer = 0.3f;
+
+        /// <summary>
+        /// A float depicting the layer for the connection between Resources and Units.
+        /// </summary>
+        public const float ConnectingLayer = 0.52f;
+
+        /// <summary>
+        /// A float depicting the layer for Resources
+        /// </summary>
+        public const float ResourceLayer = 0.53f;
 
         /// <summary>
         /// A float depicting the layer for general units

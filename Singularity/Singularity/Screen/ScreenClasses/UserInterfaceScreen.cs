@@ -356,7 +356,7 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {
-            // 
+            //
             return true;
         }
 

@@ -60,7 +60,7 @@ namespace Singularity.Platform
 
         public int Id { get; }
 
-        // the sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome 
+        // the sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome
         private int mSheet;
         private int mSheetPosition;
 
@@ -194,7 +194,6 @@ namespace Singularity.Platform
             // return true;
             // }
 
-            //return false;
             return true;
         }
 
@@ -245,6 +244,7 @@ namespace Singularity.Platform
         public void StoreResource(Resource resource)
         {
             mResources.Add(resource);
+            Uncollide();
         }
 
         /// <summary>
@@ -252,18 +252,18 @@ namespace Singularity.Platform
         /// </summary>
         /// <param name="resourcetype">The resource you ask for</param>
         /// <returns>the resource you asked for, null otherwise.</returns>
-        public MapResource GetResource(EResourceType resourcetype)
+        public Optional<Resource> GetResource(EResourceType resourcetype)
         {
-            // var index = mResources.FindIndex(x => x.isType(resourcetype));
-            // if (index < 0)
-            // {
-            // return null;
-            // }
+            // TODO: reservation of Resources (and stuff)
+            var index = mResources.FindIndex(x => x.Type == resourcetype);
+            if (index < 0)
+            {
+                return Optional<Resource>.Of(null);
+            }
 
-            // var foundresource = mResources[index];
-            // mResources.RemoveAt(index);
-            // return foundresource;
-            return null;
+            var foundresource = mResources[index];
+            mResources.RemoveAt(index);
+            return Optional<Resource>.Of(foundresource);
         }
 
         /// <summary>
@@ -371,11 +371,24 @@ namespace Singularity.Platform
                         LayerConstants.PlatformLayer);
                     break;
             }
+
+            // also draw the resources on top
+
+            foreach (var res in mResources)
+            {
+                res.Draw(spritebatch);
+            }
         }
 
         /// <inheritdoc cref="Singularity.Property.IUpdate"/>
         public void Update(GameTime t)
         {
+            Uncollide();
+        }
+
+        private void Uncollide()
+        {
+            // take care of the Resources on top not colliding. todo: fixme. @fkarg
         }
 
         public EPlatformType GetMyType()
@@ -419,8 +432,8 @@ namespace Singularity.Platform
         {
             return mInwardsEdges;
         }
-        
-        public override bool Equals(Object other)
+
+        public override bool Equals(object other)
         {
             var b = other as PlatformBlank;
 
@@ -450,7 +463,6 @@ namespace Singularity.Platform
         {
             return AbsoluteSize.GetHashCode() * 17 + AbsolutePosition.GetHashCode() + mType.GetHashCode();
         }
-
 
         /// <summary>
         /// Sets all the parameters to draw a platfrom properly and calculates the absolute size of a platform.

@@ -52,5 +52,5 @@ namespace Singularity.Utils
             mValue = value;
 
         }
-	}
+    }
 }
