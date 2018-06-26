@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
@@ -32,7 +31,7 @@ namespace Singularity.Map
     /// </remarks>
     internal sealed class FogOfWar : IUpdate
     {
-        
+
         /// <summary>
         /// This array holds bit values of whether the position (tile) was visited or not. Where 1 = visited and 0 = unvisited.
         /// </summary>
@@ -71,7 +70,9 @@ namespace Singularity.Map
         /// <summary>
         /// Creates a new FogOfWar object for the given mapTexture.
         /// </summary>
-        /// <param name="mapTexture">The texture of the map mentioned</param>
+		/// <param name="camera">The Camera of the game</param>
+		/// <param name="graphicsDevice">The graphical Device (System-util)</param>
+		// @Ativolex: update your comments. :)
         public FogOfWar(Camera camera, GraphicsDevice graphicsDevice)
         {
 
@@ -79,32 +80,32 @@ namespace Singularity.Map
 
             mRevealingObjects = new LinkedList<IRevealing>();
 
-            mInitializeMaskStencilState = new DepthStencilState()
+            mInitializeMaskStencilState = new DepthStencilState
             {
                 StencilEnable = true,
                 StencilFunction = CompareFunction.Always,
                 StencilPass = StencilOperation.Replace,
                 ReferenceStencil = 1,
-                DepthBufferEnable = false,
+                DepthBufferEnable = false
             };
 
 
-            mApplyMaskStencilState = new DepthStencilState()
+            mApplyMaskStencilState = new DepthStencilState
             {
                 StencilEnable = true,
                 StencilFunction = CompareFunction.LessEqual,
                 StencilPass = StencilOperation.Replace,
                 ReferenceStencil = 1,
-                DepthBufferEnable = false,
+                DepthBufferEnable = false
             };
 
-            mApplyInvertedMaskStencilState = new DepthStencilState()
+            mApplyInvertedMaskStencilState = new DepthStencilState
             {
                 StencilEnable = true,
                 StencilFunction = CompareFunction.Greater,
                 StencilPass = StencilOperation.Replace,
                 ReferenceStencil = 1,
-                DepthBufferEnable = false,
+                DepthBufferEnable = false
             };
 
 
@@ -114,7 +115,7 @@ namespace Singularity.Map
                 VertexColorEnabled = true,
                 DiffuseColor = Color.White.ToVector3(),
                 AlphaFunction = CompareFunction.Always,
-                ReferenceAlpha = 0,
+                ReferenceAlpha = 0
             };
 
         }

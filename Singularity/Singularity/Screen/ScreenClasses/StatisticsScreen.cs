@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -19,6 +15,10 @@ namespace Singularity.Screen.ScreenClasses
 
     class Statistics : IScreen
     {
+        public EScreen Screen { get; private set; } = EScreen.StatisticsScreen;
+
+        public bool Loaded { get; set; }
+
         /// <summary>
         /// Updates the contents of the screen.
         /// </summary>

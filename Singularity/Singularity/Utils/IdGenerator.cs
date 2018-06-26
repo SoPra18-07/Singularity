@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Singularity.Utils
+﻿namespace Singularity.Utils
 {
+	public interface IId
+	{
+		int MId { get; }
+	}
+
     public static class IdGenerator
     {
-        private static int sId = 0;
+        private static int sId; // (defaults to 0)
 
         public static int NextiD()
         {

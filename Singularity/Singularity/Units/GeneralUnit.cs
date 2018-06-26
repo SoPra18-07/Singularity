@@ -1,38 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.DistributionManager;
-using Singularity.Platform;
 using Singularity.Graph;
 using Singularity.Graph.Paths;
 using Singularity.Libraries;
+using Singularity.Manager;
+using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
-using Singularity.Units;
 using Singularity.Utils;
-using Action = System.Action;
 
 namespace Singularity.Units
 {
-    [DataContract()]
-    public class GeneralUnit : IUnit, IUpdate, IDraw, ISpatial
+    [DataContract]
+    public class GeneralUnit : ISpatial
     {
+
+        public int Id { get; }
         [DataMember]
-        public int Id { get; set; }
-        [DataMember]
-        private DistributionManager.DistributionManager mDistrManager;
+        private int mPositionId;
         [DataMember]
         public Optional<Resource> Carrying { get; set; }
+        [DataMember]
+        private int? mTargetId;
         [DataMember]
         private Queue<Vector2> mPathQueue; // the queue of platform center locations
         [DataMember]
         private Queue<INode> mNodeQueue;
-        [DataMember]
-        internal JobType Job { get; set; } = JobType.Idle;
 
+        [DataMember]
+        private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
+        
         //These are the assigned task and a flag, wether the unit is done with it.
         [DataMember]
         private Task mAssignedTask;
@@ -60,7 +60,7 @@ namespace Singularity.Units
         [DataMember]
         public Vector2 RelativeSize { get; set; }
         [DataMember]
-        private readonly PathManager mPathManager;
+        private readonly Director mDirector;
 
         /// <summary>
         /// whether the unit is moving or currently standing still,
@@ -80,7 +80,7 @@ namespace Singularity.Units
         /// The node the unit moves to. Null if the unit doesn't move anywhere
         /// </summary>
         [DataMember]
-        private INode mDestination;
+        private Optional<INode> mDestination;
 
         /// <summary>
         /// The speed the unit moves at.
@@ -88,10 +88,17 @@ namespace Singularity.Units
         [DataMember]
         private const float Speed = 3f;
 
-        public GeneralUnit(PlatformBlank platform, PathManager pathManager, DistributionManager.DistributionManager distrManager)
+        [DataMember]
+        internal JobType Job { get; set; } = JobType.Idle;
+
+        //If a Command center controlling this unit is destroyed or turned off, this unit will also be turned off
+        [DataMember]
+        public bool Active { get; set; }
+
+
+        public GeneralUnit(PlatformBlank platform, ref Director director)
         {
-            Id = IdGenerator.NextiD();
-            mDestination = null;
+            mDestination = Optional<INode>.Of(null);
 
             CurrentNode = platform;
 
@@ -100,9 +107,8 @@ namespace Singularity.Units
             mNodeQueue = new Queue<INode>();
 
             mIsMoving = false;
-            mPathManager = pathManager;
-            mDistrManager = distrManager;
-            distrManager.Register(this);
+            mDirector = director;
+            mDirector.GetDistributionManager.Register(this);
             mDone = true;
         }
 
@@ -112,16 +118,17 @@ namespace Singularity.Units
         /// <param name="job">The job the unit should do.</param>
         public void ChangeJob(JobType job)
         {
-            if (Job == JobType.Production && mAssigned)
+            if (Job == JobType.Production && mAssigned && mDestination.IsPresent())
             {
-                ((PlatformBlank)mDestination).UnAssignUnits(this, Job);
+                ((PlatformBlank)mDestination.Get()).UnAssignUnits(this, Job);
                 mAssigned = false;
             }
             Job = job;
         }
 
         /// <summary>
-        /// Is called if this Units Job is changed to Production or Defense. BUT NOT BY THE UNIT ITSELF. Should only be called by the DistrManager
+        /// Is called if this Units Job is changed to Production or Defense. BUT NOT BY THE UNIT ITSELF. Should only be called by the DistrManager.
+        /// Can also be used to just change the "home" of the unit. In that case just give it the job it already has (in the task).
         /// </summary>
         /// <param name="task">The new task for the unit</param>
         public void AssignTask(Task task)
@@ -129,24 +136,15 @@ namespace Singularity.Units
             mDone = false;
             mAssignedTask = task;
             ChangeJob(mAssignedTask.Job);
-            mDestination = mAssignedTask.End;
-            mAssignedAction = mAssignedTask.Action;
+            //Check whether there is a Destination. (it should)
+            if (mAssignedTask.End.IsPresent())
+            {
+                mDestination = Optional<INode>.Of(mAssignedTask.End.Get());
+            }
+            //It doesnt matter here whether it is null, so just get the reference
+            mAssignedAction = mAssignedTask.Action.Get();
         }
 
-        /// <summary>
-        /// Is called when the unit should go to a new Platform, but not change jobs.
-        /// </summary>
-        public void ChangeHome(Task task)
-        {
-            if (mAssigned)
-            {
-                ((PlatformBlank)mCurrentNode).UnAssignUnits(this, Job);
-            }
-            mDone = false;
-            mAssignedTask = task;
-            mDestination = mAssignedTask.End;
-            mAssignedAction = mAssignedTask.Action;
-        }
 
         /// <summary>
         /// In the Idle case the unit will just get a Target to move to and do so.
@@ -163,20 +161,25 @@ namespace Singularity.Units
                         mDone = false;
                         //Care!!! DO NOT UNDER ANY CIRCUMSTANCES USE THIS PLACEHOLDER
                         IPlatformAction action = new ProduceMineResource(null, null);
-                        mAssignedTask = mDistrManager.RequestNewTask(this, Job, Optional<IPlatformAction>.Of(action));
-                        mDestination = mAssignedTask.End;
-                        
+                        mAssignedTask = mDirector.GetDistributionManager.RequestNewTask(this, Job, Optional<IPlatformAction>.Of(action));
+                        //Check if the given destination is null (it shouldnt)
+                        if (mAssignedTask.End.IsPresent())
+                        {
+                            mDestination = Optional<INode>.Of(mAssignedTask.End.Get());
+                        }
+
                     }
                     break;
 
                 case JobType.Production:
                     //You arrived at your destination and you now want to work.
                     //Console.Out.WriteLine(AbsolutePosition.X + " " + AbsolutePosition.Y + Id);
-                    if(!mIsMoving && !mDone && mCurrentNode == mDestination)
+                    //No need to check for null here, it has been checked before
+                    if(!mIsMoving && !mDone && mCurrentNode.Equals(mDestination.Get()))
                     {
                         if (!mAssigned)
                         {
-                            ((PlatformBlank)mDestination).AssignUnits(this, Job);
+                            ((PlatformBlank)mDestination.Get()).AssignUnits(this, Job);
                             mAssigned = true;
                         }
                     }
@@ -215,12 +218,24 @@ namespace Singularity.Units
 
         private void RegulateMovement()
         {
+            if (!mIsMoving && mDone)
+            {
+                mDone = false;
+                if (Job == JobType.Idle)
+                {
+                    //Care!!! DO NOT UNDER ANY CIRCUMSTANCES USE THIS PLACEHOLDER
+                    IPlatformAction action = new ProduceMineResource(null, null);
+                    mAssignedTask = mDirector.GetDistributionManager.RequestNewTask(this, Job, Optional<IPlatformAction>.Of(action));
+                    mDestination = Optional<INode>.Of(mAssignedTask.End.Get());
+                }
+            }
+
             // if this if clause is fulfilled we get a new path to move to.
             // we only do this if we're not moving, have no destination and our
             // current nodequeue is empty (the path)
-            if (mDestination != null && mNodeQueue.Count <= 0 && !mIsMoving)
+            if (mDestination.IsPresent() && mNodeQueue.Count <= 0 && !mIsMoving)
             {
-                mNodeQueue = mPathManager.GetPath(this, mDestination).GetNodePath();
+                mNodeQueue = mDirector.GetPathManager.GetPath(this, mDestination.Get()).GetNodePath();
 
                 mCurrentNode = mNodeQueue.Dequeue();
             }
@@ -254,7 +269,7 @@ namespace Singularity.Units
             if (Vector2.Distance(AbsolutePosition, target) < 2)
             {
                 CurrentNode = mCurrentNode;
-                mDestination = null;
+                mDestination = Optional<INode>.Of(null);
                 mIsMoving = false;
                 return true;
             }

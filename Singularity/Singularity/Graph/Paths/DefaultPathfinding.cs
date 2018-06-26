@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Singularity.Property;
 
@@ -31,7 +26,7 @@ namespace Singularity.Graph.Paths
 
             var closedList = new List<INode>();
 
-            var openList = new List<INode>() {start};
+            var openList = new List<INode> {start};
 
             var cameFrom = new Dictionary<INode, INode>();
 
@@ -62,7 +57,7 @@ namespace Singularity.Graph.Paths
                         minValue = fScore[node];
                         current = node;
                     }
-                    
+
                 }
 
                 // current can never be null from my short amount of thinking about it (if actual arguments are given)
@@ -126,6 +121,7 @@ namespace Singularity.Graph.Paths
                     cameFrom[neighbor] = current;
                     gScore[neighbor] = tentativeGScore;
                     fScore[neighbor] = gScore[neighbor] + HeuristicCostEstimate(neighbor, destination);
+
                 }
             }
             return null;

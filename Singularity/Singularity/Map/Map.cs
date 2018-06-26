@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Exceptions;
-using Singularity.Graph.Paths;
+using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
 using Singularity.Libraries;
+using Singularity.Manager;
 using Singularity.Map.Properties;
 using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
-using Singularity.Utils;
 
 namespace Singularity.Map
-{   
-    internal sealed class Map : IDraw, IUpdate
-    {   
+{
+    internal sealed class Map : IDraw, IUpdate, IKeyListener
+    {
         private readonly CollisionMap mCollisionMap;
         public readonly StructureMap mStructureMap;
         private readonly ResourceMap mResourceMap;
@@ -25,7 +24,7 @@ namespace Singularity.Map
 
         private readonly Texture2D mBackgroundTexture;
 
-        private readonly bool mDebug;
+        private bool mDebug;
 
         /// <summary>
         /// Creates a new Map object, which solely draws its background
@@ -34,20 +33,23 @@ namespace Singularity.Map
         /// </summary>
         /// <param name="backgroundTexture">The background texture of the map</param>
         /// <param name="viewport">The viewport of the window</param>
+        /// <param name="director">A reference to the Director</param>
         /// <param name="debug">Whether the debug grid lines are drawn or not</param>
         /// <param name="initialResources">The initial resources of this map, if not specified there will not be any on the map</param>
-        /// <param name="fow">The fog of war for this map</param>
-        public Map(Texture2D backgroundTexture, Viewport viewport, InputManager inputManager, PathManager pathManager, bool debug = false, IEnumerable<Resource> initialResources = null)
+        public Map(Texture2D backgroundTexture, Viewport viewport, ref Director director, bool debug = false, IEnumerable<Resource> initialResources = null)
         {
 
             mBackgroundTexture = backgroundTexture;
             mDebug = debug;
 
-            mCamera = new Camera(viewport, inputManager, 0, 0);
+
+            mCamera = new Camera(viewport, ref director);
 
             mCollisionMap = new CollisionMap();
-            mStructureMap = new StructureMap(pathManager);
+            mStructureMap = new StructureMap(ref director);
             mResourceMap = new ResourceMap(initialResources);
+
+            director.GetInputManager.AddKeyListener(this);
         }
 
         /// <see cref="CollisionMap.UpdateCollider(ICollider)"/>
@@ -57,7 +59,7 @@ namespace Singularity.Map
         }
 
         public void Draw(SpriteBatch spriteBatch)
-        {   
+        {
 
             //draw the background texture
             spriteBatch.Draw(mBackgroundTexture,
@@ -68,7 +70,7 @@ namespace Singularity.Map
                 Vector2.Zero,
                 SpriteEffects.None,
                 LayerConstants.MapLayer);
-            
+
 
 
             //make sure to only draw the grid if a texture is given.
@@ -102,7 +104,7 @@ namespace Singularity.Map
                     if (colMap[i, j].IsPresent())
                     {
 
-                        spriteBatch.FillRectangle(new Rectangle(i * MapConstants.GridWidth, j * MapConstants.GridHeight, MapConstants.GridWidth, MapConstants.GridHeight), 
+                        spriteBatch.FillRectangle(new Rectangle(i * MapConstants.GridWidth, j * MapConstants.GridHeight, MapConstants.GridWidth, MapConstants.GridHeight),
                             new Color(new Vector4(1, 0, 0, 0.2f)), 0f, LayerConstants.CollisionDebugLayer);
                     }
                 }
@@ -141,7 +143,7 @@ namespace Singularity.Map
         {
             return mStructureMap;
         }
-        
+
         public CollisionMap GetCollisionMap()
         {
             return mCollisionMap;
@@ -220,13 +222,33 @@ namespace Singularity.Map
             // simple logic, this yields true if all of them are true and false if one is false. One can easily convince himself,
             // that if all the "edge" points of the rectangle are on the map then the rectangle is on the map.
 
-            return (IsOnTop(new Vector2(rect.X, rect.Y), camera) && 
+            return (IsOnTop(new Vector2(rect.X, rect.Y), camera) &&
                     IsOnTop(new Vector2(rect.X + rect.Width, rect.Y), camera) &&
                     IsOnTop(new Vector2(rect.X, rect.Y + rect.Height), camera) &&
                     IsOnTop(new Vector2(rect.X + rect.Width, rect.Y + rect.Height), camera));
 
         }
 
+        public void KeyTyped(KeyEvent keyEvent)
+        {
+            foreach (var key in keyEvent.CurrentKeys)
+            {
+                if (key == Keys.F4)
+                {
+                    mDebug = !mDebug;
+                }
+            }
+        }
+
+        public void KeyPressed(KeyEvent keyEvent)
+        {
+
+        }
+
+        public void KeyReleased(KeyEvent keyEvent)
+        {
+
+        }
     }
 }
 

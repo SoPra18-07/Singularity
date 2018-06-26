@@ -8,18 +8,18 @@ namespace Singularity.serialization
     /// <summary>
     /// A Serializable Dummy written for the Testmethod of XSerializer.cs. For further Documentation of purpose look it up in mentioned Testmethod.
     /// </summary>
-    [DataContract()]
+    [DataContract]
     internal class SerializationDummy
     {
-        [DataMember()]
-        private static int sCount = 0;
-        [DataMember()]
+        [DataMember]
+        private static int sCount; // defaults to 0
+        [DataMember]
         private CyclicDummy mCDummy;
-        [DataMember()]
+        [DataMember]
         private int mId;
-        [DataMember()]
+        [DataMember]
         private List<SerializationDummy> mDummyList;
-        [DataMember()]
+        [DataMember]
         public Vector2 mVector = new Vector2(1,2);
 
 

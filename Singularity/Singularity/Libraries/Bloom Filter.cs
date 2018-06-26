@@ -2,9 +2,8 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Libraries;
 
-namespace Libraries
+namespace Singularity.Libraries
 {
     /// <summary>
     /// 
@@ -49,8 +48,8 @@ namespace Libraries
         #region private fields
 
         //resolution
-        private int mWidth;
-        private int mHeight;
+        private int mMWidth;
+        private int mMHeight;
 
         //RenderTargets
         private RenderTarget2D mBloomRenderTarget2DMip0;
@@ -95,7 +94,7 @@ namespace Libraries
         private float mBloomStrength4 = 1.0f;
         private float mBloomStrength5 = 1.0f;
 
-        private float BloomStrengthMultiplier = 1.0f;
+        private float mBloomStrengthMultiplier = 1.0f;
         
         private float mRadiusMultiplier = 1.0f;
 
@@ -104,7 +103,7 @@ namespace Libraries
 
         #region public fields + enums
 
-        private bool BloomUseLuminance = true;
+        private bool mBloomUseLuminance = true;
         private int mBloomDownsamplePasses = 5;
 
         //enums
@@ -116,7 +115,7 @@ namespace Libraries
             SuperWide,
             Cheap,
             One
-        };
+        }
 
         #endregion
 
@@ -180,7 +179,7 @@ namespace Libraries
                 if (Math.Abs(mBloomStrength - value) > 0.001f)
                 {
                     mBloomStrength = value;
-                    mBloomStrengthParameter.SetValue(mBloomStrength * BloomStrengthMultiplier);
+                    mBloomStrengthParameter.SetValue(mBloomStrength * mBloomStrengthMultiplier);
                 }
 
             }
@@ -398,7 +397,7 @@ namespace Libraries
             }
 
             //Change renderTarget resolution if different from what we expected. If lower than the inputTexture we gain performance.
-            if (width != mWidth || height != mHeight)
+            if (width != mMWidth || height != mMHeight)
             {
                 UpdateResolution(width, height);
 
@@ -417,9 +416,9 @@ namespace Libraries
             mGraphicsDevice.SetRenderTarget(mBloomRenderTarget2DMip0);
 
             BloomScreenTexture = inputTexture;
-            BloomInverseResolution = new Vector2(1.0f / mWidth, 1.0f / mHeight);
+            BloomInverseResolution = new Vector2(1.0f / mMWidth, 1.0f / mMHeight);
             
-            if (BloomUseLuminance)
+            if (mBloomUseLuminance)
             {
                 mBloomPassExtractLuminance.Apply();
             }
@@ -498,7 +497,7 @@ namespace Libraries
 
                                 BloomStrength = mBloomStrength5;
                                 BloomRadius = mBloomRadius5;
-                                if (BloomUseLuminance)
+                                if (mBloomUseLuminance)
                                 {
                                     mBloomPassUpsampleLuminance.Apply();
                                 }
@@ -520,7 +519,7 @@ namespace Libraries
 
                             BloomStrength = mBloomStrength4;
                             BloomRadius = mBloomRadius4;
-                            if (BloomUseLuminance)
+                            if (mBloomUseLuminance)
                             {
                                 mBloomPassUpsampleLuminance.Apply();
                             }
@@ -543,7 +542,7 @@ namespace Libraries
 
                         BloomStrength = mBloomStrength3;
                         BloomRadius = mBloomRadius3;
-                        if (BloomUseLuminance)
+                        if (mBloomUseLuminance)
                         {
                             mBloomPassUpsampleLuminance.Apply();
                         }
@@ -566,7 +565,7 @@ namespace Libraries
 
                     BloomStrength = mBloomStrength2;
                     BloomRadius = mBloomRadius2;
-                    if (BloomUseLuminance)
+                    if (mBloomUseLuminance)
                     {
                         mBloomPassUpsampleLuminance.Apply();
                     }
@@ -589,7 +588,7 @@ namespace Libraries
                 BloomStrength = mBloomStrength1;
                 BloomRadius = mBloomRadius1;
 
-                if (BloomUseLuminance)
+                if (mBloomUseLuminance)
                 {
                     mBloomPassUpsampleLuminance.Apply();
                 }
@@ -619,8 +618,8 @@ namespace Libraries
         /// <param name="height">height of the image</param>
         public void UpdateResolution(int width, int height)
         {
-            mWidth = width;
-            mHeight = height;
+            mMWidth = width;
+            mMHeight = height;
 
             if (mBloomRenderTarget2DMip0 != null)
             {
@@ -628,23 +627,23 @@ namespace Libraries
             }
 
             mBloomRenderTarget2DMip0 = new RenderTarget2D(mGraphicsDevice,
-                (int) (width),
-                (int) (height), false, mRenderTargetFormat, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
+                width,
+                height, false, mRenderTargetFormat, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
             mBloomRenderTarget2DMip1 = new RenderTarget2D(mGraphicsDevice,
-                (int) (width/2),
-                (int) (height/2), false, mRenderTargetFormat, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                width/2,
+                height/2, false, mRenderTargetFormat, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             mBloomRenderTarget2DMip2 = new RenderTarget2D(mGraphicsDevice,
-                (int) (width/4),
-                (int) (height/4), false, mRenderTargetFormat, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                width/4,
+                height/4, false, mRenderTargetFormat, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             mBloomRenderTarget2DMip3 = new RenderTarget2D(mGraphicsDevice,
-                (int) (width/8),
-                (int) (height/8), false, mRenderTargetFormat, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                width/8,
+                height/8, false, mRenderTargetFormat, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             mBloomRenderTarget2DMip4 = new RenderTarget2D(mGraphicsDevice,
-                (int) (width/16),
-                (int) (height/16), false, mRenderTargetFormat, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                width/16,
+                height/16, false, mRenderTargetFormat, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             mBloomRenderTarget2DMip5 = new RenderTarget2D(mGraphicsDevice,
-                (int) (width/32),
-                (int) (height/32), false, mRenderTargetFormat, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                width/32,
+                height/32, false, mRenderTargetFormat, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
         }
 
         /// <summary>
