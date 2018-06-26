@@ -181,6 +181,7 @@ namespace Singularity.Platform
         public void StoreResource(Resource resource)
         {
             mResources.Add(resource);
+            Uncollide();
         }
 
         /// <summary>
@@ -325,6 +326,12 @@ namespace Singularity.Platform
         /// <inheritdoc cref="Singularity.Property.IUpdate"/>
         public void Update(GameTime t)
         {
+            Uncollide();
+        }
+
+        private void Uncollide()
+        {
+            // take care of the Resources on top not colliding. todo: fixme. @fkarg
         }
 
         public EPlatformType GetMyType()
@@ -455,7 +462,6 @@ namespace Singularity.Platform
         {
             return AbsoluteSize.GetHashCode() * 17 + AbsolutePosition.GetHashCode() + mType.GetHashCode();
         }
-
 
         /// <summary>
         /// Sets all the parameters to draw a platfrom properly and calculates the absolute size of a platform.
