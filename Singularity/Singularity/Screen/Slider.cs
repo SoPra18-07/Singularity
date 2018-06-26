@@ -44,7 +44,7 @@ namespace Singularity.Screen
         private float mValueCurrent;
         private float mValuePrevious;
 
-
+        //TODO: Add a limit to which every slider is movable and add a maximal value that the slider can reach
 
         /// <summary>
         /// Creates an instance of a slide where the square size of the
