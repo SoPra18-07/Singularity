@@ -25,9 +25,9 @@ namespace Singularity.Platform
         protected EPlatformType mType = EPlatformType.Blank;
 
         [DataMember]
-        private const int mPlatformWidth = 148;
+        private const int PlatformWidth = 148;
         [DataMember]
-        private const int mPlatformHeight = 172;
+        private const int PlatformHeight = 172;
         [DataMember]
         private int mHealth;
         [DataMember]
@@ -72,6 +72,7 @@ namespace Singularity.Platform
         public Vector2 AbsolutePosition { get; set; }
         [DataMember]
         public Vector2 AbsoluteSize { get; set; }
+
         [DataMember]
         public Vector2 RelativePosition { get; set; }
         [DataMember]
@@ -258,9 +259,9 @@ namespace Singularity.Platform
                         SpriteEffects.None,
                         LayerConstants.BasePlatformLayer);
                     // then draw what's on top of that
-                    spritebatch.Draw(mPlatformBaseTexture,
+                    spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
-                        new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 148),
+                        new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 148),
                         Color.White,
                         0f,
                         Vector2.Zero,
@@ -281,9 +282,9 @@ namespace Singularity.Platform
                         SpriteEffects.None,
                         LayerConstants.BasePlatformLayer);
                     // then draw what's on top of that
-                    spritebatch.Draw(mPlatformBaseTexture,
+                    spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
-                        new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 153),
+                        new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 153),
                         Color.White,
                         0f,
                         Vector2.Zero,
@@ -343,11 +344,9 @@ namespace Singularity.Platform
             //default?
             mHealth = 100;
 
-            //Waiting for PlatformActions to be completed.
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
-            //The only IPlatformAction available so far is BlueprintBuild.
+            //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[1];
-            //mIPlatformActions[0] = IPlatformAction.BlueprintBuild;
 
             mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
 

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Graph.Paths;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platform;
@@ -47,6 +48,12 @@ namespace Singularity.Screen.ScreenClasses
         private Director mDirector;
         private readonly GraphicsDevice mGraphicsDevice;
 
+        //Other managers
+        private PathManager mPathManager;
+
+        private Manager.StoryManager mStoryManager;
+
+        private DistributionManager mDistributionManager;
         // roads
         private Road mRoad1;
 
@@ -74,7 +81,8 @@ namespace Singularity.Screen.ScreenClasses
         private Camera mCamera;
 
 
-        public GameScreen(GraphicsDevice graphicsDevice, ref Director director)
+
+        public GameScreen(GraphicsDevice graphicsDevice, ref Director director, Map.Map map, Camera camera, FogOfWar fow)
         {
             mGraphicsDevice = graphicsDevice;
 
@@ -82,7 +90,12 @@ namespace Singularity.Screen.ScreenClasses
             mUpdateables = new LinkedList<IUpdate>();
             mSpatialObjects = new LinkedList<ISpatial>();
 
+            mMap = map;
+            mCamera = camera;
+            mFow = fow;
+
             mDirector = director;
+
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -122,12 +135,6 @@ namespace Singularity.Screen.ScreenClasses
         public void Update(GameTime gametime)
         {
 
-            foreach (var updateable in mUpdateables)
-            {
-                updateable.Update(gametime);
-
-            }
-
             foreach (var spatial in mSpatialObjects)
             {
                 var collidingObject = spatial as ICollider;
@@ -145,75 +152,12 @@ namespace Singularity.Screen.ScreenClasses
             mFow.Update(gametime);
 
             mTransformMatrix = mCamera.GetTransform();
-
-
         }
 
         public void LoadContent(ContentManager content)
         {
 
-            var mapBackground = content.Load<Texture2D>("MockUpBackground");
-            mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, ref mDirector);
-            mCamera = mMap.GetCamera();
-
-            //Give the Distributionmanager the Graph he is operating on.
-            //TODO: Talk about whether the DistributionManager should operate on all Graphs or if we want to make additional DMs.
-
-            mMUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
-
-            mPlatformSheet = content.Load<Texture2D>("PlatformSpriteSheet");
-            // TODO: use this.Content to load your game content here
-            mPlatformBlankTexture = content.Load<Texture2D>("PlatformBasic");
-            mPlatformDomeTexture = content.Load<Texture2D>("Dome");
-            mPlatform = new PlatformBlank(new Vector2(300, 400), mPlatformBlankTexture, mPlatformBlankTexture);
-            mPlatform2 = new Junkyard(new Vector2(800, 600), mPlatformDomeTexture, mPlatformBlankTexture);
-            mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture, mPlatformBlankTexture);
-            mPlatform3 = new EnergyFacility(new Vector2(600, 200), mPlatformDomeTexture, mPlatformBlankTexture);
-
-
-            var platform4 = new Well(new Vector2(1000, 200), mPlatformDomeTexture, mPlatformBlankTexture, mMap.GetResourceMap());
-            var platform5 = new Quarry(new Vector2(1300, 400), mPlatformDomeTexture, mPlatformBlankTexture, mMap.GetResourceMap());
-
-            var genUnit = new GeneralUnit(mPlatform, ref mDirector);
-            var genUnit2 = new GeneralUnit(mPlatform2, ref mDirector);
-            var genUnit3 = new GeneralUnit(mPlatform3, ref mDirector);
-
-            mFow = new FogOfWar(mCamera, mGraphicsDevice);
-
-            mMUnit1 = new MilitaryUnit(new Vector2(600, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector);
-            mMUnit2 = new MilitaryUnit(new Vector2(100, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector);
-
-            // load an enemy unit
-            mEnemy1 = new EnemyUnit(new Vector2(300, 600), mMUnitSheet, mMap.GetCamera(), ref mDirector);
-
-            // load roads
-            mRoad1 = new Road(mPlatform, mPlatform2, false);
-            var road2 = new Road(mPlatform3, platform4, false);
-            var road3 = new Road(mPlatform2, mPlatform3, false);
-            var road4 = new Road(platform4, platform5, false);
-            var road5 = new Road(platform5, mPlatform, false);
-            var road6 = new Road(mPlatform, platform4, false);
-
             AddObject(mMap);
-
-            AddObject(mMUnit1);
-            AddObject(mMUnit2);
-            AddObject(mEnemy1);
-            AddObject(mPlatform);
-            AddObject(mPlatform2);
-            AddObject(mPlatform3);
-            AddObject(platform4);
-            AddObject(platform5);
-            AddObject(mRoad1);
-            AddObject(road2);
-            AddObject(road3);
-            AddObject(road4);
-            AddObject(road5);
-            AddObject(road6);
-
-            AddObject(genUnit);
-            AddObject(genUnit2);
-            AddObject(genUnit3);
   
             AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
 

@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
+using Singularity.Graph.Paths;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Platform;
@@ -29,28 +30,30 @@ namespace Singularity.Units
         [DataMember]
         private Queue<INode> mNodeQueue;
 
+        [DataMember]
         private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
         
-
+        [DataMember]
         //These are the assigned task and a flag, wether the unit is done with it.
         private Task mAssignedTask;
-
+        [DataMember]
         private bool mDone;
-        
-        private IPlatformAction mAssignedAction;
+
+        private IPlatformAction AssignedAction;
 
         public INode CurrentNode { get; private set; }
 
         // TODO: also use the size for the units representation since we someday need to draw rectangles over units (bounding box)
 
+        [DataMember]
         public Vector2 AbsolutePosition { get; set; }
-
+        [DataMember]
         public Vector2 AbsoluteSize { get; set; }
-
+        [DataMember]
         public Vector2 RelativePosition { get; set; }
-
+        [DataMember]
         public Vector2 RelativeSize { get; set; }
-
+        [DataMember]
         private readonly Director mDirector;
 
         /// <summary>
@@ -58,24 +61,35 @@ namespace Singularity.Units
         /// this is used so the unit can ask for a new path if it
         /// doesn't move
         /// </summary>
+        [DataMember]
         private bool mIsMoving;
 
         /// <summary>
         /// The node the unit started from. Changes when the unit reaches its destination (to the destination).
         /// </summary>
+        [DataMember]
         private INode mCurrentNode;
 
         /// <summary>
         /// The node the unit moves to. Null if the unit doesn't move anywhere
         /// </summary>
+        [DataMember]
         private Optional<INode> mDestination;
+
 
         /// <summary>
         /// The speed the unit moves at.
         /// </summary>
+        [DataMember]
         private const float Speed = 3f;
 
+        [DataMember()]
         internal JobType Job { get; set; } = JobType.Idle;
+
+        //If a Command center controlling this unit is destroyed or turned off, this unit will also be turned off
+        [DataMember()]
+        public bool Active { get; set; }
+
 
         public GeneralUnit(PlatformBlank platform, ref Director director)
         {
@@ -250,6 +264,7 @@ namespace Singularity.Units
         /// <summary>
         /// Only contains implementation for the Idle case so far
         /// </summary>
+        /// <inheritdoc cref="Singularity.Property.IUpdate"/>
         /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
@@ -264,6 +279,7 @@ namespace Singularity.Units
                     mDestination = Optional<INode>.Of(mAssignedTask.End.Get());
                 }
             }
+
             // if this if clause is fulfilled we get a new path to move to.
             // we only do this if we're not moving, have no destination and our
             // current nodequeue is empty (the path)

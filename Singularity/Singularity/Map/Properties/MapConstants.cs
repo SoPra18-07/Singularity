@@ -30,12 +30,12 @@ namespace Singularity.Map.Properties
         /// <summary>
         /// The width of the background picture for the map.
         /// </summary>
-        public const int MapWidth = 2000;
+        public const int MapWidth = 4000;
 
         /// <summary>
         /// The height of the background picture for the map.
         /// </summary>
-        public const int MapHeight = 1000;
+        public const int MapHeight = 2000;
 
         /// <summary>
         /// The most left point of the map.
