@@ -149,9 +149,11 @@ namespace Singularity.Screen.ScreenClasses
 
         public void LoadContent(ContentManager content)
         {
+  
+            // AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
 
             var mapBackground = content.Load<Texture2D>("MockUpBackground");
-            mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, ref mDirector, neo: true); // todo: change neo to false if map is moving weird. :)
+            mMap = new Map.Map(mapBackground, mGraphicsDevice.Viewport, ref mDirector, initialResources: ResourceHelper.GetRandomlyDistributedResources(5), neo: false); // todo: change neo to false if map is moving weird. :)
             mCamera = mMap.GetCamera();
 
             //Give the Distributionmanager the Graph he is operating on.
@@ -214,8 +216,6 @@ namespace Singularity.Screen.ScreenClasses
             AddObject(genUnit);
             AddObject(genUnit2);
             AddObject(genUnit3);
-  
-            AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
 
             mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
             mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
