@@ -125,6 +125,7 @@ namespace Singularity.Screen.ScreenClasses
             mAchievementsButton.ButtonHovering += OnAchievementsHovering;
             mQuitButton.ButtonHovering += OnQuitHovering;
 
+            Loaded = true;
         }
 
 
@@ -217,7 +218,6 @@ namespace Singularity.Screen.ScreenClasses
 
                         var opacity =
                             (float) Animations.Easing(0, 1f, mTransitionStartTime, mTransitionDuration, gameTime);
-                        Debug.WriteLine(mMenuOpacity);
                         mMenuOpacity = opacity;
                         mWindowOpacity = opacity;
                     }

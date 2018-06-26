@@ -45,10 +45,10 @@ namespace Singularity.Levels
             //Load stuff
             var platformCylTexture = content.Load<Texture2D>("Cylinders");
             var platformBlankTexture = content.Load<Texture2D>("PlatformBasic");
-            var mapBackground = content.Load<Texture2D>("MockUpBackground");
+            var mapBackground = content.Load<Texture2D>("backgroundGrid");
 
             //Map related stuff
-            mMap = new Map.Map(mapBackground, mGraphics.Viewport, ref mDirector, false);
+            mMap = new Map.Map(mapBackground, 20, 20, mGraphics.Viewport, ref mDirector, false);
             mCamera = mMap.GetCamera();
             mFow = new FogOfWar(mCamera, mGraphics);
 

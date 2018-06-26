@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using EpPathFinding.cs;
 using Microsoft.Xna.Framework;
 using Singularity.Map.Properties;
 using Singularity.Property;
@@ -11,6 +14,9 @@ namespace Singularity.Map
     /// </summary>
     internal sealed class CollisionMap
     {
+        // Number of cells in the grid
+        private readonly int mGridXLength;
+        private readonly int mGridYLength;
         /// <summary>
         /// The look up table is used to check whether a given collider is already present in the collision map
         /// </summary>
@@ -19,7 +25,12 @@ namespace Singularity.Map
         /// <summary>
         /// The collision map is used to store the position and the id of every object which is able to collide.
         /// </summary>
-        private readonly Optional<ICollider>[,] mCollisionMap;
+        private readonly CollisionNode[,] mCollisionMap;
+
+        /// <summary>
+        /// Stores the walkability information of the map to be used by the pathfinder
+        /// </summary>
+        private readonly BaseGrid mWalkableGrid;
 
         /// <summary>
         /// Creates a new Collision map used to store and update all colliding objects.
@@ -28,19 +39,30 @@ namespace Singularity.Map
         {
             mLookUpTable = new Dictionary<int, Rectangle>();
 
-            mCollisionMap = new Optional<ICollider>
+            mGridXLength = MapConstants.MapWidth / MapConstants.GridWidth;
+            mGridYLength = MapConstants.MapHeight / MapConstants.GridHeight;
+
+            mCollisionMap = new CollisionNode
             [
-                (MapConstants.MapWidth / MapConstants.GridWidth),
-                (MapConstants.MapHeight / MapConstants.GridHeight)
+                mGridXLength,
+                mGridYLength
             ];
+            bool[][] movableMatrix = new bool[mGridXLength][];
+
+
+
+
             for (var i = 0; i < mCollisionMap.GetLength(0); i++)
             {
+                movableMatrix[i] = new bool[mGridYLength];
+
                 for (var j = 0; j < mCollisionMap.GetLength(1); j++)
                 {
-                    mCollisionMap[i, j] = Optional<ICollider>.Of(null);
-
+                    mCollisionMap[i, j] = new CollisionNode(i, j, Optional<ICollider>.Of(null));
+                    movableMatrix[i][j] = Map.IsOnTop(new Vector2(i * MapConstants.GridWidth, j * MapConstants.GridHeight));
                 }
             }
+            mWalkableGrid = new StaticGrid(mGridXLength, mGridYLength, movableMatrix);
 
         }
 
@@ -59,10 +81,11 @@ namespace Singularity.Map
 
                 for (var x = oldBounds.X / MapConstants.GridWidth; x <= (oldBounds.X + oldBounds.Width) / MapConstants.GridWidth; x++)
                 {
-                    for (var y = (oldBounds.Y / MapConstants.GridHeight); y <= ((oldBounds.Y + oldBounds.Height) / MapConstants.GridHeight); y++)
+                    for (var y = oldBounds.Y / MapConstants.GridHeight; y <= (oldBounds.Y + oldBounds.Height) / MapConstants.GridHeight; y++)
                     {
+                        mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(null));
+                        mWalkableGrid.SetWalkableAt(x, y, true);
 
-                        mCollisionMap[x, y] = Optional<ICollider>.Of(null);
                     }
                 }
             }
@@ -73,7 +96,8 @@ namespace Singularity.Map
             {
                 for (var y = (collider.AbsBounds.Y / MapConstants.GridHeight); y <= ((collider.AbsBounds.Y + collider.AbsBounds.Height) / MapConstants.GridHeight) ; y++)
                 {
-                    mCollisionMap[x, y] = Optional<ICollider>.Of(collider);
+                    mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(collider));Optional<ICollider>.Of(collider);
+                    mWalkableGrid.SetWalkableAt(x, y, false);
                 }
             }
 
@@ -81,9 +105,14 @@ namespace Singularity.Map
         }
 
         //TODO: this method exists solely for debugging purposes, so the map can draw a representation of the current collision map.
-        public Optional<ICollider>[,] GetCollisionMap()
+        public CollisionNode[,] GetCollisionMap()
         {
             return mCollisionMap;
+        }
+
+        public BaseGrid GetWalkabilityGrid()
+        {
+            return mWalkableGrid;
         }
     }
 }

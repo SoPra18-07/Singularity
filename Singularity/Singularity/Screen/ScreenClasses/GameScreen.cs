@@ -120,11 +120,10 @@ namespace Singularity.Screen.ScreenClasses
             {
                 spatial.Draw(spriteBatch);
             }
+
             spriteBatch.End();
 
             mFow.FillInvertedMask(spriteBatch);
-
-
         }
 
         public bool DrawLower()
@@ -134,7 +133,6 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Update(GameTime gametime)
         {
-
             foreach (var spatial in mSpatialObjects)
             {
                 var collidingObject = spatial as ICollider;

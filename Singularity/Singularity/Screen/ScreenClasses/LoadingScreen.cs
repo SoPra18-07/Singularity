@@ -59,6 +59,7 @@ namespace Singularity.Screen.ScreenClasses
         public void LoadContent(ContentManager content)
         {
             mLogo = content.Load<Texture2D>("Logo");
+            Loaded = true;
         }
 
         /// <summary>

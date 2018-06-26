@@ -20,12 +20,12 @@ namespace Singularity.Map.Properties
         /// <summary>
         /// The width of the Grid used for collision detection in pixels.
         /// </summary>
-        public const int GridWidth = 40;
+        public const int GridWidth = 20;
 
         /// <summary>
         /// The height of the Grid used for collision detection in pixels.
         /// </summary>
-        public const int GridHeight = 40;
+        public const int GridHeight = 20;
 
         /// <summary>
         /// The width of the background picture for the map.
@@ -36,6 +36,16 @@ namespace Singularity.Map.Properties
         /// The height of the background picture for the map.
         /// </summary>
         public const int MapHeight = 2000;
+
+        /// <summary>
+        /// The width of each map tile.
+        /// </summary>
+        public const int TileWidth = 200;
+
+        /// <summary>
+        /// The height of each map tile.
+        /// </summary>
+        public const int TileHeight = 100;
 
         /// <summary>
         /// The most left point of the map.
