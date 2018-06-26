@@ -13,7 +13,7 @@ namespace Singularity.Platform
         [DataMember]
         private const int PlatformWidth = 144;
         [DataMember]
-        private const int PlatformHeight = 127;
+        private const int PlatformHeight = 187;
 
         public Mine(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource): base(position, platformSpriteSheet, baseSprite, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
         {
@@ -25,7 +25,7 @@ namespace Singularity.Platform
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Mine;
             mSpritename = "Dome";
-            AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
+            AbsoluteSize = SetPlatfromDrawParameters();
         }
 
         public override void Produce()

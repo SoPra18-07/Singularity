@@ -47,10 +47,10 @@ namespace Singularity.Levels
             var platformBlankTexture = content.Load<Texture2D>("PlatformBasic");
             var platformDomeTexture = content.Load<Texture2D>("Dome");
             var milUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
-            var mapBackground = content.Load<Texture2D>("MockUpBackground");
+            var mapBackground = content.Load<Texture2D>("backgroundGrid");
 
             //Map related stuff
-            mMap = new Map.Map(mapBackground, 20, 20, mGraphics.Viewport, ref mDirector, false);
+            mMap = new Map.Map(mapBackground, 20, 20, mGraphics.Viewport, ref mDirector, true);
             mCamera = mMap.GetCamera();
             mFow = new FogOfWar(mCamera, mGraphics);
 

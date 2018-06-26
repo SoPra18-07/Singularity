@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
+using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
@@ -51,11 +52,15 @@ namespace Singularity.Units
 
         private readonly float mScale;
 
-        private readonly Map.Map mMap;
+        private Map.Map mMap;
 
         private Stack<Vector2> mPath;
 
         private Director mDirector;
+
+        private MilitaryPathfinder mPathfinder;
+
+        private Vector2[] mDebugPath; //TODO this is for debugging
 
         public Vector2 AbsolutePosition { get; set; }
 
@@ -78,8 +83,7 @@ namespace Singularity.Units
         
         public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director, ref Map.Map map)
         {
-            Id = IdGenerator.NextiD(); // TODO this will later use a random number generator to create a unique
-                    // id for the specific unit.
+            Id = IdGenerator.NextiD(); // id for the specific unit.
             Health = 10;
 
             mScale = 0.4f;
@@ -102,6 +106,8 @@ namespace Singularity.Units
             mMilSheet = spriteSheet;
 
             mMap = map;
+
+            mPathfinder = new MilitaryPathfinder();
         }
 
 
@@ -175,7 +181,6 @@ namespace Singularity.Units
 
         public void Draw(SpriteBatch spriteBatch)
         {
-
             spriteBatch.Draw(
                 mMilSheet,
                 AbsolutePosition,
@@ -187,7 +192,15 @@ namespace Singularity.Units
                 SpriteEffects.None,
                 LayerConstants.MilitaryUnitLayer
                 );
-
+            
+            // TODO DEBUG REGION
+            if (mDebugPath != null)
+            {
+                for (var i = 0; i < mDebugPath.Length - 1; i++)
+                {
+                    spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
+                }
+            }
         }
 
 
@@ -296,11 +309,16 @@ namespace Singularity.Units
                         var currentPosition = Center;
                         Debug.WriteLine("Starting path finding at: " + currentPosition.X +", " + currentPosition.Y);
                         Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
-                        mPath?.Clear();
 
-                        mPath = MilitaryPathfinder.FindPath(currentPosition,
+                        mPath = new Stack<Vector2>();
+                        mPath = mPathfinder.FindPath(currentPosition,
                             mTargetPosition,
-                            mMap);
+                            ref mMap);
+
+                        // TODO: DEBUG REGION
+                        mDebugPath = mPath.ToArray();
+
+                        // TODO: END DEBUG REGION
 
                         mBoundsSnapshot = Bounds;
                         mZoomSnapshot = mCamera.GetZoom();

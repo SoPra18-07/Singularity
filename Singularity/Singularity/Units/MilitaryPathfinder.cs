@@ -10,8 +10,13 @@ using Singularity.Map.Properties;
 
 namespace Singularity.Units
 {
-    internal static class MilitaryPathfinder
+    /// <summary>
+    /// A Jump Point Search pathfinder implementation for military units
+    /// </summary>
+    internal sealed class MilitaryPathfinder
     {
+        private JumpPointParam mJpParam;
+
         /// <summary>
         /// Finds a path between 2 position on a map
         /// </summary>
@@ -19,19 +24,22 @@ namespace Singularity.Units
         /// <param name="endPosition">Destination</param>
         /// <param name="map">Game map currently being used</param>
         /// <returns>A list of Vector2 waypoints that the object must traverse to get to its destination</returns>
-        internal static Stack<Vector2> FindPath(Vector2 startPosition, Vector2 endPosition, Map.Map map)
+        internal Stack<Vector2> FindPath(Vector2 startPosition, Vector2 endPosition, ref Map.Map map)
         {
-            var jPParam = new JumpPointParam(iGrid: map.GetCollisionMap().GetWalkabilityGrid(),
-                                             iStartPos: VectorToGridPos(startPosition),
-                                             iEndPos: VectorToGridPos(endPosition),
-                                             iAllowEndNodeUnWalkable: EndNodeUnWalkableTreatment.ALLOW,
-                                             iMode: HeuristicMode.MANHATTAN);
-
-            var pathGrid = JumpPointFinder.FindPath(jPParam);
-            foreach (var pos in pathGrid)
+            if (mJpParam != null)
             {
-                Debug.WriteLine(pos);
+                mJpParam.Reset(VectorToGridPos(startPosition), VectorToGridPos(endPosition));
             }
+            else
+            {
+                mJpParam = new JumpPointParam(iGrid: map.GetCollisionMap().GetWalkabilityGrid(),
+                    iStartPos: VectorToGridPos(startPosition),
+                    iDiagonalMovement: DiagonalMovement.OnlyWhenNoObstacles,
+                    iEndPos: VectorToGridPos(endPosition),
+                    iAllowEndNodeUnWalkable: EndNodeUnWalkableTreatment.DISALLOW,
+                    iMode: HeuristicMode.MANHATTAN);
+            }
+            var pathGrid = JumpPointFinder.FindPath(mJpParam);
 
             var pathVector = new Stack<Vector2>(pathGrid.Count);
             pathVector.Push(endPosition);
@@ -52,7 +60,7 @@ namespace Singularity.Units
         /// </summary>
         /// <param name="vector">Vector2 to be converted</param>
         /// <returns>Corresponding grid positions</returns>
-        internal static GridPos VectorToGridPos(Vector2 vector)
+        private GridPos VectorToGridPos(Vector2 vector)
         {
             return new GridPos((int) Math.Floor(vector.X / MapConstants.GridWidth),
                                (int) Math.Floor(vector.Y / MapConstants.GridHeight));
@@ -63,7 +71,7 @@ namespace Singularity.Units
         /// </summary>
         /// <param name="gridPos">GridPos to be converted</param>
         /// <returns>Corresponding Vector2 position</returns>
-        internal static Vector2 GridPosToVector2(GridPos gridPos)
+        private static Vector2 GridPosToVector2(GridPos gridPos)
         {
             return new Vector2(gridPos.x * MapConstants.GridWidth,
                                gridPos.y * MapConstants.GridHeight);

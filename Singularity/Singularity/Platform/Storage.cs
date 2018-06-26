@@ -27,7 +27,7 @@ namespace Singularity.Platform
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Storage;
             mSpritename = "Dome";
-            AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
+            AbsoluteSize = SetPlatfromDrawParameters();
         }
 
         public override void Produce()

@@ -51,13 +51,13 @@ namespace Singularity.Platform
 
         public Vector2 Center { get; set; }
 
-        public int RevelationRadius { get; private set; } = 200;
+        public int RevelationRadius { get; } = 200;
 
-        public Rectangle AbsBounds { get; private set; }
+        public Rectangle AbsBounds { get; internal set; }
 
         public bool Moved { get; private set; }
 
-        public int Id { get; private set; }
+        public int Id { get; }
 
         // the sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome 
         private int mSheet;
@@ -238,7 +238,7 @@ namespace Singularity.Platform
                     // Basic platform
                     spritebatch.Draw(mPlatformBaseTexture,
                         AbsolutePosition,
-                        new Rectangle(0, 0, (int)AbsoluteSize.X, (int)AbsoluteSize.Y),
+                        null,
                         Color.White,
                         0f,
                         Vector2.Zero,
@@ -362,7 +362,6 @@ namespace Singularity.Platform
             mIsBlueprint = true;
             mRequested = new Dictionary<EResourceType, int>();
 
-            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, 148, 88);
             Moved = false;
 
             if (center == Vector2.Zero)
@@ -461,51 +460,103 @@ namespace Singularity.Platform
             {
                 case EPlatformType.Blank:
                     mSheet = 0;
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        88);
                     break;
                 case EPlatformType.Energy:
                     mSheet = 3;
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        127);
                     break;
                 case EPlatformType.Factory:
                     mSheetPosition = 1;
                     mSheet = 3;
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        127);
                     break;
                 case EPlatformType.Junkyard:
                     mSheetPosition = 2;
                     mSheet = 3;
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        127);
                     break;
                 case EPlatformType.Mine:
                     mSheetPosition = 3;
                     mSheet = 3;
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        127);
                     break;
                 case EPlatformType.Packaging:
                     mSheetPosition = 4;
-                    mSheet = 4;
+                    mSheet = 3;
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        127);
                     break;
                 case EPlatformType.Quarry:
                     mSheetPosition = 5;
                     mSheet = 3;
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        127);
                     break;
                 case EPlatformType.Storage:
                     mSheetPosition = 6;
                     mSheet = 3;
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        127);
                     break;
                 case EPlatformType.Well:
                     mSheetPosition = 7;
                     mSheet = 3;
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        127);
                     break;
                 case EPlatformType.Kinetic:
-                    mSheet = 4;
+                    mSheet = 1;
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        165);
                     break;
                 case EPlatformType.Laser:
-                    mSheet = 2;
+                    mSheet = 1;
                     mSheetPosition = 1;
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        165);
                     break;
                 case EPlatformType.Barracks:
-                    mSheet = 1;
+                    mSheet = 2;
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        170);
                     break;
                 case EPlatformType.Command:
-                    mSheet = 1;
+                    mSheet = 2;
                     mSheetPosition = 1;
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        170);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
