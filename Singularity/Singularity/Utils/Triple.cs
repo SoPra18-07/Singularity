@@ -16,8 +16,9 @@
         /// <summary>
         /// Creates a new 2-Tuple with the given values at their specified location.
         /// </summary>
-        /// <param name="firstValue">The first value of the tuple</param>
-        /// <param name="secondValue">The second value of the tuple</param>
+        /// <param name="firstValue">The first value of the Triple</param>
+        /// <param name="secondValue">The second value of the Triple</param>
+        /// <param name="thirdValue">The third value of the Triple </param>
         public Triple(T1 firstValue, T2 secondValue, T3 thirdValue)
         {
             mFirstValue = firstValue;
@@ -56,11 +57,6 @@
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
             if (!(obj is Triple<T1, T2, T3>))
             {
                 return false;

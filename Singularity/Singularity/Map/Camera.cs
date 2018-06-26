@@ -1,21 +1,22 @@
-﻿using System;
-using System.Diagnostics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
+using Singularity.Manager;
 using Singularity.Map.Properties;
 using Singularity.Property;
+using Singularity.Screen;
 
 namespace Singularity.Map
-{   
+{
     //TODO: update in such a way that zoom is centered on the current mouse position
     /// <inheritdoc/>
     /// <remarks>
     /// The camera object is used to move and zoom the map and all its components.
     /// </remarks>
-    internal sealed class Camera : IUpdate, IKeyListener, IMouseWheelListener
+    internal sealed class Camera : IUpdate, IKeyListener, IMouseWheelListener, IMousePositionListener
     {
+        public EScreen Screen { get; private set; } = EScreen.GameScreen;
 
         /// <summary>
         /// The speed at which the camera moves in pixels per update.
@@ -36,6 +37,10 @@ namespace Singularity.Map
         /// The y location of the camera unzoomed. Could also be called the "true" or "absolute" y location.
         /// </summary>
         private float mY;
+
+        private float mMouseX;
+
+        private float mMouseY;
 
         /// <summary>
         /// The current zoom value of the camera.
@@ -58,9 +63,10 @@ namespace Singularity.Map
         /// objects to the camera view.
         /// </summary>
         /// <param name="viewport">The viewport of the window</param>
+        /// <param name="director">The director</param>
         /// <param name="x">The initial x position of the camera</param>
         /// <param name="y">the initial y position of the camera</param>
-        public Camera(Viewport viewport, InputManager inputManager, int x = 0, int y = 0)
+        public Camera(Viewport viewport, ref Director director, int x = 0, int y = 0)
         {
             if (x < 0)
             {
@@ -78,8 +84,9 @@ namespace Singularity.Map
             mZoom = 1.0f;
             mBounds = new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight);
 
-            inputManager.AddKeyListener(this);
-            inputManager.AddMouseWheelListener(this);
+            director.GetInputManager.AddKeyListener(this);
+            director.GetInputManager.AddMouseWheelListener(this);
+            director.GetInputManager.AddMousePositionListener(this);
 
             mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
 
@@ -94,12 +101,11 @@ namespace Singularity.Map
         {
             return mTransform;
         }
-
-        //TODO: remove this when input manager is there, since we don't need to fetch it anymore
+        
         public void Update(GameTime gametime)
         {
 
-            //finally update the matrix to all the fitting values.    
+            //finally update the matrix to all the fitting values.
             UpdateTransformMatrix();
         }
 
@@ -118,7 +124,7 @@ namespace Singularity.Map
         /// clip to the edge if its the case.
         /// </summary>
         private void ValidatePosition()
-        {   
+        {
             // first of all we need to update our matrix with the new values, since they got changed by moving.
             UpdateTransformMatrix();
 
@@ -148,6 +154,25 @@ namespace Singularity.Map
             mY = (int) (MathHelper.Clamp(cameraWorldMin.Y, limitWorldMin.Y, limitWorldMax.Y - cameraSize.Y) +
                         positionOffsetY);
 
+        }
+
+        /// <summary>
+        /// Zooms to the given zoomTarget by the amount specified
+        /// </summary>
+        /// <param name="zoomTarget">The target to zoom to</param>
+        /// <param name="amount">The amount to zoom</param>
+        private void ZoomToTarget(Vector2 zoomTarget, float amount)
+        {
+            // the mouse position in world space with the old zoom
+            var abs = Vector2.Transform(zoomTarget, Matrix.Invert(mTransform));
+
+            mZoom += amount;
+
+            // set the cameras x, y coordinates such that the zoomTarget stays in the same spot. (screen space)
+            mX = abs.X * mZoom - zoomTarget.X;
+            mY = abs.Y * mZoom - zoomTarget.Y;
+
+            ValidatePosition();
         }
 
         ///<summary>
@@ -185,7 +210,7 @@ namespace Singularity.Map
 
         public void KeyTyped(KeyEvent keyEvent)
         {
-            
+
         }
 
         public void KeyPressed(KeyEvent keyEvent)
@@ -227,10 +252,10 @@ namespace Singularity.Map
 
         public void KeyReleased(KeyEvent keyEvent)
         {
-            
+
         }
 
-        public void MouseWheelValueChanged(EMouseAction mouseAction)
+        public bool MouseWheelValueChanged(EMouseAction mouseAction)
         {
             var scrollChange = 0f;
 
@@ -248,8 +273,10 @@ namespace Singularity.Map
             if (!((mZoom + scrollChange) * MapConstants.MapWidth < mViewport.Width ||
                   (mZoom + scrollChange) * MapConstants.MapHeight < mViewport.Height))
             {
-                mZoom += scrollChange;
+                ZoomToTarget(new Vector2(mMouseX, mMouseY), scrollChange);
             }
+
+            return false;
         }
 
         public Matrix GetStencilProjection()
@@ -263,6 +290,12 @@ namespace Singularity.Map
                 cameraWorldMin.Y,
                 0,
                 1);
+        }
+
+        public void MousePositionChanged(float newX, float newY)
+        {
+            mMouseX = newX;
+            mMouseY = newY;
         }
     }
 }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,6 +14,10 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     class SaveGameScreen : IScreen
     {
+
+        public EScreen Screen { get; private set; } = EScreen.SaveGameScreen;
+        public bool Loaded { get; set; }
+
         /// <summary>
         /// Updates the contents of the screen.
         /// </summary>

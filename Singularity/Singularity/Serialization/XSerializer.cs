@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Xml;
 
 namespace Singularity.serialization

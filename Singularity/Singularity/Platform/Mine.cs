@@ -1,26 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Map;
-using Singularity.Property;
 using Singularity.Resources;
 
 namespace Singularity.Platform
 {
-    [DataContract()]
-    class Mine : PlatformBlank, IRevealing
+    [DataContract]
+    class Mine : PlatformBlank
     {
-        [DataMember()]
+        [DataMember]
         private const int PlatformWidth = 144;
-        [DataMember()]
+        [DataMember]
         private const int PlatformHeight = 127;
 
-        public Mine(Vector2 position, Texture2D spritesheet, ResourceMap resource): base(position, spritesheet, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
+        public Mine(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource): base(position, platformSpriteSheet, baseSprite, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
         {
             //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[2];

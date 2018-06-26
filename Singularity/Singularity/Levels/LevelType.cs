@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Singularity.Levels
 {
-    internal enum LevelType
+    public enum LevelType
     {
         None,
         Tutorial,

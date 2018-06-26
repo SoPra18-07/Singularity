@@ -1,6 +1,6 @@
 ﻿namespace Singularity.Property
 {
-    
+
     /// <summary>
     /// Provides layer values for the different game objects. The smaller the value the more in the back the unit
     /// gets drawn. The idea for this class was this we can dynamically add and change values without having to
@@ -32,12 +32,17 @@
         /// <summary>
         /// A float depicting the layer for general units
         /// </summary>
-        public const float GeneralUnitLayer = 0.4f;
+        public const float GeneralUnitLayer = 0.55f;
 
         /// <summary>
-        /// A float depicting the layer for platforms
+        /// A float depicting the layer for platforms bases
         /// </summary>
-        public const float PlatformLayer = 0.5f;
+        public const float BasePlatformLayer = 0.5f;
+
+        /// <summary>
+        /// A float depicting the layer for platform tops
+        /// </summary>
+        public const float PlatformLayer = 0.6f;
 
         /// <summary>
         /// A float depciting the layer of the map that is layered above the objects to smooth the fog of war appearance

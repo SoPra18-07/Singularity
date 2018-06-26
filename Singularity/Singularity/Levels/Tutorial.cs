@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.MemoryMappedFiles;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Graph.Paths;
-using Singularity.Input;
+using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platform;
 using Singularity.Screen.ScreenClasses;
@@ -16,31 +10,32 @@ using Singularity.Units;
 
 namespace Singularity.Levels
 {
-    //Not sure whether this should be serialized
+    //Not sure whether this should be serialized, but I guess...
+    [DataContract]
     class Tutorial
     {
-
+        [DataMember]
         private GameScreen mGameScreen;
-        private InputManager mInput;
-        private PathManager mPath;
-        private StoryManager.StoryManager mStory;
-        private DistributionManager.DistributionManager mDist;
+        [DataMember]
         private GraphicsDevice mGraphics;
+        [DataMember]
         private Map.Map mMap;
+        [DataMember]
         private Camera mCamera;
+        [DataMember]
         private FogOfWar mFow;
+        [DataMember]
+        private Director mDirector;
 
         //GameObjects to initialize:
+        [DataMember]
         private CommandCenter mPlatform;
 
-        public Tutorial(GraphicsDevice graphics, InputManager input, PathManager path, StoryManager.StoryManager story, DistributionManager.DistributionManager dist, ContentManager content)
+        public Tutorial(GraphicsDevice graphics, ref Director dir, ContentManager content)
         {
-            mInput = input;
-            mPath = path;
-            mStory = story;
-            story.SetLevelType(LevelType.Tutorial);
-            story.LoadAchievements();
-            mDist = dist;
+            mDirector = dir;
+            dir.GetStoryManager.SetLevelType(LevelType.Tutorial);
+            dir.GetStoryManager.LoadAchievements();
             mGraphics = graphics;
             LoadContent(content);
         }
@@ -49,23 +44,24 @@ namespace Singularity.Levels
         {
             //Load stuff
             var platformCylTexture = content.Load<Texture2D>("Cylinders");
+            var platformBlankTexture = content.Load<Texture2D>("PlatformBasic");
             var mapBackground = content.Load<Texture2D>("MockUpBackground");
 
             //Map related stuff
-            mMap = new Map.Map(mapBackground, mGraphics.Viewport, mInput, mPath, false);
+            mMap = new Map.Map(mapBackground, mGraphics.Viewport, ref mDirector, false);
             mCamera = mMap.GetCamera();
             mFow = new FogOfWar(mCamera, mGraphics);
 
             //INITIALIZE GAMESCREEN
-            mGameScreen = new GameScreen(mGraphics, mInput, mPath, mStory, mDist, mMap, mCamera, mFow);
+            mGameScreen = new GameScreen(mGraphics, ref mDirector, mMap, mCamera, mFow);
 
             //IngameObjects stuff
-            mPlatform = new CommandCenter(new Vector2(1000, 500), platformCylTexture, mStory);
-            var genUnit = new GeneralUnit(mPlatform, mPath, mDist);
-            var genUnit2 = new GeneralUnit(mPlatform, mPath, mDist);
-            var genUnit3 = new GeneralUnit(mPlatform, mPath, mDist);
-            var genUnit4 = new GeneralUnit(mPlatform, mPath, mDist);
-            var genUnit5 = new GeneralUnit(mPlatform, mPath, mDist);
+            mPlatform = new CommandCenter(new Vector2(1000, 500), platformCylTexture, platformBlankTexture, ref mDirector);
+            var genUnit = new GeneralUnit(mPlatform, ref mDirector);
+            var genUnit2 = new GeneralUnit(mPlatform, ref mDirector);
+            var genUnit3 = new GeneralUnit(mPlatform, ref mDirector);
+            var genUnit4 = new GeneralUnit(mPlatform, ref mDirector);
+            var genUnit5 = new GeneralUnit(mPlatform, ref mDirector);
 
             //Finally add the objects
             mFow.AddRevealingObject(mPlatform);

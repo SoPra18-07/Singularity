@@ -1,83 +1,86 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.DistributionManager;
-using Singularity.Platform;
 using Singularity.Graph;
 using Singularity.Graph.Paths;
 using Singularity.Libraries;
+using Singularity.Manager;
+using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
-using Singularity.Units;
 using Singularity.Utils;
 
 namespace Singularity.Units
 {
-    [DataContract()]
-    public class GeneralUnit : IUnit, IUpdate, IDraw, ISpatial
+    [DataContract]
+    public class GeneralUnit : ISpatial
     {
-        [DataMember()]
+        [DataMember]
         public int Id { get; }
-        [DataMember()]
-        public Optional<Resource> Carrying { get; set; } // TODO change resource into a nullable type
-        [DataMember()]
+        [DataMember]
+        private int mPositionId;
+        [DataMember]
+        public Optional<Resource> Carrying { get; set; }
+        [DataMember]
+        private int? mTargetId;
+        [DataMember]
         private Queue<Vector2> mPathQueue; // the queue of platform center locations
-        [DataMember()]
+        [DataMember]
         private Queue<INode> mNodeQueue;
 
-        [DataMember()]
+        [DataMember]
         private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
         
-        [DataMember()]
+        [DataMember]
         //These are the assigned task and a flag, wether the unit is done with it.
         private Task mAssignedTask;
-        [DataMember()]
+        [DataMember]
         private bool mDone;
-        [DataMember()]
-        private DistributionManager.DistributionManager mDistrManager;
-        [DataMember()]
+
+        private IPlatformAction AssignedAction;
+
         public INode CurrentNode { get; private set; }
 
         // TODO: also use the size for the units representation since we someday need to draw rectangles over units (bounding box)
 
-        [DataMember()]
+        [DataMember]
         public Vector2 AbsolutePosition { get; set; }
-        [DataMember()]
+        [DataMember]
         public Vector2 AbsoluteSize { get; set; }
-        [DataMember()]
+        [DataMember]
         public Vector2 RelativePosition { get; set; }
-        [DataMember()]
+        [DataMember]
         public Vector2 RelativeSize { get; set; }
-        [DataMember()]
-        private readonly PathManager mPathManager;
+        [DataMember]
+        private readonly Director mDirector;
 
         /// <summary>
         /// whether the unit is moving or currently standing still,
         /// this is used so the unit can ask for a new path if it
         /// doesn't move
         /// </summary>
-        [DataMember()]
+        [DataMember]
         private bool mIsMoving;
 
         /// <summary>
         /// The node the unit started from. Changes when the unit reaches its destination (to the destination).
         /// </summary>
-        [DataMember()]
+        [DataMember]
         private INode mCurrentNode;
 
         /// <summary>
         /// The node the unit moves to. Null if the unit doesn't move anywhere
         /// </summary>
-        [DataMember()]
-        private INode mDestination;
+        [DataMember]
+        private Optional<INode> mDestination;
+
 
         /// <summary>
         /// The speed the unit moves at.
         /// </summary>
-        [DataMember()]
+        [DataMember]
         private const float Speed = 3f;
 
         [DataMember()]
@@ -88,9 +91,9 @@ namespace Singularity.Units
         public bool Active { get; set; }
 
 
-        public GeneralUnit(PlatformBlank platform, PathManager pathManager, DistributionManager.DistributionManager distrManager)
+        public GeneralUnit(PlatformBlank platform, ref Director director)
         {
-            mDestination = null;
+            mDestination = Optional<INode>.Of(null);
 
             CurrentNode = platform;
 
@@ -99,9 +102,8 @@ namespace Singularity.Units
             mNodeQueue = new Queue<INode>();
 
             mIsMoving = false;
-            mPathManager = pathManager;
-            mDistrManager = distrManager;
-            distrManager.Register(this);
+            mDirector = director;
+            mDirector.GetDistributionManager.Register(this);
             mDone = true;
         }
         /// <summary>
@@ -273,16 +275,17 @@ namespace Singularity.Units
                 {
                     //Care!!! DO NOT UNDER ANY CIRCUMSTANCES USE THIS PLACEHOLDER
                     IPlatformAction action = new ProduceMineResource(null, null);
-                    mAssignedTask = mDistrManager.RequestNewTask(this, Job, Optional<IPlatformAction>.Of(action));
-                    mDestination = mAssignedTask.End;
+                    mAssignedTask = mDirector.GetDistributionManager.RequestNewTask(this, Job, Optional<IPlatformAction>.Of(action));
+                    mDestination = Optional<INode>.Of(mAssignedTask.End.Get());
                 }
             }
+
             // if this if clause is fulfilled we get a new path to move to.
             // we only do this if we're not moving, have no destination and our
             // current nodequeue is empty (the path)
-            if (mDestination != null && mNodeQueue.Count <= 0 && !mIsMoving)
+            if (mDestination.IsPresent() && mNodeQueue.Count <= 0 && !mIsMoving)
             {
-                mNodeQueue = mPathManager.GetPath(this, mDestination).GetNodePath();
+                mNodeQueue = mDirector.GetPathManager.GetPath(this, mDestination.Get()).GetNodePath();
 
                 mCurrentNode = mNodeQueue.Dequeue();
             }
@@ -321,7 +324,7 @@ namespace Singularity.Units
             if (Vector2.Distance(AbsolutePosition, target) < 2)
             {
                 CurrentNode = mCurrentNode;
-                mDestination = null;
+                mDestination = Optional<INode>.Of(null);
                 mIsMoving = false;
                 return true;
             }

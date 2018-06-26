@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,6 +16,8 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     internal sealed class AchievementsScreen : ITransitionableMenu
     {
+        public EScreen Screen { get; private set; } = EScreen.AchievementsScreen;
+
         /// <summary>
         /// Updates the contents of the screen.
         /// </summary>
@@ -67,6 +65,9 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         public bool TransitionRunning { get; }
+
+        public bool Loaded { get; set; }
+
         public void TransitionTo(EScreen originScreen, EScreen targetScreen, GameTime gameTime)
         {
             throw new NotImplementedException();

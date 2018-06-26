@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Property;
+using Singularity.Manager;
 using Singularity.Resources;
 using Singularity.Units;
 
@@ -15,17 +12,21 @@ namespace Singularity.Platform
     [DataContract()]
     class CommandCenter: PlatformBlank
     {
-        [DataMember()]
+        [DataMember]
         private const int PlatformWidth = 200;
 
-        [DataMember()]
+        [DataMember]
         private const int PlatformHeight = 233;
 
-        [DataMember()]
+        [DataMember]
         private List<GeneralUnit> mControlledUnits;
 
-        public CommandCenter(Vector2 position, Texture2D spritesheet, StoryManager.StoryManager story): base(position, spritesheet)
+        [DataMember]
+        private Director mDirector;
+
+        public CommandCenter(Vector2 position, Texture2D spritesheet, Texture2D baseSprite, ref Director dir): base(position, spritesheet, baseSprite, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
         {
+            mDirector = dir;
             //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[2];
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
@@ -35,7 +36,7 @@ namespace Singularity.Platform
             mSpritename = "Cylinders";
             AbsoluteSize = new Vector2(PlatformWidth, PlatformHeight);
             mControlledUnits = new List<GeneralUnit>();
-            story.AddEnergy(5);
+            dir.GetStoryManager.AddEnergy(5);
         }
 
         public override void Produce()
