@@ -288,6 +288,8 @@ namespace Singularity.Platform
         /// <inheritdoc cref="Singularity.Property.IDraw"/>
         public void Draw(SpriteBatch spritebatch)
         {
+            var transparency = mIsBlueprint ? 0.35f : 1f;
+
             switch (mSheet)
             {
                 case 0:
@@ -295,7 +297,7 @@ namespace Singularity.Platform
                     spritebatch.Draw(mPlatformBaseTexture,
                         AbsolutePosition,
                         null,
-                        Color.White,
+                        Color.White * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
@@ -308,7 +310,7 @@ namespace Singularity.Platform
                     spritebatch.Draw(mPlatformBaseTexture,
                         Vector2.Add(AbsolutePosition, new Vector2(-3, 73)),
                         null,
-                        Color.White,
+                        Color.White * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
@@ -318,7 +320,7 @@ namespace Singularity.Platform
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
                         new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 148),
-                        Color.White,
+                        Color.White * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
@@ -331,7 +333,7 @@ namespace Singularity.Platform
                     spritebatch.Draw(mPlatformBaseTexture,
                         Vector2.Add(AbsolutePosition, new Vector2(-3, 82)),
                         null,
-                        Color.White,
+                        Color.White * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
@@ -341,7 +343,7 @@ namespace Singularity.Platform
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
                         new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 153),
-                        Color.White,
+                        Color.White * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
@@ -353,7 +355,7 @@ namespace Singularity.Platform
                     spritebatch.Draw(mPlatformBaseTexture,
                         Vector2.Add(AbsolutePosition, new Vector2(-3, 38)),
                         null,
-                        Color.White,
+                        Color.White * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
@@ -363,7 +365,7 @@ namespace Singularity.Platform
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
                         new Rectangle(148 * (mSheetPosition % 4), 109 * (int) Math.Floor(mSheetPosition / 4d), 148, 109),
-                        Color.White,
+                        Color.White * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
