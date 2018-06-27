@@ -125,6 +125,10 @@ namespace Singularity.Levels
             mGameScreen.AddObject(genUnit4);
             mGameScreen.AddObject(genUnit5);
             mGameScreen.AddObject(milUnit);
+
+            //TESTMETHODS HERE =====================================
+            mDirector.GetDistributionManager.DistributeJobs(JobType.Idle, JobType.Production, 2);
+            mDirector.GetDistributionManager.TestAttributes();
         }
 
         public GameScreen GetGameScreen()

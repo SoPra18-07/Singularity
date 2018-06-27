@@ -60,7 +60,7 @@ namespace Singularity.Map
             mDebug = debug;
 
 
-            mCamera = new Camera(viewport, ref director, neo: neo);
+            mCamera = new Camera(viewport, ref director, 800, 800, neo);
 
             mCollisionMap = new CollisionMap();
             mStructureMap = new StructureMap(ref director);

@@ -22,7 +22,7 @@ namespace Singularity.Platform
         private List<IEdge> mOutwardsEdges;
 
         [DataMember]
-        internal EPlatformType mType = EPlatformType.Blank;
+        internal EPlatformType mType;
 
         [DataMember]
         private const int PlatformWidth = 148;
@@ -102,6 +102,11 @@ namespace Singularity.Platform
             mIPlatformActions = new IPlatformAction[1];
 
             mAssignedUnits = new Dictionary<JobType, List<GeneralUnit>>();
+            mAssignedUnits.Add(JobType.Idle, new List<GeneralUnit>());
+            mAssignedUnits.Add(JobType.Defense, new List<GeneralUnit>());
+            mAssignedUnits.Add(JobType.Production, new List<GeneralUnit>());
+            mAssignedUnits.Add(JobType.Logistics, new List<GeneralUnit>());
+            mAssignedUnits.Add(JobType.Construction, new List<GeneralUnit>());
 
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();

@@ -13,7 +13,7 @@ namespace Singularity.Resources
         // TODO: fkarg implement
 
         private const float Speed = 4f;
-        private Vector2 velocity;
+        private Vector2 mVelocity;
 
         public Vector2 RelativePosition { get; set; }
 
@@ -44,19 +44,19 @@ namespace Singularity.Resources
             {
                 var targetPosition = diff - 35 * Geometry.NormalizeVector(diff) + AbsolutePosition;
 
-                var movementVector = Vector2.Multiply(Geometry.NormalizeVector(velocity), 0.4f) + Vector2.Multiply(Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y)), 0.6f);
+                var movementVector = Vector2.Multiply(Geometry.NormalizeVector(mVelocity), 0.4f) + Vector2.Multiply(Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y)), 0.6f);
 
-                velocity = movementVector * Speed;
+                mVelocity = movementVector * Speed;
             } else {
-                velocity = Vector2.Multiply(velocity, 0.6f);
+                mVelocity = Vector2.Multiply(mVelocity, 0.6f);
             }
-            AbsolutePosition = AbsolutePosition + velocity;
+            AbsolutePosition = AbsolutePosition + mVelocity;
 
         }
 
         public Vector2 GetVelocity()
         {
-            return velocity;
+            return mVelocity;
         }
 
         /// <summary>
@@ -84,8 +84,8 @@ namespace Singularity.Resources
         public void Update(GameTime gametime)
         {
             // Resoucres only update their location (if on a platform).
-            AbsolutePosition += velocity;
-            velocity = Vector2.Multiply(velocity, 0.8f);
+            AbsolutePosition += mVelocity;
+            mVelocity = Vector2.Multiply(mVelocity, 0.8f);
         }
     }
 }

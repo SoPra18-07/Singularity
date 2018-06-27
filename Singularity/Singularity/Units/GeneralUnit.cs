@@ -47,6 +47,9 @@ namespace Singularity.Units
         [DataMember]
         private IPlatformAction mAssignedAction;
 
+        /// <summary>
+        /// The node the unit started from. Changes when the unit reaches its destination (to the destination).
+        /// </summary>
         [DataMember]
         public INode CurrentNode { get; private set; }
 
@@ -70,12 +73,6 @@ namespace Singularity.Units
         /// </summary>
         [DataMember]
         private bool mIsMoving;
-
-        /// <summary>
-        /// The node the unit started from. Changes when the unit reaches its destination (to the destination).
-        /// </summary>
-        [DataMember]
-        private INode mCurrentNode;
 
         /// <summary>
         /// The node the unit moves to. Null if the unit doesn't move anywhere
@@ -143,8 +140,15 @@ namespace Singularity.Units
             {
                 mDestination = Optional<INode>.Of(mAssignedTask.End.Get());
             }
-            //It doesnt matter here whether it is null, so just get the reference
-            mAssignedAction = mAssignedTask.Action.Get();
+   
+            if (mAssignedTask.Action.IsPresent())
+            {
+                mAssignedAction = mAssignedTask.Action.Get();
+            }
+            else
+            {
+                mAssignedAction = null;
+            }
         }
 
 
@@ -169,19 +173,22 @@ namespace Singularity.Units
                         {
                             mDestination = Optional<INode>.Of(mAssignedTask.End.Get());
                         }
+                    }
 
+                    //We arrived at the target, so its now time to get another job
+                    if (mNodeQueue.Count == 0 && Job == JobType.Idle)
+                    {
+                        mDone = true;
                     }
                     break;
 
                 case JobType.Production:
                     //You arrived at your destination and you now want to work.
-                    //Console.Out.WriteLine(AbsolutePosition.X + " " + AbsolutePosition.Y + Id);
-                    //No need to check for null here, it has been checked before
-                    if(!mIsMoving && !mDone && mCurrentNode.Equals(mDestination.Get()))
+                    if(!mIsMoving && !mDone && CurrentNode.Equals(mAssignedTask.End.Get()))
                     {
                         if (!mAssigned)
                         {
-                            ((PlatformBlank)mDestination.Get()).AssignUnits(this, Job);
+                            mAssignedTask.End.Get().AssignUnits(this, Job);
                             mAssigned = true;
                         }
                     }
@@ -190,13 +197,6 @@ namespace Singularity.Units
 
             //The movement and everything revolving around it happens here!
             RegulateMovement();
-
-            //We arrived at the target, so its now time to get another job
-            if (mNodeQueue.Count == 0 && Job == JobType.Idle)
-            {
-                mDone = true;
-            }
-
         }
 
         /*========================================================================================================================
@@ -239,30 +239,30 @@ namespace Singularity.Units
             {
                 mNodeQueue = mDirector.GetPathManager.GetPath(this, mDestination.Get()).GetNodePath();
 
-                mCurrentNode = mNodeQueue.Dequeue();
+                CurrentNode = mNodeQueue.Dequeue();
             }
 
-            if (mCurrentNode == null)
+            if (CurrentNode == null)
             {
                 return;
             }
 
             // update the current node to move to after the last one got reached.
-            if (ReachedTarget(((PlatformBlank)mCurrentNode).Center) && mNodeQueue.Count > 0)
+            if (ReachedTarget(((PlatformBlank)CurrentNode).Center) && mNodeQueue.Count > 0)
             {
-                mCurrentNode = mNodeQueue.Dequeue();
+                CurrentNode = mNodeQueue.Dequeue();
             }
 
             // finally move to the current node.
-            Move(((PlatformBlank)mCurrentNode).Center);
+            Move(((PlatformBlank)CurrentNode).Center);
 
             // check whether we have reached the target after our move call.
-            ReachedTarget(((PlatformBlank)mCurrentNode).Center);
+            ReachedTarget(((PlatformBlank)CurrentNode).Center);
 
-            if (((PlatformBlank) mCurrentNode).GetPlatformResources().Count > 0)
+            /*if (((PlatformBlank) CurrentNode).GetPlatformResources().Count > 0)
             {
-                // todo: fix
-                var res = ((PlatformBlank) mCurrentNode).GetResource(EResourceType.Oil);
+                // todo: fix  (fkarg)?
+                var res = ((PlatformBlank) CurrentNode).GetResource(EResourceType.Oil);
                 if (res.IsPresent())
                 {
                     Carrying = res;
@@ -272,7 +272,7 @@ namespace Singularity.Units
             if (Carrying.IsPresent())
             {
                 Carrying.Get().Follow(this);
-            }
+            }*/
 
         }
 
@@ -287,7 +287,10 @@ namespace Singularity.Units
             //since we're operating with float values we just want the distance to be smaller than 2 pixels.
             if (Vector2.Distance(AbsolutePosition, target) < 2)
             {
-                CurrentNode = mCurrentNode;
+                if (mDestination.IsPresent())
+                {
+                    CurrentNode = mDestination.Get();
+                }
                 mDestination = Optional<INode>.Of(null);
                 mIsMoving = false;
                 return true;

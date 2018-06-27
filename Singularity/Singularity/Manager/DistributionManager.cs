@@ -50,9 +50,6 @@ namespace Singularity.Manager
         [DataMember]
         private List<Pair<PlatformBlank, int>> mDefPlatforms;
 
-        // Alternativ könnte man auch bei den beiden Listen direkt die Platformen einsetzen?
-        // Momentan ja, aber wenn du ne plattform haben willst die (rein theoretisch) verteidigen und Produzieren gleichzeitig kann? Oder gleichzeitig KineticDefense und LaserDefense ist?
-        // Aber wollen wir das? also entweder so, oder halt wie oben vorgeschlagen
 
         public DistributionManager()
         {
@@ -384,7 +381,7 @@ namespace Singularity.Manager
                     mProduction.Add(unit);
                 }
                 //The unit will change its job when calling this
-                unit.AssignTask(new Task(job, Optional<PlatformBlank>.Of(goTo), null, null));
+                unit.AssignTask(new Task(job, Optional<PlatformBlank>.Of(goTo), null, Optional<IPlatformAction>.Of(null)));
                 list[startindex] = new Pair<PlatformBlank, int>(goTo, list[startindex].GetSecond() + 1);
                 if (startindex == list.Count - 1)
                 {
@@ -451,7 +448,7 @@ namespace Singularity.Manager
                     var units = mDefPlatforms[startindex].GetFirst().GetAssignedUnits();
                     var transferunit = units[JobType.Defense].First();
                     //Change the Home of the Unit
-                    transferunit.AssignTask(new Task(JobType.Defense, Optional<PlatformBlank>.Of(platform), null, null));
+                    transferunit.AssignTask(new Task(JobType.Defense, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
                 }
             }
             else
@@ -509,7 +506,7 @@ namespace Singularity.Manager
                     }
                     var transferunit = units[JobType.Production].First();
                     //Change home of the unit
-                    transferunit.AssignTask(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, null));
+                    transferunit.AssignTask(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
                 }
             }
         }
@@ -581,11 +578,11 @@ namespace Singularity.Manager
             //TODO: Create Action references, when interfaces were created.
             if (isbuilding)
             {
-                mBuildingResources.Enqueue(new Task(JobType.Construction, Optional<PlatformBlank>.Of(platform), Optional<EResourceType>.Of(resource), Optional<IPlatformAction>.Of(action)));
+                mBuildingResources.Enqueue(new Task(JobType.Construction, Optional<PlatformBlank>.Of(platform), resource, Optional<IPlatformAction>.Of(action)));
             }
             else
             {
-                mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, Optional<PlatformBlank>.Of(platform), Optional<EResourceType>.Of(resource), Optional<IPlatformAction>.Of(action)));
+                mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, Optional<PlatformBlank>.Of(platform), resource, Optional<IPlatformAction>.Of(action)));
             }
         }
 
