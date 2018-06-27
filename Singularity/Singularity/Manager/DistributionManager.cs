@@ -93,15 +93,11 @@ namespace Singularity.Manager
         {
             if (isDef)
             {
-                mDefPlatforms.Add(new Pair<PlatformBlank, int>(platform, 0));
-                var times = mDefense.Count / mDefPlatforms.Count;
                 //Make sure the new platform gets some units
                 NewlyDistribute(platform, true);
             }
             else
             {
-                mProdPlatforms.Add(new Pair<PlatformBlank, int>(platform, 0));
-                var times = mProduction.Count / mProdPlatforms.Count;
                 //Make sure the new platform gets some units
                 NewlyDistribute(platform, false);
             }
@@ -246,11 +242,17 @@ namespace Singularity.Manager
             var search = true;
             var startindex = list.Count - 1;
             var lowassign = int.MaxValue;
+
+            if (list.Count == 0)
+            {
+                return new List<GeneralUnit>();
+            }
+
             //this will always be overridden this way
             //The idea is to search the list backwards and try to find the platform with more units than the previous platform
             //Given that the units have been distributed fairly, we can now decrement units from there.
             //If we reach the end that way, we have to continue decrementing the units from the end.
-            for (var i = list.Count - 1; search; i--)
+            for (var i = startindex; search; i--)
             {
                 if (i == 0)
                 {
