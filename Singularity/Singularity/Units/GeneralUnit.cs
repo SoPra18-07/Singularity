@@ -93,7 +93,6 @@ namespace Singularity.Units
         [DataMember]
         public bool Active { get; set; }
 
-
         public GeneralUnit(PlatformBlank platform, ref Director director)
         {
             mDestination = Optional<INode>.Of(null);
@@ -175,6 +174,8 @@ namespace Singularity.Units
                         }
                     }
 
+                    RegulateMovement();
+
                     //We arrived at the target, so its now time to get another job
                     if (mNodeQueue.Count == 0 && Job == JobType.Idle)
                     {
@@ -192,11 +193,9 @@ namespace Singularity.Units
                             mAssigned = true;
                         }
                     }
+                    RegulateMovement();
                     break;
             }
-
-            //The movement and everything revolving around it happens here!
-            RegulateMovement();
         }
 
         /*========================================================================================================================
@@ -220,17 +219,6 @@ namespace Singularity.Units
 
         private void RegulateMovement()
         {
-            if (!mIsMoving && mDone)
-            {
-                mDone = false;
-                if (Job == JobType.Idle)
-                {
-                    //Care!!! DO NOT UNDER ANY CIRCUMSTANCES USE THIS PLACEHOLDER
-                    IPlatformAction action = new ProduceMineResource(null, null);
-                    mAssignedTask = mDirector.GetDistributionManager.RequestNewTask(this, Job, Optional<IPlatformAction>.Of(action));
-                    mDestination = Optional<INode>.Of(mAssignedTask.End.Get());
-                }
-            }
 
             // if this if clause is fulfilled we get a new path to move to.
             // we only do this if we're not moving, have no destination and our
@@ -254,7 +242,11 @@ namespace Singularity.Units
             }
 
             // finally move to the current node.
-            Move(((PlatformBlank)CurrentNode).Center);
+            if (!ReachedTarget(((PlatformBlank)CurrentNode).Center) || !mAssignedTask.End.Get().Equals(CurrentNode))
+            {
+                Move(((PlatformBlank)CurrentNode).Center);
+            }
+
 
             // check whether we have reached the target after our move call.
             ReachedTarget(((PlatformBlank)CurrentNode).Center);
