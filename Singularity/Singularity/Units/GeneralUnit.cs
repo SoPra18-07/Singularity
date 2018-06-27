@@ -116,9 +116,11 @@ namespace Singularity.Units
         /// <param name="job">The job the unit should do.</param>
         public void ChangeJob(JobType job)
         {
-            if (Job == JobType.Production && mAssigned && mDestination.IsPresent())
+            //If its moving it cannot be assigned, since the unit only assigns itself when it reached the target (and stopped moving)
+            //That also means, that the CurrentNode is the Producing platform, so we call that UnAssign method.
+            if (Job == JobType.Production && mAssigned && !mIsMoving)
             {
-                ((PlatformBlank)mDestination.Get()).UnAssignUnits(this, Job);
+                ((PlatformBlank)CurrentNode).UnAssignUnits(this, Job);
                 mAssigned = false;
             }
             Job = job;
@@ -139,7 +141,7 @@ namespace Singularity.Units
             {
                 mDestination = Optional<INode>.Of(mAssignedTask.End.Get());
             }
-   
+
             if (mAssignedTask.Action.IsPresent())
             {
                 mAssignedAction = mAssignedTask.Action.Get();

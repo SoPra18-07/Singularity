@@ -96,14 +96,14 @@ namespace Singularity.Manager
                 mDefPlatforms.Add(new Pair<PlatformBlank, int>(platform, 0));
                 var times = mDefense.Count / mDefPlatforms.Count;
                 //Make sure the new platform gets some units
-                //NewlyDistribute(platform, true);
+                NewlyDistribute(platform, true);
             }
             else
             {
                 mProdPlatforms.Add(new Pair<PlatformBlank, int>(platform, 0));
                 var times = mProduction.Count / mProdPlatforms.Count;
                 //Make sure the new platform gets some units
-                //NewlyDistribute(platform, false);
+                NewlyDistribute(platform, false);
             }
         }
 
@@ -403,111 +403,31 @@ namespace Singularity.Manager
         { //TODO: Change this to use The written helpermethods
             if (isDefense)
             {
-                var search = true;
-                var reachend = false;
-                var startindex = 0;
-                var lowassign = mDefense.Count + 1;
-                //this will always be overridden this way
-                //The idea is to search the list backwards and try to find the platform with more units than the previous platform
-                //Given that the units have been distributed fairly, we can now decrement units from there.
-                //If we reach the end that way, we have to continue decrementing the units from the end.
-                for (var i = mDefPlatforms.Count - 2; i >= 0 && search; i--)
-                {
-                    if (i == 0)
-                    {
-                        search = false;
-                        startindex = mDefPlatforms.Count - 2;
-                    }
+                // + 1 because we didnt add the new platform yet
+                var times = mDefense.Count / (mDefPlatforms.Count + 1);
+                var list = GetUnitsFairly(times, mDefPlatforms, false);
 
-                    //Relys on fairness
-                    if (lowassign <= mDefPlatforms[i].GetSecond())
-                    {
-                        lowassign = mDefPlatforms[i].GetSecond();
-                    }
-                    else
-                    {
-                        //Found the place to decrement units
-                        lowassign = mDefPlatforms[i].GetSecond();
-                        search = false;
-                        startindex = i + 1;
-                    }
+                foreach (var unit in list)
+                {
+                    //Also unassigns the unit.
+                    unit.AssignTask(new Task(JobType.Defense, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
                 }
 
-
-                int amount = mDefense.Count / mDefPlatforms.Count;
-
-                //The transfer itself starts here
-                for (var i = amount; i > 0; i--)
-                {
-                    //This means there are no Units to distribute
-                    if (mDefPlatforms[startindex].GetSecond() == 0)
-                    {
-                        return;
-                    }
-
-                    var units = mDefPlatforms[startindex].GetFirst().GetAssignedUnits();
-                    var transferunit = units[JobType.Defense].First();
-                    //Change the Home of the Unit
-                    transferunit.AssignTask(new Task(JobType.Defense, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
-                }
+                mDefPlatforms.Add(new Pair<PlatformBlank, int>(platform, list.Count));
             }
             else
             {
-                var search = true;
-                var reachend = false;
-                int startindex = 0;
-                var lowassign = mProduction.Count + 1;
-                //this will always be overridden this way
-                //The idea is to search the list backwards and try to find the platform with more units than the previous platform
-                //Given that the units have been distributed fairly, we can now decrement units from there.
-                //If we reach the end that way, we have to continue decrementing the units from the end.
-                for (var i = mProdPlatforms.Count - 2; i >= 0 && search; i--)
-                {
-                    if (i == 0)
-                    {
-                        search = false;
-                        startindex = mProdPlatforms.Count - 2;
-                    }
+                // + 1 because we didnt add the new platform yet
+                var times = mProduction.Count / (mProdPlatforms.Count + 1);
+                var list = GetUnitsFairly(times, mProdPlatforms, false);
 
-                    //Relys on fairness
-                    if (lowassign <= mProdPlatforms[i].GetSecond())
-                    {
-                        lowassign = mProdPlatforms[i].GetSecond();
-                    }
-                    else
-                    {
-                        //Found the place to decrement units
-                        lowassign = mProdPlatforms[i].GetSecond();
-                        search = false;
-                        startindex = i + 1;
-                    }
+                foreach (var unit in list)
+                {
+                    //Also unassigns the unit.
+                    unit.AssignTask(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
                 }
 
-
-                int amount = mProduction.Count / mProdPlatforms.Count;
-
-                //The transfer itself starts here
-                for (var i = amount; i > 0; i--)
-                {
-                    //This means there are no Units to distribute
-                    if (mProdPlatforms[startindex].GetSecond() == 0)
-                    {
-                        return;
-                    }
-
-                    var units = mProdPlatforms[startindex].GetFirst().GetAssignedUnits();
-                    if (startindex - 1 == 0)
-                    {
-                        startindex = mProdPlatforms.Count - 2;
-                    }
-                    else
-                    {
-                        startindex--;
-                    }
-                    var transferunit = units[JobType.Production].First();
-                    //Change home of the unit
-                    transferunit.AssignTask(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
-                }
+                mProdPlatforms.Add(new Pair<PlatformBlank, int>(platform, list.Count));
             }
         }
 
