@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using System.Runtime.Serialization;
 using Singularity.Utils;
 
-namespace Singularity.StoryManager
+namespace Singularity.Levels
 {
     [DataContract()]
-    class Achievements
+    internal sealed class Achievements
     {
 
         //The statistics of the Achievements.

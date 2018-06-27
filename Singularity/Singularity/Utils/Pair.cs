@@ -56,7 +56,7 @@
 
             var objAsPair = (Pair<T1, T2>) obj;
 
-            return (objAsPair.GetFirst().Equals(mFirstValue) && objAsPair.GetSecond().Equals(mSecondValue));
+            return objAsPair.GetFirst().Equals(mFirstValue) && objAsPair.GetSecond().Equals(mSecondValue);
 
         }
 

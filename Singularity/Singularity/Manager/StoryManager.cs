@@ -1,17 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Security;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Singularity.Levels;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.serialization;
-using Singularity.StoryManager;
 
 namespace Singularity.Manager
 {

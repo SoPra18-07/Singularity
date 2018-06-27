@@ -103,7 +103,7 @@ namespace Singularity.Screen
         {
             if (SliderMoving != null && Active)
             {
-                SliderMoving(this, EventArgs.Empty, (mCurrentX/(mMax-mMin)));
+                SliderMoving(this, EventArgs.Empty, mCurrentX/(mMax-mMin));
             }
         }
 
@@ -123,10 +123,10 @@ namespace Singularity.Screen
 
                 // if slider is left click them make it slave to the mouse
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                    Mouse.GetState().X >= mCurrentX - ((float)mSliderSize / 2) &&
-                    Mouse.GetState().X <= mCurrentX + ((float)mSliderSize / 2) &&
-                    Mouse.GetState().Y >= Position.Y - ((float)mSliderSize / 2) &&
-                    Mouse.GetState().Y <= Position.Y + ((float)mSliderSize / 2))
+                    Mouse.GetState().X >= mCurrentX - (float)mSliderSize / 2 &&
+                    Mouse.GetState().X <= mCurrentX + (float)mSliderSize / 2 &&
+                    Mouse.GetState().Y >= Position.Y - (float)mSliderSize / 2 &&
+                    Mouse.GetState().Y <= Position.Y + (float)mSliderSize / 2)
                 {
                     mSlave = true;
                 }
@@ -169,7 +169,7 @@ namespace Singularity.Screen
                 // calculate int value of slider and convert to string
                 if (mWithValue)
                 {
-                    mStringValue = ((int)(((mCurrentX - mMin) / (mMax - mMin)) * 100)).ToString();
+                    mStringValue = ((int)((mCurrentX - mMin) / (mMax - mMin) * 100)).ToString();
                 }
             }
         }
@@ -182,10 +182,10 @@ namespace Singularity.Screen
         {
             if (Active)
             {
-                spriteBatch.DrawLine(Position.X, Position.Y, mMax, Position.Y, (Color.White * (float)0.6), 3);
+                spriteBatch.DrawLine(Position.X, Position.Y, mMax, Position.Y, Color.White * (float)0.6, 3);
 
                 // slider based on current position
-                spriteBatch.StrokedRectangle(new Vector2(mCurrentX - ((float)mSliderSize / 2), Position.Y - ((float)mSliderSize / 2)),
+                spriteBatch.StrokedRectangle(new Vector2(mCurrentX - (float)mSliderSize / 2, Position.Y - (float)mSliderSize / 2),
                     new Vector2(mSliderSize, mSliderSize), Color.Gray, Color.Black, (float).5, (float)0.8);
 
                 // add value display
@@ -194,15 +194,15 @@ namespace Singularity.Screen
                     // draws rectangle to the right side of slider
                     // spriteBatch.StrokedRectangle(new Vector2(mMax + mSliderSize, Position.Y - 30), new Vector2(60, 60), Color.Gray, Color.Black, 1, (float)0.8);
                     spriteBatch.StrokedRectangle(
-                        new Vector2((mMax + mSliderSize + 30) - (mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X / 2), Position.Y - 12 - mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).Y / 4),
+                        new Vector2(mMax + mSliderSize + 30 - mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X / 2, Position.Y - 12 - mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).Y / 4),
                         new Vector2(mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X, mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X), Color.Gray, Color.Black, 1, (float)0.8);
 
                     // draws in value of slider in the center of display window
                     spriteBatch.DrawString(mFont,
                         origin: Vector2.Zero,
-                        position: new Vector2((mMax + mSliderSize + 30) - (mFont.MeasureString(mStringValue).X / 2), Position.Y - 12),
+                        position: new Vector2(mMax + mSliderSize + 30 - mFont.MeasureString(mStringValue).X / 2, Position.Y - 12),
                         color: Color.White,
-                        text: mStringValue.ToString(),
+                        text: mStringValue,
                         rotation: 0f,
                         scale: 1f,
                         effects: SpriteEffects.None,

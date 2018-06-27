@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platform;
+using Singularity.Resources;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 
@@ -50,7 +51,7 @@ namespace Singularity.Levels
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
 
             //Map related stuff
-            mMap = new Map.Map(mapBackground, 20, 20, mGraphics.Viewport, ref mDirector, true);
+            mMap = new Map.Map(mapBackground, 20, 20, mGraphics.Viewport, ref mDirector, neo: true);
             mCamera = mMap.GetCamera();
             mFow = new FogOfWar(mCamera, mGraphics);
 
@@ -86,6 +87,19 @@ namespace Singularity.Levels
             var road3 = new Road(platform3, mPlatform, false);
             var road4 = new Road(mPlatform, platform4, false);
             var road5 = new Road(platform4, platform3, false);
+
+            // Resources
+            var res = new Resource(EResourceType.Trash, platform2.Center);
+            var res4 = new Resource(EResourceType.Trash, platform2.Center);
+            var res5 = new Resource(EResourceType.Trash, platform2.Center);
+            var res2 = new Resource(EResourceType.Chip, platform3.Center);
+            var res3 = new Resource(EResourceType.Oil, platform4.Center);
+
+            platform2.StoreResource(res);
+            platform3.StoreResource(res2);
+            platform4.StoreResource(res3);
+            platform2.StoreResource(res4);
+            platform2.StoreResource(res5);
 
             //Finally add the objects
             //FOG OF WAR =====================

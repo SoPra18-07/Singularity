@@ -2,14 +2,12 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Graph.Paths;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Sound;
-using Singularity.Units;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -22,40 +20,14 @@ namespace Singularity.Screen.ScreenClasses
     {
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
         public bool Loaded { get; set; }
-
-        // sprite textures
-        private Texture2D mPlatformSheet;
-        private Texture2D mMUnitSheet;
-        private Texture2D mPlatformBlankTexture;
-        private Texture2D mPlatformDomeTexture;
-
-        // platforms
-        private PlatformBlank mPlatform;
-        private PlatformBlank mPlatform2;
-        private EnergyFacility mPlatform3;
-
-        // units
-        private MilitaryUnit mMUnit1;
-        private MilitaryUnit mMUnit2;
-
-        private EnemyUnit mEnemy1;
-
+        
         // map and fog of war
-        private Map.Map mMap;
-        private FogOfWar mFow;
+        private readonly Map.Map mMap;
+        private readonly FogOfWar mFow;
 
         // director for Managing all the Managers
-        private Director mDirector;
+        private readonly Director mDirector;
         private readonly GraphicsDevice mGraphicsDevice;
-
-        //Other managers
-        private PathManager mPathManager;
-
-        private Manager.StoryManager mStoryManager;
-
-        private DistributionManager mDistributionManager;
-        // roads
-        private Road mRoad1;
 
         /// <summary>
         /// This list contains all the drawable objects currently in the game.
@@ -154,8 +126,6 @@ namespace Singularity.Screen.ScreenClasses
 
         public void LoadContent(ContentManager content)
         {
-
-            // AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
 
             AddObject(mMap);
 

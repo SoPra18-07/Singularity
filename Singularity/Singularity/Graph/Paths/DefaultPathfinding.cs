@@ -62,6 +62,7 @@ namespace Singularity.Graph.Paths
 
                 // current can never be null from my short amount of thinking about it (if actual arguments are given)
 
+                Debug.Assert(current != null, "pathFinding failed.");
                 if (current.Equals(destination))
                 {
                     return ReconstructPath(cameFrom, current);
