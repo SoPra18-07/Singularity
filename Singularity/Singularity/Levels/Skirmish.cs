@@ -88,26 +88,6 @@ namespace Singularity.Levels
             var road5 = new Road(platform4, platform3, false);
 
             //Finally add the objects
-            //FOG OF WAR =====================
-            mFow.AddRevealingObject(mPlatform);
-            mFow.AddRevealingObject(platform2);
-            mFow.AddRevealingObject(platform3);
-            mFow.AddRevealingObject(platform4);
-
-            mFow.AddRevealingObject(milUnit);
-
-            //MAP============================
-            mMap.AddPlatform(mPlatform);
-            mMap.AddPlatform(platform2);
-            mMap.AddPlatform(platform3);
-            mMap.AddPlatform(platform4);
-
-            mMap.AddRoad(road1);
-            mMap.AddRoad(road2);
-            mMap.AddRoad(road3);
-            mMap.AddRoad(road4);
-            mMap.AddRoad(road5);
-
 
             //GAMESCREEN=====================
             mGameScreen.AddObject(mPlatform);
