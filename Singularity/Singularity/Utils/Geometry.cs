@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Singularity.Platform;
 
 namespace Singularity.Utils
 {
@@ -44,7 +43,7 @@ namespace Singularity.Utils
 
         public static Vector2 GetCenter(float x, float y, float width, float height)
         {
-            return new Vector2(x + (width/2f), y + (height/2f));
+            return new Vector2(x + width/2f, y + height/2f);
         }
     }
 }

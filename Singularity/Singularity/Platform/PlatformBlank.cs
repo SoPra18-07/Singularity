@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -33,7 +32,7 @@ namespace Singularity.Platform
         /// Indicates the type of platform this is, defaults to blank.
         /// </summary>
         [DataMember]
-        internal EPlatformType mType = EPlatformType.Blank;
+        internal EPlatformType mType;
 
         /// <summary>
         /// Indicates the platform width
@@ -128,6 +127,11 @@ namespace Singularity.Platform
             mIPlatformActions = new IPlatformAction[1];
 
             mAssignedUnits = new Dictionary<JobType, List<GeneralUnit>>();
+            mAssignedUnits.Add(JobType.Idle, new List<GeneralUnit>());
+            mAssignedUnits.Add(JobType.Defense, new List<GeneralUnit>());
+            mAssignedUnits.Add(JobType.Production, new List<GeneralUnit>());
+            mAssignedUnits.Add(JobType.Logistics, new List<GeneralUnit>());
+            mAssignedUnits.Add(JobType.Construction, new List<GeneralUnit>());
 
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
@@ -607,7 +611,7 @@ namespace Singularity.Platform
 
             switch (mSheet)
             {
-                case (0):
+                case 0:
                     // basic platforms
                     AbsoluteSize = new Vector2(148, 85);
                     ColliderGrid = new [,]

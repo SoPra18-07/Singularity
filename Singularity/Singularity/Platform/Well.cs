@@ -34,7 +34,7 @@ namespace Singularity.Platform
             SetPlatfromParameters();
         }
 
-        public void Produce()
+        public override void Produce()
         {
             for (var i = 0; i < mAssignedUnits.Count; i++)
             {

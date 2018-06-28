@@ -112,7 +112,7 @@ namespace Singularity.Screen.ScreenClasses
                     // step 3: text becomes invisible
                     // step 4: text becomes visible
                     // step 5: start fade out
-                    case (1):
+                    case 1:
                         mMTextOpacity = 0f;
                         if (mMSecondFrame)
                         {
@@ -122,7 +122,7 @@ namespace Singularity.Screen.ScreenClasses
                         mMSecondFrame = !mMSecondFrame;
 
                         break;
-                    case (2):
+                    case 2:
                         mMTextOpacity = 1f;
                         if (mMSecondFrame)
                         {
@@ -131,7 +131,7 @@ namespace Singularity.Screen.ScreenClasses
 
                         mMSecondFrame = !mMSecondFrame;
                         break;
-                    case (3):
+                    case 3:
                         mMTextOpacity = 0f;
                         if (mMSecondFrame)
                         {
@@ -140,7 +140,7 @@ namespace Singularity.Screen.ScreenClasses
 
                         mMSecondFrame = !mMSecondFrame;
                         break;
-                    case (4):
+                    case 4:
                         mMTextOpacity = 1f;
                         if (mMSecondFrame)
                         {
@@ -149,7 +149,7 @@ namespace Singularity.Screen.ScreenClasses
 
                         mMSecondFrame = !mMSecondFrame;
                         break;
-                    case (5):
+                    case 5:
                         mMHoloOpacity = (float)Animations.Easing(1f, 0f, mMTransitionStartTime, mMTransitionDuration, gametime);
 
                         if (gametime.TotalGameTime.TotalMilliseconds >= mMTransitionStartTime + mMTransitionDuration)
