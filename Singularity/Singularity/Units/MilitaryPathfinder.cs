@@ -39,10 +39,12 @@ namespace Singularity.Units
             var pathGrid = JumpPointFinder.FindPath(mJpParam);
 
             var pathVector = new Stack<Vector2>(pathGrid.Count);
+
             pathVector.Push(endPosition);
+            
 
             Debug.WriteLine("Path:");
-            for (int i = pathGrid.Count - 1; i > 0; i--)
+            for (var i = pathGrid.Count - 1; i > 0; i--)
             {
                 var gridPos = GridPosToVector2(pathGrid[i]);
                 Debug.WriteLine(gridPos.X + ", " + gridPos.Y);

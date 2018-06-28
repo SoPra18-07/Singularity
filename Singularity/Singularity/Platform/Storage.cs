@@ -25,7 +25,7 @@ namespace Singularity.Platform
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Storage;
             mSpritename = "Dome";
-            AbsoluteSize = SetPlatfromDrawParameters();
+            SetPlatfromParameters();
         }
 
         /// <summary>

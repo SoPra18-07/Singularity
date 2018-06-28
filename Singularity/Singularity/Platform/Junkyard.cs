@@ -27,7 +27,7 @@ namespace Singularity.Platform
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Junkyard;
             mSpritename = "Dome";
-            AbsoluteSize = SetPlatfromDrawParameters();
+            SetPlatfromParameters();
         }
 
         public void BurnTrash()
