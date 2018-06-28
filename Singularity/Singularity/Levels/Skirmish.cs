@@ -87,6 +87,7 @@ namespace Singularity.Levels
             var road4 = new Road(mPlatform, platform4, false);
             var road5 = new Road(platform4, platform3, false);
 
+
             //Finally add the objects
             //FOG OF WAR =====================
             mFow.AddRevealingObject(mPlatform);

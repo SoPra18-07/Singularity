@@ -221,7 +221,7 @@ namespace Singularity.Screen.ScreenClasses
             // create items
             //TODO: Create an object representing the Idle units at the moment. Something like "Idle: 24" should be enough
             mDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
-            mDefSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
+            mDefSlider = new Slider(new Vector2(100,100), 150, 10, mLibSans12, ref mDirector);
             mBuildTextField = new TextField("Build", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
             mBuildSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
             mLogisticsTextField = new TextField("Logistics", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);

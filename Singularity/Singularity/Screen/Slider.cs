@@ -18,6 +18,8 @@ namespace Singularity.Screen
         private float mMin;
         private float mMax;
 
+        private Vector2 mLastPosition;
+
         // current x position of slider
         private float mCurrentX;
 
@@ -52,9 +54,21 @@ namespace Singularity.Screen
         public event PageMovingEventHandler PageMoving;
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="position"> position of the slider bar left hand corner</param>
+        /// <param name="length"> length of the slider bar</param>
+        /// <param name="sliderSize"> size of the slider (square)</param>
+        /// <param name="font"> font used for value display</param>
+        /// <param name="director"></param>
+        /// <param name="withValueBox"> specify if you want the value box : default yet</param>
+        /// <param name="withPages"> specify if you want pages: default no</param>
+        /// <param name="pages"> amout of pages you want</param>
         public Slider(Vector2 position, int length,int sliderSize, SpriteFont font, ref Director director, bool withValueBox = true, bool withPages = false, int pages = 0)
         {
             Position = position;
+            mLastPosition = position;
             mMin = Position.X;
             mMax = Position.X + length;
             Size = new Vector2(length, sliderSize);
@@ -110,6 +124,11 @@ namespace Singularity.Screen
                 mMin = Position.X;
                 mMax = Position.X + Size.X;
                 mPageSize = Size.X / (Pages - 1);
+                if (!Position.Equals(mLastPosition))
+                {
+                    mCurrentX += (Position.X - mLastPosition.X);
+                    mLastPosition = Position;
+                }
 
                 // if slave to the mouse then move according to the limits of the slider bar
                 if (mSlave && !mWithPages)
@@ -218,12 +237,11 @@ namespace Singularity.Screen
             if (Active)
             {
                 // draws slider bar
-                spriteBatch.DrawLine(Position.X, Position.Y, mMax, Position.Y, (Color.White * (float) 0.6), 3);
-
+                spriteBatch.DrawLine(Position, Size.X, 0f, Color.White*0.6f, 2);
 
                 // draws slider
                 spriteBatch.StrokedRectangle(
-                    new Vector2(mCurrentX - ((float) Size.Y / 2), Position.Y - ((float) Size.Y / 2)),
+                    new Vector2(mCurrentX - (Size.Y / 2), Position.Y - (Size.Y / 2)),
                     new Vector2(Size.Y, Size.Y),
                     Color.Gray,
                     Color.Black,
@@ -270,7 +288,6 @@ namespace Singularity.Screen
             {
                 // when left key is pressed and mouse within slider bounds then make slider slave to mouse
                 case EMouseAction.LeftClick:
-                    Debug.Write("Hello");
                     if( Mouse.GetState().X >= mCurrentX - (Size.Y / 2) &&
                         Mouse.GetState().X <= mCurrentX + (Size.Y / 2) &&
                         Mouse.GetState().Y >= Position.Y - (Size.Y / 2) &&
