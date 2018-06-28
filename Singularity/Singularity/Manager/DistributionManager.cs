@@ -263,7 +263,7 @@ namespace Singularity.Manager
                 }
 
                 //Relys on fairness
-                if (lowassign <= list[i].GetSecond())
+                if (lowassign >= list[i].GetSecond())
                 {
                     lowassign = list[i].GetSecond();
                 }
