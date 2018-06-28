@@ -80,6 +80,9 @@ namespace Singularity.Levels
             //MilUnits
             var milUnit = new MilitaryUnit(new Vector2(2000, 700), milUnitSheet, mMap.GetCamera(), ref mDirector, ref mMap);
 
+            //SetUnit
+            var setUnit = new Settler(new Vector2(2000, 600), mCamera, ref mDirector, ref mMap);
+
             //Roads
             var road1 = new Road(mPlatform, platform2, false);
             var road2 = new Road(platform2, platform3, false);
