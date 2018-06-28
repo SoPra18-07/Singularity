@@ -11,7 +11,7 @@ namespace Singularity.Property
         /// <summary>
         /// Indicates whether the game is in debug mode or not
         /// </summary>
-        internal static bool DebugState { get; set; } = true;
+        internal static bool DebugState { get; set; } = false;
 
     }
 }

@@ -106,18 +106,25 @@ namespace Singularity.Platform
 
         public bool[,] ColliderGrid { get; internal set; }
 
+        private readonly float mCenterOffsetY;
 
-        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, Vector2 center = new Vector2())
+
+        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36)
         {
 
             Id = IdGenerator.NextiD();
 
-            mType = EPlatformType.Blank;
+            mCenterOffsetY = centerOffsetY;
+
+            mType = type;
 
             mInwardsEdges = new List<IEdge>();
             mOutwardsEdges = new List<IEdge>();
 
             AbsolutePosition = position;
+
+            SetPlatfromParameters(); // this changes the draw parameters based on the platform type but
+            // also sets the AbsoluteSize and collider grids
 
             //default?
             mHealth = 100;
@@ -145,23 +152,16 @@ namespace Singularity.Platform
             mIsBlueprint = true;
             mRequested = new Dictionary<EResourceType, int>();
 
-            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, 148, 88);
             Moved = false;
 
-            if (center == Vector2.Zero)
-            {
-                // no value was specified so just use the platform blank implementation.
-                Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y - 36);
-            }
-            else
-            {
-                //value was given by subclass thus take that
-                Center = center;
-            }
+            UpdateValues();
 
-            SetPlatfromParameters(); // this changes the draw parameters based on the platform type but
-                                     // also sets the AbsoluteSize and collider grids
+        }
 
+        public void UpdateValues()
+        {
+            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int) AbsoluteSize.X, (int) AbsoluteSize.Y);
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y + mCenterOffsetY);
         }
 
         /// <summary>
