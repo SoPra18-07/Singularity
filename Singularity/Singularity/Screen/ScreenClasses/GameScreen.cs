@@ -99,6 +99,12 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.End();
 
             mFow.FillInvertedMask(spriteBatch);
+
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mTransformMatrix);
+
+            mMap.GetStructureMap().DrawAboveFow(spriteBatch);
+
+            spriteBatch.End();
         }
 
         public bool DrawLower()

@@ -16,6 +16,8 @@ namespace Singularity.Platform
 
     {
 
+        private float mLayer;
+
         private List<IEdge> mInwardsEdges;
 
         private List<IEdge> mOutwardsEdges;
@@ -83,6 +85,8 @@ namespace Singularity.Platform
         {
 
             Id = IdGenerator.NextiD();
+
+            mLayer = LayerConstants.PlatformLayer;
 
             mType = EPlatformType.Blank;
 
@@ -306,7 +310,7 @@ namespace Singularity.Platform
                         Vector2.Zero,
                         1f,
                         SpriteEffects.None,
-                        LayerConstants.BasePlatformLayer);
+                        mLayer - 0.01f);
                     break;
                 case 1:
                     // Cone
@@ -319,7 +323,7 @@ namespace Singularity.Platform
                         Vector2.Zero,
                         1f,
                         SpriteEffects.None,
-                        LayerConstants.BasePlatformLayer);
+                        mLayer - 0.01f);
                     // then draw what's on top of that
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
@@ -329,7 +333,7 @@ namespace Singularity.Platform
                         Vector2.Zero,
                         1f,
                         SpriteEffects.None,
-                        LayerConstants.PlatformLayer);
+                        mLayer);
                     break;
                 case 2:
                     // Cylinder
@@ -342,7 +346,7 @@ namespace Singularity.Platform
                         Vector2.Zero,
                         1f,
                         SpriteEffects.None,
-                        LayerConstants.BasePlatformLayer);
+                        mLayer - 0.01f);
                     // then draw what's on top of that
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
@@ -352,7 +356,7 @@ namespace Singularity.Platform
                         Vector2.Zero,
                         1f,
                         SpriteEffects.None,
-                        LayerConstants.PlatformLayer);
+                        mLayer);
                     break;
                 case 3:
                     // Draw the basic platform first
@@ -364,7 +368,7 @@ namespace Singularity.Platform
                         Vector2.Zero,
                         1f,
                         SpriteEffects.None,
-                        LayerConstants.BasePlatformLayer);
+                        mLayer - 0.01f);
                     // Dome
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
@@ -374,7 +378,7 @@ namespace Singularity.Platform
                         Vector2.Zero,
                         1f,
                         SpriteEffects.None,
-                        LayerConstants.PlatformLayer);
+                        mLayer);
                     break;
             }
 
@@ -600,6 +604,11 @@ namespace Singularity.Platform
                 default:
                     return Vector2.Zero;
             }
+        }
+
+        public void SetLayer(float layer)
+        {
+            mLayer = layer;
         }
     }
 }

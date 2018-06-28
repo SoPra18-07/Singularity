@@ -119,16 +119,18 @@ namespace Singularity.Levels
             mGameScreen.AddObject(road3);
             mGameScreen.AddObject(road4);
             mGameScreen.AddObject(road5);
-            mGameScreen.AddObject(genUnit);
-            mGameScreen.AddObject(genUnit2);
-            mGameScreen.AddObject(genUnit3);
-            mGameScreen.AddObject(genUnit4);
-            mGameScreen.AddObject(genUnit5);
+            //mGameScreen.AddObject(genUnit);
+            //mGameScreen.AddObject(genUnit2);
+            //mGameScreen.AddObject(genUnit3);
+            //mGameScreen.AddObject(genUnit4);
+            //mGameScreen.AddObject(genUnit5);
             mGameScreen.AddObject(milUnit);
 
             //TESTMETHODS HERE =====================================
             mDirector.GetDistributionManager.DistributeJobs(JobType.Idle, JobType.Production, 3);
             mDirector.GetDistributionManager.TestAttributes();
+
+            mMap.GetStructureMap().AddPlatformToPlace(new PlatformPlacement(EPlatformType.Blank, EPlacementType.MouseFollowAndRoad, Screen.EScreen.GameScreen, ref mDirector, 900, 900, mMap.GetResourceMap()));
         }
 
         public GameScreen GetGameScreen()

@@ -11,6 +11,7 @@ using Singularity.Map;
 using Singularity.Property;
 using Singularity.Screen;
 using Singularity.Utils;
+using System.Diagnostics;
 
 namespace Singularity.Platform
 {
@@ -30,9 +31,13 @@ namespace Singularity.Platform
 
         private readonly bool mMouseFollowOnly;
 
+        private bool mIsFinished;
+
         private readonly PlatformBlank mPlatform;
 
-        private bool mHoveringPlatform;
+        private PlatformBlank mHoveringPlatform;
+
+        private Road mConnectionRoad;
 
         private float mMouseX;
 
@@ -40,7 +45,7 @@ namespace Singularity.Platform
 
         public PlatformPlacement(EPlatformType platformType, EPlacementType placementType, EScreen screen, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null)
         {
-            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.Both);
+            director.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             director.GetInputManager.AddMousePositionListener(this);
 
             switch (placementType)
@@ -66,10 +71,10 @@ namespace Singularity.Platform
                     break;
             }
 
-            mHoveringPlatform = false;
-
             Screen = screen;
             mPlatform = PlatformFactory.Get(platformType, ref director, x, y, resourceMap);
+            //TODO: change to not hardcoded value.
+            mPlatform.SetLayer(0.99f);
 
             UpdateBounds();
 
@@ -82,7 +87,7 @@ namespace Singularity.Platform
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            throw new NotImplementedException();
+            mPlatform.Draw(spriteBatch);
         }
 
         public void Update(GameTime gametime)
@@ -90,17 +95,22 @@ namespace Singularity.Platform
             switch (mCurrentState.GetState())
             {
                 case 1:
+                    mPlatform.AbsolutePosition = new Vector2(mMouseX - mPlatform.AbsoluteSize.X / 2f, mMouseY - mPlatform.AbsoluteSize.Y / 2f);
                     break;
 
                 case 2:
+                    mConnectionRoad.Destination = new Vector2(mMouseX, mMouseY);
                     break;
 
                 case 3:
+                    mIsFinished = true;
                     break;
 
                 default:
                     break;
             }
+
+            UpdateBounds();
         }
 
 
@@ -114,17 +124,19 @@ namespace Singularity.Platform
                 {
                     case 1:
                         mCurrentState.NextState();
+                        mConnectionRoad = new Road(mPlatform, null, true);
 
                         if (mMouseFollowOnly)
                         {
                             mCurrentState.NextState();
+                            mConnectionRoad = null;
                         }
 
                         giveThrough = false;
                         break;
 
                     case 2:
-                        if (mHoveringPlatform)
+                        if (mHoveringPlatform != null)
                         {
                             mCurrentState.NextState();
                         }
@@ -147,6 +159,7 @@ namespace Singularity.Platform
                     return giveThrough;
                 }
 
+                mConnectionRoad = null;
                 mCurrentState.PreviousState();
                 giveThrough = false;
             }
@@ -164,10 +177,31 @@ namespace Singularity.Platform
             return true;
         }
 
-        public void MousePositionChanged(float newX, float newY)
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
-            mMouseX = newX;
-            mMouseY = newY;
+
+            mMouseX = worldX;
+            mMouseY = worldY;
+        }
+
+        public bool IsFinished()
+        {
+            return mIsFinished;
+        }
+
+        public void SetHovering(PlatformBlank hovering)
+        {
+            mHoveringPlatform = hovering;
+        }
+
+        public PlatformBlank GetPlatform()
+        {
+            return mPlatform;
+        }
+
+        public Road GetRoad()
+        {
+            return mConnectionRoad;
         }
     }
 }

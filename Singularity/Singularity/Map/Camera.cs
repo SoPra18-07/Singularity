@@ -58,6 +58,8 @@ namespace Singularity.Map
 
         private readonly bool mNeo;
 
+        private readonly InputManager mInputManager;
+
 
         /// <summary>
         /// Creates a new Camera object which provides a transform matrix to adjust
@@ -70,6 +72,7 @@ namespace Singularity.Map
         /// <param name="neo">If the neo Layout should be used for navigating instead of qwertz</param>
         public Camera(Viewport viewport, ref Director director, int x = 0, int y = 0, bool neo = false)
         {
+
             if (x < 0)
             {
                 x = 0;
@@ -86,12 +89,15 @@ namespace Singularity.Map
             mViewport = viewport;
             mZoom = 1.0f;
             mBounds = new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight);
+            mInputManager = director.GetInputManager;
 
             director.GetInputManager.AddKeyListener(this);
             director.GetInputManager.AddMouseWheelListener(this);
             director.GetInputManager.AddMousePositionListener(this);
 
             mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
+
+            mInputManager.CameraMoved(mTransform);
 
         }
 
@@ -211,6 +217,7 @@ namespace Singularity.Map
         private void UpdateTransformMatrix()
         {
             mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
+            mInputManager.CameraMoved(mTransform);
         }
 
         public void KeyTyped(KeyEvent keyEvent)
@@ -327,10 +334,10 @@ namespace Singularity.Map
                 1);
         }
 
-        public void MousePositionChanged(float newX, float newY)
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
-            mMouseX = newX;
-            mMouseY = newY;
+            mMouseX = screenX;
+            mMouseY = screenY;
         }
     }
 }

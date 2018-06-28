@@ -341,10 +341,10 @@ namespace Singularity.Screen.ScreenClasses
 
         #region InputManagement
 
-        public void MousePositionChanged(float newX, float newY)
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
-            mMouseX = newX;
-            mMouseY = newY;
+            mMouseX = screenX;
+            mMouseY = screenY;
         }
 
         public Rectangle Bounds { get; }

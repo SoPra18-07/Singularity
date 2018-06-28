@@ -662,11 +662,11 @@ namespace Singularity.Screen
             return false;
         }
 
-        public void MousePositionChanged(float newX, float newY)
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
             // update member variable with new mouse position
-            mMouseX = newX;
-            mMouseY = newY;
+            mMouseX = screenX;
+            mMouseY = screenY;
         }
         #endregion
 

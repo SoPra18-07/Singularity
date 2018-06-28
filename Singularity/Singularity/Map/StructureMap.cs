@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Platform;
 using Singularity.Property;
+using System.Diagnostics;
 
 namespace Singularity.Map
 {
@@ -45,6 +46,7 @@ namespace Singularity.Map
             mGraphs = new List<Graph.Graph>();
             mDirector = director;
 
+            mPlatformsToPlace = new LinkedList<PlatformPlacement>();
             mPlatforms = new LinkedList<PlatformBlank>();
             mRoads = new LinkedList<Road>();
         }
@@ -112,6 +114,14 @@ namespace Singularity.Map
             mDirector.GetPathManager.AddGraph(mGraphs[mGraphs.Count - 1]);
         }
 
+        public void DrawAboveFow(SpriteBatch spriteBatch)
+        {
+            foreach (var platformToAdd in mPlatformsToPlace)
+            {
+                platformToAdd.Draw(spriteBatch);
+            }
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             foreach(var platform in mPlatforms)
@@ -122,11 +132,6 @@ namespace Singularity.Map
             foreach (var road in mRoads)
             {
                 road.Draw(spriteBatch);
-            }
-
-            foreach(var platformToAdd in mPlatformsToPlace)
-            {
-                platformToAdd.Draw(spriteBatch);
             }
         }
 
@@ -143,13 +148,23 @@ namespace Singularity.Map
             }
 
             //TODO: set ishovering for the platformtoAdd if there are any.
+            var toRemove = new LinkedList<PlatformPlacement>();
 
             foreach (var platformToAdd in mPlatformsToPlace)
             {
                 if (!platformToAdd.IsFinished())
                 {
                     platformToAdd.Update(gametime);
+                    return;
                 }
+                //platform is finished
+                this.AddPlatform(platformToAdd.GetPlatform());
+                this.AddRoad(platformToAdd.GetRoad());
+            }
+            
+            foreach(var platformToRemove in toRemove)
+            {
+                mPlatformsToPlace.Remove(platformToRemove);
             }
         }
 
