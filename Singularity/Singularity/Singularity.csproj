@@ -118,7 +118,6 @@
     <Compile Include="Property\ICollider.cs" />
     <Compile Include="Property\IRevealing.cs" />
     <Compile Include="Resources\EResourceType.cs" />
-    <Compile Include="Platform\Action.cs" />
     <Compile Include="Platform\PlatformBlank.cs" />
     <Compile Include="Screen\EOptionScreenState.cs" />
     <Compile Include="Screen\ITransitionableMenu.cs" />

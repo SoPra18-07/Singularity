@@ -64,8 +64,6 @@ namespace Singularity.Manager
             //Lists for Tasks to do
             mBuildingResources = new Queue<Task>();
             mRefiningOrStoringResources = new Queue<Task>();
-            mRequestedUnitsProduce = new Queue<Task>();
-            mRequestedUnitsDefense = new Queue<Task>();
 
             //Other stuff
             mBlueprintBuilds = new List<BuildBluePrint>();
@@ -499,8 +497,13 @@ namespace Singularity.Manager
         /// <param name="action">The platformaction of which they shall be unassigned</param>
         public void ManualUnassign(JobType job, int amount, IPlatformAction action)
         {
-
-            action.UnAssignUnits(amount, job);
+            var list = action.UnAssignUnits(amount, job);
+            foreach (var unit in list)
+            {
+                mManual.Remove(unit);
+                unit.ChangeJob(JobType.Idle);
+                mIdle.Add(unit);
+            }
         }
 
         /// <summary>
@@ -512,9 +515,6 @@ namespace Singularity.Manager
         /// <param name="isbuilding">True if the resources are for building, false otherwise</param>
         public void RequestResource(PlatformBlank platform, EResourceType resource, IPlatformAction action, bool isbuilding = false)
         {
-            // Will repair request ressources or units? And what unit will be used?
-            // We do not have repair yet or anytime soon.
-            // In that case I guess Ill ignore it for now.
             //TODO: Create Action references, when interfaces were created.
             if (isbuilding)
             {
@@ -523,27 +523,6 @@ namespace Singularity.Manager
             else
             {
                 mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, Optional<PlatformBlank>.Of(platform), resource, Optional<IPlatformAction>.Of(action)));
-            }
-        }
-
-        //TODO: Think about if we still need this
-        public void RequestUnits(PlatformBlank platform, JobType job, IPlatformAction action, bool isdefending = false)
-        {
-            if (isdefending)
-            {
-                //Assure fairness
-                if (platform.GetAssignedUnits().Count <= mDefense.Count / mDefPlatforms.Count)
-                {
-                    mRequestedUnitsDefense.Enqueue(new Task(JobType.Construction, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(action)));
-                }
-            }
-            else
-            {
-                //Assure fairness
-                if (platform.GetAssignedUnits().Count <= mProduction.Count / mProdPlatforms.Count)
-                {
-                    mRequestedUnitsProduce.Enqueue(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(action)));
-                }
             }
         }
 
