@@ -17,8 +17,7 @@ namespace Singularity.Platforms
         [DataMember()]
         private const int PlatformHeight = 127;
 
-        public Storage(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ref Director director)
-            : base(position: position, platformSpriteSheet: spritesheet, baseSprite: basesprite, director: ref director, center: new Vector2(x: position.X + PlatformWidth / 2f, y: position.Y + PlatformHeight - 36))
+        public Storage(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ref Director director): base(position, spritesheet, basesprite, director, EPlatformType.Storage, -50)
         {
             //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[2];
@@ -27,7 +26,7 @@ namespace Singularity.Platforms
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Storage;
             mSpritename = "Dome";
-            AbsoluteSize = SetPlatfromDrawParameters();
+            SetPlatfromParameters();
         }
 
         /// <summary>

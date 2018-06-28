@@ -10,6 +10,6 @@ namespace Singularity.Screen
 
         Vector2 Size { get; }
 
-        bool Active { get; set; }
+        bool ActiveWindow { get; set; }
     }
 }

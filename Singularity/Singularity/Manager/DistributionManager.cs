@@ -508,7 +508,7 @@ namespace Singularity.Manager
                 mRefiningOrStoringResources.Enqueue(item: new Task(job: JobType.Logistics, end: Optional<PlatformBlank>.Of(value: platform), res: resource, action: Optional<IPlatformAction>.Of(value: action)));
             }
         }
-        
+
         //TODO: Think about if we still need this
         public void RequestUnits(PlatformBlank platform, JobType job, IPlatformAction action, bool isdefending = false)
         {

@@ -66,6 +66,8 @@ namespace Singularity.Units
 
         public Rectangle AbsBounds { get; private set; }
 
+        public bool[,] ColliderGrid { get; }
+
         public EnemyUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director)
         {
             Id = IdGenerator.NextiD(); // TODO this will later use a random number generator to create a unique

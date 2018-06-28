@@ -28,7 +28,7 @@ namespace Singularity.Units
         private Director mDirector;
 
         /// <summary>
-        /// Creates a selection box 
+        /// Creates a selection box
         /// </summary>
         /// <param name="color"></param>
         /// <param name="camera"></param>

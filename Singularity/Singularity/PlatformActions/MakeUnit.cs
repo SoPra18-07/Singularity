@@ -26,7 +26,7 @@ namespace Singularity.PlatformActions
         {
             mBuildingCost = new Dictionary<EResourceType, int> {{EResourceType.Steel, 3}, {EResourceType.Chip, 2}, {EResourceType.Fuel, 2}};
         }
-        
+
     }
 
 

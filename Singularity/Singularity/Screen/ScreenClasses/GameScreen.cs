@@ -20,7 +20,7 @@ namespace Singularity.Screen.ScreenClasses
     {
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
         public bool Loaded { get; set; }
-        
+
         // map and fog of war
         private readonly Map.Map mMap;
         private readonly FogOfWar mFow;

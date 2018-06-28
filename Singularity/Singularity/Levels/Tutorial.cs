@@ -48,7 +48,7 @@ namespace Singularity.Levels
             var mapBackground = content.Load<Texture2D>(assetName: "backgroundGrid");
 
             //Map related stuff
-            mMap = new Map.Map(backgroundTexture: mapBackground, width: 20, height: 20, viewport: mGraphics.Viewport, director: ref mDirector, debug: true);
+            mMap = new Map.Map(backgroundTexture: mapBackground, width: 20, height: 20, viewport: mGraphics.Viewport, director: ref mDirector);
             mCamera = mMap.GetCamera();
             mFow = new FogOfWar(camera: mCamera, graphicsDevice: mGraphics);
 

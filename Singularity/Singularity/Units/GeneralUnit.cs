@@ -72,7 +72,7 @@ namespace Singularity.Units
         /// </summary>
         [DataMember]
         private bool mIsMoving;
-        
+
         /// The node the unit moves to. Null if the unit doesn't move anywhere
         /// </summary>
         [DataMember]

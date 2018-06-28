@@ -8,6 +8,7 @@ using Singularity.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Map.Properties;
 using Singularity.Property;
 using Singularity.Screen;
 using Singularity.Sound;
@@ -85,7 +86,9 @@ namespace Singularity.Units
 
         public Rectangle AbsBounds { get; private set; }
 
-        
+        public bool[,] ColliderGrid { get; }
+
+
         public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director, ref Map.Map map)
         {
             Id = IdGenerator.NextiD(); // id for the specific unit.
@@ -197,19 +200,22 @@ namespace Singularity.Units
                 effects: SpriteEffects.None,
                 layerDepth: LayerConstants.MilitaryUnitLayer
                 );
-            
-            // TODO DEBUG REGION
-            if (mDebugPath != null)
+
+            if (GlobalVariables.DebugState)
             {
-                for (var i = 0; i < mDebugPath.Length - 1; i++)
+                // TODO DEBUG REGION
+                if (mDebugPath != null)
                 {
-                    spriteBatch.DrawLine(point1: mDebugPath[i], point2: mDebugPath[i + 1], color: Color.Orange);
+                    for (var i = 0; i < mDebugPath.Length - 1; i++)
+                    {
+                        spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
+                    }
                 }
             }
 
             if (mShoot)
             {
-                // draws a laser line a a slight glow around the line, then sets the shoot future off 
+                // draws a laser line a a slight glow around the line, then sets the shoot future off
                 spriteBatch.DrawLine(point1: Center, point2: MapCoordinates(v: mEnemyPosition), color: Color.White, thickness: 2);
                 spriteBatch.DrawLine(point1: new Vector2(x: Center.X - 2, y: Center.Y), point2: MapCoordinates(v: mEnemyPosition), color: Color.White * .2f, thickness: 6);
                 mShoot = false;
@@ -246,7 +252,7 @@ namespace Singularity.Units
                 if (!HasReachedWaypoint())
                 {
                     MoveToTarget(target: mPath.Peek());
-                    
+
 
                 }
                 else
@@ -338,28 +344,45 @@ namespace Singularity.Units
             switch (mouseAction)
             {
                 case EMouseAction.LeftClick:
-                    if (mSelected && !mIsMoving && !withinBounds && Map.Map.IsOnTop(rect: new Rectangle(x: (int)(mMouseX - RelativeSize.X / 2f), y: (int)(mMouseY - RelativeSize.Y / 2f), width: (int)RelativeSize.X, height: (int)RelativeSize.Y), camera: mCamera))
+                    // check for if the unit is selected, not moving, the click is not within the bounds of the unit, and the click was on the map.
+                    if (mSelected
+                        && !mIsMoving
+                        && !withinBounds
+                        && Map.Map.IsOnTop(new Rectangle((int) (mMouseX - RelativeSize.X / 2f),
+                                (int) (mMouseY - RelativeSize.Y / 2f),
+                                (int) RelativeSize.X,
+                                (int) RelativeSize.Y),
+                            mCamera))
                     {
-                        mIsMoving = true;
-                        mTargetPosition = Vector2.Transform(position: new Vector2(x: Mouse.GetState().X, y: Mouse.GetState().Y),
-                            matrix: Matrix.Invert(matrix: mCamera.GetTransform()));
-                        var currentPosition = Center;
-                        Debug.WriteLine(message: "Starting path finding at: " + currentPosition.X +", " + currentPosition.Y);
-                        Debug.WriteLine(message: "Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
 
-                        mPath = new Stack<Vector2>();
-                        mPath = mPathfinder.FindPath(startPosition: currentPosition,
-                            endPosition: mTargetPosition,
-                            map: ref mMap);
+                        mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
+                            Matrix.Invert(mCamera.GetTransform()));
+                        if (mMap.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
+                            (int) mTargetPosition.X / MapConstants.GridWidth,
+                            (int) mTargetPosition.Y / MapConstants.GridWidth))
+                        {
+                            mIsMoving = true;
 
-                        // TODO: DEBUG REGION
-                        mDebugPath = mPath.ToArray();
+                            var currentPosition = Center;
+                            Debug.WriteLine("Starting path finding at: " + currentPosition.X + ", " + currentPosition.Y);
+                            Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
 
-                        // TODO: END DEBUG REGION
+                            mPath = new Stack<Vector2>();
+                            mPath = mPathfinder.FindPath(currentPosition,
+                                mTargetPosition,
+                                ref mMap);
 
-                        mBoundsSnapshot = Bounds;
-                        mZoomSnapshot = mCamera.GetZoom();
-                        giveThrough = true;
+                            if (GlobalVariables.DebugState)
+                            {
+                                // TODO: DEBUG REGION
+                                mDebugPath = mPath.ToArray();
+                                // TODO: END DEBUG REGION
+                            }
+
+                            mBoundsSnapshot = Bounds;
+                            mZoomSnapshot = mCamera.GetZoom();
+                            giveThrough = true;
+                        }
                     }
 
                     if (withinBounds) {

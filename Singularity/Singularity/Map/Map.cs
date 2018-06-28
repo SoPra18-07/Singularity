@@ -48,7 +48,6 @@ namespace Singularity.Map
             int height,
             Viewport viewport,
             ref Director director,
-            bool debug = false,
             IEnumerable<MapResource> initialResources = null,
             bool neo = false)
         {
@@ -56,7 +55,7 @@ namespace Singularity.Map
             mHeight = height;
 
             mBackgroundTexture = backgroundTexture;
-            mDebug = debug;
+            mDebug = GlobalVariables.DebugState;
 
 
             mCamera = new Camera(viewport: viewport, director: ref director, x: 800, y: 800, neo: neo);
@@ -177,8 +176,8 @@ namespace Singularity.Map
                     point: new Vector2(x: 0, y: rowCount * MapConstants.GridHeight), length: MapConstants.MapWidth, angle: 0, color: Color.Yellow, thickness: 1, layerDepth: LayerConstants.GridDebugLayer);
             }
 
-            
-            
+
+
             for(var i = 0; i < colMap.GetLength(dimension: 0); i++)
             {
                 for (var j = 0; j < colMap.GetLength(dimension: 1); j ++)
@@ -190,7 +189,7 @@ namespace Singularity.Map
                     }
                 }
             }
-            
+
 
         }
 
@@ -318,6 +317,7 @@ namespace Singularity.Map
             {
                 if (key == Keys.F4)
                 {
+                    GlobalVariables.DebugState = !GlobalVariables.DebugState;
                     mDebug = !mDebug;
                 }
             }

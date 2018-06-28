@@ -114,8 +114,10 @@ namespace Singularity.PlatformActions
         }
     }
 
+    /*
     public abstract class APlatformResourceAction : APlatformAction
     {
-        public APlatformResourceAction()
+        public APlatformResourceAction();
     }
+    */
 }
