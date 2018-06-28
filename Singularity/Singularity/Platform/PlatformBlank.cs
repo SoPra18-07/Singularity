@@ -116,7 +116,10 @@ namespace Singularity.Platform
 
         public bool[,] ColliderGrid { get; internal set; }
 
-        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director, float centerOffsetY = -36)
+        private readonly float mCenterOffsetY;
+
+
+        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36)
         {
 
             Id = IdGenerator.NextiD();
@@ -129,10 +132,15 @@ namespace Singularity.Platform
 
             mType = EPlatformType.Blank;
 
+            mType = type;
+
             mInwardsEdges = new List<IEdge>();
             mOutwardsEdges = new List<IEdge>();
 
             AbsolutePosition = position;
+
+            SetPlatfromParameters(); // this changes the draw parameters based on the platform type but
+            // also sets the AbsoluteSize and collider grids
 
             //default?
             mHealth = 100;
