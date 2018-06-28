@@ -357,7 +357,7 @@ namespace Singularity.Units
 
                         mBoundsSnapshot = Bounds;
                         mZoomSnapshot = mCamera.GetZoom();
-                        giveThrough = true;
+                        giveThrough = false;
                     }
 
                     if (withinBounds) {

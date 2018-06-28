@@ -171,6 +171,7 @@ namespace Singularity.Units
             switch (mouseAction)
             {
                 case EMouseAction.LeftClick:
+                    Debug.Write("this works \n");
                     if (mSelected && !mIsMoving && !withinBounds && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f), (int)(mMouseY - RelativeSize.Y / 2f), (int)RelativeSize.X, (int)RelativeSize.Y), mCamera))
                     {
                         mIsMoving = true;
