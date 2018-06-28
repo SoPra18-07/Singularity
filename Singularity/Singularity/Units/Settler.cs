@@ -70,6 +70,7 @@ namespace Singularity.Units
             mDirector = director;
 
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            Debug.WriteLine("Added to mouse click listener");
             mDirector.GetInputManager.AddMousePositionListener(this);
 
             mMap = map;
@@ -95,7 +96,6 @@ namespace Singularity.Units
         
         public void Update(GameTime gameTime)
         {
-
             //make sure to update the relative bounds rectangle enclosing this unit.
             Bounds = new Rectangle((int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
 
@@ -166,6 +166,7 @@ namespace Singularity.Units
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
+            Debug.WriteLine("Clicked");
             var giveThrough = true;
 
             switch (mouseAction)
