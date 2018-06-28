@@ -127,9 +127,6 @@ namespace Singularity.Levels
             mGameScreen.AddObject(genUnit5);
             mGameScreen.AddObject(milUnit);
 
-            mMap.GetStructureMap().AddPlatformToPlace(new PlatformPlacement(EPlatformType.Well, EPlacementType.MouseFollowAndRoad, EScreen.GameScreen, mCamera, ref mDirector, 900, 900, mMap.GetResourceMap()));
-
-
             //TESTMETHODS HERE =====================================
             mDirector.GetDistributionManager.DistributeJobs(JobType.Idle, JobType.Production, 3);
             mDirector.GetDistributionManager.TestAttributes();
