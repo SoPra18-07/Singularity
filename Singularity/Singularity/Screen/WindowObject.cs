@@ -484,8 +484,8 @@ namespace Singularity.Screen
             //  - the window is not minimized
             //  - the window is scrollable (the number of items is too big for one window)
             //  - the window is active
-            if (!(mMouseX > mPosition.X) || !(mMouseX < mPosition.X + mSize.X) || !(mMouseY > mPosition.Y) ||
-                !(mMouseY < mPosition.Y + mSize.Y) || mMinimized || !mScrollable || !Active)
+            if (mMouseX > mPosition.X && mMouseX < mPosition.X + mSize.X && mMouseY > mPosition.Y &&
+                mMouseY < mPosition.Y + mSize.Y && !mMinimized && mScrollable && Active)
             {
                 // scroll up or down
                 switch (mouseAction)
@@ -611,8 +611,8 @@ namespace Singularity.Screen
 
             // resharper wanted it this 'overseeable' way o.O
             // minimized + mouse on minimized window -> return false ... else true
-            return !mMinimized || (!(mMouseX > mPosition.X) || !(mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width) || 
-                                   !(mMouseY > mPosition.Y) || !(mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height));
+            return mMinimized && mMouseX > mPosition.X && mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width &&
+                                   mMouseY > mPosition.Y && mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height;
         }
 
         public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
