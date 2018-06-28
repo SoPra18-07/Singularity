@@ -118,6 +118,10 @@ namespace Singularity.Screen
         }
 
 
+        /// <summary>
+        /// Update the values and placement of slider bar
+        /// </summary>
+        /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
             // if slider should be shown 
@@ -126,12 +130,15 @@ namespace Singularity.Screen
                 mMin = Position.X;
                 mMax = Position.X + Size.X;
                 mPageSize = Size.X / Pages;
+
+                // if Position has changed, update slider bar position based on change
                 if (!Position.Equals(mLastPosition))
                 {
                     mCurrentX += (Position.X - mLastPosition.X);
                     mLastPosition = Position;
                 }
 
+                // if page increase or decrease, update position
                 if (!Pages.Equals(mLastPage))
                 {
                     mCurrentX = (mMin + mCurrentPage * mPageSize);
@@ -176,6 +183,7 @@ namespace Singularity.Screen
                         OnSliderMoving();
                         mValuePrevious = mCurrentX;
                     }
+
                     // calculate value of slide and convert to string
                     if (mWithValue)
                     {
@@ -207,6 +215,7 @@ namespace Singularity.Screen
                             float distanceCovered = Mouse.GetState().X - mMin;
                             if (Math.Abs((distanceCovered - (mCurrentPage * mPageSize))) > (.5 * mPageSize))
                             {
+                                // move one page forward or backward depending on position relative to mouse
                                 if ((distanceCovered - (mCurrentPage * mPageSize)) > 0)
                                 {
                                     mCurrentPage += 1;
@@ -240,6 +249,7 @@ namespace Singularity.Screen
                             float distanceCovered = Mouse.GetState().X - mMin;
                             if (Math.Abs((distanceCovered - (mCurrentPage * mPageSize))) > (.5 * mPageSize))
                             {
+                                // move one page forward or backward depending on position relative to mouse
                                 if ((distanceCovered - (mCurrentPage * mPageSize)) > 0)
                                 {
                                     mCurrentX += mPageSize;
@@ -272,6 +282,10 @@ namespace Singularity.Screen
             }
         }
 
+        /// <summary>
+        /// Draws the slider bar and slider and possible page notches if specified and value box
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
             // if slider should be shown
@@ -312,6 +326,7 @@ namespace Singularity.Screen
                     {
                         if (mPageSize > 3)
                         {
+                            // draw page notches if they arent to close to another on bar
                             for (int i = 0; i < (Pages+1); i++)
                             {
                                 spriteBatch.DrawLine(new Vector2((Position.X + (i * (Size.X / Pages))), Position.Y - 2),
@@ -352,7 +367,7 @@ namespace Singularity.Screen
             }
         }
 
-        #region MouseActions
+        #region MouseActionsWhichDontWork
 
         // TODO not woriking, wont print debug message
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
@@ -384,21 +399,27 @@ namespace Singularity.Screen
                     mSlave = false;
                     return false;
             }
-
             return true;
         }
 
         #endregion
 
         #region Properties
+
+        // changes the location of slider bar
         public Vector2 Position { get; set; }
 
+        //(length of bar, size of slider)
         public Vector2 Size { get; }
 
+        // can make slider not active (not drawn and nothing happens) 
         public bool Active { get; set; }
 
+        // can change the amount of pages available on slider bar
         public int Pages { get; set; }
 
+        // can change the max amount the slider bar can go instead of to end of bar for pages
+        // CAREFUL this does NOT update with changes to PAGES
         public int MaxIncrement { get; set; }
         #endregion
 
