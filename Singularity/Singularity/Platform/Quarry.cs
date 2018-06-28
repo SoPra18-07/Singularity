@@ -19,13 +19,14 @@ namespace Singularity.Platform
         [DataMember]
         private Director mDirector;
 
-        public Quarry(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, ref Director dir, bool autoRegister = true): base(position, platformSpriteSheet, baseSprite, ref dir, -12)
+        public Quarry(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, ref Director dir, bool autoRegister = true): base(position, platformSpriteSheet, baseSprite, ref dir, EPlatformType.Quarry, -50)
         {
             mDirector = dir;
             if (autoRegister)
             {
                 dir.GetDistributionManager.Register(this, false);
             }
+
             //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[2];
             mIPlatformActions[0] = new ProduceQuarryResource(this, resource);
@@ -34,7 +35,7 @@ namespace Singularity.Platform
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Quarry;
             mSpritename = "Dome";
-            AbsoluteSize = SetPlatfromDrawParameters();
+            SetPlatfromParameters();
         }
 
         public override void Produce()

@@ -108,10 +108,20 @@ namespace Singularity.Platform
 
                 case 2:
                     mConnectionRoad.Destination = new Vector2(mMouseX, mMouseY);
-                    if (mHoveringPlatform != null)
+                    mPlatform.ResetColor();
+                    if (mHoveringPlatform == null)
                     {
-                        mConnectionRoad.Destination = mHoveringPlatform.Center;
+                        break;
+                        
                     }
+                    mConnectionRoad.Destination = mHoveringPlatform.Center;
+
+                    if (Vector2.Distance(mHoveringPlatform.Center, mPlatform.Center) >
+                        (mPlatform.RevelationRadius + mHoveringPlatform.RevelationRadius))
+                    {
+                        mPlatform.SetColor(Color.Red);
+                    }
+
                     break;
 
                 case 3:
@@ -138,6 +148,11 @@ namespace Singularity.Platform
                 {
                     case 1:
                         mPlatform.UpdateValues();
+                        if (!Map.Map.IsOnTop(mPlatform.AbsBounds))
+                        {
+                            break;
+                        }
+
                         mCurrentState.NextState();
                         mConnectionRoad = new Road(mPlatform, null, true);
 
@@ -153,8 +168,14 @@ namespace Singularity.Platform
                     case 2:
                         // the second boolean expression limits two platforms to only be connectable by a road if the road isn't in the fog of war.
                         // this was requested by felix
-                        if (mHoveringPlatform != null 
-                            && Vector2.Distance(mHoveringPlatform.Center, mPlatform.Center) <= (mPlatform.RevelationRadius + mHoveringPlatform.RevelationRadius))
+                        if (mHoveringPlatform == null)
+                        {
+                            break;
+
+                        }
+
+                        if (Vector2.Distance(mHoveringPlatform.Center, mPlatform.Center) <=
+                                (mPlatform.RevelationRadius + mHoveringPlatform.RevelationRadius))
                         {
                             mCurrentState.NextState();
                         }
@@ -177,6 +198,7 @@ namespace Singularity.Platform
                     return giveThrough;
                 }
 
+                mPlatform.ResetColor();
                 mConnectionRoad = null;
                 mCurrentState.PreviousState();
                 giveThrough = false;

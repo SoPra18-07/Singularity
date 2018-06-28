@@ -269,5 +269,15 @@ namespace Singularity.Screen.ScreenClasses
             }
             return true;
         }
+
+        public Map.Map GetMap()
+        {
+            return mMap;
+        }
+
+        public Camera GetCamera()
+        {
+            return mCamera;
+        }
     }
 }

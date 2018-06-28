@@ -49,7 +49,6 @@ namespace Singularity.Map
             FogOfWar fow,
             Viewport viewport,
             ref Director director,
-            bool debug = false,
             IEnumerable<MapResource> initialResources = null,
             bool neo = false)
         {
@@ -57,7 +56,7 @@ namespace Singularity.Map
             mHeight = height;
 
             mBackgroundTexture = backgroundTexture;
-            mDebug = debug;
+            mDebug = GlobalVariables.DebugState;
 
             mFow = fow;
 
@@ -312,6 +311,7 @@ namespace Singularity.Map
             {
                 if (key == Keys.F4)
                 {
+                    GlobalVariables.DebugState = !GlobalVariables.DebugState;
                     mDebug = !mDebug;
                 }
             }

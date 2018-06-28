@@ -65,6 +65,8 @@
     <Compile Include="Platform\EPlacementType.cs" />
     <Compile Include="Platform\PlatformFactory.cs" />
     <Compile Include="Platform\PlatformPlacement.cs" />
+    <Compile Include="Screen\ScreenClasses\InfoBoxWindow.cs" />
+    <Compile Include="Property\GlobalVariables.cs" />
     <Compile Include="Units\EnemyUnit.cs" />
     <Compile Include="Units\SelectionBox.cs" />
     <Compile Include="Units\Task.cs" />
@@ -178,6 +180,7 @@
     <Compile Include="Platform\ProduceResource.cs" />
     <Compile Include="Resources\Resource.cs" />
     <Compile Include="Screen\WindowObject.cs" />
+    <Compile Include="Screen\HorizontalCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="C5, Version=2.5.0.0, Culture=neutral, PublicKeyToken=282361b99ded7e8e, processorArchitecture=MSIL">
