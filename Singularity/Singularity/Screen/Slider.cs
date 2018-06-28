@@ -48,11 +48,14 @@ namespace Singularity.Screen
 
         // event handler for sending out event of percent of bar covered by slider
         public delegate void SliderMovingEventHandler(object source, EventArgs args, float percentMoved);
+
         public event SliderMovingEventHandler SliderMoving;
 
         // event handler for sending out event of page slider is located on 
         public delegate void PageMovingEventHandler(object source, EventArgs args, int currentPage);
+
         public event PageMovingEventHandler PageMoving;
+
         #endregion
 
         /// <summary>
@@ -66,7 +69,14 @@ namespace Singularity.Screen
         /// <param name="withValueBox"> specify if you want the value box : default yet</param>
         /// <param name="withPages"> specify if you want pages: default no</param>
         /// <param name="pages"> amout of pages you want</param>
-        public Slider(Vector2 position, int length,int sliderSize, SpriteFont font, ref Director director, bool withValueBox = true, bool withPages = false, int pages = 0)
+        public Slider(Vector2 position,
+            int length,
+            int sliderSize,
+            SpriteFont font,
+            ref Director director,
+            bool withValueBox = true,
+            bool withPages = false,
+            int pages = 0)
         {
             Position = position;
             mLastPosition = position;
@@ -187,7 +197,7 @@ namespace Singularity.Screen
                     // calculate value of slide and convert to string
                     if (mWithValue)
                     {
-                        mStringValue = ((int)(((mCurrentX - mMin) / (mMax - mMin)) * 100)).ToString();
+                        mStringValue = ((int) (((mCurrentX - mMin) / (mMax - mMin)) * 100)).ToString();
                     }
                 }
 
@@ -234,7 +244,8 @@ namespace Singularity.Screen
                     {
                         if (Mouse.GetState().X < mMin)
                         {
-                            mCurrentX = mMin; mCurrentPage = 0;
+                            mCurrentX = mMin;
+                            mCurrentPage = 0;
                         }
 
                         // set max movement of mouse to max increment
@@ -306,7 +317,7 @@ namespace Singularity.Screen
                         Color.Gray,
                         Color.Black,
                         1,
-                        (float)0.8);
+                        (float) 0.8);
 
                     if (!mWithPages)
                     {
@@ -327,7 +338,7 @@ namespace Singularity.Screen
                         if (mPageSize > 3)
                         {
                             // draw page notches if they arent to close to another on bar
-                            for (int i = 0; i < (Pages+1); i++)
+                            for (int i = 0; i < (Pages + 1); i++)
                             {
                                 spriteBatch.DrawLine(new Vector2((Position.X + (i * (Size.X / Pages))), Position.Y - 2),
                                     4,
@@ -340,7 +351,8 @@ namespace Singularity.Screen
                         // draws in page number of slider in the center of display window
                         spriteBatch.DrawString(mFont,
                             origin: Vector2.Zero,
-                            position: new Vector2((mMax + Size.Y + 30) - (mFont.MeasureString(mCurrentPage.ToString()).X / 2),
+                            position: new Vector2(
+                                (mMax + Size.Y + 30) - (mFont.MeasureString(mCurrentPage.ToString()).X / 2),
                                 Position.Y - 12),
                             color: Color.White,
                             text: mCurrentPage.ToString(),
@@ -350,11 +362,11 @@ namespace Singularity.Screen
                             layerDepth: 0.2f);
 
                     }
-                
-                 // draws slider bar
-                 spriteBatch.DrawLine(Position, Size.X, 0f, Color.White*0.6f, 2);
 
-                // draws slider
+                    // draws slider bar
+                    spriteBatch.DrawLine(Position, Size.X, 0f, Color.White * 0.6f, 2);
+
+                    // draws slider
                     spriteBatch.StrokedRectangle(
                         new Vector2(mCurrentX - (Size.Y / 2), Position.Y - (Size.Y / 2)),
                         new Vector2(Size.Y, Size.Y),
@@ -376,7 +388,7 @@ namespace Singularity.Screen
             {
                 // when left key is pressed and mouse within slider bounds then make slider slave to mouse
                 case EMouseAction.LeftClick:
-                    if( Mouse.GetState().X >= mCurrentX - (Size.Y / 2) &&
+                    if (Mouse.GetState().X >= mCurrentX - (Size.Y / 2) &&
                         Mouse.GetState().X <= mCurrentX + (Size.Y / 2) &&
                         Mouse.GetState().Y >= Position.Y - (Size.Y / 2) &&
                         Mouse.GetState().Y <= Position.Y + (Size.Y / 2))
@@ -384,8 +396,10 @@ namespace Singularity.Screen
                         mSlave = true;
                         return false;
                     }
+
                     break;
             }
+
             return true;
         }
 
@@ -399,6 +413,7 @@ namespace Singularity.Screen
                     mSlave = false;
                     return false;
             }
+
             return true;
         }
 
@@ -421,8 +436,10 @@ namespace Singularity.Screen
         // can change the max amount the slider bar can go instead of to end of bar for pages
         // CAREFUL this does NOT update with changes to PAGES
         public int MaxIncrement { get; set; }
-        #endregion
 
+        public int CurrentPage() {return mCurrentPage;}
+
+        #endregion
         #region NotUsed
 
         public EScreen Screen { get; }
