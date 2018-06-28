@@ -69,63 +69,63 @@ namespace Singularity.Sound
         public void LoadContent(ContentManager contentManager)
         {
             // Load all sound files from the directory.
-            foreach (string s in Directory.GetFiles(path: @"Content\Sound", searchPattern: "*.xnb"))
+            foreach (string s in Directory.GetFiles(@"Content\Sound", "*.xnb"))
             {
                 // Cut off file ending and determine game phase.
-                string fullName = s.Substring(startIndex: 8);
-                int endPos = fullName.LastIndexOf(value: ".", comparisonType: StringComparison.Ordinal);
-                int phasePos = fullName.LastIndexOf(value: "_", comparisonType: StringComparison.Ordinal);
-                int levelPos = fullName.LastIndexOf(value: @"\", comparisonType: StringComparison.Ordinal);
-                fullName = fullName.Substring(startIndex: 0, length: endPos);
-                string levelName = fullName.Substring(startIndex: levelPos + 1, length: phasePos - levelPos - 1);
-                string phase = fullName.Substring(startIndex: phasePos + 1);
-                Console.WriteLine(value: $"Loading theme {levelName} for game phase {phase} from {fullName}");
-                Song song = contentManager.Load<Song>(assetName: fullName);
-                if (!mAllSongs.ContainsKey(key: levelName))
+                string fullName = s.Substring(8);
+                int endPos = fullName.LastIndexOf(".", StringComparison.Ordinal);
+                int phasePos = fullName.LastIndexOf("_", StringComparison.Ordinal);
+                int levelPos = fullName.LastIndexOf(@"\", StringComparison.Ordinal);
+                fullName = fullName.Substring(0, endPos);
+                string levelName = fullName.Substring(levelPos + 1, phasePos - levelPos - 1);
+                string phase = fullName.Substring(phasePos + 1);
+                Console.WriteLine($"Loading theme {levelName} for game phase {phase} from {fullName}");
+                Song song = contentManager.Load<Song>(fullName);
+                if (!mAllSongs.ContainsKey(levelName))
                 {
-                    mAllSongs[key: levelName] = new Song[3];
+                    mAllSongs[levelName] = new Song[3];
                 }
 
                 if (phase == "Menu")
                 {
-                    mAllSongs[key: levelName][(int) SoundPhase.Menu] = song;
+                    mAllSongs[levelName][(int) SoundPhase.Menu] = song;
                 }
 
                 if (phase == "Build")
                 {
-                    mAllSongs[key: levelName][(int) SoundPhase.Build] = song;
+                    mAllSongs[levelName][(int) SoundPhase.Build] = song;
                 }
 
                 if (phase == "Battle")
                 {
-                    mAllSongs[key: levelName][(int) SoundPhase.Battle] = song;
+                    mAllSongs[levelName][(int) SoundPhase.Battle] = song;
                 }
             }
 
-            foreach (string s in Directory.GetFiles(path: @"Content\Sound\SFX", searchPattern: "*.xnb"))
+            foreach (string s in Directory.GetFiles(@"Content\Sound\SFX", "*.xnb"))
             {
-                string fullName = s.Substring(startIndex: 8);
-                int endPos = fullName.LastIndexOf(value: ".", comparisonType: StringComparison.Ordinal);
-                fullName = fullName.Substring(startIndex: 0, length: endPos);
-                SoundEffect effect = contentManager.Load<SoundEffect>(assetName: fullName);
-                string effectName = fullName.Substring(startIndex: fullName.LastIndexOf(value: @"\", comparisonType: StringComparison.Ordinal) + 1);
-                mEffects[key: effectName] = effect;
-                Console.WriteLine(value: $"Loaded {effectName}");
+                string fullName = s.Substring(8);
+                int endPos = fullName.LastIndexOf(".", StringComparison.Ordinal);
+                fullName = fullName.Substring(0, endPos);
+                SoundEffect effect = contentManager.Load<SoundEffect>(fullName);
+                string effectName = fullName.Substring(fullName.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+                mEffects[effectName] = effect;
+                Console.WriteLine($"Loaded {effectName}");
             }
 
-            foreach (string s in Directory.GetFiles(path: @"Content\Sound\UI", searchPattern: "*.xnb"))
+            foreach (string s in Directory.GetFiles(@"Content\Sound\UI", "*.xnb"))
             {
-                string fullName = s.Substring(startIndex: 8);
-                int endPos = fullName.LastIndexOf(value: ".", comparisonType: StringComparison.Ordinal);
-                fullName = fullName.Substring(startIndex: 0, length: endPos);
-                SoundEffect effect = contentManager.Load<SoundEffect>(assetName: fullName);
-                string effectName = fullName.Substring(startIndex: fullName.LastIndexOf(value: @"\", comparisonType: StringComparison.Ordinal) + 1);
-                mEffects[key: effectName] = effect;
-                Console.WriteLine(value: $"Loaded {effectName}");
+                string fullName = s.Substring(8);
+                int endPos = fullName.LastIndexOf(".", StringComparison.Ordinal);
+                fullName = fullName.Substring(0, endPos);
+                SoundEffect effect = contentManager.Load<SoundEffect>(fullName);
+                string effectName = fullName.Substring(fullName.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+                mEffects[effectName] = effect;
+                Console.WriteLine($"Loaded {effectName}");
             }
 
             //sSoundtrack = contentManager.Load<Song>("BGmusic");
-            sSSoundtrack = mAllSongs[key: "Tutorial"][(int) SoundPhase.Build];
+            sSSoundtrack = mAllSongs["Tutorial"][(int) SoundPhase.Build];
         }
 
         #endregion
@@ -135,7 +135,7 @@ namespace Singularity.Sound
             if (sSSoundtrack == null)
                 return;
 
-            MediaPlayer.Play(song: sSSoundtrack);
+            MediaPlayer.Play(sSSoundtrack);
         }
 
 
@@ -153,41 +153,41 @@ namespace Singularity.Sound
         /// <returns>The id of the instance if params are valid. -1 if the SoundClass is invalid. -2 if the effect doesn't exist.</returns>
         public int PlaySound(string name, float x, float y, float volume, float pitch, bool isGlobal, bool loop, SoundClass soundClass)
         {
-            if (!mEffects.ContainsKey(key: name))
+            if (!mEffects.ContainsKey(name))
             {
                 return -2;
             }
             if (soundClass == SoundClass.Effect)
             {
-                SoundEffectInstance effectInstance = mEffects[key: name].CreateInstance();
+                SoundEffectInstance effectInstance = mEffects[name].CreateInstance();
                 effectInstance.Volume = volume;
                 effectInstance.Pitch = pitch;
                 effectInstance.IsLooped = loop;
                 if (!isGlobal)
                 {
-                    AudioEmitter emitter = new AudioEmitter { Position = new Vector3(x: x, y: y, z: mSoundPlaneDepth) };
-                    effectInstance.Apply3D(listener: mListener, emitter: emitter);
+                    AudioEmitter emitter = new AudioEmitter { Position = new Vector3(x, y, mSoundPlaneDepth) };
+                    effectInstance.Apply3D(mListener, emitter);
                 }
-                mEffectInstances.Add(key: mEffectInstanceId, value: effectInstance);
-                mEffectInstances[key: mEffectInstanceId].Play();
-                mInstanceMap.Add(key: mAllInstanceId, value: new Tuple<SoundClass, int>(item1: soundClass, item2: mEffectInstanceId));
+                mEffectInstances.Add(mEffectInstanceId, effectInstance);
+                mEffectInstances[mEffectInstanceId].Play();
+                mInstanceMap.Add(mAllInstanceId, new Tuple<SoundClass, int>(soundClass, mEffectInstanceId));
                 mEffectInstanceId++;
                 return mAllInstanceId++;
             }
             if (soundClass == SoundClass.Ui)
             {
-                SoundEffectInstance effectInstance = mUiSounds[key: name].CreateInstance();
+                SoundEffectInstance effectInstance = mUiSounds[name].CreateInstance();
                 effectInstance.Volume = volume;
                 effectInstance.Pitch = pitch;
                 effectInstance.IsLooped = loop;
                 if (!isGlobal)
                 {
-                    AudioEmitter emitter = new AudioEmitter { Position = new Vector3(x: x, y: y, z: mSoundPlaneDepth) };
-                    effectInstance.Apply3D(listener: mListener, emitter: emitter);
+                    AudioEmitter emitter = new AudioEmitter { Position = new Vector3(x, y, mSoundPlaneDepth) };
+                    effectInstance.Apply3D(mListener, emitter);
                 }
-                mUiInstances.Add(key: mEffectInstanceId, value: effectInstance);
-                mUiInstances[key: mEffectInstanceId].Play();
-                mInstanceMap.Add(key: mAllInstanceId, value: new Tuple<SoundClass, int>(item1: soundClass, item2: mUiInstanceId));
+                mUiInstances.Add(mEffectInstanceId, effectInstance);
+                mUiInstances[mEffectInstanceId].Play();
+                mInstanceMap.Add(mAllInstanceId, new Tuple<SoundClass, int>(soundClass, mUiInstanceId));
                 mUiInstanceId++;
                 return mAllInstanceId++;
             }
@@ -201,17 +201,17 @@ namespace Singularity.Sound
         /// <param name="volume">The desired volume.</param>
         public void SetSoundVolume(int id, float volume)
         {
-            if (mInstanceMap.ContainsKey(key: id))
+            if (mInstanceMap.ContainsKey(id))
             {
-                SoundClass soundClass = mInstanceMap[key: id].Item1;
-                int instanceId = mInstanceMap[key: id].Item2;
+                SoundClass soundClass = mInstanceMap[id].Item1;
+                int instanceId = mInstanceMap[id].Item2;
                 if (soundClass == SoundClass.Effect)
                 {
-                    mEffectInstances[key: instanceId].Volume = volume;
+                    mEffectInstances[instanceId].Volume = volume;
                 }
                 else if (soundClass == SoundClass.Ui)
                 {
-                    mUiInstances[key: instanceId].Volume = volume;
+                    mUiInstances[instanceId].Volume = volume;
                 }
             }
         }
@@ -223,7 +223,7 @@ namespace Singularity.Sound
         /// <param name="y">New y coordinate of the listener.</param>
         public void SetListenerPosition(float x, float y)
         {
-            mListener.Position = new Vector3(x: x, y: y, z: mSoundPlaneDepth);
+            mListener.Position = new Vector3(x, y, mSoundPlaneDepth);
         }
 
         /// <summary>
@@ -234,19 +234,19 @@ namespace Singularity.Sound
         /// <param name="y">The new y coordinate.</param>
         public void SetSoundPosition(int id, float x, float y)
         {
-            if (mInstanceMap.ContainsKey(key: id))
+            if (mInstanceMap.ContainsKey(id))
             {
-                SoundClass soundClass = mInstanceMap[key: id].Item1;
-                int instanceId = mInstanceMap[key: id].Item2;
+                SoundClass soundClass = mInstanceMap[id].Item1;
+                int instanceId = mInstanceMap[id].Item2;
                 if (soundClass == SoundClass.Effect)
                 {
-                    AudioEmitter emitter = new AudioEmitter { Position = new Vector3(x: x, y: y, z: mSoundPlaneDepth) };
-                    mEffectInstances[key: instanceId].Apply3D(listener: mListener, emitter: emitter);
+                    AudioEmitter emitter = new AudioEmitter { Position = new Vector3(x, y, mSoundPlaneDepth) };
+                    mEffectInstances[instanceId].Apply3D(mListener, emitter);
                 }
                 else if (soundClass == SoundClass.Ui)
                 {
-                    AudioEmitter emitter = new AudioEmitter { Position = new Vector3(x: x, y: y, z: mSoundPlaneDepth) };
-                    mUiInstances[key: instanceId].Apply3D(listener: mListener, emitter: emitter);
+                    AudioEmitter emitter = new AudioEmitter { Position = new Vector3(x, y, mSoundPlaneDepth) };
+                    mUiInstances[instanceId].Apply3D(mListener, emitter);
                 }
             }
         }
@@ -258,17 +258,17 @@ namespace Singularity.Sound
         /// <param name="pitch">The new pitch.</param>
         public void SetSoundPitch(int id, float pitch)
         {
-            if (mInstanceMap.ContainsKey(key: id))
+            if (mInstanceMap.ContainsKey(id))
             {
-                SoundClass soundClass = mInstanceMap[key: id].Item1;
-                int instanceId = mInstanceMap[key: id].Item2;
+                SoundClass soundClass = mInstanceMap[id].Item1;
+                int instanceId = mInstanceMap[id].Item2;
                 if (soundClass == SoundClass.Effect)
                 {
-                    mEffectInstances[key: instanceId].Pitch = pitch;
+                    mEffectInstances[instanceId].Pitch = pitch;
                 }
                 else if (soundClass == SoundClass.Ui)
                 {
-                    mUiInstances[key: instanceId].Pitch = pitch;
+                    mUiInstances[instanceId].Pitch = pitch;
                 }
             }
         }
@@ -279,16 +279,16 @@ namespace Singularity.Sound
         /// <param name="id">The id of the sound to be stopped.</param>
         public void StopSound(int id)
         {
-            if (mInstanceMap.ContainsKey(key: id))
+            if (mInstanceMap.ContainsKey(id))
             {
-                SoundClass soundClass = mInstanceMap[key: id].Item1;
+                SoundClass soundClass = mInstanceMap[id].Item1;
                 if (soundClass == SoundClass.Effect)
                 {
-                    mEffectInstances[key: mInstanceMap[key: id].Item2].Stop();
+                    mEffectInstances[mInstanceMap[id].Item2].Stop();
                 }
                 else if (soundClass == SoundClass.Ui)
                 {
-                    mUiInstances[key: mInstanceMap[key: id].Item2].Stop();
+                    mUiInstances[mInstanceMap[id].Item2].Stop();
                 }
             }
         }
@@ -310,9 +310,9 @@ namespace Singularity.Sound
             {
                 for (int i = 0; i <= mEffectInstanceId; i++)
                 {
-                    if (mEffectInstances.ContainsKey(key: i))
+                    if (mEffectInstances.ContainsKey(i))
                     {
-                        mEffectInstances[key: i].Stop();
+                        mEffectInstances[i].Stop();
                     }
                 }
             }
@@ -320,9 +320,9 @@ namespace Singularity.Sound
             {
                 for (int i = 0; i <= mEffectInstanceId; i++)
                 {
-                    if (mUiInstances.ContainsKey(key: i))
+                    if (mUiInstances.ContainsKey(i))
                     {
-                        mUiInstances[key: i].Stop();
+                        mUiInstances[i].Stop();
                     }
                 }
             }
@@ -345,9 +345,9 @@ namespace Singularity.Sound
             {
                 for (int i = 0; i <= mEffectInstanceId; i++)
                 {
-                    if (mEffectInstances.ContainsKey(key: i))
+                    if (mEffectInstances.ContainsKey(i))
                     {
-                        mEffectInstances[key: i].Pause();
+                        mEffectInstances[i].Pause();
                     }
                 }
             }
@@ -355,9 +355,9 @@ namespace Singularity.Sound
             {
                 for (int i = 0; i <= mUiInstanceId; i++)
                 {
-                    if (mUiInstances.ContainsKey(key: i))
+                    if (mUiInstances.ContainsKey(i))
                     {
-                        mUiInstances[key: i].Pause();
+                        mUiInstances[i].Pause();
                     }
                 }
             }
@@ -377,11 +377,11 @@ namespace Singularity.Sound
             {
                 for (int i = 0; i <= mEffectInstanceId; i++)
                 {
-                    if (mEffectInstances.ContainsKey(key: i))
+                    if (mEffectInstances.ContainsKey(i))
                     {
-                        if (mEffectInstances[key: i].State == SoundState.Paused)
+                        if (mEffectInstances[i].State == SoundState.Paused)
                         {
-                            mEffectInstances[key: i].Play();
+                            mEffectInstances[i].Play();
                         }
                     }
                 }
@@ -390,11 +390,11 @@ namespace Singularity.Sound
             {
                 for (int i = 0; i <= mUiInstanceId; i++)
                 {
-                    if (mUiInstances.ContainsKey(key: i))
+                    if (mUiInstances.ContainsKey(i))
                     {
-                        if (mUiInstances[key: i].State == SoundState.Paused)
+                        if (mUiInstances[i].State == SoundState.Paused)
                         {
-                            mUiInstances[key: i].Play();
+                            mUiInstances[i].Play();
                         }
                     }
                 }
@@ -415,7 +415,7 @@ namespace Singularity.Sound
             {
                 // TODO: Maybe play random background music.
             }
-            MediaPlayer.Play(song: mAllSongs[key: mLevel][(int)soundPhase]);
+            MediaPlayer.Play(mAllSongs[mLevel][(int)soundPhase]);
         }
 
         /// <summary>
@@ -439,8 +439,8 @@ namespace Singularity.Sound
                 {
                     if (pair.Value.State == SoundState.Stopped)
                     {
-                        mInstanceMap.Remove(key: pair.Key);
-                        dict.Remove(key: pair.Key);
+                        mInstanceMap.Remove(pair.Key);
+                        dict.Remove(pair.Key);
                     }
                 }
             }

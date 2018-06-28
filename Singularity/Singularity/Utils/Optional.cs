@@ -19,7 +19,7 @@ namespace Singularity.Utils
         /// <returns>A new Optional with the value given</returns>
         public static Optional<T> Of(T value)
         {
-            return new Optional<T>(value: value);
+            return new Optional<T>(value);
         }
 
         /// <summary>

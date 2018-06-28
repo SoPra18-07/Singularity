@@ -32,97 +32,96 @@ namespace Singularity.Levels
         [DataMember]
         private PlatformBlank mPlatform;
 
-        public Skirmish(GraphicsDevice graphics, ref Director director, ContentManager content)
+        public Skirmish(GraphicsDevice graphics, ref Director dir, ContentManager content)
         {
-            mDirector = director;
-            director.GetStoryManager.SetLevelType(leveltype: LevelType.Skirmish);
-            director.GetStoryManager.LoadAchievements();
+            mDirector = dir;
+            dir.GetStoryManager.SetLevelType(LevelType.Skirmish);
+            dir.GetStoryManager.LoadAchievements();
             mGraphics = graphics;
-            LoadContent(content: content);
+            LoadContent(content);
         }
 
         public void LoadContent(ContentManager content)
         {
             //Load stuff
-            var platformCylTexture = content.Load<Texture2D>(assetName: "Cylinders");
-            var platformBlankTexture = content.Load<Texture2D>(assetName: "PlatformBasic");
-            var platformDomeTexture = content.Load<Texture2D>(assetName: "Dome");
-            var milUnitSheet = content.Load<Texture2D>(assetName: "UnitSpriteSheet");
-            var mapBackground = content.Load<Texture2D>(assetName: "backgroundGrid");
+            var platformCylTexture = content.Load<Texture2D>("Cylinders");
+            var platformBlankTexture = content.Load<Texture2D>("PlatformBasic");
+            var platformDomeTexture = content.Load<Texture2D>("Dome");
+            var milUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
+            var mapBackground = content.Load<Texture2D>("backgroundGrid");
 
             //Map related stuff
-            mMap = new Map.Map(backgroundTexture: mapBackground, width: 20, height: 20, viewport: mGraphics.Viewport, director: ref mDirector, neo: true); // NEOLAYOUT (searchmark for @fkarg)
+            mMap = new Map.Map(mapBackground, 20, 20, mGraphics.Viewport, ref mDirector, neo: true); // NEOLAYOUT (searchmark for @fkarg)
             mCamera = mMap.GetCamera();
-            mFow = new FogOfWar(camera: mCamera, graphicsDevice: mGraphics);
+            mFow = new FogOfWar(mCamera, mGraphics);
 
             //INITIALIZE GAMESCREEN
-            mGameScreen = new GameScreen(graphicsDevice: mGraphics, director: ref mDirector, map: mMap, camera: mCamera, fow: mFow);
+            mGameScreen = new GameScreen(mGraphics, ref mDirector, mMap, mCamera, mFow);
 
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
-            mPlatform = new PlatformBlank(position: new Vector2(x: 1000, y: 1000), platformSpriteSheet: null, baseSprite: platformBlankTexture, director: ref mDirector);
-            var platform2 = new Well(position: new Vector2(x: 800, y: 1000), platformSpriteSheet: platformDomeTexture, baseSprite: platformBlankTexture, resource: mMap.GetResourceMap(), director: ref mDirector);
-            var platform3 = new Quarry(position: new Vector2(x: 1200, y: 1200),
-                platformSpriteSheet: platformDomeTexture,
-                baseSprite: platformBlankTexture,
-                resource: mMap.GetResourceMap(),
-                director: ref mDirector);
-            var platform4 = new EnergyFacility(position: new Vector2(x: 1000, y: 800),
-                platformSpriteSheet: platformDomeTexture,
-                baseSprite: platformBlankTexture,
-                director: ref mDirector);
+            mPlatform = new PlatformBlank(new Vector2(1000, 1000), null, platformBlankTexture);
+            var platform2 = new Well(new Vector2(800, 1000), platformDomeTexture, platformBlankTexture, mMap.GetResourceMap(), ref mDirector);
+            var platform3 = new Quarry(new Vector2(1200, 1200),
+                platformDomeTexture,
+                platformBlankTexture,
+                mMap.GetResourceMap(),
+                ref mDirector);
+            var platform4 = new EnergyFacility(new Vector2(1000, 800),
+                platformDomeTexture,
+                platformBlankTexture);
 
             //GenUnits
-            var genUnit = new GeneralUnit(platform: mPlatform, director: ref mDirector);
-            var genUnit2 = new GeneralUnit(platform: mPlatform, director: ref mDirector);
-            var genUnit3 = new GeneralUnit(platform: mPlatform, director: ref mDirector);
-            var genUnit4 = new GeneralUnit(platform: mPlatform, director: ref mDirector);
-            var genUnit5 = new GeneralUnit(platform: mPlatform, director: ref mDirector);
+            var genUnit = new GeneralUnit(mPlatform, ref mDirector);
+            var genUnit2 = new GeneralUnit(mPlatform, ref mDirector);
+            var genUnit3 = new GeneralUnit(mPlatform, ref mDirector);
+            var genUnit4 = new GeneralUnit(mPlatform, ref mDirector);
+            var genUnit5 = new GeneralUnit(mPlatform, ref mDirector);
 
             //MilUnits
-            var milUnit = new MilitaryUnit(position: new Vector2(x: 2000, y: 700), spriteSheet: milUnitSheet, camera: mMap.GetCamera(), director: ref mDirector, map: ref mMap);
+            var milUnit = new MilitaryUnit(new Vector2(2000, 700), milUnitSheet, mMap.GetCamera(), ref mDirector, ref mMap);
 
             //Roads
-            var road1 = new Road(source: mPlatform, destination: platform2, blueprint: false);
-            var road2 = new Road(source: platform2, destination: platform3, blueprint: false);
-            var road3 = new Road(source: platform3, destination: mPlatform, blueprint: false);
-            var road4 = new Road(source: mPlatform, destination: platform4, blueprint: false);
-            var road5 = new Road(source: platform4, destination: platform3, blueprint: false);
+            var road1 = new Road(mPlatform, platform2, false);
+            var road2 = new Road(platform2, platform3, false);
+            var road3 = new Road(platform3, mPlatform, false);
+            var road4 = new Road(mPlatform, platform4, false);
+            var road5 = new Road(platform4, platform3, false);
 
             // Resources
-            var res = new Resource(type: EResourceType.Trash, position: platform2.Center);
-            var res4 = new Resource(type: EResourceType.Trash, position: platform2.Center);
-            var res5 = new Resource(type: EResourceType.Trash, position: platform2.Center);
-            var res2 = new Resource(type: EResourceType.Chip, position: platform3.Center);
-            var res3 = new Resource(type: EResourceType.Oil, position: platform4.Center);
+            var res = new Resource(EResourceType.Trash, platform2.Center);
+            var res4 = new Resource(EResourceType.Trash, platform2.Center);
+            var res5 = new Resource(EResourceType.Trash, platform2.Center);
+            var res2 = new Resource(EResourceType.Chip, platform3.Center);
+            var res3 = new Resource(EResourceType.Oil, platform4.Center);
 
-            platform2.StoreResource(resource: res);
-            platform3.StoreResource(resource: res2);
-            platform4.StoreResource(resource: res3);
-            platform2.StoreResource(resource: res4);
-            platform2.StoreResource(resource: res5);
+            platform2.StoreResource(res);
+            platform3.StoreResource(res2);
+            platform4.StoreResource(res3);
+            platform2.StoreResource(res4);
+            platform2.StoreResource(res5);
 
             //Finally add the objects
 
             //GAMESCREEN=====================
-            mGameScreen.AddObject(toAdd: mPlatform);
-            mGameScreen.AddObject(toAdd: platform2);
-            mGameScreen.AddObject(toAdd: platform3);
-            mGameScreen.AddObject(toAdd: platform4);
-            mGameScreen.AddObject(toAdd: road1);
-            mGameScreen.AddObject(toAdd: road2);
-            mGameScreen.AddObject(toAdd: road3);
-            mGameScreen.AddObject(toAdd: road4);
-            mGameScreen.AddObject(toAdd: road5);
-            mGameScreen.AddObject(toAdd: genUnit);
-            mGameScreen.AddObject(toAdd: genUnit2);
-            mGameScreen.AddObject(toAdd: genUnit3);
-            mGameScreen.AddObject(toAdd: genUnit4);
-            mGameScreen.AddObject(toAdd: genUnit5);
-            mGameScreen.AddObject(toAdd: milUnit);
+            mGameScreen.AddObject(mPlatform);
+            mGameScreen.AddObject(platform2);
+            mGameScreen.AddObject(platform3);
+            mGameScreen.AddObject(platform4);
+            mGameScreen.AddObject(road1);
+            mGameScreen.AddObject(road2);
+            mGameScreen.AddObject(road3);
+            mGameScreen.AddObject(road4);
+            mGameScreen.AddObject(road5);
+            mGameScreen.AddObject(genUnit);
+            mGameScreen.AddObject(genUnit2);
+            mGameScreen.AddObject(genUnit3);
+            mGameScreen.AddObject(genUnit4);
+            mGameScreen.AddObject(genUnit5);
+            mGameScreen.AddObject(milUnit);
 
             //TESTMETHODS HERE =====================================
-            mDirector.GetDistributionManager.DistributeJobs(oldj: JobType.Idle, newj: JobType.Production, amount: 3);
+            mDirector.GetDistributionManager.DistributeJobs(JobType.Idle, JobType.Production, 3);
             mDirector.GetDistributionManager.TestAttributes();
         }
 

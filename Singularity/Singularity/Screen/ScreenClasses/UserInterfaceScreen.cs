@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
 using Singularity.Manager;
+using Singularity.Sound;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -86,9 +88,9 @@ namespace Singularity.Screen.ScreenClasses
             mGraphics = mgraphics;
 
             // initialize input manager
-            mInputManager.AddMousePositionListener(iMouseListener: this);
-            mInputManager.AddMouseClickListener(iMouseClickListener: this, leftClickType: EClickType.InBoundsOnly, rightClickType: EClickType.InBoundsOnly);
-            Bounds = new Rectangle(x: 0,y: 0, width: mgraphics.PreferredBackBufferWidth, height: mgraphics.PreferredBackBufferHeight);
+            mInputManager.AddMousePositionListener(this);
+            mInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            Bounds = new Rectangle(0,0, mgraphics.PreferredBackBufferWidth, mgraphics.PreferredBackBufferHeight);
 
             // create the windowList
             mWindowList = new List<WindowObject>();
@@ -102,7 +104,7 @@ namespace Singularity.Screen.ScreenClasses
             // update all windows
             foreach (var window in mWindowList)
             {
-                window.Update(gametime: gametime);
+                window.Update(gametime);
             }
 
             #region testing
@@ -110,16 +112,16 @@ namespace Singularity.Screen.ScreenClasses
             // TODO - DELETE TESTING OF POPUPWINDOW
             if (!mActiveWindow)
             {
-                if (mPopupWindowList.Contains(item: mTestPopupWindow))
+                if (mPopupWindowList.Contains(mTestPopupWindow))
                 {
-                    mPopupWindowList.Remove(item: mTestPopupWindow);
+                    mPopupWindowList.Remove(mTestPopupWindow);
                 }
             }
             else
             {
                 foreach (var window in mPopupWindowList)
                 {
-                    window.Update(gametime: gametime);
+                    window.Update(gametime);
                 }
             }
 
@@ -132,18 +134,18 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend, samplerState: null, depthStencilState: null, rasterizerState: mRasterizerState);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, mRasterizerState);
 
             // draw all windows
             foreach (var window in mWindowList)
             {
-                window.Draw(spriteBatch: spriteBatch);
+                window.Draw(spriteBatch);
             }
 
             // TODO - DELETE TESTING OF POPUPWINDOW
             foreach (var popupWindow in mPopupWindowList)
             {
-                popupWindow.Draw(spriteBatch: spriteBatch);
+                popupWindow.Draw(spriteBatch);
             }
 
             spriteBatch.End();
@@ -152,9 +154,9 @@ namespace Singularity.Screen.ScreenClasses
         public void LoadContent(ContentManager content)
         {
             // load all spritefonts
-            mLibSans20 = content.Load<SpriteFont>(assetName: "LibSans20");
-            mLibSans14 = content.Load<SpriteFont>(assetName: "LibSans14");
-            mLibSans12 = content.Load<SpriteFont>(assetName: "LibSans12");
+            mLibSans20 = content.Load<SpriteFont>("LibSans20");
+            mLibSans14 = content.Load<SpriteFont>("LibSans14");
+            mLibSans12 = content.Load<SpriteFont>("LibSans12");
 
             // resolution
             mCurrentScreenWidth = mGraphics.PreferredBackBufferWidth;
@@ -163,8 +165,8 @@ namespace Singularity.Screen.ScreenClasses
             #region windows pos+size calculation
 
             // change color for the border or the filling of all userinterface windows here
-            var windowColor = new Color(r: 0.27f, g: 0.5f, b: 0.7f, alpha: 0.8f);
-            var borderColor = new Color(r: 0.68f, g: 0.933f, b: 0.933f, alpha: .8f);
+            var windowColor = new Color(0.27f, 0.5f, 0.7f, 0.8f);
+            var borderColor = new Color(0.68f, 0.933f, 0.933f, .8f);
 
             // position + size of topBar
             var topBarHeight = mCurrentScreenHeight / 30;
@@ -204,30 +206,30 @@ namespace Singularity.Screen.ScreenClasses
             // TODO
             #region eventLogWindow
 
-            var eventLogWindow = new WindowObject(windowName: "// EVENT LOG", position: new Vector2(x: eventLogX, y: eventLogY), size: new Vector2(x: eventLogWidth, y: eventLogHeight), colorBorder: borderColor, colorFill: windowColor, borderPadding: 10f, objectPadding: 10f, minimizable: true, spriteFont: mLibSans14, inputManager: mInputManager, graphics: mGraphics);
+            var eventLogWindow = new WindowObject("// EVENT LOG", new Vector2(eventLogX, eventLogY), new Vector2(eventLogWidth, eventLogHeight), borderColor, windowColor, 10f, 10f, true, mLibSans14, mInputManager, mGraphics);
 
             // create items
 
             // add all items
 
-            mWindowList.Add(item: eventLogWindow);
+            mWindowList.Add(eventLogWindow);
 
             #endregion
 
             #region civilUnitsWindow
 
-            var civilUnitsWindow = new WindowObject(windowName: "// CIVIL UNITS", position: new Vector2(x: civilUnitsX, y: civilUnitsY), size: new Vector2(x: civilUnitsWidth, y: civilUnitsHeight), colorBorder: borderColor, colorFill: windowColor, borderPadding: 10, objectPadding: 20, minimizable: true, spriteFont: mLibSans14, inputManager: mInputManager, graphics: mGraphics);
+            var civilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(civilUnitsX, civilUnitsY), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 10, 20, true, mLibSans14, mInputManager, mGraphics);
 
             // create items
             //TODO: Create an object representing the Idle units at the moment. Something like "Idle: 24" should be enough
-            mDefTextField = new TextField(text: "Defense", position: Vector2.Zero, size: new Vector2(x: civilUnitsWidth, y: civilUnitsWidth), spriteFont: mLibSans12);
-            mDefSlider = new Slider(position: Vector2.Zero, length: 150, sliderSize: 10, font: mLibSans12, director: ref mDirector, withValueBox: true, withPages: true, pages: 5);
-            mBuildTextField = new TextField(text: "Build", position: Vector2.Zero, size: new Vector2(x: civilUnitsWidth, y: civilUnitsWidth), spriteFont: mLibSans12);
-            mBuildSlider = new Slider(position: Vector2.Zero, length: 150, sliderSize: 10, font: mLibSans12, director: ref mDirector);
-            mLogisticsTextField = new TextField(text: "Logistics", position: Vector2.Zero, size: new Vector2(x: civilUnitsWidth, y: civilUnitsWidth), spriteFont: mLibSans12);
-            mLogisticsSlider = new Slider(position: Vector2.Zero, length: 150, sliderSize: 10, font: mLibSans12, director: ref mDirector);
-            mProductionTextField = new TextField(text: "Production", position: Vector2.Zero, size: new Vector2(x: civilUnitsWidth, y: civilUnitsWidth), spriteFont: mLibSans12);
-            mProductionSlider = new Slider(position: Vector2.Zero, length: 150, sliderSize: 10, font: mLibSans12, director: ref mDirector);
+            mDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
+            mDefSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true, 5);
+            mBuildTextField = new TextField("Build", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
+            mBuildSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
+            mLogisticsTextField = new TextField("Logistics", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
+            mLogisticsSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
+            mProductionTextField = new TextField("Production", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
+            mProductionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
 
 
             //Subscribe Distr to sliders
@@ -238,23 +240,23 @@ namespace Singularity.Screen.ScreenClasses
             //mProductionSlider.SliderMoving += mDirector.GetDistributionManager.ProductionSlider();
 
             // adding all items
-            civilUnitsWindow.AddItem(item: mDefTextField);
-            civilUnitsWindow.AddItem(item: mDefSlider);
-            civilUnitsWindow.AddItem(item: mBuildTextField);
-            civilUnitsWindow.AddItem(item: mBuildSlider);
-            civilUnitsWindow.AddItem(item: mLogisticsTextField);
-            civilUnitsWindow.AddItem(item: mLogisticsSlider);
-            civilUnitsWindow.AddItem(item: mProductionTextField);
-            civilUnitsWindow.AddItem(item: mProductionSlider);
+            civilUnitsWindow.AddItem(mDefTextField);
+            civilUnitsWindow.AddItem(mDefSlider);
+            civilUnitsWindow.AddItem(mBuildTextField);
+            civilUnitsWindow.AddItem(mBuildSlider);
+            civilUnitsWindow.AddItem(mLogisticsTextField);
+            civilUnitsWindow.AddItem(mLogisticsSlider);
+            civilUnitsWindow.AddItem(mProductionTextField);
+            civilUnitsWindow.AddItem(mProductionSlider);
 
-            mWindowList.Add(item: civilUnitsWindow);
+            mWindowList.Add(civilUnitsWindow);
 
             #endregion
 
             // TODO
             #region resourceWindow
 
-            var resourceWindow = new WindowObject(windowName: "// RESOURCES", position: new Vector2(x: resourceX, y: resourceY), size: new Vector2(x: resourceWidth, y: resourceHeight), minimizable: true, spriteFont: mLibSans14, inputManager: mInputManager, graphics: mGraphics);
+            var resourceWindow = new WindowObject("// RESOURCES", new Vector2(resourceX, resourceY), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mInputManager, mGraphics);
 
             // create items
 
@@ -272,13 +274,13 @@ namespace Singularity.Screen.ScreenClasses
                 "Quisque semper feugiat diam, eu posuere mi posuere ac. Vestibulum posuere posuere semper. " +
                 "Pellentesque nec lacinia nulla, sit amet scelerisque justo.";
 
-            mTextFieldTest = new TextField(text: testText, position: Vector2.One, size: new Vector2(x: resourceWidth - 50, y: resourceHeight), spriteFont: mLibSans12);
+            mTextFieldTest = new TextField(testText, Vector2.One, new Vector2(resourceWidth - 50, resourceHeight), mLibSans12);
 
-            resourceWindow.AddItem(item: mTextFieldTest);
+            resourceWindow.AddItem(mTextFieldTest);
 
             #endregion
 
-            mWindowList.Add(item: resourceWindow);
+            mWindowList.Add(resourceWindow);
 
             #endregion
 
@@ -298,22 +300,22 @@ namespace Singularity.Screen.ScreenClasses
                 "Anwendung neuronaler Methoden, und damit oft Forschungsgegenstand der Neuroinformatik. " +
                 "Viele Anwendungen fuer kuenstliche neuronale Netze finden sich auch in der Mustererkennung und vor allem im Bildverstehen.";
 
-            var testWindowColor = new Color(r: 0.27f, g: 0.5f, b: 0.7f, alpha: 0.8f);
-            var testBorderColor = new Color(r: 0.68f, g: 0.933f, b: 0.933f, alpha: 0.8f);
+            var testWindowColor = new Color(0.27f, 0.5f, 0.7f, 0.8f);
+            var testBorderColor = new Color(0.68f, 0.933f, 0.933f, 0.8f);
 
-            mOkayButton = new Button(buttonText: "Okay", font: mLibSans12, position: Vector2.Zero, color: borderColor) { Opacity = 1f };
+            mOkayButton = new Button("Okay", mLibSans12, Vector2.Zero, borderColor) { Opacity = 1f };
 
             mActiveWindow = true;
 
             mOkayButton.ButtonClicked += OnButtonClickOkayButton;
 
-            mTestPopupWindow = new PopupWindow(windowName: "// POPUP", button: mOkayButton , position: new Vector2(x: mCurrentScreenWidth / 2 - 250 / 2, y: mCurrentScreenHeight / 2 - 250 / 2), size: new Vector2(x: 250, y: 250), colorBorder: testBorderColor, colorFill: testWindowColor, spriteFontTitle: mLibSans14, inputManager: mInputManager, graphics: mGraphics);
+            mTestPopupWindow = new PopupWindow("// POPUP", mOkayButton , new Vector2(mCurrentScreenWidth / 2 - 250 / 2, mCurrentScreenHeight / 2 - 250 / 2), new Vector2(250, 250), testBorderColor, testWindowColor, mLibSans14, mInputManager, mGraphics);
 
-            mTextFieldTestPopup = new TextField(text: testText2, position: Vector2.One, size: new Vector2(x: resourceWidth - 50, y: resourceHeight), spriteFont: mLibSans12);
+            mTextFieldTestPopup = new TextField(testText2, Vector2.One, new Vector2(resourceWidth - 50, resourceHeight), mLibSans12);
 
-            mTestPopupWindow.AddItem(item: mTextFieldTestPopup);
+            mTestPopupWindow.AddItem(mTextFieldTestPopup);
 
-            mPopupWindowList.Add(item: mTestPopupWindow);
+            mPopupWindowList.Add(mTestPopupWindow);
 
             #endregion
         }
@@ -333,8 +335,8 @@ namespace Singularity.Screen.ScreenClasses
         private void OnButtonClickOkayButton(object sender, EventArgs eventArgs)
         {
             mActiveWindow = false;
-            mInputManager.RemoveMousePositionListener(iMouseListener: mTestPopupWindow);
-            mInputManager.RemoveMouseWheelListener(iMouseWheelListener: mTestPopupWindow);
+            mInputManager.RemoveMousePositionListener(mTestPopupWindow);
+            mInputManager.RemoveMouseWheelListener(mTestPopupWindow);
         }
 
         #region InputManagement

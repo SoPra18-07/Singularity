@@ -21,14 +21,14 @@ namespace Singularity.Serialization
         private static void Serialize(object toSerialize, string filepath)
         {
             var ser = new NetDataContractSerializer();
-            var fs = new FileStream(path: filepath, mode: FileMode.Create);
-            var xdwriter = XmlDictionaryWriter.CreateTextWriter(stream: fs);
+            var fs = new FileStream(filepath, FileMode.Create);
+            var xdwriter = XmlDictionaryWriter.CreateTextWriter(fs);
 
             //Write xml-header
-            xdwriter.WriteStartDocument(standalone: true);
+            xdwriter.WriteStartDocument(true);
 
             //Write the xml-data of the object to the file
-            ser.WriteObject(writer: xdwriter, graph: toSerialize);
+            ser.WriteObject(xdwriter, toSerialize);
 
             //Write xml-tail
             xdwriter.WriteEndDocument();
@@ -46,16 +46,16 @@ namespace Singularity.Serialization
         private static List<object> Deserialize(string filepath)
         {
             var ser = new NetDataContractSerializer();
-            var fs = new FileStream(path: filepath, mode: FileMode.Open);
-            var reader = XmlDictionaryReader.CreateTextReader(stream: fs, quotas: new XmlDictionaryReaderQuotas());
+            var fs = new FileStream(filepath, FileMode.Open);
+            var reader = XmlDictionaryReader.CreateTextReader(fs, new XmlDictionaryReaderQuotas());
             var deserializedObject = new List<object>();
 
             while (reader.Read())
             {
-                if (ser.IsStartObject(reader: reader))
+                if (ser.IsStartObject(reader))
                 {
-                    var o = ser.ReadObject(reader: reader);
-                    deserializedObject.Add(item: o);
+                    var o = ser.ReadObject(reader);
+                    deserializedObject.Add(o);
                 }
                 break;
             }
@@ -74,13 +74,13 @@ namespace Singularity.Serialization
         public static void Save(object toSave, string name)
         {
             var path = @"%USERPROFILE%\Saved Games\Singularity";
-            path = Environment.ExpandEnvironmentVariables(name: path);
-            if (!Directory.Exists(path: path))
+            path = Environment.ExpandEnvironmentVariables(path);
+            if (!Directory.Exists(path))
             {
-                Directory.CreateDirectory(path: path);
+                Directory.CreateDirectory(path);
             }
             path = path + @"\" + name;
-            Serialize(toSerialize: toSave, filepath: path);
+            Serialize(toSave, path);
         }
 
         /// <summary>
@@ -91,13 +91,13 @@ namespace Singularity.Serialization
         /// <returns>The Object that has been loaded</returns>
         public static object Load(string path)
         {
-            var loadedObjects = Deserialize(filepath: path);
+            var loadedObjects = Deserialize(path);
             if (loadedObjects.Count == 0)
             {
-                throw new IOException(message: "There are no deserialized Objects. Most likely your .xml file is empty.");
+                throw new IOException("There are no deserialized Objects. Most likely your .xml file is empty.");
             }
             //One may implement additional logic here later
-            return loadedObjects[index: 0];
+            return loadedObjects[0];
         }
 
         /// <summary>
@@ -111,57 +111,57 @@ namespace Singularity.Serialization
             //Initialize Dummys
             var list = new List<SerializationDummy>();
             var commonList = new List<SerializationDummy>();
-            commonList.Add(item: new SerializationDummy(randomvalue: 100, list: new List<SerializationDummy>()));
-            list.Add(item: new SerializationDummy(randomvalue: 1, list: commonList));
-            list.Add(item: new SerializationDummy(randomvalue: 2, list: commonList));
-            var dummy = new SerializationDummy(randomvalue: 20, list: list);
+            commonList.Add(new SerializationDummy(100, new List<SerializationDummy>()));
+            list.Add(new SerializationDummy(1, commonList));
+            list.Add(new SerializationDummy(2, commonList));
+            var dummy = new SerializationDummy(20, list);
 
-            Console.WriteLine(value: "Before Serialization: ");
-            Console.WriteLine(value: "=====================");
+            Console.WriteLine("Before Serialization: ");
+            Console.WriteLine("=====================");
             dummy.PrintFields();
             dummy.Increment();
 
             //Serialize
             var path = @"%USERPROFILE%\Saved Games";
-            path = Environment.ExpandEnvironmentVariables(name: path);
+            path = Environment.ExpandEnvironmentVariables(path);
             path = path + @"\Gamesave.xml";
-            Serialize(toSerialize: dummy, filepath: path);
+            Serialize(dummy, path);
 
             //Deserialize
-            var deserialized = Deserialize(filepath: path);
-            var dummyd = (SerializationDummy) deserialized[index: 0];
-            Console.WriteLine(value: "After Deserialization: ");
-            Console.WriteLine(value: "======================");
+            var deserialized = Deserialize(path);
+            var dummyd = (SerializationDummy) deserialized[0];
+            Console.WriteLine("After Deserialization: ");
+            Console.WriteLine("======================");
 
             //Check fields
             dummyd.PrintFields();
 
             //Check shared references
             var deserializedList = dummyd.GetList();
-            var dummy1 = deserializedList[index: 0];
-            var dummy2 = deserializedList[index: 1];
+            var dummy1 = deserializedList[0];
+            var dummy2 = deserializedList[1];
             dummyd.Increment();
-            if (ReferenceEquals(objA: dummy1.GetList(), objB: dummy2.GetList()))
+            if (ReferenceEquals(dummy1.GetList(), dummy2.GetList()))
             {
-                Console.WriteLine(value: "SHARED REFERENCES HAVE BEEN PRESERVED CORRECTLY.");
+                Console.WriteLine("SHARED REFERENCES HAVE BEEN PRESERVED CORRECTLY.");
             }
             else
             {
-                Console.WriteLine(value: "Shared references have not been preserved correctly...");
+                Console.WriteLine("Shared references have not been preserved correctly...");
             }
 
             //Check Cyclic reference
-            if (ReferenceEquals(objA: dummyd.GetDummy().GetCyclicReference(), objB: dummyd))
+            if (ReferenceEquals(dummyd.GetDummy().GetCyclicReference(), dummyd))
             {
-                Console.WriteLine(value: "CYCLIC REFERNCE HAS BEEN PRESERVED CORRECTLY.");
+                Console.WriteLine("CYCLIC REFERNCE HAS BEEN PRESERVED CORRECTLY.");
             }
             else
             {
-                Console.WriteLine(value: "Cyclic reference has not been preserved...");
+                Console.WriteLine("Cyclic reference has not been preserved...");
             }
 
             //Check allegedly not Serializable Object Vector2
-            Console.WriteLine(value: "X and Y Coordinate of Vector2: " + dummyd.mVector.X + " " + dummyd.mVector.Y);
+            Console.WriteLine("X and Y Coordinate of Vector2: " + dummyd.mVector.X + " " + dummyd.mVector.Y);
         }
     }
 }

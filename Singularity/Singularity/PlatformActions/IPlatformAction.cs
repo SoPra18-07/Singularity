@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Units;
@@ -78,49 +77,19 @@ namespace Singularity.PlatformActions
     {
         protected readonly Dictionary<GeneralUnit, JobType> mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
         protected readonly PlatformBlank mPlatform;
-        protected readonly Director mDirector;
 
-        protected APlatformAction(PlatformBlank platform, ref Director director)
+        protected APlatformAction(PlatformBlank platform)
         {
-            mPlatform = platform;
-            mDirector = director;
+             mPlatform = platform;
         }
 
 
-        public PlatformActionState State { get; protected set; } = PlatformActionState.Active;
+        public PlatformActionState State { get; private set; } = PlatformActionState.Active;
 
         public abstract List<JobType> UnitsRequired { get; }
 
-        public PlatformBlank Platform => mPlatform;
-        public Dictionary<GeneralUnit, JobType> AssignedUnits => mAssignedUnits;
-
-
-        public abstract void Execute();
-
-        /// <summary>
-        /// Gets the required resources of the PlatformAction
-        /// (for finishing this action, or for producing the next resource etc)
-        /// </summary>
-        /// <returns>The required resources.</returns>
-        public abstract Dictionary<EResourceType, int> GetRequiredResources();
-
-        public abstract void UiToggleState();
-        /* This is a demonstration of how this might be implemented:
-        {
-            switch (State)
-            {
-                case PlatformActionState.Available:
-                    mDirector.GetDistributionManager.PausePlatformAction(self);
-                    State = PlatformActionState.Deactivated;
-                    break;
-                case PlatformActionState.Deactivated:
-                    State = PlatformActionState.Available;
-                    break;
-                default:
-                    throw new AccessViolationException(message: "Someone/Something acccessed the state!!");
-            }
-        }
-        */
+        PlatformBlank IPlatformAction.Platform => mPlatform;
+        Dictionary<GeneralUnit, JobType> IPlatformAction.AssignedUnits => mAssignedUnits;
 
         /// <summary>
         /// Assigns the unit to this PlatformAction and to this platform.
@@ -129,7 +98,34 @@ namespace Singularity.PlatformActions
         /// <param name="job">Job.</param>
         void IPlatformAction.AssignUnit(GeneralUnit unit, JobType job)
         {
-            mAssignedUnits.Add(key: unit, value: job);
+            mAssignedUnits.Add(unit, job);
+        }
+
+        public abstract void Execute();
+
+        /// <summary>
+        /// Gets the required resources of the PlatformAction
+        /// (for finishing this action, or for producing the next resource etc)
+        /// </summary>
+        /// <returns>The required resources.</returns>
+        Dictionary<EResourceType, int> IPlatformAction.GetRequiredResources()
+        {
+            return new Dictionary<EResourceType, int>();
+        }
+
+        void IPlatformAction.UiToggleState()
+        {
+            switch (State)
+            {
+                case PlatformActionState.Available:
+                    State = PlatformActionState.Deactivated;
+                    break;
+                case PlatformActionState.Deactivated:
+                    State = PlatformActionState.Available;
+                    break;
+                default:
+                    throw new AccessViolationException("Someone/Something acccessed the state!!");
+            }
         }
 
         public void UnAssignUnits(int amount, JobType job)
@@ -137,7 +133,7 @@ namespace Singularity.PlatformActions
             foreach (var unit in mAssignedUnits.Keys)
             {
                 if (unit.Job != job || amount <= 0) continue;
-                mAssignedUnits.Remove(key: unit);
+                mAssignedUnits.Remove(unit);
                 amount -= 1;
             }
         }

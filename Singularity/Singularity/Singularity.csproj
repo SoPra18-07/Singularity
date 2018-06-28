@@ -62,8 +62,6 @@
   <ItemGroup>
     <Compile Include="Manager\DistributionManager.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />
-    <Compile Include="PlatformActions\MakeUnit.cs" />
-    <Compile Include="Platforms\Barracks.cs" />
     <Compile Include="Units\EnemyUnit.cs" />
     <Compile Include="Units\SelectionBox.cs" />
     <Compile Include="Units\Task.cs" />

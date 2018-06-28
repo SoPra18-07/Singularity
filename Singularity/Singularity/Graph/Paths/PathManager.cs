@@ -23,12 +23,12 @@ namespace Singularity.Graph.Paths
 
         public void AddGraph(Graph graph)
         {
-            mGraphs.Add(item: graph);
+            mGraphs.Add(graph);
         }
 
         public void RemoveGraph(Graph graph)
         {
-            mGraphs.Remove(item: graph);
+            mGraphs.Remove(graph);
         }
 
 
@@ -48,18 +48,18 @@ namespace Singularity.Graph.Paths
 
             if (asGeneralUnit != null)
             {
-                return GetPathForGeneralUnits(unit: asGeneralUnit, destination: destination);
+                return GetPathForGeneralUnits(asGeneralUnit, destination);
             }
 
             var asMilitaryUnit = unit as MilitaryUnit;
 
             if (asMilitaryUnit != null)
             {
-                return GetPathForMilitaryUnits(unit: asMilitaryUnit, destination: destination);
+                return GetPathForMilitaryUnits(asMilitaryUnit, destination);
             }
 
             throw new InvalidGenericArgumentException(
-                message: "The given argument was not one for which paths are meant to be calculated. The following are" +
+                "The given argument was not one for which paths are meant to be calculated. The following are" +
                 "supported: MilitaryUnit and GeneralUnit.");
 
         }
@@ -68,7 +68,7 @@ namespace Singularity.Graph.Paths
         {
             // todo: know which units are on which graph.
             // todo: fix. @Ativolex @fkarg
-            return PathfindingFactory.GetPathfinding().AStar(graph: mGraphs[index: 0], start: unit.CurrentNode, destination: destination);
+            return PathfindingFactory.GetPathfinding().AStar(mGraphs[0], unit.CurrentNode, destination);
         }
 
         private IPath GetPathForMilitaryUnits(MilitaryUnit unit, INode destination)

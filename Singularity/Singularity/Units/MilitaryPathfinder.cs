@@ -25,28 +25,28 @@ namespace Singularity.Units
         {
             if (mJpParam != null)
             {
-                mJpParam.Reset(iStartPos: VectorToGridPos(vector: startPosition), iEndPos: VectorToGridPos(vector: endPosition));
+                mJpParam.Reset(VectorToGridPos(startPosition), VectorToGridPos(endPosition));
             }
             else
             {
                 mJpParam = new JumpPointParam(iGrid: map.GetCollisionMap().GetWalkabilityGrid(),
-                    iStartPos: VectorToGridPos(vector: startPosition),
+                    iStartPos: VectorToGridPos(startPosition),
                     iDiagonalMovement: DiagonalMovement.OnlyWhenNoObstacles,
-                    iEndPos: VectorToGridPos(vector: endPosition),
+                    iEndPos: VectorToGridPos(endPosition),
                     iAllowEndNodeUnWalkable: EndNodeUnWalkableTreatment.DISALLOW,
                     iMode: HeuristicMode.MANHATTAN);
             }
-            var pathGrid = JumpPointFinder.FindPath(iParam: mJpParam);
+            var pathGrid = JumpPointFinder.FindPath(mJpParam);
 
-            var pathVector = new Stack<Vector2>(capacity: pathGrid.Count);
-            pathVector.Push(item: endPosition);
+            var pathVector = new Stack<Vector2>(pathGrid.Count);
+            pathVector.Push(endPosition);
 
-            Debug.WriteLine(message: "Path:");
+            Debug.WriteLine("Path:");
             for (int i = pathGrid.Count - 1; i > 0; i--)
             {
-                var gridPos = GridPosToVector2(gridPos: pathGrid[index: i]);
-                Debug.WriteLine(message: gridPos.X + ", " + gridPos.Y);
-                pathVector.Push(item: gridPos);
+                var gridPos = GridPosToVector2(pathGrid[i]);
+                Debug.WriteLine(gridPos.X + ", " + gridPos.Y);
+                pathVector.Push(gridPos);
             }
 
             return pathVector;
@@ -59,8 +59,8 @@ namespace Singularity.Units
         /// <returns>Corresponding grid positions</returns>
         private GridPos VectorToGridPos(Vector2 vector)
         {
-            return new GridPos(iX: (int) Math.Floor(d: vector.X / MapConstants.GridWidth),
-                               iY: (int) Math.Floor(d: vector.Y / MapConstants.GridHeight));
+            return new GridPos((int) Math.Floor(vector.X / MapConstants.GridWidth),
+                               (int) Math.Floor(vector.Y / MapConstants.GridHeight));
         }
 
         /// <summary>
@@ -70,8 +70,8 @@ namespace Singularity.Units
         /// <returns>Corresponding Vector2 position</returns>
         private static Vector2 GridPosToVector2(GridPos gridPos)
         {
-            return new Vector2(x: gridPos.x * MapConstants.GridWidth,
-                               y: gridPos.y * MapConstants.GridHeight);
+            return new Vector2(gridPos.x * MapConstants.GridWidth,
+                               gridPos.y * MapConstants.GridHeight);
         }
 
     }
