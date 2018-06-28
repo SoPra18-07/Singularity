@@ -178,7 +178,7 @@ namespace Singularity.Libraries
             double anglePerSide = MathHelper.TwoPi / sides;
 
             // "Rotate" to the starting point
-            while ((curAngle + (anglePerSide / 2.0)) < startingAngle)
+            while (curAngle + anglePerSide / 2.0 < startingAngle)
             {
                 curAngle += anglePerSide;
 
@@ -191,7 +191,7 @@ namespace Singularity.Libraries
             points.Add(points[0]);
 
             // Now remove the points at the end of the circle to create the arc
-            int sidesInArc = (int)((radians / anglePerSide) + 0.5);
+            int sidesInArc = (int)(radians / anglePerSide + 0.5);
             points.RemoveRange(sidesInArc + 1, points.Count - sidesInArc - 1);
 
             return points;
@@ -366,6 +366,7 @@ namespace Singularity.Libraries
         /// <param name="rect">The rectangle to draw</param>
         /// <param name="color">The color to draw the rectangle in</param>
         /// <param name="thickness">The thickness of the lines</param>
+        /// <param name="layerDepth">The layer at which to draw</param>
         public static void DrawRectangle(this SpriteBatch spriteBatch, Rectangle rect, Color color, float thickness, float layerDepth = 0)
         {
 
@@ -700,6 +701,7 @@ namespace Singularity.Libraries
         /// <param name="radius"> radius of the circle</param>
         /// <param name="sides"> how many sides the circle is composed of</param>
         /// <param name="color"> color of the cirlce </param>
+        /// <param name="layerDepth">The layer at which to draw</param>
         public static void FillCircle(this SpriteBatch spriteBatch, Vector2 center, float radius,int sides, Color color, float layerDepth = 0)
         {
             spriteBatch.DrawCircle(center, radius, sides, color, radius, layerDepth);

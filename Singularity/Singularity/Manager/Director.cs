@@ -2,9 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Singularity.Graph.Paths;
 using Singularity.Input;
-using Singularity.Property;
 using Singularity.Sound;
-using Singularity;
 
 namespace Singularity.Manager
 {

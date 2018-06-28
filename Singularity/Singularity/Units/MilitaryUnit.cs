@@ -96,7 +96,7 @@ namespace Singularity.Units
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(DefaultWidth * mScale, DefaultHeight * mScale);
 
-            RevelationRadius = (int) AbsoluteSize.X * 3;
+            RevelationRadius = 500;
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * mScale / 2, AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
 
             Moved = false;
@@ -125,8 +125,8 @@ namespace Singularity.Units
         {
             // form a triangle from unit location to mouse location
             // adjust to be at center of sprite
-            var x = (target.X - (RelativePosition.X + RelativeSize.X / 2));
-            var y = (target.Y - (RelativePosition.Y + RelativeSize.Y / 2));
+            var x = target.X - (RelativePosition.X + RelativeSize.X / 2);
+            var y = target.Y - (RelativePosition.Y + RelativeSize.Y / 2);
             var hypot = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
 
             // calculate degree between formed triangle
@@ -143,11 +143,11 @@ namespace Singularity.Units
             // calculate rotation with increased degrees going counterclockwise
             if (x >= 0)
             {
-                mRotation = (int) (Math.Round(270 - degree, MidpointRounding.AwayFromZero));
+                mRotation = (int) Math.Round(270 - degree, MidpointRounding.AwayFromZero);
             }
             else
             {
-                mRotation = (int) (Math.Round(90 + degree, MidpointRounding.AwayFromZero));
+                mRotation = (int) Math.Round(90 + degree, MidpointRounding.AwayFromZero);
             }
 
             // add 42 degrees since sprite sheet starts at sprite -42deg not 0
@@ -189,7 +189,7 @@ namespace Singularity.Units
             spriteBatch.Draw(
                 mMilSheet,
                 AbsolutePosition,
-                new Rectangle((150 * mColumn), (75 * mRow), (int) (AbsoluteSize.X / mScale), (int) (AbsoluteSize.Y / mScale)),
+                new Rectangle(150 * mColumn, 75 * mRow, (int) (AbsoluteSize.X / mScale), (int) (AbsoluteSize.Y / mScale)),
                 mColor,
                 0f,
                 Vector2.Zero,
@@ -257,8 +257,8 @@ namespace Singularity.Units
             }
 
             // these are values needed to properly get the current sprite out of the spritesheet.
-            mRow = (mRotation / 18);
-            mColumn = ((mRotation - (mRow * 18)) / 3);
+            mRow = mRotation / 18;
+            mColumn = (mRotation - mRow * 18) / 3;
 
             //finally select the appropriate color for selected/deselected units.
             mColor = mSelected ? sSelectedColor : sNotSelectedColor;
