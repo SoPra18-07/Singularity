@@ -19,6 +19,7 @@ namespace Singularity.Screen
         private float mMax;
 
         private Vector2 mLastPosition;
+        private int mLastPages;
 
         // current x position of slider
         private float mCurrentX;
@@ -79,6 +80,7 @@ namespace Singularity.Screen
             mFont = font;
             Active = true;
             Pages = pages;
+            mLastPages = pages;
             mDirector = director;
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
@@ -92,10 +94,10 @@ namespace Singularity.Screen
             // set initial max increment of the slider to the max amount of pages
             if (mWithPages)
             {
-                mCurrentPage = 1;
-                mLastPage = 1;
+                mCurrentPage = 0;
+                mLastPage = 0;
                 MaxIncrement = pages;
-                mPageSize = Size.X / (Pages-1);
+                mPageSize = Size.X / Pages;
             }
         }
 
@@ -123,11 +125,33 @@ namespace Singularity.Screen
             {
                 mMin = Position.X;
                 mMax = Position.X + Size.X;
-                mPageSize = Size.X / (Pages - 1);
+                mPageSize = Size.X / Pages;
                 if (!Position.Equals(mLastPosition))
                 {
                     mCurrentX += (Position.X - mLastPosition.X);
                     mLastPosition = Position;
+                }
+
+                if (!Pages.Equals(mLastPage))
+                {
+                    mCurrentX = (mMin + mCurrentPage * mPageSize);
+                    mLastPage = Pages;
+                }
+
+                // if slider is left click them make it slave to the mouse
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
+                    Mouse.GetState().X >= mCurrentX - (Size.Y / 2) &&
+                    Mouse.GetState().X <= mCurrentX + (Size.Y / 2) &&
+                    Mouse.GetState().Y >= Position.Y - (Size.Y / 2) &&
+                    Mouse.GetState().Y <= Position.Y + (Size.Y / 2))
+                {
+                    mSlave = true;
+                }
+
+                // if slider is left button released then unslave from mouse
+                if (Mouse.GetState().LeftButton == ButtonState.Released)
+                {
+                    mSlave = false;
                 }
 
                 // if slave to the mouse then move according to the limits of the slider bar
@@ -167,7 +191,7 @@ namespace Singularity.Screen
                         if (Mouse.GetState().X < mMin)
                         {
                             mCurrentX = mMin;
-                            mCurrentPage = 1;
+                            mCurrentPage = 0;
                         }
 
                         // set current page to max page if mouse past bar min
@@ -181,10 +205,18 @@ namespace Singularity.Screen
                         {
                             // move one page over if more than half way to next page covered by mouse
                             float distanceCovered = Mouse.GetState().X - mMin;
-                            if ((distanceCovered - ((mCurrentPage-1) * mPageSize)) > (.5 * mPageSize))
-                            { 
-                                mCurrentPage += 1;
-                                mCurrentX += mPageSize;
+                            if (Math.Abs((distanceCovered - (mCurrentPage * mPageSize))) > (.5 * mPageSize))
+                            {
+                                if ((distanceCovered - (mCurrentPage * mPageSize)) > 0)
+                                {
+                                    mCurrentPage += 1;
+                                    mCurrentX += mPageSize;
+                                }
+                                else
+                                {
+                                    mCurrentPage -= 1;
+                                    mCurrentX -= mPageSize;
+                                }
                             }
                         }
                     }
@@ -193,23 +225,32 @@ namespace Singularity.Screen
                     {
                         if (Mouse.GetState().X < mMin)
                         {
-                            mCurrentX = mMin; mCurrentPage = 1;
+                            mCurrentX = mMin; mCurrentPage = 0;
                         }
 
                         // set max movement of mouse to max increment
-                        else if (Mouse.GetState().X > ((MaxIncrement-1) * mPageSize + mMin))
+                        else if (Mouse.GetState().X > (MaxIncrement * mPageSize + mMin))
                         {
-                            mCurrentX = ((MaxIncrement-1) * mPageSize) + mMin;
+                            mCurrentX = (MaxIncrement * mPageSize) + mMin;
                             mCurrentPage = MaxIncrement;
                         }
 
                         else
                         {
                             float distanceCovered = Mouse.GetState().X - mMin;
-                            if ((distanceCovered - ((mCurrentPage-1) * mPageSize)) > (.5 * mPageSize))
+                            if (Math.Abs((distanceCovered - (mCurrentPage * mPageSize))) > (.5 * mPageSize))
                             {
-                                mCurrentX += mPageSize;
-                                mCurrentPage += 1;
+                                if ((distanceCovered - (mCurrentPage * mPageSize)) > 0)
+                                {
+                                    mCurrentX += mPageSize;
+                                    mCurrentPage += 1;
+                                }
+                                else
+                                {
+                                    mCurrentX -= mPageSize;
+                                    mCurrentPage -= 1;
+
+                                }
                             }
                         }
                     }
@@ -218,7 +259,7 @@ namespace Singularity.Screen
                     if (mCurrentPage > MaxIncrement)
                     {
                         mCurrentPage = MaxIncrement;
-                        mCurrentX = (MaxIncrement - 1) * mPageSize;
+                        mCurrentX = MaxIncrement * mPageSize;
                     }
 
                     // if page has changed : send out event with new current page
@@ -236,17 +277,6 @@ namespace Singularity.Screen
             // if slider should be shown
             if (Active)
             {
-                // draws slider bar
-                spriteBatch.DrawLine(Position, Size.X, 0f, Color.White*0.6f, 2);
-
-                // draws slider
-                spriteBatch.StrokedRectangle(
-                    new Vector2(mCurrentX - (Size.Y / 2), Position.Y - (Size.Y / 2)),
-                    new Vector2(Size.Y, Size.Y),
-                    Color.Gray,
-                    Color.Black,
-                    (float) .5,
-                    (float) 0.8);
 
                 // add value display
                 if (mWithValue)
@@ -262,19 +292,62 @@ namespace Singularity.Screen
                         Color.Gray,
                         Color.Black,
                         1,
+                        (float)0.8);
+
+                    if (!mWithPages)
+                    {
+                        // draws in value of slider in the center of display window
+                        spriteBatch.DrawString(mFont,
+                            origin: Vector2.Zero,
+                            position: new Vector2((mMax + Size.Y + 30) - (mFont.MeasureString(mStringValue).X / 2),
+                                Position.Y - 12),
+                            color: Color.White,
+                            text: mStringValue.ToString(),
+                            rotation: 0f,
+                            scale: 1f,
+                            effects: SpriteEffects.None,
+                            layerDepth: 0.2f);
+                    }
+                    else
+                    {
+                        if (mPageSize > 3)
+                        {
+                            for (int i = 0; i < (Pages+1); i++)
+                            {
+                                spriteBatch.DrawLine(new Vector2((Position.X + (i * (Size.X / Pages))), Position.Y - 2),
+                                    4,
+                                    1.57f,
+                                    Color.White * .8f,
+                                    1);
+                            }
+                        }
+
+                        // draws in page number of slider in the center of display window
+                        spriteBatch.DrawString(mFont,
+                            origin: Vector2.Zero,
+                            position: new Vector2((mMax + Size.Y + 30) - (mFont.MeasureString(mCurrentPage.ToString()).X / 2),
+                                Position.Y - 12),
+                            color: Color.White,
+                            text: mCurrentPage.ToString(),
+                            rotation: 0f,
+                            scale: 1f,
+                            effects: SpriteEffects.None,
+                            layerDepth: 0.2f);
+
+                    }
+                
+                 // draws slider bar
+                 spriteBatch.DrawLine(Position, Size.X, 0f, Color.White*0.6f, 2);
+
+                // draws slider
+                    spriteBatch.StrokedRectangle(
+                        new Vector2(mCurrentX - (Size.Y / 2), Position.Y - (Size.Y / 2)),
+                        new Vector2(Size.Y, Size.Y),
+                        Color.Gray,
+                        Color.Black,
+                        (float) .5,
                         (float) 0.8);
 
-                    // draws in value of slider in the center of display window
-                    spriteBatch.DrawString(mFont,
-                        origin: Vector2.Zero,
-                        position: new Vector2((mMax + Size.Y + 30) - (mFont.MeasureString(mStringValue).X / 2),
-                            Position.Y - 12),
-                        color: Color.White,
-                        text: mStringValue.ToString(),
-                        rotation: 0f,
-                        scale: 1f,
-                        effects: SpriteEffects.None,
-                        layerDepth: 0.2f);
                 }
             }
         }
