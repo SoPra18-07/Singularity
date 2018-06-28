@@ -116,10 +116,8 @@ namespace Singularity.Platform
 
         public bool[,] ColliderGrid { get; internal set; }
 
-        private readonly float mCenterOffsetY;
 
-
-        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36)
+        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36)
         {
 
             Id = IdGenerator.NextiD();

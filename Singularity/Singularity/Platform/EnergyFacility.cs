@@ -2,6 +2,7 @@
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Manager;
 using Singularity.Resources;
 
 namespace Singularity.Platform
@@ -14,7 +15,7 @@ namespace Singularity.Platform
         [DataMember]
         private const int PlatformHeight = 127;
 
-        public EnergyFacility(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite) : base(position, platformSpriteSheet, baseSprite , EPlatformType.Energy, -50)
+        public EnergyFacility(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director dir) : base(position, platformSpriteSheet, baseSprite , ref dir, EPlatformType.Energy, -50)
         {
             //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[2];

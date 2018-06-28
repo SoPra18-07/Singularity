@@ -18,10 +18,14 @@ namespace Singularity.Platform
         [DataMember]
         private Director mDirector;
 
-        public Quarry(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, ref Director dir): base(position, platformSpriteSheet, baseSprite, EPlatformType.Quarry, -50)
+        public Quarry(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, ref Director dir, bool autoRegister = true): base(position, platformSpriteSheet, baseSprite, ref dir, EPlatformType.Quarry, -50)
         {
             mDirector = dir;
-            dir.GetDistributionManager.Register(this, false);
+            if (autoRegister)
+            {
+                dir.GetDistributionManager.Register(this, false);
+            }
+
             //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[2];
             mIPlatformActions[0] = new ProduceQuarryResource(this, resource);
