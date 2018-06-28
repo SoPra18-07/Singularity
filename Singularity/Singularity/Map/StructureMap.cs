@@ -23,6 +23,8 @@ namespace Singularity.Map
         /// </summary>
         private readonly LinkedList<Road> mRoads;
 
+        private readonly LinkedList<PlatformPlacement> mPlatformsToPlace;
+
         private readonly Director mDirector;
 
         private readonly List<Graph.Graph> mGraphs;
@@ -121,6 +123,11 @@ namespace Singularity.Map
             {
                 road.Draw(spriteBatch);
             }
+
+            foreach(var platformToAdd in mPlatformsToPlace)
+            {
+                platformToAdd.Draw(spriteBatch);
+            }
         }
 
         public void Update(GameTime gametime)
@@ -134,6 +141,21 @@ namespace Singularity.Map
             {
                 road.Update(gametime);
             }
+
+            //TODO: set ishovering for the platformtoAdd if there are any.
+
+            foreach (var platformToAdd in mPlatformsToPlace)
+            {
+                if (!platformToAdd.IsFinished())
+                {
+                    platformToAdd.Update(gametime);
+                }
+            }
+        }
+
+        public void AddPlatformToPlace(PlatformPlacement platformPlacement)
+        {
+            mPlatformsToPlace.AddLast(platformPlacement);
         }
     }
 }
