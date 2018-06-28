@@ -24,10 +24,6 @@ namespace Singularity.Screen
         // is the slider slave to the mouse
         private bool mSlave;
 
-        // dimensions of slider and bar in pixels
-        private readonly int mSliderSize;
-        private readonly int mBarLength;
-
         // with value box on right side, bar with pages (notches)
         private readonly bool mWithValue;
         private readonly bool mWithPages;
@@ -63,8 +59,6 @@ namespace Singularity.Screen
             mMax = Position.X + length;
             Size = new Vector2(length, sliderSize);
             mCurrentX = mMin;
-            mSliderSize = sliderSize;
-            mBarLength = length;
             mValuePrevious = mMin;
             mWithValue = withValueBox;
             mWithPages = withPages;
@@ -87,7 +81,7 @@ namespace Singularity.Screen
                 mCurrentPage = 1;
                 mLastPage = 1;
                 MaxIncrement = pages;
-                mPageSize = mBarLength / (Pages-1);
+                mPageSize = Size.X / (Pages-1);
             }
         }
 
@@ -114,8 +108,8 @@ namespace Singularity.Screen
             if (Active)
             {
                 mMin = Position.X;
-                mMax = Position.X + mBarLength;
-                mPageSize = mBarLength / (Pages - 1);
+                mMax = Position.X + Size.X;
+                mPageSize = Size.X / (Pages - 1);
 
                 // if slave to the mouse then move according to the limits of the slider bar
                 if (mSlave && !mWithPages)
@@ -226,10 +220,11 @@ namespace Singularity.Screen
                 // draws slider bar
                 spriteBatch.DrawLine(Position.X, Position.Y, mMax, Position.Y, (Color.White * (float) 0.6), 3);
 
+
                 // draws slider
                 spriteBatch.StrokedRectangle(
-                    new Vector2(mCurrentX - ((float) mSliderSize / 2), Position.Y - ((float) mSliderSize / 2)),
-                    new Vector2(mSliderSize, mSliderSize),
+                    new Vector2(mCurrentX - ((float) Size.Y / 2), Position.Y - ((float) Size.Y / 2)),
+                    new Vector2(Size.Y, Size.Y),
                     Color.Gray,
                     Color.Black,
                     (float) .5,
@@ -241,7 +236,7 @@ namespace Singularity.Screen
                     // draws rectangle to the right side of slider
                     spriteBatch.StrokedRectangle(
                         new Vector2(
-                            (mMax + mSliderSize + 30) -
+                            (mMax + Size.Y + 30) -
                             (mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X / 2),
                             Position.Y - 12 - mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).Y / 4),
                         new Vector2(mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X,
@@ -254,7 +249,7 @@ namespace Singularity.Screen
                     // draws in value of slider in the center of display window
                     spriteBatch.DrawString(mFont,
                         origin: Vector2.Zero,
-                        position: new Vector2((mMax + mSliderSize + 30) - (mFont.MeasureString(mStringValue).X / 2),
+                        position: new Vector2((mMax + Size.Y + 30) - (mFont.MeasureString(mStringValue).X / 2),
                             Position.Y - 12),
                         color: Color.White,
                         text: mStringValue.ToString(),
@@ -276,10 +271,10 @@ namespace Singularity.Screen
                 // when left key is pressed and mouse within slider bounds then make slider slave to mouse
                 case EMouseAction.LeftClick:
                     Debug.Write("Hello");
-                    if( Mouse.GetState().X >= mCurrentX - ((float)mSliderSize / 2) &&
-                        Mouse.GetState().X <= mCurrentX + ((float)mSliderSize / 2) &&
-                        Mouse.GetState().Y >= Position.Y - ((float)mSliderSize / 2) &&
-                        Mouse.GetState().Y <= Position.Y + ((float)mSliderSize / 2))
+                    if( Mouse.GetState().X >= mCurrentX - (Size.Y / 2) &&
+                        Mouse.GetState().X <= mCurrentX + (Size.Y / 2) &&
+                        Mouse.GetState().Y >= Position.Y - (Size.Y / 2) &&
+                        Mouse.GetState().Y <= Position.Y + (Size.Y / 2))
                     {
                         mSlave = true;
                         return false;
