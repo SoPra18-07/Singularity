@@ -54,6 +54,8 @@ namespace Singularity.Screen.ScreenClasses
 
         private bool mCanBuildPlatform;
 
+        private PlatformPlacement mPlatformToPlace;
+
         #region civilUnitsWindow members
 
         private Slider mDefSlider;
@@ -213,6 +215,11 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             #endregion
+
+            if (mPlatformToPlace != null && mPlatformToPlace.IsFinished())
+            {
+                mCanBuildPlatform = true;
+            }
 
             // update screen size TODO : UPDATE POSITIONS OF THE WINDOWS WHEN RES-CHANGE IN PAUSE MENU
             mCurrentScreenWidth = mGraphics.PreferredBackBufferWidth;
@@ -980,15 +987,18 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-            mStructureMap.AddPlatformToPlace(new PlatformPlacement(
-                EPlatformType.Blank, 
-                EPlacementType.MouseFollowAndRoad, 
-                EScreen.UserInterfaceScreen, 
-                mCamera, 
-                ref mDirector, 
-                0f, 
-                0f, 
-                mResourceMap));
+
+            mPlatformToPlace = new PlatformPlacement(
+                EPlatformType.Blank,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
 
@@ -996,7 +1006,7 @@ namespace Singularity.Screen.ScreenClasses
         }
         private void OnButtonmBlankPlatformReleased(object sender, EventArgs eventArgs)
         {
-            mCanBuildPlatform = true;
+
         }
 
         private void OnButtonmJunkyardPlatformClick(object sender, EventArgs eventArgs)
@@ -1005,7 +1015,8 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-            mStructureMap.AddPlatformToPlace(new PlatformPlacement(
+
+            mPlatformToPlace = new PlatformPlacement(
                 EPlatformType.Junkyard,
                 EPlacementType.MouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
@@ -1013,13 +1024,15 @@ namespace Singularity.Screen.ScreenClasses
                 ref mDirector,
                 0f,
                 0f,
-                mResourceMap));
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
         private void OnButtonmJunkyardPlatformReleased(object sender, EventArgs eventArgs)
         {
-            mCanBuildPlatform = true;
+
         }
 
         private void OnButtonmQuarryPlatformClick(object sender, EventArgs eventArgs)
@@ -1028,7 +1041,8 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-            mStructureMap.AddPlatformToPlace(new PlatformPlacement(
+            
+            mPlatformToPlace = new PlatformPlacement(
                 EPlatformType.Quarry,
                 EPlacementType.MouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
@@ -1036,13 +1050,15 @@ namespace Singularity.Screen.ScreenClasses
                 ref mDirector,
                 0f,
                 0f,
-                mResourceMap));
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
         private void OnButtonmQuarryPlatformReleased(object sender, EventArgs eventArgs)
         {
-            mCanBuildPlatform = true;
+
         }
 
         private void OnButtonmMinePlatformClick(object sender, EventArgs eventArgs)
@@ -1051,7 +1067,8 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-            mStructureMap.AddPlatformToPlace(new PlatformPlacement(
+
+            mPlatformToPlace = new PlatformPlacement(
                 EPlatformType.Mine,
                 EPlacementType.MouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
@@ -1059,13 +1076,15 @@ namespace Singularity.Screen.ScreenClasses
                 ref mDirector,
                 0f,
                 0f,
-                mResourceMap));
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
         private void OnButtonmMinePlatformReleased(object sender, EventArgs eventArgs)
         {
-            mCanBuildPlatform = true;
+
         }
 
         private void OnButtonmWellPlatformClick(object sender, EventArgs eventArgs)
@@ -1074,7 +1093,8 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-            mStructureMap.AddPlatformToPlace(new PlatformPlacement(
+
+            mPlatformToPlace = new PlatformPlacement(
                 EPlatformType.Well,
                 EPlacementType.MouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
@@ -1082,13 +1102,15 @@ namespace Singularity.Screen.ScreenClasses
                 ref mDirector,
                 0f,
                 0f,
-                mResourceMap));
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
         private void OnButtonmWellPlatformReleased(object sender, EventArgs eventArgs)
         {
-            mCanBuildPlatform = true;
+
         }
 
         private void OnButtonmFactoryPlatformClick(object sender, EventArgs eventArgs)
@@ -1097,7 +1119,8 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-            mStructureMap.AddPlatformToPlace(new PlatformPlacement(
+
+            mPlatformToPlace = new PlatformPlacement(
                 EPlatformType.Factory,
                 EPlacementType.MouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
@@ -1105,13 +1128,15 @@ namespace Singularity.Screen.ScreenClasses
                 ref mDirector,
                 0f,
                 0f,
-                mResourceMap));
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
         private void OnButtonmFactoryPlatformReleased(object sender, EventArgs eventArgs)
         {
-            mCanBuildPlatform = true;
+
         }
 
         private void OnButtonmStoragePlatformClick(object sender, EventArgs eventArgs)
@@ -1120,7 +1145,8 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-            mStructureMap.AddPlatformToPlace(new PlatformPlacement(
+
+            mPlatformToPlace = new PlatformPlacement(
                 EPlatformType.Storage,
                 EPlacementType.MouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
@@ -1128,13 +1154,15 @@ namespace Singularity.Screen.ScreenClasses
                 ref mDirector,
                 0f,
                 0f,
-                mResourceMap));
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
         private void OnButtonmStoragePlatformReleased(object sender, EventArgs eventArgs)
         {
-            mCanBuildPlatform = true;
+
         }
 
         private void OnButtonmPowerhousePlatformClick(object sender, EventArgs eventArgs)
@@ -1143,7 +1171,8 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-            mStructureMap.AddPlatformToPlace(new PlatformPlacement(
+
+            mPlatformToPlace = new PlatformPlacement(
                 EPlatformType.Energy,
                 EPlacementType.MouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
@@ -1151,13 +1180,15 @@ namespace Singularity.Screen.ScreenClasses
                 ref mDirector,
                 0f,
                 0f,
-                mResourceMap));
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
         private void OnButtonmPowerhousePlatformReleased(object sender, EventArgs eventArgs)
         {
-            mCanBuildPlatform = true;
+
         }
 
         private void OnButtonmCommandcenterPlatformClick(object sender, EventArgs eventArgs)
@@ -1166,7 +1197,8 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-            mStructureMap.AddPlatformToPlace(new PlatformPlacement(
+
+            mPlatformToPlace = new PlatformPlacement(
                 EPlatformType.Command,
                 EPlacementType.MouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
@@ -1174,13 +1206,15 @@ namespace Singularity.Screen.ScreenClasses
                 ref mDirector,
                 0f,
                 0f,
-                mResourceMap));
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
         private void OnButtonmCommandcenterPlatformReleased(object sender, EventArgs eventArgs)
         {
-            mCanBuildPlatform = true;
+
         }
 
         private void OnButtonmArmoryPlatformClick(object sender, EventArgs eventArgs)
@@ -1198,7 +1232,8 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-            mStructureMap.AddPlatformToPlace(new PlatformPlacement(
+
+            mPlatformToPlace = new PlatformPlacement(
                 EPlatformType.Kinetic,
                 EPlacementType.MouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
@@ -1206,13 +1241,15 @@ namespace Singularity.Screen.ScreenClasses
                 ref mDirector,
                 0f,
                 0f,
-                mResourceMap));
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
         private void OnButtonmKineticTowerPlatformReleased(object sender, EventArgs eventArgs)
         {
-            mCanBuildPlatform = true;
+
         }
 
         private void OnButtonmLaserTowerPlatformClick(object sender, EventArgs eventArgs)
@@ -1221,7 +1258,8 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-            mStructureMap.AddPlatformToPlace(new PlatformPlacement(
+
+            mPlatformToPlace = new PlatformPlacement(
                 EPlatformType.Laser,
                 EPlacementType.MouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
@@ -1229,13 +1267,15 @@ namespace Singularity.Screen.ScreenClasses
                 ref mDirector,
                 0f,
                 0f,
-                mResourceMap));
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
         private void OnButtonmLaserTowerPlatformReleased(object sender, EventArgs eventArgs)
         {
-            mCanBuildPlatform = true;
+
         }
 
         private void OnButtonmBarracksPlatformClick(object sender, EventArgs eventArgs)
@@ -1244,7 +1284,8 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-            mStructureMap.AddPlatformToPlace(new PlatformPlacement(
+
+            mPlatformToPlace = new PlatformPlacement(
                 EPlatformType.Barracks,
                 EPlacementType.MouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
@@ -1252,13 +1293,15 @@ namespace Singularity.Screen.ScreenClasses
                 ref mDirector,
                 0f,
                 0f,
-                mResourceMap));
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
         private void OnButtonmBarracksPlatformReleased(object sender, EventArgs eventArgs)
         {
-            mCanBuildPlatform = true;
+
         }
 
         #endregion
