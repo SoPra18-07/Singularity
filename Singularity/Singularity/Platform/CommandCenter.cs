@@ -34,7 +34,7 @@ namespace Singularity.Platform
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Command;
             mSpritename = "Cylinders";
-            AbsoluteSize = SetPlatfromDrawParameters();
+            SetPlatfromParameters();
             mControlledUnits = new List<GeneralUnit>();
             dir.GetStoryManager.AddEnergy(5);
         }

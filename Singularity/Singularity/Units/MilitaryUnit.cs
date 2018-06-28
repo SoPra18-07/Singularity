@@ -8,6 +8,7 @@ using Singularity.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Map.Properties;
 using Singularity.Property;
 using Singularity.Screen;
 using Singularity.Sound;
@@ -84,6 +85,8 @@ namespace Singularity.Units
         public Rectangle Bounds { get; private set; }
 
         public Rectangle AbsBounds { get; private set; }
+
+        public bool[,] ColliderGrid { get; }
 
         
         public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director, ref Map.Map map)
@@ -197,13 +200,16 @@ namespace Singularity.Units
                 SpriteEffects.None,
                 LayerConstants.MilitaryUnitLayer
                 );
-            
-            // TODO DEBUG REGION
-            if (mDebugPath != null)
+
+            if (GlobalVariables.DebugState)
             {
-                for (var i = 0; i < mDebugPath.Length - 1; i++)
+                // TODO DEBUG REGION
+                if (mDebugPath != null)
                 {
-                    spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
+                    for (var i = 0; i < mDebugPath.Length - 1; i++)
+                    {
+                        spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
+                    }
                 }
             }
 
@@ -338,28 +344,46 @@ namespace Singularity.Units
             switch (mouseAction)
             {
                 case EMouseAction.LeftClick:
-                    if (mSelected && !mIsMoving && !withinBounds && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f), (int)(mMouseY - RelativeSize.Y / 2f), (int)RelativeSize.X, (int)RelativeSize.Y), mCamera))
+                    // check for if the unit is selected, not moving, the click is not within the bounds of the unit, and the click was on the map.
+                    if (mSelected
+                        && !mIsMoving
+                        && !withinBounds
+                        && Map.Map.IsOnTop(new Rectangle((int) (mMouseX - RelativeSize.X / 2f),
+                                (int) (mMouseY - RelativeSize.Y / 2f),
+                                (int) RelativeSize.X,
+                                (int) RelativeSize.Y),
+                            mCamera))
                     {
-                        mIsMoving = true;
+                        
                         mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
                             Matrix.Invert(mCamera.GetTransform()));
-                        var currentPosition = Center;
-                        Debug.WriteLine("Starting path finding at: " + currentPosition.X +", " + currentPosition.Y);
-                        Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
+                        if (mMap.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
+                            (int) mTargetPosition.X / MapConstants.GridWidth,
+                            (int) mTargetPosition.Y / MapConstants.GridWidth))
+                        {
+                            mIsMoving = true;
 
-                        mPath = new Stack<Vector2>();
-                        mPath = mPathfinder.FindPath(currentPosition,
-                            mTargetPosition,
-                            ref mMap);
+                            var currentPosition = Center;
+                            Debug.WriteLine("Starting path finding at: " + currentPosition.X + ", " + currentPosition.Y);
+                            Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
 
-                        // TODO: DEBUG REGION
-                        mDebugPath = mPath.ToArray();
+                            mPath = new Stack<Vector2>();
+                            mPath = mPathfinder.FindPath(currentPosition,
+                                mTargetPosition,
+                                ref mMap);
 
-                        // TODO: END DEBUG REGION
+                            if (GlobalVariables.DebugState)
+                            {
+                                // TODO: DEBUG REGION
+                                mDebugPath = mPath.ToArray();
+                                // TODO: END DEBUG REGION
+                            }
 
-                        mBoundsSnapshot = Bounds;
-                        mZoomSnapshot = mCamera.GetZoom();
-                        giveThrough = true;
+                            mBoundsSnapshot = Bounds;
+                            mZoomSnapshot = mCamera.GetZoom();
+                            giveThrough = true;
+                        }
+                        
                     }
 
                     if (withinBounds) {
