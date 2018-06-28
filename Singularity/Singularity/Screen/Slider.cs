@@ -65,7 +65,7 @@ namespace Singularity.Screen
             mSliderLength = length;
             mValueCurrent = 0;
             mValuePrevious = 0;
-            Active = true;
+            ActiveWindow = true;
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Singularity.Screen
             mFont = font;
             // start off value at 0
             mStringValue = 0.ToString();
-            Active = true;
+            ActiveWindow = true;
         }
 
 
@@ -101,7 +101,7 @@ namespace Singularity.Screen
         /// </summary>
         protected virtual void OnSliderMoving()
         {
-            if (SliderMoving != null && Active)
+            if (SliderMoving != null && ActiveWindow)
             {
                 SliderMoving(this, EventArgs.Empty, (mCurrentX/(mMax-mMin)));
             }
@@ -114,7 +114,7 @@ namespace Singularity.Screen
         /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
-            if (Active)
+            if (ActiveWindow)
             {
                 mMin = Position.X;
                 mMax = Position.X + mSliderLength;
@@ -180,7 +180,7 @@ namespace Singularity.Screen
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (Active)
+            if (ActiveWindow)
             {
                 spriteBatch.DrawLine(Position.X, Position.Y, mMax, Position.Y, (Color.White * (float)0.6), 3);
 
@@ -214,6 +214,6 @@ namespace Singularity.Screen
 
         public Vector2 Position { get; set; }
         public Vector2 Size { get; }
-        public bool Active { get; set; }
+        public bool ActiveWindow { get; set; }
     }
 }

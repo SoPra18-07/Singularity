@@ -16,6 +16,15 @@ namespace Singularity.Screen
         // bool to indicated if the button is made of text
         private readonly bool mIsText;
 
+        // bool to indicate if the button needs to crop the texture2D with a sourceRectangle
+        private readonly bool mCrop;
+
+        // bool to indicate if the mouse was just hovering or not
+        private bool mHoveringStarted;
+
+        // sourceRectangle to crop the texture2D if needed
+        private readonly Rectangle mSourceRectangle;
+
         private readonly float mScale;
         private readonly Texture2D mButtonTexture;
         private readonly string mButtonText;
@@ -46,6 +55,7 @@ namespace Singularity.Screen
         public event EventHandler ButtonReleased;
         public event EventHandler ButtonHovering;
         public event EventHandler ButtonClicked;
+        public event EventHandler ButtonHoveringEnd;
 
 
         /// <summary>
@@ -66,9 +76,32 @@ namespace Singularity.Screen
             mColor = Color.White;
             CreateRectangularBounds();
             Opacity = 1;
-            Active = true;
+            ActiveWindow = true;
         }
 
+
+        /// <summary>
+        /// Creates a button using a Texture2D + a cropping AKA source vector
+        /// </summary>
+        /// <param name="scale"> scale of the texture</param>
+        /// <param name="buttonTexture"></param>
+        /// <param name="sourceRectangle">crop the buttonTexture</param>
+        /// <param name="position"></param>
+        /// <param name="withBorder"></param>
+        public Button(float scale, Texture2D buttonTexture, Rectangle sourceRectangle, Vector2 position, bool withBorder)
+        {
+            mIsText = false;
+            mCrop = true;
+            mScale = scale;
+            mButtonTexture = buttonTexture;
+            mSourceRectangle = sourceRectangle;
+            Position = position;
+            Size = new Vector2(sourceRectangle.Width * scale, sourceRectangle.Height * scale);//new Vector2((int)(mButtonTexture.Width * scale), (int)(mButtonTexture.Height * scale));
+            mColor = Color.White;
+            CreateRectangularBounds();
+            Opacity = 1;
+            ActiveWindow = true;
+        }
 
 
         /// <summary>
@@ -86,7 +119,7 @@ namespace Singularity.Screen
             Size = new Vector2((int)mFont.MeasureString(mButtonText).X, (int)mFont.MeasureString(mButtonText).Y);
             mColor = Color.White;
             CreateRectangularBounds();
-            Active = true;
+            ActiveWindow = true;
         }
 
         public Button(string buttonText, SpriteFont font, Vector2 position, Color color)
@@ -98,7 +131,7 @@ namespace Singularity.Screen
             Size = new Vector2((int)mFont.MeasureString(mButtonText).X, (int)mFont.MeasureString(mButtonText).Y);
             mColor = color;
             CreateRectangularBounds();
-            Active = true;
+            ActiveWindow = true;
         }
 
 
@@ -115,7 +148,7 @@ namespace Singularity.Screen
         /// </summary>
         protected virtual void OnButtonReleased()
         {
-            if (ButtonReleased != null && Active)
+            if (ButtonReleased != null && ActiveWindow)
             {
                 ButtonReleased(this, EventArgs.Empty);
             }
@@ -127,9 +160,20 @@ namespace Singularity.Screen
         /// </summary>
         protected virtual void OnButtonHovering()
         {
-            if (ButtonHovering != null && Active)
+            if (ButtonHovering != null && ActiveWindow)
             {
                 ButtonHovering(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Sends out event that mouse is no longer hovering over the button
+        /// </summary>
+        protected virtual void OnButtonHoveringEnd()
+        {
+            if (ButtonHoveringEnd != null && ActiveWindow)
+            {
+                ButtonHoveringEnd(this, EventArgs.Empty);
             }
         }
 
@@ -138,7 +182,7 @@ namespace Singularity.Screen
         /// </summary>
         protected virtual void OnButtonClicked()
         {
-            if (Active)
+            if (ActiveWindow)
             {
                 ButtonClicked?.Invoke(this, EventArgs.Empty);
             }
@@ -152,24 +196,46 @@ namespace Singularity.Screen
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (Active)
+            if (ActiveWindow)
             {
                 // draw for button that uses a Texture2D
                 if (mIsText == false)
                 {
-                    spriteBatch.Draw(mButtonTexture,
-                        Position,
-                        null,
-                        mColor * Opacity,
-                        0f,
-                        new Vector2(0, 0),
-                        mScale,
-                        SpriteEffects.None,
-                        0f);
-                    if (mWithBorder)
+                    // draw for buttons which need to crop the texture
+                    if (mCrop)
                     {
-                        // draw border around texture if feauture selected
-                        spriteBatch.DrawRectangle(Position, new Vector2(Size.X, Size.Y), Color.White, 1);
+                        spriteBatch.Draw(mButtonTexture,
+                            Position,
+                            mSourceRectangle,
+                            mColor * Opacity,
+                            0f,
+                            new Vector2(0, 0),
+                            mScale,
+                            SpriteEffects.None,
+                            0f);
+                        if (mWithBorder)
+                        {
+                            // draw border around texture if feauture selected
+                            spriteBatch.DrawRectangle(Position, new Vector2(Size.X, Size.Y), Color.White, 1);
+                        }
+                    }
+                    // draw for buttons which do not need to crop the texture
+                    else
+                    {
+                        spriteBatch.Draw(mButtonTexture,
+                            Position,
+                            null,
+                            mColor * Opacity,
+                            0f,
+                            new Vector2(0, 0),
+                            mScale,
+                            SpriteEffects.None,
+                            0f);
+                        if (mWithBorder)
+                        {
+                            // draw border around texture if feauture selected
+                            spriteBatch.DrawRectangle(Position, new Vector2(Size.X, Size.Y), Color.White, 1);
+                        }
                     }
 
                 }
@@ -198,7 +264,7 @@ namespace Singularity.Screen
         /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
-            if (Active)
+            if (ActiveWindow)
             {
                 // if mouse is hovering over button then make draw color gray
                 if (Mouse.GetState().X >= Position.X &&
@@ -208,12 +274,22 @@ namespace Singularity.Screen
                 {
                     OnButtonHovering();
                     mColor = Color.Gray;
+
+                    // set no hovering -> hovering
+                    mHoveringStarted = true;
                 }
 
-                // otherwise keep draw color at white
+                // otherwise keep draw color at white + call hoveringEnd event
                 else
                 {
                     mColor = Color.White;
+
+                    // set hovering -> no hovering
+                    if (mHoveringStarted)
+                    {
+                        OnButtonHoveringEnd();
+                        mHoveringStarted = false;
+                    }
                 }
 
                 // check if button has been left clicked
@@ -226,7 +302,6 @@ namespace Singularity.Screen
                     OnButtonClicked();
                     mClicked = true;
                 }
-
 
                 // check if left button is also released within button bounds to send out ButtonReleased event
 
@@ -253,6 +328,6 @@ namespace Singularity.Screen
         public Vector2 Size { get; }
 
         // active button <-> inactive button
-        public bool Active { get; set; }
+        public bool ActiveWindow { get; set; }
     }
 }
