@@ -88,7 +88,7 @@ namespace Singularity.Screen
             mWithValue = withValueBox;
             mWithPages = withPages;
             mFont = font;
-            Active = true;
+            ActiveWindow = true;
             Pages = pages;
             mLastPages = pages;
             mDirector = director;
@@ -113,7 +113,7 @@ namespace Singularity.Screen
 
         protected virtual void OnSliderMoving()
         {
-            if (SliderMoving != null && Active)
+            if (SliderMoving != null && ActiveWindow)
             {
                 SliderMoving(this, EventArgs.Empty, (mCurrentX / (mMax - mMin)));
             }
@@ -121,7 +121,7 @@ namespace Singularity.Screen
 
         protected virtual void OnPageMoving()
         {
-            if (PageMoving != null && Active)
+            if (PageMoving != null && ActiveWindow)
             {
                 PageMoving(this, EventArgs.Empty, mCurrentPage);
             }
@@ -135,7 +135,7 @@ namespace Singularity.Screen
         public void Update(GameTime gametime)
         {
             // if slider should be shown 
-            if (Active)
+            if (ActiveWindow)
             {
                 mMin = Position.X;
                 mMax = Position.X + Size.X;
@@ -300,7 +300,7 @@ namespace Singularity.Screen
         public void Draw(SpriteBatch spriteBatch)
         {
             // if slider should be shown
-            if (Active)
+            if (ActiveWindow)
             {
 
                 // add value display
@@ -428,7 +428,7 @@ namespace Singularity.Screen
         public Vector2 Size { get; }
 
         // can make slider not active (not drawn and nothing happens) 
-        public bool Active { get; set; }
+        public bool ActiveWindow { get; set; }
 
         // can change the amount of pages available on slider bar
         public int Pages { get; set; }

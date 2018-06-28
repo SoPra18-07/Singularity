@@ -296,7 +296,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO
             #region eventLogWindow
 
-            var eventLogWindow = new WindowObject("// EVENT LOG", new Vector2(eventLogX, eventLogY), new Vector2(eventLogWidth, eventLogHeight), borderColor, windowColor, 10f, 10f, true, mLibSans14, mInputManager, mGraphics);
+            var eventLogWindow = new WindowObject("// EVENT LOG", new Vector2(eventLogX, eventLogY), new Vector2(eventLogWidth, eventLogHeight), true, mLibSans14, mInputManager, mGraphics);
 
             // create items
 
@@ -378,7 +378,7 @@ namespace Singularity.Screen.ScreenClasses
 
             #region buildMenuWindow
 
-            mBuildMenuWindow = new WindowObject("// BUILDMENU", new Vector2(buildMenuX, buildMenuY), new Vector2(buildMenuWidth, (float)buildMenuHeight), borderColor, windowColor, 10, 10, true, mLibSans14, mInputManager, mGraphics);
+            mBuildMenuWindow = new WindowObject("// BUILDMENU", new Vector2(buildMenuX, buildMenuY), new Vector2(buildMenuWidth, (float)buildMenuHeight), true, mLibSans14, mInputManager, mGraphics);
 
             #region button definitions
 

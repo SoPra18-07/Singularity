@@ -8,7 +8,7 @@
         /// <summary> Available: meaning it can be executed,
         /// the button for the action can be clicked </summary>
         Available,
-        /// <summary> Active: meaning it is currently being executed,
+        /// <summary> ActiveWindow: meaning it is currently being executed,
         ///  so not available right now (the button cannot be clicked) </summary>
         Active,
         /// <summary> Deactivated: meaning it's manually paused

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
@@ -523,8 +524,9 @@ namespace Singularity.Screen
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
-            if (mouseAction != EMouseAction.LeftClick || !withinBounds || !Active)
+            if (mouseAction == EMouseAction.LeftClick && withinBounds && Active)
             {
+                Console.Out.WriteLine("check");
                 #region minimization
 
                 if (mMouseX >= mMinimizationRectangle.X &&
@@ -577,7 +579,6 @@ namespace Singularity.Screen
                 mMouseY > mPosition.Y &&
                 mMouseY < mPosition.Y + mTitleSizeY + mMinimizationSize &&
                 !mClickOnTitleBar)
-
                 // mouse above the title rectangle
                 {
                     if (!(mMouseX >= mMinimizationRectangle.X &&
@@ -617,7 +618,8 @@ namespace Singularity.Screen
         public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {
             #region window movement
-            if (!mClickOnTitleBar || !Active)
+
+            if (mClickOnTitleBar && Active)
                 // enable single window movement + no reaction when deactivated
             {
                 // backup old window position to calculate the movement
