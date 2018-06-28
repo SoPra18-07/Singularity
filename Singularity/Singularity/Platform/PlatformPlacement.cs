@@ -148,6 +148,11 @@ namespace Singularity.Platform
                 {
                     case 1:
                         mPlatform.UpdateValues();
+                        if (!Map.Map.IsOnTop(mPlatform.AbsBounds))
+                        {
+                            break;
+                        }
+
                         mCurrentState.NextState();
                         mConnectionRoad = new Road(mPlatform, null, true);
 
