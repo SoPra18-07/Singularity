@@ -50,7 +50,7 @@ namespace Singularity.Platform
         /// <param name="y">The initial y coordinate of the platform</param>
         /// <param name="resourceMap">The resource map needed to initialize some platforms</param>
         /// <returns></returns>
-        public static PlatformBlank Get(EPlatformType type, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null)
+        public static PlatformBlank Get(EPlatformType type, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null, bool autoRegister = true)
         {
             //TODO: add conesheet to this query. Its not included right now since it doesn't exists at this point in time
             if (mCylinderSheet == null || mDomeSheet == null || mBlankSheet == null)
@@ -63,22 +63,22 @@ namespace Singularity.Platform
             switch (type)
             {
                 case EPlatformType.Quarry:
-                    return new Quarry(position, mDomeSheet, mBlankSheet, resourceMap, ref director);
+                    return new Quarry(position, mDomeSheet, mBlankSheet, resourceMap, ref director, autoRegister);
 
-                case EPlatformType.Barracks:
+                case EPlatformType.Barracks: 
                     throw new NotImplementedException("Barracks have not yet been implemented");
 
                 case EPlatformType.Blank:
-                    return new PlatformBlank(position, mBlankSheet, mBlankSheet);
+                    return new PlatformBlank(position, mBlankSheet, mBlankSheet, ref director);
 
                 case EPlatformType.Command:
                     return new CommandCenter(position, mCylinderSheet, mBlankSheet, ref director);
 
                 case EPlatformType.Energy:
-                    return new EnergyFacility(position, mDomeSheet, mBlankSheet);
+                    return new EnergyFacility(position, mDomeSheet, mBlankSheet, ref director);
 
                 case EPlatformType.Factory:
-                    return new Factory(position, mDomeSheet, mBlankSheet);
+                    return new Factory(position, mDomeSheet, mBlankSheet, ref director);
 
                 case EPlatformType.Junkyard:
                     return new Junkyard(position, mDomeSheet, mBlankSheet, ref director);
@@ -87,16 +87,16 @@ namespace Singularity.Platform
                     throw new NotImplementedException("Kinetic Facilities have not yet been implemented");
 
                 case EPlatformType.Mine:
-                    return new Mine(position, mDomeSheet, mBlankSheet, resourceMap, ref director);
+                    return new Mine(position, mDomeSheet, mBlankSheet, resourceMap, ref director, autoRegister);
 
                 case EPlatformType.Packaging:
                     throw new NotImplementedException("Packaging facilities have not yet been implemented");
 
                 case EPlatformType.Storage:
-                    return new Storage(position, mDomeSheet, mBlankSheet);
+                    return new Storage(position, mDomeSheet, mBlankSheet, ref director);
 
                 case EPlatformType.Well:
-                    return new Well(position, mDomeSheet, mBlankSheet, resourceMap, ref director);
+                    return new Well(position, mDomeSheet, mBlankSheet, resourceMap, ref director, autoRegister);
 
                 case EPlatformType.Laser:
                     throw new NotImplementedException("Laser facilites have not yet been implemented");

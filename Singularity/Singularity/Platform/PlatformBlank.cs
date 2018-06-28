@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
+using Singularity.Manager;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
@@ -61,6 +64,8 @@ namespace Singularity.Platform
 
         public int Id { get; }
 
+        private readonly Director mDirector;
+
         // the sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome
         private int mSheet;
         private int mSheetPosition;
@@ -80,11 +85,16 @@ namespace Singularity.Platform
         [DataMember]
         public Vector2 RelativeSize { get; set; }
 
+        private readonly float mCenterOffsetY;
 
-        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, Vector2 center = new Vector2())
+        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director, float centerOffsetY = -36)
         {
 
             Id = IdGenerator.NextiD();
+
+            mDirector = director;
+
+            mCenterOffsetY = centerOffsetY;
 
             mLayer = LayerConstants.PlatformLayer;
 
@@ -123,23 +133,23 @@ namespace Singularity.Platform
             mIsBlueprint = true;
             mRequested = new Dictionary<EResourceType, int>();
 
-            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, 148, 88);
+            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int) AbsoluteSize.X, (int) AbsoluteSize.Y);
             Moved = false;
 
-            if (center == Vector2.Zero)
-            {
-                // no value was specified so just use the platform blank implementation.
-                Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y - 36);
-            }
-            else
-            {
-                //value was given by subclass thus take that
-                Center = center;
-            }
+            UpdateValues();
 
-            AbsoluteSize = SetPlatfromDrawParameters(); // this changes the draw parameters based on the platform type but
-                                                        // also returns the AbsoluteSize so the property can be set
+        }
 
+        public void UpdateValues()
+        {
+            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y + mCenterOffsetY);
+        }
+
+        public void Register()
+        {
+            //TODO: make this so we can also register defense platforms
+            mDirector.GetDistributionManager.Register(this, false);
         }
 
         /// <summary>

@@ -6,13 +6,14 @@ using Singularity.Manager;
 using Singularity.Platform;
 using Singularity.Property;
 using System.Diagnostics;
+using Singularity.Input;
 
 namespace Singularity.Map
 {
     /// <summary>
     /// A Structure map holds all the structures currently in the game.
     /// </summary>
-    public sealed class StructureMap : IDraw, IUpdate
+    public sealed class StructureMap : IDraw, IUpdate, IMousePositionListener
     {
         /// <summary>
         /// A list of all the platforms currently in the game
@@ -32,6 +33,10 @@ namespace Singularity.Map
 
         private readonly FogOfWar mFow;
 
+        private float mMouseX;
+
+        private float mMouseY;
+
         private int mCurrentGraphIndex;
 
         /// <summary>
@@ -39,6 +44,8 @@ namespace Singularity.Map
         /// </summary>
         public StructureMap(FogOfWar fow, ref Director director)
         {
+            director.GetInputManager.AddMousePositionListener(this);
+
             mCurrentGraphIndex = 0;
 
             mFow = fow;
@@ -137,9 +144,24 @@ namespace Singularity.Map
 
         public void Update(GameTime gametime)
         {
+            PlatformBlank hovering = null;
+
             foreach (var platform in mPlatforms)
             {
                 platform.Update(gametime);
+
+                if (mPlatformsToPlace.Count <= 0)
+                {
+                    continue;
+                }
+
+                if (!platform.AbsBounds.Intersects(new Rectangle((int) mMouseX, (int) mMouseY, 1, 1)))
+                {
+                    continue;
+                }
+
+                hovering = platform;
+
             }
 
             foreach (var road in mRoads)
@@ -147,19 +169,21 @@ namespace Singularity.Map
                 road.Update(gametime);
             }
 
-            //TODO: set ishovering for the platformtoAdd if there are any.
             var toRemove = new LinkedList<PlatformPlacement>();
 
             foreach (var platformToAdd in mPlatformsToPlace)
             {
                 if (!platformToAdd.IsFinished())
                 {
+                    platformToAdd.SetHovering(hovering);
                     platformToAdd.Update(gametime);
                     return;
                 }
                 //platform is finished
-                this.AddPlatform(platformToAdd.GetPlatform());
-                this.AddRoad(platformToAdd.GetRoad());
+                AddPlatform(platformToAdd.GetPlatform());
+                platformToAdd.GetPlatform().Register();
+                AddRoad(platformToAdd.GetRoad());
+                toRemove.AddLast(platformToAdd);
             }
             
             foreach(var platformToRemove in toRemove)
@@ -171,6 +195,12 @@ namespace Singularity.Map
         public void AddPlatformToPlace(PlatformPlacement platformPlacement)
         {
             mPlatformsToPlace.AddLast(platformPlacement);
+        }
+
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
+        {
+            mMouseX = worldX;
+            mMouseY = worldY;
         }
     }
 }

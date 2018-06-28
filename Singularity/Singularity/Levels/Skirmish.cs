@@ -6,6 +6,7 @@ using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platform;
 using Singularity.Resources;
+using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 
@@ -63,7 +64,7 @@ namespace Singularity.Levels
 
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
-            mPlatform = new PlatformBlank(new Vector2(1000, 1000), null, platformBlankTexture);
+            mPlatform = new PlatformBlank(new Vector2(1000, 1000), null, platformBlankTexture, ref mDirector);
 
             // this is done via the factory to test, so I can instantly see if something is some time off.
             var platform2 = PlatformFactory.Get(EPlatformType.Well, ref mDirector, 800, 1000, mMap.GetResourceMap());
@@ -76,7 +77,7 @@ namespace Singularity.Levels
                 ref mDirector);
             var platform4 = new EnergyFacility(new Vector2(1000, 800),
                 platformDomeTexture,
-                platformBlankTexture);
+                platformBlankTexture, ref mDirector);
 
             //GenUnits
             var genUnit = new GeneralUnit(mPlatform, ref mDirector);
@@ -119,18 +120,20 @@ namespace Singularity.Levels
             mGameScreen.AddObject(road3);
             mGameScreen.AddObject(road4);
             mGameScreen.AddObject(road5);
-            //mGameScreen.AddObject(genUnit);
-            //mGameScreen.AddObject(genUnit2);
-            //mGameScreen.AddObject(genUnit3);
-            //mGameScreen.AddObject(genUnit4);
-            //mGameScreen.AddObject(genUnit5);
+            mGameScreen.AddObject(genUnit);
+            mGameScreen.AddObject(genUnit2);
+            mGameScreen.AddObject(genUnit3);
+            mGameScreen.AddObject(genUnit4);
+            mGameScreen.AddObject(genUnit5);
             mGameScreen.AddObject(milUnit);
+
+            mMap.GetStructureMap().AddPlatformToPlace(new PlatformPlacement(EPlatformType.Well, EPlacementType.MouseFollowAndRoad, EScreen.GameScreen, mCamera, ref mDirector, 900, 900, mMap.GetResourceMap()));
+
 
             //TESTMETHODS HERE =====================================
             mDirector.GetDistributionManager.DistributeJobs(JobType.Idle, JobType.Production, 3);
             mDirector.GetDistributionManager.TestAttributes();
 
-            mMap.GetStructureMap().AddPlatformToPlace(new PlatformPlacement(EPlatformType.Blank, EPlacementType.MouseFollowAndRoad, Screen.EScreen.GameScreen, ref mDirector, 900, 900, mMap.GetResourceMap()));
         }
 
         public GameScreen GetGameScreen()

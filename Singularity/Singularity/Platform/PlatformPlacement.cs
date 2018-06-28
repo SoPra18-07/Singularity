@@ -12,6 +12,7 @@ using Singularity.Property;
 using Singularity.Screen;
 using Singularity.Utils;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Singularity.Platform
 {
@@ -43,8 +44,13 @@ namespace Singularity.Platform
 
         private float mMouseY;
 
-        public PlatformPlacement(EPlatformType platformType, EPlacementType placementType, EScreen screen, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null)
+        private readonly Camera mCamera;
+
+        public PlatformPlacement(EPlatformType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null)
         {
+            mCamera = camera;
+            Screen = screen;
+
             director.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             director.GetInputManager.AddMousePositionListener(this);
 
@@ -71,8 +77,7 @@ namespace Singularity.Platform
                     break;
             }
 
-            Screen = screen;
-            mPlatform = PlatformFactory.Get(platformType, ref director, x, y, resourceMap);
+            mPlatform = PlatformFactory.Get(platformType, ref director, x, y, resourceMap, false);
             //TODO: change to not hardcoded value.
             mPlatform.SetLayer(0.99f);
 
@@ -82,12 +87,15 @@ namespace Singularity.Platform
 
         private void UpdateBounds()
         {
+            mPlatform.RelativePosition = Vector2.Transform(mPlatform.AbsolutePosition, mCamera.GetTransform());
+            mPlatform.RelativeSize = mPlatform.AbsoluteSize * mCamera.GetZoom();
             Bounds = new Rectangle((int) mPlatform.RelativePosition.X, (int) mPlatform.RelativePosition.Y, (int) mPlatform.RelativeSize.X, (int) mPlatform.RelativeSize.Y);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             mPlatform.Draw(spriteBatch);
+            mConnectionRoad?.Draw(spriteBatch);
         }
 
         public void Update(GameTime gametime)
@@ -100,16 +108,22 @@ namespace Singularity.Platform
 
                 case 2:
                     mConnectionRoad.Destination = new Vector2(mMouseX, mMouseY);
+                    if (mHoveringPlatform != null)
+                    {
+                        mConnectionRoad.Destination = mHoveringPlatform.Center;
+                    }
                     break;
 
                 case 3:
+                    mPlatform.SetLayer(LayerConstants.PlatformLayer);
+                    mConnectionRoad.Blueprint = false;
+                    mConnectionRoad.Place(mPlatform, mHoveringPlatform);
                     mIsFinished = true;
                     break;
 
                 default:
                     break;
             }
-
             UpdateBounds();
         }
 
@@ -118,11 +132,12 @@ namespace Singularity.Platform
         {
             var giveThrough = true;
 
-            if (mouseAction == EMouseAction.LeftClick && withinBounds)
+            if (mouseAction == EMouseAction.LeftClick)
             {
                 switch (mCurrentState.GetState())
                 {
                     case 1:
+                        mPlatform.UpdateValues();
                         mCurrentState.NextState();
                         mConnectionRoad = new Road(mPlatform, null, true);
 
@@ -136,7 +151,10 @@ namespace Singularity.Platform
                         break;
 
                     case 2:
-                        if (mHoveringPlatform != null)
+                        // the second boolean expression limits two platforms to only be connectable by a road if the road isn't in the fog of war.
+                        // this was requested by felix
+                        if (mHoveringPlatform != null 
+                            && Vector2.Distance(mHoveringPlatform.Center, mPlatform.Center) <= (mPlatform.RevelationRadius + mHoveringPlatform.RevelationRadius))
                         {
                             mCurrentState.NextState();
                         }
