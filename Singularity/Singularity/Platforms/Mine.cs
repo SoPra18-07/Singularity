@@ -20,13 +20,13 @@ namespace Singularity.Platforms
         [DataMember]
         private Director mDirector;
 
-        public Mine(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ResourceMap resource, ref Director dir) : base(position, spritesheet, basesprite, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
+        public Mine(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ResourceMap resource, ref Director director)
+            : base(position: position, platformSpriteSheet: spritesheet, baseSprite: basesprite, director: ref director, center:new Vector2(x: position.X + PlatformWidth / 2f, y: position.Y + PlatformHeight - 36))
         {
-            mDirector = dir;
-            dir.GetDistributionManager.Register(this, false);
+            director.GetDistributionManager.Register(platform: this, isDef: false);
 
             mIPlatformActions = new IPlatformAction[2];
-            mIPlatformActions[0] = new ProduceMineResource(this, resource);
+            mIPlatformActions[0] = new ProduceMineResource(platform: this, resourceMap: resource);
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
@@ -45,7 +45,7 @@ namespace Singularity.Platforms
 
         public new void Update(GameTime time)
         {
-            base.Update(time);
+            base.Update(t: time);
             if (time.TotalGameTime.TotalSeconds % 5 <= 0.5)
             {
                 Produce();

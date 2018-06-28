@@ -38,7 +38,7 @@ namespace Singularity.Manager
         {
             mLevelType = LevelType.None;
             mEnergyLevel = 0;
-            mTime = new TimeSpan(0, 0, 0, 0, 0);
+            mTime = new TimeSpan(days: 0, hours: 0, minutes: 0, seconds: 0, milliseconds: 0);
             LoadAchievements();
 
             mUnits = new Dictionary<string, int>
@@ -86,15 +86,15 @@ namespace Singularity.Manager
         internal void LoadAchievements()
         {
             var path = @"%USERPROFILE%\Saved Games\Singularity";
-            path = Environment.ExpandEnvironmentVariables(path);
-            if (!Directory.Exists(path))
+            path = Environment.ExpandEnvironmentVariables(name: path);
+            if (!Directory.Exists(path: path))
             {
-                Directory.CreateDirectory(path);
+                Directory.CreateDirectory(path: path);
             }
 
-            if (File.Exists(path + @"\Achievements.xml"))
+            if (File.Exists(path: path + @"\Achievements.xml"))
             {
-                mAchievements = (Achievements)XSerializer.Load(path + @"\Achievements.xml");
+                mAchievements = (Achievements)XSerializer.Load(path: path + @"\Achievements.xml");
             }
             else
             {
@@ -109,8 +109,8 @@ namespace Singularity.Manager
         public void UpdateUnits(string action)
         {
             int a;
-            mUnits.TryGetValue(action, out a);
-            mUnits.Add(action, a + 1);
+            mUnits.TryGetValue(key: action, value: out a);
+            mUnits.Add(key: action, value: a + 1);
             if (mAchievements.Replicant())
             {
                 //trigger Achievement-popup;
@@ -124,8 +124,8 @@ namespace Singularity.Manager
         public void UpdatePlatforms(string action)
         {
             int a;
-            mPlatforms.TryGetValue(action, out a);
-            mPlatforms.Add(action, a + 1);
+            mPlatforms.TryGetValue(key: action, value: out a);
+            mPlatforms.Add(key: action, value: a + 1);
             if (mAchievements.Skynet())
             {
                 //trigger Achievement-popup;
@@ -139,8 +139,8 @@ namespace Singularity.Manager
         public void UpdateResources(EResourceType resource)
         {
             int a;
-            mResources.TryGetValue(resource, out a);
-            mResources.Add(resource, a + 1);
+            mResources.TryGetValue(key: resource, value: out a);
+            mResources.Add(key: resource, value: a + 1);
         }
 
         /// <summary>
@@ -160,7 +160,7 @@ namespace Singularity.Manager
         /// <param name="time"></param>
         public void Update(GameTime time)
         {
-            mTime = mTime.Add(time.ElapsedGameTime);
+            mTime = mTime.Add(ts: time.ElapsedGameTime);
             switch (mLevelType)
             {
                 case LevelType.None:

@@ -20,14 +20,14 @@ namespace Singularity.Serialization
         [DataMember]
         private List<SerializationDummy> mDummyList;
         [DataMember]
-        public Vector2 mVector = new Vector2(1,2);
+        public Vector2 mVector = new Vector2(x: 1,y: 2);
 
 
         public SerializationDummy(int randomvalue, List<SerializationDummy> list)
         {
             mId = randomvalue;
             mDummyList = list;
-            mCDummy = new CyclicDummy(this);
+            mCDummy = new CyclicDummy(reference: this);
         }
 
         public CyclicDummy GetDummy()
@@ -45,16 +45,16 @@ namespace Singularity.Serialization
         /// </summary>
         public void PrintFields()
         {
-            Console.WriteLine("This is the PrintFields method.");
-            Console.WriteLine("My mId: " + mId);
-            Console.WriteLine("The static count: " + sCount);
-            Console.WriteLine("The List that was given to me: " + mDummyList);
-            Console.WriteLine("The content of the List: ");
+            Console.WriteLine(value: "This is the PrintFields method.");
+            Console.WriteLine(value: "My mId: " + mId);
+            Console.WriteLine(value: "The static count: " + sCount);
+            Console.WriteLine(value: "The List that was given to me: " + mDummyList);
+            Console.WriteLine(value: "The content of the List: ");
             for (var i = 0; i < mDummyList.Count; i++)
             {
-                Console.WriteLine(mDummyList[i]);
+                Console.WriteLine(value: mDummyList[index: i]);
             }
-            Console.WriteLine("End PrintFields method.");
+            Console.WriteLine(value: "End PrintFields method.");
         }
 
         public override string ToString()

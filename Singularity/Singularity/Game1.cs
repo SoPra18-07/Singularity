@@ -34,15 +34,15 @@ namespace Singularity
 
         internal Game1()
         {
-            mGraphics = new GraphicsDeviceManager(this);
+            mGraphics = new GraphicsDeviceManager(game: this);
             Content.RootDirectory = "Content";
 
             mGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
 
-            mDirector = new Director(Content);
+            mDirector = new Director(content: Content);
 
 
-            mScreenManager = new StackScreenManager(Content, mDirector.GetInputManager);
+            mScreenManager = new StackScreenManager(contentManager: Content, inputManager: mDirector.GetInputManager);
 
         }
 
@@ -70,25 +70,25 @@ namespace Singularity
         /// </summary>
         protected override void LoadContent()
         {
-            var viewportResolution = new Vector2(GraphicsDevice.Viewport.Width,
-                GraphicsDevice.Viewport.Height);
+            var viewportResolution = new Vector2(x: GraphicsDevice.Viewport.Width,
+                y: GraphicsDevice.Viewport.Height);
             // Create a new SpriteBatch, which can be used to draw textures.
-            mSpriteBatch = new SpriteBatch(GraphicsDevice);
+            mSpriteBatch = new SpriteBatch(graphicsDevice: GraphicsDevice);
 
 
-            mGameScreen = new Skirmish(mGraphics.GraphicsDevice, ref mDirector, Content).GetGameScreen();
+            mGameScreen = new Skirmish(graphics: mGraphics.GraphicsDevice, director: ref mDirector, content: Content).GetGameScreen();
 
             //mGameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector);
 
-            mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
+            mMainMenuManager = new MainMenuManagerScreen(screenResolution: viewportResolution, screenManager: mScreenManager, showSplash: true, game: this);
 
-            mUserInterfaceScreen = new UserInterfaceScreen(ref mDirector, mGraphics);
+            mUserInterfaceScreen = new UserInterfaceScreen(director: ref mDirector, mgraphics: mGraphics);
 
             // Add the screens to the screen manager
             // The idea is that the game screen is always at the bottom and stuff is added simply
             // on top of it.
-            mScreenManager.AddScreen(mGameScreen);
-            mScreenManager.AddScreen(mUserInterfaceScreen);
+            mScreenManager.AddScreen(screen: mGameScreen);
+            mScreenManager.AddScreen(screen: mUserInterfaceScreen);
             // mScreenManager.AddScreen(mMainMenuManager); // TODO: This makes it so that the main menu is bypassed
 
             // load and play Soundtrack as background music
@@ -113,9 +113,9 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            mDirector.Update(gameTime, IsActive);
-            mScreenManager.Update(gameTime);
-            base.Update(gameTime);
+            mDirector.Update(gametime: gameTime, isActive: IsActive);
+            mScreenManager.Update(gametime: gameTime);
+            base.Update(gameTime: gameTime);
         }
 
         /// <summary>
@@ -124,10 +124,10 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(color: Color.Black);
 
-            mScreenManager.Draw(mSpriteBatch);
-            base.Draw(gameTime);
+            mScreenManager.Draw(spriteBatch: mSpriteBatch);
+            base.Draw(gameTime: gameTime);
         }
     }
 }

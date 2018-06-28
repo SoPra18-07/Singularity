@@ -33,11 +33,11 @@ namespace Singularity.Levels
         {
             if (TrashBurned.GetFirst() + 1 == 10000)
             {
-                TrashBurned = new Pair<int, bool>(TrashBurned.GetFirst() + 1, true);
+                TrashBurned = new Pair<int, bool>(firstValue: TrashBurned.GetFirst() + 1, secondValue: true);
             }
             else
             {
-                TrashBurned = new Pair<int, bool>(TrashBurned.GetFirst() + 1, TrashBurned.GetSecond());
+                TrashBurned = new Pair<int, bool>(firstValue: TrashBurned.GetFirst() + 1, secondValue: TrashBurned.GetSecond());
             }
             return TrashBurned.GetSecond();
         }
@@ -66,11 +66,11 @@ namespace Singularity.Levels
         {
             if (PlatformsBuilt.GetFirst() + 1 == 1000)
             {
-                PlatformsBuilt = new Pair<int, bool>(PlatformsBuilt.GetFirst() + 1, true);
+                PlatformsBuilt = new Pair<int, bool>(firstValue: PlatformsBuilt.GetFirst() + 1, secondValue: true);
             }
             else
             {
-                PlatformsBuilt = new Pair<int, bool>(PlatformsBuilt.GetFirst() + 1, PlatformsBuilt.GetSecond());
+                PlatformsBuilt = new Pair<int, bool>(firstValue: PlatformsBuilt.GetFirst() + 1, secondValue: PlatformsBuilt.GetSecond());
             }
             return PlatformsBuilt.GetSecond();
         }
@@ -89,11 +89,11 @@ namespace Singularity.Levels
         {
             if (UnitsBuilt.GetFirst() + 1 == 1000)
             {
-                UnitsBuilt = new Pair<int, bool>(UnitsBuilt.GetFirst() + 1, true);
+                UnitsBuilt = new Pair<int, bool>(firstValue: UnitsBuilt.GetFirst() + 1, secondValue: true);
             }
             else
             {
-                UnitsBuilt = new Pair<int, bool>(UnitsBuilt.GetFirst() + 1, UnitsBuilt.GetSecond());
+                UnitsBuilt = new Pair<int, bool>(firstValue: UnitsBuilt.GetFirst() + 1, secondValue: UnitsBuilt.GetSecond());
             }
             return UnitsBuilt.GetSecond();
         }

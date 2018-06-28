@@ -75,27 +75,27 @@ namespace Singularity.Screen.ScreenClasses
 
             // if you're interested in whats going on here, refer to the documentation of the FogOfWar class.
 
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mTransformMatrix);
+            spriteBatch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.AlphaBlend, samplerState: null, depthStencilState: null, rasterizerState: null, effect: null, transformMatrix: mTransformMatrix);
 
             foreach (var drawable in mDrawables)
             {
-                drawable.Draw(spriteBatch);
+                drawable.Draw(spriteBatch: spriteBatch);
             }
 
             spriteBatch.End();
 
-            mFow.DrawMasks(spriteBatch);
+            mFow.DrawMasks(spriteBatch: spriteBatch);
 
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, mFow.GetApplyMaskStencilState(), null, null, mTransformMatrix);
+            spriteBatch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.AlphaBlend, samplerState: null, depthStencilState: mFow.GetApplyMaskStencilState(), rasterizerState: null, effect: null, transformMatrix: mTransformMatrix);
 
             foreach (var spatial in mSpatialObjects)
             {
-                spatial.Draw(spriteBatch);
+                spatial.Draw(spriteBatch: spriteBatch);
             }
 
             spriteBatch.End();
 
-            mFow.FillInvertedMask(spriteBatch);
+            mFow.FillInvertedMask(spriteBatch: spriteBatch);
         }
 
         public bool DrawLower()
@@ -111,15 +111,15 @@ namespace Singularity.Screen.ScreenClasses
 
                 if (collidingObject != null)
                 {
-                    mMap.UpdateCollider(collidingObject);
+                    mMap.UpdateCollider(collider: collidingObject);
                 }
 
-                spatial.RelativePosition = Vector2.Transform(spatial.AbsolutePosition, mCamera.GetTransform());
+                spatial.RelativePosition = Vector2.Transform(position: spatial.AbsolutePosition, matrix: mCamera.GetTransform());
                 spatial.RelativeSize = spatial.AbsoluteSize * mCamera.GetZoom();
 
-                spatial.Update(gametime);
+                spatial.Update(gametime: gametime);
             }
-            mFow.Update(gametime);
+            mFow.Update(gametime: gametime);
 
             mTransformMatrix = mCamera.GetTransform();
         }
@@ -127,12 +127,12 @@ namespace Singularity.Screen.ScreenClasses
         public void LoadContent(ContentManager content)
         {
 
-            AddObject(mMap);
+            AddObject(toAdd: mMap);
 
-            AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
+            AddObjects(toAdd: ResourceHelper.GetRandomlyDistributedResources(amount: 5));
 
-            mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
-            mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
+            mDirector.GetSoundManager.SetLevelThemeMusic(name: "Tutorial");
+            mDirector.GetSoundManager.SetSoundPhase(soundPhase: SoundPhase.Build);
         }
 
         public bool UpdateLower()
@@ -152,39 +152,39 @@ namespace Singularity.Screen.ScreenClasses
             var road = toAdd as Road;
             var platform = toAdd as PlatformBlank;
 
-            if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
+            if (!typeof(IDraw).IsAssignableFrom(c: typeof(T)) && !typeof(IUpdate).IsAssignableFrom(c: typeof(T)) && road == null && platform == null)
             {
                 return false;
             }
 
             if (road != null)
             {
-                mMap.AddRoad(road);
+                mMap.AddRoad(road: road);
             }
 
             if (platform != null)
             {
-                mMap.AddPlatform(platform);
+                mMap.AddPlatform(platform: platform);
             }
 
-            if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
+            if (typeof(IRevealing).IsAssignableFrom(c: typeof(T)))
             {
-                mFow.AddRevealingObject((IRevealing)toAdd);
+                mFow.AddRevealingObject(revealingObject: (IRevealing)toAdd);
             }
 
-            if (typeof(ISpatial).IsAssignableFrom(typeof(T)))
+            if (typeof(ISpatial).IsAssignableFrom(c: typeof(T)))
             {
-                mSpatialObjects.AddLast((ISpatial) toAdd);
+                mSpatialObjects.AddLast(value: (ISpatial) toAdd);
                 return true;
             }
 
-            if (typeof(IDraw).IsAssignableFrom(typeof(T)))
+            if (typeof(IDraw).IsAssignableFrom(c: typeof(T)))
             {
-                mDrawables.AddLast((IDraw)toAdd);
+                mDrawables.AddLast(value: (IDraw)toAdd);
             }
-            if (typeof(IUpdate).IsAssignableFrom(typeof(T)))
+            if (typeof(IUpdate).IsAssignableFrom(c: typeof(T)))
             {
-                mUpdateables.AddLast((IUpdate)toAdd);
+                mUpdateables.AddLast(value: (IUpdate)toAdd);
             }
             return true;
 
@@ -202,7 +202,7 @@ namespace Singularity.Screen.ScreenClasses
 
             foreach (var t in toAdd)
             {
-                isSuccessful = isSuccessful && AddObject(t);
+                isSuccessful = isSuccessful && AddObject(toAdd: t);
             }
 
             return isSuccessful;
@@ -220,39 +220,39 @@ namespace Singularity.Screen.ScreenClasses
             var road = toRemove as Road;
             var platform = toRemove as PlatformBlank;
 
-            if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
+            if (!typeof(IDraw).IsAssignableFrom(c: typeof(T)) && !typeof(IUpdate).IsAssignableFrom(c: typeof(T)) && road == null && platform == null)
             {
                 return false;
             }
 
             if (road != null)
             {
-                mMap.RemoveRoad(road);
+                mMap.RemoveRoad(road: road);
             }
 
             if (platform != null)
             {
-                mMap.RemovePlatform(platform);
+                mMap.RemovePlatform(platform: platform);
             }
 
-            if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
+            if (typeof(IRevealing).IsAssignableFrom(c: typeof(T)))
             {
-                mFow.RemoveRevealingObject((IRevealing)toRemove);
+                mFow.RemoveRevealingObject(revealingObject: (IRevealing)toRemove);
             }
 
-            if (typeof(ISpatial).IsAssignableFrom(typeof(T)))
+            if (typeof(ISpatial).IsAssignableFrom(c: typeof(T)))
             {
-                mSpatialObjects.Remove((ISpatial)toRemove);
+                mSpatialObjects.Remove(value: (ISpatial)toRemove);
                 return true;
             }
 
-            if (typeof(IDraw).IsAssignableFrom(typeof(T)))
+            if (typeof(IDraw).IsAssignableFrom(c: typeof(T)))
             {
-                mDrawables.Remove((IDraw)toRemove);
+                mDrawables.Remove(value: (IDraw)toRemove);
             }
-            if (typeof(IUpdate).IsAssignableFrom(typeof(T)))
+            if (typeof(IUpdate).IsAssignableFrom(c: typeof(T)))
             {
-                mUpdateables.Remove((IUpdate)toRemove);
+                mUpdateables.Remove(value: (IUpdate)toRemove);
             }
             return true;
         }

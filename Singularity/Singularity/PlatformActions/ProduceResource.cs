@@ -8,13 +8,13 @@ using Singularity.Units;
 namespace Singularity.PlatformActions
 {
 
-    public class ProduceWellResource : APlatformAction
+    public class ProduceWellResource : APlatformResourceAction
     {
 
         // The ResourceMap is needed for actually 'producing' the resources.
         private readonly ResourceMap mResourceMap;
 
-        public ProduceWellResource(PlatformBlank platform, ResourceMap resourceMap) : base(platform)
+        public ProduceWellResource(PlatformBlank platform, ResourceMap resourceMap) : base(platform: platform)
         {
             mResourceMap = resourceMap;
         }
@@ -23,20 +23,25 @@ namespace Singularity.PlatformActions
 
         public override void Execute()
         {
-            var res = mResourceMap.GetWellResource(mPlatform.AbsolutePosition);
+            var res = mResourceMap.GetWellResource(location: mPlatform.AbsolutePosition);
             if (res.IsPresent())
             {
-                mPlatform.StoreResource(res.Get());
+                mPlatform.StoreResource(resource: res.Get());
             }
+        }
+
+        public override Dictionary<EResourceType, int> GetRequiredResources()
+        {
+            return new Dictionary<EResourceType, int>();
         }
     }
 
-    public class ProduceQuarryResource : APlatformAction
+    public class ProduceQuarryResource : APlatformResourceAction
     {
         // The ResourceMap is needed for actually 'producing' the resources.
         private ResourceMap mResourceMap;
 
-        public ProduceQuarryResource(PlatformBlank platform, ResourceMap resourceMap) : base(platform)
+        public ProduceQuarryResource(PlatformBlank platform, ResourceMap resourceMap) : base(platform: platform)
         {
             mResourceMap = resourceMap;
         }
@@ -45,20 +50,25 @@ namespace Singularity.PlatformActions
 
         public override void Execute()
         {
-            var res = mResourceMap.GetQuarryResource(mPlatform.AbsolutePosition);
+            var res = mResourceMap.GetQuarryResource(location: mPlatform.AbsolutePosition);
             if (res.IsPresent())
             {
-                mPlatform.StoreResource(res.Get());
+                mPlatform.StoreResource(resource: res.Get());
             }
+        }
+
+        public override Dictionary<EResourceType, int> GetRequiredResources()
+        {
+            return new Dictionary<EResourceType, int>();
         }
     }
 
-    public class ProduceMineResource : APlatformAction
+    public class ProduceMineResource : APlatformResourceAction
     {
         // The ResourceMap is needed for actually 'producing' the resources.
         private ResourceMap mResourceMap;
 
-        public ProduceMineResource(PlatformBlank platform, ResourceMap resourceMap) : base(platform)
+        public ProduceMineResource(PlatformBlank platform, ResourceMap resourceMap) : base(platform: platform)
         {
             mResourceMap = resourceMap;
         }
@@ -67,18 +77,25 @@ namespace Singularity.PlatformActions
 
         public override void Execute()
         {
-            var res = mResourceMap.GetMineResource(mPlatform.AbsolutePosition);
+            var res = mResourceMap.GetMineResource(location: mPlatform.AbsolutePosition);
             if (res.IsPresent())
             {
-                mPlatform.StoreResource(res.Get());
+                mPlatform.StoreResource(resource: res.Get());
             }
         }
+
+        public override Dictionary<EResourceType, int> GetRequiredResources()
+        {
+            return new Dictionary<EResourceType, int>();
+        }
     }
+
+
 
     public class BuildBluePrint : APlatformAction
     {
         private Dictionary<EResourceType, int> mMRequiredResources;
-        public BuildBluePrint(PlatformBlank platform, PlatformBlank toBeBuilt) : base(platform)
+        public BuildBluePrint(PlatformBlank platform, PlatformBlank toBeBuilt) : base(platform: platform)
         {
             mMRequiredResources = toBeBuilt.GetResourcesRequired();
         }
@@ -90,5 +107,15 @@ namespace Singularity.PlatformActions
             throw new NotImplementedException();
             // TODO: Build Blueprints!! (fkarg)
         }
+
+        public override Dictionary<EResourceType, int> GetRequiredResources()
+        {
+            return new Dictionary<EResourceType, int>();
+        }
+    }
+
+    public abstract class APlatformResourceAction : APlatformAction
+    {
+        public APlatformResourceAction()
     }
 }

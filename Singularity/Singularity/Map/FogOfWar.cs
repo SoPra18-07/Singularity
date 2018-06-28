@@ -109,7 +109,7 @@ namespace Singularity.Map
             };
 
 
-            mAlphaComparator = new AlphaTestEffect(graphicsDevice)
+            mAlphaComparator = new AlphaTestEffect(device: graphicsDevice)
             {
                 Projection = mCamera.GetStencilProjection(),
                 VertexColorEnabled = true,
@@ -126,11 +126,11 @@ namespace Singularity.Map
         /// <param name="spriteBatch"></param>
         public void DrawMasks(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, mInitializeMaskStencilState, null, mAlphaComparator, mCamera.GetTransform());
+            spriteBatch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.AlphaBlend, samplerState: null, depthStencilState: mInitializeMaskStencilState, rasterizerState: null, effect: mAlphaComparator, transformMatrix: mCamera.GetTransform());
 
             foreach (var revealing in mRevealingObjects)
             {
-                spriteBatch.DrawCircle(revealing.Center, revealing.RevelationRadius, 100, Color.Transparent, revealing.RevelationRadius);
+                spriteBatch.DrawCircle(center: revealing.Center, radius: revealing.RevelationRadius, sides: 100, color: Color.Transparent, thickness: revealing.RevelationRadius);
             }
 
             spriteBatch.End();
@@ -143,9 +143,9 @@ namespace Singularity.Map
         /// <param name="spriteBatch"></param>
         public void FillInvertedMask(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, mApplyInvertedMaskStencilState, null, null, mCamera.GetTransform());
+            spriteBatch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.AlphaBlend, samplerState: null, depthStencilState: mApplyInvertedMaskStencilState, rasterizerState: null, effect: null, transformMatrix: mCamera.GetTransform());
 
-            spriteBatch.FillRectangle(new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight), new Color(Color.Black, 0.5f));
+            spriteBatch.FillRectangle(rect: new Rectangle(x: 0, y: 0, width: MapConstants.MapWidth, height: MapConstants.MapHeight), color: new Color(color: Color.Black, alpha: 0.5f));
 
             spriteBatch.End();
         }
@@ -156,7 +156,7 @@ namespace Singularity.Map
         /// <param name="revealingObject">The object which can reveal the fog of war.</param>
         public void AddRevealingObject(IRevealing revealingObject)
         {
-            mRevealingObjects.AddLast(revealingObject);
+            mRevealingObjects.AddLast(value: revealingObject);
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace Singularity.Map
         /// <param name="revealingObject">The object which can reveal the fog of war.</param>
         public void RemoveRevealingObject(IRevealing revealingObject)
         {
-            mRevealingObjects.Remove(revealingObject);
+            mRevealingObjects.Remove(value: revealingObject);
         }
 
         public void Update(GameTime gametime)

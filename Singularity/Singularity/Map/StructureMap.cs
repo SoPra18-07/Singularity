@@ -56,8 +56,8 @@ namespace Singularity.Map
         {
             CreateNewGraph();
 
-            mPlatforms.AddLast(platform);
-            mGraphs[mCurrentGraphIndex].AddNode(platform);
+            mPlatforms.AddLast(value: platform);
+            mGraphs[index: mCurrentGraphIndex].AddNode(node: platform);
         }
 
         /// <summary>
@@ -68,23 +68,23 @@ namespace Singularity.Map
         {
             CreateNewGraph();
 
-            mPlatforms.Remove(platform);
-            mGraphs[mCurrentGraphIndex].RemoveNode(platform);
+            mPlatforms.Remove(value: platform);
+            mGraphs[index: mCurrentGraphIndex].RemoveNode(node: platform);
         }
         public void AddRoad(Road road)
         {
             CreateNewGraph();
 
-            mRoads.AddLast(road);
-            mGraphs[mCurrentGraphIndex].AddEdge(road);
+            mRoads.AddLast(value: road);
+            mGraphs[index: mCurrentGraphIndex].AddEdge(edge: road);
         }
 
         public void RemoveRoad(Road road)
         {
             CreateNewGraph();
 
-            mRoads.Remove(road);
-            mGraphs[mCurrentGraphIndex].RemoveEdge(road);
+            mRoads.Remove(value: road);
+            mGraphs[index: mCurrentGraphIndex].RemoveEdge(edge: road);
 
         }
 
@@ -96,8 +96,8 @@ namespace Singularity.Map
                 return;
             }
 
-            mGraphs.Add(new Graph.Graph());
-            mDirector.GetPathManager.AddGraph(mGraphs[mGraphs.Count - 1]);
+            mGraphs.Add(item: new Graph.Graph());
+            mDirector.GetPathManager.AddGraph(graph: mGraphs[index: mGraphs.Count - 1]);
         }
 
     }

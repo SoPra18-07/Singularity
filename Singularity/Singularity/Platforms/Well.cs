@@ -17,16 +17,14 @@ namespace Singularity.Platforms
         private const int PlatformWidth = 144;
         [DataMember]
         private const int PlatformHeight = 127;
-        [DataMember]
-        private Director mDirector;
 
-        public Well(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, ref Director dir): base(position, platformSpriteSheet, baseSprite, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
+        public Well(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, ref Director director)
+            : base(position: position, platformSpriteSheet: platformSpriteSheet, baseSprite: baseSprite, director: ref director, center: new Vector2(x: position.X + PlatformWidth / 2f, y: position.Y + PlatformHeight - 36))
         {
-            mDirector = dir;
-            dir.GetDistributionManager.Register(this, false);
+            director.GetDistributionManager.Register(platform: this, isDef: false);
             //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[2];
-            mIPlatformActions[1] = new ProduceWellResource(this, resource);
+            mIPlatformActions[1] = new ProduceWellResource(platform: this, resourceMap: resource);
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
@@ -45,10 +43,10 @@ namespace Singularity.Platforms
 
         public new void Update(GameTime time)
         {
-            base.Update(time);
+            base.Update(t: time);
             if (time.TotalGameTime.TotalSeconds % 5 <= 0.5)
             {
-                Console.Out.WriteLine("PRODUCE!!!!");
+                Console.Out.WriteLine(value: "PRODUCE!!!!");
                 Produce();
             }
         }

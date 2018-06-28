@@ -47,17 +47,17 @@ namespace Singularity.Map
 
 
 
-            for (var i = 0; i < mCollisionMap.GetLength(0); i++)
+            for (var i = 0; i < mCollisionMap.GetLength(dimension: 0); i++)
             {
                 movableMatrix[i] = new bool[gridYLength];
 
-                for (var j = 0; j < mCollisionMap.GetLength(1); j++)
+                for (var j = 0; j < mCollisionMap.GetLength(dimension: 1); j++)
                 {
-                    mCollisionMap[i, j] = new CollisionNode(i, j, Optional<ICollider>.Of(null));
-                    movableMatrix[i][j] = Map.IsOnTop(new Vector2(i * MapConstants.GridWidth, j * MapConstants.GridHeight));
+                    mCollisionMap[i, j] = new CollisionNode(x: i, y: j, iCollider: Optional<ICollider>.Of(value: null));
+                    movableMatrix[i][j] = Map.IsOnTop(position: new Vector2(x: i * MapConstants.GridWidth, y: j * MapConstants.GridHeight));
                 }
             }
-            mWalkableGrid = new StaticGrid(gridXLength, gridYLength, movableMatrix);
+            mWalkableGrid = new StaticGrid(iWidth: gridXLength, iHeight: gridYLength, iMatrix: movableMatrix);
 
         }
 
@@ -70,16 +70,16 @@ namespace Singularity.Map
         {
 
             //Check if the location of an already existing collider needs to be updated.
-            if (mLookUpTable.ContainsKey(collider.Id) && collider.Moved)
+            if (mLookUpTable.ContainsKey(key: collider.Id) && collider.Moved)
             {
-                var oldBounds = mLookUpTable[collider.Id];
+                var oldBounds = mLookUpTable[key: collider.Id];
 
                 for (var x = oldBounds.X / MapConstants.GridWidth; x <= (oldBounds.X + oldBounds.Width) / MapConstants.GridWidth; x++)
                 {
                     for (var y = oldBounds.Y / MapConstants.GridHeight; y <= (oldBounds.Y + oldBounds.Height) / MapConstants.GridHeight; y++)
                     {
-                        mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(null));
-                        mWalkableGrid.SetWalkableAt(x, y, true);
+                        mCollisionMap[x, y] = new CollisionNode(x: x, y: y, iCollider: Optional<ICollider>.Of(value: null));
+                        mWalkableGrid.SetWalkableAt(iX: x, iY: y, iWalkable: true);
 
                     }
                 }
@@ -91,12 +91,12 @@ namespace Singularity.Map
             {
                 for (var y = collider.AbsBounds.Y / MapConstants.GridHeight; y <= (collider.AbsBounds.Y + collider.AbsBounds.Height) / MapConstants.GridHeight ; y++)
                 {
-                    mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(collider));Optional<ICollider>.Of(collider);
-                    mWalkableGrid.SetWalkableAt(x, y, false);
+                    mCollisionMap[x, y] = new CollisionNode(x: x, y: y, iCollider: Optional<ICollider>.Of(value: collider));Optional<ICollider>.Of(value: collider);
+                    mWalkableGrid.SetWalkableAt(iX: x, iY: y, iWalkable: false);
                 }
             }
 
-            mLookUpTable[collider.Id] = collider.AbsBounds;
+            mLookUpTable[key: collider.Id] = collider.AbsBounds;
         }
 
         //TODO: this method exists solely for debugging purposes, so the map can draw a representation of the current collision map.

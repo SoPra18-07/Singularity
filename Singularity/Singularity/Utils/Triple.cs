@@ -64,7 +64,7 @@
 
             var objAsTriple = (Triple<T1, T2, T3>)obj;
 
-            return objAsTriple.GetFirst().Equals(mFirstValue) && objAsTriple.GetSecond().Equals(mSecondValue) && objAsTriple.GetThird().Equals(mThirdValue);
+            return objAsTriple.GetFirst().Equals(obj: mFirstValue) && objAsTriple.GetSecond().Equals(obj: mSecondValue) && objAsTriple.GetThird().Equals(obj: mThirdValue);
 
         }
 

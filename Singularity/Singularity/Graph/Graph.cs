@@ -30,19 +30,19 @@ namespace Singularity.Graph
 
         public void AddNode(INode node)
         {
-            mNodes.Add(node);
+            mNodes.Add(item: node);
         }
 
         public void AddEdge(IEdge edge)
         {
-            mEdges.Remove(edge);
+            mEdges.Remove(item: edge);
         }
 
         public void AddNodes(IEnumerable<INode> nodes)
         {
             foreach(var node in nodes)
             {
-                AddNode(node);
+                AddNode(node: node);
             }
         }
 
@@ -50,25 +50,25 @@ namespace Singularity.Graph
         {
             foreach (var edge in edges)
             {
-                AddEdge(edge);
+                AddEdge(edge: edge);
             }
         }
 
         public void RemoveNode(INode node)
         {
-            mNodes.Remove(node);
+            mNodes.Remove(item: node);
         }
 
         public void RemoveEdge(IEdge edge)
         {
-            mEdges.Remove(edge);
+            mEdges.Remove(item: edge);
         }
 
         public void RemoveNodes(IEnumerable<INode> nodes)
         {
             foreach (var node in nodes)
             {
-                RemoveNode(node);
+                RemoveNode(node: node);
             }
         }
 
@@ -76,7 +76,7 @@ namespace Singularity.Graph
         {
             foreach (var edge in edges)
             {
-                RemoveEdge(edge);
+                RemoveEdge(edge: edge);
             }
         }
 

@@ -50,22 +50,22 @@ namespace Singularity.Map.Properties
         /// <summary>
         /// The most left point of the map.
         /// </summary>
-        public static readonly Vector2 sLeft = new Vector2(0, MapHeight / 2f);
+        public static readonly Vector2 sLeft = new Vector2(x: 0, y: MapHeight / 2f);
 
         /// <summary>
         /// The most top point of the map.
         /// </summary>
-        public static readonly Vector2 sTop = new Vector2(MapWidth / 2f, 0);
+        public static readonly Vector2 sTop = new Vector2(x: MapWidth / 2f, y: 0);
 
         /// <summary>
         /// The most buttom point of the map.
         /// </summary>
-        public static readonly Vector2 sBottom = new Vector2(MapWidth / 2f, MapHeight);
+        public static readonly Vector2 sBottom = new Vector2(x: MapWidth / 2f, y: MapHeight);
 
         /// <summary>
         /// The most right point of the map.
         /// </summary>
-        public static readonly Vector2 sRight = new Vector2(MapWidth, MapHeight / 2f);
+        public static readonly Vector2 sRight = new Vector2(x: MapWidth, y: MapHeight / 2f);
 
     }
 }

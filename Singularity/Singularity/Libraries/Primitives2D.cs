@@ -30,8 +30,8 @@ namespace Singularity.Libraries
 
         private static void CreateThePixel(SpriteBatch spriteBatch)
         {
-            sPixel = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
-            sPixel.SetData(new[] { Color.White });
+            sPixel = new Texture2D(graphicsDevice: spriteBatch.GraphicsDevice, width: 1, height: 1, mipmap: false, format: SurfaceFormat.Color);
+            sPixel.SetData(data: new[] { Color.White });
         }
 
 
@@ -53,10 +53,10 @@ namespace Singularity.Libraries
 
             for (int i = 1; i < points.Count; i++)
             {
-                DrawLine(spriteBatch, points[i - 1] + position, points[i] + position, color, thickness, layer);
+                DrawLine(spriteBatch: spriteBatch, point1: points[index: i - 1] + position, point2: points[index: i] + position, color: color, thickness: thickness, layerDepth: layer);
             }
             // connect the last and first again
-            DrawLine(spriteBatch, points[points.Count - 1] + position, points[0] + position, color, thickness, layer);
+            DrawLine(spriteBatch: spriteBatch, point1: points[index: points.Count - 1] + position, point2: points[index: 0] + position, color: color, thickness: thickness, layerDepth: layer);
         }
 
 
@@ -70,9 +70,9 @@ namespace Singularity.Libraries
         {
             // Look for a cached version of this circle
             String circleKey = radius + "x" + sides;
-            if (sCircleCache.ContainsKey(circleKey))
+            if (sCircleCache.ContainsKey(key: circleKey))
             {
-                return sCircleCache[circleKey];
+                return sCircleCache[key: circleKey];
             }
 
             List<Vector2> vectors = new List<Vector2>();
@@ -82,23 +82,23 @@ namespace Singularity.Libraries
 
             for (double theta = 0.0; theta < max; theta += step)
             {
-                vectors.Add(new Vector2((float)(radius * Math.Cos(theta)), (float)(radius * Math.Sin(theta))));
+                vectors.Add(item: new Vector2(x: (float)(radius * Math.Cos(d: theta)), y: (float)(radius * Math.Sin(a: theta))));
             }
 
             // then add the first vector again so it's a complete loop
-            vectors.Add(new Vector2((float)(radius * Math.Cos(0)), (float)(radius * Math.Sin(0))));
+            vectors.Add(item: new Vector2(x: (float)(radius * Math.Cos(d: 0)), y: (float)(radius * Math.Sin(a: 0))));
 
             // Cache this circle so that it can be quickly drawn next time
-            sCircleCache.Add(circleKey, vectors);
+            sCircleCache.Add(key: circleKey, value: vectors);
 
             return vectors;
         }
 
         private static List<Vector2> CreateEllipse(Rectangle rect)
         {
-            if (sEllipseCache.ContainsKey(rect))
+            if (sEllipseCache.ContainsKey(key: rect))
             {
-                return sEllipseCache[rect];
+                return sEllipseCache[key: rect];
             }
 
             var vectors = new List<Vector2>();
@@ -118,7 +118,7 @@ namespace Singularity.Libraries
                 for (var y = rect.Y; y <= rect.Y + rect.Height / 2; y++)
                 {
 
-                    var distanceToFocuses = Math.Pow(x - rect.Center.X, 2) / Math.Pow(a, 2) + Math.Pow(y - rect.Center.Y, 2) / Math.Pow(b, 2);
+                    var distanceToFocuses = Math.Pow(x: x - rect.Center.X, y: 2) / Math.Pow(x: a, y: 2) + Math.Pow(x: y - rect.Center.Y, y: 2) / Math.Pow(x: b, y: 2);
 
                     if (!(distanceToFocuses < 1 && distanceToFocuses + precision > 1 ||
                           distanceToFocuses > 1 && distanceToFocuses - precision < 1))
@@ -127,7 +127,7 @@ namespace Singularity.Libraries
 
                     }
                     //System.Diagnostics.Debug.Write(x + ", "  + y);
-                    vectors.Add(new Vector2(x, y));
+                    vectors.Add(item: new Vector2(x: x, y: y));
 
                 }
 
@@ -138,8 +138,8 @@ namespace Singularity.Libraries
                 for (var y = rect.Y + rect.Height / 2; y <= rect.Y + rect.Height; y++)
                 {
 
-                    var distanceToFocuses = Math.Pow(x - rect.Center.X, 2) / Math.Pow(a, 2) +
-                                            Math.Pow(y - rect.Center.Y, 2) / Math.Pow(b, 2);
+                    var distanceToFocuses = Math.Pow(x: x - rect.Center.X, y: 2) / Math.Pow(x: a, y: 2) +
+                                            Math.Pow(x: y - rect.Center.Y, y: 2) / Math.Pow(x: b, y: 2);
 
                     if (!(distanceToFocuses < 1 && distanceToFocuses + precision > 1 ||
                           distanceToFocuses > 1 && distanceToFocuses - precision < 1))
@@ -149,11 +149,11 @@ namespace Singularity.Libraries
                     }
 
                     //System.Diagnostics.Debug.Write(x + ", "  + y);
-                    vectors.Add(new Vector2(x, y));
+                    vectors.Add(item: new Vector2(x: x, y: y));
 
                 }
             }
-            sEllipseCache.Add(rect, vectors);
+            sEllipseCache.Add(key: rect, value: vectors);
             return vectors;
 
         }
@@ -170,8 +170,8 @@ namespace Singularity.Libraries
         private static List<Vector2> CreateArc(float radius, int sides, float startingAngle, float radians)
         {
             List<Vector2> points = new List<Vector2>();
-            points.AddRange(CreateCircle(radius, sides));
-            points.RemoveAt(points.Count - 1); // remove the last point because it's a duplicate of the first
+            points.AddRange(collection: CreateCircle(radius: radius, sides: sides));
+            points.RemoveAt(index: points.Count - 1); // remove the last point because it's a duplicate of the first
 
             // The circle starts at (radius, 0)
             double curAngle = 0.0;
@@ -183,16 +183,16 @@ namespace Singularity.Libraries
                 curAngle += anglePerSide;
 
                 // move the first point to the end
-                points.Add(points[0]);
-                points.RemoveAt(0);
+                points.Add(item: points[index: 0]);
+                points.RemoveAt(index: 0);
             }
 
             // Add the first point, just in case we make a full circle
-            points.Add(points[0]);
+            points.Add(item: points[index: 0]);
 
             // Now remove the points at the end of the circle to create the arc
             int sidesInArc = (int)(radians / anglePerSide + 0.5);
-            points.RemoveRange(sidesInArc + 1, points.Count - sidesInArc - 1);
+            points.RemoveRange(index: sidesInArc + 1, count: points.Count - sidesInArc - 1);
 
             return points;
         }
@@ -212,11 +212,11 @@ namespace Singularity.Libraries
         {
             if (sPixel == null)
             {
-                CreateThePixel(spriteBatch);
+                CreateThePixel(spriteBatch: spriteBatch);
             }
 
             // Simply use the function already there
-            spriteBatch.Draw(sPixel, rect, color);
+            spriteBatch.Draw(texture: sPixel, destinationRectangle: rect, color: color);
         }
 
 
@@ -232,10 +232,10 @@ namespace Singularity.Libraries
         {
             if (sPixel == null)
             {
-                CreateThePixel(spriteBatch);
+                CreateThePixel(spriteBatch: spriteBatch);
             }
 
-            spriteBatch.Draw(sPixel, rect, null, color, angle, Vector2.Zero, SpriteEffects.None, layer);
+            spriteBatch.Draw(texture: sPixel, destinationRectangle: rect, sourceRectangle: null, color: color, rotation: angle, origin: Vector2.Zero, effects: SpriteEffects.None, layerDepth: layer);
         }
 
 
@@ -248,7 +248,7 @@ namespace Singularity.Libraries
         /// <param name="color">The color to draw the rectangle in</param>
         public static void FillRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color)
         {
-            FillRectangle(spriteBatch, location, size, color, 0.0f);
+            FillRectangle(spriteBatch: spriteBatch, location: location, size: size, color: color, angle: 0.0f);
         }
 
 
@@ -264,19 +264,19 @@ namespace Singularity.Libraries
         {
             if (sPixel == null)
             {
-                CreateThePixel(spriteBatch);
+                CreateThePixel(spriteBatch: spriteBatch);
             }
 
             // stretch the pixel between the two vectors
-            spriteBatch.Draw(sPixel,
-                             location,
-                             null,
-                             color,
-                             angle,
-                             Vector2.Zero,
-                             size,
-                             SpriteEffects.None,
-                             0);
+            spriteBatch.Draw(texture: sPixel,
+                             position: location,
+                             sourceRectangle: null,
+                             color: color,
+                             rotation: angle,
+                             origin: Vector2.Zero,
+                             scale: size,
+                             effects: SpriteEffects.None,
+                             layerDepth: 0);
         }
 
 
@@ -291,7 +291,7 @@ namespace Singularity.Libraries
         /// <param name="color">The color to draw the rectangle in</param>
         public static void FillRectangle(this SpriteBatch spriteBatch, float x, float y, float w, float h, Color color)
         {
-            FillRectangle(spriteBatch, new Vector2(x, y), new Vector2(w, h), color, 0.0f);
+            FillRectangle(spriteBatch: spriteBatch, location: new Vector2(x: x, y: y), size: new Vector2(x: w, y: h), color: color, angle: 0.0f);
         }
 
 
@@ -307,7 +307,7 @@ namespace Singularity.Libraries
         /// <param name="angle">The angle of the rectangle in radians</param>
         public static void FillRectangle(this SpriteBatch spriteBatch, float x, float y, float w, float h, Color color, float angle)
         {
-            FillRectangle(spriteBatch, new Vector2(x, y), new Vector2(w, h), color, angle);
+            FillRectangle(spriteBatch: spriteBatch, location: new Vector2(x: x, y: y), size: new Vector2(x: w, y: h), color: color, angle: angle);
         }
 
         /// <summary>
@@ -327,19 +327,19 @@ namespace Singularity.Libraries
         {
             if (sPixel == null)
             {
-                CreateThePixel(spriteBatch);
+                CreateThePixel(spriteBatch: spriteBatch);
             }
 
             // stretch the pixel between the two vectors
-            spriteBatch.Draw(sPixel,
-                location,
-                null,
-                color * opacity,
-                angle,
-                Vector2.Zero,
-                size,
-                SpriteEffects.None,
-                0);
+            spriteBatch.Draw(texture: sPixel,
+                position: location,
+                sourceRectangle: null,
+                color: color * opacity,
+                rotation: angle,
+                origin: Vector2.Zero,
+                scale: size,
+                effects: SpriteEffects.None,
+                layerDepth: 0);
         }
 
         #endregion
@@ -355,7 +355,7 @@ namespace Singularity.Libraries
         /// <param name="color">The color to draw the rectangle in</param>
         public static void DrawRectangle(this SpriteBatch spriteBatch, Rectangle rect, Color color)
         {
-            DrawRectangle(spriteBatch, rect, color, 1.0f);
+            DrawRectangle(spriteBatch: spriteBatch, rect: rect, color: color, thickness: 1.0f);
         }
 
 
@@ -373,10 +373,10 @@ namespace Singularity.Libraries
             // TODO: Handle rotations
             // TODO: Figure out the pattern for the offsets required and then handle it in the line instead of here
 
-            DrawLine(spriteBatch, new Vector2(rect.X, rect.Y), new Vector2(rect.Right, rect.Y), color, thickness, layerDepth); // top
-            DrawLine(spriteBatch, new Vector2(rect.X + 1f, rect.Y), new Vector2(rect.X + 1f, rect.Bottom + thickness), color, thickness, layerDepth); // left
-            DrawLine(spriteBatch, new Vector2(rect.X, rect.Bottom), new Vector2(rect.Right, rect.Bottom), color, thickness, layerDepth); // bottom
-            DrawLine(spriteBatch, new Vector2(rect.Right + 1f, rect.Y), new Vector2(rect.Right + 1f, rect.Bottom + thickness), color, thickness, layerDepth); // right
+            DrawLine(spriteBatch: spriteBatch, point1: new Vector2(x: rect.X, y: rect.Y), point2: new Vector2(x: rect.Right, y: rect.Y), color: color, thickness: thickness, layerDepth: layerDepth); // top
+            DrawLine(spriteBatch: spriteBatch, point1: new Vector2(x: rect.X + 1f, y: rect.Y), point2: new Vector2(x: rect.X + 1f, y: rect.Bottom + thickness), color: color, thickness: thickness, layerDepth: layerDepth); // left
+            DrawLine(spriteBatch: spriteBatch, point1: new Vector2(x: rect.X, y: rect.Bottom), point2: new Vector2(x: rect.Right, y: rect.Bottom), color: color, thickness: thickness, layerDepth: layerDepth); // bottom
+            DrawLine(spriteBatch: spriteBatch, point1: new Vector2(x: rect.Right + 1f, y: rect.Y), point2: new Vector2(x: rect.Right + 1f, y: rect.Bottom + thickness), color: color, thickness: thickness, layerDepth: layerDepth); // right
         }
 
 
@@ -389,7 +389,7 @@ namespace Singularity.Libraries
         /// <param name="color">The color to draw the rectangle in</param>
         public static void DrawRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color)
         {
-            DrawRectangle(spriteBatch, new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y), color, 1.0f);
+            DrawRectangle(spriteBatch: spriteBatch, rect: new Rectangle(x: (int)location.X, y: (int)location.Y, width: (int)size.X, height: (int)size.Y), color: color, thickness: 1.0f);
         }
 
 
@@ -403,7 +403,7 @@ namespace Singularity.Libraries
         /// <param name="thickness">The thickness of the line</param>
         public static void DrawRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float thickness)
         {
-            DrawRectangle(spriteBatch, new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y), color, thickness);
+            DrawRectangle(spriteBatch: spriteBatch, rect: new Rectangle(x: (int)location.X, y: (int)location.Y, width: (int)size.X, height: (int)size.Y), color: color, thickness: thickness);
         }
 
         /// <summary>
@@ -417,7 +417,7 @@ namespace Singularity.Libraries
         /// <param name="opacity"></param>
         public static void DrawRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float thickness, float opacity)
         {
-            DrawRectangle(spriteBatch, new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y), color * opacity, thickness);
+            DrawRectangle(spriteBatch: spriteBatch, rect: new Rectangle(x: (int)location.X, y: (int)location.Y, width: (int)size.X, height: (int)size.Y), color: color * opacity, thickness: thickness);
         }
 
         #endregion
@@ -436,7 +436,7 @@ namespace Singularity.Libraries
         /// <param name="color">The color to use</param>
         public static void DrawLine(this SpriteBatch spriteBatch, float x1, float y1, float x2, float y2, Color color)
         {
-            DrawLine(spriteBatch, new Vector2(x1, y1), new Vector2(x2, y2), color, 1.0f);
+            DrawLine(spriteBatch: spriteBatch, point1: new Vector2(x: x1, y: y1), point2: new Vector2(x: x2, y: y2), color: color, thickness: 1.0f);
         }
 
 
@@ -452,7 +452,7 @@ namespace Singularity.Libraries
         /// <param name="thickness">The thickness of the line</param>
         public static void DrawLine(this SpriteBatch spriteBatch, float x1, float y1, float x2, float y2, Color color, float thickness)
         {
-            DrawLine(spriteBatch, new Vector2(x1, y1), new Vector2(x2, y2), color, thickness);
+            DrawLine(spriteBatch: spriteBatch, point1: new Vector2(x: x1, y: y1), point2: new Vector2(x: x2, y: y2), color: color, thickness: thickness);
         }
 
 
@@ -465,7 +465,7 @@ namespace Singularity.Libraries
         /// <param name="color">The color to use</param>
         public static void DrawLine(this SpriteBatch spriteBatch, Vector2 point1, Vector2 point2, Color color)
         {
-            DrawLine(spriteBatch, point1, point2, color, 1.0f);
+            DrawLine(spriteBatch: spriteBatch, point1: point1, point2: point2, color: color, thickness: 1.0f);
         }
 
 
@@ -481,12 +481,12 @@ namespace Singularity.Libraries
         public static void DrawLine(this SpriteBatch spriteBatch, Vector2 point1, Vector2 point2, Color color, float thickness, float layerDepth = 0)
         {
             // calculate the distance between the two vectors
-            float distance = Vector2.Distance(point1, point2);
+            float distance = Vector2.Distance(value1: point1, value2: point2);
 
             // calculate the angle between the two vectors
-            float angle = (float)Math.Atan2(point2.Y - point1.Y, point2.X - point1.X);
+            float angle = (float)Math.Atan2(y: point2.Y - point1.Y, x: point2.X - point1.X);
 
-            DrawLine(spriteBatch, point1, distance, angle, color, thickness, layerDepth);
+            DrawLine(spriteBatch: spriteBatch, point: point1, length: distance, angle: angle, color: color, thickness: thickness, layerDepth: layerDepth);
         }
 
 
@@ -500,7 +500,7 @@ namespace Singularity.Libraries
         /// <param name="color">The color to use</param>
         public static void DrawLine(this SpriteBatch spriteBatch, Vector2 point, float length, float angle, Color color)
         {
-            DrawLine(spriteBatch, point, length, angle, color, 1.0f);
+            DrawLine(spriteBatch: spriteBatch, point: point, length: length, angle: angle, color: color, thickness: 1.0f);
         }
 
 
@@ -518,19 +518,19 @@ namespace Singularity.Libraries
         {
             if (sPixel == null)
             {
-                CreateThePixel(spriteBatch);
+                CreateThePixel(spriteBatch: spriteBatch);
             }
 
             // stretch the pixel between the two vectors
-            spriteBatch.Draw(sPixel,
-                             point,
-                             null,
-                             color,
-                             angle,
-                             Vector2.Zero,
-                             new Vector2(length, thickness),
-                             SpriteEffects.None,
-                             layerDepth);
+            spriteBatch.Draw(texture: sPixel,
+                             position: point,
+                             sourceRectangle: null,
+                             color: color,
+                             rotation: angle,
+                             origin: Vector2.Zero,
+                             scale: new Vector2(x: length, y: thickness),
+                             effects: SpriteEffects.None,
+                             layerDepth: layerDepth);
         }
 
         #endregion
@@ -540,7 +540,7 @@ namespace Singularity.Libraries
 
         public static void PutPixel(this SpriteBatch spriteBatch, float x, float y, Color color)
         {
-            PutPixel(spriteBatch, new Vector2(x, y), color);
+            PutPixel(spriteBatch: spriteBatch, position: new Vector2(x: x, y: y), color: color);
         }
 
 
@@ -548,10 +548,10 @@ namespace Singularity.Libraries
         {
             if (sPixel == null)
             {
-                CreateThePixel(spriteBatch);
+                CreateThePixel(spriteBatch: spriteBatch);
             }
 
-            spriteBatch.Draw(sPixel, position, color);
+            spriteBatch.Draw(texture: sPixel, position: position, color: color);
         }
 
         #endregion
@@ -568,7 +568,7 @@ namespace Singularity.Libraries
         /// <param name="layer">The layer to draw the ellipse on</param>
         public static void DrawEllipse(this SpriteBatch spriteBatch, Rectangle rect, Color color, float layer)
         {
-            DrawPoints(spriteBatch, Vector2.Zero, CreateEllipse(rect), color, 1.0f, layer);
+            DrawPoints(spriteBatch: spriteBatch, position: Vector2.Zero, points: CreateEllipse(rect: rect), color: color, thickness: 1.0f, layer: layer);
         }
 
 
@@ -582,7 +582,7 @@ namespace Singularity.Libraries
         /// <param name="layer">todo: @Ativolex </param>
         public static void DrawEllipse(this SpriteBatch spriteBatch, Rectangle rect, Color color, float thickness, float layer)
         {
-            DrawPoints(spriteBatch, Vector2.Zero, CreateEllipse(rect), color, thickness, layer);
+            DrawPoints(spriteBatch: spriteBatch, position: Vector2.Zero, points: CreateEllipse(rect: rect), color: color, thickness: thickness, layer: layer);
         }
 
         #endregion
@@ -600,7 +600,7 @@ namespace Singularity.Libraries
         /// <param name="color">The color of the circle</param>
         public static void DrawCircle(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, Color color)
         {
-            DrawPoints(spriteBatch, center, CreateCircle(radius, sides), color, 1.0f);
+            DrawPoints(spriteBatch: spriteBatch, position: center, points: CreateCircle(radius: radius, sides: sides), color: color, thickness: 1.0f);
         }
 
 
@@ -616,7 +616,7 @@ namespace Singularity.Libraries
         /// <param name="layerDepth">todo: @Ativolex</param>
         public static void DrawCircle(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, Color color, float thickness, float layerDepth = 0)
         {
-            DrawPoints(spriteBatch, center, CreateCircle(radius, sides), color, thickness, layerDepth);
+            DrawPoints(spriteBatch: spriteBatch, position: center, points: CreateCircle(radius: radius, sides: sides), color: color, thickness: thickness, layer: layerDepth);
         }
 
 
@@ -631,7 +631,7 @@ namespace Singularity.Libraries
         /// <param name="color">The color of the circle</param>
         public static void DrawCircle(this SpriteBatch spriteBatch, float x, float y, float radius, int sides, Color color)
         {
-            DrawPoints(spriteBatch, new Vector2(x, y), CreateCircle(radius, sides), color, 1.0f);
+            DrawPoints(spriteBatch: spriteBatch, position: new Vector2(x: x, y: y), points: CreateCircle(radius: radius, sides: sides), color: color, thickness: 1.0f);
         }
 
 
@@ -647,7 +647,7 @@ namespace Singularity.Libraries
         /// <param name="thickness">The thickness of the lines used</param>
         public static void DrawCircle(this SpriteBatch spriteBatch, float x, float y, float radius, int sides, Color color, float thickness)
         {
-            DrawPoints(spriteBatch, new Vector2(x, y), CreateCircle(radius, sides), color, thickness);
+            DrawPoints(spriteBatch: spriteBatch, position: new Vector2(x: x, y: y), points: CreateCircle(radius: radius, sides: sides), color: color, thickness: thickness);
         }
 
         #endregion
@@ -667,7 +667,7 @@ namespace Singularity.Libraries
         /// <param name="color">The color of the arc</param>
         public static void DrawArc(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, float startingAngle, float radians, Color color)
         {
-            DrawArc(spriteBatch, center, radius, sides, startingAngle, radians, color, 1.0f);
+            DrawArc(spriteBatch: spriteBatch, center: center, radius: radius, sides: sides, startingAngle: startingAngle, radians: radians, color: color, thickness: 1.0f);
         }
 
 
@@ -684,9 +684,9 @@ namespace Singularity.Libraries
         /// <param name="thickness">The thickness of the arc</param>
         public static void DrawArc(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, float startingAngle, float radians, Color color, float thickness)
         {
-            List<Vector2> arc = CreateArc(radius, sides, startingAngle, radians);
+            List<Vector2> arc = CreateArc(radius: radius, sides: sides, startingAngle: startingAngle, radians: radians);
             //List<Vector2> arc = CreateArc2(radius, sides, startingAngle, degrees);
-            DrawPoints(spriteBatch, center, arc, color, thickness);
+            DrawPoints(spriteBatch: spriteBatch, position: center, points: arc, color: color, thickness: thickness);
         }
 
         #endregion
@@ -704,7 +704,7 @@ namespace Singularity.Libraries
         /// <param name="layerDepth">The layer at which to draw</param>
         public static void FillCircle(this SpriteBatch spriteBatch, Vector2 center, float radius,int sides, Color color, float layerDepth = 0)
         {
-            spriteBatch.DrawCircle(center, radius, sides, color, radius, layerDepth);
+            spriteBatch.DrawCircle(center: center, radius: radius, sides: sides, color: color, thickness: radius, layerDepth: layerDepth);
         }
 
         #endregion
@@ -723,8 +723,8 @@ namespace Singularity.Libraries
         public static void StrokedRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color colorBorder, Color colorCenter, float opacityBorder, float opacityCenter)
         {
 
-            FillRectangle(spriteBatch, location, size, colorCenter, 0, opacityCenter);
-            DrawRectangle(spriteBatch, location, size, colorBorder, 1, opacityBorder);
+            FillRectangle(spriteBatch: spriteBatch, location: location, size: size, color: colorCenter, angle: 0, opacity: opacityCenter);
+            DrawRectangle(spriteBatch: spriteBatch, location: location, size: size, color: colorBorder, thickness: 1, opacity: opacityBorder);
         }
 
         #endregion
@@ -743,9 +743,9 @@ namespace Singularity.Libraries
         public static void StrokedCircle(this SpriteBatch spriteBatch, Vector2 center, int radius, Color colorBorder, Color colorCenter, float opacityBorder, float opacityCenter)
         {
             // 3 pixel wide border of the circle
-            DrawCircle(spriteBatch, center, radius, 100, colorBorder * opacityBorder, 1);
+            DrawCircle(spriteBatch: spriteBatch, center: center, radius: radius, sides: 100, color: colorBorder * opacityBorder, thickness: 1);
             // fills the circle
-            DrawCircle(spriteBatch, center, radius - 1, 100, colorCenter * opacityCenter, radius - 1);
+            DrawCircle(spriteBatch: spriteBatch, center: center, radius: radius - 1, sides: 100, color: colorCenter * opacityCenter, thickness: radius - 1);
         }
 
         /// <summary>
@@ -759,9 +759,9 @@ namespace Singularity.Libraries
         public static void StrokedCircle(this SpriteBatch spriteBatch, Vector2 center, int radius, Color colorBorder, Color colorCenter)
         {
             // 3 pixel wide border of the circle
-            DrawCircle(spriteBatch, center, radius, 100, colorBorder, 1);
+            DrawCircle(spriteBatch: spriteBatch, center: center, radius: radius, sides: 100, color: colorBorder, thickness: 1);
             // fills the circle
-            DrawCircle(spriteBatch, center, radius - 1, 100, colorCenter, radius - 1);
+            DrawCircle(spriteBatch: spriteBatch, center: center, radius: radius - 1, sides: 100, color: colorCenter, thickness: radius - 1);
         }
 
         #endregion
