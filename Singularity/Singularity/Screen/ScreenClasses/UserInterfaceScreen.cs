@@ -350,6 +350,7 @@ namespace Singularity.Screen.ScreenClasses
         public Rectangle Bounds { get; }
 
         public EScreen Screen { get; } = EScreen.UserInterfaceScreen;
+
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
             //

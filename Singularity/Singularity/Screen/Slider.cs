@@ -106,7 +106,6 @@ namespace Singularity.Screen
             if (SliderMoving != null && Active)
             {
                 SliderMoving(this, EventArgs.Empty, (mCurrentX / (mMax - mMin)));
-            }
         }
 
         protected virtual void OnPageMoving()

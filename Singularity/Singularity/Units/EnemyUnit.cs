@@ -1,8 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Map.Properties;
@@ -99,8 +97,8 @@ namespace Singularity.Units
         {
             // form a triangle from unit location to mouse location
             // adjust to be at center of sprite 150x75
-            var x = (target.X - (RelativePosition.X + RelativeSize.X / 2));
-            var y = (target.Y - (RelativePosition.Y + RelativeSize.Y / 2));
+            var x = target.X - (RelativePosition.X + RelativeSize.X / 2);
+            var y = target.Y - (RelativePosition.Y + RelativeSize.Y / 2);
             var hypot = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
 
             // calculate degree between formed triangle
@@ -117,11 +115,11 @@ namespace Singularity.Units
             // calculate rotation with increased degrees going counterclockwise
             if (x >= 0)
             {
-                mRotation = (int)(Math.Round(270 - degree, MidpointRounding.AwayFromZero));
+                mRotation = (int)Math.Round(270 - degree, MidpointRounding.AwayFromZero);
             }
             else
             {
-                mRotation = (int)(Math.Round(90 + degree, MidpointRounding.AwayFromZero));
+                mRotation = (int)Math.Round(90 + degree, MidpointRounding.AwayFromZero);
             }
 
             // add 42 degrees since sprite sheet starts at sprite -42d not 0
@@ -164,7 +162,7 @@ namespace Singularity.Units
             spriteBatch.Draw(
                 mMilSheet,
                 AbsolutePosition,
-                new Rectangle((150 * mColumn), (75 * mRow), (int)AbsoluteSize.X, (int)AbsoluteSize.Y),
+                new Rectangle(150 * mColumn, 75 * mRow, (int)AbsoluteSize.X, (int)AbsoluteSize.Y),
                 mColor,
                 0f,
                 Vector2.Zero,
@@ -213,8 +211,8 @@ namespace Singularity.Units
             }
 
             // these are values needed to properly get the current sprite out of the spritesheet.
-            mRow = (mRotation / 18);
-            mColumn = ((mRotation - (mRow * 18)) / 3);
+            mRow = mRotation / 18;
+            mColumn = (mRotation - mRow * 18) / 3;
 
             //finally select the appropriate color for selected/deselected units.
             mColor = mSelected ? sSelectedColor : sNotSelectedColor;

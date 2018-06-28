@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Property;
 using Singularity.Libraries;
@@ -13,7 +12,7 @@ namespace Singularity.Resources
         // TODO: fkarg implement
 
         private const float Speed = 4f;
-        private Vector2 velocity;
+        private Vector2 mVelocity;
 
         public Vector2 RelativePosition { get; set; }
 
@@ -40,23 +39,25 @@ namespace Singularity.Resources
 
             // the actual targetPosition is a certain distance (usually 50) from the unit, in the direction of the unit.
             var diff = unit.AbsolutePosition - AbsolutePosition;
-            if (Geometry.Length(diff) > 50)
+            if (Geometry.Length(diff) > 40)
             {
-                var targetPosition = diff - 35 * Geometry.NormalizeVector(diff) + AbsolutePosition;
+                var targetPosition = diff - 40 * Geometry.NormalizeVector(diff) + AbsolutePosition;
 
-                var movementVector = Vector2.Multiply(Geometry.NormalizeVector(velocity), 0.4f) + Vector2.Multiply(Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y)), 0.6f);
+                var factor = 0.4f; // experimental. seems to be a good value though.
 
-                velocity = movementVector * Speed;
+                var movementVector = Vector2.Multiply(Geometry.NormalizeVector(mVelocity), factor) + Vector2.Multiply(Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y)), 1 - factor);
+
+                mVelocity = movementVector * Speed;
             } else {
-                velocity = Vector2.Multiply(velocity, 0.6f);
+                mVelocity = Vector2.Multiply(mVelocity, 0.93f);
             }
-            AbsolutePosition = AbsolutePosition + velocity;
+            AbsolutePosition = AbsolutePosition + mVelocity;
 
         }
 
         public Vector2 GetVelocity()
         {
-            return velocity;
+            return mVelocity;
         }
 
         /// <summary>
@@ -73,19 +74,20 @@ namespace Singularity.Resources
         /// <param name="direction"></param>
         public void Move(Vector2 direction)
         {
-            AbsolutePosition += direction;
+            mVelocity += Geometry.NormalizeVector(direction) * Speed;
         }
 
         public void Draw(SpriteBatch spriteBatch)
 		{
-			spriteBatch.DrawCircle(AbsolutePosition, 10, 20, ResourceHelper.GetColor(Type), 10, LayerConstants.ResourceLayer);
+			spriteBatch.DrawCircle(AbsolutePosition, 8, 20, ResourceHelper.GetColor(Type), 10, LayerConstants.ResourceLayer);
+            spriteBatch.DrawCircle(AbsolutePosition, 10, 20, Color.Black, 2, LayerConstants.ResourceLayer);
         }
 
         public void Update(GameTime gametime)
         {
             // Resoucres only update their location (if on a platform).
-            AbsolutePosition += velocity;
-            velocity = Vector2.Multiply(velocity, 0.8f);
+            AbsolutePosition += mVelocity;
+            mVelocity = Vector2.Multiply(mVelocity, 0.8f);
         }
     }
 }

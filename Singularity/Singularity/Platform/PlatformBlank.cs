@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -22,7 +21,7 @@ namespace Singularity.Platform
         private List<IEdge> mOutwardsEdges;
 
         [DataMember]
-        internal EPlatformType mType = EPlatformType.Blank;
+        internal EPlatformType mType;
 
         [DataMember]
         private const int PlatformWidth = 148;
@@ -581,16 +580,16 @@ namespace Singularity.Platform
 
             switch (mSheet)
             {
-                case (0):
+                case 0:
                     // basic platforms
                     return new Vector2(148, 85);
-                case (1):
+                case 1:
                     // cones
                     return new Vector2(148, 165);
-                case (2):
+                case 2:
                     // cylinders
                     return new Vector2(148, 170);
-                case (3):
+                case 3:
                     // domes
                     return new Vector2(148, 126);
                 default:
