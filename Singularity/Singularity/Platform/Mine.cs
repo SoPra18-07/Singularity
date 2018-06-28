@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Resources;
+using Singularity.Units;
 
 namespace Singularity.Platform
 {
@@ -39,8 +40,13 @@ namespace Singularity.Platform
 
         public override void Produce()
         {
-            for (var i = 0; i < mAssignedUnits.Count; i++)
+            foreach (var pair in mAssignedUnits[JobType.Production])
             {
+                //That means the unit is not at work yet.
+                if (!pair.GetSecond())
+                {
+                    continue;
+                }
                 mIPlatformActions[1].Execute();
             }
         }

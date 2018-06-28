@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Exceptions;
 using Singularity.Graph;
 using Singularity.Manager;
 using Singularity.Property;
@@ -47,7 +48,7 @@ namespace Singularity.Platform
         [DataMember]
         protected string mSpritename;
         [DataMember]
-        protected Dictionary<JobType, List<GeneralUnit>> mAssignedUnits;
+        protected Dictionary<JobType, List<Pair<GeneralUnit, bool>>> mAssignedUnits;
 
         [DataMember]
         protected List<Resource> mResources;
@@ -114,12 +115,12 @@ namespace Singularity.Platform
             //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[1];
 
-            mAssignedUnits = new Dictionary<JobType, List<GeneralUnit>>();
-            mAssignedUnits.Add(JobType.Idle, new List<GeneralUnit>());
-            mAssignedUnits.Add(JobType.Defense, new List<GeneralUnit>());
-            mAssignedUnits.Add(JobType.Production, new List<GeneralUnit>());
-            mAssignedUnits.Add(JobType.Logistics, new List<GeneralUnit>());
-            mAssignedUnits.Add(JobType.Construction, new List<GeneralUnit>());
+            mAssignedUnits = new Dictionary<JobType, List<Pair<GeneralUnit, bool>>>();
+            mAssignedUnits.Add(JobType.Idle, new List<Pair<GeneralUnit, bool>>());
+            mAssignedUnits.Add(JobType.Defense, new List<Pair<GeneralUnit, bool>>());
+            mAssignedUnits.Add(JobType.Production, new List<Pair<GeneralUnit, bool>>());
+            mAssignedUnits.Add(JobType.Logistics, new List<Pair<GeneralUnit, bool>>());
+            mAssignedUnits.Add(JobType.Construction, new List<Pair<GeneralUnit, bool>>());
 
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
@@ -155,8 +156,8 @@ namespace Singularity.Platform
         /// <summary>
         /// Get the assigned Units of this platform.
         /// </summary>
-        /// <returns> a list containing references of the units</returns>
-        public Dictionary<JobType, List<GeneralUnit>> GetAssignedUnits()
+        /// <returns> a Dictionary, under each JobType there is an entry with a list containing all assigned units plus a bool to show wether they are present on the platform</returns>
+        public Dictionary<JobType, List<Pair<GeneralUnit, bool>>> GetAssignedUnits()
         {
             return mAssignedUnits;
         }
@@ -168,8 +169,22 @@ namespace Singularity.Platform
         /// <param name="job">The Job to be done by the unit</param>
         public void AssignUnits(GeneralUnit unit, JobType job)
         {
-            var list = mAssignedUnits[job];
-            list.Add(unit);
+            mAssignedUnits[job].Add(new Pair<GeneralUnit, bool>(unit, false));
+        }
+
+        /// <summary>
+        /// The units will call this methods when they reached the platform they have to work on.
+        /// </summary>
+        /// <param name="unit"></param>
+        public void ShowedUp(GeneralUnit unit, JobType job)
+        {
+            var pair = mAssignedUnits[job].Find(x => x.GetFirst().Equals(unit));
+            if (pair == null)
+            {
+                throw new InvalidGenericArgumentException("There is no such unit! => Something went wrong...");
+            }
+            mAssignedUnits[job].Remove(pair);
+            mAssignedUnits[job].Add(new Pair<GeneralUnit, bool>(unit, true));
         }
 
         /// <summary>
@@ -179,8 +194,8 @@ namespace Singularity.Platform
         /// <param name="job">The Job of the unit</param>
         public void UnAssignUnits(GeneralUnit unit, JobType job)
         {
-            var list = mAssignedUnits[job];
-            list.Remove(unit);
+            var pair = mAssignedUnits[job].Find(x => x.GetFirst().Equals(unit));
+            mAssignedUnits[job].Remove(pair);
         }
 
         public virtual void Produce()

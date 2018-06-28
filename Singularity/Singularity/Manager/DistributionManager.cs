@@ -109,6 +109,7 @@ namespace Singularity.Manager
             Console.Out.WriteLine(mProduction.Count);
             Console.Out.WriteLine(mIdle.Count);
             Console.Out.WriteLine(mProdPlatforms[1].GetFirst().mType + " " + mProdPlatforms[1].GetSecond());
+            Console.Out.WriteLine(mProdPlatforms[0].GetFirst().mType + " " + mProdPlatforms[0].GetSecond());
         }
 
         /// <summary>
@@ -304,7 +305,7 @@ namespace Singularity.Manager
 
                 //Remove the first unit in the AssignedUnitList. The unit will unassign itself. Then add the unit to our unitslist.
                 //Also dont forget to decrement the number in the tuple, and to delete the unit from the joblist.
-                var transferunit = platUnits[job].First();
+                var transferunit = platUnits[job].First().GetFirst();
                 units.Add(transferunit);
                 joblist.Remove(transferunit);
                 var number = list[startindex].GetSecond() - 1;
