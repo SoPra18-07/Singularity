@@ -21,9 +21,9 @@ namespace Singularity.Units
         public Optional<IPlatformAction> Action { get; set; }
 
         [DataMember]
-        public Optional<EResourceType> GetResource { get; set; }
+        public EResourceType? GetResource { get; set; }
 
-        public Task(JobType job, Optional<PlatformBlank> end, Optional<EResourceType> res, Optional<IPlatformAction> action)
+        public Task(JobType job, Optional<PlatformBlank> end, EResourceType? res, Optional<IPlatformAction> action)
         {
             Job = job;
             End = end;

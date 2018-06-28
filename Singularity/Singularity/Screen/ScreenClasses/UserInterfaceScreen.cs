@@ -9,7 +9,7 @@ using Singularity.Manager;
 namespace Singularity.Screen.ScreenClasses
 {
     /// <summary>
-    /// the userInterface screen
+    /// The UserInterfaceScreen contains everything of the player's UI
     /// </summary>
     internal sealed class UserInterfaceScreen : IScreen, IMousePositionListener, IMouseClickListener
     {
@@ -313,13 +313,13 @@ namespace Singularity.Screen.ScreenClasses
             // create items
             //TODO: Create an object representing the Idle units at the moment. Something like "Idle: 24" should be enough
             mDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
-            mDefSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12);
+            mDefSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true, 5);
             mBuildTextField = new TextField("Build", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
-            mBuildSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12);
+            mBuildSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
             mLogisticsTextField = new TextField("Logistics", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
-            mLogisticsSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12);
+            mLogisticsSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
             mProductionTextField = new TextField("Production", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
-            mProductionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12);
+            mProductionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
 
 
             //Subscribe Distr to sliders
@@ -1308,6 +1308,7 @@ namespace Singularity.Screen.ScreenClasses
         public Rectangle Bounds { get; }
 
         public EScreen Screen { get; } = EScreen.UserInterfaceScreen;
+
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
             //

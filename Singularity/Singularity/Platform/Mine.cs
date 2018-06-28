@@ -31,10 +31,10 @@ namespace Singularity.Platform
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Mine;
             mSpritename = "Dome";
-            AbsoluteSize = SetPlatfromDrawParameters();
+            SetPlatfromParameters();
         }
 
-        public void Produce()
+        public override void Produce()
         {
             for (var i = 0; i < mAssignedUnits.Count; i++)
             {

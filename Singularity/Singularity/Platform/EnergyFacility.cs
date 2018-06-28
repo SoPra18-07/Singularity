@@ -2,7 +2,6 @@
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Manager;
 using Singularity.Resources;
 
 namespace Singularity.Platform
@@ -25,7 +24,7 @@ namespace Singularity.Platform
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Energy;
             mSpritename = "Dome";
-            AbsoluteSize = SetPlatfromDrawParameters();
+            SetPlatfromParameters();
         }
 
         public void TurnOn(Manager.StoryManager story)

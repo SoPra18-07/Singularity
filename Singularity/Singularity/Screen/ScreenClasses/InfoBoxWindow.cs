@@ -8,10 +8,14 @@ using Singularity.Property;
 
 namespace Singularity.Screen.ScreenClasses
 {
+    /// <summary>
+    /// InfoBoxes are small boxes which can be used to quickly show a notice to the player. (With or without border)
+    /// These boxes can contain IWindowItems and will be shown when the mouse is above a specific rectangle that needs to be set.
+    /// </summary>
     class InfoBoxWindow : IDraw, IUpdate, IMousePositionListener
     {
         // list of items to put in info box
-        private List<IWindowItem> mItemList;
+        private readonly List<IWindowItem> mItemList;
 
         // size of info box
         private Vector2 mSize;

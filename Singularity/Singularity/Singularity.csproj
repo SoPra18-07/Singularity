@@ -63,6 +63,7 @@
     <Compile Include="Manager\DistributionManager.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />
     <Compile Include="Screen\ScreenClasses\InfoBoxWindow.cs" />
+    <Compile Include="Property\GlobalVariables.cs" />
     <Compile Include="Units\EnemyUnit.cs" />
     <Compile Include="Units\SelectionBox.cs" />
     <Compile Include="Units\Task.cs" />
@@ -152,7 +153,7 @@
     <Compile Include="Sound\SoundClass.cs" />
     <Compile Include="Sound\SoundManager.cs" />
     <Compile Include="Sound\SoundPhase.cs" />
-    <Compile Include="StoryManager\Achievements.cs" />
+    <Compile Include="Levels\Achievements.cs" />
     <Compile Include="Manager\StoryManager.cs" />
     <Compile Include="Screen\TextField.cs" />
     <Compile Include="Units\GeneralUnit.cs" />

@@ -8,6 +8,7 @@ using Singularity.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Map.Properties;
 using Singularity.Property;
 using Singularity.Screen;
 using Singularity.Sound;
@@ -85,6 +86,8 @@ namespace Singularity.Units
 
         public Rectangle AbsBounds { get; private set; }
 
+        public bool[,] ColliderGrid { get; }
+
         
         public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director, ref Map.Map map)
         {
@@ -96,7 +99,7 @@ namespace Singularity.Units
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(DefaultWidth * mScale, DefaultHeight * mScale);
 
-            RevelationRadius = (int) AbsoluteSize.X * 3;
+            RevelationRadius = 500;
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * mScale / 2, AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
 
             Moved = false;
@@ -125,8 +128,8 @@ namespace Singularity.Units
         {
             // form a triangle from unit location to mouse location
             // adjust to be at center of sprite
-            var x = (target.X - (RelativePosition.X + RelativeSize.X / 2));
-            var y = (target.Y - (RelativePosition.Y + RelativeSize.Y / 2));
+            var x = target.X - (RelativePosition.X + RelativeSize.X / 2);
+            var y = target.Y - (RelativePosition.Y + RelativeSize.Y / 2);
             var hypot = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
 
             // calculate degree between formed triangle
@@ -143,11 +146,11 @@ namespace Singularity.Units
             // calculate rotation with increased degrees going counterclockwise
             if (x >= 0)
             {
-                mRotation = (int) (Math.Round(270 - degree, MidpointRounding.AwayFromZero));
+                mRotation = (int) Math.Round(270 - degree, MidpointRounding.AwayFromZero);
             }
             else
             {
-                mRotation = (int) (Math.Round(90 + degree, MidpointRounding.AwayFromZero));
+                mRotation = (int) Math.Round(90 + degree, MidpointRounding.AwayFromZero);
             }
 
             // add 42 degrees since sprite sheet starts at sprite -42deg not 0
@@ -189,7 +192,7 @@ namespace Singularity.Units
             spriteBatch.Draw(
                 mMilSheet,
                 AbsolutePosition,
-                new Rectangle((150 * mColumn), (75 * mRow), (int) (AbsoluteSize.X / mScale), (int) (AbsoluteSize.Y / mScale)),
+                new Rectangle(150 * mColumn, 75 * mRow, (int) (AbsoluteSize.X / mScale), (int) (AbsoluteSize.Y / mScale)),
                 mColor,
                 0f,
                 Vector2.Zero,
@@ -197,13 +200,16 @@ namespace Singularity.Units
                 SpriteEffects.None,
                 LayerConstants.MilitaryUnitLayer
                 );
-            
-            // TODO DEBUG REGION
-            if (mDebugPath != null)
+
+            if (GlobalVariables.DebugState)
             {
-                for (var i = 0; i < mDebugPath.Length - 1; i++)
+                // TODO DEBUG REGION
+                if (mDebugPath != null)
                 {
-                    spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
+                    for (var i = 0; i < mDebugPath.Length - 1; i++)
+                    {
+                        spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
+                    }
                 }
             }
 
@@ -257,8 +263,8 @@ namespace Singularity.Units
             }
 
             // these are values needed to properly get the current sprite out of the spritesheet.
-            mRow = (mRotation / 18);
-            mColumn = ((mRotation - (mRow * 18)) / 3);
+            mRow = mRotation / 18;
+            mColumn = (mRotation - mRow * 18) / 3;
 
             //finally select the appropriate color for selected/deselected units.
             mColor = mSelected ? sSelectedColor : sNotSelectedColor;
@@ -338,28 +344,46 @@ namespace Singularity.Units
             switch (mouseAction)
             {
                 case EMouseAction.LeftClick:
-                    if (mSelected && !mIsMoving && !withinBounds && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f), (int)(mMouseY - RelativeSize.Y / 2f), (int)RelativeSize.X, (int)RelativeSize.Y), mCamera))
+                    // check for if the unit is selected, not moving, the click is not within the bounds of the unit, and the click was on the map.
+                    if (mSelected
+                        && !mIsMoving
+                        && !withinBounds
+                        && Map.Map.IsOnTop(new Rectangle((int) (mMouseX - RelativeSize.X / 2f),
+                                (int) (mMouseY - RelativeSize.Y / 2f),
+                                (int) RelativeSize.X,
+                                (int) RelativeSize.Y),
+                            mCamera))
                     {
-                        mIsMoving = true;
+                        
                         mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
                             Matrix.Invert(mCamera.GetTransform()));
-                        var currentPosition = Center;
-                        Debug.WriteLine("Starting path finding at: " + currentPosition.X +", " + currentPosition.Y);
-                        Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
+                        if (mMap.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
+                            (int) mTargetPosition.X / MapConstants.GridWidth,
+                            (int) mTargetPosition.Y / MapConstants.GridWidth))
+                        {
+                            mIsMoving = true;
 
-                        mPath = new Stack<Vector2>();
-                        mPath = mPathfinder.FindPath(currentPosition,
-                            mTargetPosition,
-                            ref mMap);
+                            var currentPosition = Center;
+                            Debug.WriteLine("Starting path finding at: " + currentPosition.X + ", " + currentPosition.Y);
+                            Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
 
-                        // TODO: DEBUG REGION
-                        mDebugPath = mPath.ToArray();
+                            mPath = new Stack<Vector2>();
+                            mPath = mPathfinder.FindPath(currentPosition,
+                                mTargetPosition,
+                                ref mMap);
 
-                        // TODO: END DEBUG REGION
+                            if (GlobalVariables.DebugState)
+                            {
+                                // TODO: DEBUG REGION
+                                mDebugPath = mPath.ToArray();
+                                // TODO: END DEBUG REGION
+                            }
 
-                        mBoundsSnapshot = Bounds;
-                        mZoomSnapshot = mCamera.GetZoom();
-                        giveThrough = true;
+                            mBoundsSnapshot = Bounds;
+                            mZoomSnapshot = mCamera.GetZoom();
+                            giveThrough = true;
+                        }
+                        
                     }
 
                     if (withinBounds) {

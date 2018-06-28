@@ -4,6 +4,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Singularity.Screen
 {
+    /// <summary>
+    /// HorizontalCollection enables the creation of a new IWindowItem composed of other IWindowItems.
+    /// The IWindowItems get placed beside each other horizontally
+    /// </summary>
     class HorizontalCollection : IWindowItem
     {
         // list holding the collection of IWindowItems
