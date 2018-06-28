@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
-using Singularity.Graph.Paths;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Platform;
@@ -70,12 +68,7 @@ namespace Singularity.Units
         /// </summary>
         [DataMember]
         private bool mIsMoving;
-
-        /// <summary>
-        /// The node the unit started from. Changes when the unit reaches its destination (to the destination).
-        /// </summary>
-        [DataMember]
-        private INode mCurrentNode;
+        
 
         /// <summary>
         /// The node the unit moves to. Null if the unit doesn't move anywhere
@@ -177,7 +170,7 @@ namespace Singularity.Units
                     //You arrived at your destination and you now want to work.
                     //Console.Out.WriteLine(AbsolutePosition.X + " " + AbsolutePosition.Y + Id);
                     //No need to check for null here, it has been checked before
-                    if(!mIsMoving && !mDone && mCurrentNode.Equals(mDestination.Get()))
+                    if(!mIsMoving && !mDone && CurrentNode.Equals(mDestination.Get()))
                     {
                         if (!mAssigned)
                         {
@@ -239,33 +232,41 @@ namespace Singularity.Units
             {
                 mNodeQueue = mDirector.GetPathManager.GetPath(this, mDestination.Get()).GetNodePath();
 
-                mCurrentNode = mNodeQueue.Dequeue();
+                CurrentNode = mNodeQueue.Dequeue();
             }
 
-            if (mCurrentNode == null)
+            if (CurrentNode == null)
             {
                 return;
             }
 
             // update the current node to move to after the last one got reached.
-            if (ReachedTarget(((PlatformBlank)mCurrentNode).Center) && mNodeQueue.Count > 0)
+            if (ReachedTarget(((PlatformBlank)CurrentNode).Center) && mNodeQueue.Count > 0)
             {
-                mCurrentNode = mNodeQueue.Dequeue();
+                CurrentNode = mNodeQueue.Dequeue();
             }
 
             // finally move to the current node.
-            Move(((PlatformBlank)mCurrentNode).Center);
+            Move(((PlatformBlank)CurrentNode).Center);
 
             // check whether we have reached the target after our move call.
-            ReachedTarget(((PlatformBlank)mCurrentNode).Center);
+            ReachedTarget(((PlatformBlank)CurrentNode).Center);
 
-            if (((PlatformBlank) mCurrentNode).GetPlatformResources().Count > 0)
+            if (((PlatformBlank) CurrentNode).GetPlatformResources().Count > 0)
             {
                 // todo: fix
-                var res = ((PlatformBlank) mCurrentNode).GetResource(EResourceType.Oil);
+                var res = ((PlatformBlank) CurrentNode).GetResource(EResourceType.Oil);
                 if (res.IsPresent())
                 {
                     Carrying = res;
+                }
+                else if (!Carrying.IsPresent())
+                {
+                    res = ((PlatformBlank) CurrentNode).GetResource(EResourceType.Trash);
+                    if (res.IsPresent())
+                    {
+                        Carrying = res;
+                    }
                 }
             }
 
@@ -287,7 +288,7 @@ namespace Singularity.Units
             //since we're operating with float values we just want the distance to be smaller than 2 pixels.
             if (Vector2.Distance(AbsolutePosition, target) < 2)
             {
-                CurrentNode = mCurrentNode;
+                CurrentNode = CurrentNode;
                 mDestination = Optional<INode>.Of(null);
                 mIsMoving = false;
                 return true;

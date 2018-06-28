@@ -99,15 +99,15 @@ namespace Singularity.Screen.ScreenClasses
             mBorderRectangle = new Rectangle(
                 x: (int)mPosition.X,
                 y: (int)mPosition.Y,
-                width: (int)(mSize.X),
-                height: ((int)mSize.Y)
+                width: (int)mSize.X,
+                height: (int)mSize.Y
                 );
 
             // ScissorRectangle will cut everything drawn outside of this rectangle when set
             mScissorRectangle = new Rectangle(
                 x: (int)(mPosition.X + 10),
                 y: (int)(mPosition.Y + titleSizeY + 30),
-                width: (mWindowRectangle.Width - 20),
+                width: mWindowRectangle.Width - 20,
                 height: (int)(mSize.Y - titleSizeY - 3 * 10 - buttonSize.Y)
                 );
 
@@ -173,7 +173,7 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            // TODO
+            // TODO: what is there still to be done?
 
             // draw window
             /*spriteBatch.FillRectangle(mWindowRectangle, mColorFill);
@@ -302,18 +302,18 @@ namespace Singularity.Screen.ScreenClasses
         private Rectangle CalcScrollbarRectangle(Rectangle scissorRectangle, float combinedItemsSize)
         {
             // scrollbar to scrollbarRectangleBorder has the same ratio as scissorRectangle to combinedItemSize
-            var sizeY = (scissorRectangle.Height / combinedItemsSize) * mScrollBarBorderRectangle.Height;
+            var sizeY = scissorRectangle.Height / combinedItemsSize * mScrollBarBorderRectangle.Height;
 
             // number of possible steps rounded up
             var numberOfSteps = (combinedItemsSize - scissorRectangle.Height) / 10;
             // number of times scrolled down
-            var numberOfStepsTaken = ((scissorRectangle.Y - mItemPosTop.Y) / 10);
+            var numberOfStepsTaken = (scissorRectangle.Y - mItemPosTop.Y) / 10;
             // step size for the scrollbar
             var stepSize = (mScrollBarBorderRectangle.Height - sizeY) / numberOfSteps;
             // calculate new position
             var positionY = mScrollBarBorderRectangle.Y + numberOfStepsTaken * stepSize + 3;
 
-            return new Rectangle((int)(mPosition.X + mSize.X - 20 + 2), (int)positionY, (20 - 4), (int)sizeY);
+            return new Rectangle((int)(mPosition.X + mSize.X - 20 + 2), (int)positionY, 20 - 4, (int)sizeY);
         }
     }
 }

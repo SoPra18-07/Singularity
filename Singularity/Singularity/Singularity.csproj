@@ -152,7 +152,7 @@
     <Compile Include="Sound\SoundClass.cs" />
     <Compile Include="Sound\SoundManager.cs" />
     <Compile Include="Sound\SoundPhase.cs" />
-    <Compile Include="StoryManager\Achievements.cs" />
+    <Compile Include="Levels\Achievements.cs" />
     <Compile Include="Manager\StoryManager.cs" />
     <Compile Include="Screen\TextField.cs" />
     <Compile Include="Units\GeneralUnit.cs" />
