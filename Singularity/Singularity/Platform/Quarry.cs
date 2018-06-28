@@ -18,7 +18,7 @@ namespace Singularity.Platform
         [DataMember]
         private Director mDirector;
 
-        public Quarry(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, ref Director dir): base(position, platformSpriteSheet, baseSprite, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
+        public Quarry(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, ref Director dir): base(position, platformSpriteSheet, baseSprite, EPlatformType.Quarry, -50)
         {
             mDirector = dir;
             dir.GetDistributionManager.Register(this, false);
