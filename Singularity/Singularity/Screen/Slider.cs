@@ -276,19 +276,17 @@ namespace Singularity.Screen
                 // when left key is pressed and mouse within slider bounds then make slider slave to mouse
                 case EMouseAction.LeftClick:
                     Debug.Write("Hello");
-                    if(Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                        Mouse.GetState().X >= mCurrentX - ((float)mSliderSize / 2) &&
+                    if( Mouse.GetState().X >= mCurrentX - ((float)mSliderSize / 2) &&
                         Mouse.GetState().X <= mCurrentX + ((float)mSliderSize / 2) &&
                         Mouse.GetState().Y >= Position.Y - ((float)mSliderSize / 2) &&
                         Mouse.GetState().Y <= Position.Y + ((float)mSliderSize / 2))
                     {
                         mSlave = true;
-
                         return false;
                     }
                     break;
             }
-            return false;
+            return true;
         }
 
 
@@ -298,11 +296,7 @@ namespace Singularity.Screen
             {
                 // once left button is released, release slider as slave from mouse
                 case EMouseAction.LeftClick:
-                    if (Mouse.GetState().LeftButton == ButtonState.Released)
-                    {
-                        mSlave = false;
-                    }
-
+                    mSlave = false;
                     return false;
             }
 
