@@ -158,6 +158,8 @@ namespace Singularity.Map
             mY = (int) (MathHelper.Clamp(cameraWorldMin.Y, limitWorldMin.Y, limitWorldMax.Y - cameraSize.Y) +
                         positionOffsetY);
 
+            UpdateTransformMatrix();
+
         }
 
         /// <summary>
