@@ -11,8 +11,10 @@ using Singularity.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Screen;
+using Singularity.Screen.ScreenClasses;
 using Singularity.Utils;
 
 namespace Singularity.Units
@@ -50,11 +52,12 @@ namespace Singularity.Units
         private float mMouseY;
         private Stack<Vector2> mPath;
         private Vector2[] mDebugPath; //TODO this is for debugging
+        private GameScreen mGameScreen;
 
 
 
         // constructor for settler (position)
-        public Settler(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
+        public Settler(Vector2 position, Camera camera, ref Director director, ref Map.Map map, GameScreen gameScreen)
         {
             Id = IdGenerator.NextiD(); // id for the specific unit.
             Health = 10;
@@ -78,6 +81,8 @@ namespace Singularity.Units
             mMap = map;
 
             mPathfinder = new MilitaryPathfinder();
+            mGameScreen = gameScreen;
+
         }
 
         private int Health { get; set; }
@@ -238,6 +243,8 @@ namespace Singularity.Units
                 if (key == Keys.B)
                 {
                     // build a control center here
+                    // mGameScreen.AddObject()
+                    
                 }
             }
         }
