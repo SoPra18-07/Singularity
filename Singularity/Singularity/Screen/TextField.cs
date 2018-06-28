@@ -32,7 +32,7 @@ namespace Singularity.Screen
             // update size
             Size = new Vector2(size.X, spriteFont.MeasureString(mSplittedText).Y);
 
-            Active = true;
+            ActiveWindow = true;
         }
 
         public void Update(GameTime gametime)
@@ -128,6 +128,6 @@ namespace Singularity.Screen
         /// <summary>
         ///
         /// </summary>
-        public bool Active { get; set; }
+        public bool ActiveWindow { get; set; }
     }
 }
