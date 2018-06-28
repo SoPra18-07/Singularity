@@ -14,9 +14,6 @@ namespace Singularity.Map
     /// </summary>
     internal sealed class CollisionMap
     {
-        // Number of cells in the grid
-        private readonly int mGridXLength;
-        private readonly int mGridYLength;
         /// <summary>
         /// The look up table is used to check whether a given collider is already present in the collision map
         /// </summary>
@@ -39,21 +36,21 @@ namespace Singularity.Map
         {
             mLookUpTable = new Dictionary<int, Rectangle>();
 
-            mGridXLength = MapConstants.MapWidth / MapConstants.GridWidth;
-            mGridYLength = MapConstants.MapHeight / MapConstants.GridHeight;
+            var GridXLength = MapConstants.MapWidth / MapConstants.GridWidth;
+            var GridYLength = MapConstants.MapHeight / MapConstants.GridHeight;
 
             mCollisionMap = new CollisionNode
             [
-                mGridXLength,
-                mGridYLength
+                GridXLength,
+                GridYLength
             ];
 
             // movableMatrix is used to construct a StaticGrid object, which is used by the pathfinder.
-            var movableMatrix = new bool[mGridXLength][];
+            var movableMatrix = new bool[GridXLength][];
 
             for (var i = 0; i < mCollisionMap.GetLength(0); i++)
             {
-                movableMatrix[i] = new bool[mGridYLength];
+                movableMatrix[i] = new bool[GridYLength];
 
                 for (var j = 0; j < mCollisionMap.GetLength(1); j++)
                 {
@@ -61,7 +58,7 @@ namespace Singularity.Map
                     movableMatrix[i][j] = Map.IsOnTop(new Vector2(i * MapConstants.GridWidth, j * MapConstants.GridHeight));
                 }
             }
-            mWalkableGrid = new StaticGrid(mGridXLength, mGridYLength, movableMatrix);
+            mWalkableGrid = new StaticGrid(GridXLength, GridYLength, movableMatrix);
 
         }
 
