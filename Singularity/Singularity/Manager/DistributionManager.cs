@@ -413,6 +413,8 @@ namespace Singularity.Manager
 
                 foreach (var unit in list)
                 {
+                    //We have to re-add the units to the job list because GetUnitsFairly did unassign them
+                    mDefense.Add(unit);
                     //Also unassigns the unit.
                     unit.AssignTask(new Task(JobType.Defense, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
                 }
@@ -427,6 +429,8 @@ namespace Singularity.Manager
 
                 foreach (var unit in list)
                 {
+                    //We have to re-add the units to the job list because GetUnitsFairly did unassign them
+                    mProduction.Add(unit);
                     //Also unassigns the unit.
                     unit.AssignTask(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
                 }
