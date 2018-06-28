@@ -47,10 +47,9 @@ namespace Singularity.Map
                 mGridXLength,
                 mGridYLength
             ];
-            bool[][] movableMatrix = new bool[mGridXLength][];
 
-
-
+            // movableMatrix is used to construct a StaticGrid object, which is used by the pathfinder.
+            var movableMatrix = new bool[mGridXLength][];
 
             for (var i = 0; i < mCollisionMap.GetLength(0); i++)
             {
@@ -70,10 +69,9 @@ namespace Singularity.Map
         /// Updates the collision map for the given coordinates and id. If the object identified by the id is already present
         /// in the collision map the coordinates get updated, otherwise it gets added.
         /// </summary>
-        /// <param name="collider">The collider to be updated updated</param>
+        /// <param name="collider">The collider to be updated.</param>
         public void UpdateCollider(ICollider collider)
         {
-
             //Check if the location of an already existing collider needs to be updated.
             if (mLookUpTable.ContainsKey(collider.Id) && collider.Moved)
             {
@@ -85,20 +83,32 @@ namespace Singularity.Map
                     {
                         mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(null));
                         mWalkableGrid.SetWalkableAt(x, y, true);
-
                     }
                 }
             }
 
             //add the given collider to the collision map.
-
-            for (var x = collider.AbsBounds.X / MapConstants.GridWidth; x <= (collider.AbsBounds.X + collider.AbsBounds.Width) / MapConstants.GridWidth; x++)
+            var i = 0;
+            var j = 0;
+            for (var x = collider.AbsBounds.X / MapConstants.GridWidth; x < (collider.AbsBounds.X + collider.AbsBounds.Width) / MapConstants.GridWidth; x++)
             {
-                for (var y = (collider.AbsBounds.Y / MapConstants.GridHeight); y <= ((collider.AbsBounds.Y + collider.AbsBounds.Height) / MapConstants.GridHeight) ; y++)
+                for (var y = (collider.AbsBounds.Y / MapConstants.GridHeight); y < ((collider.AbsBounds.Y + collider.AbsBounds.Height) / MapConstants.GridHeight) ; y++)
                 {
-                    mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(collider));Optional<ICollider>.Of(collider);
-                    mWalkableGrid.SetWalkableAt(x, y, false);
+                    
+                    Debug.WriteLine("i, j: " + i + ", " + j);
+                    /*
+                    if (collider.ColliderGrid != null && collider.ColliderGrid[j, i] && false)
+                    {
+                        mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(collider));
+                        Optional<ICollider>.Of(collider);
+                        mWalkableGrid.SetWalkableAt(x, y, false);
+                    }
+                    */
+
+                    j++;
                 }
+
+                i++;
             }
 
             mLookUpTable[collider.Id] = collider.AbsBounds;
