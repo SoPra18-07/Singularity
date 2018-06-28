@@ -2,7 +2,7 @@
 
 namespace Singularity.Property
 {
-    internal interface IRevealing
+    public interface IRevealing
     {
         int RevelationRadius { get; }
 

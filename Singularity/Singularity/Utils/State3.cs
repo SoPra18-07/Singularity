@@ -62,6 +62,29 @@ namespace Singularity.Utils
         }
 
         /// <summary>
+        /// Moves this state to its previous state and returns the state it was previously in.
+        /// </summary>
+        /// <returns>The number of the state it was in</returns>
+        public int PreviousState()
+        {
+            if (mIsSecondState)
+            {
+                mIsFirstState = true;
+                mIsSecondState = false;
+                return 2;
+            }
+
+            if (mIsThirdState)
+            {
+                mIsSecondState = true;
+                mIsThirdState = false;
+                return 3;
+            }
+
+            return 1;
+        }
+
+        /// <summary>
         /// Gets the current state. 
         /// </summary>
         /// <returns>Returns the number of the current state, and -1 if no state is currently active.</returns>

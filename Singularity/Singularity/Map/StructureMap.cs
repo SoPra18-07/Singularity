@@ -1,13 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Platform;
+using Singularity.Property;
 
 namespace Singularity.Map
 {
     /// <summary>
     /// A Structure map holds all the structures currently in the game.
     /// </summary>
-    public sealed class StructureMap
+    public sealed class StructureMap : IDraw, IUpdate
     {
         /// <summary>
         /// A list of all the platforms currently in the game
@@ -23,14 +27,18 @@ namespace Singularity.Map
 
         private readonly List<Graph.Graph> mGraphs;
 
+        private readonly FogOfWar mFow;
+
         private int mCurrentGraphIndex;
 
         /// <summary>
         /// Creates a new structure map which holds all the structures currently in the game.
         /// </summary>
-        public StructureMap(ref Director director)
+        public StructureMap(FogOfWar fow, ref Director director)
         {
             mCurrentGraphIndex = 0;
+
+            mFow = fow;
 
             mGraphs = new List<Graph.Graph>();
             mDirector = director;
@@ -57,6 +65,7 @@ namespace Singularity.Map
             CreateNewGraph();
 
             mPlatforms.AddLast(platform);
+            mFow.AddRevealingObject(platform);
             mGraphs[mCurrentGraphIndex].AddNode(platform);
         }
 
@@ -69,6 +78,7 @@ namespace Singularity.Map
             CreateNewGraph();
 
             mPlatforms.Remove(platform);
+            mFow.RemoveRevealingObject(platform);
             mGraphs[mCurrentGraphIndex].RemoveNode(platform);
         }
         public void AddRoad(Road road)
@@ -100,5 +110,30 @@ namespace Singularity.Map
             mDirector.GetPathManager.AddGraph(mGraphs[mGraphs.Count - 1]);
         }
 
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            foreach(var platform in mPlatforms)
+            {
+                platform.Draw(spriteBatch);
+            }
+
+            foreach (var road in mRoads)
+            {
+                road.Draw(spriteBatch);
+            }
+        }
+
+        public void Update(GameTime gametime)
+        {
+            foreach (var platform in mPlatforms)
+            {
+                platform.Update(gametime);
+            }
+
+            foreach (var road in mRoads)
+            {
+                road.Update(gametime);
+            }
+        }
     }
 }

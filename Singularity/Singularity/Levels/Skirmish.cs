@@ -54,9 +54,9 @@ namespace Singularity.Levels
             PlatformFactory.Init(null, platformCylTexture, platformDomeTexture, platformBlankTexture);
 
             //Map related stuff
-            mMap = new Map.Map(mapBackground, 20, 20, mGraphics.Viewport, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
-            mCamera = mMap.GetCamera();
+            mCamera = new Camera(mGraphics.Viewport, ref mDirector);
             mFow = new FogOfWar(mCamera, mGraphics);
+            mMap = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.Viewport, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
 
             //INITIALIZE GAMESCREEN
             mGameScreen = new GameScreen(mGraphics, ref mDirector, mMap, mCamera, mFow);
@@ -64,7 +64,10 @@ namespace Singularity.Levels
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
             mPlatform = new PlatformBlank(new Vector2(1000, 1000), null, platformBlankTexture);
+
+            // this is done via the factory to test, so I can instantly see if something is some time off.
             var platform2 = PlatformFactory.Get(EPlatformType.Well, ref mDirector, 800, 1000, mMap.GetResourceMap());
+
             //var platform2 = new Well(new Vector2(800, 1000), platformDomeTexture, platformBlankTexture, mMap.GetResourceMap(), ref mDirector);
             var platform3 = new Quarry(new Vector2(1200, 1200),
                 platformDomeTexture,
@@ -83,7 +86,7 @@ namespace Singularity.Levels
             var genUnit5 = new GeneralUnit(mPlatform, ref mDirector);
 
             //MilUnits
-            var milUnit = new MilitaryUnit(new Vector2(2000, 700), milUnitSheet, mMap.GetCamera(), ref mDirector, ref mMap);
+            var milUnit = new MilitaryUnit(new Vector2(2000, 700), milUnitSheet, mCamera, ref mDirector, ref mMap);
 
             //Roads
             var road1 = new Road(mPlatform, platform2, false);

@@ -9,12 +9,11 @@ using Singularity.Screen;
 
 namespace Singularity.Map
 {
-    //TODO: update in such a way that zoom is centered on the current mouse position
     /// <inheritdoc/>
     /// <remarks>
     /// The camera object is used to move and zoom the map and all its components.
     /// </remarks>
-    internal sealed class Camera : IUpdate, IKeyListener, IMouseWheelListener, IMousePositionListener
+    public sealed class Camera : IUpdate, IKeyListener, IMouseWheelListener, IMousePositionListener
     {
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
 
