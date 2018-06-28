@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
-using Singularity.Graph.Paths;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Platform;
@@ -73,8 +71,7 @@ namespace Singularity.Units
         /// </summary>
         [DataMember]
         private bool mIsMoving;
-
-        /// <summary>
+        
         /// The node the unit moves to. Null if the unit doesn't move anywhere
         /// </summary>
         [DataMember]
@@ -249,24 +246,32 @@ namespace Singularity.Units
                 Move(((PlatformBlank)CurrentNode).Center);
             }
 
-
             // check whether we have reached the target after our move call.
             ReachedTarget(((PlatformBlank)CurrentNode).Center);
 
-            /*if (((PlatformBlank) CurrentNode).GetPlatformResources().Count > 0)
+
+            if (((PlatformBlank) CurrentNode).GetPlatformResources().Count > 0)
             {
-                // todo: fix  (fkarg)?
+                // todo: fix
                 var res = ((PlatformBlank) CurrentNode).GetResource(EResourceType.Oil);
                 if (res.IsPresent())
                 {
                     Carrying = res;
+                }
+                else if (!Carrying.IsPresent())
+                {
+                    res = ((PlatformBlank) CurrentNode).GetResource(EResourceType.Trash);
+                    if (res.IsPresent())
+                    {
+                        Carrying = res;
+                    }
                 }
             }
 
             if (Carrying.IsPresent())
             {
                 Carrying.Get().Follow(this);
-            }*/
+            }
 
         }
 

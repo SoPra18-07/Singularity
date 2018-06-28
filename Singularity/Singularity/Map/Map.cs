@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -267,7 +266,7 @@ namespace Singularity.Map
              */
 
             var worldSpacePosition =
-                (camera == null ? position : Vector2.Transform(position, Matrix.Invert(camera.GetTransform())));
+                camera == null ? position : Vector2.Transform(position, Matrix.Invert(camera.GetTransform()));
 
 
             var sign = Math.Sign(
@@ -290,7 +289,7 @@ namespace Singularity.Map
                 (MapConstants.sBottom.Y - MapConstants.sRight.Y) * (worldSpacePosition.X - MapConstants.sRight.X)
             );
 
-            return (sign == 1 && sign2 == 1 && sign3 == 1 && sign4 == 1);
+            return sign == 1 && sign2 == 1 && sign3 == 1 && sign4 == 1;
 
         }
 
@@ -306,10 +305,10 @@ namespace Singularity.Map
             // simple logic, this yields true if all of them are true and false if one is false. One can easily convince himself,
             // that if all the "edge" points of the rectangle are on the map then the rectangle is on the map.
 
-            return (IsOnTop(new Vector2(rect.X, rect.Y), camera) &&
-                    IsOnTop(new Vector2(rect.X + rect.Width, rect.Y), camera) &&
-                    IsOnTop(new Vector2(rect.X, rect.Y + rect.Height), camera) &&
-                    IsOnTop(new Vector2(rect.X + rect.Width, rect.Y + rect.Height), camera));
+            return IsOnTop(new Vector2(rect.X, rect.Y), camera) &&
+                   IsOnTop(new Vector2(rect.X + rect.Width, rect.Y), camera) &&
+                   IsOnTop(new Vector2(rect.X, rect.Y + rect.Height), camera) &&
+                   IsOnTop(new Vector2(rect.X + rect.Width, rect.Y + rect.Height), camera);
 
         }
 

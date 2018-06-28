@@ -25,43 +25,43 @@ namespace Singularity.Resources
             switch (type)
             {
                 case EResourceType.Chip:
-                    return Color.LavenderBlush;
+                    return Color.Lime; // updated
 
                 case EResourceType.Concrete:
-                    return Color.LightBlue;
+                    return Color.Lavender; // updated
 
                 case EResourceType.Copper:
-                    return Color.IndianRed;
+                    return Color.Orange; // updated
 
                 case EResourceType.Fuel:
-                    return Color.DarkSlateGray;
+                    return Color.Magenta; // updated
 
                 case EResourceType.Metal:
-                    return Color.DarkMagenta;
+                    return Color.Teal; // updated
 
                 case EResourceType.Oil:
-                    return Color.RosyBrown;
+                    return Color.Brown; // updated
 
                 case EResourceType.Plastic:
-                    return Color.BlueViolet;
+                    return Color.Purple; // updated
 
                 case EResourceType.Sand:
-                    return Color.Yellow;
+                    return Color.Yellow; // updated
 
                 case EResourceType.Silicon:
-                    return Color.Beige;
+                    return Color.Cyan; // updated
 
                 case EResourceType.Steel:
-                    return Color.Black;
+                    return Color.Navy; // updated
 
                 case EResourceType.Stone:
-                    return Color.LightGray;
+                    return Color.Gray; // updated
 
                 case EResourceType.Water:
-                    return Color.Aqua;
+                    return Color.Blue; // updated
 
                 case EResourceType.Trash:
-                    return Color.Gray;
+                    return Color.Red; // updated
 
                 default:
                     throw new NotSupportedException();
