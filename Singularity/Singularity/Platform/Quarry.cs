@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Resources;
+using Singularity.Units;
 
 namespace Singularity.Platform
 {
@@ -18,10 +19,14 @@ namespace Singularity.Platform
         [DataMember]
         private Director mDirector;
 
-        public Quarry(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, ref Director dir): base(position, platformSpriteSheet, baseSprite, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
+        public Quarry(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, ref Director dir, bool autoRegister = true): base(position, platformSpriteSheet, baseSprite, ref dir, EPlatformType.Quarry, -50)
         {
             mDirector = dir;
-            dir.GetDistributionManager.Register(this, false);
+            if (autoRegister)
+            {
+                dir.GetDistributionManager.Register(this, false);
+            }
+
             //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[2];
             mIPlatformActions[0] = new ProduceQuarryResource(this, resource);
@@ -30,13 +35,18 @@ namespace Singularity.Platform
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Quarry;
             mSpritename = "Dome";
-            AbsoluteSize = SetPlatfromDrawParameters();
+            SetPlatfromParameters();
         }
 
         public override void Produce()
         {
-            for (var i = 0; i < mAssignedUnits.Count; i++)
+            foreach (var pair in mAssignedUnits[JobType.Production])
             {
+                //That means the unit is not at work yet.
+                if (!pair.GetSecond())
+                {
+                    continue;
+                }
                 mIPlatformActions[1].Execute();
             }
         }

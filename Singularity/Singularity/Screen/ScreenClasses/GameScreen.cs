@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -88,6 +89,8 @@ namespace Singularity.Screen.ScreenClasses
 
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, mFow.GetApplyMaskStencilState(), null, null, mTransformMatrix);
 
+            mMap.GetStructureMap().Draw(spriteBatch);
+
             foreach (var spatial in mSpatialObjects)
             {
                 spatial.Draw(spriteBatch);
@@ -96,6 +99,12 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.End();
 
             mFow.FillInvertedMask(spriteBatch);
+
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mTransformMatrix);
+
+            mMap.GetStructureMap().DrawAboveFow(spriteBatch);
+
+            spriteBatch.End();
         }
 
         public bool DrawLower()
@@ -105,7 +114,7 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Update(GameTime gametime)
         {
-            foreach (var spatial in mSpatialObjects)
+            foreach (var spatial in mSpatialObjects.Concat(mMap.GetStructureMap().GetPlatformList()))
             {
                 var collidingObject = spatial as ICollider;
 
@@ -119,6 +128,8 @@ namespace Singularity.Screen.ScreenClasses
 
                 spatial.Update(gametime);
             }
+            mMap.GetStructureMap().Update(gametime);
+
             mFow.Update(gametime);
 
             mTransformMatrix = mCamera.GetTransform();
@@ -160,11 +171,13 @@ namespace Singularity.Screen.ScreenClasses
             if (road != null)
             {
                 mMap.AddRoad(road);
+                return true;
             }
 
             if (platform != null)
             {
                 mMap.AddPlatform(platform);
+                return true;
             }
 
             if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
@@ -255,6 +268,16 @@ namespace Singularity.Screen.ScreenClasses
                 mUpdateables.Remove((IUpdate)toRemove);
             }
             return true;
+        }
+
+        public Map.Map GetMap()
+        {
+            return mMap;
+        }
+
+        public Camera GetCamera()
+        {
+            return mCamera;
         }
     }
 }
