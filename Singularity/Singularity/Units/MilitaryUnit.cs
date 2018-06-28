@@ -200,13 +200,16 @@ namespace Singularity.Units
                 SpriteEffects.None,
                 LayerConstants.MilitaryUnitLayer
                 );
-            
-            // TODO DEBUG REGION
-            if (mDebugPath != null)
+
+            if (GlobalVariables.DebugState)
             {
-                for (var i = 0; i < mDebugPath.Length - 1; i++)
+                // TODO DEBUG REGION
+                if (mDebugPath != null)
                 {
-                    spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
+                    for (var i = 0; i < mDebugPath.Length - 1; i++)
+                    {
+                        spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
+                    }
                 }
             }
 
@@ -369,10 +372,12 @@ namespace Singularity.Units
                                 mTargetPosition,
                                 ref mMap);
 
-                            // TODO: DEBUG REGION
-                            mDebugPath = mPath.ToArray();
-
-                            // TODO: END DEBUG REGION
+                            if (GlobalVariables.DebugState)
+                            {
+                                // TODO: DEBUG REGION
+                                mDebugPath = mPath.ToArray();
+                                // TODO: END DEBUG REGION
+                            }
 
                             mBoundsSnapshot = Bounds;
                             mZoomSnapshot = mCamera.GetZoom();
