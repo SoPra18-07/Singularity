@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
-using Singularity.Platform;
+using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
@@ -51,7 +51,7 @@ namespace Singularity.Levels
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
 
             //Map related stuff
-            mMap = new Map.Map(mapBackground, 20, 20, mGraphics.Viewport, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
+            mMap = new Map.Map(mapBackground, 20, 20, mGraphics.Viewport, ref mDirector, neo: true); // NEOLAYOUT (searchmark for @fkarg)
             mCamera = mMap.GetCamera();
             mFow = new FogOfWar(mCamera, mGraphics);
 

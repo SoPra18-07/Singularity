@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
-using Singularity.Platform;
+using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Sound;

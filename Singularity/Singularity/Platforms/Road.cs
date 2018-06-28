@@ -4,7 +4,7 @@ using Singularity.Graph;
 using Singularity.Libraries;
 using Singularity.Property;
 
-namespace Singularity.Platform
+namespace Singularity.Platforms
 {
     public sealed class Road : ISpatial, IEdge
     {

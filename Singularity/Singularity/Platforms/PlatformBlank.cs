@@ -4,12 +4,13 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
+using Singularity.PlatformActions;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
 using Singularity.Utils;
 
-namespace Singularity.Platform
+namespace Singularity.Platforms
 {
     [DataContract]
     public class PlatformBlank : IRevealing, INode, ICollider

@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Singularity.Levels;
 using Singularity.Property;
 using Singularity.Resources;
-using Singularity.serialization;
+using Singularity.Serialization;
 
 namespace Singularity.Manager
 {

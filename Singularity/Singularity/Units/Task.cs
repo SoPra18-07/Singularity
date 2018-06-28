@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization;
-using Singularity.Platform;
+using Singularity.PlatformActions;
+using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Utils;
 

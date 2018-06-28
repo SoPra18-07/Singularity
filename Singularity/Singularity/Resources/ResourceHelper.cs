@@ -19,9 +19,7 @@ namespace Singularity.Resources
         /// <returns>The color for the given type</returns>
         public static Color GetColor(EResourceType type)
         {
-            // TODO: use a more fitting color distribution, literally just chose anything here.
             // for reference: https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/
-            // -> use them. @fkarg
             switch (type)
             {
                 case EResourceType.Chip:

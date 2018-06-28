@@ -3,37 +3,36 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.PlatformActions;
 using Singularity.Resources;
 
-namespace Singularity.Platform
+namespace Singularity.Platforms
 {
     [DataContract()]
-    class Storage: PlatformBlank
+    class Factory: PlatformBlank
     {
         [DataMember()]
         private const int PlatformWidth = 144;
         [DataMember()]
         private const int PlatformHeight = 127;
 
-        public Storage(Vector2 position, Texture2D spritesheet, Texture2D basesprite): base(position, spritesheet, basesprite, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
+        public Factory(Vector2 position, Texture2D spritesheet, Texture2D basesprite): base(position, spritesheet, basesprite, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
         {
             //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[2];
+            //mIPlatformActions[0] = new ProduceFactoryResource(this);
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
-            mType = EPlatformType.Storage;
+            mType = EPlatformType.Factory;
             mSpritename = "Dome";
             AbsoluteSize = SetPlatfromDrawParameters();
         }
 
-        /// <summary>
-        /// Connects this storage to another storage to act like a portal.
-        /// </summary>
-        /// <param name="storage">The other storage to be connected to</param>
-        public void Connect(Storage storage)
+        public override void Produce()
         {
             throw new NotImplementedException();
+            //mIPlatformActions[0].Execute();
         }
     }
 }

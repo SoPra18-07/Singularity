@@ -7,7 +7,7 @@ using Singularity.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map.Properties;
-using Singularity.Platform;
+using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Resources;
 

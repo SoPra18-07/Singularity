@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Singularity.Manager;
-using Singularity.Platform;
+using Singularity.Platforms;
 
 namespace Singularity.Map
 {

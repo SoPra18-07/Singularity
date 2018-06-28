@@ -3,9 +3,10 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
+using Singularity.PlatformActions;
 using Singularity.Resources;
 
-namespace Singularity.Platform
+namespace Singularity.Platforms
 {
     [DataContract]
     class Junkyard : PlatformBlank

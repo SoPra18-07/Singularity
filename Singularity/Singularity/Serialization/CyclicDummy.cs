@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Singularity.serialization
+namespace Singularity.Serialization
 {
     /// <summary>
     /// A dummy class to create a cyclic reference in SerializationDummy.cs.

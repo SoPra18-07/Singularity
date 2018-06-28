@@ -2,9 +2,10 @@
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.PlatformActions;
 using Singularity.Resources;
 
-namespace Singularity.Platform
+namespace Singularity.Platforms
 {
     [DataContract]
     internal sealed class EnergyFacility : PlatformBlank

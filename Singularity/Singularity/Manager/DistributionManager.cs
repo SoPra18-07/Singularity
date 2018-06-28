@@ -4,7 +4,8 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Singularity.Exceptions;
 using Singularity.Graph;
-using Singularity.Platform;
+using Singularity.PlatformActions;
+using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Units;
 using Singularity.Utils;
@@ -507,7 +508,7 @@ namespace Singularity.Manager
                 mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, Optional<PlatformBlank>.Of(platform), resource, Optional<IPlatformAction>.Of(action)));
             }
         }
-
+        
         //TODO: Think about if we still need this
         public void RequestUnits(PlatformBlank platform, JobType job, IPlatformAction action, bool isdefending = false)
         {

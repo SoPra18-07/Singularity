@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Units;
 
-namespace Singularity.Platform
+namespace Singularity.PlatformActions
 {
 
 
