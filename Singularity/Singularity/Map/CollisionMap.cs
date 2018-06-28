@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using EpPathFinding.cs;
 using Microsoft.Xna.Framework;
 using Singularity.Map.Properties;
@@ -14,9 +12,6 @@ namespace Singularity.Map
     /// </summary>
     internal sealed class CollisionMap
     {
-        // Number of cells in the grid
-        private readonly int mGridXLength;
-        private readonly int mGridYLength;
         /// <summary>
         /// The look up table is used to check whether a given collider is already present in the collision map
         /// </summary>
@@ -39,22 +34,22 @@ namespace Singularity.Map
         {
             mLookUpTable = new Dictionary<int, Rectangle>();
 
-            mGridXLength = MapConstants.MapWidth / MapConstants.GridWidth;
-            mGridYLength = MapConstants.MapHeight / MapConstants.GridHeight;
+            var gridXLength = MapConstants.MapWidth / MapConstants.GridWidth;
+            var gridYLength = MapConstants.MapHeight / MapConstants.GridHeight;
 
             mCollisionMap = new CollisionNode
             [
-                mGridXLength,
-                mGridYLength
+                gridXLength,
+                gridYLength
             ];
-            bool[][] movableMatrix = new bool[mGridXLength][];
+            bool[][] movableMatrix = new bool[gridXLength][];
 
 
 
 
             for (var i = 0; i < mCollisionMap.GetLength(0); i++)
             {
-                movableMatrix[i] = new bool[mGridYLength];
+                movableMatrix[i] = new bool[gridYLength];
 
                 for (var j = 0; j < mCollisionMap.GetLength(1); j++)
                 {
@@ -62,7 +57,7 @@ namespace Singularity.Map
                     movableMatrix[i][j] = Map.IsOnTop(new Vector2(i * MapConstants.GridWidth, j * MapConstants.GridHeight));
                 }
             }
-            mWalkableGrid = new StaticGrid(mGridXLength, mGridYLength, movableMatrix);
+            mWalkableGrid = new StaticGrid(gridXLength, gridYLength, movableMatrix);
 
         }
 
@@ -94,7 +89,7 @@ namespace Singularity.Map
 
             for (var x = collider.AbsBounds.X / MapConstants.GridWidth; x <= (collider.AbsBounds.X + collider.AbsBounds.Width) / MapConstants.GridWidth; x++)
             {
-                for (var y = (collider.AbsBounds.Y / MapConstants.GridHeight); y <= ((collider.AbsBounds.Y + collider.AbsBounds.Height) / MapConstants.GridHeight) ; y++)
+                for (var y = collider.AbsBounds.Y / MapConstants.GridHeight; y <= (collider.AbsBounds.Y + collider.AbsBounds.Height) / MapConstants.GridHeight ; y++)
                 {
                     mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(collider));Optional<ICollider>.Of(collider);
                     mWalkableGrid.SetWalkableAt(x, y, false);

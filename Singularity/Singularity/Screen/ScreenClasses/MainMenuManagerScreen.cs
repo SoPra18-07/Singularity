@@ -203,14 +203,14 @@ namespace Singularity.Screen.ScreenClasses
         {
             switch (mTransitionState)
             {
-                case (0):
+                case 0:
                     // start the necessary transitions
                     originScreen.TransitionTo(mScreenState, targetEScreen, gameTime);
                     mMenuBackgroundScreen.TransitionTo(mScreenState, targetEScreen, gameTime);
                     mTransitionState = 1;
                     break;
 
-                case (1):
+                case 1:
                     // Wait for the origin screen to finish transitioning out
                     if (!originScreen.TransitionRunning)
                     {
@@ -222,7 +222,7 @@ namespace Singularity.Screen.ScreenClasses
                         mTransitionState = 2;
                     }
                     break;
-                case (2):
+                case 2:
                     // now wait for the target screen to finish transitioning in
                     if (!targetScreen.TransitionRunning)
                     {

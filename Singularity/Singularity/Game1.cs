@@ -1,7 +1,5 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Graph.Paths;
-using Singularity.Input;
 using Singularity.Levels;
 using Singularity.Manager;
 using Singularity.Screen;
