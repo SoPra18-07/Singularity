@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Exceptions;
 using Singularity.Graph;
+using Singularity.Manager;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
@@ -18,6 +22,9 @@ namespace Singularity.Platform
     public class PlatformBlank : IRevealing, INode, ICollider
 
     {
+
+        private float mLayer;
+
         /// <summary>
         /// List of inwards facing edges/roads towards the platform.
         /// </summary>
@@ -68,7 +75,7 @@ namespace Singularity.Platform
         [DataMember]
         protected string mSpritename;
         [DataMember]
-        protected Dictionary<JobType, List<GeneralUnit>> mAssignedUnits;
+        protected Dictionary<JobType, List<Pair<GeneralUnit, bool>>> mAssignedUnits;
 
         [DataMember]
         protected List<Resource> mResources;
@@ -84,6 +91,8 @@ namespace Singularity.Platform
         public bool Moved { get; private set; }
 
         public int Id { get; }
+
+        private readonly Director mDirector;
 
         // the sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome
         private int mSheet;
@@ -104,17 +113,27 @@ namespace Singularity.Platform
         [DataMember]
         public Vector2 RelativeSize { get; set; }
 
-        public bool[,] ColliderGrid { get; internal set; }
-
         private readonly float mCenterOffsetY;
 
+        private Color mColor;
 
-        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36)
+        public bool[,] ColliderGrid { get; internal set; }
+
+
+        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36)
         {
 
             Id = IdGenerator.NextiD();
 
+            mColor = Color.White;
+
+            mDirector = director;
+
             mCenterOffsetY = centerOffsetY;
+
+            mLayer = LayerConstants.PlatformLayer;
+
+            mType = EPlatformType.Blank;
 
             mType = type;
 
@@ -133,12 +152,12 @@ namespace Singularity.Platform
             //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[1];
 
-            mAssignedUnits = new Dictionary<JobType, List<GeneralUnit>>();
-            mAssignedUnits.Add(JobType.Idle, new List<GeneralUnit>());
-            mAssignedUnits.Add(JobType.Defense, new List<GeneralUnit>());
-            mAssignedUnits.Add(JobType.Production, new List<GeneralUnit>());
-            mAssignedUnits.Add(JobType.Logistics, new List<GeneralUnit>());
-            mAssignedUnits.Add(JobType.Construction, new List<GeneralUnit>());
+            mAssignedUnits = new Dictionary<JobType, List<Pair<GeneralUnit, bool>>>();
+            mAssignedUnits.Add(JobType.Idle, new List<Pair<GeneralUnit, bool>>());
+            mAssignedUnits.Add(JobType.Defense, new List<Pair<GeneralUnit, bool>>());
+            mAssignedUnits.Add(JobType.Production, new List<Pair<GeneralUnit, bool>>());
+            mAssignedUnits.Add(JobType.Logistics, new List<Pair<GeneralUnit, bool>>());
+            mAssignedUnits.Add(JobType.Construction, new List<Pair<GeneralUnit, bool>>());
 
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
@@ -153,22 +172,37 @@ namespace Singularity.Platform
             mRequested = new Dictionary<EResourceType, int>();
 
             Moved = false;
-
             UpdateValues();
 
         }
 
+        public void SetColor(Color color)
+        {
+            mColor = color;
+        }
+
+        public void ResetColor()
+        {
+            mColor = Color.White;
+        }
+
         public void UpdateValues()
         {
-            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int) AbsoluteSize.X, (int) AbsoluteSize.Y);
+            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y + mCenterOffsetY);
+        }
+
+        public void Register()
+        {
+            //TODO: make this so we can also register defense platforms
+            mDirector.GetDistributionManager.Register(this, false);
         }
 
         /// <summary>
         /// Get the assigned Units of this platform.
         /// </summary>
-        /// <returns> a list containing references of the units</returns>
-        public Dictionary<JobType, List<GeneralUnit>> GetAssignedUnits()
+        /// <returns> a Dictionary, under each JobType there is an entry with a list containing all assigned units plus a bool to show wether they are present on the platform</returns>
+        public Dictionary<JobType, List<Pair<GeneralUnit, bool>>> GetAssignedUnits()
         {
             return mAssignedUnits;
         }
@@ -180,8 +214,22 @@ namespace Singularity.Platform
         /// <param name="job">The Job to be done by the unit</param>
         public void AssignUnits(GeneralUnit unit, JobType job)
         {
-            var list = mAssignedUnits[job];
-            list.Add(unit);
+            mAssignedUnits[job].Add(new Pair<GeneralUnit, bool>(unit, false));
+        }
+
+        /// <summary>
+        /// The units will call this methods when they reached the platform they have to work on.
+        /// </summary>
+        /// <param name="unit"></param>
+        public void ShowedUp(GeneralUnit unit, JobType job)
+        {
+            var pair = mAssignedUnits[job].Find(x => x.GetFirst().Equals(unit));
+            if (pair == null)
+            {
+                throw new InvalidGenericArgumentException("There is no such unit! => Something went wrong...");
+            }
+            mAssignedUnits[job].Remove(pair);
+            mAssignedUnits[job].Add(new Pair<GeneralUnit, bool>(unit, true));
         }
 
         /// <summary>
@@ -191,8 +239,8 @@ namespace Singularity.Platform
         /// <param name="job">The Job of the unit</param>
         public void UnAssignUnits(GeneralUnit unit, JobType job)
         {
-            var list = mAssignedUnits[job];
-            list.Remove(unit);
+            var pair = mAssignedUnits[job].Find(x => x.GetFirst().Equals(unit));
+            mAssignedUnits[job].Remove(pair);
         }
 
         public virtual void Produce()
@@ -327,12 +375,12 @@ namespace Singularity.Platform
                     spritebatch.Draw(mPlatformBaseTexture,
                         AbsolutePosition,
                         null,
-                        Color.White * transparency,
+                        mColor * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
                         SpriteEffects.None,
-                        LayerConstants.BasePlatformLayer);
+                        mLayer - 0.01f);
                     break;
                 case 1:
                     // Cone
@@ -340,12 +388,12 @@ namespace Singularity.Platform
                     spritebatch.Draw(mPlatformBaseTexture,
                         Vector2.Add(AbsolutePosition, new Vector2(-3, 73)),
                         null,
-                        Color.White * transparency,
+                        mColor * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
                         SpriteEffects.None,
-                        LayerConstants.BasePlatformLayer);
+                        mLayer - 0.01f);
                     // then draw what's on top of that
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
@@ -355,7 +403,7 @@ namespace Singularity.Platform
                         Vector2.Zero,
                         1f,
                         SpriteEffects.None,
-                        LayerConstants.PlatformLayer);
+                        mLayer);
                     break;
                 case 2:
                     // Cylinder
@@ -363,44 +411,44 @@ namespace Singularity.Platform
                     spritebatch.Draw(mPlatformBaseTexture,
                         Vector2.Add(AbsolutePosition, new Vector2(-3, 82)),
                         null,
-                        Color.White * transparency,
+                        mColor * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
                         SpriteEffects.None,
-                        LayerConstants.BasePlatformLayer);
+                        mLayer - 0.01f);
                     // then draw what's on top of that
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
                         new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 153),
-                        Color.White * transparency,
+                        mColor * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
                         SpriteEffects.None,
-                        LayerConstants.PlatformLayer);
+                        mLayer);
                     break;
                 case 3:
                     // Draw the basic platform first
                     spritebatch.Draw(mPlatformBaseTexture,
                         Vector2.Add(AbsolutePosition, new Vector2(-3, 38)),
                         null,
-                        Color.White * transparency,
+                        mColor * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
                         SpriteEffects.None,
-                        LayerConstants.BasePlatformLayer);
+                        mLayer - 0.01f);
                     // Dome
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
                         new Rectangle(148 * (mSheetPosition % 4), 109 * (int) Math.Floor(mSheetPosition / 4d), 148, 109),
-                        Color.White * transparency,
+                        mColor * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
                         SpriteEffects.None,
-                        LayerConstants.PlatformLayer);
+                        mLayer);
                     break;
             }
 
@@ -677,6 +725,11 @@ namespace Singularity.Platform
                     throw new ArgumentOutOfRangeException("Attempted to use a spritesheet "
                         + "for platforms that doesn't exist.");
             }
+        }
+
+        public void SetLayer(float layer)
+        {
+            mLayer = layer;
         }
     }
 }

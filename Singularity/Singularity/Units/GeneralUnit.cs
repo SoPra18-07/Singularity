@@ -128,7 +128,7 @@ namespace Singularity.Units
         /// Can also be used to just change the "home" of the unit. In that case just give it the job it already has (in the task).
         /// </summary>
         /// <param name="task">The new task for the unit</param>
-        public void AssignTask(Task task)
+        internal void AssignTask(Task task)
         {
             mDone = false;
             mAssignedTask = task;
@@ -136,6 +136,7 @@ namespace Singularity.Units
             //Check whether there is a Destination. (it should)
             if (mAssignedTask.End.IsPresent())
             {
+                mAssignedTask.End.Get().AssignUnits(this, Job);
                 mDestination = Optional<INode>.Of(mAssignedTask.End.Get());
             }
 
@@ -188,7 +189,7 @@ namespace Singularity.Units
                     {
                         if (!mAssigned)
                         {
-                            mAssignedTask.End.Get().AssignUnits(this, Job);
+                            mAssignedTask.End.Get().ShowedUp(this, Job);
                             mAssigned = true;
                         }
                     }
