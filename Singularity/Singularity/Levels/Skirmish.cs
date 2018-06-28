@@ -121,7 +121,7 @@ namespace Singularity.Levels
             mGameScreen.AddObject(milUnit);
 
             //TESTMETHODS HERE =====================================
-            mDirector.GetDistributionManager.DistributeJobs(JobType.Idle, JobType.Production, 3);
+            mDirector.GetDistributionManager.DistributeJobs(JobType.Idle, JobType.Production, 2);
             mDirector.GetDistributionManager.TestAttributes();
         }
 

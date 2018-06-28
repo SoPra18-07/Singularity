@@ -301,6 +301,7 @@ namespace Singularity.Manager
 
                 //Remove the first unit in the AssignedUnitList. The unit will unassign itself. Then add the unit to our unitslist.
                 //Also dont forget to decrement the number in the tuple, and to delete the unit from the joblist.
+                //TODO: SEARCH for a reason why transferunit is null
                 var transferunit = platUnits[job].First();
                 units.Add(transferunit);
                 joblist.Remove(transferunit);
@@ -486,6 +487,13 @@ namespace Singularity.Manager
             {
                 mManual.Add(unit);
                 action.AssignUnit(unit, job);
+                if (job == JobType.Production)
+                {
+
+                } else if (job == JobType.Defense)
+                {
+
+                }
             }
         }
 

@@ -96,7 +96,7 @@ namespace Singularity.Platform
             //default?
             mHealth = 100;
 
-            //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
+            //I dont think this class has to register in the DistributionManager
             //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[1];
 

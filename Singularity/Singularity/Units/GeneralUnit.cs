@@ -250,7 +250,7 @@ namespace Singularity.Units
             ReachedTarget(((PlatformBlank)CurrentNode).Center);
 
 
-            if (((PlatformBlank) CurrentNode).GetPlatformResources().Count > 0)
+            /*if (((PlatformBlank) CurrentNode).GetPlatformResources().Count > 0)
             {
                 // todo: fix
                 var res = ((PlatformBlank) CurrentNode).GetResource(EResourceType.Oil);
@@ -271,7 +271,7 @@ namespace Singularity.Units
             if (Carrying.IsPresent())
             {
                 Carrying.Get().Follow(this);
-            }
+            }*/
 
         }
 
