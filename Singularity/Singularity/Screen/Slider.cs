@@ -76,7 +76,7 @@ namespace Singularity.Screen
             ref Director director,
             bool withValueBox = true,
             bool withPages = false,
-            int pages = 0)
+            int pages = 0, EScreen screen = EScreen.UserInterfaceScreen)
         {
             Position = position;
             mLastPosition = position;
@@ -94,6 +94,7 @@ namespace Singularity.Screen
             mDirector = director;
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
+            Screen = screen;
 
             // if value box requested, initiate string value to 0
             if (mWithValue)
@@ -388,6 +389,7 @@ namespace Singularity.Screen
             {
                 // when left key is pressed and mouse within slider bounds then make slider slave to mouse
                 case EMouseAction.LeftClick:
+
                     if (Mouse.GetState().X >= mCurrentX - (Size.Y / 2) &&
                         Mouse.GetState().X <= mCurrentX + (Size.Y / 2) &&
                         Mouse.GetState().Y >= Position.Y - (Size.Y / 2) &&
@@ -439,10 +441,7 @@ namespace Singularity.Screen
 
         public int CurrentPage() {return mCurrentPage;}
 
-        #endregion
-        #region NotUsed
-
-        public EScreen Screen { get; }
+        public EScreen Screen { get;}
 
         public Rectangle Bounds { get; }
         public void MousePositionChanged(float newX, float newY)

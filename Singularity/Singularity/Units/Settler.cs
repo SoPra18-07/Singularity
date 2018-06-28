@@ -17,7 +17,7 @@ using Singularity.Utils;
 
 namespace Singularity.Units
 {
-    class Settler: ICollider, IRevealing, IMouseClickListener, IMousePositionListener
+    class Settler: ICollider, IRevealing, IMouseClickListener, IMousePositionListener, IKeyListener
     {
         public Vector2 RelativePosition { get; set; }
         public Vector2 RelativeSize { get; set; }
@@ -28,7 +28,7 @@ namespace Singularity.Units
         public int Id { get; }
         public int RevelationRadius { get; }
         public Vector2 Center { get; private set; }
-        public EScreen Screen { get; }
+        public EScreen Screen { get; } = EScreen.GameScreen;
         public Rectangle Bounds { get; private set; }
 
 
@@ -57,6 +57,7 @@ namespace Singularity.Units
         public Settler(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
         {
             Id = IdGenerator.NextiD(); // id for the specific unit.
+            Health = 10;
 
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(20, 20);
@@ -71,6 +72,7 @@ namespace Singularity.Units
 
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             Debug.WriteLine("Added to mouse click listener");
+            mDirector.GetInputManager.AddKeyListener(this);
             mDirector.GetInputManager.AddMousePositionListener(this);
 
             mMap = map;
@@ -78,10 +80,17 @@ namespace Singularity.Units
             mPathfinder = new MilitaryPathfinder();
         }
 
+        private int Health { get; set; }
+
+        public void MakeDamage(int damage)
+        {
+            Health -= damage; // TODO
+        }
+
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.StrokedRectangle(AbsolutePosition, AbsoluteSize, Color.Gray, (mSelected)? sSelectedColor : sNotSelectedColor, .8f, 1f);
+            spriteBatch.StrokedRectangle(AbsolutePosition, AbsoluteSize, Color.Gray, (mSelected)? sSelectedColor : sNotSelectedColor, .8f, 1f, LayerConstants.MilitaryUnitLayer);
             
             // TODO DEBUG REGION
             if (mDebugPath != null)
@@ -164,15 +173,14 @@ namespace Singularity.Units
             }
         }
 
+
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
-            Debug.WriteLine("Clicked");
             var giveThrough = true;
 
             switch (mouseAction)
             {
                 case EMouseAction.LeftClick:
-                    Debug.Write("this works \n");
                     if (mSelected && !mIsMoving && !withinBounds && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f), (int)(mMouseY - RelativeSize.Y / 2f), (int)RelativeSize.X, (int)RelativeSize.Y), mCamera))
                     {
                         mIsMoving = true;
@@ -214,6 +222,39 @@ namespace Singularity.Units
             return giveThrough;
         }
 
+
+
+        public void MousePositionChanged(float newX, float newY)
+        {
+            mMouseX = newX;
+            mMouseY = newY;
+        }
+
+        public void KeyTyped(KeyEvent keyEvent)
+        {
+            Keys[] keyArray = keyEvent.CurrentKeys;
+            foreach (Keys key in keyArray)
+            {
+                if (key == Keys.B)
+                {
+                    // build a control center here
+                }
+            }
+        }
+
+
+
+        #region NotUsed
+        public void KeyPressed(KeyEvent keyEvent)
+        {
+
+        }
+
+        public void KeyReleased(KeyEvent keyEvent)
+        {
+            
+        }
+
         public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {
             return true;
@@ -223,11 +264,6 @@ namespace Singularity.Units
         {
             return true;
         }
-
-        public void MousePositionChanged(float newX, float newY)
-        {
-            mMouseX = newX;
-            mMouseY = newY;
-        }
+        #endregion
     }
 }

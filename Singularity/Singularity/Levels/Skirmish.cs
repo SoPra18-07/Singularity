@@ -83,6 +83,7 @@ namespace Singularity.Levels
 
             //SetUnit
             var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap);
+            var selBox = new SelectionBox(Color.White, mCamera, ref mDirector);
 
             //Roads
             var road1 = new Road(mPlatform, platform2, false);
@@ -123,6 +124,7 @@ namespace Singularity.Levels
             mGameScreen.AddObject(genUnit5);
             mGameScreen.AddObject(milUnit);
             mGameScreen.AddObject(setUnit);
+            mGameScreen.AddObject(selBox);
 
             mDirector.GetDistributionManager.DistributeJobs(JobType.Idle, JobType.Production, 3);
             mDirector.GetDistributionManager.TestAttributes();
