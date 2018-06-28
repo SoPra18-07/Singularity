@@ -198,6 +198,7 @@ namespace Singularity.Platform
                     return giveThrough;
                 }
 
+                mPlatform.ResetColor();
                 mConnectionRoad = null;
                 mCurrentState.PreviousState();
                 giveThrough = false;
