@@ -54,7 +54,7 @@ namespace Singularity.Levels
             PlatformFactory.Init(null, platformCylTexture, platformDomeTexture, platformBlankTexture);
 
             //Map related stuff
-            mCamera = new Camera(mGraphics.Viewport, ref mDirector);
+            mCamera = new Camera(mGraphics.Viewport, ref mDirector, 800, 800);
             mFow = new FogOfWar(mCamera, mGraphics);
             mMap = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.Viewport, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
 

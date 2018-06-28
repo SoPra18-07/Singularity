@@ -88,7 +88,7 @@ namespace Singularity
             // The idea is that the game screen is always at the bottom and stuff is added simply
             // on top of it.
             mScreenManager.AddScreen(mGameScreen);
-            mScreenManager.AddScreen(mUserInterfaceScreen);
+            //mScreenManager.AddScreen(mUserInterfaceScreen);
             // mScreenManager.AddScreen(mMainMenuManager); // TODO: This makes it so that the main menu is bypassed
 
             // load and play Soundtrack as background music
