@@ -1,37 +1,22 @@
 ﻿using Microsoft.Xna.Framework;
-using Singularity.Map.Properties;
 
 namespace Singularity.Property
 {
     internal interface ICollider : ISpatial
     {
         /// <summary>
-        /// Creates a collider grid that shows for each grid point in the bounding
-        /// box if that grid position is collidable.
+        /// Provides a lookup table for which spaces have a collider in them and which don't within the bounding box
         /// </summary>
-        /// For example:
-        /// [0, 0, 0, 0, 0,
-        ///  0, 0, 1, 0, 0,
-        ///  0, 1, 1, 1, 0,
-        ///  0, 0, 1, 0, 0,]
-        ///
-        /// is the ColliderGrid for an  diamond shaped object.
         bool[,] ColliderGrid { get; }
 
         /// <summary>
-        /// Absolute bounding box of an object. The object MUST be smaller
-        /// than this bounding box.
+        /// Indicates the absolute bounds of a collider. The entire object must be within this bounds
         /// </summary>
         Rectangle AbsBounds { get; }
 
-        /// <summary>
-        /// Indicates if an object has moved since the last update call.
-        /// </summary>
+
         bool Moved { get; }
 
-        /// <summary>
-        /// Unique unit ID.
-        /// </summary>
         int Id { get; }
     }
 }

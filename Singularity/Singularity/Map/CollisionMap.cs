@@ -87,28 +87,26 @@ namespace Singularity.Map
                 }
             }
 
-            //add the given collider to the collision map.
-            var i = 0;
-            var j = 0;
-            for (var x = collider.AbsBounds.X / MapConstants.GridWidth; x < (collider.AbsBounds.X + collider.AbsBounds.Width) / MapConstants.GridWidth; x++)
+            if (collider.ColliderGrid == null)
             {
-                for (var y = (collider.AbsBounds.Y / MapConstants.GridHeight); y < ((collider.AbsBounds.Y + collider.AbsBounds.Height) / MapConstants.GridHeight) ; y++)
+                return;
+            }
+            //add the given collider to the collision map.
+            for (var i = 0; i < collider.ColliderGrid.GetLength(1); i++)
+            {
+                for (var j = 0; j < collider.ColliderGrid.GetLength(0); j++)
                 {
-                    
-                    Debug.WriteLine("i, j: " + i + ", " + j);
-                    /*
-                    if (collider.ColliderGrid != null && collider.ColliderGrid[j, i] && false)
+                    if (!collider.ColliderGrid[j, i])
                     {
-                        mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(collider));
-                        Optional<ICollider>.Of(collider);
-                        mWalkableGrid.SetWalkableAt(x, y, false);
+                        continue;
                     }
-                    */
 
-                    j++;
+                    var x = (int) (collider.AbsolutePosition.X / MapConstants.GridWidth) + i;
+                    var y = (int) (collider.AbsolutePosition.Y / MapConstants.GridHeight) + j;
+                    mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(collider));
+                    Optional<ICollider>.Of(collider);
+                    mWalkableGrid.SetWalkableAt(x, y, false);
                 }
-
-                i++;
             }
 
             mLookUpTable[collider.Id] = collider.AbsBounds;

@@ -8,6 +8,7 @@ using Singularity.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Map.Properties;
 using Singularity.Property;
 using Singularity.Screen;
 using Singularity.Sound;
@@ -340,28 +341,44 @@ namespace Singularity.Units
             switch (mouseAction)
             {
                 case EMouseAction.LeftClick:
-                    if (mSelected && !mIsMoving && !withinBounds && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f), (int)(mMouseY - RelativeSize.Y / 2f), (int)RelativeSize.X, (int)RelativeSize.Y), mCamera))
+                    // check for if the unit is selected, not moving, the click is not within the bounds of the unit, and the click was on the map.
+                    if (mSelected
+                        && !mIsMoving
+                        && !withinBounds
+                        && Map.Map.IsOnTop(new Rectangle((int) (mMouseX - RelativeSize.X / 2f),
+                                (int) (mMouseY - RelativeSize.Y / 2f),
+                                (int) RelativeSize.X,
+                                (int) RelativeSize.Y),
+                            mCamera))
                     {
-                        mIsMoving = true;
+                        
                         mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
                             Matrix.Invert(mCamera.GetTransform()));
-                        var currentPosition = Center;
-                        Debug.WriteLine("Starting path finding at: " + currentPosition.X +", " + currentPosition.Y);
-                        Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
+                        if (mMap.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
+                            (int) mTargetPosition.X / MapConstants.GridWidth,
+                            (int) mTargetPosition.Y / MapConstants.GridWidth))
+                        {
+                            mIsMoving = true;
 
-                        mPath = new Stack<Vector2>();
-                        mPath = mPathfinder.FindPath(currentPosition,
-                            mTargetPosition,
-                            ref mMap);
+                            var currentPosition = Center;
+                            Debug.WriteLine("Starting path finding at: " + currentPosition.X + ", " + currentPosition.Y);
+                            Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
 
-                        // TODO: DEBUG REGION
-                        mDebugPath = mPath.ToArray();
+                            mPath = new Stack<Vector2>();
+                            mPath = mPathfinder.FindPath(currentPosition,
+                                mTargetPosition,
+                                ref mMap);
 
-                        // TODO: END DEBUG REGION
+                            // TODO: DEBUG REGION
+                            mDebugPath = mPath.ToArray();
 
-                        mBoundsSnapshot = Bounds;
-                        mZoomSnapshot = mCamera.GetZoom();
-                        giveThrough = true;
+                            // TODO: END DEBUG REGION
+
+                            mBoundsSnapshot = Bounds;
+                            mZoomSnapshot = mCamera.GetZoom();
+                            giveThrough = true;
+                        }
+                        
                     }
 
                     if (withinBounds) {

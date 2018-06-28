@@ -612,12 +612,12 @@ namespace Singularity.Platform
                     AbsoluteSize = new Vector2(148, 85);
                     ColliderGrid = new [,]
                     {
-                        { false, true,  true,  true,  true,  true,  true,  false, false },
-                        { true,  true,  true,  true,  true,  true,  true,  true , false },
-                        { true,  true,  true,  true,  true,  true,  true,  true , false },
-                        { true,  true,  true,  true,  true,  true,  true,  false, false },
-                        { false, false, true,  true,  true,  true,  false, false, false },
-                        { false, false, false, false, false, false, false, false, false }
+                        { false, true,  true,  true,  true,  true,  true,  false },
+                        { true,  true,  true,  true,  true,  true,  true,  true  },
+                        { true,  true,  true,  true,  true,  true,  true,  true  },
+                        { true,  true,  true,  true,  true,  true,  true,  false },
+                        { false, false, true,  true,  true,  true,  false, false },
+                        { false, false, false, false, false, false, false, false }
                     };
                     break;
                 case (1):
@@ -625,16 +625,16 @@ namespace Singularity.Platform
                     AbsoluteSize = new Vector2(148, 165);
                     ColliderGrid = new [,]
                     {
-                        { false, false, false, false, false, false, false, false, false },
-                        { false, false, false, false, false, false, false, false, false },
-                        { false, false, false, false, false, false, false, false, false },
-                        { false, false, false, false, false, false, false, false, false },
-                        { false, true,  true,  true,  true,  true,  true,  false, false },
-                        { true,  true,  true,  true,  true,  true,  true,  true , false },
-                        { true,  true,  true,  true,  true,  true,  true,  true , false },
-                        { true,  true,  true,  true,  true,  true,  true,  false, false },
-                        { false, false, true,  true,  true,  true,  false, false, false },
-                        { false, false, false, false, false, false, false, false, false }
+                        { false, false, false, false, false, false, false, false },
+                        { false, false, false, false, false, false, false, false },
+                        { false, false, false, false, false, false, false, false },
+                        { false, false, false, false, false, false, false, false },
+                        { false, true,  true,  true,  true,  true,  true,  false },
+                        { true,  true,  true,  true,  true,  true,  true,  true  },
+                        { true,  true,  true,  true,  true,  true,  true,  true  },
+                        { true,  true,  true,  true,  true,  true,  true,  false },
+                        { false, false, true,  true,  true,  true,  false, false },
+                        { false, false, false, false, false, false, false, false }
                     };
                     break;
                 case (2):
@@ -642,16 +642,16 @@ namespace Singularity.Platform
                     AbsoluteSize = new Vector2(148, 170);
                     ColliderGrid = new [,]
                     {
-                        { false, false, false, false, false, false, false, false, false },
-                        { false, false, false, false, false, false, false, false, false },
-                        { false, false, false, false, false, false, false, false, false },
-                        { false, false, false, false, false, false, false, false, false },
-                        { false, true,  true,  true,  true,  true,  true,  false, false },
-                        { true,  true,  true,  true,  true,  true,  true,  true , false },
-                        { true,  true,  true,  true,  true,  true,  true,  true , false },
-                        { true,  true,  true,  true,  true,  true,  true,  false, false },
-                        { false, false, true,  true,  true,  true,  false, false, false },
-                        { false, false, false, false, false, false, false, false, false }
+                        { false, false, false, false, false, false, false, false },
+                        { false, false, false, false, false, false, false, false },
+                        { false, false, false, false, false, false, false, false },
+                        { false, false, false, false, false, false, false, false },
+                        { false, true,  true,  true,  true,  true,  true,  false },
+                        { true,  true,  true,  true,  true,  true,  true,  true  },
+                        { true,  true,  true,  true,  true,  true,  true,  true  },
+                        { true,  true,  true,  true,  true,  true,  true,  false },
+                        { false, false, true,  true,  true,  true,  false, false },
+                        { false, false, false, false, false, false, false, false }
                     };
                     break;
                 case (3):
@@ -659,14 +659,14 @@ namespace Singularity.Platform
                     AbsoluteSize = new Vector2(148, 126);
                     ColliderGrid = new [,]
                     {
-                        { false, false, false, false, false, false, false, false, false },
-                        { false, false, false, false, false, false, false, false, false },
-                        { false, true,  true,  true,  true,  true,  true,  false, false },
-                        { true,  true,  true,  true,  true,  true,  true,  true , false },
-                        { true,  true,  true,  true,  true,  true,  true,  true , false },
-                        { true,  true,  true,  true,  true,  true,  true,  false, false },
-                        { false, false, true,  true,  true,  true,  false, false, false },
-                        { false, false, false, false, false, false, false, false, false }
+                        { false, false, false, false, false, false, false, false },
+                        { false, false, false, false, false, false, false, false },
+                        { false, true,  true,  true,  true,  true,  true,  false },
+                        { true,  true,  true,  true,  true,  true,  true,  true  },
+                        { true,  true,  true,  true,  true,  true,  true,  true  },
+                        { true,  true,  true,  true,  true,  true,  true,  false },
+                        { false, false, true,  true,  true,  true,  false, false },
+                        { false, false, false, false, false, false, false, false }
                     };
                     break;
                 default:
