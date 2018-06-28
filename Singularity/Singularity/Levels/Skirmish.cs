@@ -82,7 +82,7 @@ namespace Singularity.Levels
             var milUnit = new MilitaryUnit(new Vector2(2000, 700), milUnitSheet, mMap.GetCamera(), ref mDirector, ref mMap);
 
             //SetUnit
-            var setUnit = new Settler(new Vector2(2000, 600), mCamera, ref mDirector, ref mMap);
+            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap);
 
             //Roads
             var road1 = new Road(mPlatform, platform2, false);
@@ -113,6 +113,8 @@ namespace Singularity.Levels
 
             mFow.AddRevealingObject(milUnit);
 
+            mFow.AddRevealingObject(setUnit);
+
             //MAP============================
             mMap.AddPlatform(mPlatform);
             mMap.AddPlatform(platform2);
@@ -142,6 +144,7 @@ namespace Singularity.Levels
             mGameScreen.AddObject(genUnit4);
             mGameScreen.AddObject(genUnit5);
             mGameScreen.AddObject(milUnit);
+            mGameScreen.AddObject(setUnit);
         }
 
         public GameScreen GetGameScreen()

@@ -246,8 +246,6 @@ namespace Singularity.Units
                 if (!HasReachedWaypoint())
                 {
                     MoveToTarget(mPath.Peek());
-                    
-
                 }
                 else
                 {
