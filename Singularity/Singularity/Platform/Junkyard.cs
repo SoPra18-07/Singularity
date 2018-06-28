@@ -17,7 +17,7 @@ namespace Singularity.Platform
         [DataMember]
         private Director mDirector;
 
-        public Junkyard(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director dir) : base(position, platformSpriteSheet, baseSprite, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
+        public Junkyard(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director dir) : base(position, platformSpriteSheet, baseSprite, EPlatformType.Junkyard, -50)
         {
             mDirector = dir;
             //Add possible Actions in this array
