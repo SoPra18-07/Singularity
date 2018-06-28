@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using EpPathFinding.cs;
 using Microsoft.Xna.Framework;
 using Singularity.Map.Properties;
@@ -34,22 +36,21 @@ namespace Singularity.Map
         {
             mLookUpTable = new Dictionary<int, Rectangle>();
 
-            var gridXLength = MapConstants.MapWidth / MapConstants.GridWidth;
-            var gridYLength = MapConstants.MapHeight / MapConstants.GridHeight;
+            var GridXLength = MapConstants.MapWidth / MapConstants.GridWidth;
+            var GridYLength = MapConstants.MapHeight / MapConstants.GridHeight;
 
             mCollisionMap = new CollisionNode
             [
-                gridXLength,
-                gridYLength
+                GridXLength,
+                GridYLength
             ];
-            bool[][] movableMatrix = new bool[gridXLength][];
 
-
-
+            // movableMatrix is used to construct a StaticGrid object, which is used by the pathfinder.
+            var movableMatrix = new bool[GridXLength][];
 
             for (var i = 0; i < mCollisionMap.GetLength(0); i++)
             {
-                movableMatrix[i] = new bool[gridYLength];
+                movableMatrix[i] = new bool[GridYLength];
 
                 for (var j = 0; j < mCollisionMap.GetLength(1); j++)
                 {
@@ -57,7 +58,7 @@ namespace Singularity.Map
                     movableMatrix[i][j] = Map.IsOnTop(new Vector2(i * MapConstants.GridWidth, j * MapConstants.GridHeight));
                 }
             }
-            mWalkableGrid = new StaticGrid(gridXLength, gridYLength, movableMatrix);
+            mWalkableGrid = new StaticGrid(GridXLength, GridYLength, movableMatrix);
 
         }
 
@@ -65,10 +66,9 @@ namespace Singularity.Map
         /// Updates the collision map for the given coordinates and id. If the object identified by the id is already present
         /// in the collision map the coordinates get updated, otherwise it gets added.
         /// </summary>
-        /// <param name="collider">The collider to be updated updated</param>
+        /// <param name="collider">The collider to be updated.</param>
         public void UpdateCollider(ICollider collider)
         {
-
             //Check if the location of an already existing collider needs to be updated.
             if (mLookUpTable.ContainsKey(collider.Id) && collider.Moved)
             {
@@ -80,18 +80,28 @@ namespace Singularity.Map
                     {
                         mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(null));
                         mWalkableGrid.SetWalkableAt(x, y, true);
-
                     }
                 }
             }
 
-            //add the given collider to the collision map.
-
-            for (var x = collider.AbsBounds.X / MapConstants.GridWidth; x <= (collider.AbsBounds.X + collider.AbsBounds.Width) / MapConstants.GridWidth; x++)
+            if (collider.ColliderGrid == null)
             {
-                for (var y = collider.AbsBounds.Y / MapConstants.GridHeight; y <= (collider.AbsBounds.Y + collider.AbsBounds.Height) / MapConstants.GridHeight ; y++)
+                return;
+            }
+            //add the given collider to the collision map.
+            for (var i = 0; i < collider.ColliderGrid.GetLength(1); i++)
+            {
+                for (var j = 0; j < collider.ColliderGrid.GetLength(0); j++)
                 {
-                    mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(collider));Optional<ICollider>.Of(collider);
+                    if (!collider.ColliderGrid[j, i])
+                    {
+                        continue;
+                    }
+
+                    var x = (int) (collider.AbsolutePosition.X / MapConstants.GridWidth) + i;
+                    var y = (int) (collider.AbsolutePosition.Y / MapConstants.GridHeight) + j;
+                    mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(collider));
+                    Optional<ICollider>.Of(collider);
                     mWalkableGrid.SetWalkableAt(x, y, false);
                 }
             }

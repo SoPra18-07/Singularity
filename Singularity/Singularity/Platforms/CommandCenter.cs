@@ -25,7 +25,7 @@ namespace Singularity.Platforms
         [DataMember]
         private Director mDirector;
 
-        public CommandCenter(Vector2 position, Texture2D spritesheet, Texture2D baseSprite, ref Director dir): base(position, spritesheet, baseSprite, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
+        public CommandCenter(Vector2 position, Texture2D spritesheet, Texture2D baseSprite, ref Director dir): base(position, spritesheet, baseSprite, EPlatformType.Command, -50)
         {
             mDirector = dir;
             //Add possible Actions in this array
@@ -35,7 +35,7 @@ namespace Singularity.Platforms
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Command;
             mSpritename = "Cylinders";
-            AbsoluteSize = SetPlatfromDrawParameters();
+            SetPlatfromParameters();
             mControlledUnits = new List<GeneralUnit>();
             dir.GetStoryManager.AddEnergy(5);
         }
