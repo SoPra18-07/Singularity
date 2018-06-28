@@ -402,7 +402,7 @@ namespace Singularity.Manager
         /// <param name="platform">The newly registered platform</param>
         /// <param name="isDefense">Is true if its a DefensePlatform, false otherwise</param>
         private void NewlyDistribute(PlatformBlank platform, bool isDefense)
-        { //TODO: Change this to use The written helpermethods
+        {
             if (isDefense)
             {
                 // + 1 because we didnt add the new platform yet
@@ -438,7 +438,7 @@ namespace Singularity.Manager
         /// </summary>
         /// <param name="amount">The amount of units to be assigned</param>
         /// <param name="action">The action to which the units shall be assigned</param>
-        /// <param name="job">The Job the units are supposed to have.</param>
+        /// <param name="job">The Job the units had/are supposed to have.</param>
         public void ManualAssign(int amount, IPlatformAction action, JobType job)
         {
             List<GeneralUnit> oldlist;
@@ -451,10 +451,10 @@ namespace Singularity.Manager
                     oldlist = mIdle;
                     break;
                 case JobType.Production:
-                    oldlist = mDefense;
+                    oldlist = mProduction;
                     break;
                 case JobType.Defense:
-                    oldlist = mProduction;
+                    oldlist = mDefense;
                     break;
                 case JobType.Logistics:
                     oldlist = mLogistics;
@@ -463,13 +463,31 @@ namespace Singularity.Manager
                     throw new InvalidGenericArgumentException("You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
             }
 
-            for (var i = amount; i >= 0; i--)
+            //COLLECT THE UNITS
+            List<GeneralUnit> list;
+            if (job == JobType.Defense)
             {
-                //Change the job of a random unit
-                var rand = mRandom.Next(0, oldlist.Count);
-                var removeit = oldlist.ElementAt(rand);
-                mManual.Add(removeit);
-                action.AssignUnit(removeit, job);
+                list = GetUnitsFairly(amount, mDefPlatforms, true);
+            }else if (job == JobType.Production)
+            {
+                list = GetUnitsFairly(amount, mProdPlatforms, false);
+            }
+            else
+            {
+                list = new List<GeneralUnit>();
+                for (var i = amount; i >= 0; i--)
+                {
+                    //Change the job of a random unit
+                    var rand = mRandom.Next(0, oldlist.Count);
+                    var removeit = oldlist.ElementAt(rand);
+                    list.Add(removeit);
+                }
+            }
+
+            foreach (var unit in list)
+            {
+                mManual.Add(unit);
+                action.AssignUnit(unit, job);
             }
         }
 
