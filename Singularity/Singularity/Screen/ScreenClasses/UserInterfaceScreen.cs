@@ -198,10 +198,6 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             #endregion
-
-            // update screen size TODO : UPDATE POSITIONS OF THE WINDOWS WHEN RES-CHANGE IN PAUSE MENU
-            mCurrentScreenWidth = mGraphics.PreferredBackBufferWidth;
-            mCurrentScreenHeight = mGraphics.PreferredBackBufferHeight;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -246,32 +242,38 @@ namespace Singularity.Screen.ScreenClasses
             mCurrentScreenWidth = mGraphics.PreferredBackBufferWidth;
             mCurrentScreenHeight = mGraphics.PreferredBackBufferHeight;
 
+            System.Diagnostics.Debug.WriteLine(mGraphics.PreferredBackBufferWidth);
+            System.Diagnostics.Debug.WriteLine(mGraphics.PreferredBackBufferHeight);
+
             #region windows pos+size calculation
             // TODO : CHANGE TO FIX VALUES
             // change color for the border or the filling of all userinterface windows here
             var windowColor = new Color(0.27f, 0.5f, 0.7f, 0.8f);
             var borderColor = new Color(0.68f, 0.933f, 0.933f, .8f);
 
+/*
             // position + size of topBar
-            var topBarHeight = mCurrentScreenHeight / 30;
+            var topBarHeight = 720 / 30;
             var topBarWidth = mCurrentScreenWidth;
+*/
+
 
             // position + size of civilUnits window
-            var civilUnitsX = topBarHeight / 2;
-            var civilUnitsY = topBarHeight / 2 + topBarHeight;
-            var civilUnitsWidth = (int)(mCurrentScreenWidth / 4.5);
-            var civilUnitsHeight = (int)(mCurrentScreenHeight / 1.8);
+            var civilUnitsWidth = (int)(1080 / 4.5);
+            var civilUnitsHeight = (int)(720 / 1.8);
+            var civilUnitsX = 0;
+            var civilUnitsY = 720 / 30 + 24;
 
             // position + size of resource window
-            var resourceX = topBarHeight / 2;
-            var resourceY = 2 * (topBarHeight / 2) + topBarHeight + civilUnitsHeight;
+            var resourceX = 0; //12
+            var resourceY = 2 * (24 / 2) + 48 + civilUnitsHeight;
             var resourceWidth = civilUnitsWidth;
-            var resourceHeight = (int)(mCurrentScreenHeight / 2.75);
+            var resourceHeight = (int)(720 / 2.75);
 
             // position + size of eventLog window
             var eventLogWidth = civilUnitsWidth;
-            var eventLogHeight = (int)(mCurrentScreenHeight / 2.5);
-            var eventLogX = mCurrentScreenWidth - eventLogWidth - topBarHeight / 2;
+            var eventLogHeight = (int)(720 / 2.5);
+            var eventLogX = mCurrentScreenWidth - eventLogWidth;
             var eventLogY = civilUnitsY;
 
             // position + size of buildMenu window
