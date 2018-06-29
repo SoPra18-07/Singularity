@@ -129,7 +129,7 @@
     <Compile Include="Screen\ITransitionableMenu.cs" />
     <Compile Include="Screen\IWindowItem.cs" />
     <Compile Include="Screen\ScreenClasses\GameScreen.cs" />
-    <Compile Include="Screen\ScreenClasses\PopupWindow.cs" />
+    <Compile Include="Screen\PopupWindow.cs" />
     <Compile Include="Screen\Slider.cs" />
     <Compile Include="Screen\ScreenClasses\UserInterfaceScreen.cs" />
     <Compile Include="Screen\Button.cs" />

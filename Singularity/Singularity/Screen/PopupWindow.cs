@@ -5,7 +5,7 @@ using Singularity.Input;
 using Singularity.Libraries;
 using Singularity.Property;
 
-namespace Singularity.Screen.ScreenClasses
+namespace Singularity.Screen
 {
     internal sealed class PopupWindow : IDraw, IUpdate, IMouseWheelListener, IMousePositionListener
     {
@@ -13,7 +13,6 @@ namespace Singularity.Screen.ScreenClasses
         // parameters
         private readonly string mWindowName;
         private readonly Button mButton;
-        private readonly Vector2 mPosition;
         private readonly Vector2 mSize;
         private readonly Color mColorBorder;
         private readonly Color mColorFill;
@@ -70,7 +69,7 @@ namespace Singularity.Screen.ScreenClasses
             GraphicsDeviceManager graphics)
         {
             mWindowName = windowName;
-            mPosition = position;
+            Position = position;
             mSize = size;
             mColorBorder = colorBorder;
             mColorFill = colorFill;
@@ -87,48 +86,48 @@ namespace Singularity.Screen.ScreenClasses
             var buttonSize = new Vector2(button.Size.X + 10, button.Size.Y + 10);
 
             // position where the next item will be drawn
-            mItemPosTop = new Vector2(mPosition.X + 10, mPosition.Y + titleSizeY + 30); // TODO
+            mItemPosTop = new Vector2(Position.X + 10, Position.Y + titleSizeY + 30); // TODO
 
             // set the window rectangle
             mWindowRectangle = new Rectangle(
-                x: (int)(mPosition.X + 1),
-                y: (int)(mPosition.Y + 2),
+                x: (int)(Position.X + 1),
+                y: (int)(Position.Y + 2),
                 width: (int)(mSize.X - 2),
                 height: (int)(mSize.Y - 2)
                 );
             mBorderRectangle = new Rectangle(
-                x: (int)mPosition.X,
-                y: (int)mPosition.Y,
+                x: (int)Position.X,
+                y: (int)Position.Y,
                 width: (int)mSize.X,
                 height: (int)mSize.Y
                 );
 
             // ScissorRectangle will cut everything drawn outside of this rectangle when set
             mScissorRectangle = new Rectangle(
-                x: (int)(mPosition.X + 10),
-                y: (int)(mPosition.Y + titleSizeY + 30),
+                x: (int)(Position.X + 10),
+                y: (int)(Position.Y + titleSizeY + 30),
                 width: mWindowRectangle.Width - 20,
                 height: (int)(mSize.Y - titleSizeY - 3 * 10 - buttonSize.Y)
                 );
 
             // set the rectangle of the title bar
             mTitleBarRectangle = new Rectangle(
-                x: (int)mPosition.X + 10,
-                y: (int)mPosition.Y + titleSizeY + 20,
+                x: (int)Position.X + 10,
+                y: (int)Position.Y + titleSizeY + 20,
                 width: (int)mSize.X - 40,
                 height: 1
                 );
 
             // set the rectangle of the button
             mButtonBorderRectangle = new Rectangle(
-                x: (int)(mPosition.X + mSize.X / 2 - buttonSize.X / 2),
-                y: (int)(mPosition.Y + mSize.Y - buttonSize.Y + 1),
+                x: (int)(Position.X + mSize.X / 2 - buttonSize.X / 2),
+                y: (int)(Position.Y + mSize.Y - buttonSize.Y + 1),
                 width: (int)buttonSize.X,
                 height: (int)buttonSize.Y - 2);
 
             // set the rectangle for scrolling
             mScrollBarBorderRectangle = new Rectangle(
-                x: (int)(mPosition.X + mSize.X - 20),
+                x: (int)(Position.X + mSize.X - 20),
                 y: mScissorRectangle.Y,
                 width: 20,
                 height: mScissorRectangle.Height
@@ -181,7 +180,7 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.StrokedRectangle(new Vector2(mWindowRectangle.X, mWindowRectangle.Y), new Vector2(mWindowRectangle.Width, mWindowRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
 
             // draw window title + bar
-            spriteBatch.DrawString(mSpriteFontTitle, mWindowName, new Vector2(mPosition.X + 10, mPosition.Y + 10), new Color(255, 255, 255));
+            spriteBatch.DrawString(mSpriteFontTitle, mWindowName, new Vector2(Position.X + 10, Position.Y + 10), new Color(255, 255, 255));
             //spriteBatch.DrawRectangle(mTitleBarRectangle, mColorBorder, 1);
             spriteBatch.StrokedRectangle(new Vector2(mTitleBarRectangle.X, mTitleBarRectangle.Y), new Vector2(mTitleBarRectangle.Width, mTitleBarRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
 
@@ -258,8 +257,8 @@ namespace Singularity.Screen.ScreenClasses
             // enabled only if
             //  - the mouse is above the scrollable part of the window
             //  - the window is scrollable (the number of items is too big for one window)
-            if (!(mMouseX > mPosition.X) || !(mMouseX < mPosition.X + mSize.X) || !(mMouseY > mPosition.Y) ||
-                !(mMouseY < mPosition.Y + mSize.Y) || !mScrollable)
+            if (!(mMouseX > Position.X) || !(mMouseX < Position.X + mSize.X) || !(mMouseY > Position.Y) ||
+                !(mMouseY < Position.Y + mSize.Y) || !mScrollable)
             {
                 return true;
             }
@@ -313,7 +312,10 @@ namespace Singularity.Screen.ScreenClasses
             // calculate new position
             var positionY = mScrollBarBorderRectangle.Y + numberOfStepsTaken * stepSize + 3;
 
-            return new Rectangle((int)(mPosition.X + mSize.X - 20 + 2), (int)positionY, 20 - 4, (int)sizeY);
+            return new Rectangle((int)(Position.X + mSize.X - 20 + 2), (int)positionY, 20 - 4, (int)sizeY);
         }
+
+        // position of the window
+        public Vector2 Position { get; set; }
     }
 }
