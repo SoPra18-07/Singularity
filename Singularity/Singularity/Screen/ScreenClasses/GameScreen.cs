@@ -56,6 +56,8 @@ namespace Singularity.Screen.ScreenClasses
         private Camera mCamera;
 
         private SelectionBox mSelBox;
+        private Texture2D mBlankPlat;
+        private Texture2D mCylPlat;
 
 
 
@@ -151,6 +153,10 @@ namespace Singularity.Screen.ScreenClasses
 
             mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
             mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
+
+            // This is for the creation of the Command Centers from the settlers
+            mBlankPlat = content.Load<Texture2D>("PlatformBasic");
+            mCylPlat = content.Load<Texture2D>("Cylinders"); ;
         }
 
         public bool UpdateLower()
@@ -324,21 +330,22 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="sender"></param>
         /// <param name="eventArgs"></param>
         /// <param name="v"> the position at which the settler is currently at</param>
+        /// <param name="s"> settler passes itself along so that it can be deleted </param>
         private void SettlerBuild(object sender, EventArgs eventArgs, Vector2 v, Settler s)
         {
             // TODO eventually the EPlacementType should be instance but currently that
             // TODO requires a road to be place and therefore throws an exception !!!!!
-            PlatformPlacement platformToPlace = new PlatformPlacement(
-                EPlatformType.Command,
-                EPlacementType.MouseFollowAndRoad,
-                EScreen.UserInterfaceScreen,
-                mCamera,
-                ref mDirector,
-                0f,
-                0f,
-                GetMap().GetResourceMap(), true, v);
 
-            GetMap().GetStructureMap().AddPlatformToPlace(platformToPlace);
+            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, (float)(v.Y-100)), mCylPlat, mBlankPlat, ref mDirector);
+            var genUnit = new GeneralUnit(cCenter, ref mDirector);
+            var genUnit2 = new GeneralUnit(cCenter, ref mDirector);
+
+            // adds the command center to the GameScreen, as well as two general units
+            AddObject(cCenter);
+            AddObject(genUnit);
+            AddObject(genUnit2);
+
+            // removes the settler from the GameScreen
             RemoveObject(s);
         }
 

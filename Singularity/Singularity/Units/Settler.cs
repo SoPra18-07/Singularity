@@ -249,8 +249,7 @@ namespace Singularity.Units
                         mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
                             Matrix.Invert(mCamera.GetTransform()));
                         var currentPosition = Center;
-                        Debug.WriteLine("Starting path finding at: " + currentPosition.X + ", " +
-                                        currentPosition.Y);
+                        Debug.WriteLine("Starting path finding at: " + currentPosition.X + ", " + currentPosition.Y);
                         Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
 
                         mPath = new Stack<Vector2>();
