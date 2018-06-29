@@ -321,7 +321,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO : ADD INFO BAR
             /*
                         // position + size of topBar
-                        var topBarHeight = 720 / 30;
+                        var topBarHeight = 25;
                         var topBarWidth = mCurrentScreenWidth;
             */
 
@@ -982,23 +982,15 @@ namespace Singularity.Screen.ScreenClasses
         {
             // resource window position
             mResourceWindow.Position = new Vector2(12, mCurrentScreenHeight - 12 - mResourceWindow.Size.Y);
-/*            var resourceX = 12;
-            var resourceY = mCurrentScreenHeight - 12 - mResourceWindow.Size.Y;*/
 
             // civil units position
-            mCivilUnitsWindow.Position = new Vector2(12, mCurrentScreenHeight - 12 - 12 - mResourceWindow.Size.Y - mCivilUnitsWindow.Size.Y);
-/*            var civilUnitsX = 12;
-            var civilUnitsY = mCurrentScreenHeight - 12 - 12 - mResourceWindow.Size.Y - mCivilUnitsWindow.Size.Y;*/
+            mCivilUnitsWindow.Position = new Vector2(12, 12 + 25);
 
             // build menu position
             mBuildMenuWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mBuildMenuWindow.Size.X, mCurrentScreenHeight - 12 - mBuildMenuWindow.Size.Y);
-/*            float buildMenuX = mCurrentScreenWidth - 12 - mBuildMenuWindow.Size.X;
-            float buildMenuY = mCurrentScreenHeight - 12 - mBuildMenuWindow.Size.Y;*/
 
             // event log position
-            mEventLogWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mEventLogWindow.Size.X, mCurrentScreenHeight - 12 - 12 - mBuildMenuWindow.Size.Y - mEventLogWindow.Size.Y);
-/*            var eventLogX = mCurrentScreenWidth -  12 - mEventLogWindow.Size.X;
-            var eventLogY = mCurrentScreenHeight - 12 - 12 - mBuildMenuWindow.Size.Y - mEventLogWindow.Size.Y;*/
+            mEventLogWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mEventLogWindow.Size.X, 12 + 25);
         }
 
         // TODO : ADD ALL BUILD PLATFORM ACTIONS

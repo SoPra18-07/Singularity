@@ -256,7 +256,7 @@ namespace Singularity.Screen
         private void Initialization()
         {
             // calculate resizing by screensize
-            mMinimizationSize = (int)Size.X / 12;
+            mMinimizationSize = 20;
             mTitleSizeY = 720 / 26;
 
             // int to save scroll values
