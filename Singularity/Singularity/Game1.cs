@@ -89,7 +89,7 @@ namespace Singularity
             // on top of it.
             mScreenManager.AddScreen(mGameScreen);
             mScreenManager.AddScreen(mUserInterfaceScreen);
-            // mScreenManager.AddScreen(mMainMenuManager); // TODO: This makes it so that the main menu is bypassed
+            //mScreenManager.AddScreen(mMainMenuManager); // TODO: This makes it so that the main menu is bypassed
 
             // load and play Soundtrack as background music
             // todo this
