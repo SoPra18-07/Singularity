@@ -1,4 +1,6 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Diagnostics;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -89,6 +91,9 @@ namespace Singularity.Levels
             //MilUnits
             var milUnit = new MilitaryUnit(new Vector2(2000, 700), milUnitSheet, mCamera, ref mDirector, ref mMap);
 
+            //SetUnit
+            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, mGameScreen);
+
             //Roads
             var road1 = new Road(mPlatform, platform2, false);
             var road2 = new Road(platform2, platform3, false);
@@ -126,6 +131,8 @@ namespace Singularity.Levels
             mGameScreen.AddObject(genUnit4);
             mGameScreen.AddObject(genUnit5);
             mGameScreen.AddObject(milUnit);
+            mGameScreen.AddObject(setUnit);
+
 
             //TESTMETHODS HERE =====================================
             mDirector.GetDistributionManager.DistributeJobs(JobType.Idle, JobType.Production, 4);
