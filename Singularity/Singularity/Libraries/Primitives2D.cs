@@ -238,6 +238,16 @@ namespace Singularity.Libraries
             spriteBatch.Draw(sPixel, rect, null, color, angle, Vector2.Zero, SpriteEffects.None, layer);
         }
 
+        public static void FillRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float opacity, float layer, bool stroke = true)
+        {
+            if (sPixel == null)
+            {
+                CreateThePixel(spriteBatch);
+            }
+
+            spriteBatch.Draw(sPixel, new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y), null, color*opacity, 0f, Vector2.Zero, SpriteEffects.None, layer);
+        }
+
 
         /// <summary>
         /// Draws a filled rectangle
@@ -319,11 +329,7 @@ namespace Singularity.Libraries
         /// <param name="color"></param>
         /// <param name="angle"></param>
         /// <param name="opacity"></param>
-        public static void FillRectangle(this SpriteBatch spriteBatch,
-            Vector2 location,
-            Vector2 size,
-            Color color,
-            float angle, float opacity)
+        public static void FillRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float angle, float opacity)
         {
             if (sPixel == null)
             {
@@ -711,7 +717,24 @@ namespace Singularity.Libraries
 
         #region StrokedRectangle
         /// <summary>
-        /// Draws stroked rectangle
+        /// Draws stroked rectangle with layer specification
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="location"></param>
+        /// <param name="size"></param>
+        /// <param name="colorBorder"></param>
+        /// <param name="colorCenter"></param>
+        /// <param name="opacityBorder"></param>
+        /// <param name="opacityCenter"></param>
+        /// <param name="layer"></param>
+        public static void StrokedRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color colorBorder, Color colorCenter, float opacityBorder, float opacityCenter, float layer)
+        {
+            FillRectangle(spriteBatch, new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y), colorCenter * opacityCenter, 0f, layer);
+            DrawRectangle(spriteBatch, new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y), colorBorder*opacityBorder, 2, layer);    
+        }
+
+        /// <summary>
+        /// Draws stroked rectangle without layer specification
         /// </summary>
         /// <param name="spriteBatch"></param>
         /// <param name="location"></param>
@@ -726,6 +749,8 @@ namespace Singularity.Libraries
             FillRectangle(spriteBatch, location, size, colorCenter, 0, opacityCenter);
             DrawRectangle(spriteBatch, location, size, colorBorder, 1, opacityBorder);
         }
+
+
 
         #endregion
 

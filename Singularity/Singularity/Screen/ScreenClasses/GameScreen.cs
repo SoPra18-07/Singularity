@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -9,6 +10,7 @@ using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Sound;
+using Singularity.Units;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -27,7 +29,7 @@ namespace Singularity.Screen.ScreenClasses
         private readonly FogOfWar mFow;
 
         // director for Managing all the Managers
-        private readonly Director mDirector;
+        private Director mDirector;
         private readonly GraphicsDevice mGraphicsDevice;
 
         /// <summary>
@@ -53,6 +55,10 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         private Camera mCamera;
 
+        private SelectionBox mSelBox;
+        private Texture2D mBlankPlat;
+        private Texture2D mCylPlat;
+
 
 
         public GameScreen(GraphicsDevice graphicsDevice, ref Director director, Map.Map map, Camera camera, FogOfWar fow)
@@ -68,6 +74,9 @@ namespace Singularity.Screen.ScreenClasses
             mFow = fow;
 
             mDirector = director;
+
+            //mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
+            //AddObject(mSelBox);
 
         }
 
@@ -144,6 +153,10 @@ namespace Singularity.Screen.ScreenClasses
 
             mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
             mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
+
+            // This is for the creation of the Command Centers from the settlers
+            mBlankPlat = content.Load<Texture2D>("PlatformBasic");
+            mCylPlat = content.Load<Texture2D>("Cylinders"); ;
         }
 
         public bool UpdateLower()
@@ -162,6 +175,8 @@ namespace Singularity.Screen.ScreenClasses
 
             var road = toAdd as Road;
             var platform = toAdd as PlatformBlank;
+            var settler = toAdd as Settler;
+            var milUnit = toAdd as MilitaryUnit;
 
             if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
@@ -178,6 +193,19 @@ namespace Singularity.Screen.ScreenClasses
             {
                 mMap.AddPlatform(platform);
                 return true;
+            }
+
+            // subscribes the game screen the the settler event (to build a command center)
+            // TODO unsubscribe / delete settler when event is fired
+            if (settler != null)
+            {
+                settler.BuildCommandCenter += SettlerBuild;
+            }
+
+            // subscribe every military unit to the selection box
+            if (milUnit != null)
+            {
+                //mSelBox.SelectingBox += milUnit.BoxSelected;
             }
 
             if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
@@ -232,6 +260,8 @@ namespace Singularity.Screen.ScreenClasses
         {
             var road = toRemove as Road;
             var platform = toRemove as PlatformBlank;
+            var settler = toRemove as Settler;
+            var milUnit = toRemove as MilitaryUnit;
 
             if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
@@ -246,6 +276,18 @@ namespace Singularity.Screen.ScreenClasses
             if (platform != null)
             {
                 mMap.RemovePlatform(platform);
+            }
+
+            // TODO don't know if this is necessary, but unsubscribe GameScreen from this instance event
+            if (settler != null)
+            {
+                settler.BuildCommandCenter -= SettlerBuild;
+            }
+
+            // unsubscribe from this military unit when deleted
+            if (milUnit != null)
+            {
+                //mSelBox.SelectingBox -= milUnit.BoxSelected;
             }
 
             if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
@@ -279,5 +321,34 @@ namespace Singularity.Screen.ScreenClasses
         {
             return mCamera;
         }
+
+
+        /// <summary>
+        /// This get executed when a settler is transformed into a command center
+        /// Essentially this builds a command center 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        /// <param name="v"> the position at which the settler is currently at</param>
+        /// <param name="s"> settler passes itself along so that it can be deleted </param>
+        private void SettlerBuild(object sender, EventArgs eventArgs, Vector2 v, Settler s)
+        {
+            // TODO eventually the EPlacementType should be instance but currently that
+            // TODO requires a road to be place and therefore throws an exception !!!!!
+
+            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, (float)(v.Y-100)), mCylPlat, mBlankPlat, ref mDirector);
+            var genUnit = new GeneralUnit(cCenter, ref mDirector);
+            var genUnit2 = new GeneralUnit(cCenter, ref mDirector);
+
+            // adds the command center to the GameScreen, as well as two general units
+            AddObject(cCenter);
+            AddObject(genUnit);
+            AddObject(genUnit2);
+
+            // removes the settler from the GameScreen
+            RemoveObject(s);
+        }
+
+
     }
 }
