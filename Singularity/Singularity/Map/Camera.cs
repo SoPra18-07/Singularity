@@ -25,7 +25,7 @@ namespace Singularity.Map
         /// <summary>
         /// The viewport of the window, e.g. the current size of it.
         /// </summary>
-        private readonly Viewport mViewport;
+        private readonly GraphicsDevice mGraphics;
 
         /// <summary>
         /// The x location of the camera unzoomed. Could also be called the "true" or "absolute" x location.
@@ -70,7 +70,7 @@ namespace Singularity.Map
         /// <param name="x">The initial x position of the camera</param>
         /// <param name="y">the initial y position of the camera</param>
         /// <param name="neo">If the neo Layout should be used for navigating instead of qwertz</param>
-        public Camera(Viewport viewport, ref Director director, int x = 0, int y = 0, bool neo = false)
+        public Camera(GraphicsDevice graphics, ref Director director, int x = 0, int y = 0, bool neo = false)
         {
 
             if (x < 0)
@@ -86,7 +86,7 @@ namespace Singularity.Map
             mX = x;
             mY = y;
             mNeo = neo;
-            mViewport = viewport;
+            mGraphics = graphics;
             mZoom = 1.0f;
             mBounds = new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight);
             mInputManager = director.GetInputManager;
@@ -147,7 +147,7 @@ namespace Singularity.Map
             var cameraWorldMin = Vector2.Transform(Vector2.Zero, Matrix.Invert(mTransform));
 
             //The current scope of the camera which gets changed by the zoom
-            var cameraSize = new Vector2(mViewport.Width, mViewport.Height) / mZoom;
+            var cameraSize = new Vector2(mGraphics.Viewport.Width, mGraphics.Viewport.Height) / mZoom;
 
             //The vectors which represents the (top left)/(right bottom) corner of the bounding box, used to not move over
             var limitWorldMin = new Vector2(mBounds.Left, mBounds.Top);
@@ -312,8 +312,8 @@ namespace Singularity.Map
                     break;
             }
             
-            if (!((mZoom + scrollChange) * MapConstants.MapWidth < mViewport.Width ||
-                  (mZoom + scrollChange) * MapConstants.MapHeight < mViewport.Height))
+            if (!((mZoom + scrollChange) * MapConstants.MapWidth < mGraphics.Viewport.Width ||
+                  (mZoom + scrollChange) * MapConstants.MapHeight < mGraphics.Viewport.Height))
             {
                 ZoomToTarget(new Vector2(mMouseX, mMouseY), scrollChange);
             }
@@ -327,8 +327,8 @@ namespace Singularity.Map
             var cameraWorldMin = Vector2.Transform(Vector2.Zero, Matrix.Invert(mTransform));
 
             return Matrix.CreateOrthographicOffCenter(cameraWorldMin.X,
-                cameraWorldMin.X + mViewport.Width / mZoom,
-                cameraWorldMin.Y + mViewport.Height / mZoom,
+                cameraWorldMin.X + mGraphics.Viewport.Width / mZoom,
+                cameraWorldMin.Y + mGraphics.Viewport.Height / mZoom,
                 cameraWorldMin.Y,
                 0,
                 1);
