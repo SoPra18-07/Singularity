@@ -65,6 +65,11 @@
         public const float FogOfWarLayer = 0.91f;
 
         /// <summary>
+        /// A float depicting the layer for platforms that are currently above the fog of war
+        /// </summary>
+        public const float PlatformAboveFOWLayer = 0.92f;
+
+        /// <summary>
         /// A float depicting the layer for the collision debug
         /// </summary>
         public const float CollisionDebugLayer = 0.95f;

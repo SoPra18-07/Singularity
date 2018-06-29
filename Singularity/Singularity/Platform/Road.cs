@@ -2,15 +2,20 @@
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
 using Singularity.Libraries;
+using Singularity.Map;
 using Singularity.Property;
 
 namespace Singularity.Platform
 {
     public sealed class Road : ISpatial, IEdge
     {
-        private PlatformBlank Source { get; }
+        public Vector2 Source { get; set; }
 
-        private PlatformBlank Destination { get; }
+        public Vector2 Destination { get; set; }
+
+        private INode SourceAsNode { get; set; }
+
+        private INode DestinationAsNode { get; set; }
 
         private bool mBlueprint;
 
@@ -43,22 +48,52 @@ namespace Singularity.Platform
         /// <param name="source">The source IRevealing object from which this road gets drawn</param>
         /// <param name="destination">The destinaion IRevealing object to which this road gets drawn</param>
         /// <param name="blueprint">Whether this road is a blueprint or not</param>
-        public Road(PlatformBlank source, PlatformBlank destination, bool blueprint)
+        public Road(PlatformBlank source, PlatformBlank destination , bool blueprint)
         {
+
             // the hardcoded values need some changes for different platforms, ill wait until those are implemented to find a good solution.
-            Source = source;
-            Destination = destination;
+            if(source == null && destination == null)
+            {
+                throw new System.Exception("Source and Destination can't both be null");
+            }
+            if(source == null && destination != null)
+            {
+                Destination = destination.Center;
+                Source = destination.Center;
+            }else if(source != null && destination == null)
+            {
+                Source = source.Center;
+                Destination = source.Center;
+            }else
+            {
+                Place(source, destination);
+            }
             Blueprint = blueprint;
 
+        }
+
+        public void Place(PlatformBlank source, PlatformBlank dest)
+        {
+            if(source == null || dest == null)
+            {
+                return;
+            }
+
+            SourceAsNode = source;
+            DestinationAsNode = dest;
+
+            Source = source.Center;
+            Destination = dest.Center;
+
             source.AddEdge(this, EEdgeFacing.Outwards);
-            destination.AddEdge(this, EEdgeFacing.Inwards);
+            dest.AddEdge(this, EEdgeFacing.Inwards);
 
         }
 
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawLine(((IRevealing)Source).Center, ((IRevealing)Destination).Center, mBlueprint ?  new Color(new Vector4(.1803922f, 0.2078431f, .3803922f, .5f)) : new Color(new Vector3(.75f, .75f, .75f)), 5f, LayerConstants.RoadLayer);
+            spriteBatch.DrawLine(Source, Destination, mBlueprint ?  new Color(new Vector4(.1803922f, 0.2078431f, .3803922f, .5f)) : new Color(new Vector3(.75f, .75f, .75f)), 5f, LayerConstants.RoadLayer);
         }
 
         public void Update(GameTime gametime)
@@ -68,17 +103,17 @@ namespace Singularity.Platform
 
         public INode GetParent()
         {
-            return Source;
+            return SourceAsNode;
         }
 
         public INode GetChild()
         {
-            return Destination;
+            return DestinationAsNode;
         }
 
         public float GetCost()
         {
-            return Vector2.Distance(((IRevealing) Source).Center, ((IRevealing) Destination).Center);
+            return Vector2.Distance(Source, Destination);
         }
     }
 }

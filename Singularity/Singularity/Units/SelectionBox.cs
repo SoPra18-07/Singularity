@@ -151,7 +151,7 @@ namespace Singularity.Units
         }
 
         #region NotUsedInputMouseActions
-        public void MousePositionChanged(float newX, float newY)
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
 
         }

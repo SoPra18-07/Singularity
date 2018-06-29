@@ -411,10 +411,10 @@ namespace Singularity.Units
             return true;
         }
 
-        public void MousePositionChanged(float newX, float newY)
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
-            mMouseX = newX;
-            mMouseY = newY;
+            mMouseX = screenX;
+            mMouseY = screenY;
         }
 
         /// <summary>
@@ -427,6 +427,26 @@ namespace Singularity.Units
             return new Vector2(Vector2.Transform(new Vector2(v.X, v.Y),
                 Matrix.Invert(mCamera.GetTransform())).X, Vector2.Transform(new Vector2(v.X, v.Y),
                 Matrix.Invert(mCamera.GetTransform())).Y);
+        }
+
+        /// <summary>
+        /// This is called up every time a selection box is created
+        /// if MUnit bounds intersects with the selection box then it become selected
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <param name="position"> top left corner of the selection box</param>
+        /// <param name="size"> size of selection box</param>
+        public void BoxSelected(object sender, EventArgs e, Vector2 position, Vector2 size)
+        {
+            // create a rectangle from given parameters 
+            Rectangle selBox = new Rectangle((int) position.X, (int) position.Y, (int) size.X, (int) size.Y);
+
+            // check if selection box intersects with MUnit bounds
+            if (selBox.Intersects(AbsBounds))
+            {
+                mSelected = true;
+            }
         }
     }
 }

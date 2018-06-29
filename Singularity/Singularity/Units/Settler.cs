@@ -21,6 +21,35 @@ namespace Singularity.Units
 {
     class Settler: ICollider, IRevealing, IMouseClickListener, IMousePositionListener, IKeyListener
     {
+
+
+        #region Declarations
+        private readonly Camera mCamera;
+        private Director mDirector;
+        private Map.Map mMap;
+        private MilitaryPathfinder mPathfinder;
+        private static readonly Color sSelectedColor = Color.Bisque;
+        private static readonly Color sNotSelectedColor = Color.Beige;
+        private bool mSelected;
+        private const double Speed = 2;
+        private bool mIsMoving;
+        private Rectangle mBoundsSnapshot;
+        private Vector2 mToAdd;
+        private double mZoomSnapshot;
+        private Vector2 mMovementVector;
+        private Vector2 mTargetPosition;
+        private float mMouseX;
+        private float mMouseY;
+        private Stack<Vector2> mPath;
+        private Vector2[] mDebugPath; //TODO this is for debugging
+        private GameScreen mGameScreen;
+        #endregion
+
+        #region Properties
+        // TODO i use this bool for now to make the settler inactive
+        // TODO im not sure exactly how to remove it from the 
+        public bool Dead { get; private set; }
+        private int Health { get; set; }
         public Vector2 RelativePosition { get; set; }
         public Vector2 RelativeSize { get; set; }
         public Vector2 AbsolutePosition { get; set; }
@@ -34,28 +63,7 @@ namespace Singularity.Units
         public EScreen Screen { get; } = EScreen.GameScreen;
         public Rectangle Bounds { get; private set; }
 
-
-        private readonly Camera mCamera;
-        private Director mDirector;
-        private Map.Map mMap;
-        private MilitaryPathfinder mPathfinder;
-        private static readonly Color sSelectedColor = Color.Bisque;
-        private static readonly Color sNotSelectedColor = Color.Beige;
-        private bool mSelected;
-        private const double Speed = 4;
-        private bool mIsMoving;
-        private Rectangle mBoundsSnapshot;
-        private Vector2 mToAdd;
-        private double mZoomSnapshot;
-        private Vector2 mMovementVector;
-        private Vector2 mTargetPosition;
-        private float mMouseX;
-        private float mMouseY;
-        private Stack<Vector2> mPath;
-        private Vector2[] mDebugPath; //TODO this is for debugging
-        private GameScreen mGameScreen;
-
-
+        #endregion
 
         // constructor for settler (position)
         public Settler(Vector2 position, Camera camera, ref Director director, ref Map.Map map, GameScreen gameScreen)
@@ -83,21 +91,55 @@ namespace Singularity.Units
 
             mPathfinder = new MilitaryPathfinder();
             mGameScreen = gameScreen;
+            mTargetPosition = Center;
+            Dead = false;
 
         }
 
-        private int Health { get; set; }
+        #region BuildCommanCenterEvent
+        public delegate void SettlerEventHandler(object source, EventArgs args, Vector2 v, Settler s);
+        public event SettlerEventHandler BuildCommandCenter;
 
+        /// <summary>
+        /// The subscriber and subscription occurs in the GameScreen class
+        /// everytime a settler is added the Gamescreen starts to listen for
+        /// a build command center event from it (if it recieves it it unsubscribes from
+        /// this settle instance and also removes the settler from GameScreen)
+        /// </summary>
+        private void OnBuildCommandCenter()
+        {
+            if (BuildCommandCenter != null)
+            {
+                BuildCommandCenter(this, EventArgs.Empty, AbsolutePosition, this);
+            }
+        }
+        #endregion
+
+        /// <summary>
+        /// Inflicts damage on the Settler Unit
+        /// </summary>
+        /// <param name="damage"> amount of damage to be inflicted on Unit</param>
         public void MakeDamage(int damage)
         {
             Health -= damage; // TODO
+            if (Health <= 0)
+            {
+                Dead = true;
+            }
         }
 
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.StrokedRectangle(AbsolutePosition, AbsoluteSize, Color.Gray, (mSelected)? sSelectedColor : sNotSelectedColor, .8f, 1f, LayerConstants.MilitaryUnitLayer);
-            
+            // Draws settler as stroked rectangle
+            spriteBatch.StrokedRectangle(AbsolutePosition,
+                AbsoluteSize,
+                Color.Gray,
+                (mSelected) ? sSelectedColor : sNotSelectedColor,
+                .8f,
+                1f,
+                LayerConstants.MilitaryUnitLayer);
+
             // TODO DEBUG REGION
             if (mDebugPath != null)
             {
@@ -108,11 +150,14 @@ namespace Singularity.Units
             }
         }
 
-        
+
         public void Update(GameTime gameTime)
         {
             //make sure to update the relative bounds rectangle enclosing this unit.
-            Bounds = new Rectangle((int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
+            Bounds = new Rectangle((int) RelativePosition.X,
+                (int) RelativePosition.Y,
+                (int) RelativeSize.X,
+                (int) RelativeSize.Y);
 
             if (HasReachedTarget())
             {
@@ -135,8 +180,14 @@ namespace Singularity.Units
             }
 
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
-            AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int)AbsolutePosition.Y + 11, (int)(AbsoluteSize.X), (int)(AbsoluteSize.Y));
+
+            // TODO modify aboslute bounds (these are taken from military unit)
+            AbsBounds = new Rectangle((int) AbsolutePosition.X + 16,
+                (int) AbsolutePosition.Y + 11,
+                (int) (AbsoluteSize.X),
+                (int) (AbsoluteSize.Y));
             Moved = mIsMoving;
+            
         }
 
         private void MoveToTarget(Vector2 target)
@@ -187,13 +238,19 @@ namespace Singularity.Units
             switch (mouseAction)
             {
                 case EMouseAction.LeftClick:
-                    if (mSelected && !mIsMoving && !withinBounds && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f), (int)(mMouseY - RelativeSize.Y / 2f), (int)RelativeSize.X, (int)RelativeSize.Y), mCamera))
+                    if (mSelected && !mIsMoving && !withinBounds && Map.Map.IsOnTop(
+                            new Rectangle((int) (mMouseX - RelativeSize.X / 2f),
+                                (int) (mMouseY - RelativeSize.Y / 2f),
+                                (int) RelativeSize.X,
+                                (int) RelativeSize.Y),
+                            mCamera))
                     {
                         mIsMoving = true;
                         mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
                             Matrix.Invert(mCamera.GetTransform()));
                         var currentPosition = Center;
-                        Debug.WriteLine("Starting path finding at: " + currentPosition.X + ", " + currentPosition.Y);
+                        Debug.WriteLine("Starting path finding at: " + currentPosition.X + ", " +
+                                        currentPosition.Y);
                         Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
 
                         mPath = new Stack<Vector2>();
@@ -228,28 +285,27 @@ namespace Singularity.Units
             return giveThrough;
         }
 
-
-
-        public void MousePositionChanged(float newX, float newY)
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
-            mMouseX = newX;
-            mMouseY = newY;
+            mMouseX = screenX;
+            mMouseY = screenY;
+
         }
 
         public void KeyTyped(KeyEvent keyEvent)
         {
+            // b key is used to convert the settler unit into a command center
             Keys[] keyArray = keyEvent.CurrentKeys;
             foreach (Keys key in keyArray)
             {
-                if (key == Keys.B)
+                // if key b has been pressed and the settler unit is selected and its not moving
+                // --> send out event that deletes settler and adds a command center
+                if (key == Keys.B && mSelected && HasReachedTarget())
                 {
-                    // build a control center here
-                    // mGameScreen.AddObject()
-                    
-                }
+                    OnBuildCommandCenter();
+                }  
             }
         }
-
 
 
         #region NotUsed
@@ -273,5 +329,7 @@ namespace Singularity.Units
             return true;
         }
         #endregion
+
+
     }
 }

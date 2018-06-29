@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -6,6 +7,7 @@ using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platform;
 using Singularity.Resources;
+using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 
@@ -50,18 +52,25 @@ namespace Singularity.Levels
             var milUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
 
+            //TODO: have a cone texture 
+            PlatformFactory.Init(null, platformCylTexture, platformDomeTexture, platformBlankTexture);
+
             //Map related stuff
-            mMap = new Map.Map(mapBackground, 20, 20, mGraphics.Viewport, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
-            mCamera = mMap.GetCamera();
+            mCamera = new Camera(mGraphics.Viewport, ref mDirector, 800, 800);
             mFow = new FogOfWar(mCamera, mGraphics);
+            mMap = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.Viewport, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
 
             //INITIALIZE GAMESCREEN
             mGameScreen = new GameScreen(mGraphics, ref mDirector, mMap, mCamera, mFow);
 
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
-            mPlatform = new PlatformBlank(new Vector2(1000, 1000), null, platformBlankTexture);
-            var platform2 = new Well(new Vector2(800, 1000), platformDomeTexture, platformBlankTexture, mMap.GetResourceMap(), ref mDirector);
+            mPlatform = new PlatformBlank(new Vector2(1000, 1000), null, platformBlankTexture, ref mDirector);
+
+            // this is done via the factory to test, so I can instantly see if something is some time off.
+            var platform2 = PlatformFactory.Get(EPlatformType.Well, ref mDirector, 800, 1000, mMap.GetResourceMap());
+
+            //var platform2 = new Well(new Vector2(800, 1000), platformDomeTexture, platformBlankTexture, mMap.GetResourceMap(), ref mDirector);
             var platform3 = new Quarry(new Vector2(1200, 1200),
                 platformDomeTexture,
                 platformBlankTexture,
@@ -69,7 +78,7 @@ namespace Singularity.Levels
                 ref mDirector);
             var platform4 = new EnergyFacility(new Vector2(1000, 800),
                 platformDomeTexture,
-                platformBlankTexture);
+                platformBlankTexture, ref mDirector);
 
             //GenUnits
             var genUnit = new GeneralUnit(mPlatform, ref mDirector);
@@ -83,7 +92,6 @@ namespace Singularity.Levels
 
             //SetUnit
             var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, mGameScreen);
-            var selBox = new SelectionBox(Color.White, mCamera, ref mDirector);
 
             //Roads
             var road1 = new Road(mPlatform, platform2, false);
@@ -106,7 +114,6 @@ namespace Singularity.Levels
             platform2.StoreResource(res5);
 
             //Finally add the objects
-
             //GAMESCREEN=====================
             mGameScreen.AddObject(mPlatform);
             mGameScreen.AddObject(platform2);
@@ -124,10 +131,12 @@ namespace Singularity.Levels
             mGameScreen.AddObject(genUnit5);
             mGameScreen.AddObject(milUnit);
             mGameScreen.AddObject(setUnit);
-            mGameScreen.AddObject(selBox);
 
-            mDirector.GetDistributionManager.DistributeJobs(JobType.Idle, JobType.Production, 3);
+
+            //TESTMETHODS HERE =====================================
+            mDirector.GetDistributionManager.DistributeJobs(JobType.Idle, JobType.Production, 4);
             mDirector.GetDistributionManager.TestAttributes();
+
         }
 
         public GameScreen GetGameScreen()

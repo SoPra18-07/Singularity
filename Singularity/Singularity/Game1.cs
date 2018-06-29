@@ -82,7 +82,7 @@ namespace Singularity
 
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
 
-            mUserInterfaceScreen = new UserInterfaceScreen(ref mDirector, mGraphics);
+            mUserInterfaceScreen = new UserInterfaceScreen(ref mDirector, mGraphics, mGameScreen);
 
             // Add the screens to the screen manager
             // The idea is that the game screen is always at the bottom and stuff is added simply
