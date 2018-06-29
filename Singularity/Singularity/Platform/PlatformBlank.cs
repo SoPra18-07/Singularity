@@ -592,6 +592,7 @@ namespace Singularity.Platform
                     break;
                 case EPlatformType.Barracks:
                     mSheet = 2;
+                    mSheetPosition = 1;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
                         PlatformWidth,
@@ -599,7 +600,6 @@ namespace Singularity.Platform
                     break;
                 case EPlatformType.Command:
                     mSheet = 2;
-                    mSheetPosition = 1;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
                         PlatformWidth,
