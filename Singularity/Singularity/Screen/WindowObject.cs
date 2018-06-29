@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
@@ -8,7 +9,9 @@ using Singularity.Property;
 namespace Singularity.Screen
 {
     /// <summary>
-    /// TODO
+    /// WindowObject is a modular window which holds IWindowItems. The IWindowItems get placed one below the other in the window.
+    /// If the IWindowItems are too big for the window, the window automatically becomes scrollable.
+    /// The WindowObject is moveable and can be made minimizable
     /// </summary>
     internal sealed class WindowObject: IDraw, IUpdate, IMouseWheelListener, IMouseClickListener, IMousePositionListener
     {
@@ -262,7 +265,10 @@ namespace Singularity.Screen
             mItemPosTop = new Vector2(mPosition.X + mBorderPadding, mPosition.Y + mTitleSizeY + 2 * mMinimizationSize);
 
             // Only input from inside the window is proccessed
-            Bounds = new Rectangle((int)mPosition.X, (int)mPosition.Y, (int)mSize.X, (int)mSize.Y);
+            Bounds = new Rectangle((int)mPosition.X, (int)mPosition.Y, (int)(mSize.X), ((int)mSize.Y));
+
+            // activate window
+            Active = true;
         }
 
         /// <summary>
@@ -294,6 +300,12 @@ namespace Singularity.Screen
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            if (!Active)
+                // window is deactivated
+            {
+                return;
+            }
+
             // backup current scissor so we can restore later
             var saveRect = spriteBatch.GraphicsDevice.ScissorRectangle;
 
@@ -324,7 +336,10 @@ namespace Singularity.Screen
                 // draw IWindowItems
                 foreach (var item in mItemList)
                 {
-                    item.Draw(spriteBatch);
+                    if (item.ActiveWindow)
+                    {
+                        item.Draw(spriteBatch);
+                    }
                 }
 
                 // restore scissor from backup
@@ -356,6 +371,12 @@ namespace Singularity.Screen
 
         public void Update(GameTime gametime)
         {
+            if (!Active)
+                // window is deactivated
+            {
+                return;
+            }
+
             // current position to place the next item
             var localItemPos = mItemPosTop;
 
@@ -363,13 +384,16 @@ namespace Singularity.Screen
             mCombinedItemsSize = 0;
             foreach (var item in mItemList)
             {
-                item.Update(gametime);
+                if (item.ActiveWindow)
+                {
+                    item.Update(gametime);
 
-                item.Position = localItemPos;
+                    item.Position = localItemPos;
 
-                mCombinedItemsSize += mObjectPadding + item.Size.Y;
+                    mCombinedItemsSize += mObjectPadding + item.Size.Y;
 
-                localItemPos = new Vector2(localItemPos.X, localItemPos.Y + item.Size.Y + mObjectPadding);
+                    localItemPos = new Vector2(localItemPos.X, localItemPos.Y + item.Size.Y + mObjectPadding);
+                }
             }
 
             // bottom of all items combined
@@ -459,8 +483,9 @@ namespace Singularity.Screen
             //  - the mouse is above the scrollable part of the window
             //  - the window is not minimized
             //  - the window is scrollable (the number of items is too big for one window)
-            if ((mMouseX > mPosition.X) && (mMouseX < mPosition.X + mSize.X) && (mMouseY > mPosition.Y) &&
-                (mMouseY < mPosition.Y + mSize.Y) && !mMinimized && mScrollable)
+            //  - the window is active
+            if (mMouseX > mPosition.X && mMouseX < mPosition.X + mSize.X && mMouseY > mPosition.Y &&
+                mMouseY < mPosition.Y + mSize.Y && !mMinimized && mScrollable && Active)
             {
                 // scroll up or down
                 switch (mouseAction)
@@ -499,8 +524,9 @@ namespace Singularity.Screen
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
-            if (mouseAction == EMouseAction.LeftClick && withinBounds)
+            if (mouseAction == EMouseAction.LeftClick && withinBounds && Active)
             {
+                Console.Out.WriteLine("check");
                 #region minimization
 
                 if (mMouseX >= mMinimizationRectangle.X &&
@@ -515,23 +541,23 @@ namespace Singularity.Screen
                     {
                         mMinimized = true;
 
-                        // disable all items due to minimization
-                        foreach (var item in mItemList)
-                        {
-                            item.Active = false;
-                        }
+                    // disable all items due to minimization
+                    foreach (var item in mItemList)
+                    {
+                        item.ActiveWindow = false;
                     }
-                    else if (mMinimized)
+                }
+                else if (mMinimized)
                     // LeftClick on Minimize-Button, window IS minimized
                     // -> use regular rectangles + move window back in screen if outside
                     {
                         mMinimized = false;
 
-                        // enable all items due to maximization
-                        foreach (var item in mItemList)
-                        {
-                            item.Active = true;
-                        }
+                    // enable all items due to maximization
+                    foreach (var item in mItemList)
+                    {
+                        item.ActiveWindow = true;
+                    }
 
                         // catch window being out of screen at the bottom after maximization
                         if (mPosition.Y + mSize.Y > mCurrentScreenHeight)
@@ -553,7 +579,6 @@ namespace Singularity.Screen
                 mMouseY > mPosition.Y &&
                 mMouseY < mPosition.Y + mTitleSizeY + mMinimizationSize &&
                 !mClickOnTitleBar)
-
                 // mouse above the title rectangle
                 {
                     if (!(mMouseX >= mMinimizationRectangle.X &&
@@ -586,15 +611,16 @@ namespace Singularity.Screen
 
             // resharper wanted it this 'overseeable' way o.O
             // minimized + mouse on minimized window -> return false ... else true
-            return !mMinimized || (!(mMouseX > mPosition.X) || !(mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width) || 
-                                   !(mMouseY > mPosition.Y) || !(mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height));
+            return mMinimized && mMouseX > mPosition.X && mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width &&
+                                   mMouseY > mPosition.Y && mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height;
         }
 
         public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {
             #region window movement
-            if (mClickOnTitleBar)
-                // enable single window movement
+
+            if (mClickOnTitleBar && Active)
+                // enable single window movement + no reaction when deactivated
             {
                 // backup old window position to calculate the movement
                 var positionOld = mPosition;
@@ -655,6 +681,12 @@ namespace Singularity.Screen
 
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
+            if (!Active)
+                // window deactivated
+            {
+                return true;
+            }
+
             mClickOnTitleBar = false;
 
             Bounds = new Rectangle((int)mPosition.X, (int)mPosition.Y, (int)mSize.X, (int)mSize.Y);
@@ -662,11 +694,17 @@ namespace Singularity.Screen
             return false;
         }
 
-        public void MousePositionChanged(float newX, float newY)
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
+            if (!Active)
+                // window is deactivated
+            {
+                return;
+            }
+
             // update member variable with new mouse position
-            mMouseX = newX;
-            mMouseY = newY;
+            mMouseX = screenX;
+            mMouseY = screenY;
         }
         #endregion
 
@@ -692,5 +730,7 @@ namespace Singularity.Screen
 
             return new Rectangle((int)(mPosition.X + mSize.X - mMinimizationSize + 2), (int)positionY, mMinimizationSize - 4, (int)sizeY);
         }
+
+        private bool Active { get; set; }
     }
 }

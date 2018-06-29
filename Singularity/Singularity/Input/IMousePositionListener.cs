@@ -10,6 +10,6 @@
         /// </summary>
         /// <param name="newX">The new x mouse coordinate</param>
         /// <param name="newY">The new y mouse coordinate</param>
-        void MousePositionChanged(float newX, float newY);
+        void MousePositionChanged(float screenX, float screenY, float worldX, float worldY);
     }
 }

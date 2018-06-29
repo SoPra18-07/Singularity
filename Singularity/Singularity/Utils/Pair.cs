@@ -6,7 +6,7 @@
     /// </summary>
     /// <typeparam name="T1">The type of the first value of the tuple</typeparam>
     /// <typeparam name="T2">The type of the second value of the tuple</typeparam>
-    internal sealed class Pair<T1, T2>
+    public sealed class Pair<T1, T2>
     {
         private readonly T1 mFirstValue;
         private readonly T2 mSecondValue;
