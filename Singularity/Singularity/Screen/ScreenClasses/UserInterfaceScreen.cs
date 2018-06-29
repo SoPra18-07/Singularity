@@ -1313,8 +1313,7 @@ namespace Singularity.Screen.ScreenClasses
 
         #endregion
 
-        // All build buttons show a little info window at the mouse pointer showing costs + name what gets build
-        // while the mouse is hovering above the button
+        // All build buttons show a little info window mouse is hovering of costs + name of what gets build
         #region buttonHovering Info
 
         // NOTICE : all following hovering- or hoveringEnd- methods do basically the same:
