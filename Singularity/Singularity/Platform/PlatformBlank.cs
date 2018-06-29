@@ -11,28 +11,54 @@ using Singularity.Utils;
 
 namespace Singularity.Platform
 {
+    /// <inheritdoc cref="IRevealing"/>
+    /// <inheritdoc cref="INode"/>
+    /// <inheritdoc cref="ICollider"/>
     [DataContract]
     public class PlatformBlank : IRevealing, INode, ICollider
 
     {
-
+        /// <summary>
+        /// List of inwards facing edges/roads towards the platform.
+        /// </summary>
         private List<IEdge> mInwardsEdges;
 
+        /// <summary>
+        /// List of outwards facing edges/roads.
+        /// </summary>
         private List<IEdge> mOutwardsEdges;
 
+        /// <summary>
+        /// Indicates the type of platform this is, defaults to blank.
+        /// </summary>
         [DataMember]
         internal EPlatformType mType;
 
+        /// <summary>
+        /// Indicates the platform width
+        /// </summary>
         [DataMember]
         private const int PlatformWidth = 148;
+
+        /// <summary>
+        /// Indicates the platform height.
+        /// </summary>
         [DataMember]
         private const int PlatformHeight = 172;
+
+        /// <summary>
+        /// How much health the platform has
+        /// </summary>
         [DataMember]
         private int mHealth;
-        [DataMember]
-        private int mId;
+
+        /// <summary>
+        /// Indicates if the platform is a "real" platform or a blueprint.
+        /// </summary>
         [DataMember]
         protected bool mIsBlueprint;
+
+
         [DataMember]
         protected Dictionary<EResourceType, int> mCost;
         [DataMember]
@@ -78,20 +104,27 @@ namespace Singularity.Platform
         [DataMember]
         public Vector2 RelativeSize { get; set; }
 
+        public bool[,] ColliderGrid { get; internal set; }
 
-        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, Vector2 center = new Vector2())
+        private readonly float mCenterOffsetY;
+
+
+        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36)
         {
 
             Id = IdGenerator.NextiD();
 
-            mType = EPlatformType.Blank;
+            mCenterOffsetY = centerOffsetY;
 
-            AbsoluteSize = SetPlatfromDrawParameters();
+            mType = type;
 
             mInwardsEdges = new List<IEdge>();
             mOutwardsEdges = new List<IEdge>();
 
             AbsolutePosition = position;
+
+            SetPlatfromParameters(); // this changes the draw parameters based on the platform type but
+            // also sets the AbsoluteSize and collider grids
 
             //default?
             mHealth = 100;
@@ -119,23 +152,16 @@ namespace Singularity.Platform
             mIsBlueprint = true;
             mRequested = new Dictionary<EResourceType, int>();
 
-            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, 148, 88);
             Moved = false;
 
-            if (center == Vector2.Zero)
-            {
-                // no value was specified so just use the platform blank implementation.
-                Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y - 36);
-            }
-            else
-            {
-                //value was given by subclass thus take that
-                Center = center;
-            }
+            UpdateValues();
 
-            AbsoluteSize = SetPlatfromDrawParameters(); // this changes the draw parameters based on the platform type but
-                                                        // also returns the AbsoluteSize so the property can be set
+        }
 
+        public void UpdateValues()
+        {
+            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int) AbsoluteSize.X, (int) AbsoluteSize.Y);
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y + mCenterOffsetY);
         }
 
         /// <summary>
@@ -474,7 +500,7 @@ namespace Singularity.Platform
         /// Sets all the parameters to draw a platfrom properly and calculates the absolute size of a platform.
         /// </summary>
         /// <returns>Absolute Size of a platform</returns>
-        protected Vector2 SetPlatfromDrawParameters()
+        protected void SetPlatfromParameters()
         {
             mSheetPosition = 0;
             switch (mType)
@@ -587,18 +613,69 @@ namespace Singularity.Platform
             {
                 case 0:
                     // basic platforms
-                    return new Vector2(148, 85);
-                case 1:
+                    AbsoluteSize = new Vector2(148, 85);
+                    ColliderGrid = new [,]
+                    {
+                        { false, true,  true,  true,  true,  true,  true,  false },
+                        { true,  true,  true,  true,  true,  true,  true,  true  },
+                        { true,  true,  true,  true,  true,  true,  true,  true  },
+                        { true,  true,  true,  true,  true,  true,  true,  false },
+                        { false, false, true,  true,  true,  true,  false, false },
+                        { false, false, false, false, false, false, false, false }
+                    };
+                    break;
+                case (1):
                     // cones
-                    return new Vector2(148, 165);
-                case 2:
+                    AbsoluteSize = new Vector2(148, 165);
+                    ColliderGrid = new [,]
+                    {
+                        { false, false, false, false, false, false, false, false },
+                        { false, false, false, false, false, false, false, false },
+                        { false, false, false, false, false, false, false, false },
+                        { false, false, false, false, false, false, false, false },
+                        { false, true,  true,  true,  true,  true,  true,  false },
+                        { true,  true,  true,  true,  true,  true,  true,  true  },
+                        { true,  true,  true,  true,  true,  true,  true,  true  },
+                        { true,  true,  true,  true,  true,  true,  true,  false },
+                        { false, false, true,  true,  true,  true,  false, false },
+                        { false, false, false, false, false, false, false, false }
+                    };
+                    break;
+                case (2):
                     // cylinders
-                    return new Vector2(148, 170);
-                case 3:
+                    AbsoluteSize = new Vector2(148, 170);
+                    ColliderGrid = new [,]
+                    {
+                        { false, false, false, false, false, false, false, false },
+                        { false, false, false, false, false, false, false, false },
+                        { false, false, false, false, false, false, false, false },
+                        { false, false, false, false, false, false, false, false },
+                        { false, true,  true,  true,  true,  true,  true,  false },
+                        { true,  true,  true,  true,  true,  true,  true,  true  },
+                        { true,  true,  true,  true,  true,  true,  true,  true  },
+                        { true,  true,  true,  true,  true,  true,  true,  false },
+                        { false, false, true,  true,  true,  true,  false, false },
+                        { false, false, false, false, false, false, false, false }
+                    };
+                    break;
+                case (3):
                     // domes
-                    return new Vector2(148, 126);
+                    AbsoluteSize = new Vector2(148, 126);
+                    ColliderGrid = new [,]
+                    {
+                        { false, false, false, false, false, false, false, false },
+                        { false, false, false, false, false, false, false, false },
+                        { false, true,  true,  true,  true,  true,  true,  false },
+                        { true,  true,  true,  true,  true,  true,  true,  true  },
+                        { true,  true,  true,  true,  true,  true,  true,  true  },
+                        { true,  true,  true,  true,  true,  true,  true,  false },
+                        { false, false, true,  true,  true,  true,  false, false },
+                        { false, false, false, false, false, false, false, false }
+                    };
+                    break;
                 default:
-                    return Vector2.Zero;
+                    throw new ArgumentOutOfRangeException("Attempted to use a spritesheet "
+                        + "for platforms that doesn't exist.");
             }
         }
     }

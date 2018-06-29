@@ -42,9 +42,7 @@ namespace Singularity.Units
         {
             mColor = color;
             mCamera = camera;
-
             mDirector = director;
-
             director.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             director.GetInputManager.AddMousePositionListener(this);
         }
@@ -61,7 +59,6 @@ namespace Singularity.Units
             // if selection box has been created by user then draw
             if (mBoxExists)
             {
-
                 mXStart = mStartBox.X;
                 mYStart = mStartBox.Y;
 
@@ -118,7 +115,6 @@ namespace Singularity.Units
                 case EMouseAction.LeftClick:
                     if (mBoxExists)
                     {
-
                         mBoxExists = false;
                         if (mSizeBox.X > 2 && mSizeBox.Y > 2)
                         {

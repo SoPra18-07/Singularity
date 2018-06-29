@@ -82,7 +82,7 @@ namespace Singularity.Levels
             var milUnit = new MilitaryUnit(new Vector2(2000, 700), milUnitSheet, mCamera, ref mDirector, ref mMap);
 
             //SetUnit
-            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap);
+            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, mGameScreen);
             var selBox = new SelectionBox(Color.White, mCamera, ref mDirector);
 
             //Roads

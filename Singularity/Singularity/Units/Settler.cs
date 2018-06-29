@@ -25,6 +25,7 @@ namespace Singularity.Units
         public Vector2 RelativeSize { get; set; }
         public Vector2 AbsolutePosition { get; set; }
         public Vector2 AbsoluteSize { get; set; }
+        public bool[,] ColliderGrid { get; }
         public Rectangle AbsBounds { get; private set; }
         public bool Moved { get; private set; }
         public int Id { get; }

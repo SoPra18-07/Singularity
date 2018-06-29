@@ -19,7 +19,7 @@ namespace Singularity.Platform
         [DataMember]
         private Director mDirector;
 
-        public Mine(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ResourceMap resource, ref Director dir) : base(position, spritesheet, basesprite, new Vector2(position.X + PlatformWidth / 2f, position.Y + PlatformHeight - 36))
+        public Mine(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ResourceMap resource, ref Director dir) : base(position, spritesheet, basesprite, EPlatformType.Mine, -50)
         {
             mDirector = dir;
             dir.GetDistributionManager.Register(this, false);
@@ -31,7 +31,7 @@ namespace Singularity.Platform
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Mine;
             mSpritename = "Dome";
-            AbsoluteSize = SetPlatfromDrawParameters();
+            SetPlatfromParameters();
         }
 
         public override void Produce()
