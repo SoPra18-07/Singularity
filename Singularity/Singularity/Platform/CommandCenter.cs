@@ -24,7 +24,7 @@ namespace Singularity.Platform
         [DataMember]
         private Director mDirector;
 
-        public CommandCenter(Vector2 position, Texture2D spritesheet, Texture2D baseSprite, ref Director dir): base(position, spritesheet, baseSprite, EPlatformType.Command, -50)
+        public CommandCenter(Vector2 position, Texture2D spritesheet, Texture2D baseSprite, ref Director dir): base(position, spritesheet, baseSprite, ref dir, EPlatformType.Command, -50)
         {
             mDirector = dir;
             //Add possible Actions in this array

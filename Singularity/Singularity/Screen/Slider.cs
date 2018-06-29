@@ -445,8 +445,9 @@ namespace Singularity.Screen
         public EScreen Screen { get; }
 
         public Rectangle Bounds { get; }
-        public void MousePositionChanged(float newX, float newY)
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
+
         }
         public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {

@@ -526,7 +526,6 @@ namespace Singularity.Screen
         {
             if (mouseAction == EMouseAction.LeftClick && withinBounds && Active)
             {
-                Console.Out.WriteLine("check");
                 #region minimization
 
                 if (mMouseX >= mMinimizationRectangle.X &&
@@ -540,24 +539,28 @@ namespace Singularity.Screen
                     // -> use minimized rectangles
                     {
                         mMinimized = true;
+                        // Only input from inside the minimized rectangle is proccessed
+                        Bounds = new Rectangle(mMinimizedBorderRectangle.X, mMinimizedBorderRectangle.Y, mMinimizedBorderRectangle.Width, mMinimizedBorderRectangle.Height);
 
-                    // disable all items due to minimization
-                    foreach (var item in mItemList)
-                    {
-                        item.ActiveWindow = false;
+                        // disable all items due to minimization
+                        foreach (var item in mItemList)
+                        {
+                            item.ActiveWindow = false;
+                        }
                     }
-                }
                 else if (mMinimized)
                     // LeftClick on Minimize-Button, window IS minimized
                     // -> use regular rectangles + move window back in screen if outside
                     {
                         mMinimized = false;
+                        // Only input from inside the window is proccessed
+                        Bounds = new Rectangle((int)mPosition.X, (int)mPosition.Y, (int)(mSize.X), ((int)mSize.Y));
 
-                    // enable all items due to maximization
-                    foreach (var item in mItemList)
-                    {
-                        item.ActiveWindow = true;
-                    }
+                        // enable all items due to maximization
+                        foreach (var item in mItemList)
+                        {
+                            item.ActiveWindow = true;
+                        }
 
                         // catch window being out of screen at the bottom after maximization
                         if (mPosition.Y + mSize.Y > mCurrentScreenHeight)
@@ -600,7 +603,9 @@ namespace Singularity.Screen
                 #endregion
             }
 
+
             // everything following handles if the input is given through or not
+
             if (!mMinimized &&
                 (mMouseX > mPosition.X && mMouseX < mPosition.X + mSize.X &&
                  mMouseY > mPosition.Y && mMouseY < mPosition.Y + mSize.Y))
@@ -611,8 +616,8 @@ namespace Singularity.Screen
 
             // resharper wanted it this 'overseeable' way o.O
             // minimized + mouse on minimized window -> return false ... else true
-            return mMinimized && mMouseX > mPosition.X && mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width &&
-                                   mMouseY > mPosition.Y && mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height;
+            return !(mMinimized && mMouseX > mPosition.X && mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width &&
+                                   mMouseY > mPosition.Y && mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height);
         }
 
         public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
@@ -689,12 +694,21 @@ namespace Singularity.Screen
 
             mClickOnTitleBar = false;
 
-            Bounds = new Rectangle((int)mPosition.X, (int)mPosition.Y, (int)mSize.X, (int)mSize.Y);
+            if (mMinimized)
+            {
+                // window minimized -> only input from inside the minimized window is proccessed
+                Bounds = new Rectangle(mMinimizedBorderRectangle.X, mMinimizedBorderRectangle.Y, mMinimizedBorderRectangle.Width, mMinimizedBorderRectangle.Height);
+            }
+            else
+            {
+                // window maximized -> input the maximized window is proccessed
+                Bounds = new Rectangle((int)mPosition.X, (int)mPosition.Y, (int)mSize.X, (int)mSize.Y);
+            }
 
             return false;
         }
 
-        public void MousePositionChanged(float newX, float newY)
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
             if (!Active)
                 // window is deactivated
@@ -703,8 +717,8 @@ namespace Singularity.Screen
             }
 
             // update member variable with new mouse position
-            mMouseX = newX;
-            mMouseY = newY;
+            mMouseX = screenX;
+            mMouseY = screenY;
         }
         #endregion
 

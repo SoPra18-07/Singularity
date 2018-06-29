@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
 using Singularity.Manager;
+using Singularity.Map;
+using Singularity.Platform;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -43,6 +45,16 @@ namespace Singularity.Screen.ScreenClasses
 
         // used by scissorrectangle to create a scrollable window by cutting everything outside specific bounds
         private readonly RasterizerState mRasterizerState;
+
+        private readonly StructureMap mStructureMap;
+
+        private readonly ResourceMap mResourceMap;
+
+        private readonly Camera mCamera;
+
+        private bool mCanBuildPlatform;
+
+        private PlatformPlacement mPlatformToPlace;
 
         #region civilUnitsWindow members
 
@@ -145,8 +157,14 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         /// <param name="director"></param>
         /// <param name="mgraphics"></param>
-        public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics)
+        /// <param name="gameScreen"></param>
+        public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, GameScreen gameScreen)
         {
+            mStructureMap = gameScreen.GetMap().GetStructureMap();
+            mResourceMap = gameScreen.GetMap().GetResourceMap();
+            mCamera = gameScreen.GetCamera();
+            mCanBuildPlatform = true;
+
             mDirector = director;
             mInputManager = director.GetInputManager;
             mGraphics = mgraphics;
@@ -198,6 +216,15 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             #endregion
+
+            if (mPlatformToPlace != null && mPlatformToPlace.IsFinished())
+            {
+                mCanBuildPlatform = true;
+            }
+
+            // update screen size TODO : UPDATE POSITIONS OF THE WINDOWS WHEN RES-CHANGE IN PAUSE MENU
+            mCurrentScreenWidth = mGraphics.PreferredBackBufferWidth;
+            mCurrentScreenHeight = mGraphics.PreferredBackBufferHeight;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -963,119 +990,325 @@ namespace Singularity.Screen.ScreenClasses
 
         private void OnButtonmBlankPlatformClick(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+            if (!mCanBuildPlatform)
+            {
+                return;
+            }
+
+            mPlatformToPlace = new PlatformPlacement(
+                EPlatformType.Blank,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+
+            mCanBuildPlatform = false;
+
+
         }
         private void OnButtonmBlankPlatformReleased(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+
         }
 
         private void OnButtonmJunkyardPlatformClick(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+            if (!mCanBuildPlatform)
+            {
+                return;
+            }
+
+            mPlatformToPlace = new PlatformPlacement(
+                EPlatformType.Junkyard,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+
+            mCanBuildPlatform = false;
         }
         private void OnButtonmJunkyardPlatformReleased(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+
         }
 
         private void OnButtonmQuarryPlatformClick(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+            if (!mCanBuildPlatform)
+            {
+                return;
+            }
+            
+            mPlatformToPlace = new PlatformPlacement(
+                EPlatformType.Quarry,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+
+            mCanBuildPlatform = false;
         }
         private void OnButtonmQuarryPlatformReleased(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+
         }
 
         private void OnButtonmMinePlatformClick(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+            if (!mCanBuildPlatform)
+            {
+                return;
+            }
+
+            mPlatformToPlace = new PlatformPlacement(
+                EPlatformType.Mine,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+
+            mCanBuildPlatform = false;
         }
         private void OnButtonmMinePlatformReleased(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+
         }
 
         private void OnButtonmWellPlatformClick(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+            if (!mCanBuildPlatform)
+            {
+                return;
+            }
+
+            mPlatformToPlace = new PlatformPlacement(
+                EPlatformType.Well,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+
+            mCanBuildPlatform = false;
         }
         private void OnButtonmWellPlatformReleased(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+
         }
 
         private void OnButtonmFactoryPlatformClick(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+            if (!mCanBuildPlatform)
+            {
+                return;
+            }
+
+            mPlatformToPlace = new PlatformPlacement(
+                EPlatformType.Factory,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+
+            mCanBuildPlatform = false;
         }
         private void OnButtonmFactoryPlatformReleased(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+
         }
 
         private void OnButtonmStoragePlatformClick(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+            if (!mCanBuildPlatform)
+            {
+                return;
+            }
+
+            mPlatformToPlace = new PlatformPlacement(
+                EPlatformType.Storage,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+
+            mCanBuildPlatform = false;
         }
         private void OnButtonmStoragePlatformReleased(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+
         }
 
         private void OnButtonmPowerhousePlatformClick(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+            if (!mCanBuildPlatform)
+            {
+                return;
+            }
+
+            mPlatformToPlace = new PlatformPlacement(
+                EPlatformType.Energy,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+
+            mCanBuildPlatform = false;
         }
         private void OnButtonmPowerhousePlatformReleased(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+
         }
 
         private void OnButtonmCommandcenterPlatformClick(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+            if (!mCanBuildPlatform)
+            {
+                return;
+            }
+
+            mPlatformToPlace = new PlatformPlacement(
+                EPlatformType.Command,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+
+            mCanBuildPlatform = false;
         }
         private void OnButtonmCommandcenterPlatformReleased(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+
         }
 
         private void OnButtonmArmoryPlatformClick(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+            //TODO: implement armory?
         }
         private void OnButtonmArmoryPlatformReleased(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+            //TODO: see above
         }
 
         private void OnButtonmKineticTowerPlatformClick(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+            if (!mCanBuildPlatform)
+            {
+                return;
+            }
+
+            mPlatformToPlace = new PlatformPlacement(
+                EPlatformType.Kinetic,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+
+            mCanBuildPlatform = false;
         }
         private void OnButtonmKineticTowerPlatformReleased(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+
         }
 
         private void OnButtonmLaserTowerPlatformClick(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+            if (!mCanBuildPlatform)
+            {
+                return;
+            }
+
+            mPlatformToPlace = new PlatformPlacement(
+                EPlatformType.Laser,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+
+            mCanBuildPlatform = false;
         }
         private void OnButtonmLaserTowerPlatformReleased(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+
         }
 
         private void OnButtonmBarracksPlatformClick(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+            if (!mCanBuildPlatform)
+            {
+                return;
+            }
+
+            mPlatformToPlace = new PlatformPlacement(
+                EPlatformType.Barracks,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+
+            mCanBuildPlatform = false;
         }
         private void OnButtonmBarracksPlatformReleased(object sender, EventArgs eventArgs)
         {
-            // TODO : Add platform placement code
+
         }
 
         #endregion
@@ -1301,10 +1534,10 @@ namespace Singularity.Screen.ScreenClasses
 
         #region InputManagement
 
-        public void MousePositionChanged(float newX, float newY)
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
-            mMouseX = newX;
-            mMouseY = newY;
+            mMouseX = screenX;
+            mMouseY = screenY;
         }
 
         public Rectangle Bounds { get; }
