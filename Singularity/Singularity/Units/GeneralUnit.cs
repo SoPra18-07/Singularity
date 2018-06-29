@@ -158,6 +158,7 @@ namespace Singularity.Units
         /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
+
             switch (Job)
             {
                 case JobType.Idle:
@@ -225,7 +226,7 @@ namespace Singularity.Units
             // current nodequeue is empty (the path)
             if (mDestination.IsPresent() && mNodeQueue.Count <= 0 && !mIsMoving)
             {
-                mNodeQueue = mDirector.GetPathManager.GetPath(this, mDestination.Get()).GetNodePath();
+                mNodeQueue = mDirector.GetPathManager.GetPath(this, mDestination.Get(), ((PlatformBlank)mDestination.Get()).GetGraphIndex()).GetNodePath();
 
                 CurrentNode = mNodeQueue.Dequeue();
             }

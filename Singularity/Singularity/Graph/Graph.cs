@@ -90,5 +90,31 @@ namespace Singularity.Graph
             return mEdges;
         }
 
+        public override bool Equals(object obj)
+        {
+            var graph = obj as Graph;
+
+            if (graph == null)
+            {
+                return false;
+            }
+
+            if (!(graph.GetNodes().TrueForAll(GetNodes().Contains) && graph.GetNodes().Count == GetNodes().Count))
+            {
+                return false;
+            }
+
+            if (!(graph.GetEdges().TrueForAll(GetEdges().Contains) && graph.GetEdges().Count == GetEdges().Count))
+            {
+                return false;
+            }
+            return true;
+
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode() + mNodes.GetHashCode() * mEdges.GetHashCode();
+        }
     }
 }

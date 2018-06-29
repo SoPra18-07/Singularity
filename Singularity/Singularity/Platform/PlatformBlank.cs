@@ -23,6 +23,8 @@ namespace Singularity.Platform
 
     {
 
+        private int mGraphIndex;
+
         private float mLayer;
 
         /// <summary>
@@ -730,6 +732,32 @@ namespace Singularity.Platform
         public void SetLayer(float layer)
         {
             mLayer = layer;
+        }
+
+        public IEnumerable<INode> GetChilds()
+        {
+            var childs = new List<INode>();
+
+            foreach (var outgoing in GetOutwardsEdges())
+            {
+                childs.Add(outgoing.GetChild());
+            }
+
+            foreach (var ingoing in GetInwardsEdges())
+            {
+                childs.Add(ingoing.GetParent());
+            }
+            return childs;
+        }
+
+        public void SetGraphIndex(int graphIndex)
+        {
+            mGraphIndex = graphIndex;
+        }
+
+        public int GetGraphIndex()
+        {
+            return mGraphIndex;
         }
     }
 }

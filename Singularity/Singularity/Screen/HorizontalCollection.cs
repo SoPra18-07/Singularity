@@ -89,7 +89,6 @@ namespace Singularity.Screen
                 foreach (var item in mItemList)
                 {
                     item.Draw(spriteBatch);
-                    System.Diagnostics.Debug.WriteLine(item.Position);
                 }
             }
         }
