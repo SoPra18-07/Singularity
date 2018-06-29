@@ -1,4 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -32,14 +37,12 @@ namespace Singularity.Units
         /// </summary>
         /// <param name="color"></param>
         /// <param name="camera"></param>
-        /// <param name="director"></param>
+        /// <param name="manager"></param>
         public SelectionBox(Color color, Camera camera, ref Director director)
         {
             mColor = color;
             mCamera = camera;
-
             mDirector = director;
-
             director.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             director.GetInputManager.AddMousePositionListener(this);
         }
@@ -56,7 +59,6 @@ namespace Singularity.Units
             // if selection box has been created by user then draw
             if (mBoxExists)
             {
-
                 mXStart = mStartBox.X;
                 mYStart = mStartBox.Y;
 
@@ -70,7 +72,7 @@ namespace Singularity.Units
                     mYStart = MouseCoordinates().Y;
                 }
 
-                spriteBatch.StrokedRectangle(new Vector2(mXStart, mYStart), mSizeBox, Color.White, Color.White, .8f, .5f);
+                spriteBatch.StrokedRectangle(new Vector2(mXStart, mYStart), mSizeBox, Color.White, Color.White, .8f, .5f, LayerConstants.FogOfWarLayer);
 
             }
         }
@@ -80,7 +82,7 @@ namespace Singularity.Units
             mSizeBox = new Vector2(Math.Abs(mStartBox.X - MouseCoordinates().X), Math.Abs(mStartBox.Y - MouseCoordinates().Y));
         }
 
-        public EScreen Screen { get; }
+        public EScreen Screen { get; } = EScreen.GameScreen;
 
         public Rectangle Bounds { get; }
 
@@ -113,7 +115,6 @@ namespace Singularity.Units
                 case EMouseAction.LeftClick:
                     if (mBoxExists)
                     {
-
                         mBoxExists = false;
                         if (mSizeBox.X > 2 && mSizeBox.Y > 2)
                         {

@@ -70,13 +70,20 @@ namespace Singularity.Platform
 
         private readonly Camera mCamera;
 
-        public PlatformPlacement(EPlatformType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null)
+        private readonly bool mSettler;
+
+        private readonly Vector2 mSetPosition;
+
+        public PlatformPlacement(EPlatformType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null, bool settler = false, Vector2 position = default(Vector2))
         {
             mCamera = camera;
             Screen = screen;
 
             director.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             director.GetInputManager.AddMousePositionListener(this);
+
+            mSettler = settler;
+            mSetPosition = position;
 
             // for further information as to why which states refer to the documentation for mCurrentState
             switch (placementType)
@@ -133,7 +140,17 @@ namespace Singularity.Platform
             {
                 case 1:
                     // for this, we want the platform to follow the mouse, and also be centered on the sprite.
-                    mPlatform.AbsolutePosition = new Vector2(mMouseX - mPlatform.AbsoluteSize.X / 2f, mMouseY - mPlatform.AbsoluteSize.Y / 2f);
+                    if (!mSettler)
+                    {
+                        mPlatform.AbsolutePosition = new Vector2(mMouseX - mPlatform.AbsoluteSize.X / 2f,
+                            mMouseY - mPlatform.AbsoluteSize.Y / 2f);
+                    }
+                    else
+                    {
+                        mPlatform.AbsolutePosition = new Vector2(mSetPosition.X - mPlatform.AbsoluteSize.X / 2f,
+                            mSetPosition.Y - mPlatform.AbsoluteSize.Y / 2f);
+                    }
+
                     break;
 
                 case 2:
