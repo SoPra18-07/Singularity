@@ -73,6 +73,7 @@ namespace Singularity.Screen
             int sliderSize,
             SpriteFont font,
             ref Director director,
+            EScreen screen = EScreen.GameScreen,
             bool withValueBox = true,
             bool withPages = false,
             int pages = 0)
@@ -91,6 +92,7 @@ namespace Singularity.Screen
             Pages = pages;
             mLastPages = pages;
             mDirector = director;
+            Screen = screen;
             mDirector.GetInputManager.AddMouseClickListener(iMouseClickListener: this, leftClickType: EClickType.Both, rightClickType: EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(iMouseListener: this);
 

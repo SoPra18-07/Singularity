@@ -73,6 +73,7 @@ namespace Singularity.Units
         [DataMember]
         private bool mIsMoving;
         
+        /// <summary>
         /// The node the unit moves to. Null if the unit doesn't move anywhere
         /// </summary>
         [DataMember]
@@ -165,8 +166,10 @@ namespace Singularity.Units
                     {
                         mDone = false;
                         //Care!!! DO NOT UNDER ANY CIRCUMSTANCES USE THIS PLACEHOLDER
-                        IPlatformAction action = new ProduceMineResource(platform: null, resourceMap: null);
-                        mAssignedTask = mDirector.GetDistributionManager.RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(value: action));
+                        // IPlatformAction action = new ProduceMineResource(platform: null, resourceMap: null, director: ref mDirector);
+                        // WHY THE FUCK GOT A PLATFORMACTION CREATED HERE ?!?!?
+
+                        mAssignedTask = mDirector.GetDistributionManager.RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
                         //Check if the given destination is null (it shouldnt)
                         if (mAssignedTask.End.IsPresent())
                         {
