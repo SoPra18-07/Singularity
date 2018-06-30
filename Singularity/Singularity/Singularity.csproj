@@ -69,7 +69,9 @@
     <Compile Include="Platforms\PlatformPlacement.cs" />
     <Compile Include="Property\IDie.cs" />
     <Compile Include="Screen\ScreenClasses\InfoBoxWindow.cs" />
+    <Compile Include="Screen\InfoBoxWindow.cs" />
     <Compile Include="Property\GlobalVariables.cs" />
+    <Compile Include="Screen\InfoBarWindowObject.cs" />
     <Compile Include="Units\EnemyUnit.cs" />
     <Compile Include="Units\SelectionBox.cs" />
     <Compile Include="Units\Settler.cs" />
