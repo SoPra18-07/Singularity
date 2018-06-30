@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using Singularity.Manager;
-﻿using System;
-using System.Collections.Generic;
 using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Units;

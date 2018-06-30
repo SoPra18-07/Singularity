@@ -6,6 +6,7 @@ using Singularity.Manager;
 using Singularity.Map;
 using Singularity.PlatformActions;
 using Singularity.Resources;
+using Singularity.Units;
 
 namespace Singularity.Platforms
 {
@@ -18,9 +19,12 @@ namespace Singularity.Platforms
         private const int PlatformHeight = 187;
         
 
-        public Mine(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ResourceMap resource, ref Director dir) : base(position, spritesheet, basesprite, EPlatformType.Mine, -50)
+        public Mine(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ResourceMap resource, ref Director director, bool autoRegister = true) : base(position, spritesheet, basesprite, ref director, EPlatformType.Mine, -50)
         {
-            mDirector.GetDistributionManager.Register(platform: this, isDef: false);
+            if (autoRegister)
+            {
+                director.GetDistributionManager.Register(this, false);
+            }
 
             mIPlatformActions = new IPlatformAction[2];
             mIPlatformActions[0] = new ProduceMineResource(platform: this, resourceMap: resource, director: ref mDirector);
@@ -34,8 +38,13 @@ namespace Singularity.Platforms
 
         public override void Produce()
         {
-            for (var i = 0; i < mAssignedUnits.Count; i++)
+            foreach (var pair in mAssignedUnits[JobType.Production])
             {
+                //That means the unit is not at work yet.
+                if (!pair.GetSecond())
+                {
+                    continue;
+                }
                 mIPlatformActions[1].Execute();
             }
         }

@@ -6,6 +6,7 @@ using Singularity.Manager;
 using Singularity.Map;
 using Singularity.PlatformActions;
 using Singularity.Resources;
+using Singularity.Units;
 
 namespace Singularity.Platforms
 {
@@ -19,10 +20,14 @@ namespace Singularity.Platforms
         [DataMember]
         private Director mDirector;
 
-        public Quarry(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, ref Director dir): base(position, platformSpriteSheet, baseSprite, EPlatformType.Quarry, -50)
+        public Quarry(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, ref Director dir, bool autoRegister = true): base(position, platformSpriteSheet, baseSprite, ref dir, EPlatformType.Quarry, -50)
         {
             mDirector = dir;
-            dir.GetDistributionManager.Register(this, false);
+            if (autoRegister)
+            {
+                dir.GetDistributionManager.Register(this, false);
+            }
+
             //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[2];
             mIPlatformActions[0] = new ProduceQuarryResource(platform: this, resourceMap: resource, director: ref mDirector);
@@ -36,8 +41,13 @@ namespace Singularity.Platforms
 
         public override void Produce()
         {
-            for (var i = 0; i < mAssignedUnits.Count; i++)
+            foreach (var pair in mAssignedUnits[JobType.Production])
             {
+                //That means the unit is not at work yet.
+                if (!pair.GetSecond())
+                {
+                    continue;
+                }
                 mIPlatformActions[1].Execute();
             }
         }

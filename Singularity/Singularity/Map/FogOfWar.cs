@@ -29,7 +29,7 @@ namespace Singularity.Map
     /// all the different buffer in the background (ColorBuffer, DepthBuffer, VertexBuffer, ...) so it shouldn't really
     /// add that much extra performance on the gpu.
     /// </remarks>
-    internal sealed class FogOfWar : IUpdate
+    public sealed class FogOfWar : IUpdate
     {
 
         /// <summary>

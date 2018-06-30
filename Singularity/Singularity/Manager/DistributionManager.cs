@@ -109,6 +109,7 @@ namespace Singularity.Manager
             Console.Out.WriteLine(mProduction.Count);
             Console.Out.WriteLine(mIdle.Count);
             Console.Out.WriteLine(mProdPlatforms[1].GetFirst().mType + " " + mProdPlatforms[1].GetSecond());
+            Console.Out.WriteLine(mProdPlatforms[0].GetFirst().mType + " " + mProdPlatforms[0].GetSecond());
         }
 
         /// <summary>
@@ -262,7 +263,7 @@ namespace Singularity.Manager
                 }
 
                 //Relys on fairness
-                if (lowassign <= list[i].GetSecond())
+                if (lowassign >= list[i].GetSecond())
                 {
                     lowassign = list[i].GetSecond();
                 }
@@ -304,7 +305,7 @@ namespace Singularity.Manager
 
                 //Remove the first unit in the AssignedUnitList. The unit will unassign itself. Then add the unit to our unitslist.
                 //Also dont forget to decrement the number in the tuple, and to delete the unit from the joblist.
-                var transferunit = platUnits[job].First();
+                var transferunit = platUnits[job].First().GetFirst();
                 units.Add(transferunit);
                 joblist.Remove(transferunit);
                 var number = list[startindex].GetSecond() - 1;
@@ -412,6 +413,8 @@ namespace Singularity.Manager
 
                 foreach (var unit in list)
                 {
+                    //We have to re-add the units to the job list because GetUnitsFairly did unassign them
+                    mDefense.Add(unit);
                     //Also unassigns the unit.
                     unit.AssignTask(new Task(JobType.Defense, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
                 }
@@ -426,6 +429,8 @@ namespace Singularity.Manager
 
                 foreach (var unit in list)
                 {
+                    //We have to re-add the units to the job list because GetUnitsFairly did unassign them
+                    mProduction.Add(unit);
                     //Also unassigns the unit.
                     unit.AssignTask(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
                 }

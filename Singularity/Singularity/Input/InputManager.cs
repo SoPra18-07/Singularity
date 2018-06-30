@@ -29,6 +29,10 @@ namespace Singularity.Input
         private KeyboardState mCurrentKeyboardState;
         private KeyboardState mPreviousKeyboardState;
 
+        private bool mCameraMoved;
+
+        private Matrix mCurrentTransform;
+
         public InputManager()
         {
             mScreensToCheck = new List<EScreen>();
@@ -400,11 +404,13 @@ namespace Singularity.Input
 
         private void CreateMousePositionEvents()
         {
-            if (mCurrentMouseState.X != mPreviousMouseState.X || mCurrentMouseState.Y != mPreviousMouseState.Y)
+            if (mCurrentMouseState.X != mPreviousMouseState.X || mCurrentMouseState.Y != mPreviousMouseState.Y || mCameraMoved)
             {
+                var worldMouse = Vector2.Transform(new Vector2(mCurrentMouseState.X, mCurrentMouseState.Y), Matrix.Invert(mCurrentTransform));
+
                 foreach (var mousePositionListener in mMousePositionListener)
                 {
-                    mousePositionListener.MousePositionChanged(mCurrentMouseState.X, mCurrentMouseState.Y);
+                    mousePositionListener.MousePositionChanged(mCurrentMouseState.X, mCurrentMouseState.Y, worldMouse.X, worldMouse.Y);
                 }
             }
         }
@@ -496,6 +502,8 @@ namespace Singularity.Input
             mPreviousMouseState = mCurrentMouseState;
             mPreviousKeyboardState = mCurrentKeyboardState;
 
+            mCameraMoved = false;
+
             mScreensToCheck.Clear();
 
         }
@@ -508,6 +516,12 @@ namespace Singularity.Input
         private static Rectangle RectAtPosition(float x, float y)
         {
             return new Rectangle((int) x, (int) y, 1, 1);
+        }
+
+        public void CameraMoved(Matrix transform)
+        {
+            mCameraMoved = true;
+            mCurrentTransform = transform;
         }
     }
 }

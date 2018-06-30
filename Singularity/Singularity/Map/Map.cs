@@ -13,7 +13,7 @@ using Singularity.Resources;
 
 namespace Singularity.Map
 {
-    internal sealed class Map : IDraw, IUpdate, IKeyListener
+    internal sealed class Map : IDraw, IKeyListener
     {
         private readonly CollisionMap mCollisionMap;
         public readonly StructureMap mStructureMap;
@@ -22,12 +22,12 @@ namespace Singularity.Map
         private readonly int mWidth;
         private readonly int mHeight;
 
-        private readonly Camera mCamera;
-
         private readonly Texture2D mBackgroundTexture;
         private readonly SpriteFont mLibSans12;
 
         private bool mDebug;
+
+        private readonly FogOfWar mFow;
 
 
         /// <summary>
@@ -46,6 +46,7 @@ namespace Singularity.Map
         public Map(Texture2D backgroundTexture,
             int width,
             int height,
+            FogOfWar fow,
             Viewport viewport,
             ref Director director,
             IEnumerable<MapResource> initialResources = null,
@@ -57,11 +58,10 @@ namespace Singularity.Map
             mBackgroundTexture = backgroundTexture;
             mDebug = GlobalVariables.DebugState;
 
-
-            mCamera = new Camera(viewport, ref director, 800, 800, neo);
+            mFow = fow;
 
             mCollisionMap = new CollisionMap();
-            mStructureMap = new StructureMap(ref director);
+            mStructureMap = new StructureMap(fow, ref director);
             mResourceMap = new ResourceMap(initialResources);
 
             director.GetInputManager.AddKeyListener(this);
@@ -193,10 +193,9 @@ namespace Singularity.Map
 
         }
 
-        //TODO: remove if input manager is available since we only use this to pass an update to the camera.
-        public void Update(GameTime gametime)
+        public FogOfWar GetFogOfWar()
         {
-            mCamera.Update(gametime);
+            return mFow;
         }
 
         /// <see cref="StructureMap.AddPlatform(PlatformBlank)"/>
@@ -234,11 +233,6 @@ namespace Singularity.Map
         public ResourceMap GetResourceMap()
         {
             return mResourceMap;
-        }
-
-        public Camera GetCamera()
-        {
-            return mCamera;
         }
 
         /// <summary>
