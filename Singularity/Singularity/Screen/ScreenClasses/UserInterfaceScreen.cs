@@ -369,7 +369,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO
             #region infoBarWindow
 
-            // NOTICE: this window is the only window which is compeletely created and managed in it's own class due to very different tasks
+            // NOTICE: this window is the only window which is compeletely created and managed in its own class due to very different tasks
             mInfoBar = new InfoBarWindowObject(borderColor, windowColor, mGraphics, mLibSans14, mDirector, mScreenManager);
 
             #endregion

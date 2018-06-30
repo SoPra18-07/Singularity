@@ -12,7 +12,7 @@ namespace Singularity.Screen
 {
     class InfoBarWindowObject : IDraw, IUpdate, IMousePositionListener, IMouseClickListener
     {
-        // list of items of info bar
+        // list of items in info bar
         private readonly List<IWindowItem> mInfoBarItemList;
 
         // pause button of info bar
@@ -27,7 +27,7 @@ namespace Singularity.Screen
         // civil units of info bar
         private Button mCivilUnitsButton;
 
-        // width division to place the items at the correct position
+        // just a simple division of the infoBar to be able to place it's buttons at one of X possible locations
         private int mWidthDivision;
 
         // colors for the rectangle
@@ -43,7 +43,7 @@ namespace Singularity.Screen
         // game time to draw in info bar
         private GameTime mGameTime;
 
-        // input management
+        // needed for input management
         private Director mDirector;
 
         // screen management - needed for pause menu
@@ -55,32 +55,40 @@ namespace Singularity.Screen
         // mouse position - needed to prevent input through the info bar
         private Vector2 mMouse;
 
+        /// <summary>
+        /// The infoBar is part of the UI.
+        /// It is placed on the top of the screen.
+        /// </summary>
+        /// <param name="borderColor">the color used for the infoBar's border</param>
+        /// <param name="fillColor">the color used to fill the infoBar</param>
+        /// <param name="graphics"></param>
+        /// <param name="spriteFont">font used for buttons and text</param>
+        /// <param name="director"></param>
+        /// <param name="screenManager"></param>
         public InfoBarWindowObject(Color borderColor, Color fillColor, GraphicsDeviceManager graphics, SpriteFont spriteFont, Director director, IScreenManager screenManager)
         {
+            // set member variables - for further commenting see declaration of member variables
             mBordeColor = borderColor;
             mFillColor = fillColor;
             mSpriteFont = spriteFont;
             mDirector = director;
             mScreenManager = screenManager;
+            mInfoBarItemList = new List<IWindowItem>();
 
-            // TODO :
-            // possibly replace graphics device manager with vector of screen size, then replacement of Width with entire screen size is needed.
-            // The entire Screen size must then be updated in UI to enable the pause menu to be placed in screen center
-
-            // TODO : CHECK
-            Screen = EScreen.UserInterfaceScreen;
-
-            Width = graphics.PreferredBackBufferWidth;
+            // set to zero to force the update 'change-in-res'-call once (because width and backup are different from the beginning)
             mWidthBackup = 0;
 
             mWidthDivision = Width / 10;
 
-            Bounds = new Rectangle(0, 0, Width, 25);
-
-            mInfoBarItemList = new List<IWindowItem>();
-
+            // set starting values
+            Screen = EScreen.UserInterfaceScreen;
+            Width = graphics.PreferredBackBufferWidth;
             Active = true;
 
+            // the entire infoBar
+            Bounds = new Rectangle(0, 0, Width, 25);
+
+            // NOTICE : all buttons can start with position (0,0) since they will be positioned at the first update-call
             // pause button
             mPauseButton = new Button(" ll ", mSpriteFont, new Vector2(0, 0)) {Opacity = 1f};
             mInfoBarItemList.Add(mPauseButton);
@@ -101,16 +109,26 @@ namespace Singularity.Screen
             mInfoBarItemList.Add(mCivilUnitsButton);
             // TODO : ADD DROPDOWN MENU mCivilUnitsButton.ButtonReleased += CivilUnitsButtonReleased;
 
+            // add input manager to prevent other objects from behind the infoBar to get called through the infoBar
             director.GetInputManager.AddMousePositionListener(this);
             director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
 
             // TODO : ADD TINY COLOR RECTANGLES BESIDE THE RESSOURCE BUTTONS
 
+
             // pause menu screen
             mGamePauseScreen = new GamePauseScreen(new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), mScreenManager);
 
+
+            // TODO :
+            // possibly replace graphics device manager with vector of screen size, then replacement of Width with entire screen size is needed.
+            // The entire Screen size must then be updated in UI to enable the pause menu to be placed in screen center
         }
 
+        /// <summary>
+        /// standard draw
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
             if (Active)
@@ -128,6 +146,10 @@ namespace Singularity.Screen
             }
         }
 
+        /// <summary>
+        /// standard update
+        /// </summary>
+        /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
             if (Active)
@@ -136,8 +158,11 @@ namespace Singularity.Screen
                 if (mWidthBackup != Width)
                 {
                     mWidthBackup = Width;
+
                     mWidthDivision = Width / 10;
+
                     Bounds = new Rectangle(0, 0, Width, 25);
+
                     mPauseButton.Position = new Vector2(Width - 20, 2.5f);
                     mCivilUnitsButton.Position = new Vector2(mWidthDivision * 1, 2.5f);
                     mRefinedRessourcesButton.Position = new Vector2(mWidthDivision * 3, 2.5f);
@@ -151,27 +176,27 @@ namespace Singularity.Screen
             }
         }
 
+        // the width of the screen and therefore the width of the infoBar
         public int Width { private get; set; }
 
+        // true, if the infoBar should be updated and drawn
         public bool Active { get; set; } // !KEEP PUBLIC, BECAUSE THE STORY MANAGER WILL PROBABLY USE IT!
 
-        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
-        {
-            mMouse = new Vector2(screenX, screenY);
-        }
-
+        // set screentype
         public EScreen Screen { get; }
 
+        // bounds for input manager
         public Rectangle Bounds { get; private set; }
 
+        // the pause button opens the pause menu screen
         private void PauseButtonReleased(object sender, EventArgs eventArgs)
         {
             mScreenManager.AddScreen(mGamePauseScreen);
         }
 
+        // inputmanagement only prevents the input going through the infoBar
         #region input management
 
-        // input manager only prevents the input going through the infoBar
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
             return !withinBounds;
@@ -185,6 +210,11 @@ namespace Singularity.Screen
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
             return !withinBounds;
+        }
+
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
+        {
+            mMouse = new Vector2(screenX, screenY);
         }
 
         #endregion
