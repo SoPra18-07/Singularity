@@ -72,7 +72,7 @@ namespace Singularity.Units
         /// </summary>
         [DataMember]
         private bool mIsMoving;
-        
+
         /// <summary>
         /// The node the unit moves to. Null if the unit doesn't move anywhere
         /// </summary>
@@ -323,7 +323,7 @@ namespace Singularity.Units
 
             mDirector.GetDistributionManager.Kill(this);
             mAssignedAction.Kill(this);
-            
+
 
             return true;
         }

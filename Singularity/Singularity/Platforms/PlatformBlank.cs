@@ -98,7 +98,7 @@ namespace Singularity.Platforms
         // the sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome
         private int mSheet;
         private int mSheetPosition;
-        
+
 
         [DataMember]
         public Vector2 AbsolutePosition { get; set; }
@@ -549,7 +549,7 @@ namespace Singularity.Platforms
         {
             return AbsoluteSize.GetHashCode() * 17 + AbsolutePosition.GetHashCode() + mType.GetHashCode();
         }
-        
+
 
         /// <summary>
         /// Sets all the parameters to draw a platfrom properly and calculates the absolute size of a platform.
@@ -755,9 +755,9 @@ namespace Singularity.Platforms
 
             //default?
             mHealth = 100;
-            
+
             mIPlatformActions.RemoveAll(a => a.Die());
-            
+
             mAssignedUnits[JobType.Idle].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
             mAssignedUnits[JobType.Defense].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
             mAssignedUnits[JobType.Construction].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
@@ -768,7 +768,7 @@ namespace Singularity.Platforms
             mResources.RemoveAll(r => r.Die());
             mResources = new List<Resource> {new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center),
                 new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center)};
-            
+
             mRequested = new Dictionary<EResourceType, int>();
 
             Moved = false;
@@ -787,10 +787,10 @@ namespace Singularity.Platforms
             // see https://github.com/SoPra18-07/Singularity/issues/215
 
             // removing the PlatformActions first
-            
+
             mInwardsEdges.RemoveAll(e => ((Road) e).Die());
             mOutwardsEdges.RemoveAll(e => ((Road) e).Die()); // this is indirectly calling the Kill(road) function below
-            
+
 
             mResources.RemoveAll(r => r.Die());
 

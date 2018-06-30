@@ -516,7 +516,7 @@ namespace Singularity.Manager
                 mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, Optional<PlatformBlank>.Of(platform), resource, Optional<IPlatformAction>.Of(action)));
             }
         }
-        
+
         //TODO: Think about if we still need this
         public void RequestUnits(PlatformBlank platform, JobType job, IPlatformAction action, bool isdefending = false)
         {
@@ -599,7 +599,7 @@ namespace Singularity.Manager
                 default:
                     throw new InvalidGenericArgumentException("Your requested JobType does not exist.");
             }
-            
+
             mKilled = mKilled.Select(p => new Pair<int, int>(p.GetFirst(), p.GetSecond() - 1)).ToList();
             mKilled.RemoveAll(p => p.GetSecond() < 0);
 

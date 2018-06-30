@@ -152,13 +152,13 @@ namespace Singularity.Platforms
                 case 2:
                     // now we want a road to follow our mouse
                     mConnectionRoad.Destination = new Vector2(mMouseX, mMouseY);
-                    
+
                     // we prematurely reset the color of the platform, so we don't have to worry about it being red
                     mPlatform.ResetColor();
                     if (mHoveringPlatform == null)
                     {
                         break;
-                        
+
                     }
                     // at this point we have a hovering platform, so we clip the road destination to its center
                     mConnectionRoad.Destination = mHoveringPlatform.Center;
@@ -198,7 +198,7 @@ namespace Singularity.Platforms
                 {
                     case 1:
                         mPlatform.UpdateValues();
-                        
+
                         //first check if the platform is even on the map, if not we don't want to progress, since it isn't a valid position
                         if (!Map.Map.IsOnTop(mPlatform.AbsBounds))
                         {
@@ -258,7 +258,7 @@ namespace Singularity.Platforms
                     return giveThrough;
                 }
 
-                // make sure to reset colors when reverting to the last state. The rest is just some cleanup to properly 
+                // make sure to reset colors when reverting to the last state. The rest is just some cleanup to properly
                 // get to the previous state
                 mPlatform.ResetColor();
                 mConnectionRoad = null;

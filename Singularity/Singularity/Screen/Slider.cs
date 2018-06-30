@@ -36,7 +36,7 @@ namespace Singularity.Screen
         // size of a page relative to the lenght of the slider bar
         private float mPageSize;
 
-        // font for writing the value string of the slider 
+        // font for writing the value string of the slider
         private readonly SpriteFont mFont;
         private String mStringValue;
 
@@ -50,7 +50,7 @@ namespace Singularity.Screen
 
         public event SliderMovingEventHandler SliderMoving;
 
-        // event handler for sending out event of page slider is located on 
+        // event handler for sending out event of page slider is located on
         public delegate void PageMovingEventHandler(object source, EventArgs args, int currentPage);
 
         public event PageMovingEventHandler PageMoving;
@@ -58,7 +58,7 @@ namespace Singularity.Screen
         #endregion
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="position"> position of the slider bar left hand corner</param>
         /// <param name="length"> length of the slider bar</param>
@@ -133,7 +133,7 @@ namespace Singularity.Screen
         /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
-            // if slider should be shown 
+            // if slider should be shown
             if (ActiveWindow)
             {
                 mMin = Position.X;
@@ -427,7 +427,7 @@ namespace Singularity.Screen
         //(length of bar, size of slider)
         public Vector2 Size { get; }
 
-        // can make slider not active (not drawn and nothing happens) 
+        // can make slider not active (not drawn and nothing happens)
         public bool ActiveWindow { get; set; }
 
         // can change the amount of pages available on slider bar

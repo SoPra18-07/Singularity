@@ -183,7 +183,7 @@ namespace Singularity.Map
                 AddRoad(platformToAdd.GetRoad());
                 toRemove.AddLast(platformToAdd);
             }
-            
+
             foreach(var platformToRemove in toRemove)
             {
                 mPlatformsToPlace.Remove(platformToRemove);

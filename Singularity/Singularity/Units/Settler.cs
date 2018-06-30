@@ -43,7 +43,7 @@ namespace Singularity.Units
 
         #region Properties
         // TODO i use this bool for now to make the settler inactive
-        // TODO im not sure exactly how to remove it from the 
+        // TODO im not sure exactly how to remove it from the
         public bool Dead { get; private set; }
         private int Health { get; set; }
         public Vector2 RelativePosition { get; set; }
@@ -183,7 +183,7 @@ namespace Singularity.Units
                 (int) (AbsoluteSize.X),
                 (int) (AbsoluteSize.Y));
             Moved = mIsMoving;
-            
+
         }
 
         private void MoveToTarget(Vector2 target)
@@ -298,7 +298,7 @@ namespace Singularity.Units
                 if (key == Keys.B && mSelected && HasReachedTarget())
                 {
                     OnBuildCommandCenter();
-                }  
+                }
             }
         }
 
@@ -311,7 +311,7 @@ namespace Singularity.Units
 
         public void KeyReleased(KeyEvent keyEvent)
         {
-            
+
         }
 
         public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)

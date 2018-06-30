@@ -175,8 +175,8 @@ namespace Singularity.Map
                     new Vector2(0, rowCount * MapConstants.GridHeight), MapConstants.MapWidth, 0, Color.Yellow, 1, LayerConstants.GridDebugLayer);
             }
 
-            
-            
+
+
             for(var i = 0; i < colMap.GetLength(dimension: 0); i++)
             {
                 for (var j = 0; j < colMap.GetLength(dimension: 1); j ++)
@@ -188,7 +188,7 @@ namespace Singularity.Map
                     }
                 }
             }
-            
+
 
         }
 

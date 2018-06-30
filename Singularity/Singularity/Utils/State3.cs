@@ -84,7 +84,7 @@ namespace Singularity.Utils
         }
 
         /// <summary>
-        /// Gets the current state. 
+        /// Gets the current state.
         /// </summary>
         /// <returns>Returns the number of the current state, and -1 if no state is currently active.</returns>
         public int GetState()

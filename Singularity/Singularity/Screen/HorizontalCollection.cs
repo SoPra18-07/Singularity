@@ -13,7 +13,7 @@ namespace Singularity.Screen
         // list holding the collection of IWindowItems
         private readonly List<IWindowItem> mItemList;
 
-        // padding between the IWindowItems in collection s.t. the items fit the size (if possible) while maximizing the padding between them 
+        // padding between the IWindowItems in collection s.t. the items fit the size (if possible) while maximizing the padding between them
         private float mPadding;
 
         // backup to reset if the horizontalCollection was inactive (->update)

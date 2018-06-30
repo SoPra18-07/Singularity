@@ -88,7 +88,7 @@ namespace Singularity.Units
 
         public bool[,] ColliderGrid { get; }
 
-        
+
         public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director, ref Map.Map map)
         {
             Id = IdGenerator.NextiD(); // id for the specific unit.
@@ -215,7 +215,7 @@ namespace Singularity.Units
 
             if (mShoot)
             {
-                // draws a laser line a a slight glow around the line, then sets the shoot future off 
+                // draws a laser line a a slight glow around the line, then sets the shoot future off
                 spriteBatch.DrawLine(Center, MapCoordinates(mEnemyPosition), Color.White, 2);
                 spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), MapCoordinates(mEnemyPosition), Color.White * .2f, 6);
                 mShoot = false;
@@ -353,7 +353,7 @@ namespace Singularity.Units
                                 (int) RelativeSize.Y),
                             mCamera))
                     {
-                        
+
                         mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
                             Matrix.Invert(mCamera.GetTransform()));
 
@@ -383,7 +383,7 @@ namespace Singularity.Units
                             mZoomSnapshot = mCamera.GetZoom();
                             giveThrough = true;
                         }
-                        
+
                     }
 
                     if (withinBounds) {
@@ -440,7 +440,7 @@ namespace Singularity.Units
         /// <param name="size"> size of selection box</param>
         public void BoxSelected(object sender, EventArgs e, Vector2 position, Vector2 size)
         {
-            // create a rectangle from given parameters 
+            // create a rectangle from given parameters
             Rectangle selBox = new Rectangle((int) position.X, (int) position.Y, (int) size.X, (int) size.Y);
 
             // check if selection box intersects with MUnit bounds
