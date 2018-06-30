@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
@@ -8,7 +9,9 @@ using Singularity.Property;
 namespace Singularity.Screen
 {
     /// <summary>
-    /// TODO
+    /// WindowObject is a modular window which holds IWindowItems. The IWindowItems get placed one below the other in the window.
+    /// If the IWindowItems are too big for the window, the window automatically becomes scrollable.
+    /// The WindowObject is moveable and can be made minimizable
     /// </summary>
     internal sealed class WindowObject: IDraw, IUpdate, IMouseWheelListener, IMouseClickListener, IMousePositionListener
     {
@@ -114,8 +117,8 @@ namespace Singularity.Screen
             mWindowName = windowName;
             mPosition = position;
             mSize = size;
-            mColorBorder = new Color(r: 0.68f, g: 0.933f, b: 0.933f, alpha: .8f);
-            mColorFill = new Color(r: 0.27f, g: 0.5f, b: 0.7f, alpha: 0.8f);
+            mColorBorder = new Color(0.68f, 0.933f, 0.933f, .8f);
+            mColorFill = new Color(0.27f, 0.5f, 0.7f, 0.8f);
             mBorderPadding = 10f;
             mObjectPadding = 10f;
             mMinimizable = minimizable;
@@ -132,9 +135,9 @@ namespace Singularity.Screen
 
             mBackgroundGiven = true;
 
-            inputManager.AddMouseClickListener(iMouseClickListener: this, leftClickType: EClickType.InBoundsOnly, rightClickType: EClickType.InBoundsOnly);
-            inputManager.AddMouseWheelListener(iMouseWheelListener: this);
-            inputManager.AddMousePositionListener(iMouseListener: this);
+            inputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            inputManager.AddMouseWheelListener(this);
+            inputManager.AddMousePositionListener(this);
         }
 
 
@@ -188,9 +191,9 @@ namespace Singularity.Screen
             // set start values
             mBackgroundGiven = true;
 
-            inputManager.AddMouseClickListener(iMouseClickListener: this, leftClickType: EClickType.InBoundsOnly, rightClickType: EClickType.InBoundsOnly);
-            inputManager.AddMouseWheelListener(iMouseWheelListener: this);
-            inputManager.AddMousePositionListener(iMouseListener: this);
+            inputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            inputManager.AddMouseWheelListener(this);
+            inputManager.AddMousePositionListener(this);
         }
 
 
@@ -242,9 +245,9 @@ namespace Singularity.Screen
             // set start values
             mBackgroundGiven = false;
 
-            inputManager.AddMouseClickListener(iMouseClickListener: this, leftClickType: EClickType.InBoundsOnly, rightClickType: EClickType.InBoundsOnly);
-            inputManager.AddMouseWheelListener(iMouseWheelListener: this);
-            inputManager.AddMousePositionListener(iMouseListener: this);
+            inputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            inputManager.AddMouseWheelListener(this);
+            inputManager.AddMousePositionListener(this);
         }
 
         #endregion
@@ -259,10 +262,13 @@ namespace Singularity.Screen
             mTitleSizeY = 720 / 26;
 
             // position where the next item will be drawn
-            mItemPosTop = new Vector2(x: mPosition.X + mBorderPadding, y: mPosition.Y + mTitleSizeY + 2 * mMinimizationSize);
+            mItemPosTop = new Vector2(mPosition.X + mBorderPadding, mPosition.Y + mTitleSizeY + 2 * mMinimizationSize);
 
             // Only input from inside the window is proccessed
-            Bounds = new Rectangle(x: (int)mPosition.X, y: (int)mPosition.Y, width: (int)mSize.X, height: (int)mSize.Y);
+            Bounds = new Rectangle((int)mPosition.X, (int)mPosition.Y, (int)(mSize.X), ((int)mSize.Y));
+
+            // activate window
+            Active = true;
         }
 
         /// <summary>
@@ -271,7 +277,7 @@ namespace Singularity.Screen
         /// <param name="item">IWindowItem</param>
         public void AddItem(IWindowItem item)
         {
-            mItemList.Add(item: item);
+            mItemList.Add(item);
         }
 
         /// <summary>
@@ -282,18 +288,24 @@ namespace Singularity.Screen
         public bool DeleteItem(IWindowItem item)
         {
             // item is not in list -> can't be removed
-            if (!mItemList.Contains(item: item))
+            if (!mItemList.Contains(item))
             {
                 return false;
             }
 
             // item in list -> remove successful
-            mItemList.Remove(item: item);
+            mItemList.Remove(item);
             return true;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            if (!Active)
+                // window is deactivated
+            {
+                return;
+            }
+
             // backup current scissor so we can restore later
             var saveRect = spriteBatch.GraphicsDevice.ScissorRectangle;
 
@@ -302,20 +314,20 @@ namespace Singularity.Screen
                 // if a background was given -> draw filled rectangle
                 if (mBackgroundGiven)
                 {
-                    spriteBatch.FillRectangle(rect: mWindowRectangle, color: mColorFill);
+                    spriteBatch.FillRectangle(mWindowRectangle, mColorFill);
                 }
 
-                spriteBatch.DrawRectangle(rect: mBorderRectangle, color: mColorBorder, thickness: 2);
+                spriteBatch.DrawRectangle(mBorderRectangle, mColorBorder, 2);
 
                 // Add the scrollbar if the window is scrollable
                 if (mScrollable)
                 {
-                    spriteBatch.DrawRectangle(rect: mScrollBarBorderRectangle, color: mColorBorder, thickness: 2);
+                    spriteBatch.DrawRectangle(mScrollBarBorderRectangle, mColorBorder, 2);
 
                     // set up current scissor rectangle
-                    spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(x: mScrollBarBorderRectangle.X + 1, y: mScrollBarBorderRectangle.Y + 1, width: mScrollBarBorderRectangle.Width - 2, height: mScrollBarBorderRectangle.Height - 2);
+                    spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(mScrollBarBorderRectangle.X + 1, mScrollBarBorderRectangle.Y + 1, mScrollBarBorderRectangle.Width - 2, mScrollBarBorderRectangle.Height - 2);
 
-                    spriteBatch.FillRectangle(rect: mScrollBarRectangle, color: mColorBorder);
+                    spriteBatch.FillRectangle(mScrollBarRectangle, mColorBorder);
                 }
 
                 // set up current scissor rectangle
@@ -324,7 +336,10 @@ namespace Singularity.Screen
                 // draw IWindowItems
                 foreach (var item in mItemList)
                 {
-                    item.Draw(spriteBatch: spriteBatch);
+                    if (item.ActiveWindow)
+                    {
+                        item.Draw(spriteBatch);
+                    }
                 }
 
                 // restore scissor from backup
@@ -336,26 +351,32 @@ namespace Singularity.Screen
                 if (mBackgroundGiven)
                     // if a background was given -> draw filled rectangle
                 {
-                    spriteBatch.FillRectangle(rect: mMinimizedWindowRectangle, color: mColorFill);
+                    spriteBatch.FillRectangle(mMinimizedWindowRectangle, mColorFill);
                 }
 
-                spriteBatch.DrawRectangle(rect: mMinimizedBorderRectangle, color: mColorBorder, thickness: 2);
+                spriteBatch.DrawRectangle(mMinimizedBorderRectangle, mColorBorder, 2);
             }
 
             // if the window should be minimizable -> draw tiny rectangle for minimization to click on
             if (mMinimizable)
             {
-                spriteBatch.DrawRectangle(rect: mMinimizationRectangle, color: mColorBorder, thickness: 2);
-                spriteBatch.DrawRectangle(rect: mMinimizationLine, color: mColorBorder, thickness: 1);
+                spriteBatch.DrawRectangle(mMinimizationRectangle, mColorBorder, 2);
+                spriteBatch.DrawRectangle(mMinimizationLine, mColorBorder, 1);
             }
 
             // draw window title + bar
-            spriteBatch.DrawString(spriteFont: mSpriteFont, text: mWindowName, position: new Vector2(x: mPosition.X + mMinimizationSize / 2f, y: mPosition.Y + mMinimizationSize / 2f), color: new Color(r: 255, g: 255, b: 255));
-            spriteBatch.DrawRectangle(rect: mTitleBarRectangle, color: mColorBorder, thickness: 1);
+            spriteBatch.DrawString(mSpriteFont, mWindowName, new Vector2(mPosition.X + mMinimizationSize / 2f, mPosition.Y + mMinimizationSize / 2f), new Color(255, 255, 255));
+            spriteBatch.DrawRectangle(mTitleBarRectangle, mColorBorder, 1);
         }
 
         public void Update(GameTime gametime)
         {
+            if (!Active)
+                // window is deactivated
+            {
+                return;
+            }
+
             // current position to place the next item
             var localItemPos = mItemPosTop;
 
@@ -363,17 +384,20 @@ namespace Singularity.Screen
             mCombinedItemsSize = 0;
             foreach (var item in mItemList)
             {
-                item.Update(gametime: gametime);
+                if (item.ActiveWindow)
+                {
+                    item.Update(gametime);
 
-                item.Position = localItemPos;
+                    item.Position = localItemPos;
 
-                mCombinedItemsSize += mObjectPadding + item.Size.Y;
+                    mCombinedItemsSize += mObjectPadding + item.Size.Y;
 
-                localItemPos = new Vector2(x: localItemPos.X, y: localItemPos.Y + item.Size.Y + mObjectPadding);
+                    localItemPos = new Vector2(localItemPos.X, localItemPos.Y + item.Size.Y + mObjectPadding);
+                }
             }
 
             // bottom of all items combined
-            mItemPosBottom = new Vector2(x: localItemPos.X, y: localItemPos.Y);
+            mItemPosBottom = new Vector2(localItemPos.X, localItemPos.Y);
 
             // check if the window is overflowed with items
             mScrollable = mCombinedItemsSize > mScissorRectangle.Height;
@@ -435,7 +459,7 @@ namespace Singularity.Screen
                 width: mMinimizationSize,
                 height: (int)(mSize.Y - mTitleSizeY - 3 * mMinimizationSize)
                 );
-            mScrollBarRectangle = CalcScrollbarRectangle(scissorRectangle: mScissorRectangle, combinedItemsSize: mCombinedItemsSize
+            mScrollBarRectangle = CalcScrollbarRectangle(mScissorRectangle, mCombinedItemsSize
             );
 
             // set the rectangle of the title bar
@@ -459,8 +483,9 @@ namespace Singularity.Screen
             //  - the mouse is above the scrollable part of the window
             //  - the window is not minimized
             //  - the window is scrollable (the number of items is too big for one window)
-            if ((mMouseX > mPosition.X) && (mMouseX < mPosition.X + mSize.X) && (mMouseY > mPosition.Y) &&
-                (mMouseY < mPosition.Y + mSize.Y) && !mMinimized && mScrollable)
+            //  - the window is active
+            if (mMouseX > mPosition.X && mMouseX < mPosition.X + mSize.X && mMouseY > mPosition.Y &&
+                mMouseY < mPosition.Y + mSize.Y && !mMinimized && mScrollable && Active)
             {
                 // scroll up or down
                 switch (mouseAction)
@@ -499,8 +524,9 @@ namespace Singularity.Screen
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
-            if (mouseAction == EMouseAction.LeftClick && withinBounds)
+            if (mouseAction == EMouseAction.LeftClick && withinBounds && Active)
             {
+                Console.Out.WriteLine("check");
                 #region minimization
 
                 if (mMouseX >= mMinimizationRectangle.X &&
@@ -515,23 +541,23 @@ namespace Singularity.Screen
                     {
                         mMinimized = true;
 
-                        // disable all items due to minimization
-                        foreach (var item in mItemList)
-                        {
-                            item.Active = false;
-                        }
+                    // disable all items due to minimization
+                    foreach (var item in mItemList)
+                    {
+                        item.ActiveWindow = false;
                     }
-                    else if (mMinimized)
+                }
+                else if (mMinimized)
                     // LeftClick on Minimize-Button, window IS minimized
                     // -> use regular rectangles + move window back in screen if outside
                     {
                         mMinimized = false;
 
-                        // enable all items due to maximization
-                        foreach (var item in mItemList)
-                        {
-                            item.Active = true;
-                        }
+                    // enable all items due to maximization
+                    foreach (var item in mItemList)
+                    {
+                        item.ActiveWindow = true;
+                    }
 
                         // catch window being out of screen at the bottom after maximization
                         if (mPosition.Y + mSize.Y > mCurrentScreenHeight)
@@ -539,7 +565,7 @@ namespace Singularity.Screen
                             // reset window position
                             mPosition.Y = mCurrentScreenHeight - mSize.Y;
                             // reset item position
-                            mItemPosTop = new Vector2(x: mPosition.X + mBorderPadding, y: mPosition.Y + mTitleSizeY + 2 * mMinimizationSize);
+                            mItemPosTop = new Vector2(mPosition.X + mBorderPadding, mPosition.Y + mTitleSizeY + 2 * mMinimizationSize);
                         }
                     }
                 }
@@ -553,7 +579,6 @@ namespace Singularity.Screen
                 mMouseY > mPosition.Y &&
                 mMouseY < mPosition.Y + mTitleSizeY + mMinimizationSize &&
                 !mClickOnTitleBar)
-
                 // mouse above the title rectangle
                 {
                     if (!(mMouseX >= mMinimizationRectangle.X &&
@@ -565,10 +590,10 @@ namespace Singularity.Screen
                         mClickOnTitleBar = true;
 
                         // set 'previous mouse position'
-                        mWindowDragPos = new Vector2(x: mMouseX - mPosition.X, y: mMouseY - mPosition.Y);
+                        mWindowDragPos = new Vector2(mMouseX - mPosition.X, mMouseY - mPosition.Y);
 
                         // new Bounds so that the window can be moved everywhere
-                        Bounds = new Rectangle(x: 0, y: 0, width: mCurrentScreenWidth, height: mCurrentScreenHeight);
+                        Bounds = new Rectangle(0, 0, mCurrentScreenWidth, mCurrentScreenHeight);
                     }
                 }
 
@@ -586,15 +611,16 @@ namespace Singularity.Screen
 
             // resharper wanted it this 'overseeable' way o.O
             // minimized + mouse on minimized window -> return false ... else true
-            return !mMinimized || (!(mMouseX > mPosition.X) || !(mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width) || 
-                                   !(mMouseY > mPosition.Y) || !(mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height));
+            return mMinimized && mMouseX > mPosition.X && mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width &&
+                                   mMouseY > mPosition.Y && mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height;
         }
 
         public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {
             #region window movement
-            if (mClickOnTitleBar)
-                // enable single window movement
+
+            if (mClickOnTitleBar && Active)
+                // enable single window movement + no reaction when deactivated
             {
                 // backup old window position to calculate the movement
                 var positionOld = mPosition;
@@ -642,10 +668,10 @@ namespace Singularity.Screen
                 #endregion
 
                 // calculate the movement
-                var movementVector = new Vector2(x: mPosition.X - positionOld.X, y: mPosition.Y - positionOld.Y);
+                var movementVector = new Vector2(mPosition.X - positionOld.X, mPosition.Y - positionOld.Y);
 
                 // item movement
-                mItemPosTop = new Vector2(x: mItemPosTop.X + movementVector.X, y: mItemPosTop.Y + movementVector.Y);
+                mItemPosTop = new Vector2(mItemPosTop.X + movementVector.X, mItemPosTop.Y + movementVector.Y);
             }
 
             #endregion
@@ -655,15 +681,27 @@ namespace Singularity.Screen
 
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
+            if (!Active)
+                // window deactivated
+            {
+                return true;
+            }
+
             mClickOnTitleBar = false;
 
-            Bounds = new Rectangle(x: (int)mPosition.X, y: (int)mPosition.Y, width: (int)mSize.X, height: (int)mSize.Y);
+            Bounds = new Rectangle((int)mPosition.X, (int)mPosition.Y, (int)mSize.X, (int)mSize.Y);
 
             return false;
         }
 
         public void MousePositionChanged(float newX, float newY)
         {
+            if (!Active)
+                // window is deactivated
+            {
+                return;
+            }
+
             // update member variable with new mouse position
             mMouseX = newX;
             mMouseY = newY;
@@ -690,7 +728,9 @@ namespace Singularity.Screen
             // calculate new position
             var positionY = mScrollBarBorderRectangle.Y + numberOfStepsTaken * stepSize + 3;
 
-            return new Rectangle(x: (int)(mPosition.X + mSize.X - mMinimizationSize + 2), y: (int)positionY, width: mMinimizationSize - 4, height: (int)sizeY);
+            return new Rectangle((int)(mPosition.X + mSize.X - mMinimizationSize + 2), (int)positionY, mMinimizationSize - 4, (int)sizeY);
         }
+
+        private bool Active { get; set; }
     }
 }

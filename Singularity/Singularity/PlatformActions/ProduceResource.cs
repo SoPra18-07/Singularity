@@ -22,16 +22,11 @@ namespace Singularity.PlatformActions
 
         public override void Execute()
         {
-            var res = mResourceMap.GetWellResource(location: mPlatform.AbsolutePosition);
+            var res = mResourceMap.GetWellResource(mPlatform.AbsolutePosition);
             if (res.IsPresent())
             {
-                mPlatform.StoreResource(resource: res.Get());
+                mPlatform.StoreResource(res.Get());
             }
-        }
-
-        public override Dictionary<EResourceType, int> GetRequiredResources()
-        {
-            return new Dictionary<EResourceType, int>();
         }
     }
 
@@ -49,16 +44,11 @@ namespace Singularity.PlatformActions
 
         public override void Execute()
         {
-            var res = mResourceMap.GetQuarryResource(location: mPlatform.AbsolutePosition);
+            var res = mResourceMap.GetQuarryResource(mPlatform.AbsolutePosition);
             if (res.IsPresent())
             {
-                mPlatform.StoreResource(resource: res.Get());
+                mPlatform.StoreResource(res.Get());
             }
-        }
-
-        public override Dictionary<EResourceType, int> GetRequiredResources()
-        {
-            return new Dictionary<EResourceType, int>();
         }
     }
 
@@ -76,16 +66,11 @@ namespace Singularity.PlatformActions
 
         public override void Execute()
         {
-            var res = mResourceMap.GetMineResource(location: mPlatform.AbsolutePosition);
+            var res = mResourceMap.GetMineResource(mPlatform.AbsolutePosition);
             if (res.IsPresent())
             {
-                mPlatform.StoreResource(resource: res.Get());
+                mPlatform.StoreResource(res.Get());
             }
-        }
-
-        public override Dictionary<EResourceType, int> GetRequiredResources()
-        {
-            return new Dictionary<EResourceType, int>();
         }
     }
 
@@ -136,6 +121,11 @@ namespace Singularity.PlatformActions
                 default:
                     throw new AccessViolationException("Someone/Something acccessed the state!!");
             }
+        }
+
+        public override Dictionary<EResourceType, int> GetRequiredResources()
+        {
+            return new Dictionary<EResourceType, int>();
         }
     }
 }

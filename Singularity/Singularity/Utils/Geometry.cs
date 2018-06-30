@@ -17,15 +17,15 @@ namespace Singularity.Utils
         /// <returns>A new normalized vector of the given vector</returns>
         public static Vector3 NormalizeVector(Vector3 vector)
         {
-            var length = Math.Sqrt(d: Math.Pow(x: vector.X, y: 2) + Math.Pow(x: vector.Y, y: 2) + Math.Pow(x: vector.Z, y: 2));
+            var length = Math.Sqrt(Math.Pow(vector.X, 2) + Math.Pow(vector.Y, 2) + Math.Pow(vector.Z, 2));
 
             //make sure to not divide by zero
-            return length <= 1e-13 ? Vector3.Zero : new Vector3(x: (float)(vector.X / length), y: (float)(vector.Y / length), z: (float)(vector.Z / length));
+            return length <= 1e-13 ? Vector3.Zero : new Vector3((float)(vector.X / length), (float)(vector.Y / length), (float)(vector.Z / length));
         }
 
         public static double Length(Vector2 vec)
         {
-            return Math.Sqrt(d: Math.Pow(x: vec.X, y: 2) + Math.Pow(x: vec.Y, y: 2));
+            return Math.Sqrt(Math.Pow(vec.X, 2) + Math.Pow(vec.Y, 2));
         }
 
 
@@ -36,14 +36,14 @@ namespace Singularity.Utils
         /// <returns>A new normalized vector of the given vector</returns>
         public static Vector2 NormalizeVector(Vector2 vector)
         {
-            var tempVector = NormalizeVector(vector: new Vector3(x: vector.X, y: vector.Y, z: 0));
+            var tempVector = NormalizeVector(new Vector3(vector.X, vector.Y, 0));
 
-            return new Vector2(x: tempVector.X, y: tempVector.Y);
+            return new Vector2(tempVector.X, tempVector.Y);
         }
 
         public static Vector2 GetCenter(float x, float y, float width, float height)
         {
-            return new Vector2(x: x + width/2f, y: y + height/2f);
+            return new Vector2(x + width/2f, y + height/2f);
         }
     }
 }

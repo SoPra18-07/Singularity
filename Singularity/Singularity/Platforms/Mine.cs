@@ -18,8 +18,7 @@ namespace Singularity.Platforms
         private const int PlatformHeight = 187;
         
 
-        public Mine(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ResourceMap resource, ref Director director)
-            : base(position: position, platformSpriteSheet: spritesheet, baseSprite: basesprite, director: ref director, center:new Vector2(x: position.X + PlatformWidth / 2f, y: position.Y + PlatformHeight - 36))
+        public Mine(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ResourceMap resource, ref Director dir) : base(position, spritesheet, basesprite, EPlatformType.Mine, -50)
         {
             mDirector.GetDistributionManager.Register(platform: this, isDef: false);
 
@@ -30,7 +29,7 @@ namespace Singularity.Platforms
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Mine;
             mSpritename = "Dome";
-            AbsoluteSize = SetPlatfromDrawParameters();
+            SetPlatfromParameters();
         }
 
         public override void Produce()
@@ -43,7 +42,7 @@ namespace Singularity.Platforms
 
         public new void Update(GameTime time)
         {
-            base.Update(t: time);
+            base.Update(time);
             if (time.TotalGameTime.TotalSeconds % 5 <= 0.5)
             {
                 Produce();

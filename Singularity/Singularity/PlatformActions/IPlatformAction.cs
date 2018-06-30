@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using Singularity.Manager;
+﻿using System;
+using System.Collections.Generic;
 using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Units;
@@ -90,9 +92,18 @@ namespace Singularity.PlatformActions
 
         public abstract List<JobType> UnitsRequired { get; }
 
-        public PlatformBlank Platform => mPlatform;
-        public Dictionary<GeneralUnit, JobType> AssignedUnits => mAssignedUnits;
+        PlatformBlank IPlatformAction.Platform => mPlatform;
+        Dictionary<GeneralUnit, JobType> IPlatformAction.AssignedUnits => mAssignedUnits;
 
+        /// <summary>
+        /// Assigns the unit to this PlatformAction and to this platform.
+        /// </summary>
+        /// <param name="unit">Unit.</param>
+        /// <param name="job">Job.</param>
+        void IPlatformAction.AssignUnit(GeneralUnit unit, JobType job)
+        {
+            mAssignedUnits.Add(unit, job);
+        }
 
         public abstract void Execute();
 
@@ -104,39 +115,27 @@ namespace Singularity.PlatformActions
         public abstract Dictionary<EResourceType, int> GetRequiredResources();
 
         public abstract void UiToggleState();
-        /* This is a demonstration of how this might be implemented:
-        {
+        /* {
             switch (State)
             {
                 case PlatformActionState.Available:
-                    mDirector.GetDistributionManager.PausePlatformAction(self);
                     State = PlatformActionState.Deactivated;
                     break;
                 case PlatformActionState.Deactivated:
                     State = PlatformActionState.Available;
                     break;
                 default:
-                    throw new AccessViolationException(message: "Someone/Something acccessed the state!!");
+                    throw new AccessViolationException("Someone/Something acccessed the state!!");
             }
         }
         */
-
-        /// <summary>
-        /// Assigns the unit to this PlatformAction and to this platform.
-        /// </summary>
-        /// <param name="unit">Unit.</param>
-        /// <param name="job">Job.</param>
-        void IPlatformAction.AssignUnit(GeneralUnit unit, JobType job)
-        {
-            mAssignedUnits.Add(key: unit, value: job);
-        }
 
         public void UnAssignUnits(int amount, JobType job)
         {
             foreach (var unit in mAssignedUnits.Keys)
             {
                 if (unit.Job != job || amount <= 0) continue;
-                mAssignedUnits.Remove(key: unit);
+                mAssignedUnits.Remove(unit);
                 amount -= 1;
             }
         }

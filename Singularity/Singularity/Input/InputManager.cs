@@ -48,33 +48,33 @@ namespace Singularity.Input
 
         public void AddKeyListener(IKeyListener iKeyListener)
         {
-            mKeyListener.Add(item: iKeyListener);
+            mKeyListener.Add(iKeyListener);
         }
 
         public bool RemoveKeyListener(IKeyListener iKeyListener)
         {
-            if (!mKeyListener.Contains(item: iKeyListener))
+            if (!mKeyListener.Contains(iKeyListener))
             {
                 return false;
             }
 
-            mKeyListener.Remove(item: iKeyListener);
+            mKeyListener.Remove(iKeyListener);
             return true;
         }
 
         public void AddMousePositionListener(IMousePositionListener iMouseListener)
         {
-            mMousePositionListener.Add(item: iMouseListener);
+            mMousePositionListener.Add(iMouseListener);
         }
 
         public bool RemoveMousePositionListener(IMousePositionListener iMouseListener)
         {
-            if (!mMousePositionListener.Contains(item: iMouseListener))
+            if (!mMousePositionListener.Contains(iMouseListener))
             {
                 return false;
             }
 
-            mMousePositionListener.Remove(item: iMouseListener);
+            mMousePositionListener.Remove(iMouseListener);
             return true;
         }
 
@@ -87,67 +87,67 @@ namespace Singularity.Input
         /// <param name="rightClickType">The RightClickType</param>
         public void AddMouseClickListener(IMouseClickListener iMouseClickListener, EClickType leftClickType, EClickType rightClickType)
         {
-            if (!mMouseClickListener.ContainsKey(key: iMouseClickListener.Screen))
+            if (!mMouseClickListener.ContainsKey(iMouseClickListener.Screen))
             {
-                mMouseClickListener[key: iMouseClickListener.Screen] = new List<IMouseClickListener>();
+                mMouseClickListener[iMouseClickListener.Screen] = new List<IMouseClickListener>();
             }
 
-            mMouseClickListener[key: iMouseClickListener.Screen].Add(item: iMouseClickListener);
+            mMouseClickListener[iMouseClickListener.Screen].Add(iMouseClickListener);
 
-            mLeftClickType.Add(key: iMouseClickListener, value: leftClickType);
-            mRightClickType.Add(key: iMouseClickListener, value: rightClickType);
+            mLeftClickType.Add(iMouseClickListener, leftClickType);
+            mRightClickType.Add(iMouseClickListener, rightClickType);
         }
 
         public bool RemoveMouseClickListener(IMouseClickListener iMouseClickListener)
         {
-            if (!mMouseClickListener.ContainsKey(key: iMouseClickListener.Screen))
+            if (!mMouseClickListener.ContainsKey(iMouseClickListener.Screen))
             {
                 return false;
             }
 
-            if (!mMouseClickListener[key: iMouseClickListener.Screen].Contains(item: iMouseClickListener))
+            if (!mMouseClickListener[iMouseClickListener.Screen].Contains(iMouseClickListener))
             {
                 return false;
             }
 
-            mMouseClickListener[key: iMouseClickListener.Screen].Remove(item: iMouseClickListener);
+            mMouseClickListener[iMouseClickListener.Screen].Remove(iMouseClickListener);
 
 
-            mLeftClickType.Remove(key: iMouseClickListener);
-            mRightClickType.Remove(key: iMouseClickListener);
+            mLeftClickType.Remove(iMouseClickListener);
+            mRightClickType.Remove(iMouseClickListener);
             return true;
         }
 
         public void AddMouseWheelListener(IMouseWheelListener iMouseWheelListener)
         {
-            if (!mMouseWheelListener.ContainsKey(key: iMouseWheelListener.Screen))
+            if (!mMouseWheelListener.ContainsKey(iMouseWheelListener.Screen))
             {
-                mMouseWheelListener[key: iMouseWheelListener.Screen] = new List<IMouseWheelListener>();
+                mMouseWheelListener[iMouseWheelListener.Screen] = new List<IMouseWheelListener>();
             }
 
-            mMouseWheelListener[key: iMouseWheelListener.Screen].Add(item: iMouseWheelListener);
+            mMouseWheelListener[iMouseWheelListener.Screen].Add(iMouseWheelListener);
         }
 
         public bool RemoveMouseWheelListener(IMouseWheelListener iMouseWheelListener)
         {
-            if (!mMouseWheelListener.ContainsKey(key: iMouseWheelListener.Screen))
+            if (!mMouseWheelListener.ContainsKey(iMouseWheelListener.Screen))
             {
                 return false;
             }
 
-            if (!mMouseWheelListener[key: iMouseWheelListener.Screen].Contains(item: iMouseWheelListener))
+            if (!mMouseWheelListener[iMouseWheelListener.Screen].Contains(iMouseWheelListener))
             {
                 return false;
             }
 
-            mMouseWheelListener[key: iMouseWheelListener.Screen].Remove(item: iMouseWheelListener);
+            mMouseWheelListener[iMouseWheelListener.Screen].Remove(iMouseWheelListener);
             return true;
         }
 
 
         private bool CreateMouseWheelEvents(EScreen screen)
         {
-            if (!mMouseWheelListener.ContainsKey(key: screen))
+            if (!mMouseWheelListener.ContainsKey(screen))
             {
                 return true;
             }
@@ -157,17 +157,17 @@ namespace Singularity.Input
             if (mCurrentMouseState.ScrollWheelValue < mPreviousMouseState.ScrollWheelValue)
                 // mouse wheel has been scrolled downwards -> create event 'ScrollDown'
             {
-                foreach (var mouseWheelListener in mMouseWheelListener[key: screen])
+                foreach (var mouseWheelListener in mMouseWheelListener[screen])
                 {
-                    giveThrough = giveThrough && mouseWheelListener.MouseWheelValueChanged(mouseAction: EMouseAction.ScrollDown);
+                    giveThrough = giveThrough && mouseWheelListener.MouseWheelValueChanged(EMouseAction.ScrollDown);
                 }
             }
             else if (mCurrentMouseState.ScrollWheelValue > mPreviousMouseState.ScrollWheelValue)
                 // mouse wheel has been scrolled upwards -> create event 'ScrollUp'
             {
-                foreach (var mouseWheelListener in mMouseWheelListener[key: screen])
+                foreach (var mouseWheelListener in mMouseWheelListener[screen])
                 {
-                    giveThrough = giveThrough && mouseWheelListener.MouseWheelValueChanged(mouseAction: EMouseAction.ScrollUp);
+                    giveThrough = giveThrough && mouseWheelListener.MouseWheelValueChanged(EMouseAction.ScrollUp);
                 }
             }
 
@@ -177,7 +177,7 @@ namespace Singularity.Input
 
         private bool CreateMouseClickEvents(EScreen screen)
         {
-            if (!mMouseClickListener.ContainsKey(key: screen))
+            if (!mMouseClickListener.ContainsKey(screen))
             {
                 return true;
             }
@@ -192,32 +192,32 @@ namespace Singularity.Input
                     if (mPreviousMouseState.LeftButton != ButtonState.Pressed)
                     // left mouse button just pressed -> create events 'typed' + 'pressed'
                     {
-                        foreach (var mouseListener in mMouseClickListener[key: screen])
+                        foreach (var mouseListener in mMouseClickListener[screen])
                         {
-                            var doesIntersect = RectAtPosition(x: mCurrentMouseState.X, y: mCurrentMouseState.Y)
-                                .Intersects(value: mouseListener.Bounds);
+                            var doesIntersect = RectAtPosition(mCurrentMouseState.X, mCurrentMouseState.Y)
+                                .Intersects(mouseListener.Bounds);
 
-                            switch (mLeftClickType[key: mouseListener])
+                            switch (mLeftClickType[mouseListener])
                             {
                                 case EClickType.InBoundsOnly:
                                     if (doesIntersect)
                                     {
-                                        giveThrough = giveThrough && mouseListener.MouseButtonClicked(mouseAction: EMouseAction.LeftClick, withinBounds: true);
-                                        giveThrough = giveThrough && mouseListener.MouseButtonPressed(mouseAction: EMouseAction.LeftClick, withinBounds: true);
+                                        giveThrough = giveThrough && mouseListener.MouseButtonClicked(EMouseAction.LeftClick, true);
+                                        giveThrough = giveThrough && mouseListener.MouseButtonPressed(EMouseAction.LeftClick, true);
                                     }
                                     break;
 
                                 case EClickType.OutOfBoundsOnly:
                                     if (!doesIntersect)
                                     {
-                                        giveThrough = giveThrough && mouseListener.MouseButtonClicked(mouseAction: EMouseAction.LeftClick, withinBounds: false);
-                                        giveThrough = giveThrough && mouseListener.MouseButtonPressed(mouseAction: EMouseAction.LeftClick, withinBounds: false);
+                                        giveThrough = giveThrough && mouseListener.MouseButtonClicked(EMouseAction.LeftClick, false);
+                                        giveThrough = giveThrough && mouseListener.MouseButtonPressed(EMouseAction.LeftClick, false);
                                     }
                                     break;
 
                                 case EClickType.Both:
-                                    giveThrough = giveThrough && mouseListener.MouseButtonClicked(mouseAction: EMouseAction.LeftClick, withinBounds: doesIntersect);
-                                    giveThrough = giveThrough && mouseListener.MouseButtonPressed(mouseAction: EMouseAction.LeftClick, withinBounds: doesIntersect);
+                                    giveThrough = giveThrough && mouseListener.MouseButtonClicked(EMouseAction.LeftClick, doesIntersect);
+                                    giveThrough = giveThrough && mouseListener.MouseButtonPressed(EMouseAction.LeftClick, doesIntersect);
                                     break;
                             }
                         }
@@ -225,29 +225,29 @@ namespace Singularity.Input
                     else
                     // left mouse button was already pressed -> create event 'pressed'
                     {
-                        foreach (var mouseListener in mMouseClickListener[key: screen])
+                        foreach (var mouseListener in mMouseClickListener[screen])
                         {
-                            var doesIntersect = RectAtPosition(x: mCurrentMouseState.X, y: mCurrentMouseState.Y)
-                                .Intersects(value: mouseListener.Bounds);
+                            var doesIntersect = RectAtPosition(mCurrentMouseState.X, mCurrentMouseState.Y)
+                                .Intersects(mouseListener.Bounds);
 
-                            switch (mLeftClickType[key: mouseListener])
+                            switch (mLeftClickType[mouseListener])
                             {
                                 case EClickType.InBoundsOnly:
                                     if (doesIntersect)
                                     {
-                                        giveThrough = giveThrough && mouseListener.MouseButtonPressed(mouseAction: EMouseAction.LeftClick, withinBounds: true);
+                                        giveThrough = giveThrough && mouseListener.MouseButtonPressed(EMouseAction.LeftClick, true);
                                     }
                                     break;
 
                                 case EClickType.OutOfBoundsOnly:
                                     if (!doesIntersect)
                                     {
-                                        giveThrough = giveThrough && mouseListener.MouseButtonPressed(mouseAction: EMouseAction.LeftClick, withinBounds: false);
+                                        giveThrough = giveThrough && mouseListener.MouseButtonPressed(EMouseAction.LeftClick, false);
                                     }
                                     break;
 
                                 case EClickType.Both:
-                                    giveThrough = giveThrough && mouseListener.MouseButtonPressed(mouseAction: EMouseAction.LeftClick, withinBounds: doesIntersect);
+                                    giveThrough = giveThrough && mouseListener.MouseButtonPressed(EMouseAction.LeftClick, doesIntersect);
                                     break;
                             }
                         }
@@ -258,29 +258,29 @@ namespace Singularity.Input
                     if (mPreviousMouseState.LeftButton == ButtonState.Pressed)
                     // left mouse button was released -> create event 'released'
                     {
-                        foreach (var mouseListener in mMouseClickListener[key: screen])
+                        foreach (var mouseListener in mMouseClickListener[screen])
                         {
-                            var doesIntersect = RectAtPosition(x: mCurrentMouseState.X, y: mCurrentMouseState.Y)
-                                .Intersects(value: mouseListener.Bounds);
+                            var doesIntersect = RectAtPosition(mCurrentMouseState.X, mCurrentMouseState.Y)
+                                .Intersects(mouseListener.Bounds);
 
-                            switch (mLeftClickType[key: mouseListener])
+                            switch (mLeftClickType[mouseListener])
                             {
                                 case EClickType.InBoundsOnly:
                                     if (doesIntersect)
                                     {
-                                        giveThrough = giveThrough && mouseListener.MouseButtonReleased(mouseAction: EMouseAction.LeftClick, withinBounds: true);
+                                        giveThrough = giveThrough && mouseListener.MouseButtonReleased(EMouseAction.LeftClick, true);
                                     }
                                     break;
 
                                 case EClickType.OutOfBoundsOnly:
                                     if (!doesIntersect)
                                     {
-                                        giveThrough = giveThrough && mouseListener.MouseButtonReleased(mouseAction: EMouseAction.LeftClick, withinBounds: false);
+                                        giveThrough = giveThrough && mouseListener.MouseButtonReleased(EMouseAction.LeftClick, false);
                                     }
                                     break;
 
                                 case EClickType.Both:
-                                    giveThrough = giveThrough && mouseListener.MouseButtonReleased(mouseAction: EMouseAction.LeftClick, withinBounds: doesIntersect);
+                                    giveThrough = giveThrough && mouseListener.MouseButtonReleased(EMouseAction.LeftClick, doesIntersect);
                                     break;
                             }
                         }
@@ -296,32 +296,32 @@ namespace Singularity.Input
                     if (mPreviousMouseState.RightButton != ButtonState.Pressed)
                     // right mouse button was just pressed -> create events 'typed' + 'pressed'
                     {
-                        foreach (var mouseListener in mMouseClickListener[key: screen])
+                        foreach (var mouseListener in mMouseClickListener[screen])
                         {
-                            var doesIntersect = RectAtPosition(x: mCurrentMouseState.X, y: mCurrentMouseState.Y)
-                                .Intersects(value: mouseListener.Bounds);
+                            var doesIntersect = RectAtPosition(mCurrentMouseState.X, mCurrentMouseState.Y)
+                                .Intersects(mouseListener.Bounds);
 
-                            switch (mRightClickType[key: mouseListener])
+                            switch (mRightClickType[mouseListener])
                             {
                                 case EClickType.InBoundsOnly:
                                     if (doesIntersect)
                                     {
-                                        giveThrough = giveThrough && mouseListener.MouseButtonClicked(mouseAction: EMouseAction.RightClick, withinBounds: true);
-                                        giveThrough = giveThrough && mouseListener.MouseButtonPressed(mouseAction: EMouseAction.RightClick, withinBounds: true);
+                                        giveThrough = giveThrough && mouseListener.MouseButtonClicked(EMouseAction.RightClick, true);
+                                        giveThrough = giveThrough && mouseListener.MouseButtonPressed(EMouseAction.RightClick, true);
                                     }
                                     break;
 
                                 case EClickType.OutOfBoundsOnly:
                                     if (!doesIntersect)
                                     {
-                                        giveThrough = giveThrough && mouseListener.MouseButtonClicked(mouseAction: EMouseAction.RightClick, withinBounds: false);
-                                        giveThrough = giveThrough && mouseListener.MouseButtonPressed(mouseAction: EMouseAction.RightClick, withinBounds: false);
+                                        giveThrough = giveThrough && mouseListener.MouseButtonClicked(EMouseAction.RightClick, false);
+                                        giveThrough = giveThrough && mouseListener.MouseButtonPressed(EMouseAction.RightClick, false);
                                     }
                                     break;
 
                                 case EClickType.Both:
-                                    giveThrough = giveThrough && mouseListener.MouseButtonClicked(mouseAction: EMouseAction.RightClick, withinBounds: doesIntersect);
-                                    giveThrough = giveThrough && mouseListener.MouseButtonPressed(mouseAction: EMouseAction.RightClick, withinBounds: doesIntersect);
+                                    giveThrough = giveThrough && mouseListener.MouseButtonClicked(EMouseAction.RightClick, doesIntersect);
+                                    giveThrough = giveThrough && mouseListener.MouseButtonPressed(EMouseAction.RightClick, doesIntersect);
                                     break;
                             }
                         }
@@ -329,29 +329,29 @@ namespace Singularity.Input
                     else
                     // right mouse button was already pressed -> create event 'pressed'
                     {
-                        foreach (var mouseListener in mMouseClickListener[key: screen])
+                        foreach (var mouseListener in mMouseClickListener[screen])
                         {
-                            var doesIntersect = RectAtPosition(x: mCurrentMouseState.X, y: mCurrentMouseState.Y)
-                                .Intersects(value: mouseListener.Bounds);
+                            var doesIntersect = RectAtPosition(mCurrentMouseState.X, mCurrentMouseState.Y)
+                                .Intersects(mouseListener.Bounds);
 
-                            switch (mRightClickType[key: mouseListener])
+                            switch (mRightClickType[mouseListener])
                             {
                                 case EClickType.InBoundsOnly:
                                     if (doesIntersect)
                                     {
-                                        giveThrough = giveThrough && mouseListener.MouseButtonPressed(mouseAction: EMouseAction.RightClick, withinBounds: true);
+                                        giveThrough = giveThrough && mouseListener.MouseButtonPressed(EMouseAction.RightClick, true);
                                     }
                                     break;
 
                                 case EClickType.OutOfBoundsOnly:
                                     if (!doesIntersect)
                                     {
-                                        giveThrough = giveThrough && mouseListener.MouseButtonPressed(mouseAction: EMouseAction.RightClick, withinBounds: false);
+                                        giveThrough = giveThrough && mouseListener.MouseButtonPressed(EMouseAction.RightClick, false);
                                     }
                                     break;
 
                                 case EClickType.Both:
-                                    giveThrough = giveThrough && mouseListener.MouseButtonPressed(mouseAction: EMouseAction.RightClick, withinBounds: doesIntersect);
+                                    giveThrough = giveThrough && mouseListener.MouseButtonPressed(EMouseAction.RightClick, doesIntersect);
                                     break;
                             }
 
@@ -363,29 +363,29 @@ namespace Singularity.Input
                     if (mPreviousMouseState.RightButton == ButtonState.Pressed)
                     // right mouse button was released -> create event 'released'
                     {
-                        foreach (var mouseListener in mMouseClickListener[key: screen])
+                        foreach (var mouseListener in mMouseClickListener[screen])
                         {
-                            var doesIntersect = RectAtPosition(x: mCurrentMouseState.X, y: mCurrentMouseState.Y)
-                                .Intersects(value: mouseListener.Bounds);
+                            var doesIntersect = RectAtPosition(mCurrentMouseState.X, mCurrentMouseState.Y)
+                                .Intersects(mouseListener.Bounds);
 
-                            switch (mRightClickType[key: mouseListener])
+                            switch (mRightClickType[mouseListener])
                             {
                                 case EClickType.InBoundsOnly:
                                     if (doesIntersect)
                                     {
-                                        giveThrough = giveThrough && mouseListener.MouseButtonReleased(mouseAction: EMouseAction.RightClick, withinBounds: true);
+                                        giveThrough = giveThrough && mouseListener.MouseButtonReleased(EMouseAction.RightClick, true);
                                     }
                                     break;
 
                                 case EClickType.OutOfBoundsOnly:
                                     if (!doesIntersect)
                                     {
-                                        giveThrough = giveThrough && mouseListener.MouseButtonReleased(mouseAction: EMouseAction.RightClick, withinBounds: false);
+                                        giveThrough = giveThrough && mouseListener.MouseButtonReleased(EMouseAction.RightClick, false);
                                     }
                                     break;
 
                                 case EClickType.Both:
-                                    giveThrough = giveThrough && mouseListener.MouseButtonReleased(mouseAction: EMouseAction.RightClick, withinBounds: doesIntersect);
+                                    giveThrough = giveThrough && mouseListener.MouseButtonReleased(EMouseAction.RightClick, doesIntersect);
                                     break;
                             }
                         }
@@ -404,7 +404,7 @@ namespace Singularity.Input
             {
                 foreach (var mousePositionListener in mMousePositionListener)
                 {
-                    mousePositionListener.MousePositionChanged(newX: mCurrentMouseState.X, newY: mCurrentMouseState.Y);
+                    mousePositionListener.MousePositionChanged(mCurrentMouseState.X, mCurrentMouseState.Y);
                 }
             }
         }
@@ -416,12 +416,12 @@ namespace Singularity.Input
             foreach (var pressedKey in mCurrentKeyboardState.GetPressedKeys())
                 // go through all pressed keys and create events accordingly
             {
-                if (!mPreviousKeyboardState.GetPressedKeys().Contains(value: pressedKey))
+                if (!mPreviousKeyboardState.GetPressedKeys().Contains(pressedKey))
                     // new key was pressed -> create events 'typed' + 'pressed'
                 {
                     foreach (var keyListener in mKeyListener)
                     {
-                        keyListener.KeyTyped(keyEvent: new KeyEvent(currentKeys: mCurrentKeyboardState.GetPressedKeys()));
+                        keyListener.KeyTyped(new KeyEvent(mCurrentKeyboardState.GetPressedKeys()));
                     }
                 }
                 else
@@ -435,7 +435,7 @@ namespace Singularity.Input
             {
                 foreach (var keyListener in mKeyListener)
                 {
-                    keyListener.KeyPressed(keyEvent: new KeyEvent(currentKeys: mCurrentKeyboardState.GetPressedKeys()));
+                    keyListener.KeyPressed(new KeyEvent(mCurrentKeyboardState.GetPressedKeys()));
                 }
             }
 
@@ -444,12 +444,12 @@ namespace Singularity.Input
             foreach (var previouslyPressedKey in mPreviousKeyboardState.GetPressedKeys())
                 // go through all previously pressed keys and create events if they are no longer pressed
             {
-                if (mCurrentKeyboardState.GetPressedKeys().Contains(value: previouslyPressedKey))
+                if (mCurrentKeyboardState.GetPressedKeys().Contains(previouslyPressedKey))
                     // the key was already pressed -> no event
                 {
                     continue;
                 }
-                releasedKeys.Add(item: previouslyPressedKey);
+                releasedKeys.Add(previouslyPressedKey);
             }
 
             if (releasedKeys.Count > 0)
@@ -458,7 +458,7 @@ namespace Singularity.Input
                 // the key was released -> create event 'release'
                 foreach (var keyListener in mKeyListener)
                 {
-                    keyListener.KeyReleased(keyEvent: new KeyEvent(currentKeys: releasedKeys.ToArray()));
+                    keyListener.KeyReleased(new KeyEvent(releasedKeys.ToArray()));
                 }
             }
         }
@@ -476,12 +476,12 @@ namespace Singularity.Input
             foreach (var screen in mScreensToCheck)
             {
                 if (giveWheelThrough) {
-                    giveWheelThrough = giveWheelThrough && CreateMouseWheelEvents(screen: screen);
+                    giveWheelThrough = giveWheelThrough && CreateMouseWheelEvents(screen);
 
                 }
 
                 if (giveClickThrough) {
-                    giveClickThrough = giveClickThrough && CreateMouseClickEvents(screen: screen);
+                    giveClickThrough = giveClickThrough && CreateMouseClickEvents(screen);
 
                 }
 
@@ -502,12 +502,12 @@ namespace Singularity.Input
 
         internal void AddScreen(EScreen screen)
         {
-            mScreensToCheck.Add(item: screen);
+            mScreensToCheck.Add(screen);
         }
 
         private static Rectangle RectAtPosition(float x, float y)
         {
-            return new Rectangle(x: (int) x, y: (int) y, width: 1, height: 1);
+            return new Rectangle((int) x, (int) y, 1, 1);
         }
     }
 }

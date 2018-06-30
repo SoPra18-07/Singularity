@@ -66,6 +66,8 @@ namespace Singularity.Units
 
         public Rectangle AbsBounds { get; private set; }
 
+        public bool[,] ColliderGrid { get; }
+
         public EnemyUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director)
         {
             Id = IdGenerator.NextiD(); // TODO this will later use a random number generator to create a unique
@@ -73,10 +75,10 @@ namespace Singularity.Units
             Health = 10; //TODO
 
             AbsolutePosition = position;
-            AbsoluteSize = new Vector2(x: DefaultWidth, y: DefaultHeight);
+            AbsoluteSize = new Vector2(DefaultWidth, DefaultHeight);
 
             RevelationRadius = (int)AbsoluteSize.X;
-            Center = new Vector2(x: AbsolutePosition.X + AbsoluteSize.X / 2, y: AbsolutePosition.Y + AbsoluteSize.Y / 2);
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
 
             Moved = false;
             mIsMoving = false;
@@ -99,27 +101,27 @@ namespace Singularity.Units
             // adjust to be at center of sprite 150x75
             var x = target.X - (RelativePosition.X + RelativeSize.X / 2);
             var y = target.Y - (RelativePosition.Y + RelativeSize.Y / 2);
-            var hypot = Math.Sqrt(d: Math.Pow(x: x, y: 2) + Math.Pow(x: y, y: 2));
+            var hypot = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
 
             // calculate degree between formed triangle
             double degree;
-            if (Math.Abs(value: hypot) < 0.01)
+            if (Math.Abs(hypot) < 0.01)
             {
                 degree = 0;
             }
             else
             {
-                degree = Math.Asin(d: y / hypot) * (180.0 / Math.PI);
+                degree = Math.Asin(y / hypot) * (180.0 / Math.PI);
             }
 
             // calculate rotation with increased degrees going counterclockwise
             if (x >= 0)
             {
-                mRotation = (int)Math.Round(value: 270 - degree, mode: MidpointRounding.AwayFromZero);
+                mRotation = (int)Math.Round(270 - degree, MidpointRounding.AwayFromZero);
             }
             else
             {
-                mRotation = (int)Math.Round(value: 90 + degree, mode: MidpointRounding.AwayFromZero);
+                mRotation = (int)Math.Round(90 + degree, MidpointRounding.AwayFromZero);
             }
 
             // add 42 degrees since sprite sheet starts at sprite -42d not 0
@@ -160,15 +162,15 @@ namespace Singularity.Units
         {
 
             spriteBatch.Draw(
-                texture: mMilSheet,
-                position: AbsolutePosition,
-                sourceRectangle: new Rectangle(x: 150 * mColumn, y: 75 * mRow, width: (int)AbsoluteSize.X, height: (int)AbsoluteSize.Y),
-                color: mColor,
-                rotation: 0f,
-                origin: Vector2.Zero,
-                scale: Vector2.One,
-                effects: SpriteEffects.None,
-                layerDepth: LayerConstants.MilitaryUnitLayer
+                mMilSheet,
+                AbsolutePosition,
+                new Rectangle(150 * mColumn, 75 * mRow, (int)AbsoluteSize.X, (int)AbsoluteSize.Y),
+                mColor,
+                0f,
+                Vector2.Zero,
+                Vector2.One,
+                SpriteEffects.None,
+                LayerConstants.MilitaryUnitLayer
                 );
 
         }
@@ -186,18 +188,18 @@ namespace Singularity.Units
             }
 
             // Check if the target position is on the map.
-            if (mSelected && !mIsMoving && Map.Map.IsOnTop(rect: new Rectangle(x: (int)(mMouseX - RelativeSize.X / 2f), y: (int)(mMouseY - RelativeSize.Y / 2f), width: (int)RelativeSize.X, height: (int)RelativeSize.Y), camera: mCamera))
+            if (mSelected && !mIsMoving && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f), (int)(mMouseY - RelativeSize.Y / 2f), (int)RelativeSize.X, (int)RelativeSize.Y), mCamera))
             {
-                Rotate(target: new Vector2(x: mMouseX, y: mMouseY));
+                Rotate(new Vector2(mMouseX, mMouseY));
                 mIsMoving = true;
-                mTargetPosition = new Vector2(x: mMouseX, y: mMouseY);
+                mTargetPosition = new Vector2(mMouseX, mMouseY);
                 mBoundsSnapshot = Bounds;
                 mZoomSnapshot = mCamera.GetZoom();
             }
 
             //make sure to update the relative bounds rectangle enclosing this unit.
             Bounds = new Rectangle(
-                x: (int)RelativePosition.X, y: (int)RelativePosition.Y, width: (int)RelativeSize.X, height: (int)RelativeSize.Y);
+                (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
 
             if (HasReachedTarget())
             {
@@ -207,7 +209,7 @@ namespace Singularity.Units
             // calculate path to target position
             if (mIsMoving && !HasReachedTarget())
             {
-                MoveToTarget(target: mTargetPosition);
+                MoveToTarget(mTargetPosition);
             }
 
             // these are values needed to properly get the current sprite out of the spritesheet.
@@ -217,8 +219,8 @@ namespace Singularity.Units
             //finally select the appropriate color for selected/deselected units.
             mColor = mSelected ? sSelectedColor : sNotSelectedColor;
 
-            Center = new Vector2(x: AbsolutePosition.X + AbsoluteSize.X / 2, y: AbsolutePosition.Y + AbsoluteSize.Y / 2);
-            AbsBounds = new Rectangle(x: (int)AbsolutePosition.X, y: (int)AbsolutePosition.Y, width: (int)AbsoluteSize.X, height: (int)AbsoluteSize.Y);
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
             Moved = mIsMoving;
 
         }
@@ -230,11 +232,11 @@ namespace Singularity.Units
         private void MoveToTarget(Vector2 target)
         {
 
-            mMovementVector = new Vector2(x: target.X - mBoundsSnapshot.Center.X, y: target.Y - mBoundsSnapshot.Center.Y);
+            mMovementVector = new Vector2(target.X - mBoundsSnapshot.Center.X, target.Y - mBoundsSnapshot.Center.Y);
             mMovementVector.Normalize();
             mToAdd += mMovementVector * (float)(mZoomSnapshot * Speed);
 
-            AbsolutePosition = new Vector2(x: (float)(AbsolutePosition.X + mMovementVector.X * Speed), y: (float)(AbsolutePosition.Y + mMovementVector.Y * Speed));
+            AbsolutePosition = new Vector2((float)(AbsolutePosition.X + mMovementVector.X * Speed), (float)(AbsolutePosition.Y + mMovementVector.Y * Speed));
         }
 
         /// <summary>
@@ -243,9 +245,9 @@ namespace Singularity.Units
         private bool HasReachedTarget()
         {
 
-            if (!(Math.Abs(value: mBoundsSnapshot.Center.X + mToAdd.X -
+            if (!(Math.Abs(mBoundsSnapshot.Center.X + mToAdd.X -
                            mTargetPosition.X) < 8 &&
-                  Math.Abs(value: mBoundsSnapshot.Center.Y + mToAdd.Y -
+                  Math.Abs(mBoundsSnapshot.Center.Y + mToAdd.Y -
                            mTargetPosition.Y) < 8))
             {
                 return false;

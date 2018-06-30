@@ -33,32 +33,32 @@ namespace Singularity.Map
             }
 
             mLocationCache = new Dictionary<Vector2, List<MapResource>>();
-            mResourceMap = new List<MapResource>(collection: initialResources);
+            mResourceMap = new List<MapResource>(initialResources);
         }
 
 
         public Optional<Resource> GetWellResource(Vector2 location)
         {
-            var resourcesWell = GetResources(location: location).Where(predicate: r => r.Type == EResourceType.Water || r.Type == EResourceType.Oil).ToList();
+            var resourcesWell = GetResources(location).Where(r => r.Type == EResourceType.Water || r.Type == EResourceType.Oil).ToList();
             if (resourcesWell.Count() <= 0)
             {
-                return Optional<Resource>.Of(value: null);
+                return Optional<Resource>.Of(null);
             }
-            return resourcesWell[index: 0].Get(location: location);
+            return resourcesWell[0].Get(location);
         }
 
         public Optional<Resource> GetQuarryResource(Vector2 location) {
-            return Optional<Resource>.Of(value: new Resource(type: EResourceType.Stone, position: location));
+            return Optional<Resource>.Of(new Resource(EResourceType.Stone, location));
             // this is reference-based and totally fine, since there'll be only references then ... we don't care about that, and as soon as the references are all gone, the GC will take care of it. :)
             // (but yes, actually this could break, since we rely heavily on how c# handles references and stuff.)
         }
 
         public Optional<Resource> GetMineResource(Vector2 location) {
-            var resourcesMine = GetResources(location: location).Where(predicate: r => r.Type == EResourceType.Metal).ToList();
+            var resourcesMine = GetResources(location).Where(r => r.Type == EResourceType.Metal).ToList();
             if (resourcesMine.Count() <= 0) {
-                return Optional<Resource>.Of(value: null);
+                return Optional<Resource>.Of(null);
             }
-            return resourcesMine[index: 0].Get(location: location);
+            return resourcesMine[0].Get(location);
         }
 
         /// <summary>
@@ -71,25 +71,25 @@ namespace Singularity.Map
             // note, the location cache is probably reason number 1 if bugs occur with resources being there even though they shouldn't be,
             // we need to take care, that the resources are getting properly removed.
 
-            if (mLocationCache[key: location] != null)
+            if (mLocationCache[location] != null)
             {
-                return mLocationCache[key: location];
+                return mLocationCache[location];
             }
 
             var foundResources = new List<MapResource>();
 
             foreach (var resource in mResourceMap)
             {
-                if (new Rectangle(x: (int) resource.RelativePosition.X,
-                    y: (int)resource.RelativePosition.Y,
-                    width: (int)resource.RelativeSize.X,
-                    height: (int)resource.RelativeSize.Y).Intersects(value: new Rectangle(x: (int)location.X, y: (int)location.Y, width: 1, height: 1)))
+                if (new Rectangle((int) resource.RelativePosition.X,
+                    (int)resource.RelativePosition.Y,
+                    (int)resource.RelativeSize.X,
+                    (int)resource.RelativeSize.Y).Intersects(new Rectangle((int)location.X, (int)location.Y, 1, 1)))
                 {
-                    foundResources.Add(item: resource);
+                    foundResources.Add(resource);
                 }
             }
 
-            mLocationCache[key: location] = foundResources;
+            mLocationCache[location] = foundResources;
 
             return foundResources;
         }
@@ -100,7 +100,7 @@ namespace Singularity.Map
         /// <param name="toRemove">The resource to remove</param>
         public void RemoveResource(MapResource toRemove)
         {
-            mResourceMap.Remove(item: toRemove);
+            mResourceMap.Remove(toRemove);
             mLocationCache.Clear();
         }
     }

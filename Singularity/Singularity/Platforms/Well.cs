@@ -17,11 +17,13 @@ namespace Singularity.Platforms
         private const int PlatformWidth = 144;
         [DataMember]
         private const int PlatformHeight = 127;
+        [DataMember]
+        private Director mDirector;
 
-        public Well(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, ref Director director)
-            : base(position: position, platformSpriteSheet: platformSpriteSheet, baseSprite: baseSprite, director: ref director, center: new Vector2(x: position.X + PlatformWidth / 2f, y: position.Y + PlatformHeight - 36))
+        public Well(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, ref Director dir): base(position, platformSpriteSheet, baseSprite, EPlatformType.Well, -50)
         {
-            director.GetDistributionManager.Register(platform: this, isDef: false);
+            mDirector = dir;
+            dir.GetDistributionManager.Register(this, false);
             //Add possible Actions in this array
             mIPlatformActions = new IPlatformAction[2];
             mIPlatformActions[1] = new ProduceWellResource(platform: this, resourceMap: resource, director: ref mDirector);
@@ -30,7 +32,7 @@ namespace Singularity.Platforms
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Well;
             mSpritename = "Dome";
-            AbsoluteSize = SetPlatfromDrawParameters();
+            SetPlatfromParameters();
         }
 
         public override void Produce()
@@ -43,10 +45,10 @@ namespace Singularity.Platforms
 
         public new void Update(GameTime time)
         {
-            base.Update(t: time);
+            base.Update(time);
             if (time.TotalGameTime.TotalSeconds % 5 <= 0.5)
             {
-                Console.Out.WriteLine(value: "PRODUCE!!!!");
+                Console.Out.WriteLine("PRODUCE!!!!");
                 Produce();
             }
         }

@@ -50,15 +50,15 @@ namespace Singularity.Platforms
             Destination = destination;
             Blueprint = blueprint;
 
-            source.AddEdge(edge: this, facing: EEdgeFacing.Outwards);
-            destination.AddEdge(edge: this, facing: EEdgeFacing.Inwards);
+            source.AddEdge(this, EEdgeFacing.Outwards);
+            destination.AddEdge(this, EEdgeFacing.Inwards);
 
         }
 
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawLine(point1: ((IRevealing)Source).Center, point2: ((IRevealing)Destination).Center, color: mBlueprint ?  new Color(color: new Vector4(x: .1803922f, y: 0.2078431f, z: .3803922f, w: .5f)) : new Color(color: new Vector3(x: .75f, y: .75f, z: .75f)), thickness: 5f, layerDepth: LayerConstants.RoadLayer);
+            spriteBatch.DrawLine(((IRevealing)Source).Center, ((IRevealing)Destination).Center, mBlueprint ?  new Color(new Vector4(.1803922f, 0.2078431f, .3803922f, .5f)) : new Color(new Vector3(.75f, .75f, .75f)), 5f, LayerConstants.RoadLayer);
         }
 
         public void Update(GameTime gametime)
@@ -78,7 +78,7 @@ namespace Singularity.Platforms
 
         public float GetCost()
         {
-            return Vector2.Distance(value1: ((IRevealing) Source).Center, value2: ((IRevealing) Destination).Center);
+            return Vector2.Distance(((IRevealing) Source).Center, ((IRevealing) Destination).Center);
         }
     }
 }
