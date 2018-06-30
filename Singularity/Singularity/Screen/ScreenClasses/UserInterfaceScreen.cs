@@ -47,6 +47,9 @@ namespace Singularity.Screen.ScreenClasses
         // director
         private Director mDirector;
 
+        // screen manager -- needed for pause menu
+        private IScreenManager mScreenManager;
+        
         // needed to calculate screen-sizes
         private readonly GraphicsDeviceManager mGraphics;
 
@@ -62,6 +65,18 @@ namespace Singularity.Screen.ScreenClasses
         private bool mCanBuildPlatform;
 
         private PlatformPlacement mPlatformToPlace;
+
+        #region infoBar members
+
+        // info bar
+        private InfoBarWindowObject mInfoBar;
+
+
+
+        // units of info bar
+        // TODO : ??
+
+        #endregion
 
         #region civilUnitsWindow members
 
@@ -189,7 +204,8 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="director"></param>
         /// <param name="mgraphics"></param>
         /// <param name="gameScreen"></param>
-        public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, GameScreen gameScreen)
+        /// <param name="stackScreenManager"></param>
+        public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, GameScreen gameScreen, IScreenManager stackScreenManager)
         {
             mStructureMap = gameScreen.GetMap().GetStructureMap();
             mResourceMap = gameScreen.GetMap().GetResourceMap();
@@ -197,6 +213,7 @@ namespace Singularity.Screen.ScreenClasses
             mCanBuildPlatform = true;
 
             mDirector = director;
+            mScreenManager = stackScreenManager;
             mInputManager = director.GetInputManager;
             mGraphics = mgraphics;
 
@@ -226,6 +243,9 @@ namespace Singularity.Screen.ScreenClasses
 
                 // reset position to standard position
                 ResetWindowsToStandardPositon();
+                
+                // update infoBar width to fit the new resolution
+                mInfoBar.Width = mCurrentScreenWidth;
             }
 
             // update all windows
@@ -241,6 +261,9 @@ namespace Singularity.Screen.ScreenClasses
                     infoBox.Update(gametime);
                 }
             }
+
+            // TODO : JUST FOR TESTING
+            mInfoBar.Update(gametime);
 
             #region testing
 
@@ -292,6 +315,9 @@ namespace Singularity.Screen.ScreenClasses
                 }
             }
 
+            // TODO : JUST FOR TESTING
+            mInfoBar.Draw(spriteBatch);
+
             spriteBatch.End();
         }
 
@@ -318,13 +344,9 @@ namespace Singularity.Screen.ScreenClasses
 
             #region windows size calculation
 
-            // TODO : ADD INFO BAR
-            /*
-                        // position + size of topBar
-                        var topBarHeight = 25;
-                        var topBarWidth = mCurrentScreenWidth;
-            */
-
+            // position + size of topBar
+            const float topBarHeight = 25;
+            var topBarWidth = mCurrentScreenWidth;
 
             // size of resource window
             const float resourceWidth = 240;
@@ -345,13 +367,10 @@ namespace Singularity.Screen.ScreenClasses
             #endregion
 
             // TODO
-            #region topBarWindow
+            #region infoBarWindow
 
-            // var topBarWindow = new WindowObject("", new Vector2(0, 0), new Vector2(topBarWidth, topBarHeight), borderColor, windowColor, 10f, 10f, false, mLibSans20, mInputManager, mGraphics);
-
-            // create items
-
-            // add all items
+            // NOTICE: this window is the only window which is compeletely created and managed in its own class due to very different tasks
+            mInfoBar = new InfoBarWindowObject(borderColor, windowColor, mGraphics, mLibSans14, mDirector, mScreenManager);
 
             #endregion
 
@@ -359,13 +378,14 @@ namespace Singularity.Screen.ScreenClasses
             #region eventLogWindow
 
             mEventLogWindow = new WindowObject("// EVENT LOG", new Vector2(0, 0), new Vector2(eventLogWidth, eventLogHeight), true, mLibSans14, mInputManager, mGraphics);
-            // create items
+                
+                // create items
 
-            // add all items
+                // add all items
 
-            mWindowList.Add(mEventLogWindow);
+                mWindowList.Add(mEventLogWindow);
 
-            #endregion
+                #endregion
 
             #region civilUnitsWindow
 
@@ -1011,8 +1031,6 @@ namespace Singularity.Screen.ScreenClasses
             mButtonBasicList.ActiveHorizontalCollection = true;
             mButtonSpecialList.ActiveHorizontalCollection = false;
             mButtonMilitaryList.ActiveHorizontalCollection = false;
-
-
         }
 
         // mouse click on special list button opens the special platform build menu
