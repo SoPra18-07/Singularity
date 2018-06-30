@@ -12,7 +12,7 @@ namespace Singularity.Platforms
     /// <summary>
     /// This handles platforms which can get placed on the game screen as objects.
     /// </summary>
-    public class PlatformPlacement : IDraw, IUpdate, IMousePositionListener, IMouseClickListener
+    public sealed class PlatformPlacement : IDraw, IUpdate, IMousePositionListener, IMouseClickListener
     {
         public EScreen Screen { get; private set; }
         public Rectangle Bounds { get; private set; }
@@ -67,13 +67,16 @@ namespace Singularity.Platforms
 
         private readonly Vector2 mSetPosition;
 
+        private readonly Director mDirector;
+
         public PlatformPlacement(EPlatformType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null, bool settler = false, Vector2 position = default(Vector2))
         {
             mCamera = camera;
             Screen = screen;
+            mDirector = director;
 
-            director.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
-            director.GetInputManager.AddMousePositionListener(this);
+            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            mDirector.GetInputManager.AddMousePositionListener(this);
 
             mSettler = settler;
             mSetPosition = position;
@@ -242,6 +245,13 @@ namespace Singularity.Platforms
 
             if (mouseAction == EMouseAction.RightClick)
             {
+                /* The guess was that this is sufficient to stop placing Platforms. Turns out it isn't, additionally there'll be a nullPointer happening for a Road somewhere.
+                if (mCurrentState.GetState() == 1)
+                {
+                    mIsFinished = true;
+                }
+                */
+
                 // we only need to do something with rightclick if were in the 2nd state, since then we revert.
                 if (mCurrentState.GetState() != 2)
                 {

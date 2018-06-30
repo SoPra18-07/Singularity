@@ -449,5 +449,13 @@ namespace Singularity.Units
                 mSelected = true;
             }
         }
+
+        public bool Die()
+        {
+            // mDirector.GetMilitaryManager.Kill(this);
+            // todo: MilitaryManager implement
+
+            return true;
+        }
     }
 }

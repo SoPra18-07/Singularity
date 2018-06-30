@@ -36,7 +36,7 @@ namespace Singularity.Platforms
             set
             {
                 mBlueprint = value;
-                if (!value) { // todo: add road to graph
+                if (!value) { // todo: add road to graph - done?
                            }
             }
         }
@@ -113,6 +113,13 @@ namespace Singularity.Platforms
         public float GetCost()
         {
             return Vector2.Distance(Source, Destination);
+        }
+
+        public bool Die()
+        {
+            ((PlatformBlank) SourceAsNode).Kill(this);
+            ((PlatformBlank) DestinationAsNode).Kill(this);
+            return true;
         }
     }
 }

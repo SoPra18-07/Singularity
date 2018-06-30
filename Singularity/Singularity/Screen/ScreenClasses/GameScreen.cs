@@ -19,7 +19,7 @@ namespace Singularity.Screen.ScreenClasses
     /// Handles everything thats going on explicitly in the game.
     /// E.g. game objects, the map, camera. etc.
     /// </summary>
-    internal sealed class GameScreen : IScreen
+    public sealed class GameScreen : IScreen
     {
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
         public bool Loaded { get; set; }

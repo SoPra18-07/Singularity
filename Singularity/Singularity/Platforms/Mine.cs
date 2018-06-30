@@ -26,8 +26,7 @@ namespace Singularity.Platforms
                 director.GetDistributionManager.Register(this, false);
             }
 
-            mIPlatformActions = new IPlatformAction[2];
-            mIPlatformActions[0] = new ProduceMineResource(platform: this, resourceMap: resource, director: ref mDirector);
+            mIPlatformActions.Add(new ProduceMineResource(platform: this, resourceMap: resource, director: ref mDirector));
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();

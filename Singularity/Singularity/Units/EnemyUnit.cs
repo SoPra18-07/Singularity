@@ -66,7 +66,7 @@ namespace Singularity.Units
 
         public Rectangle AbsBounds { get; private set; }
 
-        public bool[,] ColliderGrid { get; }
+        public bool[,] ColliderGrid { get; } // todo: @balazsn!
 
         public EnemyUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director)
         {
@@ -255,6 +255,13 @@ namespace Singularity.Units
             mToAdd = Vector2.Zero;
             return true;
 
+        }
+
+        public bool Die()
+        {
+            // has no reference to other Elements that would have a reference to it. (MilitaryManager? over Director probably)
+            // mDirector.GetMilitaryManager.RemoveUnit(this);
+            return true;
         }
     }
 }

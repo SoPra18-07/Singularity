@@ -13,10 +13,10 @@ namespace Singularity.Levels
 {
     //Not sure whether this should be serialized, but I guess...
     [DataContract]
-    internal sealed class Skirmish
+    internal sealed class Skirmish : ILevel
     {
         [DataMember]
-        private GameScreen mGameScreen;
+        public GameScreen GameScreen { get; set; }
         [DataMember]
         private GraphicsDevice mGraphics;
         [DataMember]
@@ -32,11 +32,11 @@ namespace Singularity.Levels
         [DataMember]
         private PlatformBlank mPlatform;
 
-        public Skirmish(GraphicsDevice graphics, ref Director dir, ContentManager content)
+        public Skirmish(GraphicsDevice graphics, ref Director director, ContentManager content)
         {
-            mDirector = dir;
-            dir.GetStoryManager.SetLevelType(LevelType.Skirmish);
-            dir.GetStoryManager.LoadAchievements();
+            mDirector = director;
+            mDirector.GetStoryManager.SetLevelType(LevelType.Skirmish, this);
+            mDirector.GetStoryManager.LoadAchievements();
             mGraphics = graphics;
             LoadContent(content);
         }
@@ -54,11 +54,12 @@ namespace Singularity.Levels
             PlatformFactory.Init(null, platformCylTexture, platformDomeTexture, platformBlankTexture);
 
             //Map related stuff
+            mCamera = new  Camera(mGraphics, ref mDirector, 800, 800, neo: true); // NEOLAYOUT (searchmark for @fkarg)
             mFow = new FogOfWar(mCamera, mGraphics);
-            mMap = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.Viewport, ref mDirector, neo: true); // NEOLAYOUT (searchmark for @fkarg)
+            mMap = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.Viewport, ref mDirector);
 
             //INITIALIZE GAMESCREEN
-            mGameScreen = new GameScreen(mGraphics, ref mDirector, mMap, mCamera, mFow);
+            GameScreen = new GameScreen(mGraphics, ref mDirector, mMap, mCamera, mFow);
 
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
@@ -88,7 +89,7 @@ namespace Singularity.Levels
             var milUnit = new MilitaryUnit(new Vector2(2000, 700), milUnitSheet, mCamera, ref mDirector, ref mMap);
 
             //SetUnit
-            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, mGameScreen);
+            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, GameScreen);
 
             //Roads
             var road1 = new Road(mPlatform, platform2, false);
@@ -112,22 +113,22 @@ namespace Singularity.Levels
 
             //Finally add the objects
             //GAMESCREEN=====================
-            mGameScreen.AddObject(mPlatform);
-            mGameScreen.AddObject(platform2);
-            mGameScreen.AddObject(platform3);
-            mGameScreen.AddObject(platform4);
-            mGameScreen.AddObject(road1);
-            mGameScreen.AddObject(road2);
-            mGameScreen.AddObject(road3);
-            mGameScreen.AddObject(road4);
-            mGameScreen.AddObject(road5);
-            mGameScreen.AddObject(genUnit);
-            mGameScreen.AddObject(genUnit2);
-            mGameScreen.AddObject(genUnit3);
-            mGameScreen.AddObject(genUnit4);
-            mGameScreen.AddObject(genUnit5);
-            mGameScreen.AddObject(milUnit);
-            mGameScreen.AddObject(setUnit);
+            GameScreen.AddObject(mPlatform);
+            GameScreen.AddObject(platform2);
+            GameScreen.AddObject(platform3);
+            GameScreen.AddObject(platform4);
+            GameScreen.AddObject(road1);
+            GameScreen.AddObject(road2);
+            GameScreen.AddObject(road3);
+            GameScreen.AddObject(road4);
+            GameScreen.AddObject(road5);
+            GameScreen.AddObject(genUnit);
+            GameScreen.AddObject(genUnit2);
+            GameScreen.AddObject(genUnit3);
+            GameScreen.AddObject(genUnit4);
+            GameScreen.AddObject(genUnit5);
+            GameScreen.AddObject(milUnit);
+            GameScreen.AddObject(setUnit);
 
 
             //TESTMETHODS HERE =====================================
@@ -138,7 +139,7 @@ namespace Singularity.Levels
 
         public GameScreen GetGameScreen()
         {
-            return mGameScreen;
+            return GameScreen;
         }
     }
 }

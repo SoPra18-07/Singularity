@@ -325,6 +325,10 @@ namespace Singularity.Units
         }
         #endregion
 
-
+        public bool Die()
+        {
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
+            return true;
+        }
     }
 }

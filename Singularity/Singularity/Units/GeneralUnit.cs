@@ -35,7 +35,7 @@ namespace Singularity.Units
 
         //These are the assigned task and a flag, wether the unit is done with it.
         [DataMember]
-        private Task mAssignedTask;
+        private Task mTask;
 
         //Represent the current workstate.
         [DataMember]
@@ -47,7 +47,7 @@ namespace Singularity.Units
         private IPlatformAction mAssignedAction;
 
         /// <summary>
-        /// The node the unit started from. Changes when the unit reaches its destination (to the destination).
+        /// The node the unit is currently targeting.
         /// </summary>
         [DataMember]
         public INode CurrentNode { get; private set; }
@@ -133,18 +133,18 @@ namespace Singularity.Units
         internal void AssignTask(Task task)
         {
             mDone = false;
-            mAssignedTask = task;
-            ChangeJob(mAssignedTask.Job);
+            mTask = task;
+            ChangeJob(mTask.Job);
             //Check whether there is a Destination. (it should)
-            if (mAssignedTask.End.IsPresent())
+            if (mTask.End.IsPresent())
             {
-                mAssignedTask.End.Get().AssignUnits(this, Job);
-                mDestination = Optional<INode>.Of(mAssignedTask.End.Get());
+                mTask.End.Get().AssignUnits(this, Job);
+                mDestination = Optional<INode>.Of(mTask.End.Get());
             }
 
-            if (mAssignedTask.Action.IsPresent())
+            if (mTask.Action.IsPresent())
             {
-                mAssignedAction = mAssignedTask.Action.Get();
+                mAssignedAction = mTask.Action.Get();
             }
             else
             {
@@ -170,11 +170,11 @@ namespace Singularity.Units
                         // IPlatformAction action = new ProduceMineResource(platform: null, resourceMap: null, director: ref mDirector);
                         // WHY THE FUCK GOT A PLATFORMACTION CREATED HERE ?!?!?
 
-                        mAssignedTask = mDirector.GetDistributionManager.RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
+                        mTask = mDirector.GetDistributionManager.RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
                         //Check if the given destination is null (it shouldnt)
-                        if (mAssignedTask.End.IsPresent())
+                        if (mTask.End.IsPresent())
                         {
-                            mDestination = Optional<INode>.Of(mAssignedTask.End.Get());
+                            mDestination = Optional<INode>.Of(mTask.End.Get());
                         }
                     }
 
@@ -189,11 +189,11 @@ namespace Singularity.Units
 
                 case JobType.Production:
                     //You arrived at your destination and you now want to work.
-                    if(!mIsMoving && !mDone && CurrentNode.Equals(mAssignedTask.End.Get()))
+                    if(!mIsMoving && !mDone && CurrentNode.Equals(mTask.End.Get()))
                     {
                         if (!mAssigned)
                         {
-                            mAssignedTask.End.Get().ShowedUp(this, Job);
+                            mTask.End.Get().ShowedUp(this, Job);
                             mAssigned = true;
                         }
                     }
@@ -246,7 +246,7 @@ namespace Singularity.Units
             }
 
             // finally move to the current node.
-            if (!ReachedTarget(((PlatformBlank)CurrentNode).Center) || !mAssignedTask.End.Get().Equals(CurrentNode))
+            if (!ReachedTarget(((PlatformBlank)CurrentNode).Center) || !mTask.End.Get().Equals(CurrentNode))
             {
                 Move(((PlatformBlank)CurrentNode).Center);
             }
@@ -310,6 +310,30 @@ namespace Singularity.Units
             if (Carrying.IsPresent())
             {
                 Carrying.Get().Draw(spriteBatch);
+            }
+        }
+
+        public bool Die()
+        {
+            if (Carrying.IsPresent())
+            {
+                Carrying.Get().Die();
+                Carrying = Optional<Resource>.Of(null);
+            }
+
+            mDirector.GetDistributionManager.Kill(this);
+            mAssignedAction.Kill(this);
+            
+
+            return true;
+        }
+
+        public void Kill(int id)
+        {
+            if (mTask.Contains(id))
+            {
+                mTask = mDirector.GetDistributionManager.RequestNewTask(this, Job, null);
+                // also the mAssignedTask-platformaction is included in this.
             }
         }
     }

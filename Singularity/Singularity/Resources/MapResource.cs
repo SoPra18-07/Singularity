@@ -64,13 +64,17 @@ namespace Singularity.Resources
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            // TODO: test how this looks like.
             spriteBatch.DrawEllipse(new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y), mColor, Amount / 2f, LayerConstants.MapResourceLayer);
         }
 
         public void Update(GameTime gametime)
         {
             //TODO: implement update code
+        }
+
+        public bool Die()
+        {
+            return true;
         }
     }
 }

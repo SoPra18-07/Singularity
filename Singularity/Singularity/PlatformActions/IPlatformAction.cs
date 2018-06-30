@@ -3,6 +3,7 @@ using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Units;
+using Singularity.Utils;
 
 namespace Singularity.PlatformActions
 {
@@ -19,6 +20,11 @@ namespace Singularity.PlatformActions
         /// </summary>
         /// <value>The current state of the PlatformAction</value>
         PlatformActionState State { get; }
+
+        /// <summary>
+        /// Unique id of this PlatformAction.
+        /// </summary>
+        int Id { get; }
 
         /// <summary>
         /// Gets the required resources of the PlatformAction
@@ -67,7 +73,10 @@ namespace Singularity.PlatformActions
         /// <value>The assigned units.</value>
         Dictionary<GeneralUnit, JobType> AssignedUnits { get; }
 
-        PlatformBlank Platform { get; }
+        PlatformBlank Platform { get; set; }
+
+        bool Die();
+        void Kill(GeneralUnit generalUnit);
     }
 
 
@@ -75,14 +84,17 @@ namespace Singularity.PlatformActions
 
     public abstract class APlatformAction : IPlatformAction
     {
-        protected readonly Dictionary<GeneralUnit, JobType> mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
-        protected readonly PlatformBlank mPlatform;
+        protected Dictionary<GeneralUnit, JobType> mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
+        protected PlatformBlank mPlatform;
         protected readonly Director mDirector;
+
+        public int Id { get; }
 
         protected APlatformAction(PlatformBlank platform, ref Director director)
         {
             mPlatform = platform;
             mDirector = director;
+            Id = IdGenerator.NextiD();
         }
 
 
@@ -90,7 +102,12 @@ namespace Singularity.PlatformActions
 
         public abstract List<JobType> UnitsRequired { get; }
 
-        PlatformBlank IPlatformAction.Platform => mPlatform;
+        PlatformBlank IPlatformAction.Platform
+        {
+            get { return mPlatform; }
+            set { mPlatform = value; }
+        }
+
         Dictionary<GeneralUnit, JobType> IPlatformAction.AssignedUnits => mAssignedUnits;
 
         /// <summary>
@@ -136,6 +153,20 @@ namespace Singularity.PlatformActions
                 mAssignedUnits.Remove(unit);
                 amount -= 1;
             }
+        }
+
+        public bool Die()
+        {
+            mDirector.GetDistributionManager.Kill(this);
+            mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
+            mPlatform = null;
+
+            return true;
+        }
+
+        public void Kill(GeneralUnit unit)
+        {
+            mAssignedUnits.Remove(unit);
         }
     }
 }

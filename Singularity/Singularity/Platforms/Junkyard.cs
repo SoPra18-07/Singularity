@@ -18,8 +18,6 @@ namespace Singularity.Platforms
 
         public Junkyard(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director dir) : base(position, platformSpriteSheet, baseSprite, ref dir, EPlatformType.Junkyard, -50)
         {
-            //Add possible Actions in this array
-            mIPlatformActions = new IPlatformAction[1];
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
