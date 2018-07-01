@@ -167,9 +167,6 @@ namespace Singularity.Units
                     if (!mIsMoving && mDone)
                     {
                         mDone = false;
-                        //Care!!! DO NOT UNDER ANY CIRCUMSTANCES USE THIS PLACEHOLDER
-                        // IPlatformAction action = new ProduceMineResource(platform: null, resourceMap: null, director: ref mDirector);
-                        // WHY THE FUCK GOT A PLATFORMACTION CREATED HERE ?!?!?
 
                         mTask = mDirector.GetDistributionManager.RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
                         //Check if the given destination is null (it shouldnt)
@@ -316,6 +313,7 @@ namespace Singularity.Units
 
         public bool Die()
         {
+            mTask = new Task(job, Optional<PlatformBlank>.Of(null), null, Optional<IPlatformAction>.Of(null));
             if (Carrying.IsPresent())
             {
                 Carrying.Get().Die();
