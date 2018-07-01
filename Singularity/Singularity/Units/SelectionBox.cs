@@ -79,7 +79,7 @@ namespace Singularity.Units
                     mYStart = MouseCoordinates().Y;
                 }
 
-                // caculate current size of selection box based on mouse positin and point of start
+                // caculate current size of selection box based on mouse position and point of start
                 mSizeBox = new Vector2(Math.Abs(mStartBox.X - MouseCoordinates().X),
                     Math.Abs(mStartBox.Y - MouseCoordinates().Y));
             }
