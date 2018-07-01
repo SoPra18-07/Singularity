@@ -6,7 +6,7 @@ using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Property;
 
-namespace Singularity.Screen.ScreenClasses
+namespace Singularity.Screen
 {
     /// <summary>
     /// InfoBoxes are small boxes which can be used to quickly show a notice to the player. (With or without border)

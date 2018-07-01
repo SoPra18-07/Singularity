@@ -65,8 +65,9 @@
     <Compile Include="Platform\EPlacementType.cs" />
     <Compile Include="Platform\PlatformFactory.cs" />
     <Compile Include="Platform\PlatformPlacement.cs" />
-    <Compile Include="Screen\ScreenClasses\InfoBoxWindow.cs" />
+    <Compile Include="Screen\InfoBoxWindow.cs" />
     <Compile Include="Property\GlobalVariables.cs" />
+    <Compile Include="Screen\InfoBarWindowObject.cs" />
     <Compile Include="Units\EnemyUnit.cs" />
     <Compile Include="Units\SelectionBox.cs" />
     <Compile Include="Units\Settler.cs" />
@@ -130,7 +131,7 @@
     <Compile Include="Screen\ITransitionableMenu.cs" />
     <Compile Include="Screen\IWindowItem.cs" />
     <Compile Include="Screen\ScreenClasses\GameScreen.cs" />
-    <Compile Include="Screen\ScreenClasses\PopupWindow.cs" />
+    <Compile Include="Screen\PopupWindow.cs" />
     <Compile Include="Screen\Slider.cs" />
     <Compile Include="Screen\ScreenClasses\UserInterfaceScreen.cs" />
     <Compile Include="Screen\Button.cs" />
