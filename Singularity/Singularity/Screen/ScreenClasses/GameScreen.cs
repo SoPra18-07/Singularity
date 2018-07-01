@@ -239,7 +239,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>True if all given objects could be added to the screen, false otherwise</returns>
         public bool AddObjects<T>(IEnumerable<T> toAdd)
         {
-            bool isSuccessful = true;
+            var isSuccessful = true;
 
             foreach (var t in toAdd)
             {
