@@ -110,7 +110,7 @@ namespace Singularity.Platform
             }
 
             mPlatform = PlatformFactory.Get(platformType, ref director, x, y, resourceMap, false);
-            mPlatform.SetLayer(LayerConstants.PlatformAboveFOWLayer);
+            mPlatform.SetLayer(LayerConstants.PlatformAboveFowLayer);
 
             UpdateBounds();
 

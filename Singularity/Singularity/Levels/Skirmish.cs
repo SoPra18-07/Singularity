@@ -16,12 +16,12 @@ namespace Singularity.Levels
 {
     //Not sure whether this should be serialized, but I guess...
     [DataContract]
-    internal sealed class Skirmish
+    internal sealed class Skirmish: ILevel
     {
         [DataMember]
         private GameScreen mGameScreen;
         [DataMember]
-        private GraphicsDevice mGraphics;
+        private GraphicsDeviceManager mGraphics;
         [DataMember]
         private Map.Map mMap;
         [DataMember]
@@ -30,18 +30,24 @@ namespace Singularity.Levels
         private FogOfWar mFow;
         [DataMember]
         private Director mDirector;
+        [DataMember]
+        private UserInterfaceScreen mUi;
+
+        [DataMember]
+        private IScreenManager mScreenManager;
 
         //GameObjects to initialize:
         [DataMember]
         private PlatformBlank mPlatform;
 
-        public Skirmish(GraphicsDevice graphics, ref Director dir, ContentManager content)
+        public Skirmish(GraphicsDeviceManager graphics, ref Director dir, ContentManager content, IScreenManager screenmanager)
         {
             mDirector = dir;
             dir.GetStoryManager.SetLevelType(LevelType.Skirmish);
             dir.GetStoryManager.LoadAchievements();
             mGraphics = graphics;
             LoadContent(content);
+            mScreenManager = screenmanager;
         }
 
         public void LoadContent(ContentManager content)
@@ -57,12 +63,16 @@ namespace Singularity.Levels
             PlatformFactory.Init(null, platformCylTexture, platformDomeTexture, platformBlankTexture);
 
             //Map related stuff
-            mCamera = new Camera(mGraphics, ref mDirector, 800, 800);
-            mFow = new FogOfWar(mCamera, mGraphics);
-            mMap = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.Viewport, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
+            mCamera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 800, 800);
+            mFow = new FogOfWar(mCamera, mGraphics.GraphicsDevice);
+            mMap = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.GraphicsDevice.Viewport, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
 
-            //INITIALIZE GAMESCREEN
-            mGameScreen = new GameScreen(mGraphics, ref mDirector, mMap, mCamera, mFow);
+            //INITIALIZE SCREENS AND ADD THEM TO THE SCREENMANAGER
+            mGameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, mMap, mCamera, mFow);
+            mUi = new UserInterfaceScreen(ref mDirector, mGraphics, mGameScreen, mScreenManager);
+
+            mScreenManager.AddScreen(mGameScreen);
+            mScreenManager.AddScreen(mUi);
 
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
@@ -110,7 +120,7 @@ namespace Singularity.Levels
             var milUnit = new MilitaryUnit(new Vector2(2000, 700), milUnitSheet, mCamera, ref mDirector, ref mMap);
 
             //SetUnit
-            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, mGameScreen);
+            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, mGameScreen, mUi);
             
 
             // Resources

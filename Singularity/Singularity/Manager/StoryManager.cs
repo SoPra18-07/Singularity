@@ -17,7 +17,7 @@ namespace Singularity.Manager
         private int mEnergyLevel;
 
         [DataMember]
-        private TimeSpan mTime;
+        public TimeSpan Time { get; set; }
 
 
         //The statistics
@@ -38,7 +38,7 @@ namespace Singularity.Manager
         {
             mLevelType = LevelType.None;
             mEnergyLevel = 0;
-            mTime = new TimeSpan(0, 0, 0, 0, 0);
+            Time = new TimeSpan(0, 0, 0, 0, 0);
             LoadAchievements();
 
             mUnits = new Dictionary<string, int>
@@ -160,7 +160,7 @@ namespace Singularity.Manager
         /// <param name="time"></param>
         public void Update(GameTime time)
         {
-            mTime = mTime.Add(time.ElapsedGameTime);
+            Time = Time.Add(time.ElapsedGameTime);
             switch (mLevelType)
             {
                 case LevelType.None:
@@ -191,7 +191,7 @@ namespace Singularity.Manager
         /// <returns>The ingame time as TimeSpan</returns>
         public TimeSpan GetIngameTime()
         {
-            return mTime;
+            return Time;
         }
 
         /// <summary>

@@ -737,7 +737,7 @@ namespace Singularity.Screen
         }
 
         // true if window is active (window + items in window will be drawn/updated) or inactive (not drawn/updated)
-        private bool Active { get; set; }
+        internal bool Active { get; set; }
 
         // position of the window
         public Vector2 Position { private get; set; }
