@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,7 +8,6 @@ using Singularity.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
-using Singularity.Platform;
 using Singularity.Property;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
@@ -47,7 +43,7 @@ namespace Singularity.Units
 
         #region Properties
         // TODO i use this bool for now to make the settler inactive
-        // TODO im not sure exactly how to remove it from the 
+        // TODO im not sure exactly how to remove it from the
         public bool Dead { get; private set; }
         private int Health { get; set; }
         public Vector2 RelativePosition { get; set; }
@@ -181,13 +177,13 @@ namespace Singularity.Units
 
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
 
-            // TODO modify aboslute bounds (these are taken from military unit)
+            // TODO modify absolute bounds (these are taken from military unit)
             AbsBounds = new Rectangle((int) AbsolutePosition.X + 16,
                 (int) AbsolutePosition.Y + 11,
                 (int) (AbsoluteSize.X),
                 (int) (AbsoluteSize.Y));
             Moved = mIsMoving;
-            
+
         }
 
         private void MoveToTarget(Vector2 target)
@@ -302,7 +298,7 @@ namespace Singularity.Units
                 if (key == Keys.B && mSelected && HasReachedTarget())
                 {
                     OnBuildCommandCenter();
-                }  
+                }
             }
         }
 
@@ -315,7 +311,7 @@ namespace Singularity.Units
 
         public void KeyReleased(KeyEvent keyEvent)
         {
-            
+
         }
 
         public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
@@ -329,6 +325,10 @@ namespace Singularity.Units
         }
         #endregion
 
-
+        public bool Die()
+        {
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
+            return true;
+        }
     }
 }

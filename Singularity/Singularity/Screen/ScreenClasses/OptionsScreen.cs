@@ -398,8 +398,8 @@ namespace Singularity.Screen.ScreenClasses
             int width;
             int height;
             bool truth;
-            
-            
+
+
             if (mGame.mGraphics.IsFullScreen)
             {
                 truth = false;
@@ -414,7 +414,7 @@ namespace Singularity.Screen.ScreenClasses
                 width = mGame.mGraphicsAdapter.CurrentDisplayMode.Width;
                 height = mGame.mGraphicsAdapter.CurrentDisplayMode.Height;
             }
-            
+
             mGame.mGraphics.PreferredBackBufferWidth = width;
             mGame.mGraphics.PreferredBackBufferHeight = height;
             mGame.mGraphics.IsFullScreen = truth;

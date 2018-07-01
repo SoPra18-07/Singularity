@@ -93,7 +93,7 @@ namespace Singularity.Screen
 
                 // shifts the items from the top left corner to their position
                 var yShift = 5;
-                // 
+                //
                 float maxWidth = 0;
                 float maxHeight = 0;
 

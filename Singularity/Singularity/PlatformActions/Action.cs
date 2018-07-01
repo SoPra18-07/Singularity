@@ -1,4 +1,4 @@
-﻿namespace Singularity.Platform
+﻿namespace Singularity.PlatformActions
 {
     internal enum Action
     {

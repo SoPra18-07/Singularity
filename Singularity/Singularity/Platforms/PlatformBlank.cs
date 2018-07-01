@@ -1,26 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Exceptions;
 using Singularity.Graph;
 using Singularity.Manager;
+using Singularity.Map;
+using Singularity.PlatformActions;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
 using Singularity.Utils;
 
-namespace Singularity.Platform
+namespace Singularity.Platforms
 {
     /// <inheritdoc cref="IRevealing"/>
     /// <inheritdoc cref="INode"/>
     /// <inheritdoc cref="ICollider"/>
     [DataContract]
     public class PlatformBlank : IRevealing, INode, ICollider
-
     {
 
         private int mGraphIndex;
@@ -71,7 +72,7 @@ namespace Singularity.Platform
         [DataMember]
         protected Dictionary<EResourceType, int> mCost;
         [DataMember]
-        protected IPlatformAction[] mIPlatformActions;
+        protected List<IPlatformAction> mIPlatformActions;
         private readonly Texture2D mPlatformSpriteSheet;
         private readonly Texture2D mPlatformBaseTexture;
         [DataMember]
@@ -94,16 +95,12 @@ namespace Singularity.Platform
 
         public int Id { get; }
 
-        private readonly Director mDirector;
+        protected Director mDirector;
 
         // the sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome
         private int mSheet;
         private int mSheetPosition;
 
-        internal Vector2 GetLocation()
-        {
-            throw new NotImplementedException();
-        }
 
         [DataMember]
         public Vector2 AbsolutePosition { get; set; }
@@ -115,6 +112,7 @@ namespace Singularity.Platform
         [DataMember]
         public Vector2 RelativeSize { get; set; }
 
+        [DataMember]
         private readonly float mCenterOffsetY;
 
         private Color mColor;
@@ -135,8 +133,6 @@ namespace Singularity.Platform
 
             mLayer = LayerConstants.PlatformLayer;
 
-            mType = EPlatformType.Blank;
-
             mType = type;
 
             mInwardsEdges = new List<IEdge>();
@@ -152,14 +148,16 @@ namespace Singularity.Platform
 
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add possible Actions in this array
-            mIPlatformActions = new IPlatformAction[1];
+            mIPlatformActions = new List<IPlatformAction>();
 
-            mAssignedUnits = new Dictionary<JobType, List<Pair<GeneralUnit, bool>>>();
-            mAssignedUnits.Add(JobType.Idle, new List<Pair<GeneralUnit, bool>>());
-            mAssignedUnits.Add(JobType.Defense, new List<Pair<GeneralUnit, bool>>());
-            mAssignedUnits.Add(JobType.Production, new List<Pair<GeneralUnit, bool>>());
-            mAssignedUnits.Add(JobType.Logistics, new List<Pair<GeneralUnit, bool>>());
-            mAssignedUnits.Add(JobType.Construction, new List<Pair<GeneralUnit, bool>>());
+            mAssignedUnits = new Dictionary<JobType, List<Pair<GeneralUnit, bool>>>
+            {
+                {JobType.Idle, new List<Pair<GeneralUnit, bool>>()},
+                {JobType.Defense, new List<Pair<GeneralUnit, bool>>()},
+                {JobType.Production, new List<Pair<GeneralUnit, bool>>()},
+                {JobType.Logistics, new List<Pair<GeneralUnit, bool>>()},
+                {JobType.Construction, new List<Pair<GeneralUnit, bool>>()}
+            };
 
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
@@ -253,7 +251,7 @@ namespace Singularity.Platform
         /// Get the special IPlatformActions you can perform on this platform.
         /// </summary>
         /// <returns> an array with the available IPlatformActions.</returns>
-        public IPlatformAction[] GetIPlatformActions()
+        public List<IPlatformAction> GetIPlatformActions()
         {
             return mIPlatformActions;
         }
@@ -307,13 +305,20 @@ namespace Singularity.Platform
         /// <summary>
         /// Heal the platform or inflict damage on it.
         /// </summary>
-        /// <param name="damage">Negative values for healing, positive for damage</param>
+        /// <param name="damage">Positive values for healing, negative for damage</param>
         public void TakeHealDamage(int damage)
         {
             mHealth += damage;
             if (mHealth <= 0)
             {
-                //destroyplatform
+                if (mType == EPlatformType.Blank)
+                {
+                    Die();
+                }
+                else
+                {
+                    DieBlank();
+                }
             }
         }
 
@@ -352,7 +357,7 @@ namespace Singularity.Platform
         /// <returns>A dictionary containing this information.</returns>
         public Dictionary<EResourceType, int> GetmRequested()
         {
-            return mRequested;
+            return mRequested; // todo: change to sum of Requested Resources from PlatformActions. (there's no other required resources after all)
         }
 
         /// <summary>
@@ -541,10 +546,12 @@ namespace Singularity.Platform
 
         }
 
+        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
         public override int GetHashCode()
         {
             return AbsoluteSize.GetHashCode() * 17 + AbsolutePosition.GetHashCode() + mType.GetHashCode();
         }
+
 
         /// <summary>
         /// Sets all the parameters to draw a platfrom properly and calculates the absolute size of a platform.
@@ -732,6 +739,77 @@ namespace Singularity.Platform
         public void SetLayer(float layer)
         {
             mLayer = layer;
+        }
+
+        /// <summary>
+        /// This will kill only the specialised part of the platform.
+        /// </summary>
+        public void DieBlank()
+        {
+
+            mDirector.GetDistributionManager.Kill(this);
+
+
+            mColor = Color.White;
+            mType = EPlatformType.Blank;
+            mSpritename = "PlatformBasic";
+            SetPlatfromParameters();
+
+            //default?
+            mHealth = 100;
+
+            mIPlatformActions.RemoveAll(a => a.Die());
+
+            mAssignedUnits[JobType.Idle].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
+            mAssignedUnits[JobType.Defense].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
+            mAssignedUnits[JobType.Construction].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
+            mAssignedUnits[JobType.Logistics].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
+            mAssignedUnits[JobType.Production].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
+
+
+            mResources.RemoveAll(r => r.Die());
+            mResources = new List<Resource> {new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center),
+                new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center)};
+
+            mRequested = new Dictionary<EResourceType, int>();
+
+            Moved = false;
+            UpdateValues();
+        }
+
+        /// <summary>
+        /// This will kill the platform for good.
+        /// </summary>
+        public bool Die()
+        {
+
+            DieBlank();
+
+            // TODO: REMOVE from everywhere.
+            // see https://github.com/SoPra18-07/Singularity/issues/215
+
+            // removing the PlatformActions first
+
+            mInwardsEdges.RemoveAll(e => ((Road) e).Die());
+            mOutwardsEdges.RemoveAll(e => ((Road) e).Die()); // this is indirectly calling the Kill(road) function below
+
+
+            mResources.RemoveAll(r => r.Die());
+
+            mIPlatformActions.ForEach(a => a.Platform = null);
+            mIPlatformActions.RemoveAll(a => a.Die());
+            mDirector.GetDistributionManager.Kill(this);
+            mDirector.GetStoryManager.StructureMap.RemovePlatform(this);
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
+            return true;
+        }
+
+        public void Kill(IEdge road)
+        {
+            mInwardsEdges.Remove(road);
+            mOutwardsEdges.Remove(road);
+            mDirector.GetStoryManager.StructureMap.RemoveRoad((Road) road);
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(road);
         }
 
         public IEnumerable<INode> GetChilds()

@@ -7,13 +7,13 @@ using Singularity.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map.Properties;
-using Singularity.Platform;
+using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Resources;
 
 namespace Singularity.Map
 {
-    internal sealed class Map : IDraw, IKeyListener
+    public sealed class Map : IDraw, IKeyListener
     {
         private readonly CollisionMap mCollisionMap;
         public readonly StructureMap mStructureMap;
@@ -38,19 +38,17 @@ namespace Singularity.Map
         /// <param name="backgroundTexture">The background texture of the map</param>
         /// <param name="width">The width of the map in number of tiles</param>
         /// <param name="height">The height of the map in number of tiles</param>
+        /// <param name="fow">The FoW of the Map</param>
         /// <param name="viewport">The viewport of the window</param>
         /// <param name="director">A reference to the Director</param>
-        /// <param name="debug">Whether the debug grid lines are drawn or not</param>
         /// <param name="initialResources">The initial resources of this map, if not specified there will not be any on the map</param>
-        /// <param name="neo">If the WASD-moving is in NEO-Layout</param>
         public Map(Texture2D backgroundTexture,
             int width,
             int height,
             FogOfWar fow,
             Viewport viewport,
             ref Director director,
-            IEnumerable<MapResource> initialResources = null,
-            bool neo = false)
+            IEnumerable<MapResource> initialResources = null)
         {
             mWidth = width;
             mHeight = height;
@@ -65,6 +63,7 @@ namespace Singularity.Map
             mResourceMap = new ResourceMap(initialResources);
 
             director.GetInputManager.AddKeyListener(this);
+            director.GetStoryManager.StructureMap = mStructureMap;
         }
 
         /// <see cref="CollisionMap.UpdateCollider(ICollider)"/>
@@ -176,8 +175,8 @@ namespace Singularity.Map
                     new Vector2(0, rowCount * MapConstants.GridHeight), MapConstants.MapWidth, 0, Color.Yellow, 1, LayerConstants.GridDebugLayer);
             }
 
-            
-            
+
+
             for(var i = 0; i < colMap.GetLength(dimension: 0); i++)
             {
                 for (var j = 0; j < colMap.GetLength(dimension: 1); j ++)
@@ -189,7 +188,7 @@ namespace Singularity.Map
                     }
                 }
             }
-            
+
 
         }
 

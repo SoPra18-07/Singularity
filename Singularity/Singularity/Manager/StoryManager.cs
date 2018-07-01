@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Levels;
+using Singularity.Map;
 using Singularity.Property;
 using Singularity.Resources;
-using Singularity.serialization;
+using Singularity.Serialization;
 
 namespace Singularity.Manager
 {
@@ -27,6 +29,12 @@ namespace Singularity.Manager
         private Dictionary<EResourceType, int> mResources;
         [DataMember]
         private Dictionary<string, int> mPlatforms;
+
+        [DataMember]
+        public StructureMap StructureMap { get; set; }
+
+        public ILevel Level { get; set; }
+
         //Do not serialize this, BUT also do not forget to load the achievements again after deserialization!
         private Achievements mAchievements;
 
@@ -34,9 +42,9 @@ namespace Singularity.Manager
         [DataMember]
         private LevelType mLevelType;
 
-        public StoryManager()
+        public StoryManager(LevelType level = LevelType.None)
         {
-            mLevelType = LevelType.None;
+            mLevelType = level;
             mEnergyLevel = 0;
             mTime = new TimeSpan(0, 0, 0, 0, 0);
             LoadAchievements();
@@ -74,9 +82,10 @@ namespace Singularity.Manager
         }
 
         //This will determine what the storymanager will trigger etc.
-        public void SetLevelType(LevelType leveltype)
+        public void SetLevelType(LevelType leveltype, ILevel level)
         {
             mLevelType = leveltype;
+            Level = level;
         }
 
         /// <summary>

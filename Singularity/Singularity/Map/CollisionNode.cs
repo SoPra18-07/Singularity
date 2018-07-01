@@ -3,7 +3,7 @@ using Singularity.Utils;
 
 namespace Singularity.Map
 {
-    class CollisionNode
+    public class CollisionNode
     {
         public int X { get; }
 

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
+using Microsoft.Xna.Framework.Content;
 using Singularity.Exceptions;
 using Singularity.Graph;
-using Singularity.Platform;
+using Singularity.PlatformActions;
+using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Units;
 using Singularity.Utils;
@@ -13,7 +14,7 @@ using Singularity.Utils;
 namespace Singularity.Manager
 {
     [DataContract]
-    public class DistributionManager
+    public sealed class DistributionManager
     {
         [DataMember]
         private List<GeneralUnit> mIdle;
@@ -36,6 +37,9 @@ namespace Singularity.Manager
         private Queue<Task> mRequestedUnitsProduce;
         [DataMember]
         private Queue<Task> mRequestedUnitsDefense;
+
+        [DataMember]
+        private List<Pair<int, int>> mKilled;
 
         [DataMember]
         private Random mRandom;
@@ -68,7 +72,7 @@ namespace Singularity.Manager
             mRequestedUnitsProduce = new Queue<Task>();
             mRequestedUnitsDefense = new Queue<Task>();
 
-            //Other stuff
+            //Other stuff -- ???
             mBlueprintBuilds = new List<BuildBluePrint>();
             mPlatformActions = new List<IPlatformAction>();
             mProdPlatforms = new List<Pair<PlatformBlank, int>>();
@@ -487,7 +491,6 @@ namespace Singularity.Manager
         /// <param name="action">The platformaction of which they shall be unassigned</param>
         public void ManualUnassign(JobType job, int amount, IPlatformAction action)
         {
-
             action.UnAssignUnits(amount, job);
         }
 
@@ -552,6 +555,7 @@ namespace Singularity.Manager
         public Task RequestNewTask(GeneralUnit unit, JobType job, Optional<IPlatformAction> assignedAction)
         {
             var nodes = new List<INode>();
+            Task task;
             switch (job)
             {
                 case JobType.Idle:
@@ -585,14 +589,21 @@ namespace Singularity.Manager
                     throw new InvalidGenericArgumentException("You shouldnt ask for Defense tasks, you just assign units to defense.");
 
                 case JobType.Construction:
-                    return mBuildingResources.Dequeue();
+                    task = mBuildingResources.Dequeue();
+                    break;
 
                 case JobType.Logistics:
-                    return mRefiningOrStoringResources.Dequeue();
+                    task = mRefiningOrStoringResources.Dequeue();
+                    break;
 
                 default:
                     throw new InvalidGenericArgumentException("Your requested JobType does not exist.");
             }
+
+            mKilled = mKilled.Select(p => new Pair<int, int>(p.GetFirst(), p.GetSecond() - 1)).ToList();
+            mKilled.RemoveAll(p => p.GetSecond() < 0);
+
+            return mKilled.TrueForAll(p => !task.Contains(p.GetFirst())) ? task : RequestNewTask(unit, job, assignedAction);
         }
 
         public void PausePlatformAction(IPlatformAction action)
@@ -602,5 +613,41 @@ namespace Singularity.Manager
             // No, they're just being removed from occurences in the DistributionManager. As soon as they unpause, they'll send requests for Resources and units again.
             // Ah ok I got that part
         }
-    }
+
+        public void Kill(PlatformBlank platform)
+        {
+            // Strong assumption that a platform is only listed at most once in either of these.
+            mProdPlatforms.Remove(mProdPlatforms.Find(p => p.GetFirst().Equals(platform)));
+            mDefPlatforms.Remove(mDefPlatforms.Find(p => p.GetFirst().Equals(platform)));
+            var lists = new List<List<GeneralUnit>> { mIdle, mLogistics, mConstruction, mProduction, mDefense, mManual };
+            lists.ForEach(l => l.ForEach(u => u.Kill(platform.Id)));
+            // the first in the pair is the id, the second is the TTL
+            mKilled.Add(new Pair<int, int>(platform.Id, Math.Max(mBuildingResources.Count, mRefiningOrStoringResources.Count)));
+        }
+
+        public void Kill(IPlatformAction action)
+        {
+            // Strong assumption that a PlatformAction is only listed at most once here.
+            if (action.GetType() == typeof(BuildBluePrint))
+            {
+                mBlueprintBuilds.Remove(mBlueprintBuilds.Find(b => b.Equals(action)));
+            }
+            else
+            {
+                mPlatformActions.Remove(mPlatformActions.Find(p => p.Equals(action)));
+            }
+
+            var lists = new List<List<GeneralUnit>> { mIdle, mLogistics, mConstruction, mProduction, mDefense, mManual };
+            lists.ForEach(l => l.ForEach(u => u.Kill(action.Id)));
+            // the first in the pair is the id, the second is the TTL
+            mKilled.Add(new Pair<int, int>(action.Id, Math.Max(mBuildingResources.Count, mRefiningOrStoringResources.Count)));
+        }
+
+        public void Kill(GeneralUnit unit)
+        {
+            unit.Die();
+            var lists = new List<List<GeneralUnit>> {mIdle, mLogistics, mConstruction, mProduction, mDefense, mManual};
+            lists.ForEach(l => l.Remove(unit));
+        }
+}
 }

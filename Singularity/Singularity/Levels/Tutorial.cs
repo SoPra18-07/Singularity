@@ -1,10 +1,11 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
-using Singularity.Platform;
+using Singularity.Platforms;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 
@@ -12,10 +13,8 @@ namespace Singularity.Levels
 {
     //Not sure whether this should be serialized, but I guess...
     [DataContract]
-    class Tutorial
+    class Tutorial : ILevel
     {
-        [DataMember]
-        private GameScreen mGameScreen;
         [DataMember]
         private GraphicsDevice mGraphics;
         [DataMember]
@@ -31,11 +30,13 @@ namespace Singularity.Levels
         [DataMember]
         private CommandCenter mPlatform;
 
-        public Tutorial(GraphicsDevice graphics, ref Director dir, ContentManager content)
+        public GameScreen GameScreen { get; set; }
+
+        public Tutorial(GraphicsDevice graphics, ref Director director, ContentManager content)
         {
-            mDirector = dir;
-            dir.GetStoryManager.SetLevelType(LevelType.Tutorial);
-            dir.GetStoryManager.LoadAchievements();
+            mDirector = director;
+            mDirector.GetStoryManager.SetLevelType(LevelType.Tutorial, this);
+            mDirector.GetStoryManager.LoadAchievements();
             mGraphics = graphics;
             LoadContent(content);
         }
@@ -53,7 +54,7 @@ namespace Singularity.Levels
             mMap = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.Viewport, ref mDirector);
 
             //INITIALIZE GAMESCREEN
-            mGameScreen = new GameScreen(mGraphics, ref mDirector, mMap, mCamera, mFow);
+            GameScreen = new GameScreen(mGraphics, ref mDirector, mMap, mCamera, mFow);
 
             //IngameObjects stuff
             mPlatform = new CommandCenter(new Vector2(1000, 500), platformCylTexture, platformBlankTexture, ref mDirector);
@@ -68,17 +69,12 @@ namespace Singularity.Levels
 
             mMap.AddPlatform(mPlatform);
 
-            mGameScreen.AddObject(mPlatform);
-            mGameScreen.AddObject(genUnit);
-            mGameScreen.AddObject(genUnit2);
-            mGameScreen.AddObject(genUnit3);
-            mGameScreen.AddObject(genUnit4);
-            mGameScreen.AddObject(genUnit5);
-        }
-
-        public GameScreen GetGameScreen()
-        {
-            return mGameScreen;
+            GameScreen.AddObject(mPlatform);
+            GameScreen.AddObject(genUnit);
+            GameScreen.AddObject(genUnit2);
+            GameScreen.AddObject(genUnit3);
+            GameScreen.AddObject(genUnit4);
+            GameScreen.AddObject(genUnit5);
         }
     }
 }
