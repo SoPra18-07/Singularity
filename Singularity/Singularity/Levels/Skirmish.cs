@@ -67,9 +67,14 @@ namespace Singularity.Levels
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
             mPlatform = new PlatformBlank(new Vector2(1000, 1000), null, platformBlankTexture, ref mDirector);
+            mGameScreen.AddObject(mPlatform);
 
             // this is done via the factory to test, so I can instantly see if something is some time off.
             var platform2 = PlatformFactory.Get(EPlatformType.Well, ref mDirector, 800, 1000, mMap.GetResourceMap());
+            mGameScreen.AddObject(platform2);
+
+            var road1 = new Road(mPlatform, platform2, false);
+            mGameScreen.AddObject(road1);
 
             //var platform2 = new Well(new Vector2(800, 1000), platformDomeTexture, platformBlankTexture, mMap.GetResourceMap(), ref mDirector);
             var platform3 = new Quarry(new Vector2(1200, 1200),
@@ -77,9 +82,22 @@ namespace Singularity.Levels
                 platformBlankTexture,
                 mMap.GetResourceMap(),
                 ref mDirector);
+            mGameScreen.AddObject(platform3);
+            var road2 = new Road(platform2, platform3, false);
+            mGameScreen.AddObject(road2);
+            var road3 = new Road(platform3, mPlatform, false);
+            mGameScreen.AddObject(road3);
+
             var platform4 = new EnergyFacility(new Vector2(1000, 800),
                 platformDomeTexture,
                 platformBlankTexture, ref mDirector);
+            mGameScreen.AddObject(platform4);
+            var road4 = new Road(mPlatform, platform4, false);
+            mGameScreen.AddObject(road4);
+
+            var road5 = new Road(platform4, platform3, false);
+            mGameScreen.AddObject(road5);
+
 
             //GenUnits
             var genUnit = new GeneralUnit(mPlatform, ref mDirector);
@@ -93,13 +111,7 @@ namespace Singularity.Levels
 
             //SetUnit
             var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, mGameScreen);
-
-            //Roads
-            var road1 = new Road(mPlatform, platform2, false);
-            var road2 = new Road(platform2, platform3, false);
-            var road3 = new Road(platform3, mPlatform, false);
-            var road4 = new Road(mPlatform, platform4, false);
-            var road5 = new Road(platform4, platform3, false);
+            
 
             // Resources
             var res = new Resource(EResourceType.Trash, platform2.Center);
@@ -114,17 +126,6 @@ namespace Singularity.Levels
             platform2.StoreResource(res4);
             platform2.StoreResource(res5);
 
-            //Finally add the objects
-            //GAMESCREEN=====================
-            mGameScreen.AddObject(mPlatform);
-            mGameScreen.AddObject(platform2);
-            mGameScreen.AddObject(platform3);
-            mGameScreen.AddObject(platform4);
-            mGameScreen.AddObject(road1);
-            mGameScreen.AddObject(road2);
-            mGameScreen.AddObject(road3);
-            mGameScreen.AddObject(road4);
-            mGameScreen.AddObject(road5);
             mGameScreen.AddObject(genUnit);
             mGameScreen.AddObject(genUnit2);
             mGameScreen.AddObject(genUnit3);
@@ -135,7 +136,7 @@ namespace Singularity.Levels
 
 
             //TESTMETHODS HERE =====================================
-            mDirector.GetDistributionManager.DistributeJobs(JobType.Idle, JobType.Production, 4);
+            mDirector.GetDistributionManager.DistributeJobs(JobType.Idle, JobType.Production, 5);
             mDirector.GetDistributionManager.TestAttributes();
 
         }

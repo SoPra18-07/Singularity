@@ -7,7 +7,9 @@ namespace Singularity.Graph
     /// </summary>
     public interface INode
     {
-        /// <summary>
+        IEnumerable<INode> GetChilds();
+
+            /// <summary>
         /// Gets all the edges facing outwards of this node.
         /// </summary>
         /// <returns>The edges mentioned</returns>
