@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using EpPathFinding.cs;
 using Microsoft.Xna.Framework;
 using Singularity.Map.Properties;
@@ -12,7 +10,7 @@ namespace Singularity.Map
     /// <summary>
     /// The collision map is used to store all the colliding objects in a grid like fashion.
     /// </summary>
-    internal sealed class CollisionMap
+    public sealed class CollisionMap
     {
         /// <summary>
         /// The look up table is used to check whether a given collider is already present in the collision map
@@ -36,21 +34,21 @@ namespace Singularity.Map
         {
             mLookUpTable = new Dictionary<int, Rectangle>();
 
-            var GridXLength = MapConstants.MapWidth / MapConstants.GridWidth;
-            var GridYLength = MapConstants.MapHeight / MapConstants.GridHeight;
+            var gridXLength = MapConstants.MapWidth / MapConstants.GridWidth;
+            var gridYLength = MapConstants.MapHeight / MapConstants.GridHeight;
 
             mCollisionMap = new CollisionNode
             [
-                GridXLength,
-                GridYLength
+                gridXLength,
+                gridYLength
             ];
 
             // movableMatrix is used to construct a StaticGrid object, which is used by the pathfinder.
-            var movableMatrix = new bool[GridXLength][];
+            var movableMatrix = new bool[gridXLength][];
 
             for (var i = 0; i < mCollisionMap.GetLength(0); i++)
             {
-                movableMatrix[i] = new bool[GridYLength];
+                movableMatrix[i] = new bool[gridYLength];
 
                 for (var j = 0; j < mCollisionMap.GetLength(1); j++)
                 {
@@ -58,7 +56,7 @@ namespace Singularity.Map
                     movableMatrix[i][j] = Map.IsOnTop(new Vector2(i * MapConstants.GridWidth, j * MapConstants.GridHeight));
                 }
             }
-            mWalkableGrid = new StaticGrid(GridXLength, GridYLength, movableMatrix);
+            mWalkableGrid = new StaticGrid(gridXLength, gridYLength, movableMatrix);
 
         }
 

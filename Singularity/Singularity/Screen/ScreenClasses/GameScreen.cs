@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
-using Singularity.Platform;
+using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Sound;
@@ -19,11 +19,11 @@ namespace Singularity.Screen.ScreenClasses
     /// Handles everything thats going on explicitly in the game.
     /// E.g. game objects, the map, camera. etc.
     /// </summary>
-    internal sealed class GameScreen : IScreen
+    public sealed class GameScreen : IScreen
     {
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
         public bool Loaded { get; set; }
-        
+
         // map and fog of war
         private readonly Map.Map mMap;
         private readonly FogOfWar mFow;
@@ -239,7 +239,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>True if all given objects could be added to the screen, false otherwise</returns>
         public bool AddObjects<T>(IEnumerable<T> toAdd)
         {
-            bool isSuccessful = true;
+            var isSuccessful = true;
 
             foreach (var t in toAdd)
             {
@@ -325,7 +325,7 @@ namespace Singularity.Screen.ScreenClasses
 
         /// <summary>
         /// This get executed when a settler is transformed into a command center
-        /// Essentially this builds a command center 
+        /// Essentially this builds a command center
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="eventArgs"></param>

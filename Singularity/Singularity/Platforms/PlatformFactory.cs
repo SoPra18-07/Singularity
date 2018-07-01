@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
 
-namespace Singularity.Platform
+namespace Singularity.Platforms
 {
     /// <summary>
     /// The basic idea for this was to provide an easy way to get a platform via the platformtype.
@@ -24,7 +19,7 @@ namespace Singularity.Platform
 
         private static Texture2D sBlankSheet;
 
-        private static Director mDirector;
+        private static Director sDirector;
 
         /// <summary>
         /// Initializes the platform factory with the sprite sheets needed.
@@ -65,7 +60,7 @@ namespace Singularity.Platform
                 case EPlatformType.Quarry:
                     return new Quarry(position, sDomeSheet, sBlankSheet, resourceMap, ref director, autoRegister);
 
-                case EPlatformType.Barracks: 
+                case EPlatformType.Barracks:
                     throw new NotImplementedException("Barracks have not yet been implemented");
 
                 case EPlatformType.Blank:

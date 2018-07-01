@@ -1,11 +1,12 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
-using Singularity.Platform;
 using Singularity.Screen;
+using Singularity.Platforms;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 
@@ -16,10 +17,9 @@ namespace Singularity.Levels
     class Tutorial: ILevel
     {
         [DataMember]
-        private GameScreen mGameScreen;
+        public GameScreen GameScreen { get; set; }
         [DataMember]
         private GraphicsDeviceManager mGraphics;
-        [DataMember]
         private Map.Map mMap;
         [DataMember]
         private Camera mCamera;
@@ -37,11 +37,11 @@ namespace Singularity.Levels
         [DataMember]
         private CommandCenter mPlatform;
 
-        public Tutorial(GraphicsDeviceManager graphics, ref Director dir, ContentManager content, IScreenManager screenmanager)
+        public Tutorial(GraphicsDeviceManager graphics, ref Director director, ContentManager content, IScreenManager screenmanager)
         {
-            mDirector = dir;
-            dir.GetStoryManager.SetLevelType(LevelType.Tutorial);
-            dir.GetStoryManager.LoadAchievements();
+            mDirector = director;
+            mDirector.GetStoryManager.SetLevelType(LevelType.Tutorial, this);
+            mDirector.GetStoryManager.LoadAchievements();
             mGraphics = graphics;
             mScreenManager = screenmanager;
             LoadContent(content);
@@ -65,25 +65,20 @@ namespace Singularity.Levels
             mMap = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.GraphicsDevice.Viewport, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
 
             //INITIALIZE SCREENS AND ADD THEM
-            mGameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, mMap, mCamera, mFow);
-            mUi = new UserInterfaceScreen(ref mDirector, mGraphics, mGameScreen, mScreenManager);
+            GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, mMap, mCamera, mFow);
+            mUi = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
 
-            mScreenManager.AddScreen(mGameScreen);
+            mScreenManager.AddScreen(GameScreen);
             mScreenManager.AddScreen(mUi);
+
 
             //INGAME OBJECTS INITIALIZATION ===================================================
 
             //SetUnit
-            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, mGameScreen, mUi);
-            mGameScreen.AddObject(setUnit);
-
+            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, GameScreen, mUi);
+            GameScreen.AddObject(setUnit);
 
             //TESTMETHODS HERE =====================================
-        }
-
-        public GameScreen GetGameScreen()
-        {
-            return mGameScreen;
         }
     }
 }

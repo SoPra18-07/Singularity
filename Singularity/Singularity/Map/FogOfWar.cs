@@ -60,7 +60,7 @@ namespace Singularity.Map
         /// <summary>
         /// The AlphaTestEffect compares alpha values of pixels and sets them given certain restraints.
         /// </summary>
-        private readonly AlphaTestEffect mAlphaComparator;
+        private AlphaTestEffect mAlphaComparator;
 
         /// <summary>
         /// The camera object of the game used for screen coordinae calculation.
@@ -107,6 +107,7 @@ namespace Singularity.Map
                 ReferenceStencil = 1,
                 DepthBufferEnable = false
             };
+
 
 
             mAlphaComparator = new AlphaTestEffect(graphicsDevice)

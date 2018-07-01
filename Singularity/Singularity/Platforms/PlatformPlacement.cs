@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
 using Singularity.Manager;
@@ -11,15 +6,13 @@ using Singularity.Map;
 using Singularity.Property;
 using Singularity.Screen;
 using Singularity.Utils;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
-namespace Singularity.Platform
+namespace Singularity.Platforms
 {
     /// <summary>
     /// This handles platforms which can get placed on the game screen as objects.
     /// </summary>
-    public class PlatformPlacement : IDraw, IUpdate, IMousePositionListener, IMouseClickListener
+    public sealed class PlatformPlacement : IDraw, IUpdate, IMousePositionListener, IMouseClickListener
     {
         public EScreen Screen { get; private set; }
         public Rectangle Bounds { get; private set; }
@@ -74,13 +67,16 @@ namespace Singularity.Platform
 
         private readonly Vector2 mSetPosition;
 
+        private readonly Director mDirector;
+
         public PlatformPlacement(EPlatformType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null, bool settler = false, Vector2 position = default(Vector2))
         {
             mCamera = camera;
             Screen = screen;
+            mDirector = director;
 
-            director.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
-            director.GetInputManager.AddMousePositionListener(this);
+            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            mDirector.GetInputManager.AddMousePositionListener(this);
 
             mSettler = settler;
             mSetPosition = position;
@@ -156,13 +152,13 @@ namespace Singularity.Platform
                 case 2:
                     // now we want a road to follow our mouse
                     mConnectionRoad.Destination = new Vector2(mMouseX, mMouseY);
-                    
+
                     // we prematurely reset the color of the platform, so we don't have to worry about it being red
                     mPlatform.ResetColor();
                     if (mHoveringPlatform == null)
                     {
                         break;
-                        
+
                     }
                     // at this point we have a hovering platform, so we clip the road destination to its center
                     mConnectionRoad.Destination = mHoveringPlatform.Center;
@@ -201,7 +197,7 @@ namespace Singularity.Platform
                 {
                     case 1:
                         mPlatform.UpdateValues();
-                        
+
                         //first check if the platform is even on the map, if not we don't want to progress, since it isn't a valid position
                         if (!Map.Map.IsOnTop(mPlatform.AbsBounds))
                         {
@@ -248,13 +244,20 @@ namespace Singularity.Platform
 
             if (mouseAction == EMouseAction.RightClick)
             {
+                /* The guess was that this is sufficient to stop placing Platforms. Turns out it isn't, additionally there'll be a nullPointer happening for a Road somewhere.
+                if (mCurrentState.GetState() == 1)
+                {
+                    mIsFinished = true;
+                }
+                */
+
                 // we only need to do something with rightclick if were in the 2nd state, since then we revert.
                 if (mCurrentState.GetState() != 2)
                 {
                     return giveThrough;
                 }
 
-                // make sure to reset colors when reverting to the last state. The rest is just some cleanup to properly 
+                // make sure to reset colors when reverting to the last state. The rest is just some cleanup to properly
                 // get to the previous state
                 mPlatform.ResetColor();
                 mConnectionRoad = null;

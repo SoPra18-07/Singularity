@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
-using Singularity.Platform;
+using Singularity.Platforms;
 using Singularity.Property;
 using System.Diagnostics;
 using System.Linq;
@@ -79,7 +78,7 @@ namespace Singularity.Map
             mFow.AddRevealingObject(platform);
 
             var graph = Bfs(platform);
-            
+
             foreach (var node in graph.GetNodes())
             {
                 // if the platform in the current reachability graph isn't known then we don't do anything
@@ -260,7 +259,7 @@ namespace Singularity.Map
                 AddRoad(platformToAdd.GetRoad());
                 toRemove.AddLast(platformToAdd);
             }
-            
+
             foreach(var platformToRemove in toRemove)
             {
                 mPlatformsToPlace.Remove(platformToRemove);

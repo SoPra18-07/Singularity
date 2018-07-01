@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Content;
+using Singularity.Screen.ScreenClasses;
+using System.Runtime.Serialization;
 
 namespace Singularity.Levels
 {
-    interface ILevel
+    public interface ILevel
     {
         /// <summary>
         /// This method Loads all the data in the Level.
         /// </summary>
         void LoadContent(ContentManager content);
+
+        [DataMember]
+        GameScreen GameScreen { get; set; }
     }
 }

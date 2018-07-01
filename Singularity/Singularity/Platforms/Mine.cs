@@ -4,10 +4,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.PlatformActions;
 using Singularity.Resources;
 using Singularity.Units;
 
-namespace Singularity.Platform
+namespace Singularity.Platforms
 {
     [DataContract]
     class Mine : PlatformBlank
@@ -17,19 +18,15 @@ namespace Singularity.Platform
         [DataMember]
         private const int PlatformHeight = 187;
 
-        [DataMember]
-        private Director mDirector;
 
-        public Mine(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ResourceMap resource, ref Director dir, bool autoRegister = true) : base(position, spritesheet, basesprite, ref dir, EPlatformType.Mine, -50)
+        public Mine(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ResourceMap resource, ref Director director, bool autoRegister = true) : base(position, spritesheet, basesprite, ref director, EPlatformType.Mine, -50)
         {
-            mDirector = dir;
             if (autoRegister)
             {
-                dir.GetDistributionManager.Register(this, false);
+                director.GetDistributionManager.Register(this, false);
             }
 
-            mIPlatformActions = new IPlatformAction[2];
-            mIPlatformActions[0] = new ProduceMineResource(this, resource);
+            mIPlatformActions.Add(new ProduceMineResource(platform: this, resourceMap: resource, director: ref mDirector));
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();

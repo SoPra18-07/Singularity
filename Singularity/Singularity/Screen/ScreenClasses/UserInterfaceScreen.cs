@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
-using Singularity.Platform;
+using Singularity.Platforms;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -50,7 +50,7 @@ namespace Singularity.Screen.ScreenClasses
 
         // screen manager -- needed for pause menu
         private IScreenManager mScreenManager;
-        
+
         // needed to calculate screen-sizes
         private readonly GraphicsDeviceManager mGraphics;
 
@@ -244,7 +244,7 @@ namespace Singularity.Screen.ScreenClasses
 
                 // reset position to standard position
                 ResetWindowsToStandardPositon();
-                
+
                 // update infoBar width to fit the new resolution
                 mInfoBar.Width = mCurrentScreenWidth;
             }
@@ -379,7 +379,7 @@ namespace Singularity.Screen.ScreenClasses
             #region eventLogWindow
 
             mEventLogWindow = new WindowObject("// EVENT LOG", new Vector2(0, 0), new Vector2(eventLogWidth, eventLogHeight), true, mLibSans14, mInputManager, mGraphics);
-                
+
                 // create items
 
                 // add all items
@@ -1143,7 +1143,7 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-            
+
             mPlatformToPlace = new PlatformPlacement(
                 EPlatformType.Quarry,
                 EPlacementType.MouseFollowAndRoad,

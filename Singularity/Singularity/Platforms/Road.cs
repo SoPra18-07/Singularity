@@ -2,10 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
 using Singularity.Libraries;
-using Singularity.Map;
 using Singularity.Property;
 
-namespace Singularity.Platform
+namespace Singularity.Platforms
 {
     public sealed class Road : ISpatial, IEdge
     {
@@ -37,7 +36,7 @@ namespace Singularity.Platform
             set
             {
                 mBlueprint = value;
-                if (!value) { // todo: add road to graph
+                if (!value) { // todo: add road to graph - done?
                            }
             }
         }
@@ -114,6 +113,13 @@ namespace Singularity.Platform
         public float GetCost()
         {
             return Vector2.Distance(Source, Destination);
+        }
+
+        public bool Die()
+        {
+            ((PlatformBlank) SourceAsNode).Kill(this);
+            ((PlatformBlank) DestinationAsNode).Kill(this);
+            return true;
         }
     }
 }

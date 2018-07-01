@@ -1,4 +1,4 @@
-﻿namespace Singularity.Platform
+﻿namespace Singularity.PlatformActions
 {
     /// <summary>
     /// Each PlatformAction is in either one of the following States.

@@ -533,7 +533,7 @@ namespace Singularity.Screen
 
             // resharper wanted it this 'overseeable' way o.O
             // minimized + mouse on minimized window -> return false ... else true
-            return !mMinimized || (!(mMouseX > Position.X) || !(mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width) || 
+            return !mMinimized || (!(mMouseX > Position.X) || !(mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width) ||
                                    !(mMouseY > Position.Y) || !(mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height));
         }
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Runtime.Serialization;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Property;
 using Singularity.Libraries;
@@ -22,6 +23,7 @@ namespace Singularity.Resources
 
         public Vector2 AbsoluteSize { get; set; }
 
+        [DataMember]
         public EResourceType Type { get; internal set; }
 
         private Optional<GeneralUnit> mFollowing;
@@ -88,6 +90,12 @@ namespace Singularity.Resources
             // Resoucres only update their location (if on a platform).
             AbsolutePosition += mVelocity;
             mVelocity = Vector2.Multiply(mVelocity, 0.8f);
+        }
+
+        public bool Die()
+        {
+            UnFollow();
+            return true;
         }
     }
 }
