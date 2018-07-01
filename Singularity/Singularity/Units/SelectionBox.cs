@@ -32,23 +32,21 @@ namespace Singularity.Units
         /// </summary>
         /// <param name="color"></param>
         /// <param name="camera"></param>
-        /// <param name="director"></param>
+        /// <param name="manager"></param>
         public SelectionBox(Color color, Camera camera, ref Director director)
         {
             mColor = color;
             mCamera = camera;
-
             mDirector = director;
-
-            director.GetInputManager.AddMouseClickListener(iMouseClickListener: this, leftClickType: EClickType.Both, rightClickType: EClickType.Both);
-            director.GetInputManager.AddMousePositionListener(iMouseListener: this);
+            director.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            director.GetInputManager.AddMousePositionListener(this);
         }
 
 
         // event includes location an size of created selection box
         private void OnSelectingBox()
         {
-            SelectingBox?.Invoke(source: this, args: EventArgs.Empty, leftCorner: new Vector2(x: mXStart, y: mYStart), size: mSizeBox);
+            SelectingBox?.Invoke(this, EventArgs.Empty, new Vector2(mXStart, mYStart), mSizeBox);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -56,7 +54,6 @@ namespace Singularity.Units
             // if selection box has been created by user then draw
             if (mBoxExists)
             {
-
                 mXStart = mStartBox.X;
                 mYStart = mStartBox.Y;
 
@@ -70,17 +67,17 @@ namespace Singularity.Units
                     mYStart = MouseCoordinates().Y;
                 }
 
-                spriteBatch.StrokedRectangle(location: new Vector2(x: mXStart, y: mYStart), size: mSizeBox, colorBorder: Color.White, colorCenter: Color.White, opacityBorder: .8f, opacityCenter: .5f);
+                spriteBatch.StrokedRectangle(new Vector2(mXStart, mYStart), mSizeBox, Color.White, Color.White, .8f, .5f, LayerConstants.FogOfWarLayer);
 
             }
         }
 
         public void Update(GameTime gameTime)
         {
-            mSizeBox = new Vector2(x: Math.Abs(value: mStartBox.X - MouseCoordinates().X), y: Math.Abs(value: mStartBox.Y - MouseCoordinates().Y));
+            mSizeBox = new Vector2(Math.Abs(mStartBox.X - MouseCoordinates().X), Math.Abs(mStartBox.Y - MouseCoordinates().Y));
         }
 
-        public EScreen Screen { get; }
+        public EScreen Screen { get; } = EScreen.GameScreen;
 
         public Rectangle Bounds { get; }
 
@@ -113,7 +110,6 @@ namespace Singularity.Units
                 case EMouseAction.LeftClick:
                     if (mBoxExists)
                     {
-
                         mBoxExists = false;
                         if (mSizeBox.X > 2 && mSizeBox.Y > 2)
                         {
@@ -144,13 +140,13 @@ namespace Singularity.Units
         /// <returns></returns>
         private Vector2 MouseCoordinates()
         {
-            return new Vector2(x: Vector2.Transform(position: new Vector2(x: Mouse.GetState().X, y: Mouse.GetState().Y),
-                matrix: Matrix.Invert(matrix: mCamera.GetTransform())).X, y: Vector2.Transform(position: new Vector2(x: Mouse.GetState().X, y: Mouse.GetState().Y),
-                matrix: Matrix.Invert(matrix: mCamera.GetTransform())).Y);
+            return new Vector2(Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
+                Matrix.Invert(mCamera.GetTransform())).X, Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
+                Matrix.Invert(mCamera.GetTransform())).Y);
         }
 
         #region NotUsedInputMouseActions
-        public void MousePositionChanged(float newX, float newY)
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
 
         }

@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,10 +13,8 @@ namespace Singularity.Levels
 {
     //Not sure whether this should be serialized, but I guess...
     [DataContract]
-    class Tutorial
+    class Tutorial : ILevel
     {
-        [DataMember]
-        private GameScreen mGameScreen;
         [DataMember]
         private GraphicsDevice mGraphics;
         [DataMember]
@@ -31,54 +30,51 @@ namespace Singularity.Levels
         [DataMember]
         private CommandCenter mPlatform;
 
-        public Tutorial(GraphicsDevice graphics, ref Director dir, ContentManager content)
+        public GameScreen GameScreen { get; set; }
+
+        public Tutorial(GraphicsDevice graphics, ref Director director, ContentManager content)
         {
-            mDirector = dir;
-            dir.GetStoryManager.SetLevelType(leveltype: LevelType.Tutorial);
-            dir.GetStoryManager.LoadAchievements();
+            mDirector = director;
+            mDirector.GetStoryManager.SetLevelType(LevelType.Tutorial, this);
+            mDirector.GetStoryManager.LoadAchievements();
             mGraphics = graphics;
-            LoadContent(content: content);
+            LoadContent(content);
         }
 
         public void LoadContent(ContentManager content)
         {
             //Load stuff
-            var platformCylTexture = content.Load<Texture2D>(assetName: "Cylinders");
-            var platformBlankTexture = content.Load<Texture2D>(assetName: "PlatformBasic");
-            var mapBackground = content.Load<Texture2D>(assetName: "backgroundGrid");
+            var platformCylTexture = content.Load<Texture2D>("Cylinders");
+            var platformBlankTexture = content.Load<Texture2D>("PlatformBasic");
+            var mapBackground = content.Load<Texture2D>("backgroundGrid");
 
             //Map related stuff
-            mMap = new Map.Map(backgroundTexture: mapBackground, width: 20, height: 20, viewport: mGraphics.Viewport, director: ref mDirector);
-            mCamera = mMap.GetCamera();
-            mFow = new FogOfWar(camera: mCamera, graphicsDevice: mGraphics);
+            mCamera = new Camera(mGraphics, ref mDirector);
+            mFow = new FogOfWar(mCamera, mGraphics);
+            mMap = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.Viewport, ref mDirector);
 
             //INITIALIZE GAMESCREEN
-            mGameScreen = new GameScreen(graphicsDevice: mGraphics, director: ref mDirector, map: mMap, camera: mCamera, fow: mFow);
+            GameScreen = new GameScreen(mGraphics, ref mDirector, mMap, mCamera, mFow);
 
             //IngameObjects stuff
-            mPlatform = new CommandCenter(position: new Vector2(x: 1000, y: 500), spriteSheet: platformCylTexture, baseSprite: platformBlankTexture, director: ref mDirector);
-            var genUnit = new GeneralUnit(platform: mPlatform, director: ref mDirector);
-            var genUnit2 = new GeneralUnit(platform: mPlatform, director: ref mDirector);
-            var genUnit3 = new GeneralUnit(platform: mPlatform, director: ref mDirector);
-            var genUnit4 = new GeneralUnit(platform: mPlatform, director: ref mDirector);
-            var genUnit5 = new GeneralUnit(platform: mPlatform, director: ref mDirector);
+            mPlatform = new CommandCenter(new Vector2(1000, 500), platformCylTexture, platformBlankTexture, ref mDirector);
+            var genUnit = new GeneralUnit(mPlatform, ref mDirector);
+            var genUnit2 = new GeneralUnit(mPlatform, ref mDirector);
+            var genUnit3 = new GeneralUnit(mPlatform, ref mDirector);
+            var genUnit4 = new GeneralUnit(mPlatform, ref mDirector);
+            var genUnit5 = new GeneralUnit(mPlatform, ref mDirector);
 
             //Finally add the objects
-            mFow.AddRevealingObject(revealingObject: mPlatform);
+            mFow.AddRevealingObject(mPlatform);
 
-            mMap.AddPlatform(platform: mPlatform);
+            mMap.AddPlatform(mPlatform);
 
-            mGameScreen.AddObject(toAdd: mPlatform);
-            mGameScreen.AddObject(toAdd: genUnit);
-            mGameScreen.AddObject(toAdd: genUnit2);
-            mGameScreen.AddObject(toAdd: genUnit3);
-            mGameScreen.AddObject(toAdd: genUnit4);
-            mGameScreen.AddObject(toAdd: genUnit5);
-        }
-
-        public GameScreen GetGameScreen()
-        {
-            return mGameScreen;
+            GameScreen.AddObject(mPlatform);
+            GameScreen.AddObject(genUnit);
+            GameScreen.AddObject(genUnit2);
+            GameScreen.AddObject(genUnit3);
+            GameScreen.AddObject(genUnit4);
+            GameScreen.AddObject(genUnit5);
         }
     }
 }

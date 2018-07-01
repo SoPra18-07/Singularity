@@ -27,10 +27,10 @@ namespace Singularity.Screen
             mSpriteFont = spriteFont;
 
             // split text to fit size-width
-            mSplittedText = SplitLineToMultiline(text: text, size: size, spriteFont: spriteFont);
+            mSplittedText = SplitLineToMultiline(text, size, spriteFont);
 
             // update size
-            Size = new Vector2(x: size.X, y: spriteFont.MeasureString(text: mSplittedText).Y);
+            Size = new Vector2(size.X, spriteFont.MeasureString(mSplittedText).Y);
 
             ActiveWindow = true;
         }
@@ -42,7 +42,7 @@ namespace Singularity.Screen
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(spriteFont: mSpriteFont, text: mSplittedText, position: Position, color: new Color(r: 0,g: 0,b: 0));
+            spriteBatch.DrawString(mSpriteFont, mSplittedText, Position, new Color(0,0,0));
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Singularity.Screen
             var splittedLines = new StringBuilder();
             var workingLine = new StringBuilder();
 
-            var wordList = new LinkedList<string>(collection: text.Split(' '));
+            var wordList = new LinkedList<string>(text.Split(' '));
 
             while (wordList.Count > 0)
                 // words unprocessed
@@ -65,52 +65,52 @@ namespace Singularity.Screen
                 var word = wordList.First();
                 wordList.RemoveFirst();
 
-                if (spriteFont.MeasureString(text: word).X > size.X)
+                if (spriteFont.MeasureString(word).X > size.X)
                     // split single words too long for the given width
                 {
-                    Console.Out.WriteLine(value: word);
+                    Console.Out.WriteLine(word);
                     var workingWord = word;
                     var newLength = 0;
 
                     // calc number of letters to fit size
                     for (var numberOfLetters = 0; numberOfLetters < word.Length; numberOfLetters++)
                     {
-                        if (0.5 * spriteFont.MeasureString(text: workingWord).X > size.X)
+                        if (0.5 * spriteFont.MeasureString(workingWord).X > size.X)
                             // reduce size by half to increase calculation speed
                         {
-                            workingWord = workingWord.Substring(startIndex: 0, length: workingWord.Length / 2);
+                            workingWord = workingWord.Substring(0, workingWord.Length / 2);
                         }
-                        else if (spriteFont.MeasureString(text: workingWord).X > size.X)
+                        else if (spriteFont.MeasureString(workingWord).X > size.X)
                             // reduce size one letter at a time
                         {
-                            workingWord = workingWord.Substring(startIndex: 0, length: workingWord.Length - 1);
+                            workingWord = workingWord.Substring(0, workingWord.Length - 1);
                         }
 
                         newLength = workingWord.Length;
                     }
 
                     // calculated division
-                    var head = word.Substring(startIndex: 0, length: newLength);
-                    var tail = word.Substring(startIndex: newLength);
+                    var head = word.Substring(0, newLength);
+                    var tail = word.Substring(newLength);
 
                     word = head;
-                    wordList.AddFirst(value: tail);
+                    wordList.AddFirst(tail);
                 }
 
 
-                if (spriteFont.MeasureString(text: workingLine).X + spriteFont.MeasureString(text: word).X > size.X)
+                if (spriteFont.MeasureString(workingLine).X + spriteFont.MeasureString(word).X > size.X)
                     // current word too big to be added to the current line -> create new line
                 {
-                    splittedLines.AppendLine(value: workingLine.ToString());
+                    splittedLines.AppendLine(workingLine.ToString());
                     workingLine.Clear();
                 }
 
                 // add the current word to the line
-                workingLine.Append(value: word + " ");
+                workingLine.Append(word + " ");
             }
 
             // add the final line
-            splittedLines.Append(value: workingLine);
+            splittedLines.Append(workingLine);
 
             return splittedLines.ToString();
         }

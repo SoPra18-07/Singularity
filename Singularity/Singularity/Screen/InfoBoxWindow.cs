@@ -6,7 +6,7 @@ using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Property;
 
-namespace Singularity.Screen.ScreenClasses
+namespace Singularity.Screen
 {
     /// <summary>
     /// InfoBoxes are small boxes which can be used to quickly show a notice to the player. (With or without border)
@@ -119,18 +119,18 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         // mousePosition updates the onRectangle bool
-        public void MousePositionChanged(float newX, float newY)
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
             if (Active)
             {
                 // update mouse position
-                mMouse = new Vector2(newX, newY);
+                mMouse = new Vector2(screenX, screenY);
 
                 // infoBox is active if mouse on BoundRectangle (basically the button)
-                if (newX >= BoundRectangle.X &&
-                    newX <= BoundRectangle.X + BoundRectangle.Width &&
-                    newY >= BoundRectangle.Y &&
-                    newY <= BoundRectangle.Y + BoundRectangle.Height)
+                if (screenX >= BoundRectangle.X &&
+                    screenX <= BoundRectangle.X + BoundRectangle.Width &&
+                    screenY >= BoundRectangle.Y &&
+                    screenY <= BoundRectangle.Y + BoundRectangle.Height)
                 {
                     OnRectangle = true;
                 }

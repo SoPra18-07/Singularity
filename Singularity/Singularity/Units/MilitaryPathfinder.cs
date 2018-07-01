@@ -74,8 +74,8 @@ namespace Singularity.Units
         /// <returns>Corresponding grid positions</returns>
         private static GridPos VectorToGridPos(Vector2 vector)
         {
-            return new GridPos(iX: (int) Math.Floor(d: vector.X / MapConstants.GridWidth),
-                               iY: (int) Math.Floor(d: vector.Y / MapConstants.GridHeight));
+            return new GridPos((int) Math.Floor(vector.X / MapConstants.GridWidth),
+                               (int) Math.Floor(vector.Y / MapConstants.GridHeight));
         }
 
         /// <summary>
@@ -85,8 +85,8 @@ namespace Singularity.Units
         /// <returns>Corresponding Vector2 position</returns>
         private static Vector2 GridPosToVector2(GridPos gridPos)
         {
-            return new Vector2(x: gridPos.x * MapConstants.GridWidth,
-                               y: gridPos.y * MapConstants.GridHeight);
+            return new Vector2(gridPos.x * MapConstants.GridWidth,
+                               gridPos.y * MapConstants.GridHeight);
         }
 
         public bool ClearDirectPath(int x, int y, int x2, int y2, ref Map.Map map)

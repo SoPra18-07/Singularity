@@ -36,13 +36,13 @@ namespace Singularity.Graph.Paths
 
             foreach (var node in graph.GetNodes())
             {
-                gScore[key: node] = int.MaxValue;
-                fScore[key: node] = int.MaxValue;
+                gScore[node] = int.MaxValue;
+                fScore[node] = int.MaxValue;
             }
 
-            gScore[key: start] = 0f;
+            gScore[start] = 0f;
 
-            fScore[key: start] = HeuristicCostEstimate(start: start, destination: destination);
+            fScore[start] = HeuristicCostEstimate(start, destination);
 
             while (openList.Count > 0)
             {
@@ -52,9 +52,9 @@ namespace Singularity.Graph.Paths
 
                 foreach (var node in openList)
                 {
-                    if (fScore[key: node] < minValue)
+                    if (fScore[node] < minValue)
                     {
-                        minValue = fScore[key: node];
+                        minValue = fScore[node];
                         current = node;
                     }
 
@@ -62,14 +62,14 @@ namespace Singularity.Graph.Paths
 
                 // current can never be null from my short amount of thinking about it (if actual arguments are given)
 
-                Debug.Assert(condition: current != null, message: "pathFinding failed.");
-                if (current.Equals(obj: destination))
+                Debug.Assert(current != null, "pathFinding failed.");
+                if (current.Equals(destination))
                 {
-                    return ReconstructPath(cameFrom: cameFrom, current: current);
+                    return ReconstructPath(cameFrom, current);
                 }
 
-                openList.Remove(item: current);
-                closedList.Add(item: current);
+                openList.Remove(current);
+                closedList.Add(current);
                 //var edges = new List<IEdge>();
                 //edges.AddRange(current.GetOutwardsEdges());
                 //edges.AddRange(current.GetInwardsEdges());
@@ -77,51 +77,51 @@ namespace Singularity.Graph.Paths
                 {
                     var neighbor = outgoing.GetChild();
 
-                    if (closedList.Contains(item: neighbor))
+                    if (closedList.Contains(neighbor))
                     {
                         continue;
                     }
 
-                    if (!openList.Contains(item: neighbor))
+                    if (!openList.Contains(neighbor))
                     {
-                        openList.Add(item: neighbor);
+                        openList.Add(neighbor);
                     }
 
-                    var tentativeGScore = gScore[key: current] + outgoing.GetCost();
+                    var tentativeGScore = gScore[current] + outgoing.GetCost();
 
-                    if (tentativeGScore >= gScore[key: neighbor])
+                    if (tentativeGScore >= gScore[neighbor])
                     {
                         continue;
                     }
 
-                    cameFrom[key: neighbor] = current;
-                    gScore[key: neighbor] = tentativeGScore;
-                    fScore[key: neighbor] = gScore[key: neighbor] + HeuristicCostEstimate(start: neighbor, destination: destination);
+                    cameFrom[neighbor] = current;
+                    gScore[neighbor] = tentativeGScore;
+                    fScore[neighbor] = gScore[neighbor] + HeuristicCostEstimate(neighbor, destination);
                 }
                 foreach (var outgoing in current.GetInwardsEdges())
                 {
                     var neighbor = outgoing.GetParent();
 
-                    if (closedList.Contains(item: neighbor))
+                    if (closedList.Contains(neighbor))
                     {
                         continue;
                     }
 
-                    if (!openList.Contains(item: neighbor))
+                    if (!openList.Contains(neighbor))
                     {
-                        openList.Add(item: neighbor);
+                        openList.Add(neighbor);
                     }
 
-                    var tentativeGScore = gScore[key: current] + outgoing.GetCost();
+                    var tentativeGScore = gScore[current] + outgoing.GetCost();
 
-                    if (tentativeGScore >= gScore[key: neighbor])
+                    if (tentativeGScore >= gScore[neighbor])
                     {
                         continue;
                     }
 
-                    cameFrom[key: neighbor] = current;
-                    gScore[key: neighbor] = tentativeGScore;
-                    fScore[key: neighbor] = gScore[key: neighbor] + HeuristicCostEstimate(start: neighbor, destination: destination);
+                    cameFrom[neighbor] = current;
+                    gScore[neighbor] = tentativeGScore;
+                    fScore[neighbor] = gScore[neighbor] + HeuristicCostEstimate(neighbor, destination);
 
                 }
             }
@@ -131,7 +131,7 @@ namespace Singularity.Graph.Paths
 
         public IPath Dijkstra(Graph graph, INode start, INode destination)
         {
-            throw new NotImplementedException(message: "The Dijkstra algorithm is not yet implemented.");
+            throw new NotImplementedException("The Dijkstra algorithm is not yet implemented.");
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace Singularity.Graph.Paths
         /// <returns></returns>
         private static float HeuristicCostEstimate(INode start, INode destination)
         {
-            return Vector2.Distance(value1: ((IRevealing) start).Center, value2: ((IRevealing) destination).Center);
+            return Vector2.Distance(((IRevealing) start).Center, ((IRevealing) destination).Center);
         }
 
         /// <summary>
@@ -163,12 +163,12 @@ namespace Singularity.Graph.Paths
             var path = new List<INode>();
 
             var currentNode = current;
-            path.Add(item: current);
+            path.Add(current);
 
-            while (cameFrom.ContainsKey(key: currentNode))
+            while (cameFrom.ContainsKey(currentNode))
             {
-                currentNode = cameFrom[key: currentNode];
-                path.Add(item: currentNode);
+                currentNode = cameFrom[currentNode];
+                path.Add(currentNode);
             }
 
             path.Reverse();
@@ -177,7 +177,7 @@ namespace Singularity.Graph.Paths
 
             foreach (var node in path)
             {
-                sortedPath.AddNode(node: node);
+                sortedPath.AddNode(node);
             }
 
             return sortedPath;

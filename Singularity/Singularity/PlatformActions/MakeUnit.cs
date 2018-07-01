@@ -26,12 +26,10 @@ namespace Singularity.PlatformActions
         {
             mBuildingCost = new Dictionary<EResourceType, int> {{EResourceType.Steel, 3}, {EResourceType.Chip, 2}, {EResourceType.Fuel, 2}};
         }
-
     }
 
 
-
-    abstract class AMakeUnit : APlatformAction, IUpdate
+    public abstract class AMakeUnit : APlatformAction, IUpdate
     {
 
         protected Dictionary<EResourceType, int> mBuildingCost;
@@ -78,14 +76,14 @@ namespace Singularity.PlatformActions
                 case PlatformActionState.Available:
                     mMissingResources = new Dictionary<EResourceType, int>(mBuildingCost);
                     mToRequest = new Dictionary<EResourceType, int>(mMissingResources);
-                    State = PlatformActionState.Deactivated;
+                    State = PlatformActionState.Active;
                     break;
                 case PlatformActionState.Active:
                     mDirector.GetDistributionManager.PausePlatformAction(this);
                     State = PlatformActionState.Available;
                     break;
                 default:
-                    throw new AccessViolationException(message: "Someone/Something acccessed the state!!");
+                    throw new AccessViolationException("Someone/Something acccessed the state!!");
             }
         }
     }

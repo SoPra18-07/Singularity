@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using EpPathFinding.cs;
 using Microsoft.Xna.Framework;
 using Singularity.Map.Properties;
@@ -12,7 +10,7 @@ namespace Singularity.Map
     /// <summary>
     /// The collision map is used to store all the colliding objects in a grid like fashion.
     /// </summary>
-    internal sealed class CollisionMap
+    public sealed class CollisionMap
     {
         /// <summary>
         /// The look up table is used to check whether a given collider is already present in the collision map
@@ -36,29 +34,29 @@ namespace Singularity.Map
         {
             mLookUpTable = new Dictionary<int, Rectangle>();
 
-            var GridXLength = MapConstants.MapWidth / MapConstants.GridWidth;
-            var GridYLength = MapConstants.MapHeight / MapConstants.GridHeight;
+            var gridXLength = MapConstants.MapWidth / MapConstants.GridWidth;
+            var gridYLength = MapConstants.MapHeight / MapConstants.GridHeight;
 
             mCollisionMap = new CollisionNode
             [
-                GridXLength,
-                GridYLength
+                gridXLength,
+                gridYLength
             ];
 
             // movableMatrix is used to construct a StaticGrid object, which is used by the pathfinder.
-            var movableMatrix = new bool[GridXLength][];
+            var movableMatrix = new bool[gridXLength][];
 
-            for (var i = 0; i < mCollisionMap.GetLength(dimension: 0); i++)
+            for (var i = 0; i < mCollisionMap.GetLength(0); i++)
             {
-                movableMatrix[i] = new bool[GridYLength];
+                movableMatrix[i] = new bool[gridYLength];
 
-                for (var j = 0; j < mCollisionMap.GetLength(dimension: 1); j++)
+                for (var j = 0; j < mCollisionMap.GetLength(1); j++)
                 {
-                    mCollisionMap[i, j] = new CollisionNode(x: i, y: j, iCollider: Optional<ICollider>.Of(value: null));
-                    movableMatrix[i][j] = Map.IsOnTop(position: new Vector2(x: i * MapConstants.GridWidth, y: j * MapConstants.GridHeight));
+                    mCollisionMap[i, j] = new CollisionNode(i, j, Optional<ICollider>.Of(null));
+                    movableMatrix[i][j] = Map.IsOnTop(new Vector2(i * MapConstants.GridWidth, j * MapConstants.GridHeight));
                 }
             }
-            mWalkableGrid = new StaticGrid(iWidth: GridXLength, iHeight: GridYLength, iMatrix: movableMatrix);
+            mWalkableGrid = new StaticGrid(gridXLength, gridYLength, movableMatrix);
 
         }
 
@@ -70,16 +68,16 @@ namespace Singularity.Map
         public void UpdateCollider(ICollider collider)
         {
             //Check if the location of an already existing collider needs to be updated.
-            if (mLookUpTable.ContainsKey(key: collider.Id) && collider.Moved)
+            if (mLookUpTable.ContainsKey(collider.Id) && collider.Moved)
             {
-                var oldBounds = mLookUpTable[key: collider.Id];
+                var oldBounds = mLookUpTable[collider.Id];
 
                 for (var x = oldBounds.X / MapConstants.GridWidth; x <= (oldBounds.X + oldBounds.Width) / MapConstants.GridWidth; x++)
                 {
                     for (var y = oldBounds.Y / MapConstants.GridHeight; y <= (oldBounds.Y + oldBounds.Height) / MapConstants.GridHeight; y++)
                     {
-                        mCollisionMap[x, y] = new CollisionNode(x: x, y: y, iCollider: Optional<ICollider>.Of(value: null));
-                        mWalkableGrid.SetWalkableAt(iX: x, iY: y, iWalkable: true);
+                        mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(null));
+                        mWalkableGrid.SetWalkableAt(x, y, true);
                     }
                 }
             }
@@ -106,7 +104,7 @@ namespace Singularity.Map
                 }
             }
 
-            mLookUpTable[key: collider.Id] = collider.AbsBounds;
+            mLookUpTable[collider.Id] = collider.AbsBounds;
         }
 
         //TODO: this method exists solely for debugging purposes, so the map can draw a representation of the current collision map.

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Libraries;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -13,8 +14,30 @@ namespace Singularity.Screen.ScreenClasses
     class GamePauseScreen : IScreen
     {
 
-        public EScreen Screen { get; private set; } = EScreen.GamePauseScreen;
-        public bool Loaded { get; set; }
+        // fonts
+        private SpriteFont mLibSans20;
+
+        // buttons
+        private Button mAchievementButton;
+        private Button mStatisticsButton;
+        private Button mCloseButton;
+
+        // backup of pauseMenu position to update button positions
+        private Vector2 mPrevPosition;
+
+        // screen manager to add / close screens
+        private IScreenManager mScreenManager;
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public GamePauseScreen(Vector2 screenSize, IScreenManager screenManager)
+        {
+            mScreenManager = screenManager;
+
+            Position = new Vector2(screenSize.X / 2 - 150, screenSize.Y / 2 - 200);
+            mPrevPosition = Position;
+        }
 
         /// <summary>
         /// Updates the contents of the screen.
@@ -23,7 +46,9 @@ namespace Singularity.Screen.ScreenClasses
         /// that take place over time </param>
         public void Update(GameTime gametime)
         {
-            throw new NotImplementedException();
+            mAchievementButton.Update(gametime);
+            mStatisticsButton.Update(gametime);
+            mCloseButton.Update(gametime);
         }
 
         /// <summary>
@@ -32,7 +57,14 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="spriteBatch">spriteBatch that this object should draw to.</param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            throw new NotImplementedException();
+            spriteBatch.Begin();
+
+            spriteBatch.FillRectangle(Position, new Vector2(300, 400), new Color(0.27f, 0.5f, 0.7f, 0.8f), 0f);
+            mAchievementButton.Draw(spriteBatch);
+            mStatisticsButton.Draw(spriteBatch);
+            mCloseButton.Draw(spriteBatch);
+
+            spriteBatch.End();
         }
 
         /// <summary>
@@ -41,7 +73,15 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="content">Content Manager that should handle the content loading</param>
         public void LoadContent(ContentManager content)
         {
-            throw new NotImplementedException();
+            mLibSans20 = content.Load<SpriteFont>("LibSans20");
+
+            mAchievementButton = new Button("Achievements", mLibSans20, new Vector2(Position.X + 20, Position.Y + 80)) { Opacity = 1f };
+            mStatisticsButton = new Button("Statistics", mLibSans20, new Vector2(Position.X + 20, Position.Y + 180)) { Opacity = 1f };
+            mCloseButton = new Button("Close", mLibSans20, new Vector2(Position.X + 20, Position.Y + 280)) { Opacity = 1f };
+
+            mAchievementButton.ButtonReleased += AchievementButtonReleased;
+            mStatisticsButton.ButtonReleased += StatisticsButtonReleased;
+            mCloseButton.ButtonReleased += CloseButtonReleased;
         }
 
         /// <summary>
@@ -50,7 +90,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>Bool. If true, then the screen below this will be updated.</returns>
         public bool UpdateLower()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         /// <summary>
@@ -59,7 +99,34 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>Bool. If true, then the screen below this will be drawn.</returns>
         public bool DrawLower()
         {
-            throw new NotImplementedException();
+            return true;
         }
+
+        #region button managemenet
+
+        private void AchievementButtonReleased(object sender, EventArgs eventArgs)
+        {
+            // TODO : ADD PARAMETERS IF NEEDED (FOR EXAMPLE GRAPHICS DEVICE TO CALCULATE POSITIONS/SIZES
+            mScreenManager.AddScreen(new AchievementsScreen());
+        }
+
+        private void StatisticsButtonReleased(object sender, EventArgs eventArgs)
+        {
+            // TODO : ADD PARAMETERS IF NEEDED (FOR EXAMPLE GRAPHICS DEVICE TO CALCULATE POSITIONS/SIZES
+            mScreenManager.AddScreen(new Statistics());
+        }
+
+        private void CloseButtonReleased(object sender, EventArgs eventArgs)
+        {
+            mScreenManager.RemoveScreen();
+        }
+
+        #endregion
+
+        public EScreen Screen { get; } = EScreen.GamePauseScreen;
+        public bool Loaded { get; set; }
+
+        // TODO : USE MEMBER VARIABLE INSTEAD?
+        private Vector2 Position { get; }
     }
 }

@@ -5,7 +5,7 @@ using Singularity.Input;
 using Singularity.Libraries;
 using Singularity.Property;
 
-namespace Singularity.Screen.ScreenClasses
+namespace Singularity.Screen
 {
     internal sealed class PopupWindow : IDraw, IUpdate, IMouseWheelListener, IMousePositionListener
     {
@@ -13,7 +13,6 @@ namespace Singularity.Screen.ScreenClasses
         // parameters
         private readonly string mWindowName;
         private readonly Button mButton;
-        private readonly Vector2 mPosition;
         private readonly Vector2 mSize;
         private readonly Color mColorBorder;
         private readonly Color mColorFill;
@@ -70,7 +69,7 @@ namespace Singularity.Screen.ScreenClasses
             GraphicsDeviceManager graphics)
         {
             mWindowName = windowName;
-            mPosition = position;
+            Position = position;
             mSize = size;
             mColorBorder = colorBorder;
             mColorFill = colorFill;
@@ -84,64 +83,64 @@ namespace Singularity.Screen.ScreenClasses
             const int titleSizeY = 720 / 26;
 
             // calculate buttonRectangle size
-            var buttonSize = new Vector2(x: button.Size.X + 10, y: button.Size.Y + 10);
+            var buttonSize = new Vector2(button.Size.X + 10, button.Size.Y + 10);
 
             // position where the next item will be drawn
-            mItemPosTop = new Vector2(x: mPosition.X + 10, y: mPosition.Y + titleSizeY + 30); // TODO
+            mItemPosTop = new Vector2(Position.X + 10, Position.Y + titleSizeY + 30); // TODO
 
             // set the window rectangle
             mWindowRectangle = new Rectangle(
-                x: (int)(mPosition.X + 1),
-                y: (int)(mPosition.Y + 2),
+                x: (int)(Position.X + 1),
+                y: (int)(Position.Y + 2),
                 width: (int)(mSize.X - 2),
                 height: (int)(mSize.Y - 2)
                 );
             mBorderRectangle = new Rectangle(
-                x: (int)mPosition.X,
-                y: (int)mPosition.Y,
+                x: (int)Position.X,
+                y: (int)Position.Y,
                 width: (int)mSize.X,
                 height: (int)mSize.Y
                 );
 
             // ScissorRectangle will cut everything drawn outside of this rectangle when set
             mScissorRectangle = new Rectangle(
-                x: (int)(mPosition.X + 10),
-                y: (int)(mPosition.Y + titleSizeY + 30),
+                x: (int)(Position.X + 10),
+                y: (int)(Position.Y + titleSizeY + 30),
                 width: mWindowRectangle.Width - 20,
                 height: (int)(mSize.Y - titleSizeY - 3 * 10 - buttonSize.Y)
                 );
 
             // set the rectangle of the title bar
             mTitleBarRectangle = new Rectangle(
-                x: (int)mPosition.X + 10,
-                y: (int)mPosition.Y + titleSizeY + 20,
+                x: (int)Position.X + 10,
+                y: (int)Position.Y + titleSizeY + 20,
                 width: (int)mSize.X - 40,
                 height: 1
                 );
 
             // set the rectangle of the button
             mButtonBorderRectangle = new Rectangle(
-                x: (int)(mPosition.X + mSize.X / 2 - buttonSize.X / 2),
-                y: (int)(mPosition.Y + mSize.Y - buttonSize.Y + 1),
+                x: (int)(Position.X + mSize.X / 2 - buttonSize.X / 2),
+                y: (int)(Position.Y + mSize.Y - buttonSize.Y + 1),
                 width: (int)buttonSize.X,
                 height: (int)buttonSize.Y - 2);
 
             // set the rectangle for scrolling
             mScrollBarBorderRectangle = new Rectangle(
-                x: (int)(mPosition.X + mSize.X - 20),
+                x: (int)(Position.X + mSize.X - 20),
                 y: mScissorRectangle.Y,
                 width: 20,
                 height: mScissorRectangle.Height
             );
 
             // set button position
-            mButton.Position = new Vector2(x: mButtonBorderRectangle.X + 5, y: mButtonBorderRectangle.Y + 5);
+            mButton.Position = new Vector2(mButtonBorderRectangle.X + 5, mButtonBorderRectangle.Y + 5);
 
             // Initialize scissor window
             mRasterizerState = new RasterizerState() { ScissorTestEnable = true };
 
-            inputManager.AddMouseWheelListener(iMouseWheelListener: this);
-            inputManager.AddMousePositionListener(iMouseListener: this);
+            inputManager.AddMouseWheelListener(this);
+            inputManager.AddMousePositionListener(this);
         }
 
         /// <summary>
@@ -150,7 +149,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="item">IWindowItem</param>
         public void AddItem(IWindowItem item)
         {
-            mItemList.Add(item: item);
+            mItemList.Add(item);
         }
 
         /// <summary>
@@ -161,13 +160,13 @@ namespace Singularity.Screen.ScreenClasses
         public bool DeleteItem(IWindowItem item)
         {
             // item is not in list -> can't be removed
-            if (!mItemList.Contains(item: item))
+            if (!mItemList.Contains(item))
             {
                 return false;
             }
 
             // item in list -> remove successful
-            mItemList.Remove(item: item);
+            mItemList.Remove(item);
             return true;
         }
 
@@ -178,16 +177,16 @@ namespace Singularity.Screen.ScreenClasses
             // draw window
             /*spriteBatch.FillRectangle(mWindowRectangle, mColorFill);
             spriteBatch.DrawRectangle(mBorderRectangle, mColorBorder, 2);*/
-            spriteBatch.StrokedRectangle(location: new Vector2(x: mWindowRectangle.X, y: mWindowRectangle.Y), size: new Vector2(x: mWindowRectangle.Width, y: mWindowRectangle.Height), colorBorder: mColorBorder, colorCenter: mColorFill, opacityBorder: 1f, opacityCenter: 0.8f );
+            spriteBatch.StrokedRectangle(new Vector2(mWindowRectangle.X, mWindowRectangle.Y), new Vector2(mWindowRectangle.Width, mWindowRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
 
             // draw window title + bar
-            spriteBatch.DrawString(spriteFont: mSpriteFontTitle, text: mWindowName, position: new Vector2(x: mPosition.X + 10, y: mPosition.Y + 10), color: new Color(r: 255, g: 255, b: 255));
+            spriteBatch.DrawString(mSpriteFontTitle, mWindowName, new Vector2(Position.X + 10, Position.Y + 10), new Color(255, 255, 255));
             //spriteBatch.DrawRectangle(mTitleBarRectangle, mColorBorder, 1);
-            spriteBatch.StrokedRectangle(location: new Vector2(x: mTitleBarRectangle.X, y: mTitleBarRectangle.Y), size: new Vector2(x: mTitleBarRectangle.Width, y: mTitleBarRectangle.Height), colorBorder: mColorBorder, colorCenter: mColorFill, opacityBorder: 1f, opacityCenter: 0.8f );
+            spriteBatch.StrokedRectangle(new Vector2(mTitleBarRectangle.X, mTitleBarRectangle.Y), new Vector2(mTitleBarRectangle.Width, mTitleBarRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
 
             // draw 'button'
             //spriteBatch.DrawRectangle(mButtonBorderRectangle, mColorBorder, 2);
-            spriteBatch.StrokedRectangle(location: new Vector2(x: mButtonBorderRectangle.X, y: mButtonBorderRectangle.Y), size: new Vector2(x: mButtonBorderRectangle.Width, y: mButtonBorderRectangle.Height), colorBorder: mColorBorder, colorCenter: mColorFill, opacityBorder: 1f, opacityCenter: 0.8f );
+            spriteBatch.StrokedRectangle(new Vector2(mButtonBorderRectangle.X, mButtonBorderRectangle.Y), new Vector2(mButtonBorderRectangle.Width, mButtonBorderRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
 
             // backup current scissor so we can restore later
             var saveRect = spriteBatch.GraphicsDevice.ScissorRectangle;
@@ -196,12 +195,12 @@ namespace Singularity.Screen.ScreenClasses
             if (mScrollable)
             {
                 //spriteBatch.DrawRectangle(mScrollBarBorderRectangle, mColorBorder, 2);
-                spriteBatch.StrokedRectangle(location: new Vector2(x: mScrollBarBorderRectangle.X - 1, y: mScrollBarBorderRectangle.Y), size: new Vector2(x: mScrollBarBorderRectangle.Width, y: mScrollBarBorderRectangle.Height), colorBorder: mColorBorder, colorCenter: mColorFill, opacityBorder: 1f, opacityCenter: 0.8f );
+                spriteBatch.StrokedRectangle(new Vector2(mScrollBarBorderRectangle.X - 1, mScrollBarBorderRectangle.Y), new Vector2(mScrollBarBorderRectangle.Width, mScrollBarBorderRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
 
                 // set up current scissor rectangle
-                spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(x: mScrollBarBorderRectangle.X + 1, y: mScrollBarBorderRectangle.Y + 1, width: mScrollBarBorderRectangle.Width - 2, height: mScrollBarBorderRectangle.Height - 2);
+                spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(mScrollBarBorderRectangle.X + 1, mScrollBarBorderRectangle.Y + 1, mScrollBarBorderRectangle.Width - 2, mScrollBarBorderRectangle.Height - 2);
 
-                spriteBatch.FillRectangle(rect: mScrollBarRectangle, color: mColorBorder);
+                spriteBatch.FillRectangle(mScrollBarRectangle, mColorBorder);
             }
 
             // set up current scissor rectangle
@@ -210,14 +209,14 @@ namespace Singularity.Screen.ScreenClasses
             // draw IWindowItems
             foreach (var item in mItemList)
             {
-                item.Draw(spriteBatch: spriteBatch);
+                item.Draw(spriteBatch);
             }
 
             // restore scissor from backup
             spriteBatch.GraphicsDevice.ScissorRectangle = saveRect;
 
             // draw button
-            mButton.Draw(spriteBatch: spriteBatch);
+            mButton.Draw(spriteBatch);
         }
 
         public void Update(GameTime gametime)
@@ -230,25 +229,25 @@ namespace Singularity.Screen.ScreenClasses
 
             foreach (var item in mItemList)
             {
-                item.Update(gametime: gametime);
+                item.Update(gametime);
 
                 item.Position = localItemPos;
 
                 mCombinedItemsSize += 10 + item.Size.Y;
 
-                localItemPos = new Vector2(x: localItemPos.X, y: localItemPos.Y + item.Size.Y + 10);
+                localItemPos = new Vector2(localItemPos.X, localItemPos.Y + item.Size.Y + 10);
             }
 
             // bottom of all items combined
-            mItemPosBottom = new Vector2(x: localItemPos.X, y: localItemPos.Y);
+            mItemPosBottom = new Vector2(localItemPos.X, localItemPos.Y);
 
             // check if the window is overflowed with items
             mScrollable = mCombinedItemsSize > mScissorRectangle.Height;
 
             // update the scrollbar
-            mScrollBarRectangle = CalcScrollbarRectangle(scissorRectangle: mScissorRectangle, combinedItemsSize: mCombinedItemsSize);
+            mScrollBarRectangle = CalcScrollbarRectangle(mScissorRectangle, mCombinedItemsSize);
 
-            mButton.Update(gametime: gametime);
+            mButton.Update(gametime);
         }
 
         public EScreen Screen { get; } = EScreen.UserInterfaceScreen;
@@ -258,8 +257,8 @@ namespace Singularity.Screen.ScreenClasses
             // enabled only if
             //  - the mouse is above the scrollable part of the window
             //  - the window is scrollable (the number of items is too big for one window)
-            if (!(mMouseX > mPosition.X) || !(mMouseX < mPosition.X + mSize.X) || !(mMouseY > mPosition.Y) ||
-                !(mMouseY < mPosition.Y + mSize.Y) || !mScrollable)
+            if (!(mMouseX > Position.X) || !(mMouseX < Position.X + mSize.X) || !(mMouseY > Position.Y) ||
+                !(mMouseY < Position.Y + mSize.Y) || !mScrollable)
             {
                 return true;
             }
@@ -286,11 +285,11 @@ namespace Singularity.Screen.ScreenClasses
             return false;
         }
 
-        public void MousePositionChanged(float newX, float newY)
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
             // update member variable with new mouse position
-            mMouseX = newX;
-            mMouseY = newY;
+            mMouseX = screenX;
+            mMouseY = screenY;
         }
 
         /// <summary>
@@ -313,7 +312,10 @@ namespace Singularity.Screen.ScreenClasses
             // calculate new position
             var positionY = mScrollBarBorderRectangle.Y + numberOfStepsTaken * stepSize + 3;
 
-            return new Rectangle(x: (int)(mPosition.X + mSize.X - 20 + 2), y: (int)positionY, width: 20 - 4, height: (int)sizeY);
+            return new Rectangle((int)(Position.X + mSize.X - 20 + 2), (int)positionY, 20 - 4, (int)sizeY);
         }
+
+        // position of the window
+        public Vector2 Position { get; set; }
     }
 }

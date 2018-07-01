@@ -9,15 +9,11 @@ using Singularity.Screen;
 
 namespace Singularity.Map
 {
-    //TODO: update in such a way that zoom is centered on the current mouse position
-    /// <inheritdoc cref="IUpdate"/>
-    /// <inheritdoc cref="IKeyListener"/>
-    /// <inheritdoc cref="IMouseWheelListener"/>
-    /// <inheritdoc cref="IMousePositionListener"/>
+    /// <inheritdoc/>
     /// <remarks>
     /// The camera object is used to move and zoom the map and all its components.
     /// </remarks>
-    internal sealed class Camera : IUpdate, IKeyListener, IMouseWheelListener, IMousePositionListener
+    public sealed class Camera : IUpdate, IKeyListener, IMouseWheelListener, IMousePositionListener
     {
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
 
@@ -29,7 +25,7 @@ namespace Singularity.Map
         /// <summary>
         /// The viewport of the window, e.g. the current size of it.
         /// </summary>
-        private readonly Viewport mViewport;
+        private readonly GraphicsDevice mGraphics;
 
         /// <summary>
         /// The x location of the camera unzoomed. Could also be called the "true" or "absolute" x location.
@@ -62,6 +58,8 @@ namespace Singularity.Map
 
         private readonly bool mNeo;
 
+        private readonly InputManager mInputManager;
+
 
         /// <summary>
         /// Creates a new Camera object which provides a transform matrix to adjust
@@ -72,8 +70,9 @@ namespace Singularity.Map
         /// <param name="x">The initial x position of the camera</param>
         /// <param name="y">the initial y position of the camera</param>
         /// <param name="neo">If the neo Layout should be used for navigating instead of qwertz</param>
-        public Camera(Viewport viewport, ref Director director, int x = 0, int y = 0, bool neo = false)
+        public Camera(GraphicsDevice graphics, ref Director director, int x = 0, int y = 0, bool neo = false)
         {
+
             if (x < 0)
             {
                 x = 0;
@@ -87,15 +86,18 @@ namespace Singularity.Map
             mX = x;
             mY = y;
             mNeo = neo;
-            mViewport = viewport;
+            mGraphics = graphics;
             mZoom = 1.0f;
-            mBounds = new Rectangle(x: 0, y: 0, width: MapConstants.MapWidth, height: MapConstants.MapHeight);
+            mBounds = new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight);
+            mInputManager = director.GetInputManager;
 
-            director.GetInputManager.AddKeyListener(iKeyListener: this);
-            director.GetInputManager.AddMouseWheelListener(iMouseWheelListener: this);
-            director.GetInputManager.AddMousePositionListener(iMouseListener: this);
+            director.GetInputManager.AddKeyListener(this);
+            director.GetInputManager.AddMouseWheelListener(this);
+            director.GetInputManager.AddMousePositionListener(this);
 
-            mTransform = Matrix.CreateScale(scales: new Vector3(x: mZoom, y: mZoom, z: 1)) * Matrix.CreateTranslation(xPosition: -mX, yPosition: -mY, zPosition: 0);
+            mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
+
+            mInputManager.CameraMoved(mTransform);
 
         }
 
@@ -142,24 +144,26 @@ namespace Singularity.Map
              * multiplication for the point we want to know, thus multiplying by the inverse matrix.
              * vector zero is simply the origin point of the camera view. (top-left).
              */
-            var cameraWorldMin = Vector2.Transform(position: Vector2.Zero, matrix: Matrix.Invert(matrix: mTransform));
+            var cameraWorldMin = Vector2.Transform(Vector2.Zero, Matrix.Invert(mTransform));
 
             //The current scope of the camera which gets changed by the zoom
-            var cameraSize = new Vector2(x: mViewport.Width, y: mViewport.Height) / mZoom;
+            var cameraSize = new Vector2(mGraphics.Viewport.Width, mGraphics.Viewport.Height) / mZoom;
 
             //The vectors which represents the (top left)/(right bottom) corner of the bounding box, used to not move over
-            var limitWorldMin = new Vector2(x: mBounds.Left, y: mBounds.Top);
-            var limitWorldMax = new Vector2(x: mBounds.Right, y: mBounds.Bottom);
+            var limitWorldMin = new Vector2(mBounds.Left, mBounds.Top);
+            var limitWorldMax = new Vector2(mBounds.Right, mBounds.Bottom);
 
             //The offset created by zooming.
             var positionOffsetX = mX - cameraWorldMin.X;
             var positionOffsetY = mY - cameraWorldMin.Y;
 
             //finally adjust the values by the given bounds.
-            mX = (int) (MathHelper.Clamp(value: cameraWorldMin.X, min: limitWorldMin.X, max: limitWorldMax.X - cameraSize.X) +
+            mX = (int) (MathHelper.Clamp(cameraWorldMin.X, limitWorldMin.X, limitWorldMax.X - cameraSize.X) +
                         positionOffsetX);
-            mY = (int) (MathHelper.Clamp(value: cameraWorldMin.Y, min: limitWorldMin.Y, max: limitWorldMax.Y - cameraSize.Y) +
+            mY = (int) (MathHelper.Clamp(cameraWorldMin.Y, limitWorldMin.Y, limitWorldMax.Y - cameraSize.Y) +
                         positionOffsetY);
+
+            UpdateTransformMatrix();
 
         }
 
@@ -171,7 +175,7 @@ namespace Singularity.Map
         private void ZoomToTarget(Vector2 zoomTarget, float amount)
         {
             // the mouse position in world space with the old zoom
-            var abs = Vector2.Transform(position: zoomTarget, matrix: Matrix.Invert(matrix: mTransform));
+            var abs = Vector2.Transform(zoomTarget, Matrix.Invert(mTransform));
 
             mZoom += amount;
 
@@ -212,7 +216,8 @@ namespace Singularity.Map
         ///</summary>
         private void UpdateTransformMatrix()
         {
-            mTransform = Matrix.CreateScale(scales: new Vector3(x: mZoom, y: mZoom, z: 1)) * Matrix.CreateTranslation(xPosition: -mX, yPosition: -mY, zPosition: 0);
+            mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
+            mInputManager.CameraMoved(mTransform);
         }
 
         public void KeyTyped(KeyEvent keyEvent)
@@ -307,10 +312,10 @@ namespace Singularity.Map
                     break;
             }
 
-            if (!((mZoom + scrollChange) * MapConstants.MapWidth < mViewport.Width ||
-                  (mZoom + scrollChange) * MapConstants.MapHeight < mViewport.Height))
+            if (!((mZoom + scrollChange) * MapConstants.MapWidth < mGraphics.Viewport.Width ||
+                  (mZoom + scrollChange) * MapConstants.MapHeight < mGraphics.Viewport.Height))
             {
-                ZoomToTarget(zoomTarget: new Vector2(x: mMouseX, y: mMouseY), amount: scrollChange);
+                ZoomToTarget(new Vector2(mMouseX, mMouseY), scrollChange);
             }
 
             return false;
@@ -319,20 +324,20 @@ namespace Singularity.Map
         public Matrix GetStencilProjection()
         {
 
-            var cameraWorldMin = Vector2.Transform(position: Vector2.Zero, matrix: Matrix.Invert(matrix: mTransform));
+            var cameraWorldMin = Vector2.Transform(Vector2.Zero, Matrix.Invert(mTransform));
 
-            return Matrix.CreateOrthographicOffCenter(left: cameraWorldMin.X,
-                right: cameraWorldMin.X + mViewport.Width / mZoom,
-                bottom: cameraWorldMin.Y + mViewport.Height / mZoom,
-                top: cameraWorldMin.Y,
-                zNearPlane: 0,
-                zFarPlane: 1);
+            return Matrix.CreateOrthographicOffCenter(cameraWorldMin.X,
+                cameraWorldMin.X + mGraphics.Viewport.Width / mZoom,
+                cameraWorldMin.Y + mGraphics.Viewport.Height / mZoom,
+                cameraWorldMin.Y,
+                0,
+                1);
         }
 
-        public void MousePositionChanged(float newX, float newY)
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
-            mMouseX = newX;
-            mMouseY = newY;
+            mMouseX = screenX;
+            mMouseY = screenY;
         }
     }
 }

@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Levels;
+using Singularity.Map;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Serialization;
@@ -27,6 +29,12 @@ namespace Singularity.Manager
         private Dictionary<EResourceType, int> mResources;
         [DataMember]
         private Dictionary<string, int> mPlatforms;
+
+        [DataMember]
+        public StructureMap StructureMap { get; set; }
+
+        public ILevel Level { get; set; }
+
         //Do not serialize this, BUT also do not forget to load the achievements again after deserialization!
         private Achievements mAchievements;
 
@@ -34,11 +42,11 @@ namespace Singularity.Manager
         [DataMember]
         private LevelType mLevelType;
 
-        public StoryManager()
+        public StoryManager(LevelType level = LevelType.None)
         {
-            mLevelType = LevelType.None;
+            mLevelType = level;
             mEnergyLevel = 0;
-            mTime = new TimeSpan(days: 0, hours: 0, minutes: 0, seconds: 0, milliseconds: 0);
+            mTime = new TimeSpan(0, 0, 0, 0, 0);
             LoadAchievements();
 
             mUnits = new Dictionary<string, int>
@@ -74,9 +82,10 @@ namespace Singularity.Manager
         }
 
         //This will determine what the storymanager will trigger etc.
-        public void SetLevelType(LevelType leveltype)
+        public void SetLevelType(LevelType leveltype, ILevel level)
         {
             mLevelType = leveltype;
+            Level = level;
         }
 
         /// <summary>
@@ -86,15 +95,15 @@ namespace Singularity.Manager
         internal void LoadAchievements()
         {
             var path = @"%USERPROFILE%\Saved Games\Singularity";
-            path = Environment.ExpandEnvironmentVariables(name: path);
-            if (!Directory.Exists(path: path))
+            path = Environment.ExpandEnvironmentVariables(path);
+            if (!Directory.Exists(path))
             {
-                Directory.CreateDirectory(path: path);
+                Directory.CreateDirectory(path);
             }
 
-            if (File.Exists(path: path + @"\Achievements.xml"))
+            if (File.Exists(path + @"\Achievements.xml"))
             {
-                mAchievements = (Achievements)XSerializer.Load(path: path + @"\Achievements.xml");
+                mAchievements = (Achievements)XSerializer.Load(path + @"\Achievements.xml");
             }
             else
             {
@@ -109,8 +118,8 @@ namespace Singularity.Manager
         public void UpdateUnits(string action)
         {
             int a;
-            mUnits.TryGetValue(key: action, value: out a);
-            mUnits.Add(key: action, value: a + 1);
+            mUnits.TryGetValue(action, out a);
+            mUnits.Add(action, a + 1);
             if (mAchievements.Replicant())
             {
                 //trigger Achievement-popup;
@@ -124,8 +133,8 @@ namespace Singularity.Manager
         public void UpdatePlatforms(string action)
         {
             int a;
-            mPlatforms.TryGetValue(key: action, value: out a);
-            mPlatforms.Add(key: action, value: a + 1);
+            mPlatforms.TryGetValue(action, out a);
+            mPlatforms.Add(action, a + 1);
             if (mAchievements.Skynet())
             {
                 //trigger Achievement-popup;
@@ -139,8 +148,8 @@ namespace Singularity.Manager
         public void UpdateResources(EResourceType resource)
         {
             int a;
-            mResources.TryGetValue(key: resource, value: out a);
-            mResources.Add(key: resource, value: a + 1);
+            mResources.TryGetValue(resource, out a);
+            mResources.Add(resource, a + 1);
         }
 
         /// <summary>
@@ -160,7 +169,7 @@ namespace Singularity.Manager
         /// <param name="time"></param>
         public void Update(GameTime time)
         {
-            mTime = mTime.Add(ts: time.ElapsedGameTime);
+            mTime = mTime.Add(time.ElapsedGameTime);
             switch (mLevelType)
             {
                 case LevelType.None:

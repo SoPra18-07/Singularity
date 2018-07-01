@@ -72,7 +72,7 @@ namespace Singularity.Screen
             mScale = scale;
             mButtonTexture = buttonTexture;
             Position = position;
-            Size = new Vector2(x: (int)(mButtonTexture.Width * scale), y: (int)(mButtonTexture.Height * scale));
+            Size = new Vector2((int)(mButtonTexture.Width * scale), (int)(mButtonTexture.Height * scale));
             mColor = Color.White;
             CreateRectangularBounds();
             Opacity = 1;
@@ -116,7 +116,7 @@ namespace Singularity.Screen
             mButtonText = buttonText;
             mFont = font;
             Position = position;
-            Size = new Vector2(x: (int)mFont.MeasureString(text: mButtonText).X, y: (int)mFont.MeasureString(text: mButtonText).Y);
+            Size = new Vector2((int)mFont.MeasureString(mButtonText).X, (int)mFont.MeasureString(mButtonText).Y);
             mColor = Color.White;
             CreateRectangularBounds();
             ActiveWindow = true;
@@ -128,7 +128,7 @@ namespace Singularity.Screen
             mButtonText = buttonText;
             mFont = font;
             Position = position;
-            Size = new Vector2(x: (int)mFont.MeasureString(text: mButtonText).X, y: (int)mFont.MeasureString(text: mButtonText).Y);
+            Size = new Vector2((int)mFont.MeasureString(mButtonText).X, (int)mFont.MeasureString(mButtonText).Y);
             mColor = color;
             CreateRectangularBounds();
             ActiveWindow = true;
@@ -140,7 +140,7 @@ namespace Singularity.Screen
         /// </summary>
         private void CreateRectangularBounds()
         {
-            mBounds = new Rectangle(x: (int)Position.X, y: (int)Position.Y, width: (int)Size.X, height: (int)Size.Y);
+            mBounds = new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y);
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace Singularity.Screen
         {
             if (ButtonReleased != null && ActiveWindow)
             {
-                ButtonReleased(sender: this, e: EventArgs.Empty);
+                ButtonReleased(this, EventArgs.Empty);
             }
 
         }
@@ -162,7 +162,7 @@ namespace Singularity.Screen
         {
             if (ButtonHovering != null && ActiveWindow)
             {
-                ButtonHovering(sender: this, e: EventArgs.Empty);
+                ButtonHovering(this, EventArgs.Empty);
             }
         }
 
@@ -184,7 +184,7 @@ namespace Singularity.Screen
         {
             if (ActiveWindow)
             {
-                ButtonClicked?.Invoke(sender: this, e: EventArgs.Empty);
+                ButtonClicked?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -243,7 +243,7 @@ namespace Singularity.Screen
                 // draw for button that uses text
                 else
                 {
-                    spriteBatch.DrawString(spriteFont: mFont,
+                    spriteBatch.DrawString(mFont,
                         origin: Vector2.Zero,
                         position: Position,
                         color: mColor * Opacity,

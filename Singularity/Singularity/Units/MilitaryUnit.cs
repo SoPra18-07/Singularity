@@ -97,10 +97,10 @@ namespace Singularity.Units
             mScale = 0.4f;
 
             AbsolutePosition = position;
-            AbsoluteSize = new Vector2(x: DefaultWidth * mScale, y: DefaultHeight * mScale);
+            AbsoluteSize = new Vector2(DefaultWidth * mScale, DefaultHeight * mScale);
 
             RevelationRadius = 500;
-            Center = new Vector2(x: AbsolutePosition.X + AbsoluteSize.X * mScale / 2, y: AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * mScale / 2, AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
 
             Moved = false;
             mIsMoving = false;
@@ -108,8 +108,8 @@ namespace Singularity.Units
 
             mDirector = director;
 
-            mDirector.GetInputManager.AddMouseClickListener(iMouseClickListener: this, leftClickType: EClickType.Both, rightClickType: EClickType.Both);
-            mDirector.GetInputManager.AddMousePositionListener(iMouseListener: this);
+            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            mDirector.GetInputManager.AddMousePositionListener(this);
 
             mMilSheet = spriteSheet;
 
@@ -130,27 +130,27 @@ namespace Singularity.Units
             // adjust to be at center of sprite
             var x = target.X - (RelativePosition.X + RelativeSize.X / 2);
             var y = target.Y - (RelativePosition.Y + RelativeSize.Y / 2);
-            var hypot = Math.Sqrt(d: Math.Pow(x: x, y: 2) + Math.Pow(x: y, y: 2));
+            var hypot = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
 
             // calculate degree between formed triangle
             double degree;
-            if (Math.Abs(value: hypot) < 0.01)
+            if (Math.Abs(hypot) < 0.01)
             {
                 degree = 0;
             }
             else
             {
-                degree = Math.Asin(d: y / hypot) * (180.0 / Math.PI);
+                degree = Math.Asin(y / hypot) * (180.0 / Math.PI);
             }
 
             // calculate rotation with increased degrees going counterclockwise
             if (x >= 0)
             {
-                mRotation = (int) Math.Round(value: 270 - degree, mode: MidpointRounding.AwayFromZero);
+                mRotation = (int) Math.Round(270 - degree, MidpointRounding.AwayFromZero);
             }
             else
             {
-                mRotation = (int) Math.Round(value: 90 + degree, mode: MidpointRounding.AwayFromZero);
+                mRotation = (int) Math.Round(90 + degree, MidpointRounding.AwayFromZero);
             }
 
             // add 42 degrees since sprite sheet starts at sprite -42deg not 0
@@ -190,15 +190,15 @@ namespace Singularity.Units
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(
-                texture: mMilSheet,
-                position: AbsolutePosition,
-                sourceRectangle: new Rectangle(x: 150 * mColumn, y: 75 * mRow, width: (int) (AbsoluteSize.X / mScale), height: (int) (AbsoluteSize.Y / mScale)),
-                color: mColor,
-                rotation: 0f,
-                origin: Vector2.Zero,
-                scale: new Vector2(value: mScale),
-                effects: SpriteEffects.None,
-                layerDepth: LayerConstants.MilitaryUnitLayer
+                mMilSheet,
+                AbsolutePosition,
+                new Rectangle(150 * mColumn, 75 * mRow, (int) (AbsoluteSize.X / mScale), (int) (AbsoluteSize.Y / mScale)),
+                mColor,
+                0f,
+                Vector2.Zero,
+                new Vector2(mScale),
+                SpriteEffects.None,
+                LayerConstants.MilitaryUnitLayer
                 );
 
             if (GlobalVariables.DebugState)
@@ -216,8 +216,8 @@ namespace Singularity.Units
             if (mShoot)
             {
                 // draws a laser line a a slight glow around the line, then sets the shoot future off
-                spriteBatch.DrawLine(point1: Center, point2: MapCoordinates(v: mEnemyPosition), color: Color.White, thickness: 2);
-                spriteBatch.DrawLine(point1: new Vector2(x: Center.X - 2, y: Center.Y), point2: MapCoordinates(v: mEnemyPosition), color: Color.White * .2f, thickness: 6);
+                spriteBatch.DrawLine(Center, MapCoordinates(mEnemyPosition), Color.White, 2);
+                spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), MapCoordinates(mEnemyPosition), Color.White * .2f, 6);
                 mShoot = false;
             }
         }
@@ -228,17 +228,17 @@ namespace Singularity.Units
 
             //make sure to update the relative bounds rectangle enclosing this unit.
             Bounds = new Rectangle(
-                x: (int)RelativePosition.X, y: (int)RelativePosition.Y, width: (int)RelativeSize.X, height: (int)RelativeSize.Y);
+                (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
 
             // this makes the unit rotate according to the mouse position when its selected and not moving.
             if (mSelected && !mIsMoving && !mShoot)
             {
-                Rotate(target: new Vector2(x: mMouseX, y: mMouseY));
+                Rotate(new Vector2(mMouseX, mMouseY));
             }
 
             else if (mShoot)
             {
-                Rotate(target: mEnemyPosition);
+                Rotate(mEnemyPosition);
             }
 
             if (HasReachedTarget())
@@ -252,13 +252,11 @@ namespace Singularity.Units
                 if (!HasReachedWaypoint())
                 {
                     MoveToTarget(target: mPath.Peek());
-
-
                 }
                 else
                 {
                     mPath.Pop();
-                    MoveToTarget(target: mPath.Peek());
+                    MoveToTarget(mPath.Peek());
                 }
             }
 
@@ -269,16 +267,16 @@ namespace Singularity.Units
             //finally select the appropriate color for selected/deselected units.
             mColor = mSelected ? sSelectedColor : sNotSelectedColor;
 
-            Center = new Vector2(x: AbsolutePosition.X + AbsoluteSize.X * mScale / 2, y: AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
-            AbsBounds = new Rectangle(x: (int)AbsolutePosition.X + 16, y: (int) AbsolutePosition.Y + 11, width: (int)(AbsoluteSize.X * mScale), height: (int) (AbsoluteSize.Y * mScale));
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * mScale / 2, AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
+            AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * mScale), (int) (AbsoluteSize.Y * mScale));
             Moved = mIsMoving;
 
             //TODO this needs to be taken out once the military manager takes control of shooting
-            if (Keyboard.GetState().IsKeyDown(key: Keys.Space))
+            if (Keyboard.GetState().IsKeyDown(Keys.Space))
             {
                 // shoots at mouse and plays laser sound at full volume
-                Shoot(target: new Vector2(x: Mouse.GetState().X, y: Mouse.GetState().Y));
-                mDirector.GetSoundManager.PlaySound(name: "LaserSound", x: Center.X, y: Center.Y, volume: 1f, pitch: 1f, isGlobal: true, loop: false, soundClass: SoundClass.Effect);
+                Shoot(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
+                mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
 
             }
         }
@@ -287,7 +285,7 @@ namespace Singularity.Units
         {
             mShoot = true;
             mEnemyPosition = target;
-            Rotate(target: target);
+            Rotate(target);
 
         }
 
@@ -298,11 +296,11 @@ namespace Singularity.Units
         private void MoveToTarget(Vector2 target)
         {
 
-            var movementVector = new Vector2(x: target.X - Center.X, y: target.Y - Center.Y);
+            var movementVector = new Vector2(target.X - Center.X, target.Y - Center.Y);
             movementVector.Normalize();
             mToAdd += mMovementVector * (float) (mZoomSnapshot *  Speed);
 
-            AbsolutePosition = new Vector2(x: (float) (AbsolutePosition.X + movementVector.X * Speed), y: (float) (AbsolutePosition.Y + movementVector.Y * Speed));
+            AbsolutePosition = new Vector2((float) (AbsolutePosition.X + movementVector.X * Speed), (float) (AbsolutePosition.Y + movementVector.Y * Speed));
         }
 
         /// <summary>
@@ -311,9 +309,9 @@ namespace Singularity.Units
         private bool HasReachedTarget()
         {
 
-            if (!(Math.Abs(value: Center.X + mToAdd.X -
+            if (!(Math.Abs(Center.X + mToAdd.X -
                            mTargetPosition.X) < 8 &&
-                  Math.Abs(value: Center.Y + mToAdd.Y -
+                  Math.Abs(Center.Y + mToAdd.Y -
                            mTargetPosition.Y) < 8))
             {
                 return false;
@@ -324,11 +322,11 @@ namespace Singularity.Units
 
         private bool HasReachedWaypoint()
         {
-            if (Math.Abs(value: Center.X + mToAdd.X - mPath.Peek().X) < 8
-                && Math.Abs(value: Center.Y + mToAdd.Y - mPath.Peek().Y) < 8)
+            if (Math.Abs(Center.X + mToAdd.X - mPath.Peek().X) < 8
+                && Math.Abs(Center.Y + mToAdd.Y - mPath.Peek().Y) < 8)
             {
-                Debug.WriteLine(message: "Waypoint reached.");
-                Debug.WriteLine(message: "Next waypoint: " +  mPath.Peek());
+                Debug.WriteLine("Waypoint reached.");
+                Debug.WriteLine("Next waypoint: " +  mPath.Peek());
                 return true;
             }
             else
@@ -339,6 +337,7 @@ namespace Singularity.Units
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
+            // todo: someone look at the ReSharper warning following here:
             var giveThrough = true;
 
             switch (mouseAction)
@@ -357,6 +356,7 @@ namespace Singularity.Units
 
                         mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
                             Matrix.Invert(mCamera.GetTransform()));
+
                         if (mMap.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
                             (int) mTargetPosition.X / MapConstants.GridWidth,
                             (int) mTargetPosition.Y / MapConstants.GridWidth))
@@ -411,10 +411,10 @@ namespace Singularity.Units
             return true;
         }
 
-        public void MousePositionChanged(float newX, float newY)
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
-            mMouseX = newX;
-            mMouseY = newY;
+            mMouseX = screenX;
+            mMouseY = screenY;
         }
 
         /// <summary>
@@ -424,9 +424,37 @@ namespace Singularity.Units
         /// <returns></returns>
         private Vector2 MapCoordinates(Vector2 v)
         {
-            return new Vector2(x: Vector2.Transform(position: new Vector2(x: v.X, y: v.Y),
-                matrix: Matrix.Invert(matrix: mCamera.GetTransform())).X, y: Vector2.Transform(position: new Vector2(x: v.X, y: v.Y),
-                matrix: Matrix.Invert(matrix: mCamera.GetTransform())).Y);
+            return new Vector2(Vector2.Transform(new Vector2(v.X, v.Y),
+                Matrix.Invert(mCamera.GetTransform())).X, Vector2.Transform(new Vector2(v.X, v.Y),
+                Matrix.Invert(mCamera.GetTransform())).Y);
+        }
+
+        /// <summary>
+        /// This is called up every time a selection box is created
+        /// if MUnit bounds intersects with the selection box then it become selected
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <param name="position"> top left corner of the selection box</param>
+        /// <param name="size"> size of selection box</param>
+        public void BoxSelected(object sender, EventArgs e, Vector2 position, Vector2 size)
+        {
+            // create a rectangle from given parameters
+            Rectangle selBox = new Rectangle((int) position.X, (int) position.Y, (int) size.X, (int) size.Y);
+
+            // check if selection box intersects with MUnit bounds
+            if (selBox.Intersects(AbsBounds))
+            {
+                mSelected = true;
+            }
+        }
+
+        public bool Die()
+        {
+            // mDirector.GetMilitaryManager.Kill(this);
+            // todo: MilitaryManager implement
+
+            return true;
         }
     }
 }

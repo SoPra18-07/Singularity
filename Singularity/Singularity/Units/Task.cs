@@ -31,5 +31,17 @@ namespace Singularity.Units
             GetResource = res;
             Action = action;
         }
+
+        public bool Contains(int id)
+        {
+            if (End.IsPresent() && End.Get().Id == id)
+                return true;
+
+            if (Begin.IsPresent() && Begin.Get().Id == id)
+                return true;
+
+            if (!Action.IsPresent()) return false;
+            return Action.Get().Id == id;
+        }
     }
 }

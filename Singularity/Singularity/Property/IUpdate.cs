@@ -5,7 +5,7 @@ namespace Singularity.Property
     /// <summary>
     /// Provides an Interface for everything that should be able to have a update method.
     /// </summary>
-    internal interface IUpdate
+    public interface IUpdate
     {
         /// <summary>
         /// Used to update logic related code.

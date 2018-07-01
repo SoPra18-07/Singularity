@@ -29,7 +29,7 @@ namespace Singularity.Map
     /// all the different buffer in the background (ColorBuffer, DepthBuffer, VertexBuffer, ...) so it shouldn't really
     /// add that much extra performance on the gpu.
     /// </remarks>
-    internal sealed class FogOfWar : IUpdate
+    public sealed class FogOfWar : IUpdate
     {
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace Singularity.Map
         /// <summary>
         /// The AlphaTestEffect compares alpha values of pixels and sets them given certain restraints.
         /// </summary>
-        private readonly AlphaTestEffect mAlphaComparator;
+        private AlphaTestEffect mAlphaComparator;
 
         /// <summary>
         /// The camera object of the game used for screen coordinae calculation.
@@ -109,7 +109,8 @@ namespace Singularity.Map
             };
 
 
-            mAlphaComparator = new AlphaTestEffect(device: graphicsDevice)
+
+            mAlphaComparator = new AlphaTestEffect(graphicsDevice)
             {
                 Projection = mCamera.GetStencilProjection(),
                 VertexColorEnabled = true,
@@ -126,11 +127,11 @@ namespace Singularity.Map
         /// <param name="spriteBatch"></param>
         public void DrawMasks(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.AlphaBlend, samplerState: null, depthStencilState: mInitializeMaskStencilState, rasterizerState: null, effect: mAlphaComparator, transformMatrix: mCamera.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, mInitializeMaskStencilState, null, mAlphaComparator, mCamera.GetTransform());
 
             foreach (var revealing in mRevealingObjects)
             {
-                spriteBatch.DrawCircle(center: revealing.Center, radius: revealing.RevelationRadius, sides: 100, color: Color.Transparent, thickness: revealing.RevelationRadius);
+                spriteBatch.DrawCircle(revealing.Center, revealing.RevelationRadius, 100, Color.Transparent, revealing.RevelationRadius);
             }
 
             spriteBatch.End();
@@ -143,9 +144,9 @@ namespace Singularity.Map
         /// <param name="spriteBatch"></param>
         public void FillInvertedMask(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.AlphaBlend, samplerState: null, depthStencilState: mApplyInvertedMaskStencilState, rasterizerState: null, effect: null, transformMatrix: mCamera.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, mApplyInvertedMaskStencilState, null, null, mCamera.GetTransform());
 
-            spriteBatch.FillRectangle(rect: new Rectangle(x: 0, y: 0, width: MapConstants.MapWidth, height: MapConstants.MapHeight), color: new Color(color: Color.Black, alpha: 0.5f));
+            spriteBatch.FillRectangle(new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight), new Color(Color.Black, 0.5f));
 
             spriteBatch.End();
         }
@@ -156,7 +157,7 @@ namespace Singularity.Map
         /// <param name="revealingObject">The object which can reveal the fog of war.</param>
         public void AddRevealingObject(IRevealing revealingObject)
         {
-            mRevealingObjects.AddLast(value: revealingObject);
+            mRevealingObjects.AddLast(revealingObject);
         }
 
         /// <summary>
@@ -165,7 +166,7 @@ namespace Singularity.Map
         /// <param name="revealingObject">The object which can reveal the fog of war.</param>
         public void RemoveRevealingObject(IRevealing revealingObject)
         {
-            mRevealingObjects.Remove(value: revealingObject);
+            mRevealingObjects.Remove(revealingObject);
         }
 
         public void Update(GameTime gametime)

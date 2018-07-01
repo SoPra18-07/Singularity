@@ -8,9 +8,13 @@ namespace Singularity.Platforms
 {
     public sealed class Road : ISpatial, IEdge
     {
-        private PlatformBlank Source { get; }
+        public Vector2 Source { get; set; }
 
-        private PlatformBlank Destination { get; }
+        public Vector2 Destination { get; set; }
+
+        private INode SourceAsNode { get; set; }
+
+        private INode DestinationAsNode { get; set; }
 
         private bool mBlueprint;
 
@@ -32,7 +36,7 @@ namespace Singularity.Platforms
             set
             {
                 mBlueprint = value;
-                if (!value) { // todo: add road to graph
+                if (!value) { // todo: add road to graph - done?
                            }
             }
         }
@@ -43,22 +47,52 @@ namespace Singularity.Platforms
         /// <param name="source">The source IRevealing object from which this road gets drawn</param>
         /// <param name="destination">The destinaion IRevealing object to which this road gets drawn</param>
         /// <param name="blueprint">Whether this road is a blueprint or not</param>
-        public Road(PlatformBlank source, PlatformBlank destination, bool blueprint)
+        public Road(PlatformBlank source, PlatformBlank destination , bool blueprint)
         {
+
             // the hardcoded values need some changes for different platforms, ill wait until those are implemented to find a good solution.
-            Source = source;
-            Destination = destination;
+            if(source == null && destination == null)
+            {
+                throw new System.Exception("Source and Destination can't both be null");
+            }
+            if(source == null && destination != null)
+            {
+                Destination = destination.Center;
+                Source = destination.Center;
+            }else if(source != null && destination == null)
+            {
+                Source = source.Center;
+                Destination = source.Center;
+            }else
+            {
+                Place(source, destination);
+            }
             Blueprint = blueprint;
 
-            source.AddEdge(edge: this, facing: EEdgeFacing.Outwards);
-            destination.AddEdge(edge: this, facing: EEdgeFacing.Inwards);
+        }
+
+        public void Place(PlatformBlank source, PlatformBlank dest)
+        {
+            if(source == null || dest == null)
+            {
+                return;
+            }
+
+            SourceAsNode = source;
+            DestinationAsNode = dest;
+
+            Source = source.Center;
+            Destination = dest.Center;
+
+            source.AddEdge(this, EEdgeFacing.Outwards);
+            dest.AddEdge(this, EEdgeFacing.Inwards);
 
         }
 
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawLine(point1: ((IRevealing)Source).Center, point2: ((IRevealing)Destination).Center, color: mBlueprint ?  new Color(color: new Vector4(x: .1803922f, y: 0.2078431f, z: .3803922f, w: .5f)) : new Color(color: new Vector3(x: .75f, y: .75f, z: .75f)), thickness: 5f, layerDepth: LayerConstants.RoadLayer);
+            spriteBatch.DrawLine(Source, Destination, mBlueprint ?  new Color(new Vector4(.1803922f, 0.2078431f, .3803922f, .5f)) : new Color(new Vector3(.75f, .75f, .75f)), 5f, LayerConstants.RoadLayer);
         }
 
         public void Update(GameTime gametime)
@@ -68,17 +102,24 @@ namespace Singularity.Platforms
 
         public INode GetParent()
         {
-            return Source;
+            return SourceAsNode;
         }
 
         public INode GetChild()
         {
-            return Destination;
+            return DestinationAsNode;
         }
 
         public float GetCost()
         {
-            return Vector2.Distance(value1: ((IRevealing) Source).Center, value2: ((IRevealing) Destination).Center);
+            return Vector2.Distance(Source, Destination);
+        }
+
+        public bool Die()
+        {
+            ((PlatformBlank) SourceAsNode).Kill(this);
+            ((PlatformBlank) DestinationAsNode).Kill(this);
+            return true;
         }
     }
 }

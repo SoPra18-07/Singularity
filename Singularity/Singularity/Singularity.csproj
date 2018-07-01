@@ -60,14 +60,21 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Levels\ILevel.cs" />
     <Compile Include="Manager\DistributionManager.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />
     <Compile Include="PlatformActions\MakeUnit.cs" />
     <Compile Include="Platforms\Barracks.cs" />
-    <Compile Include="Screen\ScreenClasses\InfoBoxWindow.cs" />
+    <Compile Include="Platforms\EPlacementType.cs" />
+    <Compile Include="Platforms\PlatformFactory.cs" />
+    <Compile Include="Platforms\PlatformPlacement.cs" />
+    <Compile Include="Property\IDie.cs" />
+    <Compile Include="Screen\InfoBoxWindow.cs" />
     <Compile Include="Property\GlobalVariables.cs" />
+    <Compile Include="Screen\InfoBarWindowObject.cs" />
     <Compile Include="Units\EnemyUnit.cs" />
     <Compile Include="Units\SelectionBox.cs" />
+    <Compile Include="Units\Settler.cs" />
     <Compile Include="Units\Task.cs" />
     <Compile Include="Exceptions\InvalidGenericArgumentException.cs" />
     <Compile Include="Exceptions\NoSuchElementException.cs" />
@@ -128,7 +135,7 @@
     <Compile Include="Screen\ITransitionableMenu.cs" />
     <Compile Include="Screen\IWindowItem.cs" />
     <Compile Include="Screen\ScreenClasses\GameScreen.cs" />
-    <Compile Include="Screen\ScreenClasses\PopupWindow.cs" />
+    <Compile Include="Screen\PopupWindow.cs" />
     <Compile Include="Screen\Slider.cs" />
     <Compile Include="Screen\ScreenClasses\UserInterfaceScreen.cs" />
     <Compile Include="Screen\Button.cs" />
@@ -166,6 +173,7 @@
     <Compile Include="Property\IUpdate.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\State3.cs" />
     <Compile Include="Utils\Geometry.cs" />
     <Compile Include="Screen\IScreen.cs" />
     <Compile Include="Screen\IScreenManager.cs" />
@@ -203,11 +211,13 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.config" />
     <None Include="app.manifest" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="Content\Shaders\Bloom.fx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Libraries\JumpPoint\" />
+    <Folder Include="Platform\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

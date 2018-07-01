@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,6 +10,7 @@ using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Sound;
+using Singularity.Units;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -16,7 +19,7 @@ namespace Singularity.Screen.ScreenClasses
     /// Handles everything thats going on explicitly in the game.
     /// E.g. game objects, the map, camera. etc.
     /// </summary>
-    internal sealed class GameScreen : IScreen
+    public sealed class GameScreen : IScreen
     {
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
         public bool Loaded { get; set; }
@@ -26,7 +29,7 @@ namespace Singularity.Screen.ScreenClasses
         private readonly FogOfWar mFow;
 
         // director for Managing all the Managers
-        private readonly Director mDirector;
+        private Director mDirector;
         private readonly GraphicsDevice mGraphicsDevice;
 
         /// <summary>
@@ -52,6 +55,10 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         private Camera mCamera;
 
+        private SelectionBox mSelBox;
+        private Texture2D mBlankPlat;
+        private Texture2D mCylPlat;
+
 
 
         public GameScreen(GraphicsDevice graphicsDevice, ref Director director, Map.Map map, Camera camera, FogOfWar fow)
@@ -68,6 +75,9 @@ namespace Singularity.Screen.ScreenClasses
 
             mDirector = director;
 
+            //mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
+            //AddObject(mSelBox);
+
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -75,27 +85,35 @@ namespace Singularity.Screen.ScreenClasses
 
             // if you're interested in whats going on here, refer to the documentation of the FogOfWar class.
 
-            spriteBatch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.AlphaBlend, samplerState: null, depthStencilState: null, rasterizerState: null, effect: null, transformMatrix: mTransformMatrix);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mTransformMatrix);
 
             foreach (var drawable in mDrawables)
             {
-                drawable.Draw(spriteBatch: spriteBatch);
+                drawable.Draw(spriteBatch);
             }
 
             spriteBatch.End();
 
-            mFow.DrawMasks(spriteBatch: spriteBatch);
+            mFow.DrawMasks(spriteBatch);
 
-            spriteBatch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.AlphaBlend, samplerState: null, depthStencilState: mFow.GetApplyMaskStencilState(), rasterizerState: null, effect: null, transformMatrix: mTransformMatrix);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, mFow.GetApplyMaskStencilState(), null, null, mTransformMatrix);
+
+            mMap.GetStructureMap().Draw(spriteBatch);
 
             foreach (var spatial in mSpatialObjects)
             {
-                spatial.Draw(spriteBatch: spriteBatch);
+                spatial.Draw(spriteBatch);
             }
 
             spriteBatch.End();
 
-            mFow.FillInvertedMask(spriteBatch: spriteBatch);
+            mFow.FillInvertedMask(spriteBatch);
+
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mTransformMatrix);
+
+            mMap.GetStructureMap().DrawAboveFow(spriteBatch);
+
+            spriteBatch.End();
         }
 
         public bool DrawLower()
@@ -105,21 +123,23 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Update(GameTime gametime)
         {
-            foreach (var spatial in mSpatialObjects)
+            foreach (var spatial in mSpatialObjects.Concat(mMap.GetStructureMap().GetPlatformList()))
             {
                 var collidingObject = spatial as ICollider;
 
                 if (collidingObject != null)
                 {
-                    mMap.UpdateCollider(collider: collidingObject);
+                    mMap.UpdateCollider(collidingObject);
                 }
 
-                spatial.RelativePosition = Vector2.Transform(position: spatial.AbsolutePosition, matrix: mCamera.GetTransform());
+                spatial.RelativePosition = Vector2.Transform(spatial.AbsolutePosition, mCamera.GetTransform());
                 spatial.RelativeSize = spatial.AbsoluteSize * mCamera.GetZoom();
 
-                spatial.Update(gametime: gametime);
+                spatial.Update(gametime);
             }
-            mFow.Update(gametime: gametime);
+            mMap.GetStructureMap().Update(gametime);
+
+            mFow.Update(gametime);
 
             mTransformMatrix = mCamera.GetTransform();
         }
@@ -127,12 +147,16 @@ namespace Singularity.Screen.ScreenClasses
         public void LoadContent(ContentManager content)
         {
 
-            AddObject(toAdd: mMap);
+            AddObject(mMap);
 
-            AddObjects(toAdd: ResourceHelper.GetRandomlyDistributedResources(amount: 5));
+            AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
 
-            mDirector.GetSoundManager.SetLevelThemeMusic(name: "Tutorial");
-            mDirector.GetSoundManager.SetSoundPhase(soundPhase: SoundPhase.Build);
+            mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
+            mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
+
+            // This is for the creation of the Command Centers from the settlers
+            mBlankPlat = content.Load<Texture2D>("PlatformBasic");
+            mCylPlat = content.Load<Texture2D>("Cylinders"); ;
         }
 
         public bool UpdateLower()
@@ -151,40 +175,57 @@ namespace Singularity.Screen.ScreenClasses
 
             var road = toAdd as Road;
             var platform = toAdd as PlatformBlank;
+            var settler = toAdd as Settler;
+            var milUnit = toAdd as MilitaryUnit;
 
-            if (!typeof(IDraw).IsAssignableFrom(c: typeof(T)) && !typeof(IUpdate).IsAssignableFrom(c: typeof(T)) && road == null && platform == null)
+            if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
                 return false;
             }
 
             if (road != null)
             {
-                mMap.AddRoad(road: road);
+                mMap.AddRoad(road);
+                return true;
             }
 
             if (platform != null)
             {
-                mMap.AddPlatform(platform: platform);
-            }
-
-            if (typeof(IRevealing).IsAssignableFrom(c: typeof(T)))
-            {
-                mFow.AddRevealingObject(revealingObject: (IRevealing)toAdd);
-            }
-
-            if (typeof(ISpatial).IsAssignableFrom(c: typeof(T)))
-            {
-                mSpatialObjects.AddLast(value: (ISpatial) toAdd);
+                mMap.AddPlatform(platform);
                 return true;
             }
 
-            if (typeof(IDraw).IsAssignableFrom(c: typeof(T)))
+            // subscribes the game screen the the settler event (to build a command center)
+            // TODO unsubscribe / delete settler when event is fired
+            if (settler != null)
             {
-                mDrawables.AddLast(value: (IDraw)toAdd);
+                settler.BuildCommandCenter += SettlerBuild;
             }
-            if (typeof(IUpdate).IsAssignableFrom(c: typeof(T)))
+
+            // subscribe every military unit to the selection box
+            if (milUnit != null)
             {
-                mUpdateables.AddLast(value: (IUpdate)toAdd);
+                //mSelBox.SelectingBox += milUnit.BoxSelected;
+            }
+
+            if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
+            {
+                mFow.AddRevealingObject((IRevealing)toAdd);
+            }
+
+            if (typeof(ISpatial).IsAssignableFrom(typeof(T)))
+            {
+                mSpatialObjects.AddLast((ISpatial) toAdd);
+                return true;
+            }
+
+            if (typeof(IDraw).IsAssignableFrom(typeof(T)))
+            {
+                mDrawables.AddLast((IDraw)toAdd);
+            }
+            if (typeof(IUpdate).IsAssignableFrom(typeof(T)))
+            {
+                mUpdateables.AddLast((IUpdate)toAdd);
             }
             return true;
 
@@ -198,11 +239,11 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>True if all given objects could be added to the screen, false otherwise</returns>
         public bool AddObjects<T>(IEnumerable<T> toAdd)
         {
-            bool isSuccessful = true;
+            var isSuccessful = true;
 
             foreach (var t in toAdd)
             {
-                isSuccessful = isSuccessful && AddObject(toAdd: t);
+                isSuccessful = isSuccessful && AddObject(t);
             }
 
             return isSuccessful;
@@ -219,42 +260,95 @@ namespace Singularity.Screen.ScreenClasses
         {
             var road = toRemove as Road;
             var platform = toRemove as PlatformBlank;
+            var settler = toRemove as Settler;
+            var milUnit = toRemove as MilitaryUnit;
 
-            if (!typeof(IDraw).IsAssignableFrom(c: typeof(T)) && !typeof(IUpdate).IsAssignableFrom(c: typeof(T)) && road == null && platform == null)
+            if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
                 return false;
             }
 
             if (road != null)
             {
-                mMap.RemoveRoad(road: road);
+                mMap.RemoveRoad(road);
             }
 
             if (platform != null)
             {
-                mMap.RemovePlatform(platform: platform);
+                mMap.RemovePlatform(platform);
             }
 
-            if (typeof(IRevealing).IsAssignableFrom(c: typeof(T)))
+            // TODO don't know if this is necessary, but unsubscribe GameScreen from this instance event
+            if (settler != null)
             {
-                mFow.RemoveRevealingObject(revealingObject: (IRevealing)toRemove);
+                settler.BuildCommandCenter -= SettlerBuild;
             }
 
-            if (typeof(ISpatial).IsAssignableFrom(c: typeof(T)))
+            // unsubscribe from this military unit when deleted
+            if (milUnit != null)
             {
-                mSpatialObjects.Remove(value: (ISpatial)toRemove);
+                //mSelBox.SelectingBox -= milUnit.BoxSelected;
+            }
+
+            if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
+            {
+                mFow.RemoveRevealingObject((IRevealing)toRemove);
+            }
+
+            if (typeof(ISpatial).IsAssignableFrom(typeof(T)))
+            {
+                mSpatialObjects.Remove((ISpatial)toRemove);
                 return true;
             }
 
-            if (typeof(IDraw).IsAssignableFrom(c: typeof(T)))
+            if (typeof(IDraw).IsAssignableFrom(typeof(T)))
             {
-                mDrawables.Remove(value: (IDraw)toRemove);
+                mDrawables.Remove((IDraw)toRemove);
             }
-            if (typeof(IUpdate).IsAssignableFrom(c: typeof(T)))
+            if (typeof(IUpdate).IsAssignableFrom(typeof(T)))
             {
-                mUpdateables.Remove(value: (IUpdate)toRemove);
+                mUpdateables.Remove((IUpdate)toRemove);
             }
             return true;
         }
+
+        public Map.Map GetMap()
+        {
+            return mMap;
+        }
+
+        public Camera GetCamera()
+        {
+            return mCamera;
+        }
+
+
+        /// <summary>
+        /// This get executed when a settler is transformed into a command center
+        /// Essentially this builds a command center
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        /// <param name="v"> the position at which the settler is currently at</param>
+        /// <param name="s"> settler passes itself along so that it can be deleted </param>
+        private void SettlerBuild(object sender, EventArgs eventArgs, Vector2 v, Settler s)
+        {
+            // TODO eventually the EPlacementType should be instance but currently that
+            // TODO requires a road to be place and therefore throws an exception !!!!!
+
+            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, (float)(v.Y-100)), mCylPlat, mBlankPlat, ref mDirector);
+            var genUnit = new GeneralUnit(cCenter, ref mDirector);
+            var genUnit2 = new GeneralUnit(cCenter, ref mDirector);
+
+            // adds the command center to the GameScreen, as well as two general units
+            AddObject(cCenter);
+            AddObject(genUnit);
+            AddObject(genUnit2);
+
+            // removes the settler from the GameScreen
+            RemoveObject(s);
+        }
+
+
     }
 }
