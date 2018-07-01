@@ -24,6 +24,8 @@ namespace Singularity.Platforms
     public class PlatformBlank : IRevealing, INode, ICollider
     {
 
+        private int mGraphIndex;
+
         private float mLayer;
 
         /// <summary>
@@ -808,6 +810,32 @@ namespace Singularity.Platforms
             mOutwardsEdges.Remove(road);
             mDirector.GetStoryManager.StructureMap.RemoveRoad((Road) road);
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(road);
+        }
+
+        public IEnumerable<INode> GetChilds()
+        {
+            var childs = new List<INode>();
+
+            foreach (var outgoing in GetOutwardsEdges())
+            {
+                childs.Add(outgoing.GetChild());
+            }
+
+            foreach (var ingoing in GetInwardsEdges())
+            {
+                childs.Add(ingoing.GetParent());
+            }
+            return childs;
+        }
+
+        public void SetGraphIndex(int graphIndex)
+        {
+            mGraphIndex = graphIndex;
+        }
+
+        public int GetGraphIndex()
+        {
+            return mGraphIndex;
         }
     }
 }

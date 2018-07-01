@@ -176,7 +176,6 @@ namespace Singularity.Platforms
                     // this case is the 'finish' state, we set everything up, so the platform can get added to the game
                     mPlatform.SetLayer(LayerConstants.PlatformLayer);
                     mConnectionRoad.Blueprint = false;
-                    mConnectionRoad.Place(mPlatform, mHoveringPlatform);
                     mIsFinished = true;
                     break;
 

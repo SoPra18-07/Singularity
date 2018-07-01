@@ -177,7 +177,7 @@ namespace Singularity.Units
 
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
 
-            // TODO modify aboslute bounds (these are taken from military unit)
+            // TODO modify absolute bounds (these are taken from military unit)
             AbsBounds = new Rectangle((int) AbsolutePosition.X + 16,
                 (int) AbsolutePosition.Y + 11,
                 (int) (AbsoluteSize.X),
