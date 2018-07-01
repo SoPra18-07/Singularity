@@ -72,14 +72,14 @@ namespace Singularity.Graph.Paths
 
         }
 
-        private IPath GetPathForGeneralUnits(GeneralUnit unit, INode destination, int GraphIndex)
+        private IPath GetPathForGeneralUnits(GeneralUnit unit, INode destination, int graphIndex)
         {
             //TODO: implement distribution on multiple graphs, then the following boolean expression can be removed
 
-            return PathfindingFactory.GetPathfinding().AStar(mGraphs[GraphIndex], unit.CurrentNode, destination);
+            return PathfindingFactory.GetPathfinding().AStar(mGraphs[graphIndex], unit.CurrentNode, destination);
         }
 
-        private IPath GetPathForMilitaryUnits(MilitaryUnit unit, INode destination, int GraphIndex)
+        private IPath GetPathForMilitaryUnits(MilitaryUnit unit, INode destination, int graphIndex)
         {
             //todo: implement
             var pathfinding = PathfindingFactory.GetPathfinding();

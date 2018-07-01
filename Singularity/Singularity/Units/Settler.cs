@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -15,54 +16,89 @@ using Singularity.Utils;
 
 namespace Singularity.Units
 {
+    [DataContract]
     class Settler: ICollider, IRevealing, IMouseClickListener, IMousePositionListener, IKeyListener
     {
 
 
         #region Declarations
+        [DataMember]
         private readonly Camera mCamera;
+        [DataMember]
         private Director mDirector;
+        [DataMember]
         private Map.Map mMap;
+        [DataMember]
         private MilitaryPathfinder mPathfinder;
+        [DataMember]
         private static readonly Color sSelectedColor = Color.Bisque;
+        [DataMember]
         private static readonly Color sNotSelectedColor = Color.Beige;
+        [DataMember]
         private bool mSelected;
+        [DataMember]
         private const double Speed = 2;
+        [DataMember]
         private bool mIsMoving;
+        [DataMember]
         private Rectangle mBoundsSnapshot;
+        [DataMember]
         private Vector2 mToAdd;
+        [DataMember]
         private double mZoomSnapshot;
+        [DataMember]
         private Vector2 mMovementVector;
+        [DataMember]
         private Vector2 mTargetPosition;
+        [DataMember]
         private float mMouseX;
+        [DataMember]
         private float mMouseY;
+        [DataMember]
         private Stack<Vector2> mPath;
         private Vector2[] mDebugPath; //TODO this is for debugging
+        [DataMember]
         private GameScreen mGameScreen;
+        [DataMember]
+        private UserInterfaceScreen mUi;
         #endregion
 
         #region Properties
         // TODO i use this bool for now to make the settler inactive
         // TODO im not sure exactly how to remove it from the
+        [DataMember]
         public bool Dead { get; private set; }
+        [DataMember]
         private int Health { get; set; }
+        [DataMember]
         public Vector2 RelativePosition { get; set; }
+        [DataMember]
         public Vector2 RelativeSize { get; set; }
+        [DataMember]
         public Vector2 AbsolutePosition { get; set; }
+        [DataMember]
         public Vector2 AbsoluteSize { get; set; }
+        [DataMember]
         public bool[,] ColliderGrid { get; }
+        [DataMember]
         public Rectangle AbsBounds { get; private set; }
+        [DataMember]
         public bool Moved { get; private set; }
+        [DataMember]
         public int Id { get; }
+        [DataMember]
         public int RevelationRadius { get; }
+        [DataMember]
         public Vector2 Center { get; private set; }
+        [DataMember]
         public EScreen Screen { get; } = EScreen.GameScreen;
+        [DataMember]
         public Rectangle Bounds { get; private set; }
 
         #endregion
 
         // constructor for settler (position)
-        public Settler(Vector2 position, Camera camera, ref Director director, ref Map.Map map, GameScreen gameScreen)
+        public Settler(Vector2 position, Camera camera, ref Director director, ref Map.Map map, GameScreen gameScreen, UserInterfaceScreen ui)
         {
             Id = IdGenerator.NextiD(); // id for the specific unit.
             Health = 10;
@@ -87,6 +123,7 @@ namespace Singularity.Units
 
             mPathfinder = new MilitaryPathfinder();
             mGameScreen = gameScreen;
+            mUi = ui;
             mTargetPosition = Center;
             Dead = false;
 
@@ -107,6 +144,9 @@ namespace Singularity.Units
             if (BuildCommandCenter != null)
             {
                 BuildCommandCenter(this, EventArgs.Empty, AbsolutePosition, this);
+                //Note: It doesnt matter if this is called multiple times from settlers other than the first settler. It will only set variables
+                //to true, that has been true already.
+                mUi.Activate();
             }
         }
         #endregion
