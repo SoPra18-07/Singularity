@@ -76,7 +76,7 @@ namespace Singularity
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
             //This needs to be done because in the Constructor of Tutorial all Ingame-things (including screens) etc. are initialized and added
-            mLevel = new Tutorial(mGraphics, ref mDirector, Content, mScreenManager);
+            mLevel = new Skirmish(mGraphics, ref mDirector, Content, mScreenManager);
 
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
             // Add the screens to the screen manager

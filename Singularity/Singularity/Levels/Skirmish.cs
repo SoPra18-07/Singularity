@@ -46,8 +46,8 @@ namespace Singularity.Levels
             dir.GetStoryManager.SetLevelType(LevelType.Skirmish);
             dir.GetStoryManager.LoadAchievements();
             mGraphics = graphics;
-            LoadContent(content);
             mScreenManager = screenmanager;
+            LoadContent(content);
         }
 
         public void LoadContent(ContentManager content)
