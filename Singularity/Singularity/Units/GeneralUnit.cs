@@ -313,7 +313,7 @@ namespace Singularity.Units
 
         public bool Die()
         {
-            mTask = new Task(job, Optional<PlatformBlank>.Of(null), null, Optional<IPlatformAction>.Of(null));
+            mTask = new Task(Job, Optional<PlatformBlank>.Of(null), null, Optional<IPlatformAction>.Of(null));
             if (Carrying.IsPresent())
             {
                 Carrying.Get().Die();
