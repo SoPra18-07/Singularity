@@ -59,7 +59,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             spriteBatch.Begin();
 
-            spriteBatch.FillRectangle(Position, new Vector2(300, 400), new Color(0.27f, 0.5f, 0.7f, 0.8f), 0f);
+            spriteBatch.StrokedRectangle(Position, new Vector2(300,400), Color.White, new Color(0.27f, 0.5f, 0.7f, 0.8f), 1f, 1f);
             mAchievementButton.Draw(spriteBatch);
             mStatisticsButton.Draw(spriteBatch);
             mCloseButton.Draw(spriteBatch);
