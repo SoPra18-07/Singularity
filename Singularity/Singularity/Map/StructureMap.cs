@@ -78,7 +78,7 @@ namespace Singularity.Map
             mFow.AddRevealingObject(platform);
 
             var graph = Bfs(platform);
-            
+
             foreach (var node in graph.GetNodes())
             {
                 // if the platform in the current reachability graph isn't known then we don't do anything
