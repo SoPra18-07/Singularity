@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -171,6 +172,8 @@ namespace Singularity.Platforms
 
             Moved = false;
             UpdateValues();
+
+            Debug.WriteLine("PlatformBlank created");
 
         }
 
@@ -447,7 +450,7 @@ namespace Singularity.Platforms
                     // Dome
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
-                        new Rectangle(148 * (mSheetPosition % 4), 109 * (int) Math.Floor(mSheetPosition / 4d), 148, 109),
+                        new Rectangle(148 * (mSheetPosition % 4), 109 * mSheetPosition / 4, 148, 109),
                         mColor * transparency,
                         0f,
                         Vector2.Zero,

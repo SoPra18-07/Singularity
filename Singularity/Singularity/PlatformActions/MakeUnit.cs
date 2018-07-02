@@ -20,8 +20,8 @@ namespace Singularity.PlatformActions
 
         public override void CreateUnit()
         {
-            var unit = new MilitaryUnit(mPlatform.Center + mOffset, mDirector.GetMilitaryManager.GetMilitarySpriteSheet(), mDirector.GetStoryManager.Level.Camera, ref mDirector, mDirector.GetStoryManager.StructureMap.);
-            mDirector.
+            var unit = MilitaryUnit.CreateMilitaryUnit(mPlatform.Center + mOffset, ref mDirector);
+
         }
     }
 

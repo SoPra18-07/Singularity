@@ -21,7 +21,10 @@ namespace Singularity.Levels
 
         public Camera Camera { get; set; }
 
+
         public Map.Map Map { get; set; }
+
+        
 
         [DataMember]
         private GraphicsDeviceManager mGraphics;
@@ -117,11 +120,12 @@ namespace Singularity.Levels
             var genUnit5 = new GeneralUnit(mPlatform, ref mDirector);
 
             //MilUnits
-            MilitaryUnit.sMilSheet = milUnitSheet;
-            var milUnit = new MilitaryUnit(new Vector2(2000, 700), Camera, ref mDirector, ref Map);
+            var map = Map;
+            MilitaryUnit.mMilSheet = milUnitSheet;
+            var milUnit = new MilitaryUnit(new Vector2(2000, 700), Camera, ref mDirector, ref map);
 
             //SetUnit
-            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref Map, GameScreen, mUi);
+            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, mUi);
             
 
             // Resources

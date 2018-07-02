@@ -44,7 +44,7 @@ namespace Singularity.Units
 
         private Vector2 mTargetPosition;
         private int mRotation;
-        public static Texture2D sMilSheet;
+        public static Texture2D mMilSheet;
 
         private bool mSelected;
 
@@ -111,7 +111,7 @@ namespace Singularity.Units
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
 
-            if (sMilSheet == null)
+            if (mMilSheet == null)
             {
                 throw new Exception("load the sMilSheet first!");
             }
@@ -124,7 +124,8 @@ namespace Singularity.Units
 
         public static MilitaryUnit CreateMilitaryUnit(Vector2 position, ref Director director)
         {
-            return new MilitaryUnit(position, director.GetStoryManager.Level.Camera, ref director, ref director.GetStoryManager.Level.GetMap());
+            var map = director.GetStoryManager.Level.Map;
+            return new MilitaryUnit(position, director.GetStoryManager.Level.Camera, ref director, ref map);
         }
 
 
@@ -199,7 +200,7 @@ namespace Singularity.Units
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(
-                sMilSheet,
+                mMilSheet,
                 AbsolutePosition,
                 new Rectangle(150 * mColumn, 75 * mRow, (int) (AbsoluteSize.X / mScale), (int) (AbsoluteSize.Y / mScale)),
                 mColor,

@@ -75,7 +75,7 @@ namespace Singularity.PlatformActions
     }
 
 
-    public class BuildBluePrint : AMakeUnit
+    public sealed class BuildBluePrint : AMakeUnit
     {
         private Dictionary<EResourceType, int> mMRequiredResources;
 
@@ -87,6 +87,11 @@ namespace Singularity.PlatformActions
         }
 
         public override List<JobType> UnitsRequired { get; } = new List<JobType> {JobType.Construction};
+
+        public override void CreateUnit()
+        {
+            throw new NotImplementedException();
+        }
 
         public override void Execute()
         {
