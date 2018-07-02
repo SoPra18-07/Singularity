@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
-using Singularity.Platform;
+using Singularity.Platforms;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -40,6 +41,16 @@ namespace Singularity.Screen.ScreenClasses
         private int mCurrentScreenWidth;
         private int mCurrentScreenHeight;
 
+        // save the last resolution -> needed to update the window position when changes in res ingame
+        private int mPrevScreenWidth;
+        private int mPrevScreenHeight;
+
+        // director
+        private Director mDirector;
+
+        // screen manager -- needed for pause menu
+        private IScreenManager mScreenManager;
+
         // needed to calculate screen-sizes
         private readonly GraphicsDeviceManager mGraphics;
 
@@ -56,15 +67,33 @@ namespace Singularity.Screen.ScreenClasses
 
         private PlatformPlacement mPlatformToPlace;
 
+        #region infoBar members
+
+        // info bar
+        private InfoBarWindowObject mInfoBar;
+
+
+
+        // units of info bar
+        // TODO : ??
+
+        #endregion
+
         #region civilUnitsWindow members
 
+        // civil units window
+        private WindowObject mCivilUnitsWindow;
+
+        // standard position
+        private Vector2 mCivilUnitsWindowStandardPos;
+
+        // sliders for distribution
         private Slider mDefSlider;
         private Slider mBuildSlider;
         private Slider mLogisticsSlider;
         private Slider mProductionSlider;
 
-        private Director mDirector;
-
+        // text for sliders
         private TextField mDefTextField;
         private TextField mBuildTextField;
         private TextField mLogisticsTextField;
@@ -74,11 +103,29 @@ namespace Singularity.Screen.ScreenClasses
 
         #region resourceWindow members
         // TODO : ALL WITH RESOURCE-IWindowItems
+
+        // resource window
+        private WindowObject mResourceWindow;
+
+        // standard position
+        private Vector2 mResourceWindowStandardPos;
+
+        #endregion
+
+        #region eventLog members
+        // TODO : IMPLEMENT EVENT LOG
+
+        // event log window
+        private WindowObject mEventLogWindow;
+
+        // standard position
+        private Vector2 mEventLogWindowStandardPos;
+
         #endregion
 
         #region buildMenuWindow members
-        
-        // build window
+
+        // build menu window
         private WindowObject mBuildMenuWindow;
 
         // vertical lists
@@ -111,7 +158,7 @@ namespace Singularity.Screen.ScreenClasses
         private Button mLaserTowerPlatformButton;
         private Button mBarracksPlatformButton;
 
-        // infoBox of buttons TODO
+        // infoBox of buttons TODO : ADD COSTS
         private InfoBoxWindow mInfoBuildBlank;
         private InfoBoxWindow mInfoBasicList;
         private InfoBoxWindow mInfoSpecialList;
@@ -157,7 +204,9 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         /// <param name="director"></param>
         /// <param name="mgraphics"></param>
-        public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, GameScreen gameScreen)
+        /// <param name="gameScreen"></param>
+        /// <param name="stackScreenManager"></param>
+        public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, GameScreen gameScreen, IScreenManager stackScreenManager)
         {
             mStructureMap = gameScreen.GetMap().GetStructureMap();
             mResourceMap = gameScreen.GetMap().GetResourceMap();
@@ -165,6 +214,7 @@ namespace Singularity.Screen.ScreenClasses
             mCanBuildPlatform = true;
 
             mDirector = director;
+            mScreenManager = stackScreenManager;
             mInputManager = director.GetInputManager;
             mGraphics = mgraphics;
 
@@ -182,6 +232,23 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Update(GameTime gametime)
         {
+            // update screen size
+            mCurrentScreenWidth = mGraphics.PreferredBackBufferWidth;
+            mCurrentScreenHeight = mGraphics.PreferredBackBufferHeight;
+
+            // if the resolution has changed -> reset windows to standard positions
+            if (mCurrentScreenWidth != mPrevScreenWidth || mCurrentScreenHeight != mPrevScreenHeight)
+            {
+                mPrevScreenWidth = mCurrentScreenWidth;
+                mPrevScreenHeight = mCurrentScreenHeight;
+
+                // reset position to standard position
+                ResetWindowsToStandardPositon();
+
+                // update infoBar width to fit the new resolution
+                mInfoBar.Width = mCurrentScreenWidth;
+            }
+
             // update all windows
             foreach (var window in mWindowList)
             {
@@ -195,6 +262,9 @@ namespace Singularity.Screen.ScreenClasses
                     infoBox.Update(gametime);
                 }
             }
+
+            // TODO : JUST FOR TESTING
+            mInfoBar.Update(gametime);
 
             #region testing
 
@@ -220,10 +290,6 @@ namespace Singularity.Screen.ScreenClasses
             {
                 mCanBuildPlatform = true;
             }
-
-            // update screen size TODO : UPDATE POSITIONS OF THE WINDOWS WHEN RES-CHANGE IN PAUSE MENU
-            mCurrentScreenWidth = mGraphics.PreferredBackBufferWidth;
-            mCurrentScreenHeight = mGraphics.PreferredBackBufferHeight;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -250,6 +316,9 @@ namespace Singularity.Screen.ScreenClasses
                 }
             }
 
+            // TODO : JUST FOR TESTING
+            mInfoBar.Draw(spriteBatch);
+
             spriteBatch.End();
         }
 
@@ -267,70 +336,61 @@ namespace Singularity.Screen.ScreenClasses
             // resolution
             mCurrentScreenWidth = mGraphics.PreferredBackBufferWidth;
             mCurrentScreenHeight = mGraphics.PreferredBackBufferHeight;
+            mPrevScreenWidth = mCurrentScreenWidth;
+            mPrevScreenHeight = mCurrentScreenHeight;
 
-            #region windows pos+size calculation
-            // TODO : CHANGE TO FIX VALUES
             // change color for the border or the filling of all userinterface windows here
             var windowColor = new Color(0.27f, 0.5f, 0.7f, 0.8f);
             var borderColor = new Color(0.68f, 0.933f, 0.933f, .8f);
 
+            #region windows size calculation
+
             // position + size of topBar
-            var topBarHeight = mCurrentScreenHeight / 30;
+            const float topBarHeight = 25;
             var topBarWidth = mCurrentScreenWidth;
 
-            // position + size of civilUnits window
-            var civilUnitsX = topBarHeight / 2;
-            var civilUnitsY = topBarHeight / 2 + topBarHeight;
-            var civilUnitsWidth = (int)(mCurrentScreenWidth / 4.5);
-            var civilUnitsHeight = (int)(mCurrentScreenHeight / 1.8);
+            // size of resource window
+            const float resourceWidth = 240;
+            const float resourceHeight = 262;
 
-            // position + size of resource window
-            var resourceX = topBarHeight / 2;
-            var resourceY = 2 * (topBarHeight / 2) + topBarHeight + civilUnitsHeight;
-            var resourceWidth = civilUnitsWidth;
-            var resourceHeight = (int)(mCurrentScreenHeight / 2.75);
+            // size of civilUnits window
+            const float civilUnitsWidth = 240;
+            const float civilUnitsHeight = 400;
 
-            // position + size of eventLog window
-            var eventLogWidth = civilUnitsWidth;
-            var eventLogHeight = (int)(mCurrentScreenHeight / 2.5);
-            var eventLogX = mCurrentScreenWidth - eventLogWidth - topBarHeight / 2;
-            var eventLogY = civilUnitsY;
+            // size of buildMenu window
+            const float buildMenuWidth = 240;
+            const float buildMenuHeight = 170;
 
-            // position + size of buildMenu window
-            var buildMenuWidth = eventLogWidth + 10;
-            var buildMenuHeight = eventLogHeight / 1.7; // TODO 
-            float buildMenuX = mCurrentScreenWidth - buildMenuWidth;
-            float buildMenuY = mCurrentScreenHeight - (float)buildMenuHeight;
+            // size of eventLog window
+            const float eventLogWidth = 240;
+            const float eventLogHeight = 288;
 
             #endregion
 
             // TODO
-            #region topBarWindow
+            #region infoBarWindow
 
-            // var topBarWindow = new WindowObject("", new Vector2(0, 0), new Vector2(topBarWidth, topBarHeight), borderColor, windowColor, 10f, 10f, false, mLibSans20, mInputManager, mGraphics);
-
-            // create items
-
-            // add all items
+            // NOTICE: this window is the only window which is compeletely created and managed in its own class due to very different tasks
+            mInfoBar = new InfoBarWindowObject(borderColor, windowColor, mGraphics, mLibSans14, mDirector, mScreenManager);
 
             #endregion
 
             // TODO
             #region eventLogWindow
 
-            var eventLogWindow = new WindowObject("// EVENT LOG", new Vector2(eventLogX, eventLogY), new Vector2(eventLogWidth, eventLogHeight), true, mLibSans14, mInputManager, mGraphics);
+            mEventLogWindow = new WindowObject("// EVENT LOG", new Vector2(0, 0), new Vector2(eventLogWidth, eventLogHeight), true, mLibSans14, mInputManager, mGraphics);
 
-            // create items
+                // create items
 
-            // add all items
+                // add all items
 
-            mWindowList.Add(eventLogWindow);
+                mWindowList.Add(mEventLogWindow);
 
-            #endregion
+                #endregion
 
             #region civilUnitsWindow
 
-            var civilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(civilUnitsX, civilUnitsY), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 10, 20, true, mLibSans14, mInputManager, mGraphics);
+            mCivilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(0, 0), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 10, 20, true, mLibSans14, mInputManager, mGraphics);
 
             // create items
             //TODO: Create an object representing the Idle units at the moment. Something like "Idle: 24" should be enough
@@ -352,23 +412,23 @@ namespace Singularity.Screen.ScreenClasses
             //mProductionSlider.SliderMoving += mDirector.GetDistributionManager.ProductionSlider();
 
             // adding all items
-            civilUnitsWindow.AddItem(mDefTextField);
-            civilUnitsWindow.AddItem(mDefSlider);
-            civilUnitsWindow.AddItem(mBuildTextField);
-            civilUnitsWindow.AddItem(mBuildSlider);
-            civilUnitsWindow.AddItem(mLogisticsTextField);
-            civilUnitsWindow.AddItem(mLogisticsSlider);
-            civilUnitsWindow.AddItem(mProductionTextField);
-            civilUnitsWindow.AddItem(mProductionSlider);
+            mCivilUnitsWindow.AddItem(mDefTextField);
+            mCivilUnitsWindow.AddItem(mDefSlider);
+            mCivilUnitsWindow.AddItem(mBuildTextField);
+            mCivilUnitsWindow.AddItem(mBuildSlider);
+            mCivilUnitsWindow.AddItem(mLogisticsTextField);
+            mCivilUnitsWindow.AddItem(mLogisticsSlider);
+            mCivilUnitsWindow.AddItem(mProductionTextField);
+            mCivilUnitsWindow.AddItem(mProductionSlider);
 
-            mWindowList.Add(civilUnitsWindow);
+            mWindowList.Add(mCivilUnitsWindow);
 
             #endregion
 
             // TODO
             #region resourceWindow
 
-            var resourceWindow = new WindowObject("// RESOURCES", new Vector2(resourceX, resourceY), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mInputManager, mGraphics);
+            mResourceWindow = new WindowObject("// RESOURCES", new Vector2(0, 0), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mInputManager, mGraphics);
 
             // create items
 
@@ -388,19 +448,18 @@ namespace Singularity.Screen.ScreenClasses
 
             mTextFieldTest = new TextField(testText, Vector2.One, new Vector2(resourceWidth - 50, resourceHeight), mLibSans12);
 
-            resourceWindow.AddItem(mTextFieldTest);
+            mResourceWindow.AddItem(mTextFieldTest);
 
             #endregion
 
-            mWindowList.Add(resourceWindow);
+            mWindowList.Add(mResourceWindow);
 
             #endregion
 
             // TODO
-
             #region buildMenuWindow
 
-            mBuildMenuWindow = new WindowObject("// BUILDMENU", new Vector2(buildMenuX, buildMenuY), new Vector2(buildMenuWidth, (float)buildMenuHeight), true, mLibSans14, mInputManager, mGraphics);
+            mBuildMenuWindow = new WindowObject("// BUILDMENU", new Vector2(0, 0), new Vector2(buildMenuWidth, buildMenuHeight), true, mLibSans14, mInputManager, mGraphics);
 
             #region button definitions
 
@@ -869,26 +928,28 @@ namespace Singularity.Screen.ScreenClasses
             var specialList = new List<IWindowItem> { mJunkyardPlatformButton, mQuarryPlatformButton, mMinePlatformButton, mWellPlatformButton };
             var militaryList = new List<IWindowItem> { mArmoryPlatformButton, mKineticTowerPlatformButton, mLaserTowerPlatformButton, mBarracksPlatformButton };
             // create the horizontalCollection objects which process the button-row placement
-            mButtonTopList = new HorizontalCollection(topList, new Vector2(buildMenuWidth - 20, mBlankPlatformButton.Size.X), Vector2.Zero);
-            mButtonBasicList = new HorizontalCollection(basicList, new Vector2(buildMenuWidth - 20, mBlankPlatformButton.Size.X), Vector2.Zero);
-            mButtonSpecialList = new HorizontalCollection(specialList, new Vector2(buildMenuWidth - 20, mBlankPlatformButton.Size.X), Vector2.Zero);
-            mButtonMilitaryList = new HorizontalCollection(militaryList, new Vector2(buildMenuWidth - 20, mBlankPlatformButton.Size.X), Vector2.Zero);
+            mButtonTopList = new HorizontalCollection(topList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
+            mButtonBasicList = new HorizontalCollection(basicList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
+            mButtonSpecialList = new HorizontalCollection(specialList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
+            mButtonMilitaryList = new HorizontalCollection(militaryList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
             // add the all horizontalCollection to the build menu window, but deactivate all but topList
             // (they get activated if the corresponding button is pressed)
             mBuildMenuWindow.AddItem(mButtonTopList);
-            mBuildMenuWindow.AddItem(mButtonMilitaryList);
-            mButtonMilitaryList.ActiveHorizontalCollection = false;
             mBuildMenuWindow.AddItem(mButtonBasicList);
-            mButtonBasicList.ActiveHorizontalCollection = false;
+            mButtonBasicList.ActiveHorizontalCollection = true;
             mBuildMenuWindow.AddItem(mButtonSpecialList);
             mButtonSpecialList.ActiveHorizontalCollection = false;
-            
+            mBuildMenuWindow.AddItem(mButtonMilitaryList);
+            mButtonMilitaryList.ActiveHorizontalCollection = false;
+
             // add the build menu to the UI's windowList
             mWindowList.Add(mBuildMenuWindow);
 
             #endregion
 
             #endregion
+
+            ResetWindowsToStandardPositon();
 
             // TODO : DELETE AFTER SPRINT
             #region testing popup window
@@ -924,6 +985,9 @@ namespace Singularity.Screen.ScreenClasses
             mPopupWindowList.Add(mTestPopupWindow);
 
             #endregion
+
+            //DEACTIVATE EVERYTHING TO ACTIVATE IT LATER
+            Deactivate();
         }
 
         public bool UpdateLower()
@@ -937,6 +1001,46 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         public bool Loaded { get; set; }
+
+        private void ResetWindowsToStandardPositon()
+        {
+            // resource window position
+            mResourceWindow.Position = new Vector2(12, mCurrentScreenHeight - 12 - mResourceWindow.Size.Y);
+
+            // civil units position
+            mCivilUnitsWindow.Position = new Vector2(12, 12 + 25);
+
+            // build menu position
+            mBuildMenuWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mBuildMenuWindow.Size.X, mCurrentScreenHeight - 12 - mBuildMenuWindow.Size.Y);
+
+            // event log position
+            mEventLogWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mEventLogWindow.Size.X, 12 + 25);
+        }
+
+        /// <summary>
+        /// Used to Deactivate the UI to activate it later (used by settler)
+        /// </summary>
+        public void Deactivate()
+        {
+            foreach (var window in mWindowList)
+            {
+                window.Active = false;
+            }
+            //Treat our special snowflake
+            mInfoBar.Active = false;
+        }
+
+        /// <summary>
+        /// Used to Activate the UI. This was thought to be used by the settler when he spawns the CommandCenter.
+        /// </summary>
+        public void Activate()
+        {
+            foreach (var window in mWindowList)
+            {
+                window.Active = true;
+            }
+            mInfoBar.Active = true;
+        }
 
         // TODO : ADD ALL BUILD PLATFORM ACTIONS
         #region button management
@@ -956,8 +1060,6 @@ namespace Singularity.Screen.ScreenClasses
             mButtonBasicList.ActiveHorizontalCollection = true;
             mButtonSpecialList.ActiveHorizontalCollection = false;
             mButtonMilitaryList.ActiveHorizontalCollection = false;
-
-
         }
 
         // mouse click on special list button opens the special platform build menu
@@ -1041,7 +1143,7 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-            
+
             mPlatformToPlace = new PlatformPlacement(
                 EPlatformType.Quarry,
                 EPlacementType.MouseFollowAndRoad,
@@ -1306,8 +1408,7 @@ namespace Singularity.Screen.ScreenClasses
 
         #endregion
 
-        // All build buttons show a little info window at the mouse pointer showing costs + name what gets build
-        // while the mouse is hovering above the button
+        // All build buttons show a little info window mouse is hovering of costs + name of what gets build
         #region buttonHovering Info
 
         // NOTICE : all following hovering- or hoveringEnd- methods do basically the same:

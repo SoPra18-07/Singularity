@@ -3,9 +3,10 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
+using Singularity.PlatformActions;
 using Singularity.Resources;
 
-namespace Singularity.Platform
+namespace Singularity.Platforms
 {
     [DataContract]
     class Junkyard : PlatformBlank
@@ -14,14 +15,9 @@ namespace Singularity.Platform
         private const int PlatformWidth = 144;
         [DataMember]
         private const int PlatformHeight = 127;
-        [DataMember]
-        private Director mDirector;
 
         public Junkyard(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director dir) : base(position, platformSpriteSheet, baseSprite, ref dir, EPlatformType.Junkyard, -50)
         {
-            mDirector = dir;
-            //Add possible Actions in this array
-            mIPlatformActions = new IPlatformAction[1];
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();

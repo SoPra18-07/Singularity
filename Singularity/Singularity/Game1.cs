@@ -16,7 +16,7 @@ namespace Singularity
         internal readonly GraphicsAdapter mGraphicsAdapter;
 
         // Screens
-        private GameScreen mGameScreen;
+        private ILevel mLevel;
         private MainMenuManagerScreen mMainMenuManager;
         private UserInterfaceScreen mUserInterfaceScreen;
 
@@ -75,21 +75,15 @@ namespace Singularity
             // Create a new SpriteBatch, which can be used to draw textures.
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
-
-            mGameScreen = new Skirmish(mGraphics.GraphicsDevice, ref mDirector, Content).GetGameScreen();
-
-            //mGameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector);
+            //This needs to be done because in the Constructor of Tutorial all Ingame-things (including screens) etc. are initialized and added
+            mLevel = new Skirmish(mGraphics, ref mDirector, Content, mScreenManager);
 
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
-
-            mUserInterfaceScreen = new UserInterfaceScreen(ref mDirector, mGraphics, mGameScreen);
-
             // Add the screens to the screen manager
             // The idea is that the game screen is always at the bottom and stuff is added simply
             // on top of it.
-            mScreenManager.AddScreen(mGameScreen);
-            mScreenManager.AddScreen(mUserInterfaceScreen);
-            // mScreenManager.AddScreen(mMainMenuManager); // TODO: This makes it so that the main menu is bypassed
+            //ATTENTION: THE INGAME SCREENS ARE HANDLED IN THE LEVELS NOW!
+            //mScreenManager.AddScreen(mMainMenuManager); // TODO: This makes it so that the main menu is bypassed
 
             // load and play Soundtrack as background music
             // todo this

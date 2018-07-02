@@ -60,15 +60,20 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Levels\ILevel.cs" />
     <Compile Include="Manager\DistributionManager.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />
-    <Compile Include="Platform\EPlacementType.cs" />
-    <Compile Include="Platform\PlatformFactory.cs" />
-    <Compile Include="Platform\PlatformPlacement.cs" />
-    <Compile Include="Screen\ScreenClasses\InfoBoxWindow.cs" />
+    <Compile Include="PlatformActions\MakeUnit.cs" />
+    <Compile Include="Platforms\EPlacementType.cs" />
+    <Compile Include="Platforms\PlatformFactory.cs" />
+    <Compile Include="Platforms\PlatformPlacement.cs" />
+    <Compile Include="Property\IDie.cs" />
+    <Compile Include="Screen\InfoBoxWindow.cs" />
     <Compile Include="Property\GlobalVariables.cs" />
+    <Compile Include="Screen\InfoBarWindowObject.cs" />
     <Compile Include="Units\EnemyUnit.cs" />
     <Compile Include="Units\SelectionBox.cs" />
+    <Compile Include="Units\Settler.cs" />
     <Compile Include="Units\Task.cs" />
     <Compile Include="Exceptions\InvalidGenericArgumentException.cs" />
     <Compile Include="Exceptions\NoSuchElementException.cs" />
@@ -109,26 +114,26 @@
     <Compile Include="Input\InputManager.cs" />
     <Compile Include="Input\KeyEvent.cs" />
     <Compile Include="Input\MouseAction.cs" />
-    <Compile Include="Platform\CommandCenter.cs" />
-    <Compile Include="Platform\EnergyFacility.cs" />
-    <Compile Include="Platform\EPlatformType.cs" />
-    <Compile Include="Platform\Factory.cs" />
-    <Compile Include="Platform\Junkyard.cs" />
-    <Compile Include="Platform\Mine.cs" />
-    <Compile Include="Platform\Quarry.cs" />
-    <Compile Include="Platform\Storage.cs" />
-    <Compile Include="Platform\Well.cs" />
-    <Compile Include="Platform\IPlatformAction.cs" />
-    <Compile Include="Platform\Road.cs" />
+    <Compile Include="Platforms\CommandCenter.cs" />
+    <Compile Include="Platforms\EnergyFacility.cs" />
+    <Compile Include="Platforms\EPlatformType.cs" />
+    <Compile Include="Platforms\Factory.cs" />
+    <Compile Include="Platforms\Junkyard.cs" />
+    <Compile Include="Platforms\Mine.cs" />
+    <Compile Include="Platforms\Quarry.cs" />
+    <Compile Include="Platforms\Storage.cs" />
+    <Compile Include="Platforms\Well.cs" />
+    <Compile Include="PlatformActions\IPlatformAction.cs" />
+    <Compile Include="Platforms\Road.cs" />
     <Compile Include="Property\ICollider.cs" />
     <Compile Include="Property\IRevealing.cs" />
     <Compile Include="Resources\EResourceType.cs" />
-    <Compile Include="Platform\PlatformBlank.cs" />
+    <Compile Include="Platforms\PlatformBlank.cs" />
     <Compile Include="Screen\EOptionScreenState.cs" />
     <Compile Include="Screen\ITransitionableMenu.cs" />
     <Compile Include="Screen\IWindowItem.cs" />
     <Compile Include="Screen\ScreenClasses\GameScreen.cs" />
-    <Compile Include="Screen\ScreenClasses\PopupWindow.cs" />
+    <Compile Include="Screen\PopupWindow.cs" />
     <Compile Include="Screen\Slider.cs" />
     <Compile Include="Screen\ScreenClasses\UserInterfaceScreen.cs" />
     <Compile Include="Screen\Button.cs" />
@@ -175,8 +180,8 @@
     <Compile Include="Utils\Optional.cs" />
     <Compile Include="Utils\Pair.cs" />
     <Compile Include="Utils\Triple.cs" />
-    <Compile Include="Platform\PlatformActionState.cs" />
-    <Compile Include="Platform\ProduceResource.cs" />
+    <Compile Include="PlatformActions\PlatformActionState.cs" />
+    <Compile Include="PlatformActions\ProduceResource.cs" />
     <Compile Include="Resources\Resource.cs" />
     <Compile Include="Screen\WindowObject.cs" />
     <Compile Include="Screen\HorizontalCollection.cs" />
@@ -204,6 +209,7 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.config" />
     <None Include="app.manifest" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="Content\Shaders\Bloom.fx" />
     <None Include="packages.config" />
   </ItemGroup>

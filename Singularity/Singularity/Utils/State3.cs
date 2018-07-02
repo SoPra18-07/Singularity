@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Singularity.Utils
 {
+    /// <summary>
+    /// These are the states for the PlatformPlacer.
+    /// </summary>
     public class State3
     {
         private bool mIsFirstState;
@@ -85,7 +84,7 @@ namespace Singularity.Utils
         }
 
         /// <summary>
-        /// Gets the current state. 
+        /// Gets the current state.
         /// </summary>
         /// <returns>Returns the number of the current state, and -1 if no state is currently active.</returns>
         public int GetState()

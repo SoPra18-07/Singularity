@@ -1,4 +1,4 @@
-﻿namespace Singularity.Platform
+﻿namespace Singularity.Platforms
 {
     public enum EPlatformType
     {

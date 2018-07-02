@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Globalization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -37,7 +36,7 @@ namespace Singularity.Screen
         // size of a page relative to the lenght of the slider bar
         private float mPageSize;
 
-        // font for writing the value string of the slider 
+        // font for writing the value string of the slider
         private readonly SpriteFont mFont;
         private String mStringValue;
 
@@ -51,7 +50,7 @@ namespace Singularity.Screen
 
         public event SliderMovingEventHandler SliderMoving;
 
-        // event handler for sending out event of page slider is located on 
+        // event handler for sending out event of page slider is located on
         public delegate void PageMovingEventHandler(object source, EventArgs args, int currentPage);
 
         public event PageMovingEventHandler PageMoving;
@@ -59,7 +58,7 @@ namespace Singularity.Screen
         #endregion
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="position"> position of the slider bar left hand corner</param>
         /// <param name="length"> length of the slider bar</param>
@@ -76,7 +75,7 @@ namespace Singularity.Screen
             ref Director director,
             bool withValueBox = true,
             bool withPages = false,
-            int pages = 0)
+            int pages = 0, EScreen screen = EScreen.UserInterfaceScreen)
         {
             Position = position;
             mLastPosition = position;
@@ -92,8 +91,8 @@ namespace Singularity.Screen
             Pages = pages;
             mLastPages = pages;
             mDirector = director;
-            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
-            mDirector.GetInputManager.AddMousePositionListener(this);
+            mDirector.GetInputManager.AddMouseClickListener(iMouseClickListener: this, leftClickType: EClickType.Both, rightClickType: EClickType.Both);
+            mDirector.GetInputManager.AddMousePositionListener(iMouseListener: this);
 
             // if value box requested, initiate string value to 0
             if (mWithValue)
@@ -134,7 +133,7 @@ namespace Singularity.Screen
         /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
-            // if slider should be shown 
+            // if slider should be shown
             if (ActiveWindow)
             {
                 mMin = Position.X;
@@ -388,6 +387,7 @@ namespace Singularity.Screen
             {
                 // when left key is pressed and mouse within slider bounds then make slider slave to mouse
                 case EMouseAction.LeftClick:
+
                     if (Mouse.GetState().X >= mCurrentX - (Size.Y / 2) &&
                         Mouse.GetState().X <= mCurrentX + (Size.Y / 2) &&
                         Mouse.GetState().Y >= Position.Y - (Size.Y / 2) &&
@@ -427,7 +427,7 @@ namespace Singularity.Screen
         //(length of bar, size of slider)
         public Vector2 Size { get; }
 
-        // can make slider not active (not drawn and nothing happens) 
+        // can make slider not active (not drawn and nothing happens)
         public bool ActiveWindow { get; set; }
 
         // can change the amount of pages available on slider bar
@@ -439,10 +439,7 @@ namespace Singularity.Screen
 
         public int CurrentPage() {return mCurrentPage;}
 
-        #endregion
-        #region NotUsed
-
-        public EScreen Screen { get; }
+        public EScreen Screen { get;}
 
         public Rectangle Bounds { get; }
         public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)

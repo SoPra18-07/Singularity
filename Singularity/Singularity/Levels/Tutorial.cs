@@ -1,10 +1,12 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
-using Singularity.Platform;
+using Singularity.Screen;
+using Singularity.Platforms;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 
@@ -12,13 +14,12 @@ namespace Singularity.Levels
 {
     //Not sure whether this should be serialized, but I guess...
     [DataContract]
-    class Tutorial
+    class Tutorial: ILevel
     {
         [DataMember]
-        private GameScreen mGameScreen;
+        public GameScreen GameScreen { get; set; }
         [DataMember]
-        private GraphicsDevice mGraphics;
-        [DataMember]
+        private GraphicsDeviceManager mGraphics;
         private Map.Map mMap;
         [DataMember]
         private Camera mCamera;
@@ -27,16 +28,22 @@ namespace Singularity.Levels
         [DataMember]
         private Director mDirector;
 
+        [DataMember]
+        private UserInterfaceScreen mUi;
+        [DataMember]
+        private IScreenManager mScreenManager;
+
         //GameObjects to initialize:
         [DataMember]
         private CommandCenter mPlatform;
 
-        public Tutorial(GraphicsDevice graphics, ref Director dir, ContentManager content)
+        public Tutorial(GraphicsDeviceManager graphics, ref Director director, ContentManager content, IScreenManager screenmanager)
         {
-            mDirector = dir;
-            dir.GetStoryManager.SetLevelType(LevelType.Tutorial);
-            dir.GetStoryManager.LoadAchievements();
+            mDirector = director;
+            mDirector.GetStoryManager.SetLevelType(LevelType.Tutorial, this);
+            mDirector.GetStoryManager.LoadAchievements();
             mGraphics = graphics;
+            mScreenManager = screenmanager;
             LoadContent(content);
         }
 
@@ -45,40 +52,33 @@ namespace Singularity.Levels
             //Load stuff
             var platformCylTexture = content.Load<Texture2D>("Cylinders");
             var platformBlankTexture = content.Load<Texture2D>("PlatformBasic");
+            var platformDomeTexture = content.Load<Texture2D>("Dome");
+            var milUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
 
+            //TODO: have a cone texture 
+            PlatformFactory.Init(null, platformCylTexture, platformDomeTexture, platformBlankTexture);
+
             //Map related stuff
-            mCamera = new Camera(mGraphics.Viewport, ref mDirector);
-            mFow = new FogOfWar(mCamera, mGraphics);
-            mMap = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.Viewport, ref mDirector);
+            mCamera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 800, 800);
+            mFow = new FogOfWar(mCamera, mGraphics.GraphicsDevice);
+            mMap = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.GraphicsDevice.Viewport, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
 
-            //INITIALIZE GAMESCREEN
-            mGameScreen = new GameScreen(mGraphics, ref mDirector, mMap, mCamera, mFow);
+            //INITIALIZE SCREENS AND ADD THEM
+            GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, mMap, mCamera, mFow);
+            mUi = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
 
-            //IngameObjects stuff
-            mPlatform = new CommandCenter(new Vector2(1000, 500), platformCylTexture, platformBlankTexture, ref mDirector);
-            var genUnit = new GeneralUnit(mPlatform, ref mDirector);
-            var genUnit2 = new GeneralUnit(mPlatform, ref mDirector);
-            var genUnit3 = new GeneralUnit(mPlatform, ref mDirector);
-            var genUnit4 = new GeneralUnit(mPlatform, ref mDirector);
-            var genUnit5 = new GeneralUnit(mPlatform, ref mDirector);
+            mScreenManager.AddScreen(GameScreen);
+            mScreenManager.AddScreen(mUi);
 
-            //Finally add the objects
-            mFow.AddRevealingObject(mPlatform);
 
-            mMap.AddPlatform(mPlatform);
+            //INGAME OBJECTS INITIALIZATION ===================================================
 
-            mGameScreen.AddObject(mPlatform);
-            mGameScreen.AddObject(genUnit);
-            mGameScreen.AddObject(genUnit2);
-            mGameScreen.AddObject(genUnit3);
-            mGameScreen.AddObject(genUnit4);
-            mGameScreen.AddObject(genUnit5);
-        }
+            //SetUnit
+            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, GameScreen, mUi);
+            GameScreen.AddObject(setUnit);
 
-        public GameScreen GetGameScreen()
-        {
-            return mGameScreen;
+            //TESTMETHODS HERE =====================================
         }
     }
 }
