@@ -683,6 +683,8 @@ namespace Singularity.Manager
             // Ah ok I got that part
         }
 
+
+        #region Killing
         public void Kill(PlatformBlank platform)
         {
             // Strong assumption that a platform is only listed at most once in either of these.
@@ -718,5 +720,6 @@ namespace Singularity.Manager
             var lists = new List<List<GeneralUnit>> {mIdle, mLogistics, mConstruction, mProduction, mDefense, mManual};
             lists.ForEach(l => l.Remove(unit));
         }
-}
+#endregion
+    }
 }

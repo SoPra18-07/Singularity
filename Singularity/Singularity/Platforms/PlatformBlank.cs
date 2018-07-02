@@ -293,6 +293,7 @@ namespace Singularity.Platforms
             return mResources;
         }
 
+
         /// <summary>
         /// Get the health points of the platform
         /// </summary>
