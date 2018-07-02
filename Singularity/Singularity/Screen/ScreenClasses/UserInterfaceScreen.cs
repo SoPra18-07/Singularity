@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -984,6 +985,9 @@ namespace Singularity.Screen.ScreenClasses
             mPopupWindowList.Add(mTestPopupWindow);
 
             #endregion
+
+            //DEACTIVATE EVERYTHING TO ACTIVATE IT LATER
+            Deactivate();
         }
 
         public bool UpdateLower()
@@ -1011,6 +1015,31 @@ namespace Singularity.Screen.ScreenClasses
 
             // event log position
             mEventLogWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mEventLogWindow.Size.X, 12 + 25);
+        }
+
+        /// <summary>
+        /// Used to Deactivate the UI to activate it later (used by settler)
+        /// </summary>
+        public void Deactivate()
+        {
+            foreach (var window in mWindowList)
+            {
+                window.Active = false;
+            }
+            //Treat our special snowflake
+            mInfoBar.Active = false;
+        }
+
+        /// <summary>
+        /// Used to Activate the UI. This was thought to be used by the settler when he spawns the CommandCenter.
+        /// </summary>
+        public void Activate()
+        {
+            foreach (var window in mWindowList)
+            {
+                window.Active = true;
+            }
+            mInfoBar.Active = true;
         }
 
         // TODO : ADD ALL BUILD PLATFORM ACTIONS

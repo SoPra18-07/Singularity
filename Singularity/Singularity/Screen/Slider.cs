@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,7 +19,6 @@ namespace Singularity.Screen
         private float mMax;
 
         private Vector2 mLastPosition;
-        private int mLastPages;
 
         // current x position of slider
         private float mCurrentX;
@@ -30,8 +30,12 @@ namespace Singularity.Screen
         private readonly bool mWithValue;
         private readonly bool mWithPages;
 
+        // current page the user is on, and last page the user was on
         private int mCurrentPage;
         private int mLastPage;
+
+        // total amount of pages previously had (to update slider when pages are added)
+        private int mLastPagesCount;
 
         // size of a page relative to the lenght of the slider bar
         private float mPageSize;
@@ -89,7 +93,7 @@ namespace Singularity.Screen
             mFont = font;
             ActiveWindow = true;
             Pages = pages;
-            mLastPages = pages;
+            mLastPagesCount = Pages;
             mDirector = director;
             mDirector.GetInputManager.AddMouseClickListener(iMouseClickListener: this, leftClickType: EClickType.Both, rightClickType: EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(iMouseListener: this);
@@ -105,7 +109,7 @@ namespace Singularity.Screen
             {
                 mCurrentPage = 0;
                 mLastPage = 0;
-                MaxIncrement = pages;
+                MaxIncrement = Pages;
                 mPageSize = Size.X / Pages;
             }
         }
@@ -148,10 +152,10 @@ namespace Singularity.Screen
                 }
 
                 // if page increase or decrease, update position
-                if (!Pages.Equals(mLastPage))
+                if (!Pages.Equals(mLastPagesCount))
                 {
                     mCurrentX = (mMin + mCurrentPage * mPageSize);
-                    mLastPage = Pages;
+                    mLastPagesCount = Pages;
                 }
 
                 // if slider is left click them make it slave to the mouse
