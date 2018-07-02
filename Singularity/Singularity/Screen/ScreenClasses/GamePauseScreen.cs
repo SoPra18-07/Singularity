@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
+using Singularity.Manager;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -22,6 +23,9 @@ namespace Singularity.Screen.ScreenClasses
         private Button mStatisticsButton;
         private Button mCloseButton;
 
+        // Screens
+        private StatisticsScreen mStatisticsScreen;
+
         // backup of pauseMenu position to update button positions
         private Vector2 mPrevPosition;
 
@@ -31,9 +35,12 @@ namespace Singularity.Screen.ScreenClasses
         /// <summary>
         /// TODO
         /// </summary>
-        public GamePauseScreen(Vector2 screenSize, IScreenManager screenManager)
+        public GamePauseScreen(Vector2 screenSize, IScreenManager screenManager, Director director)
         {
             mScreenManager = screenManager;
+
+            // StatisticsScreen
+            mStatisticsScreen = new StatisticsScreen(screenSize, screenManager, director);
 
             Position = new Vector2(screenSize.X / 2 - 150, screenSize.Y / 2 - 200);
             mPrevPosition = Position;
@@ -113,7 +120,7 @@ namespace Singularity.Screen.ScreenClasses
         private void StatisticsButtonReleased(object sender, EventArgs eventArgs)
         {
             // TODO : ADD PARAMETERS IF NEEDED (FOR EXAMPLE GRAPHICS DEVICE TO CALCULATE POSITIONS/SIZES
-            mScreenManager.AddScreen(new Statistics());
+            mScreenManager.AddScreen(mStatisticsScreen);
         }
 
         private void CloseButtonReleased(object sender, EventArgs eventArgs)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -197,12 +198,154 @@ namespace Singularity.Units
                     }
                     RegulateMovement();
                     break;
+
+                case JobType.Defense:
+                    //You arrived at your destination and you now want to work.
+                    if (!mIsMoving && !mDone && CurrentNode.Equals(mTask.End.Get()))
+                    {
+                        if (!mAssigned)
+                        {
+                            mTask.End.Get().ShowedUp(this, Job);
+                            mAssigned = true;
+                        }
+                    }
+                    RegulateMovement();
+                    break;
+
+                case JobType.Logistics:
+                    
+                    HandleTransport();
+                    RegulateMovement();
+
+                    if (Carrying.IsPresent())
+                    {
+                        Carrying.Get().Follow(this);
+                    }
+                    break;
+
+                case JobType.Construction:
+                    HandleTransport();
+                    RegulateMovement();
+
+                    if (Carrying.IsPresent())
+                    {
+                        Carrying.Get().Follow(this);
+                    }
+                    break;
             }
         }
 
-        /*========================================================================================================================
-        ====================================Everything revolving around Movement is down here=====================================
-        ==========================================================================================================================*/
+        /// <summary>
+        /// Logistics and Construction resemble each other very much, so this is the method to handle both
+        /// </summary>
+        private void HandleTransport()
+        {
+            if (!mIsMoving && mDone)
+            {
+                mDone = false;
+
+                mTask = mDirector.GetDistributionManager.RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
+                //First go to the location where you want to get your Resource from
+                //Check if the given destination is null (it shouldnt).
+                if (mTask.Begin.IsPresent())
+                {
+                    mDestination = Optional<INode>.Of(mTask.Begin.Get());
+                }
+                else
+                {
+                    //In this case the DistributionManager has given you no valid task. That means there is no work in this job to be done. Ask in the next cycle.
+                    mDone = true;
+                }
+            }
+
+            //This means we arrived at the point we want to pick up a Resource
+            if (mTask.Begin.IsPresent() && CurrentNode.Equals(mTask.Begin.Get()) &&
+                ReachedTarget(((PlatformBlank)mTask.Begin.Get()).Center))
+            {
+                if (!Carrying.IsPresent())
+                {
+                    if (mTask.GetResource != null)
+                    {
+                        PickUp((EResourceType)mTask.GetResource);
+                    }
+
+                    //Failed to get resource, because no Resources were present. Tell the DistributionManager and consider your work done.
+                    if (!Carrying.IsPresent())
+                    {
+                        if (mTask.Job == JobType.Logistics)
+                        {
+                            if (mTask.Action.IsPresent())
+                            {
+                                if (mTask.GetResource != null)
+                                {
+                                    mDirector.GetDistributionManager.RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get());
+                                }
+                            }
+                            else
+                            {
+                                if (mTask.GetResource != null)
+                                {
+                                    mDirector.GetDistributionManager.RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null);
+                                }
+                            }
+                        }
+                        if (mTask.Job == JobType.Construction)
+                        {
+                            if (mTask.Action.IsPresent())
+                            {
+                                if (mTask.GetResource != null)
+                                {
+                                    mDirector.GetDistributionManager.RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get(), true);
+                                }
+                            }
+                            else
+                            {
+                                if (mTask.GetResource != null)
+                                {
+                                    mDirector.GetDistributionManager.RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null, true);
+                                }
+                            }
+                        }
+                        mDone = true;
+                    }
+                }
+
+                //Everything went fine with picking up, so now move on to your final destination
+                if (mTask.End.IsPresent() && !mDone)
+                {
+                    mDestination = Optional<INode>.Of(mTask.End.Get());
+                }
+            }
+
+            //This means we arrived at the point we want to leave the Resource and consider our work done
+            if (mTask.End.IsPresent() && CurrentNode.Equals(mTask.End.Get()) &&
+                ReachedTarget(((PlatformBlank)mTask.End.Get()).Center))
+            {
+                //Dont have to ask for carrying.ispresent here because in that case we wouldnt even reach this code
+                if (Carrying.IsPresent())
+                {
+                    var res = Carrying.Get();
+                    res.UnFollow();
+                    ((PlatformBlank)CurrentNode).StoreResource(res);
+                }
+
+                mDone = true;
+            }
+        }
+
+        private void PickUp(EResourceType resource)
+        {
+            if (mTask.Begin.Get().GetPlatformResources().Count > 0)
+            {
+                var res = ((PlatformBlank) CurrentNode).GetResource(resource);
+                if (res.IsPresent())
+                {
+                    Carrying = res;
+                }
+            }
+        }
+
+        #region Movement
 
         /// <summary>
         /// Moves the unit to the target position by its given speed.
@@ -244,37 +387,13 @@ namespace Singularity.Units
             }
 
             // finally move to the current node.
-            if (!ReachedTarget(((PlatformBlank)CurrentNode).Center) || !mTask.End.Get().Equals(CurrentNode))
+            if (mTask.End.IsPresent() && (!ReachedTarget(((PlatformBlank)CurrentNode).Center) || !mTask.End.Get().Equals(CurrentNode)))
             {
                 Move(((PlatformBlank)CurrentNode).Center);
             }
 
             // check whether we have reached the target after our move call.
             ReachedTarget(((PlatformBlank)CurrentNode).Center);
-
-
-            if (((PlatformBlank) CurrentNode).GetPlatformResources().Count > 0)
-            {
-                // todo: fix
-                var res = ((PlatformBlank) CurrentNode).GetResource(EResourceType.Oil);
-                if (res.IsPresent())
-                {
-                    Carrying = res;
-                }
-                else if (!Carrying.IsPresent())
-                {
-                    res = ((PlatformBlank) CurrentNode).GetResource(EResourceType.Trash);
-                    if (res.IsPresent())
-                    {
-                        Carrying = res;
-                    }
-                }
-            }
-
-            if (Carrying.IsPresent())
-            {
-                Carrying.Get().Follow(this);
-            }
 
         }
 
@@ -300,6 +419,7 @@ namespace Singularity.Units
 
             return false;
         }
+#endregion
 
         public void Draw(SpriteBatch spriteBatch)
         {

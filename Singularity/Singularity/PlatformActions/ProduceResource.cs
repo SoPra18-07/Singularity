@@ -121,7 +121,8 @@ namespace Singularity.PlatformActions
                     State = PlatformActionState.Available;
                     break;
                 case PlatformActionState.Available:
-                    mDirector.GetDistributionManager.RequestUnits(mPlatform, JobType.Production, this);
+                    //TODO: You dont request Units anymore. Are there other things to be changed too then?
+                    //mDirector.GetDistributionManager.RequestUnits(mPlatform, JobType.Production, this);
                     State = PlatformActionState.Active;
                     break;
                 default:

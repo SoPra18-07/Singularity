@@ -397,19 +397,14 @@ namespace Singularity.Screen.ScreenClasses
             mDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
             mDefSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true, 5);
             mBuildTextField = new TextField("Build", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
-            mBuildSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
+            mBuildSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true, 5);
             mLogisticsTextField = new TextField("Logistics", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
-            mLogisticsSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
+            mLogisticsSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true, 5);
             mProductionTextField = new TextField("Production", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
-            mProductionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
+            mProductionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true, 5);
 
-
-            //Subscribe Distr to sliders
-            //Still need to be implemented. A Container for all the sliders would be very useful!
-            //mDefSlider.SliderMoving += mDirector.GetDistributionManager.DefSlider();
-            //mBuildSlider.SliderMoving += mDirector.GetDistributionManager.BuildSlider();
-            //mLogisticsSlider.SliderMoving += mDirector.GetDistributionManager.LogisticsSlider();
-            //mProductionSlider.SliderMoving += mDirector.GetDistributionManager.ProductionSlider();
+            //This instance will handle the comunication between Sliders and DistributionManager.
+            var handler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mBuildSlider, mLogisticsSlider);
 
             // adding all items
             mCivilUnitsWindow.AddItem(mDefTextField);

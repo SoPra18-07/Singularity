@@ -150,10 +150,8 @@ namespace Singularity.Levels
             GameScreen.AddObject(setUnit);
 
 
-            //TESTMETHODS HERE =====================================
-            mDirector.GetDistributionManager.DistributeJobs(JobType.Idle, JobType.Production, 5);
-            mDirector.GetDistributionManager.TestAttributes();
-
+            //TESTMETHODS HERE ====================================
+            mDirector.GetDistributionManager.RequestResource(platform2, EResourceType.Oil, null);
         }
 
         public GameScreen GetGameScreen()

@@ -7,6 +7,7 @@ using Singularity.Graph;
 using Singularity.PlatformActions;
 using Singularity.Platforms;
 using Singularity.Resources;
+using Singularity.Screen;
 using Singularity.Units;
 using Singularity.Utils;
 
@@ -33,15 +34,13 @@ namespace Singularity.Manager
         [DataMember]
         private Queue<Task> mRefiningOrStoringResources;
         [DataMember]
-        private Queue<Task> mRequestedUnitsProduce;
-        [DataMember]
-        private Queue<Task> mRequestedUnitsDefense;
-
-        [DataMember]
         private List<Pair<int, int>> mKilled;
 
         [DataMember]
         private Random mRandom;
+
+        [DataMember]
+        private SliderHandler mHandler;
 
         [DataMember]
         private List<BuildBluePrint> mBlueprintBuilds;
@@ -68,8 +67,6 @@ namespace Singularity.Manager
             //Lists for Tasks to do
             mBuildingResources = new Queue<Task>();
             mRefiningOrStoringResources = new Queue<Task>();
-            mRequestedUnitsProduce = new Queue<Task>();
-            mRequestedUnitsDefense = new Queue<Task>();
 
             //Other stuff -- ???
             mBlueprintBuilds = new List<BuildBluePrint>();
@@ -77,6 +74,7 @@ namespace Singularity.Manager
             mProdPlatforms = new List<Pair<PlatformBlank, int>>();
             mDefPlatforms = new List<Pair<PlatformBlank, int>>();
             mRandom = new Random();
+            mKilled = new List<Pair<int, int>>();
         }
 
         /// <summary>
@@ -86,6 +84,54 @@ namespace Singularity.Manager
         public void Register(GeneralUnit unit)
         {
             mIdle.Add(unit);
+        }
+
+        /// <summary>
+        /// Gets the total amount of Units INDIRECTLY assigned. So this will not include directly assigned units.
+        /// </summary>
+        public int GetUnitTotal()
+        {
+            var total = 0;
+            total += mIdle.Count;
+            total += mProduction.Count;
+            total += mConstruction.Count;
+            total += mDefense.Count;
+            total += mLogistics.Count;
+            return total;
+        }
+
+        /// <summary>
+        /// Get the total amount of Units INDIRECTLY assigned in a Job.
+        /// </summary>
+        /// <returns></returns>
+        public int GetJobCount(JobType job)
+        {
+            switch (job)
+            {
+                case JobType.Idle:
+                    return mIdle.Count;
+                case JobType.Construction:
+                    return mConstruction.Count;
+                case JobType.Defense:
+                    return mDefense.Count;
+                case JobType.Logistics:
+                    return mLogistics.Count;
+                case JobType.Production:
+                    return mProduction.Count;
+                default:
+                    throw new InvalidGenericArgumentException(
+                        "There are no other Jobs! Or at least there weren't any when this was coded...");
+            }
+        }
+
+        /// <summary>
+        /// This will be called from the SliderHandler when its created.
+        /// It just registers its reference, so the DistributionManager can communicate with it.
+        /// </summary>
+        /// <param name="handler"></param>
+        internal void Register(SliderHandler handler)
+        {
+            mHandler = handler;
         }
 
         /// <summary>
@@ -407,7 +453,7 @@ namespace Singularity.Manager
         /// <param name="platform">The newly registered platform</param>
         /// <param name="isDefense">Is true if its a DefensePlatform, false otherwise</param>
         private void NewlyDistribute(PlatformBlank platform, bool isDefense)
-        { //TODO: Change this to use The written helpermethods
+        {
             if (isDefense)
             {
                 // + 1 because we didnt add the new platform yet
@@ -447,7 +493,7 @@ namespace Singularity.Manager
         /// </summary>
         /// <param name="amount">The amount of units to be assigned</param>
         /// <param name="action">The action to which the units shall be assigned</param>
-        /// <param name="job">The Job the units are supposed to have.</param>
+        /// <param name="job">The Job the units had/are supposed to have.</param>
         public void ManualAssign(int amount, IPlatformAction action, JobType job)
         {
             List<GeneralUnit> oldlist;
@@ -460,10 +506,10 @@ namespace Singularity.Manager
                     oldlist = mIdle;
                     break;
                 case JobType.Production:
-                    oldlist = mDefense;
+                    oldlist = mProduction;
                     break;
                 case JobType.Defense:
-                    oldlist = mProduction;
+                    oldlist = mDefense;
                     break;
                 case JobType.Logistics:
                     oldlist = mLogistics;
@@ -472,13 +518,43 @@ namespace Singularity.Manager
                     throw new InvalidGenericArgumentException("You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
             }
 
-            for (var i = amount; i >= 0; i--)
+            //COLLECT THE UNITS
+            List<GeneralUnit> list;
+            if (job == JobType.Defense)
             {
-                //Change the job of a random unit
-                var rand = mRandom.Next(0, oldlist.Count);
-                var removeit = oldlist.ElementAt(rand);
-                mManual.Add(removeit);
-                action.AssignUnit(removeit, job);
+                list = GetUnitsFairly(amount, mDefPlatforms, true);
+            }else if (job == JobType.Production)
+            {
+                list = GetUnitsFairly(amount, mProdPlatforms, false);
+            }
+            else
+            {
+                list = new List<GeneralUnit>();
+                for (var i = amount; i >= 0; i--)
+                {
+                    //Change the job of a random unit
+                    var rand = mRandom.Next(0, oldlist.Count);
+                    var removeit = oldlist.ElementAt(rand);
+                    list.Add(removeit);
+                }
+            }
+
+            foreach (var unit in list)
+            {
+                mManual.Add(unit);
+                action.AssignUnit(unit, job);
+                if (job == JobType.Production)
+                {
+
+                } else if (job == JobType.Defense)
+                {
+
+                }
+            }
+
+            if (mHandler != null)
+            {
+                mHandler.Refresh();
             }
         }
 
@@ -490,7 +566,18 @@ namespace Singularity.Manager
         /// <param name="action">The platformaction of which they shall be unassigned</param>
         public void ManualUnassign(JobType job, int amount, IPlatformAction action)
         {
-            action.UnAssignUnits(amount, job);
+            var list = action.UnAssignUnits(amount, job);
+            foreach (var unit in list)
+            {
+                mManual.Remove(unit);
+                unit.ChangeJob(JobType.Idle);
+                mIdle.Add(unit);
+            }
+
+            if (mHandler != null)
+            {
+                mHandler.Refresh();
+            }
         }
 
         /// <summary>
@@ -502,9 +589,6 @@ namespace Singularity.Manager
         /// <param name="isbuilding">True if the resources are for building, false otherwise</param>
         public void RequestResource(PlatformBlank platform, EResourceType resource, IPlatformAction action, bool isbuilding = false)
         {
-            // Will repair request ressources or units? And what unit will be used?
-            // We do not have repair yet or anytime soon.
-            // In that case I guess Ill ignore it for now.
             //TODO: Create Action references, when interfaces were created.
             if (isbuilding)
             {
@@ -514,34 +598,6 @@ namespace Singularity.Manager
             {
                 mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, Optional<PlatformBlank>.Of(platform), resource, Optional<IPlatformAction>.Of(action)));
             }
-        }
-
-        //TODO: Think about if we still need this
-        public void RequestUnits(PlatformBlank platform, JobType job, IPlatformAction action, bool isdefending = false)
-        {
-            if (isdefending)
-            {
-                //Assure fairness
-                if (platform.GetAssignedUnits().Count <= mDefense.Count / mDefPlatforms.Count)
-                {
-                    mRequestedUnitsDefense.Enqueue(new Task(JobType.Construction, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(action)));
-                }
-            }
-            else
-            {
-                //Assure fairness
-                if (platform.GetAssignedUnits().Count <= mProduction.Count / mProdPlatforms.Count)
-                {
-                    mRequestedUnitsProduce.Enqueue(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(action)));
-                }
-            }
-        }
-
-        // Do we even need that? I think the units should do that - huh? no this was supposed to be from platformId to Resources on that platform, primarily for internal use when searching resources ... if you have actual platform-references all the better (you could probably get them from the producing (and factory) PlatformActions ...)
-        public List<EResourceType> PlatformRequests(PlatformBlank platform)
-        {
-            throw new NotImplementedException();
-            //return platform.GetPlatformResources();
         }
 
         /// <summary>
@@ -588,11 +644,69 @@ namespace Singularity.Manager
                     throw new InvalidGenericArgumentException("You shouldnt ask for Defense tasks, you just assign units to defense.");
 
                 case JobType.Construction:
+                    if (mBuildingResources.Count == 0)
+                    {
+                        var nulltask = new Task(JobType.Logistics,
+                            Optional<PlatformBlank>.Of(null),
+                            null,
+                            Optional<IPlatformAction>.Of(null));
+                        nulltask.Begin = Optional<PlatformBlank>.Of(null);
+                        return nulltask;
+                    }
                     task = mBuildingResources.Dequeue();
+                    if (task.End.IsPresent() && task.GetResource != null)
+                    {
+                        var begin = FindBegin(task.End.Get(), (EResourceType)task.GetResource);
+                        //Use BFS to find the place you want to get your resources from
+                        if (begin != null)
+                        {
+                            task.Begin = Optional<PlatformBlank>.Of(begin);
+                        }
+                        else
+                        {
+                            //TODO: Talk with felix about how this could affect the killing thing
+                            mBuildingResources.Enqueue(task);
+                            //This means the unit will identify this task as "do nothing" and ask again.
+                            task.Begin = null;
+                        }
+                    }
+                    else
+                    {
+                        throw new InvalidGenericArgumentException("There is a task in your queue that is faulty. Check the RequestResource method!!!");
+                    }
                     break;
 
                 case JobType.Logistics:
+                    if (mRefiningOrStoringResources.Count == 0)
+                    {
+                        var nulltask = new Task(JobType.Logistics,
+                            Optional<PlatformBlank>.Of(null),
+                            null,
+                            Optional<IPlatformAction>.Of(null));
+                        nulltask.Begin = Optional<PlatformBlank>.Of(null);
+                        return nulltask;
+                    }
                     task = mRefiningOrStoringResources.Dequeue();
+                    if (task.End.IsPresent() && task.GetResource != null)
+                    {
+                        var begin = FindBegin(task.End.Get(), (EResourceType)task.GetResource);
+                        //Use BFS to find the place you want to get your resources from
+                        if (begin != null)
+                        {
+                            task.Begin = Optional<PlatformBlank>.Of(begin);
+                        }
+                        else
+                        {
+                            //TODO: Talk with felix about how this could affect the killing thing
+                            mRefiningOrStoringResources.Enqueue(task);
+                            //This means the unit will identify this task as "do nothing" and ask again.
+                            task.Begin = null;
+                        }
+                    }
+                    else
+                    {
+                        throw new InvalidGenericArgumentException("There is a task in your queue that is faulty. Check the RequestResource method!!!");
+                    }
                     break;
 
                 default:
@@ -600,9 +714,92 @@ namespace Singularity.Manager
             }
 
             mKilled = mKilled.Select(p => new Pair<int, int>(p.GetFirst(), p.GetSecond() - 1)).ToList();
-            mKilled.RemoveAll(p => p.GetSecond() < 0);
+            if (mKilled != null)
+            {
+                mKilled.RemoveAll(p => p.GetSecond() < 0);
+                return mKilled.TrueForAll(p => !task.Contains(p.GetFirst())) ? task : RequestNewTask(unit, job, assignedAction);
+            }
 
-            return mKilled.TrueForAll(p => !task.Contains(p.GetFirst())) ? task : RequestNewTask(unit, job, assignedAction);
+            return task;
+        }
+
+        /// <summary>
+        /// Uses BFS to find the nearest Platform holding a resource you want to get. Might be expensive...
+        /// </summary>
+        /// <param name="destination">The platform you start the bfs from.</param>
+        /// <param name="res">The resourcetype to look for.</param>
+        /// <returns>The platform with the desired resource, if it exists, null if not</returns>
+        private PlatformBlank FindBegin(PlatformBlank destination, EResourceType res)
+        {
+            //We need these lists, because we are operating on a undirected graph. That means we have to ensure we dont go back in our BFS
+            //this list contains platforms that cannot be visited next run.
+            var previouslevel = new List<PlatformBlank>();
+            //This list contains platforms that have been visited this run.
+            var nextpreviouslevel = new List<PlatformBlank>();
+
+            var currentlevel = new List<PlatformBlank>();
+            currentlevel.Add(destination);
+
+            var nextlevel = new List<PlatformBlank>();
+
+
+            while (currentlevel.Count > 0)
+            {
+                //Create the next level of BFS. While doing this, check if any platform has the resource you want. If yes return it.
+                foreach (PlatformBlank platform in currentlevel)
+                {
+
+                    foreach (var edge in platform.GetInwardsEdges())
+                    {
+                        var candidatePlatform = (PlatformBlank)edge.GetParent();
+                        //If true, we have already visited this platform
+                        if (previouslevel.Contains(platform) || nextpreviouslevel.Contains(platform))
+                        {
+                            continue;
+                        }
+                        //Check for the resource
+                        foreach (var resource in candidatePlatform.GetPlatformResources())
+                        {
+                            if (resource.Type != res)
+                            {
+                                continue;
+                            }
+                            return candidatePlatform;
+                        }
+
+                        nextlevel.Add(candidatePlatform);
+                    }
+
+                    foreach (var edge in platform.GetOutwardsEdges())
+                    {
+                        var candidatePlatform = (PlatformBlank)edge.GetChild();
+                        //If true, we have already visited this platform
+                        if (previouslevel.Contains(platform) || nextpreviouslevel.Contains(platform))
+                        {
+                            continue;
+                        }
+                        //Check for the resource
+                        foreach (var resource in candidatePlatform.GetPlatformResources())
+                        {
+                            if (resource.Type != res)
+                            {
+                                continue;
+                            }
+                            return candidatePlatform;
+                        }
+                        nextlevel.Add(candidatePlatform);
+                    }
+                    //mark that you have visited this platform now
+                    nextpreviouslevel.Add(platform);
+                }
+
+                //Update levels
+                previouslevel = nextpreviouslevel;
+                nextpreviouslevel = new List<PlatformBlank>();
+                currentlevel = nextlevel;
+                nextlevel = new List<PlatformBlank>();
+            }
+            return null;
         }
 
         public void PausePlatformAction(IPlatformAction action)
@@ -613,6 +810,8 @@ namespace Singularity.Manager
             // Ah ok I got that part
         }
 
+
+        #region Killing
         public void Kill(PlatformBlank platform)
         {
             // Strong assumption that a platform is only listed at most once in either of these.
@@ -648,5 +847,6 @@ namespace Singularity.Manager
             var lists = new List<List<GeneralUnit>> {mIdle, mLogistics, mConstruction, mProduction, mDefense, mManual};
             lists.ForEach(l => l.Remove(unit));
         }
-}
+#endregion
+    }
 }

@@ -23,11 +23,11 @@ namespace Singularity.Manager
 
         //The statistics
         [DataMember]
-        private Dictionary<string, int> mUnits;
+        public Dictionary<string, int> mUnits;
         [DataMember]
-        private Dictionary<EResourceType, int> mResources;
+        public Dictionary<EResourceType, int> mResources;
         [DataMember]
-        private Dictionary<string, int> mPlatforms;
+        public Dictionary<string, int> mPlatforms;
 
         [DataMember]
         public StructureMap StructureMap { get; set; }
