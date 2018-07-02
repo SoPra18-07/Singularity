@@ -2,7 +2,6 @@
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.PlatformActions;
 using Singularity.Manager;
 using Singularity.Resources;
 

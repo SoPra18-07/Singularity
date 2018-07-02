@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Exceptions;
 using Singularity.Graph;
 using Singularity.Manager;
-using Singularity.Map;
 using Singularity.PlatformActions;
 using Singularity.Property;
 using Singularity.Resources;

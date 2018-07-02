@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using Microsoft.Xna.Framework.Content;
 using Singularity.Exceptions;
 using Singularity.Graph;
 using Singularity.PlatformActions;
