@@ -30,6 +30,7 @@ namespace Singularity.Units
             End = end;
             GetResource = res;
             Action = action;
+            Begin = Optional<PlatformBlank>.Of(null);
         }
 
         public bool Contains(int id)

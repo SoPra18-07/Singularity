@@ -340,7 +340,7 @@ namespace Singularity.Platforms
         /// <returns>the resource you asked for, null otherwise.</returns>
         public Optional<Resource> GetResource(EResourceType resourcetype)
         {
-            // TODO: reservation of Resources (and stuff)
+            // TODO: reservation of Resources (and stuff)? Nah lets not do this
             var index = mResources.FindIndex(x => x.Type == resourcetype);
             if (index < 0)
             {

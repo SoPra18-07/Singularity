@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -215,11 +216,21 @@ namespace Singularity.Units
                     
                     HandleTransport();
                     RegulateMovement();
+
+                    if (Carrying.IsPresent())
+                    {
+                        Carrying.Get().Follow(this);
+                    }
                     break;
 
                 case JobType.Construction:
                     HandleTransport();
                     RegulateMovement();
+
+                    if (Carrying.IsPresent())
+                    {
+                        Carrying.Get().Follow(this);
+                    }
                     break;
             }
         }
@@ -239,6 +250,11 @@ namespace Singularity.Units
                 if (mTask.Begin.IsPresent())
                 {
                     mDestination = Optional<INode>.Of(mTask.Begin.Get());
+                }
+                else
+                {
+                    //In this case the DistributionManager has given you no valid task. That means there is no work in this job to be done. Ask in the next cycle.
+                    mDone = true;
                 }
             }
 
@@ -295,7 +311,7 @@ namespace Singularity.Units
                 }
 
                 //Everything went fine with picking up, so now move on to your final destination
-                if (mTask.End.IsPresent())
+                if (mTask.End.IsPresent() && !mDone)
                 {
                     mDestination = Optional<INode>.Of(mTask.End.Get());
                 }
@@ -319,29 +335,17 @@ namespace Singularity.Units
 
         private void PickUp(EResourceType resource)
         {
-            if (((PlatformBlank) CurrentNode).GetPlatformResources().Count > 0)
+            if (mTask.Begin.Get().GetPlatformResources().Count > 0)
             {
-                // todo: fix
                 var res = ((PlatformBlank) CurrentNode).GetResource(resource);
                 if (res.IsPresent())
                 {
                     Carrying = res;
                 }
-                else
-                {
-                    return;
-                }
-            }
-
-            if (Carrying.IsPresent())
-            {
-                Carrying.Get().Follow(this);
             }
         }
 
-        /*========================================================================================================================
-        ====================================Everything revolving around Movement is down here=====================================
-        ==========================================================================================================================*/
+        #region Movement
 
         /// <summary>
         /// Moves the unit to the target position by its given speed.
@@ -383,7 +387,7 @@ namespace Singularity.Units
             }
 
             // finally move to the current node.
-            if (!ReachedTarget(((PlatformBlank)CurrentNode).Center) || !mTask.End.Get().Equals(CurrentNode))
+            if (mTask.End.IsPresent() && (!ReachedTarget(((PlatformBlank)CurrentNode).Center) || !mTask.End.Get().Equals(CurrentNode)))
             {
                 Move(((PlatformBlank)CurrentNode).Center);
             }
@@ -415,6 +419,7 @@ namespace Singularity.Units
 
             return false;
         }
+#endregion
 
         public void Draw(SpriteBatch spriteBatch)
         {

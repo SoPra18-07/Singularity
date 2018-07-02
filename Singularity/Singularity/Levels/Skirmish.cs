@@ -145,6 +145,7 @@ namespace Singularity.Levels
 
 
             //TESTMETHODS HERE ====================================
+            mDirector.GetDistributionManager.RequestResource(platform2, EResourceType.Oil, null);
         }
 
         public GameScreen GetGameScreen()

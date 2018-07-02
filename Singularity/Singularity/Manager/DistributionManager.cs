@@ -35,11 +35,6 @@ namespace Singularity.Manager
         [DataMember]
         private Queue<Task> mRefiningOrStoringResources;
         [DataMember]
-        private Queue<Task> mRequestedUnitsProduce;
-        [DataMember]
-        private Queue<Task> mRequestedUnitsDefense;
-
-        [DataMember]
         private List<Pair<int, int>> mKilled;
 
         [DataMember]
@@ -80,6 +75,7 @@ namespace Singularity.Manager
             mProdPlatforms = new List<Pair<PlatformBlank, int>>();
             mDefPlatforms = new List<Pair<PlatformBlank, int>>();
             mRandom = new Random();
+            mKilled = new List<Pair<int, int>>();
         }
 
         /// <summary>
@@ -605,13 +601,6 @@ namespace Singularity.Manager
             }
         }
 
-        // Do we even need that? I think the units should do that - huh? no this was supposed to be from platformId to Resources on that platform, primarily for internal use when searching resources ... if you have actual platform-references all the better (you could probably get them from the producing (and factory) PlatformActions ...)
-        public List<EResourceType> PlatformRequests(PlatformBlank platform)
-        {
-            throw new NotImplementedException();
-            //return platform.GetPlatformResources();
-        }
-
         /// <summary>
         /// A method for the GeneralUnits to ask for a task to do.
         /// </summary>
@@ -656,13 +645,69 @@ namespace Singularity.Manager
                     throw new InvalidGenericArgumentException("You shouldnt ask for Defense tasks, you just assign units to defense.");
 
                 case JobType.Construction:
-                    //TODO: HANDLE QUEUE.COUNT == 0
+                    if (mBuildingResources.Count == 0)
+                    {
+                        var nulltask = new Task(JobType.Logistics,
+                            Optional<PlatformBlank>.Of(null),
+                            null,
+                            Optional<IPlatformAction>.Of(null));
+                        nulltask.Begin = Optional<PlatformBlank>.Of(null);
+                        return nulltask;
+                    }
                     task = mBuildingResources.Dequeue();
+                    if (task.End.IsPresent() && task.GetResource != null)
+                    {
+                        var begin = FindBegin(task.End.Get(), (EResourceType)task.GetResource);
+                        //Use BFS to find the place you want to get your resources from
+                        if (begin != null)
+                        {
+                            task.Begin = Optional<PlatformBlank>.Of(begin);
+                        }
+                        else
+                        {
+                            //TODO: Talk with felix about how this could affect the killing thing
+                            mBuildingResources.Enqueue(task);
+                            //This means the unit will identify this task as "do nothing" and ask again.
+                            task.Begin = null;
+                        }
+                    }
+                    else
+                    {
+                        throw new InvalidGenericArgumentException("There is a task in your queue that is faulty. Check the RequestResource method!!!");
+                    }
                     break;
 
                 case JobType.Logistics:
-                    //TODO: HANDLE QUEUE.COUNT == 0
+                    if (mRefiningOrStoringResources.Count == 0)
+                    {
+                        var nulltask = new Task(JobType.Logistics,
+                            Optional<PlatformBlank>.Of(null),
+                            null,
+                            Optional<IPlatformAction>.Of(null));
+                        nulltask.Begin = Optional<PlatformBlank>.Of(null);
+                        return nulltask;
+                    }
                     task = mRefiningOrStoringResources.Dequeue();
+                    if (task.End.IsPresent() && task.GetResource != null)
+                    {
+                        var begin = FindBegin(task.End.Get(), (EResourceType)task.GetResource);
+                        //Use BFS to find the place you want to get your resources from
+                        if (begin != null)
+                        {
+                            task.Begin = Optional<PlatformBlank>.Of(begin);
+                        }
+                        else
+                        {
+                            //TODO: Talk with felix about how this could affect the killing thing
+                            mRefiningOrStoringResources.Enqueue(task);
+                            //This means the unit will identify this task as "do nothing" and ask again.
+                            task.Begin = null;
+                        }
+                    }
+                    else
+                    {
+                        throw new InvalidGenericArgumentException("There is a task in your queue that is faulty. Check the RequestResource method!!!");
+                    }
                     break;
 
                 default:
@@ -670,9 +715,92 @@ namespace Singularity.Manager
             }
 
             mKilled = mKilled.Select(p => new Pair<int, int>(p.GetFirst(), p.GetSecond() - 1)).ToList();
-            mKilled.RemoveAll(p => p.GetSecond() < 0);
+            if (mKilled != null)
+            {
+                mKilled.RemoveAll(p => p.GetSecond() < 0);
+                return mKilled.TrueForAll(p => !task.Contains(p.GetFirst())) ? task : RequestNewTask(unit, job, assignedAction);
+            }
 
-            return mKilled.TrueForAll(p => !task.Contains(p.GetFirst())) ? task : RequestNewTask(unit, job, assignedAction);
+            return task;
+        }
+
+        /// <summary>
+        /// Uses BFS to find the nearest Platform holding a resource you want to get. Might be expensive...
+        /// </summary>
+        /// <param name="destination">The platform you start the bfs from.</param>
+        /// <param name="res">The resourcetype to look for.</param>
+        /// <returns>The platform with the desired resource, if it exists, null if not</returns>
+        private PlatformBlank FindBegin(PlatformBlank destination, EResourceType res)
+        {
+            //We need these lists, because we are operating on a undirected graph. That means we have to ensure we dont go back in our BFS
+            //this list contains platforms that cannot be visited next run.
+            var previouslevel = new List<PlatformBlank>();
+            //This list contains platforms that have been visited this run.
+            var nextpreviouslevel = new List<PlatformBlank>();
+
+            var currentlevel = new List<PlatformBlank>();
+            currentlevel.Add(destination);
+
+            var nextlevel = new List<PlatformBlank>();
+
+
+            while (currentlevel.Count > 0)
+            {
+                //Create the next level of BFS. While doing this, check if any platform has the resource you want. If yes return it.
+                foreach (PlatformBlank platform in currentlevel)
+                {
+
+                    foreach (var edge in platform.GetInwardsEdges())
+                    {
+                        var candidatePlatform = (PlatformBlank)edge.GetParent();
+                        //If true, we have already visited this platform
+                        if (previouslevel.Contains(platform) || nextpreviouslevel.Contains(platform))
+                        {
+                            continue;
+                        }
+                        //Check for the resource
+                        foreach (var resource in candidatePlatform.GetPlatformResources())
+                        {
+                            if (resource.Type != res)
+                            {
+                                continue;
+                            }
+                            return candidatePlatform;
+                        }
+
+                        nextlevel.Add(candidatePlatform);
+                    }
+
+                    foreach (var edge in platform.GetOutwardsEdges())
+                    {
+                        var candidatePlatform = (PlatformBlank)edge.GetChild();
+                        //If true, we have already visited this platform
+                        if (previouslevel.Contains(platform) || nextpreviouslevel.Contains(platform))
+                        {
+                            continue;
+                        }
+                        //Check for the resource
+                        foreach (var resource in candidatePlatform.GetPlatformResources())
+                        {
+                            if (resource.Type != res)
+                            {
+                                continue;
+                            }
+                            return candidatePlatform;
+                        }
+                        nextlevel.Add(candidatePlatform);
+                    }
+                    //mark that you have visited this platform now
+                    nextpreviouslevel.Add(platform);
+                }
+
+                //Update levels
+                previouslevel = nextpreviouslevel;
+                nextpreviouslevel = new List<PlatformBlank>();
+                currentlevel = nextlevel;
+                nextlevel = new List<PlatformBlank>();
+            }
+            return null;
         }
 
         public void PausePlatformAction(IPlatformAction action)
