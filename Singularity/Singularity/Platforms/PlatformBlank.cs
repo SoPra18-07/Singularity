@@ -387,7 +387,7 @@ namespace Singularity.Platforms
                         Vector2.Zero,
                         1f,
                         SpriteEffects.None,
-                        mLayer - 0.01f);
+                        LayerConstants.BasePlatformLayer);
                     break;
                 case 1:
                     // Cone
@@ -400,7 +400,7 @@ namespace Singularity.Platforms
                         Vector2.Zero,
                         1f,
                         SpriteEffects.None,
-                        mLayer - 0.01f);
+                        LayerConstants.BasePlatformLayer);
                     // then draw what's on top of that
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
@@ -416,14 +416,14 @@ namespace Singularity.Platforms
                     // Cylinder
                     // Draw the basic platform first
                     spritebatch.Draw(mPlatformBaseTexture,
-                        Vector2.Add(AbsolutePosition, new Vector2(-3, 82)),
+                        Vector2.Add(AbsolutePosition, new Vector2(0, 81)),
                         null,
                         mColor * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
                         SpriteEffects.None,
-                        mLayer - 0.01f);
+                        LayerConstants.BasePlatformLayer);
                     // then draw what's on top of that
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
@@ -445,7 +445,7 @@ namespace Singularity.Platforms
                         Vector2.Zero,
                         1f,
                         SpriteEffects.None,
-                        mLayer - 0.01f);
+                        LayerConstants.BasePlatformLayer);
                     // Dome
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,

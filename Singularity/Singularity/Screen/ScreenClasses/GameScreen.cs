@@ -339,7 +339,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO eventually the EPlacementType should be instance but currently that
             // TODO requires a road to be place and therefore throws an exception !!!!!
 
-            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, (float)(v.Y-100)), mCylPlat, mBlankPlat, ref mDirector);
+            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, (float)(v.Y-100)), mCylPlat, mBlankPlat, ref mDirector, false);
             var genUnit = new GeneralUnit(cCenter, ref mDirector);
             var genUnit2 = new GeneralUnit(cCenter, ref mDirector);
 
