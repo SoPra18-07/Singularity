@@ -7,6 +7,8 @@ using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platform;
+using Singularity.Resources;
+using Singularity.Units;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -63,6 +65,53 @@ namespace Singularity.Screen.ScreenClasses
 
         private PlatformPlacement mPlatformToPlace;
 
+        #region selectedPlatformWindow members
+
+        // selected platform window
+        private WindowObject mSelectedPlatformWindow;
+
+        // selectedPlatform standard position
+        private Vector2 mSelectedPlatformWindowStandardPos;
+
+        // textFields of selectedPlatformWindow titles
+        private TextField mSelectedPlatformResources;
+        private TextField mSelectedPlatformUnitAssignment;
+        private TextField mSelectedPlatformActions;
+
+        // textFields of selectedPlatformWindow unit assignment
+        private TextField mSelectedPlatformDefTextField;
+        private TextField mSelectedPlatformBuildTextField;
+        private TextField mSelectedPlatformLogisticsTextField;
+        private TextField mSelectedPlatformProductionTextField;
+
+        // TODO : ? CREATE ENERGY ITEM ?
+
+
+        // resourceItems of selectedPlatformWindow
+        private ResourceIWindowItem mSelectedPlatformChips;
+        private ResourceIWindowItem mSelectedPlatformConcrete;
+        private ResourceIWindowItem mSelectedPlatformCopper;
+        private ResourceIWindowItem mSelectedPlatformFuel;
+        private ResourceIWindowItem mSelectedPlatformMetal;
+        private ResourceIWindowItem mSelectedPlatformOil;
+        private ResourceIWindowItem mSelectedPlatformPlastic;
+        private ResourceIWindowItem mSelectedPlatformSand;
+        private ResourceIWindowItem mSelectedPlatformSilicon;
+        private ResourceIWindowItem mSelectedPlatformSteel;
+        private ResourceIWindowItem mSelectedPlatformStone;
+        private ResourceIWindowItem mSelectedPlatformWater;
+
+        // unitSliders of selectedPlatformWindow
+        private Slider mSelectedPlatformDefSlider;
+        private Slider mSelectedPlatformBuildSlider;
+        private Slider mSelectedPlatformLogisticsSlider;
+        private Slider mSelectedPlatformProductionSlider;
+
+        // resourceList
+        private List<ResourceIWindowItem> mSelectedPlatformResourceList;
+
+        #endregion
+
         #region civilUnitsWindow members
 
         // civil units window
@@ -93,6 +142,20 @@ namespace Singularity.Screen.ScreenClasses
 
         // standard position
         private Vector2 mResourceWindowStandardPos;
+
+        // resourceItems
+        private ResourceIWindowItem mResourceItemChip;
+        private ResourceIWindowItem mResourceItemConcrete;
+        private ResourceIWindowItem mResourceItemCopper;
+        private ResourceIWindowItem mResourceItemFuel;
+        private ResourceIWindowItem mResourceItemMetal;
+        private ResourceIWindowItem mResourceItemOil;
+        private ResourceIWindowItem mResourceItemPlastic;
+        private ResourceIWindowItem mResourceItemSand;
+        private ResourceIWindowItem mResourceItemSilicon;
+        private ResourceIWindowItem mResourceItemSteel;
+        private ResourceIWindowItem mResourceItemStone;
+        private ResourceIWindowItem mResourceItemWater;
 
         #endregion
 
@@ -318,13 +381,9 @@ namespace Singularity.Screen.ScreenClasses
 
             #region windows size calculation
 
-            // TODO : ADD INFO BAR
-            /*
-                        // position + size of topBar
-                        var topBarHeight = 25;
-                        var topBarWidth = mCurrentScreenWidth;
-            */
-
+            // size of selected platform window
+            const float selectedPlatformWidth = 240;
+            const float selectedPlatformHeight = 400;
 
             // size of resource window
             const float resourceWidth = 240;
@@ -344,6 +403,86 @@ namespace Singularity.Screen.ScreenClasses
 
             #endregion
 
+            #region selectedPlatformWindow
+
+            mSelectedPlatformWindow = new WindowObject("None", new Vector2(500, 500), new Vector2(selectedPlatformWidth, selectedPlatformHeight), true, mLibSans14, mInputManager, mGraphics);
+
+            // list to add all resource item to be able to iterate through them in the set-method
+            mSelectedPlatformResourceList = new List<ResourceIWindowItem>();
+
+            // resource-section-title
+            mSelectedPlatformResources = new TextField("Resources", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans14, Color.White);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformResources);
+            // resource items
+            mSelectedPlatformChips = new ResourceIWindowItem(EResourceType.Chip, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformChips);
+            mSelectedPlatformConcrete = new ResourceIWindowItem(EResourceType.Concrete, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformConcrete);
+            mSelectedPlatformCopper = new ResourceIWindowItem(EResourceType.Copper, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformCopper);
+            mSelectedPlatformFuel = new ResourceIWindowItem(EResourceType.Fuel, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformFuel);
+            mSelectedPlatformMetal = new ResourceIWindowItem(EResourceType.Metal, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformMetal);
+            mSelectedPlatformOil = new ResourceIWindowItem(EResourceType.Oil, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformOil);
+            mSelectedPlatformPlastic = new ResourceIWindowItem(EResourceType.Plastic, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformPlastic);
+            mSelectedPlatformSand = new ResourceIWindowItem(EResourceType.Sand, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformSand);
+            mSelectedPlatformSilicon = new ResourceIWindowItem(EResourceType.Silicon, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformSilicon);
+            mSelectedPlatformSteel = new ResourceIWindowItem(EResourceType.Steel, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformSteel);
+            mSelectedPlatformStone = new ResourceIWindowItem(EResourceType.Stone, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformStone);
+            mSelectedPlatformWater = new ResourceIWindowItem(EResourceType.Water, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformWater);
+            // add all resourcItems to list - 
+            mSelectedPlatformResourceList.Add(mSelectedPlatformChips);
+            mSelectedPlatformResourceList.Add(mSelectedPlatformConcrete);
+            mSelectedPlatformResourceList.Add(mSelectedPlatformCopper);
+            mSelectedPlatformResourceList.Add(mSelectedPlatformFuel);
+            mSelectedPlatformResourceList.Add(mSelectedPlatformMetal);
+            mSelectedPlatformResourceList.Add(mSelectedPlatformOil);
+            mSelectedPlatformResourceList.Add(mSelectedPlatformPlastic);
+            mSelectedPlatformResourceList.Add(mSelectedPlatformSand);
+            mSelectedPlatformResourceList.Add(mSelectedPlatformSilicon);
+            mSelectedPlatformResourceList.Add(mSelectedPlatformSteel);
+            mSelectedPlatformResourceList.Add(mSelectedPlatformStone);
+            mSelectedPlatformResourceList.Add(mSelectedPlatformWater);
+
+            // unit - assignment - section - title
+            mSelectedPlatformUnitAssignment = new TextField("Unit Assignment", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans14, Color.White);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformUnitAssignment);
+            // unit assignment text + slider
+            mSelectedPlatformDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12, Color.White);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformDefTextField);
+            mSelectedPlatformDefSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true, 5);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformDefSlider);
+            mSelectedPlatformBuildTextField = new TextField("Build", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12, Color.White);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformBuildTextField);
+            mSelectedPlatformBuildSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformBuildSlider);
+            mSelectedPlatformLogisticsTextField = new TextField("Logistics", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12, Color.White);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformLogisticsTextField);
+            mSelectedPlatformLogisticsSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformLogisticsSlider);
+            mSelectedPlatformProductionTextField = new TextField("Production", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12, Color.White);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformProductionTextField);
+            mSelectedPlatformProductionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformProductionSlider);
+
+            // actions-section-title
+            mSelectedPlatformActions = new TextField("Actions", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans14, Color.White);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformActions);
+
+            // actions TODO
+
+            mWindowList.Add(mSelectedPlatformWindow);
+
+            #endregion
+
             // TODO
             #region topBarWindow
 
@@ -359,13 +498,13 @@ namespace Singularity.Screen.ScreenClasses
             #region eventLogWindow
 
             mEventLogWindow = new WindowObject("// EVENT LOG", new Vector2(0, 0), new Vector2(eventLogWidth, eventLogHeight), true, mLibSans14, mInputManager, mGraphics);
-            // create items
+                // create items
 
-            // add all items
+                // add all items
 
-            mWindowList.Add(mEventLogWindow);
+                mWindowList.Add(mEventLogWindow);
 
-            #endregion
+                #endregion
 
             #region civilUnitsWindow
 
@@ -373,13 +512,13 @@ namespace Singularity.Screen.ScreenClasses
 
             // create items
             //TODO: Create an object representing the Idle units at the moment. Something like "Idle: 24" should be enough
-            mDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
+            mDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
             mDefSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true, 5);
-            mBuildTextField = new TextField("Build", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
+            mBuildTextField = new TextField("Build", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
             mBuildSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
-            mLogisticsTextField = new TextField("Logistics", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
+            mLogisticsTextField = new TextField("Logistics", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
             mLogisticsSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
-            mProductionTextField = new TextField("Production", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
+            mProductionTextField = new TextField("Production", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
             mProductionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
 
 
@@ -409,28 +548,35 @@ namespace Singularity.Screen.ScreenClasses
 
             mResourceWindow = new WindowObject("// RESOURCES", new Vector2(0, 0), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mInputManager, mGraphics);
 
-            // create items
+            // create all items (these are simple starting values which will be updated automatically by the UI controller)
+            mResourceItemChip = new ResourceIWindowItem(EResourceType.Chip, 10, mResourceWindow.Size, mLibSans12);
+            mResourceItemConcrete = new ResourceIWindowItem(EResourceType.Concrete, 20, mResourceWindow.Size, mLibSans12);
+            mResourceItemCopper = new ResourceIWindowItem(EResourceType.Copper, 30, mResourceWindow.Size, mLibSans12);
+            mResourceItemFuel = new ResourceIWindowItem(EResourceType.Fuel, 5000, mResourceWindow.Size, mLibSans12);
+            mResourceItemMetal = new ResourceIWindowItem(EResourceType.Metal, 100, mResourceWindow.Size, mLibSans12);
+            mResourceItemOil = new ResourceIWindowItem(EResourceType.Oil, 2343, mResourceWindow.Size, mLibSans12);
+            mResourceItemPlastic = new ResourceIWindowItem(EResourceType.Plastic, 4, mResourceWindow.Size, mLibSans12);
+            mResourceItemSand = new ResourceIWindowItem(EResourceType.Sand, 32, mResourceWindow.Size, mLibSans12);
+            mResourceItemSilicon = new ResourceIWindowItem(EResourceType.Silicon, 543, mResourceWindow.Size, mLibSans12);
+            mResourceItemSteel = new ResourceIWindowItem(EResourceType.Steel, 0, mResourceWindow.Size, mLibSans12);
+            mResourceItemStone = new ResourceIWindowItem(EResourceType.Stone, 4365, mResourceWindow.Size, mLibSans12);
+            mResourceItemWater = new ResourceIWindowItem(EResourceType.Water, 99, mResourceWindow.Size, mLibSans12);
 
-            // add all items
+            // add all items to window
+            mResourceWindow.AddItem(mResourceItemWater);
+            mResourceWindow.AddItem(mResourceItemSand);
+            mResourceWindow.AddItem(mResourceItemOil);
+            mResourceWindow.AddItem(mResourceItemMetal);
+            mResourceWindow.AddItem(mResourceItemStone);
+            mResourceWindow.AddItem(mResourceItemConcrete);
+            mResourceWindow.AddItem(mResourceItemSilicon);
+            mResourceWindow.AddItem(mResourceItemPlastic);
+            mResourceWindow.AddItem(mResourceItemFuel);
+            mResourceWindow.AddItem(mResourceItemSteel);
+            mResourceWindow.AddItem(mResourceItemCopper);
+            mResourceWindow.AddItem(mResourceItemChip);
 
-            #region testing resourceWindow
-
-            var testText =
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In sed nisi venenatis massa vehicula suscipit. " +
-                "Morbi scelerisque urna et feugiat sodales. Sed tristique arcu a odio faucibus, sit amet pharetra ligula accumsan. " +
-                "Curabitur volutpat, lectus nec lacinia eleifend, erat magna maximus dui, vitae ultrices purus dui at velit. " +
-                "Etiam nisl nisl, ultricies ut odio at, pharetra pharetra augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
-                "Aenean ante leo, porttitor sed cursus in, rhoncus a risus. Morbi urna tortor, luctus id tincidunt ac, bibendum nec magna. " +
-                "Sed fringilla posuere felis, eu blandit lacus posuere nec. Nunc et laoreet lacus. Maecenas ac laoreet lectus. " +
-                "Quisque semper feugiat diam, eu posuere mi posuere ac. Vestibulum posuere posuere semper. " +
-                "Pellentesque nec lacinia nulla, sit amet scelerisque justo.";
-
-            mTextFieldTest = new TextField(testText, Vector2.One, new Vector2(resourceWidth - 50, resourceHeight), mLibSans12);
-
-            mResourceWindow.AddItem(mTextFieldTest);
-
-            #endregion
-
+            // add the window to windowList
             mWindowList.Add(mResourceWindow);
 
             #endregion
@@ -565,7 +711,8 @@ namespace Singularity.Screen.ScreenClasses
             var infoBuildBlank = new TextField("Blank Platform",
                 Vector2.Zero,
                 mLibSans12.MeasureString("Blank Platform"),
-                mLibSans12);
+                mLibSans12, 
+                Color.White);
 
             mInfoBuildBlank = new InfoBoxWindow(
                 itemList: new List<IWindowItem> {infoBuildBlank},
@@ -586,7 +733,8 @@ namespace Singularity.Screen.ScreenClasses
             var infoBasicList = new TextField("Basic Building Menu",
                 Vector2.Zero,
                 mLibSans12.MeasureString("Basic Building Menu"),
-                mLibSans12);
+                mLibSans12,
+                Color.White);
 
             mInfoBasicList = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoBasicList },
@@ -607,7 +755,8 @@ namespace Singularity.Screen.ScreenClasses
             var infoSpecialList = new TextField("Special Building Menu",
                 Vector2.Zero,
                 mLibSans12.MeasureString("Special Building Menu"),
-                mLibSans12);
+                mLibSans12, 
+                Color.White);
 
             mInfoSpecialList = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoSpecialList },
@@ -628,7 +777,8 @@ namespace Singularity.Screen.ScreenClasses
             var infoMilitaryList = new TextField("Military Building Menu",
                 Vector2.Zero,
                 mLibSans12.MeasureString("Military Building Menu"),
-                mLibSans12);
+                mLibSans12, 
+                Color.White);
 
             mInfoMilitaryList = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoMilitaryList },
@@ -649,7 +799,8 @@ namespace Singularity.Screen.ScreenClasses
             var infoJunkyard = new TextField("Build Junkyard",
                 Vector2.Zero,
                 mLibSans12.MeasureString("Build Junkyard"),
-                mLibSans12);
+                mLibSans12, 
+                Color.White);
 
             mInfoBuildJunkyard = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoJunkyard },
@@ -670,7 +821,8 @@ namespace Singularity.Screen.ScreenClasses
             var infoQuarry = new TextField("Build Quarry",
                 Vector2.Zero,
                 mLibSans12.MeasureString("Build Quarry"),
-                mLibSans12);
+                mLibSans12, 
+                Color.White);
 
             mInfoBuildQuarry = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoQuarry },
@@ -691,7 +843,8 @@ namespace Singularity.Screen.ScreenClasses
             var infoMine = new TextField("Build Mine",
                 Vector2.Zero,
                 mLibSans12.MeasureString("Build Mine"),
-                mLibSans12);
+                mLibSans12, 
+                Color.White);
 
             mInfoBuildMine = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoMine },
@@ -712,7 +865,8 @@ namespace Singularity.Screen.ScreenClasses
             var infoWell = new TextField("Build Well",
                 Vector2.Zero,
                 mLibSans12.MeasureString("Build Well"),
-                mLibSans12);
+                mLibSans12, 
+                Color.White);
 
             mInfoBuildWell = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoWell },
@@ -733,7 +887,8 @@ namespace Singularity.Screen.ScreenClasses
             var infoFactory = new TextField("Build Factory",
                 Vector2.Zero,
                 mLibSans12.MeasureString("Build Factory"),
-                mLibSans12);
+                mLibSans12, 
+                Color.White);
 
             mInfoBuildFactory = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoFactory },
@@ -754,7 +909,8 @@ namespace Singularity.Screen.ScreenClasses
             var infoStorage = new TextField("Build Storage",
                 Vector2.Zero,
                 mLibSans12.MeasureString("Build Storage"),
-                mLibSans12);
+                mLibSans12, 
+                Color.White);
 
             mInfoBuildStorage = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoStorage },
@@ -775,7 +931,8 @@ namespace Singularity.Screen.ScreenClasses
             var infoPowerhouse = new TextField("Build Powerhouse",
                 Vector2.Zero,
                 mLibSans12.MeasureString("Build Powerhouse"),
-                mLibSans12);
+                mLibSans12, 
+                Color.White);
 
             mInfoBuildPowerhouse = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoPowerhouse },
@@ -796,7 +953,8 @@ namespace Singularity.Screen.ScreenClasses
             var infoCommandcenter = new TextField("Build Commandcenter",
                 Vector2.Zero,
                 mLibSans12.MeasureString("Build Commandcenter"),
-                mLibSans12);
+                mLibSans12, 
+                Color.White);
 
             mInfoBuildCommandcenter = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoCommandcenter },
@@ -817,7 +975,8 @@ namespace Singularity.Screen.ScreenClasses
             var infoArmory = new TextField("Build Armory",
                 Vector2.Zero,
                 mLibSans12.MeasureString("Build Armory"),
-                mLibSans12);
+                mLibSans12, 
+                Color.White);
 
             mInfoBuildArmory = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoArmory },
@@ -838,7 +997,8 @@ namespace Singularity.Screen.ScreenClasses
             var infoKineticTower = new TextField("Build Kinetic Tower",
                 Vector2.Zero,
                 mLibSans12.MeasureString("Build Kinetic Tower"),
-                mLibSans12);
+                mLibSans12, 
+                Color.White);
 
             mInfoBuildKineticTower = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoKineticTower },
@@ -859,7 +1019,8 @@ namespace Singularity.Screen.ScreenClasses
             var infoLaserTower = new TextField("Build Laser Tower",
                 Vector2.Zero,
                 mLibSans12.MeasureString("Build Laser Tower"),
-                mLibSans12);
+                mLibSans12, 
+                Color.White);
 
             mInfoBuildLaserTower = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoLaserTower },
@@ -880,10 +1041,11 @@ namespace Singularity.Screen.ScreenClasses
             var infoBarracks = new TextField("Build Barracks",
                 Vector2.Zero,
                 mLibSans12.MeasureString("Build Barracks"),
-                mLibSans12);
+                mLibSans12, 
+                Color.White);
 
             mInfoBuildBarracks = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoLaserTower },
+                itemList: new List<IWindowItem> { infoBarracks },
                 size: mLibSans12.MeasureString("Build Barracks"),
                 borderColor: new Color(0, 0, 0),
                 centerColor: new Color(1f, 0.96f, 0.9f),
@@ -957,7 +1119,7 @@ namespace Singularity.Screen.ScreenClasses
 
             mTestPopupWindow = new PopupWindow("// POPUP", mOkayButton , new Vector2(mCurrentScreenWidth / 2 - 250 / 2, mCurrentScreenHeight / 2 - 250 / 2), new Vector2(250, 250), testBorderColor, testWindowColor, mLibSans14, mInputManager, mGraphics);
 
-            mTextFieldTestPopup = new TextField(testText2, Vector2.One, new Vector2(resourceWidth - 50, resourceHeight), mLibSans12);
+            mTextFieldTestPopup = new TextField(testText2, Vector2.One, new Vector2(resourceWidth - 50, resourceHeight), mLibSans12, Color.White);
 
             mTestPopupWindow.AddItem(mTextFieldTestPopup);
 
@@ -978,6 +1140,9 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool Loaded { get; set; }
 
+        /// <summary>
+        /// resets defined windows to standard position
+        /// </summary>
         private void ResetWindowsToStandardPositon()
         {
             // resource window position
@@ -991,6 +1156,93 @@ namespace Singularity.Screen.ScreenClasses
 
             // event log position
             mEventLogWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mEventLogWindow.Size.X, 12 + 25);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="resourceAmountList"></param>
+        /// <param name="unitAssignmentList"></param>
+        /// <param name="energy"></param>
+        /// <param name="actionsList"></param>
+        private void SetSelectedPlatformValues(EPlatformType type,
+            IReadOnlyList<int> resourceAmountList,
+            Dictionary<GeneralUnit, JobType> unitAssignmentList,
+            int energy,
+            List<IPlatformAction> actionsList)
+        {
+            // catch bad input lists
+            if (resourceAmountList.Count != 12)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            // set window type
+            mSelectedPlatformWindow.WindowName = type.ToString();
+
+            #region manage resource display selectedPlatform 
+
+            // set resource amounts of the resourceAmountList
+            mSelectedPlatformChips.Amount = resourceAmountList[0];
+            mSelectedPlatformConcrete.Amount = resourceAmountList[1];
+            mSelectedPlatformCopper.Amount = resourceAmountList[2];
+            mSelectedPlatformFuel.Amount = resourceAmountList[3];
+            mSelectedPlatformMetal.Amount = resourceAmountList[4];
+            mSelectedPlatformOil.Amount = resourceAmountList[5];
+            mSelectedPlatformPlastic.Amount = resourceAmountList[6];
+            mSelectedPlatformSand.Amount = resourceAmountList[7];
+            mSelectedPlatformSilicon.Amount = resourceAmountList[8];
+            mSelectedPlatformSteel.Amount = resourceAmountList[9];
+            mSelectedPlatformStone.Amount = resourceAmountList[10];
+            mSelectedPlatformWater.Amount = resourceAmountList[11];
+
+            // deactivate (do not draw) a resource if the platform does not contain any
+            foreach (var resource in mSelectedPlatformResourceList)
+            {
+                if (resource.Amount <= 0)
+                {
+                    resource.ActiveWindow = false;
+                }
+                else
+                {
+                    resource.ActiveWindow = true;
+                }
+            }
+
+            #endregion
+
+            // activate defense text/sliders + deactivate production text/sliders if the platform is a defense tower,
+            // else deactivate defense text/sliders + activate production text/sliders
+            if (type == EPlatformType.Kinetic || type == EPlatformType.Laser)
+            {
+                mSelectedPlatformDefTextField.ActiveWindow = true;
+                mSelectedPlatformDefSlider.ActiveWindow = true;
+                mSelectedPlatformProductionTextField.ActiveWindow = false;
+                mSelectedPlatformProductionSlider.ActiveWindow = false;
+
+                // TODO : CONNECT SLIDER (MAX + CURRENTVAL) WITH DISTRIBUTION MANAGER
+            }
+            else
+            {
+                mSelectedPlatformDefTextField.ActiveWindow = false;
+                mSelectedPlatformDefSlider.ActiveWindow = false;
+                mSelectedPlatformProductionTextField.ActiveWindow = true;
+                mSelectedPlatformProductionSlider.ActiveWindow = true;
+
+                // TODO : CONNECT SLIDER (MAX + CURRENTVAL) WITH DISTRIBUTION MANAGER
+            }
+
+            // TODO : CONNECT SLIDER (MAX + CURRENTVAL) WITH DISTRIBUTION MANAGER
+/*
+            mSelectedPlatformBuildTextField;
+            mSelectedPlatformBuildSlider;
+            mSelectedPlatformLogisticsTextField;
+            mSelectedPlatformLogisticsSlider;
+*/
+
+            // TODO : SET ACTIONS FOR THE ACTIONS MENU
+
         }
 
         // TODO : ADD ALL BUILD PLATFORM ACTIONS
@@ -1593,7 +1845,7 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
-            //
+            // TODO : ? enable deselection of SelectedPlatform when clicking on a part of the screen that is not part of the UI and not a platform ?
             return true;
         }
 

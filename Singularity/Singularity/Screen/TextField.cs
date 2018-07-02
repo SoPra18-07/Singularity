@@ -12,6 +12,7 @@ namespace Singularity.Screen
 
         private readonly string mSplittedText;
         private readonly SpriteFont mSpriteFont;
+        private readonly Color mColor;
 
         /// <summary>
         /// Creates a TextField which is automatically multilined to fit the size
@@ -20,11 +21,13 @@ namespace Singularity.Screen
         /// <param name="position">top left corner of the field</param>
         /// <param name="size">size of the text field</param>
         /// <param name="spriteFont">spritefont for the text</param>
-        public TextField(string text, Vector2 position, Vector2 size, SpriteFont spriteFont)
+        /// <param name="color">text color</param>
+        public TextField(string text, Vector2 position, Vector2 size, SpriteFont spriteFont, Color color)
         {
             // use parameter-variables
             Position = position;
             mSpriteFont = spriteFont;
+            mColor = color;
 
             // split text to fit size-width
             mSplittedText = SplitLineToMultiline(text, size, spriteFont);
@@ -42,7 +45,7 @@ namespace Singularity.Screen
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(mSpriteFont, mSplittedText, Position, new Color(0,0,0));
+            spriteBatch.DrawString(mSpriteFont, mSplittedText, Position, mColor);
         }
 
         /// <summary>

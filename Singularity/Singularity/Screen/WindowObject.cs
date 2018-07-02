@@ -17,7 +17,6 @@ namespace Singularity.Screen
         #region member variables declaration
 
         // parameters
-        private readonly string mWindowName; // the window name is the windows title
         private readonly Color mColorBorder; // color of the windowborder
         private readonly Color mColorFill; // color of the window background
         private readonly float mBorderPadding; // gap between items and the left window border
@@ -112,7 +111,7 @@ namespace Singularity.Screen
             GraphicsDeviceManager graphics)
         {
             // use parameter-variables
-            mWindowName = windowName;
+            WindowName = windowName;
             Position = position;
             Size = size;
             mColorBorder = new Color(0.68f, 0.933f, 0.933f, .8f);
@@ -167,7 +166,7 @@ namespace Singularity.Screen
             GraphicsDeviceManager graphics)
         {
             // set parameter-variables
-            mWindowName = windowName;
+            WindowName = windowName;
             Position = position;
             Size = size;
             mColorBorder = colorBorder;
@@ -221,7 +220,7 @@ namespace Singularity.Screen
             GraphicsDeviceManager graphics)
         {
             // set parameter-variables
-            mWindowName = windowName;
+            WindowName = windowName;
             Position = position;
             Size = size;
             mColorBorder = colorBorder;
@@ -360,7 +359,7 @@ namespace Singularity.Screen
             }
 
             // draw window title + bar
-            spriteBatch.DrawString(mSpriteFont, mWindowName, new Vector2(Position.X + mMinimizationSize / 2f, Position.Y + mMinimizationSize / 2f), new Color(255, 255, 255));
+            spriteBatch.DrawString(mSpriteFont, WindowName, new Vector2(Position.X + mMinimizationSize / 2f, Position.Y + mMinimizationSize / 2f), new Color(255, 255, 255));
             spriteBatch.DrawRectangle(mTitleBarRectangle, mColorBorder, 1);
         }
 
@@ -744,5 +743,8 @@ namespace Singularity.Screen
 
         // size of the window
         public Vector2 Size { get; }
+
+        // the window name is the windows title
+        public string WindowName { private get; set; }
     }
 }

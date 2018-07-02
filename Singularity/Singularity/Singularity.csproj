@@ -65,8 +65,10 @@
     <Compile Include="Platform\EPlacementType.cs" />
     <Compile Include="Platform\PlatformFactory.cs" />
     <Compile Include="Platform\PlatformPlacement.cs" />
+    <Compile Include="Screen\BarIWindowItem.cs" />
     <Compile Include="Screen\ScreenClasses\InfoBoxWindow.cs" />
     <Compile Include="Property\GlobalVariables.cs" />
+    <Compile Include="Screen\ResourceIWindowItem.cs" />
     <Compile Include="Units\EnemyUnit.cs" />
     <Compile Include="Units\SelectionBox.cs" />
     <Compile Include="Units\Settler.cs" />
