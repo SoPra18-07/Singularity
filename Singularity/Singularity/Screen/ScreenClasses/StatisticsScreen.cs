@@ -21,6 +21,17 @@ namespace Singularity.Screen.ScreenClasses
         // Fonts
         private SpriteFont mLibSans20;
         private SpriteFont mLibSans14;
+        
+        // Text stored as string cariables to allow for easy chenges, if needed.
+        private readonly string mStatistics;
+        private readonly string mTime;
+        private readonly string mUnitsCreated;
+        private readonly string mUnitsLost;
+        private readonly string mUnitsKilled;
+        private readonly string mResources;
+        private readonly string mPlatformsCreated;
+        private readonly string mPlatformsLost;
+        private readonly string mPlatformsDestroyed;        
 
         // Buttons
         private Button mCloseButton;
@@ -39,6 +50,17 @@ namespace Singularity.Screen.ScreenClasses
         {
             mScreenManager = screenManager;
             mDirector = director;
+            
+            mStatistics = "Statistics";
+            mTime = "Time:";
+            mUnitsCreated = "Units created:";
+            mUnitsLost = "Units lost:";
+            mUnitsKilled = "Units killed:";
+            mResources = "Resources created:";
+            mPlatformsCreated = "Platforms created";
+            mPlatformsLost = "Platforms lost:";
+            mPlatformsDestroyed = "Platforms destroyed:";
+            
 
             Position = new Vector2(screenSize.X / 2 - 205, screenSize.Y / 2 - 225);
             mPrevPosition = Position;
@@ -80,15 +102,15 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.FillRectangle(Position, new Vector2(400, 450), new Color(0.27f, 0.5f, 0.7f, 1f), 0f);
             mCloseButton.Draw(spriteBatch);
             // Draw the window name and stats names.
-            spriteBatch.DrawString(mLibSans20, "Statistics", new Vector2(Position.X + 145, Position.Y + 10), Color.Black);
-            spriteBatch.DrawString(mLibSans14, "Time:", new Vector2(Position.X + 60, Position.Y + 60), Color.Black);
-            spriteBatch.DrawString(mLibSans14, "Units created:", new Vector2(Position.X + 60, Position.Y + 110), Color.Black);
-            spriteBatch.DrawString(mLibSans14, "Units lost:", new Vector2(Position.X + 60, Position.Y + 150), Color.Black);
-            spriteBatch.DrawString(mLibSans14, "Units killed:", new Vector2(Position.X + 60, Position.Y + 190), Color.Black);
-            spriteBatch.DrawString(mLibSans14, "Ressources created:", new Vector2(Position.X + 60, Position.Y + 240), Color.Black);
-            spriteBatch.DrawString(mLibSans14, "Platforms created:", new Vector2(Position.X + 60, Position.Y + 290), Color.Black);
-            spriteBatch.DrawString(mLibSans14, "Platforms lost:", new Vector2(Position.X + 60, Position.Y + 370), Color.Black);
-            spriteBatch.DrawString(mLibSans14, "Platforms destroyed:", new Vector2(Position.X + 60, Position.Y + 330), Color.Black);
+            spriteBatch.DrawString(mLibSans20, mStatistics, new Vector2(Position.X + 145, Position.Y + 10), Color.Black);
+            spriteBatch.DrawString(mLibSans14, mTime, new Vector2(Position.X + 60, Position.Y + 60), Color.Black);
+            spriteBatch.DrawString(mLibSans14, mUnitsCreated, new Vector2(Position.X + 60, Position.Y + 110), Color.Black);
+            spriteBatch.DrawString(mLibSans14, mUnitsLost, new Vector2(Position.X + 60, Position.Y + 150), Color.Black);
+            spriteBatch.DrawString(mLibSans14, mUnitsKilled, new Vector2(Position.X + 60, Position.Y + 190), Color.Black);
+            spriteBatch.DrawString(mLibSans14, mResources, new Vector2(Position.X + 60, Position.Y + 240), Color.Black);
+            spriteBatch.DrawString(mLibSans14, mPlatformsCreated, new Vector2(Position.X + 60, Position.Y + 290), Color.Black);
+            spriteBatch.DrawString(mLibSans14, mPlatformsLost, new Vector2(Position.X + 60, Position.Y + 370), Color.Black);
+            spriteBatch.DrawString(mLibSans14, mPlatformsDestroyed, new Vector2(Position.X + 60, Position.Y + 330), Color.Black);
             // Draw the stats behind their names, live from the StoryManager.
             spriteBatch.DrawString(mLibSans14, mDirector.GetStoryManager.Time.ToString(), new Vector2(Position.X + 110, Position.Y + 60), Color.Black);
             spriteBatch.DrawString(mLibSans14, mDirector.GetStoryManager.mUnits["created"].ToString(), new Vector2(Position.X + 180, Position.Y + 110), Color.LawnGreen);
