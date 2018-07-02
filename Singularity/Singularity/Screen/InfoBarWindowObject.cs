@@ -117,7 +117,7 @@ namespace Singularity.Screen
 
 
             // pause menu screen
-            mGamePauseScreen = new GamePauseScreen(new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), mScreenManager);
+            mGamePauseScreen = new GamePauseScreen(new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), mScreenManager, mDirector);
 
 
             // TODO :
