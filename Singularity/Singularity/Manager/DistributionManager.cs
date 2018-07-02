@@ -8,6 +8,7 @@ using Singularity.Graph;
 using Singularity.PlatformActions;
 using Singularity.Platforms;
 using Singularity.Resources;
+using Singularity.Screen;
 using Singularity.Units;
 using Singularity.Utils;
 
@@ -43,6 +44,9 @@ namespace Singularity.Manager
 
         [DataMember]
         private Random mRandom;
+
+        [DataMember]
+        private SliderHandler mHandler;
 
         [DataMember]
         private List<BuildBluePrint> mBlueprintBuilds;
@@ -85,6 +89,54 @@ namespace Singularity.Manager
         public void Register(GeneralUnit unit)
         {
             mIdle.Add(unit);
+        }
+
+        /// <summary>
+        /// Gets the total amount of Units INDIRECTLY assigned. So this will not include directly assigned units.
+        /// </summary>
+        public int GetUnitTotal()
+        {
+            var total = 0;
+            total += mIdle.Count;
+            total += mProduction.Count;
+            total += mConstruction.Count;
+            total += mDefense.Count;
+            total += mLogistics.Count;
+            return total;
+        }
+
+        /// <summary>
+        /// Get the total amount of Units INDIRECTLY assigned in a Job.
+        /// </summary>
+        /// <returns></returns>
+        public int GetJobCount(JobType job)
+        {
+            switch (job)
+            {
+                case JobType.Idle:
+                    return mIdle.Count;
+                case JobType.Construction:
+                    return mConstruction.Count;
+                case JobType.Defense:
+                    return mDefense.Count;
+                case JobType.Logistics:
+                    return mLogistics.Count;
+                case JobType.Production:
+                    return mProduction.Count;
+                default:
+                    throw new InvalidGenericArgumentException(
+                        "There are no other Jobs! Or at least there weren't any when this was coded...");
+            }
+        }
+
+        /// <summary>
+        /// This will be called from the SliderHandler when its created.
+        /// It just registers its reference, so the DistributionManager can communicate with it.
+        /// </summary>
+        /// <param name="handler"></param>
+        internal void Register(SliderHandler handler)
+        {
+            mHandler = handler;
         }
 
         /// <summary>
@@ -504,6 +556,11 @@ namespace Singularity.Manager
 
                 }
             }
+
+            if (mHandler != null)
+            {
+                mHandler.Refresh();
+            }
         }
 
         /// <summary>
@@ -520,6 +577,11 @@ namespace Singularity.Manager
                 mManual.Remove(unit);
                 unit.ChangeJob(JobType.Idle);
                 mIdle.Add(unit);
+            }
+
+            if (mHandler != null)
+            {
+                mHandler.Refresh();
             }
         }
 
@@ -594,10 +656,12 @@ namespace Singularity.Manager
                     throw new InvalidGenericArgumentException("You shouldnt ask for Defense tasks, you just assign units to defense.");
 
                 case JobType.Construction:
+                    //TODO: HANDLE QUEUE.COUNT == 0
                     task = mBuildingResources.Dequeue();
                     break;
 
                 case JobType.Logistics:
+                    //TODO: HANDLE QUEUE.COUNT == 0
                     task = mRefiningOrStoringResources.Dequeue();
                     break;
 
