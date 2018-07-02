@@ -75,8 +75,8 @@ namespace Singularity.Screen.ScreenClasses
 
             mDirector = director;
 
-            //mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
-            //AddObject(mSelBox);
+            mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
+            AddObject(mSelBox);
 
         }
 
@@ -142,6 +142,9 @@ namespace Singularity.Screen.ScreenClasses
             mFow.Update(gametime);
 
             mTransformMatrix = mCamera.GetTransform();
+
+            // TODO: for some reason just adding to GameScreen in constructor does NOT call up Update method
+            mSelBox.Update(gametime);
         }
 
         public void LoadContent(ContentManager content)
@@ -205,7 +208,7 @@ namespace Singularity.Screen.ScreenClasses
             // subscribe every military unit to the selection box
             if (milUnit != null)
             {
-                //mSelBox.SelectingBox += milUnit.BoxSelected;
+                mSelBox.SelectingBox += milUnit.BoxSelected;
             }
 
             if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
@@ -336,7 +339,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO eventually the EPlacementType should be instance but currently that
             // TODO requires a road to be place and therefore throws an exception !!!!!
 
-            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, (float)(v.Y-100)), mCylPlat, mBlankPlat, ref mDirector);
+            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, (float)(v.Y-100)), mCylPlat, mBlankPlat, ref mDirector, false);
             var genUnit = new GeneralUnit(cCenter, ref mDirector);
             var genUnit2 = new GeneralUnit(cCenter, ref mDirector);
 
