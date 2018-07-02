@@ -146,7 +146,7 @@ namespace Singularity.Platforms
             //default?
             mHealth = 100;
 
-            //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
+            //I dont think this class has to register in the DistributionManager
             //Add possible Actions in this array
             mIPlatformActions = new List<IPlatformAction>();
 
@@ -293,6 +293,7 @@ namespace Singularity.Platforms
             return mResources;
         }
 
+
         /// <summary>
         /// Get the health points of the platform
         /// </summary>
@@ -339,7 +340,7 @@ namespace Singularity.Platforms
         /// <returns>the resource you asked for, null otherwise.</returns>
         public Optional<Resource> GetResource(EResourceType resourcetype)
         {
-            // TODO: reservation of Resources (and stuff)
+            // TODO: reservation of Resources (and stuff)? Nah lets not do this
             var index = mResources.FindIndex(x => x.Type == resourcetype);
             if (index < 0)
             {

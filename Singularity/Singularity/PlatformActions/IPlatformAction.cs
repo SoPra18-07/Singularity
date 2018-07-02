@@ -57,7 +57,8 @@ namespace Singularity.PlatformActions
         /// </summary>
         /// <param name="amount">The amount of units being UNassigned</param>
         /// <param name="job"></param>
-        void UnAssignUnits(int amount, JobType job);
+        /// <returns>A list containing the unassigned units.</returns>
+        List<GeneralUnit> UnAssignUnits(int amount, JobType job);
 
         /// <summary>
         /// Gets the JobType required for this PlatformAction. Can be several.
@@ -145,14 +146,18 @@ namespace Singularity.PlatformActions
         }
         */
 
-        public void UnAssignUnits(int amount, JobType job)
+        public List<GeneralUnit> UnAssignUnits(int amount, JobType job)
         {
+            var list = new List<GeneralUnit>();
             foreach (var unit in mAssignedUnits.Keys)
             {
                 if (unit.Job != job || amount <= 0) continue;
                 mAssignedUnits.Remove(unit);
+                list.Add(unit);
                 amount -= 1;
             }
+
+            return list;
         }
 
         public bool Die()
