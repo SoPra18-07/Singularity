@@ -13,7 +13,7 @@ using Singularity.Resources;
 
 namespace Singularity.Map
 {
-    internal sealed class Map : IDraw, IKeyListener
+    public class Map : IDraw, IKeyListener
     {
         private readonly CollisionMap mCollisionMap;
         public readonly StructureMap mStructureMap;

@@ -5,7 +5,7 @@ namespace Singularity.Property
     /// <summary>
     /// Provides an Interface for everything that should be able to have a draw method.
     /// </summary>
-    internal interface IDraw
+    public interface IDraw
     {
         /// <summary>
         /// Used to draw content onto the screen with the given SpriteBatch.

@@ -12,7 +12,7 @@ namespace Singularity.Map
     /// <summary>
     /// The collision map is used to store all the colliding objects in a grid like fashion.
     /// </summary>
-    internal sealed class CollisionMap
+    public class CollisionMap
     {
         /// <summary>
         /// The look up table is used to check whether a given collider is already present in the collision map

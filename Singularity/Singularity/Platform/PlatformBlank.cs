@@ -7,9 +7,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Exceptions;
 using Singularity.Graph;
+using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Property;
 using Singularity.Resources;
+using Singularity.Screen;
+using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 using Singularity.Utils;
 
@@ -19,7 +22,7 @@ namespace Singularity.Platform
     /// <inheritdoc cref="INode"/>
     /// <inheritdoc cref="ICollider"/>
     [DataContract]
-    public class PlatformBlank : IRevealing, INode, ICollider
+    public class PlatformBlank : IRevealing, INode, ICollider, IMousePositionListener, IMouseClickListener
 
     {
 
@@ -34,6 +37,16 @@ namespace Singularity.Platform
         /// List of outwards facing edges/roads.
         /// </summary>
         private List<IEdge> mOutwardsEdges;
+
+        /// <summary>
+        /// Current mouse position on map
+        /// </summary>
+        private Vector2 mMouse;
+
+        /// <summary>
+        /// true, if left click on platform
+        /// </summary>
+        private bool mClickOnPlatform;
 
         /// <summary>
         /// Indicates the type of platform this is, defaults to blank.
@@ -174,6 +187,9 @@ namespace Singularity.Platform
             Moved = false;
             UpdateValues();
 
+            // add platform to input manager to enable platforms being selected
+            director.GetInputManager.AddMousePositionListener(this);
+            director.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.InBoundsOnly);
         }
 
         public void SetColor(Color color)
@@ -189,6 +205,7 @@ namespace Singularity.Platform
         public void UpdateValues()
         {
             AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
+            Bounds = AbsBounds;
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y + mCenterOffsetY);
         }
 
@@ -464,6 +481,11 @@ namespace Singularity.Platform
         public void Update(GameTime t)
         {
             Uncollide();
+
+            if (Selected)
+            {
+                mDirector.GetUserInterfaceController.SetDataOfSelectedPlatform(mType, GetPlatformResources(), GetAssignedUnits(), GetIPlatformActions());
+            }
         }
 
         private void Uncollide()
@@ -730,6 +752,68 @@ namespace Singularity.Platform
         public void SetLayer(float layer)
         {
             mLayer = layer;
+        }
+
+        /// <summary>
+        /// true, if the platform is selected
+        /// </summary>
+        public bool Selected { get; set; }
+
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
+        {
+            // update mouse position to current position on map
+            mMouse = new Vector2(worldX, worldY);
+        }
+
+        public EScreen Screen { get; } = EScreen.GameScreen;
+        public Rectangle Bounds { get; private set; }
+        public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
+        {
+            // prevent mouse input going through the platform
+            if (mMouse.X >= AbsBounds.X &&
+                mMouse.X <= AbsBounds.X + AbsoluteSize.X &&
+                mMouse.Y >= AbsBounds.Y &&
+                mMouse.Y <= AbsBounds.Y + AbsoluteSize.Y)
+                // mouse on top of platform
+            {
+                // this bool catches release mouse when not clicked on platform
+                mClickOnPlatform = true;
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
+        {
+            // prevent mouse input going through the platform
+            if (mMouse.X >= AbsBounds.X &&
+                mMouse.X <= AbsBounds.X + AbsoluteSize.X &&
+                mMouse.Y >= AbsBounds.Y &&
+                mMouse.Y <= AbsBounds.Y + AbsoluteSize.Y)
+                // mouse on top of platform
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
+        {
+            if (mMouse.X >= AbsBounds.X &&
+                mMouse.X <= AbsBounds.X + AbsoluteSize.X &&
+                mMouse.Y >= AbsBounds.Y &&
+                mMouse.Y <= AbsBounds.Y + AbsoluteSize.Y &&
+                mClickOnPlatform)
+                // mouse on top of platform
+            {
+                mClickOnPlatform = false;
+                Selected = true;
+                return false;
+            }
+
+            return true;
         }
     }
 }

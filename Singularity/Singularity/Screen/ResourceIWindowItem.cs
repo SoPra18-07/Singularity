@@ -46,9 +46,9 @@ namespace Singularity.Screen
         public void Update(GameTime gametime)
         {
             // update the positions
-            mColorPosition = Position;
-            mTextPosition = new Vector2(Position.X + Size.Y + 20, Position.Y);
-            mAmountPosition = new Vector2(Position.X + Size.X - mSpriteFont.MeasureString(Amount.ToString()).X - 50, Position.Y);
+            mColorPosition = new Vector2(Position.X, Position.Y + Size.Y / 4);
+            mTextPosition = new Vector2(Position.X + Size.Y, Position.Y);
+            mAmountPosition = new Vector2(Position.X + Size.X - mSpriteFont.MeasureString(Amount.ToString()).X, Position.Y);
 
             // TODO : ? UPDATE FOR THE UI RESOURCE WINDOW ?
         }
@@ -58,7 +58,7 @@ namespace Singularity.Screen
             // draw the color rectangle at the beginning
             spriteBatch.StrokedRectangle(
                 location: mColorPosition,
-                size: new Vector2(Size.Y, Size.Y), 
+                size: new Vector2(Size.Y - Size.Y / 2, Size.Y - Size.Y / 2), 
                 colorBorder: Color.White, 
                 colorCenter: mTypeColor,
                 opacityBorder: 1f,

@@ -58,7 +58,7 @@ namespace Singularity
             mGraphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
             mGraphics.PreferredBackBufferWidth = 1080;
             mGraphics.PreferredBackBufferHeight = 720;
-            mGraphics.IsFullScreen = false;
+            mGraphics.IsFullScreen = true;
             mGraphics.ApplyChanges();
 
             base.Initialize();
@@ -82,7 +82,9 @@ namespace Singularity
 
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
 
+            // create userinterface + set the userinterface as the one that is controlled by the UIController
             mUserInterfaceScreen = new UserInterfaceScreen(ref mDirector, mGraphics, mGameScreen);
+            mDirector.GetUserInterfaceController.ControlledUserInterface = mUserInterfaceScreen;
 
             // Add the screens to the screen manager
             // The idea is that the game screen is always at the bottom and stuff is added simply

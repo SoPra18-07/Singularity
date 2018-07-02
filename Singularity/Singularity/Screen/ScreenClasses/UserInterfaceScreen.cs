@@ -9,13 +9,14 @@ using Singularity.Map;
 using Singularity.Platform;
 using Singularity.Resources;
 using Singularity.Units;
+using Singularity.Utils;
 
 namespace Singularity.Screen.ScreenClasses
 {
     /// <summary>
-    /// The UserInterfaceScreen contains everything of the player's UI
+    /// The UserInterfaceScreen contains everything that is needed for the player's UI
     /// </summary>
-    internal sealed class UserInterfaceScreen : IScreen, IMousePositionListener, IMouseClickListener
+    public sealed class UserInterfaceScreen : IScreen, IMousePositionListener, IMouseClickListener
     {
         #region memberVariables
 
@@ -24,6 +25,7 @@ namespace Singularity.Screen.ScreenClasses
 
         // fonts used for the texts
         private SpriteFont mLibSans20;
+        private SpriteFont mLibSans10;
         private SpriteFont mLibSans12;
         private SpriteFont mLibSans14;
 
@@ -48,6 +50,9 @@ namespace Singularity.Screen.ScreenClasses
 
         // director
         private Director mDirector;
+
+        // user interface controller - updates the event log + selected platform window + unit distribution
+        private UserInterfaceController mUserInterfaceController;
 
         // needed to calculate screen-sizes
         private readonly GraphicsDeviceManager mGraphics;
@@ -273,6 +278,9 @@ namespace Singularity.Screen.ScreenClasses
 
             // Initialize scissor window
             mRasterizerState = new RasterizerState() { ScissorTestEnable = true };
+
+            // subscribe to user interface controller
+            mUserInterfaceController = director.GetUserInterfaceController;
         }
 
         public void Update(GameTime gametime)
@@ -364,6 +372,7 @@ namespace Singularity.Screen.ScreenClasses
             mLibSans20 = content.Load<SpriteFont>("LibSans20");
             mLibSans14 = content.Load<SpriteFont>("LibSans14");
             mLibSans12 = content.Load<SpriteFont>("LibSans12");
+            mLibSans10 = content.Load<SpriteFont>("LibSans10");
 
             // Texture Loading
             mBlankPlatformTexture = content.Load<Texture2D>("PlatformBasic");
@@ -383,7 +392,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // size of selected platform window
             const float selectedPlatformWidth = 240;
-            const float selectedPlatformHeight = 400;
+            const float selectedPlatformHeight = 180;
 
             // size of resource window
             const float resourceWidth = 240;
@@ -405,38 +414,38 @@ namespace Singularity.Screen.ScreenClasses
 
             #region selectedPlatformWindow
 
-            mSelectedPlatformWindow = new WindowObject("None", new Vector2(500, 500), new Vector2(selectedPlatformWidth, selectedPlatformHeight), true, mLibSans14, mInputManager, mGraphics);
+            mSelectedPlatformWindow = new WindowObject("None", new Vector2(250, 200), new Vector2(selectedPlatformWidth, selectedPlatformHeight), true, mLibSans14, mInputManager, mGraphics);
 
             // list to add all resource item to be able to iterate through them in the set-method
             mSelectedPlatformResourceList = new List<ResourceIWindowItem>();
 
             // resource-section-title
-            mSelectedPlatformResources = new TextField("Resources", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans14, Color.White);
+            mSelectedPlatformResources = new TextField("Resources", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12, Color.White);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformResources);
             // resource items
-            mSelectedPlatformChips = new ResourceIWindowItem(EResourceType.Chip, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformChips = new ResourceIWindowItem(EResourceType.Chip, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformChips);
-            mSelectedPlatformConcrete = new ResourceIWindowItem(EResourceType.Concrete, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformConcrete = new ResourceIWindowItem(EResourceType.Concrete, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformConcrete);
-            mSelectedPlatformCopper = new ResourceIWindowItem(EResourceType.Copper, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformCopper = new ResourceIWindowItem(EResourceType.Copper, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformCopper);
-            mSelectedPlatformFuel = new ResourceIWindowItem(EResourceType.Fuel, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformFuel = new ResourceIWindowItem(EResourceType.Fuel, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformFuel);
-            mSelectedPlatformMetal = new ResourceIWindowItem(EResourceType.Metal, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformMetal = new ResourceIWindowItem(EResourceType.Metal, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformMetal);
-            mSelectedPlatformOil = new ResourceIWindowItem(EResourceType.Oil, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformOil = new ResourceIWindowItem(EResourceType.Oil, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformOil);
-            mSelectedPlatformPlastic = new ResourceIWindowItem(EResourceType.Plastic, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformPlastic = new ResourceIWindowItem(EResourceType.Plastic, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformPlastic);
-            mSelectedPlatformSand = new ResourceIWindowItem(EResourceType.Sand, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformSand = new ResourceIWindowItem(EResourceType.Sand, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformSand);
-            mSelectedPlatformSilicon = new ResourceIWindowItem(EResourceType.Silicon, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformSilicon = new ResourceIWindowItem(EResourceType.Silicon, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformSilicon);
-            mSelectedPlatformSteel = new ResourceIWindowItem(EResourceType.Steel, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformSteel = new ResourceIWindowItem(EResourceType.Steel, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformSteel);
-            mSelectedPlatformStone = new ResourceIWindowItem(EResourceType.Stone, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformStone = new ResourceIWindowItem(EResourceType.Stone, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformStone);
-            mSelectedPlatformWater = new ResourceIWindowItem(EResourceType.Water, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12);
+            mSelectedPlatformWater = new ResourceIWindowItem(EResourceType.Water, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformWater);
             // add all resourcItems to list - 
             mSelectedPlatformResourceList.Add(mSelectedPlatformChips);
@@ -453,28 +462,28 @@ namespace Singularity.Screen.ScreenClasses
             mSelectedPlatformResourceList.Add(mSelectedPlatformWater);
 
             // unit - assignment - section - title
-            mSelectedPlatformUnitAssignment = new TextField("Unit Assignment", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans14, Color.White);
+            mSelectedPlatformUnitAssignment = new TextField("Unit Assignments", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12, Color.White);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformUnitAssignment);
             // unit assignment text + slider
-            mSelectedPlatformDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12, Color.White);
+            mSelectedPlatformDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10, Color.White);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformDefTextField);
             mSelectedPlatformDefSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true, 5);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformDefSlider);
-            mSelectedPlatformBuildTextField = new TextField("Build", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12, Color.White);
+            mSelectedPlatformBuildTextField = new TextField("Build", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10, Color.White);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformBuildTextField);
             mSelectedPlatformBuildSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformBuildSlider);
-            mSelectedPlatformLogisticsTextField = new TextField("Logistics", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12, Color.White);
+            mSelectedPlatformLogisticsTextField = new TextField("Logistics", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10, Color.White);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformLogisticsTextField);
             mSelectedPlatformLogisticsSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformLogisticsSlider);
-            mSelectedPlatformProductionTextField = new TextField("Production", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12, Color.White);
+            mSelectedPlatformProductionTextField = new TextField("Production", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10, Color.White);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformProductionTextField);
-            mSelectedPlatformProductionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
+            mSelectedPlatformProductionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans10, ref mDirector);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformProductionSlider);
 
             // actions-section-title
-            mSelectedPlatformActions = new TextField("Actions", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans14, Color.White);
+            mSelectedPlatformActions = new TextField("Actions", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12, Color.White);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformActions);
 
             // actions TODO
@@ -549,18 +558,18 @@ namespace Singularity.Screen.ScreenClasses
             mResourceWindow = new WindowObject("// RESOURCES", new Vector2(0, 0), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mInputManager, mGraphics);
 
             // create all items (these are simple starting values which will be updated automatically by the UI controller)
-            mResourceItemChip = new ResourceIWindowItem(EResourceType.Chip, 10, mResourceWindow.Size, mLibSans12);
-            mResourceItemConcrete = new ResourceIWindowItem(EResourceType.Concrete, 20, mResourceWindow.Size, mLibSans12);
-            mResourceItemCopper = new ResourceIWindowItem(EResourceType.Copper, 30, mResourceWindow.Size, mLibSans12);
-            mResourceItemFuel = new ResourceIWindowItem(EResourceType.Fuel, 5000, mResourceWindow.Size, mLibSans12);
-            mResourceItemMetal = new ResourceIWindowItem(EResourceType.Metal, 100, mResourceWindow.Size, mLibSans12);
-            mResourceItemOil = new ResourceIWindowItem(EResourceType.Oil, 2343, mResourceWindow.Size, mLibSans12);
-            mResourceItemPlastic = new ResourceIWindowItem(EResourceType.Plastic, 4, mResourceWindow.Size, mLibSans12);
-            mResourceItemSand = new ResourceIWindowItem(EResourceType.Sand, 32, mResourceWindow.Size, mLibSans12);
-            mResourceItemSilicon = new ResourceIWindowItem(EResourceType.Silicon, 543, mResourceWindow.Size, mLibSans12);
-            mResourceItemSteel = new ResourceIWindowItem(EResourceType.Steel, 0, mResourceWindow.Size, mLibSans12);
-            mResourceItemStone = new ResourceIWindowItem(EResourceType.Stone, 4365, mResourceWindow.Size, mLibSans12);
-            mResourceItemWater = new ResourceIWindowItem(EResourceType.Water, 99, mResourceWindow.Size, mLibSans12);
+            mResourceItemChip = new ResourceIWindowItem(EResourceType.Chip, 10, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemConcrete = new ResourceIWindowItem(EResourceType.Concrete, 20, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemCopper = new ResourceIWindowItem(EResourceType.Copper, 30, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemFuel = new ResourceIWindowItem(EResourceType.Fuel, 5000, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemMetal = new ResourceIWindowItem(EResourceType.Metal, 100, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemOil = new ResourceIWindowItem(EResourceType.Oil, 2343, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemPlastic = new ResourceIWindowItem(EResourceType.Plastic, 4, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemSand = new ResourceIWindowItem(EResourceType.Sand, 32, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemSilicon = new ResourceIWindowItem(EResourceType.Silicon, 543, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemSteel = new ResourceIWindowItem(EResourceType.Steel, 0, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemStone = new ResourceIWindowItem(EResourceType.Stone, 4365, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemWater = new ResourceIWindowItem(EResourceType.Water, 99, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
 
             // add all items to window
             mResourceWindow.AddItem(mResourceItemWater);
@@ -707,18 +716,23 @@ namespace Singularity.Screen.ScreenClasses
 
             mInfoBoxList = new List<InfoBoxWindow>();
 
+            var infoBoxBorderColor = new Color(1, 1, 1);
+            var infoBoxCenterColor = new Color(0, 0, 0);
+
             // Build Blank Platform info
-            var infoBuildBlank = new TextField("Blank Platform",
+            var infoBuildBlank = new TextField("Build Blank Platform",
                 Vector2.Zero,
-                mLibSans12.MeasureString("Blank Platform"),
-                mLibSans12, 
+                mLibSans10.MeasureString("Build Blank Platform"),
+                mLibSans10, 
                 Color.White);
+            
+            var infoBuildBlankResource1 = new ResourceIWindowItem(EResourceType.Chip, 2, mLibSans10.MeasureString("Build Blank Platform"), mLibSans10);
 
             mInfoBuildBlank = new InfoBoxWindow(
-                itemList: new List<IWindowItem> {infoBuildBlank},
-                size: mLibSans12.MeasureString("Blank Platform"),
-                borderColor: new Color(0.86f, 0.85f, 0.86f),
-                centerColor: new Color(1f, 1f, 1f),//(0.75f, 0.75f, 0.75f),
+                itemList: new List<IWindowItem> {infoBuildBlank, infoBuildBlankResource1 },
+                size: mLibSans10.MeasureString("Build Blank Platform"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
                 boundsRectangle: new Rectangle(
                     (int) mBlankPlatformButton.Position.X,
                     (int) mBlankPlatformButton.Position.Y,
@@ -732,15 +746,15 @@ namespace Singularity.Screen.ScreenClasses
             // Open Basic List info
             var infoBasicList = new TextField("Basic Building Menu",
                 Vector2.Zero,
-                mLibSans12.MeasureString("Basic Building Menu"),
-                mLibSans12,
+                mLibSans10.MeasureString("Basic Building Menu"),
+                mLibSans10,
                 Color.White);
 
             mInfoBasicList = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoBasicList },
-                size: mLibSans12.MeasureString("Basic Building Menu"),
-                borderColor: new Color(0, 0, 0),
-                centerColor: new Color(1f, 0.96f, 0.9f),
+                size: mLibSans10.MeasureString("Basic Building Menu"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
                 boundsRectangle: new Rectangle(
                     (int)mBasicListButton.Position.X,
                     (int)mBasicListButton.Position.Y,
@@ -754,15 +768,15 @@ namespace Singularity.Screen.ScreenClasses
             // Open Special List info
             var infoSpecialList = new TextField("Special Building Menu",
                 Vector2.Zero,
-                mLibSans12.MeasureString("Special Building Menu"),
-                mLibSans12, 
+                mLibSans10.MeasureString("Special Building Menu"),
+                mLibSans10, 
                 Color.White);
 
             mInfoSpecialList = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoSpecialList },
-                size: mLibSans12.MeasureString("Special Building Menu"),
-                borderColor: new Color(0, 0, 0),
-                centerColor: new Color(1f, 0.96f, 0.9f),
+                size: mLibSans10.MeasureString("Special Building Menu"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
                 boundsRectangle: new Rectangle(
                     (int)mSpecialListButton.Position.X,
                     (int)mSpecialListButton.Position.Y,
@@ -776,15 +790,15 @@ namespace Singularity.Screen.ScreenClasses
             // Open Military List info
             var infoMilitaryList = new TextField("Military Building Menu",
                 Vector2.Zero,
-                mLibSans12.MeasureString("Military Building Menu"),
-                mLibSans12, 
+                mLibSans10.MeasureString("Military Building Menu"),
+                mLibSans10, 
                 Color.White);
 
             mInfoMilitaryList = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoMilitaryList },
-                size: mLibSans12.MeasureString("Military Building Menu"),
-                borderColor: new Color(0, 0, 0),
-                centerColor: new Color(1f, 0.96f, 0.9f),
+                size: mLibSans10.MeasureString("Military Building Menu"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
                 boundsRectangle: new Rectangle(
                     (int)mMilitaryListButton.Position.X,
                     (int)mMilitaryListButton.Position.Y,
@@ -798,15 +812,15 @@ namespace Singularity.Screen.ScreenClasses
             // Build Junkyard info
             var infoJunkyard = new TextField("Build Junkyard",
                 Vector2.Zero,
-                mLibSans12.MeasureString("Build Junkyard"),
-                mLibSans12, 
+                mLibSans10.MeasureString("Build Junkyard"),
+                mLibSans10, 
                 Color.White);
 
             mInfoBuildJunkyard = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoJunkyard },
-                size: mLibSans12.MeasureString("Build Junkyard"),
-                borderColor: new Color(0, 0, 0),
-                centerColor: new Color(1f, 0.96f, 0.9f),
+                size: mLibSans10.MeasureString("Build Junkyard"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
                 boundsRectangle: new Rectangle(
                     (int)mJunkyardPlatformButton.Position.X,
                     (int)mJunkyardPlatformButton.Position.Y,
@@ -820,15 +834,15 @@ namespace Singularity.Screen.ScreenClasses
             // Build Quarry info
             var infoQuarry = new TextField("Build Quarry",
                 Vector2.Zero,
-                mLibSans12.MeasureString("Build Quarry"),
-                mLibSans12, 
+                mLibSans10.MeasureString("Build Quarry"),
+                mLibSans10, 
                 Color.White);
 
             mInfoBuildQuarry = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoQuarry },
-                size: mLibSans12.MeasureString("Build Quarry"),
-                borderColor: new Color(0, 0, 0),
-                centerColor: new Color(1f, 0.96f, 0.9f),
+                size: mLibSans10.MeasureString("Build Quarry"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
                 boundsRectangle: new Rectangle(
                     (int)mQuarryPlatformButton.Position.X,
                     (int)mQuarryPlatformButton.Position.Y,
@@ -842,15 +856,15 @@ namespace Singularity.Screen.ScreenClasses
             // Build Mine info
             var infoMine = new TextField("Build Mine",
                 Vector2.Zero,
-                mLibSans12.MeasureString("Build Mine"),
-                mLibSans12, 
+                mLibSans10.MeasureString("Build Mine"),
+                mLibSans10, 
                 Color.White);
 
             mInfoBuildMine = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoMine },
-                size: mLibSans12.MeasureString("Build Mine"),
-                borderColor: new Color(0, 0, 0),
-                centerColor: new Color(1f, 0.96f, 0.9f),
+                size: mLibSans10.MeasureString("Build Mine"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
                 boundsRectangle: new Rectangle(
                     (int)mMinePlatformButton.Position.X,
                     (int)mMinePlatformButton.Position.Y,
@@ -864,15 +878,15 @@ namespace Singularity.Screen.ScreenClasses
             // Build Well info
             var infoWell = new TextField("Build Well",
                 Vector2.Zero,
-                mLibSans12.MeasureString("Build Well"),
-                mLibSans12, 
+                mLibSans10.MeasureString("Build Well"),
+                mLibSans10, 
                 Color.White);
 
             mInfoBuildWell = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoWell },
-                size: mLibSans12.MeasureString("Build Well"),
-                borderColor: new Color(0, 0, 0),
-                centerColor: new Color(1f, 0.96f, 0.9f),
+                size: mLibSans10.MeasureString("Build Well"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
                 boundsRectangle: new Rectangle(
                     (int)mWellPlatformButton.Position.X,
                     (int)mWellPlatformButton.Position.Y,
@@ -886,15 +900,15 @@ namespace Singularity.Screen.ScreenClasses
             // Build Factory info
             var infoFactory = new TextField("Build Factory",
                 Vector2.Zero,
-                mLibSans12.MeasureString("Build Factory"),
-                mLibSans12, 
+                mLibSans10.MeasureString("Build Factory"),
+                mLibSans10,
                 Color.White);
 
             mInfoBuildFactory = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoFactory },
-                size: mLibSans12.MeasureString("Build Factory"),
-                borderColor: new Color(0, 0, 0),
-                centerColor: new Color(1f, 0.96f, 0.9f),
+                size: mLibSans10.MeasureString("Build Factory"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
                 boundsRectangle: new Rectangle(
                     (int)mFactoryPlatformButton.Position.X,
                     (int)mFactoryPlatformButton.Position.Y,
@@ -908,15 +922,15 @@ namespace Singularity.Screen.ScreenClasses
             // Build Storage info
             var infoStorage = new TextField("Build Storage",
                 Vector2.Zero,
-                mLibSans12.MeasureString("Build Storage"),
-                mLibSans12, 
+                mLibSans10.MeasureString("Build Storage"),
+                mLibSans10, 
                 Color.White);
 
             mInfoBuildStorage = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoStorage },
-                size: mLibSans12.MeasureString("Build Storage"),
-                borderColor: new Color(0, 0, 0),
-                centerColor: new Color(1f, 0.96f, 0.9f),
+                size: mLibSans10.MeasureString("Build Storage"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
                 boundsRectangle: new Rectangle(
                     (int)mStoragePlatformButton.Position.X,
                     (int)mStoragePlatformButton.Position.Y,
@@ -930,15 +944,15 @@ namespace Singularity.Screen.ScreenClasses
             // Build Powerhouse info
             var infoPowerhouse = new TextField("Build Powerhouse",
                 Vector2.Zero,
-                mLibSans12.MeasureString("Build Powerhouse"),
-                mLibSans12, 
+                mLibSans10.MeasureString("Build Powerhouse"),
+                mLibSans10, 
                 Color.White);
 
             mInfoBuildPowerhouse = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoPowerhouse },
-                size: mLibSans12.MeasureString("Build Powerhouse"),
-                borderColor: new Color(0, 0, 0),
-                centerColor: new Color(1f, 0.96f, 0.9f),
+                size: mLibSans10.MeasureString("Build Powerhouse"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
                 boundsRectangle: new Rectangle(
                     (int)mPowerhousePlatformButton.Position.X,
                     (int)mPowerhousePlatformButton.Position.Y,
@@ -952,15 +966,15 @@ namespace Singularity.Screen.ScreenClasses
             // Build Commandcenter info
             var infoCommandcenter = new TextField("Build Commandcenter",
                 Vector2.Zero,
-                mLibSans12.MeasureString("Build Commandcenter"),
-                mLibSans12, 
+                mLibSans10.MeasureString("Build Commandcenter"),
+                mLibSans10, 
                 Color.White);
 
             mInfoBuildCommandcenter = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoCommandcenter },
-                size: mLibSans12.MeasureString("Build Commandcenter"),
-                borderColor: new Color(0, 0, 0),
-                centerColor: new Color(1f, 0.96f, 0.9f),
+                size: mLibSans10.MeasureString("Build Commandcenter"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
                 boundsRectangle: new Rectangle(
                     (int)mCommandcenterPlatformButton.Position.X,
                     (int)mCommandcenterPlatformButton.Position.Y,
@@ -974,15 +988,15 @@ namespace Singularity.Screen.ScreenClasses
             // Build Armory info
             var infoArmory = new TextField("Build Armory",
                 Vector2.Zero,
-                mLibSans12.MeasureString("Build Armory"),
-                mLibSans12, 
+                mLibSans10.MeasureString("Build Armory"),
+                mLibSans10, 
                 Color.White);
 
             mInfoBuildArmory = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoArmory },
-                size: mLibSans12.MeasureString("Build Armory"),
-                borderColor: new Color(0, 0, 0),
-                centerColor: new Color(1f, 0.96f, 0.9f),
+                size: mLibSans10.MeasureString("Build Armory"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
                 boundsRectangle: new Rectangle(
                     (int)mArmoryPlatformButton.Position.X,
                     (int)mArmoryPlatformButton.Position.Y,
@@ -996,15 +1010,15 @@ namespace Singularity.Screen.ScreenClasses
             // Build Kinetic Tower info
             var infoKineticTower = new TextField("Build Kinetic Tower",
                 Vector2.Zero,
-                mLibSans12.MeasureString("Build Kinetic Tower"),
-                mLibSans12, 
+                mLibSans10.MeasureString("Build Kinetic Tower"),
+                mLibSans10, 
                 Color.White);
 
             mInfoBuildKineticTower = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoKineticTower },
-                size: mLibSans12.MeasureString("Build Kinetic Tower"),
-                borderColor: new Color(0, 0, 0),
-                centerColor: new Color(1f, 0.96f, 0.9f),
+                size: mLibSans10.MeasureString("Build Kinetic Tower"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
                 boundsRectangle: new Rectangle(
                     (int)mKineticTowerPlatformButton.Position.X,
                     (int)mKineticTowerPlatformButton.Position.Y,
@@ -1018,15 +1032,15 @@ namespace Singularity.Screen.ScreenClasses
             // Build Laser Tower info
             var infoLaserTower = new TextField("Build Laser Tower",
                 Vector2.Zero,
-                mLibSans12.MeasureString("Build Laser Tower"),
-                mLibSans12, 
+                mLibSans10.MeasureString("Build Laser Tower"),
+                mLibSans10, 
                 Color.White);
 
             mInfoBuildLaserTower = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoLaserTower },
-                size: mLibSans12.MeasureString("Build Laser Tower"),
-                borderColor: new Color(0, 0, 0),
-                centerColor: new Color(1f, 0.96f, 0.9f),
+                size: mLibSans10.MeasureString("Build Laser Tower"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
                 boundsRectangle: new Rectangle(
                     (int)mLaserTowerPlatformButton.Position.X,
                     (int)mLaserTowerPlatformButton.Position.Y,
@@ -1040,15 +1054,15 @@ namespace Singularity.Screen.ScreenClasses
             // Build Barracks info
             var infoBarracks = new TextField("Build Barracks",
                 Vector2.Zero,
-                mLibSans12.MeasureString("Build Barracks"),
-                mLibSans12, 
+                mLibSans10.MeasureString("Build Barracks"),
+                mLibSans10, 
                 Color.White);
 
             mInfoBuildBarracks = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoBarracks },
-                size: mLibSans12.MeasureString("Build Barracks"),
-                borderColor: new Color(0, 0, 0),
-                centerColor: new Color(1f, 0.96f, 0.9f),
+                size: mLibSans10.MeasureString("Build Barracks"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
                 boundsRectangle: new Rectangle(
                     (int)mBarracksPlatformButton.Position.X,
                     (int)mBarracksPlatformButton.Position.Y,
@@ -1090,6 +1104,7 @@ namespace Singularity.Screen.ScreenClasses
 
             #endregion
 
+            // called once to set positions
             ResetWindowsToStandardPositon();
 
             // TODO : DELETE AFTER SPRINT
@@ -1159,43 +1174,64 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         /// <summary>
-        /// 
+        /// Set the platform's values in the selectedPlatformWindow
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="type">the platform's type</param>
         /// <param name="resourceAmountList"></param>
         /// <param name="unitAssignmentList"></param>
-        /// <param name="energy"></param>
         /// <param name="actionsList"></param>
-        private void SetSelectedPlatformValues(EPlatformType type,
-            IReadOnlyList<int> resourceAmountList,
-            Dictionary<GeneralUnit, JobType> unitAssignmentList,
-            int energy,
-            List<IPlatformAction> actionsList)
+        public void SetSelectedPlatformValues(EPlatformType type,
+            IReadOnlyList<Resource> resourceAmountList,
+            Dictionary<JobType, List<Pair<GeneralUnit, bool>>> unitAssignmentList,
+            IPlatformAction[] actionsList)
         {
-            // catch bad input lists
-            if (resourceAmountList.Count != 12)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-
             // set window type
             mSelectedPlatformWindow.WindowName = type.ToString();
 
-            #region manage resource display selectedPlatform 
+            #region resources
 
-            // set resource amounts of the resourceAmountList
-            mSelectedPlatformChips.Amount = resourceAmountList[0];
-            mSelectedPlatformConcrete.Amount = resourceAmountList[1];
-            mSelectedPlatformCopper.Amount = resourceAmountList[2];
-            mSelectedPlatformFuel.Amount = resourceAmountList[3];
-            mSelectedPlatformMetal.Amount = resourceAmountList[4];
-            mSelectedPlatformOil.Amount = resourceAmountList[5];
-            mSelectedPlatformPlastic.Amount = resourceAmountList[6];
-            mSelectedPlatformSand.Amount = resourceAmountList[7];
-            mSelectedPlatformSilicon.Amount = resourceAmountList[8];
-            mSelectedPlatformSteel.Amount = resourceAmountList[9];
-            mSelectedPlatformStone.Amount = resourceAmountList[10];
-            mSelectedPlatformWater.Amount = resourceAmountList[11];
+            foreach (var resource in resourceAmountList)
+            {
+                switch (resource.Type)
+                {
+                    case EResourceType.Chip:
+                        mSelectedPlatformChips.Amount += 1;
+                        break;
+                    case EResourceType.Concrete:
+                        mSelectedPlatformConcrete.Amount += 1;
+                        break;
+                    case EResourceType.Copper:
+                        mSelectedPlatformCopper.Amount += 1;
+                        break;
+                    case EResourceType.Fuel:
+                        mSelectedPlatformFuel.Amount += 1;
+                        break;
+                    case EResourceType.Metal:
+                        mSelectedPlatformMetal.Amount += 1;
+                        break;
+                    case EResourceType.Oil:
+                        mSelectedPlatformOil.Amount += 1;
+                        break;
+                    case EResourceType.Plastic:
+                        mSelectedPlatformPlastic.Amount += 1;
+                        break;
+                    case EResourceType.Sand:
+                        mSelectedPlatformSand.Amount += 1;
+                        break;
+                    case EResourceType.Silicon:
+                        mSelectedPlatformSilicon.Amount += 1;
+                        break;
+                    case EResourceType.Steel:
+                        mSelectedPlatformSteel.Amount += 1;
+                        break;
+                    case EResourceType.Stone:
+                        mSelectedPlatformStone.Amount += 1;
+                        break;
+                    case EResourceType.Water:
+                        mSelectedPlatformWater.Amount += 1;
+                        break;
+                }
+            }
 
             // deactivate (do not draw) a resource if the platform does not contain any
             foreach (var resource in mSelectedPlatformResourceList)
@@ -1211,6 +1247,8 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             #endregion
+
+            #region unitAssignments
 
             // activate defense text/sliders + deactivate production text/sliders if the platform is a defense tower,
             // else deactivate defense text/sliders + activate production text/sliders
@@ -1234,15 +1272,26 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             // TODO : CONNECT SLIDER (MAX + CURRENTVAL) WITH DISTRIBUTION MANAGER
-/*
-            mSelectedPlatformBuildTextField;
-            mSelectedPlatformBuildSlider;
-            mSelectedPlatformLogisticsTextField;
-            mSelectedPlatformLogisticsSlider;
-*/
+            /*
+                        mSelectedPlatformBuildTextField;
+                        mSelectedPlatformBuildSlider;
+                        mSelectedPlatformLogisticsTextField;
+                        mSelectedPlatformLogisticsSlider;
+            */
+
+
+
+            #endregion
 
             // TODO : SET ACTIONS FOR THE ACTIONS MENU
+            #region actions
 
+            foreach (var action in actionsList)
+            {
+                
+            }
+
+            #endregion
         }
 
         // TODO : ADD ALL BUILD PLATFORM ACTIONS
