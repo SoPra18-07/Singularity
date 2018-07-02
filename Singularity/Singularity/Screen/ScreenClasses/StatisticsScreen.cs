@@ -22,7 +22,7 @@ namespace Singularity.Screen.ScreenClasses
         private SpriteFont mLibSans20;
         private SpriteFont mLibSans14;
         
-        // Text stored as string cariables to allow for easy chenges, if needed.
+        // Text stored as string variables to allow for easy changes, if needed.
         private readonly string mStatistics;
         private readonly string mTime;
         private readonly string mUnitsCreated;
@@ -51,6 +51,7 @@ namespace Singularity.Screen.ScreenClasses
             mScreenManager = screenManager;
             mDirector = director;
             
+            // assignments actually happen here
             mStatistics = "Statistics";
             mTime = "Time:";
             mUnitsCreated = "Units created:";
