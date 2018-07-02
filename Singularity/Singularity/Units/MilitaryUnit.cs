@@ -44,7 +44,7 @@ namespace Singularity.Units
 
         private Vector2 mTargetPosition;
         private int mRotation;
-        private readonly Texture2D mMilSheet;
+        public static Texture2D sMilSheet;
 
         private bool mSelected;
 
@@ -89,7 +89,7 @@ namespace Singularity.Units
         public bool[,] ColliderGrid { get; }
 
 
-        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director, ref Map.Map map)
+        public MilitaryUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
         {
             Id = IdGenerator.NextiD(); // id for the specific unit.
             Health = 10;
@@ -111,11 +111,20 @@ namespace Singularity.Units
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
 
-            mMilSheet = spriteSheet;
+            if (sMilSheet == null)
+            {
+                throw new Exception("load the sMilSheet first!");
+            }
 
             mMap = map;
 
             mPathfinder = new MilitaryPathfinder();
+        }
+
+
+        public static MilitaryUnit CreateMilitaryUnit(Vector2 position, ref Director director)
+        {
+            return new MilitaryUnit(position, director.GetStoryManager.Level.Camera, ref director, ref director.GetStoryManager.Level.GetMap());
         }
 
 
@@ -190,7 +199,7 @@ namespace Singularity.Units
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(
-                mMilSheet,
+                sMilSheet,
                 AbsolutePosition,
                 new Rectangle(150 * mColumn, 75 * mRow, (int) (AbsoluteSize.X / mScale), (int) (AbsoluteSize.Y / mScale)),
                 mColor,

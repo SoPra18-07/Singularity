@@ -338,7 +338,7 @@ namespace Singularity.Platforms
         public Optional<Resource> GetResource(EResourceType resourcetype)
         {
             // TODO: reservation of Resources (and stuff)
-            var index = mResources.FindIndex(x => x.Type == resourcetype);
+            var index = mResources.FindIndex(x => x.Type == resourcetype); // (FindIndex returns -1 if not found)
             if (index < 0)
             {
                 return Optional<Resource>.Of(null);
@@ -403,7 +403,7 @@ namespace Singularity.Platforms
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
                         new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 148),
-                        Color.White * transparency,
+                        mColor * transparency,
                         0f,
                         Vector2.Zero,
                         1f,

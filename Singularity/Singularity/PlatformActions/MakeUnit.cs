@@ -18,6 +18,11 @@ namespace Singularity.PlatformActions
             mBuildingCost = new Dictionary<EResourceType, int> { { EResourceType.Metal, 3 }, { EResourceType.Chip, 2 }, {EResourceType.Fuel, 1} };
         }
 
+        public override void CreateUnit()
+        {
+            var unit = new MilitaryUnit(mPlatform.Center + mOffset, mDirector.GetMilitaryManager.GetMilitarySpriteSheet(), mDirector.GetStoryManager.Level.Camera, ref mDirector, mDirector.GetStoryManager.StructureMap.);
+            mDirector.
+        }
     }
 
     class MakeStrongMilitrayUnit : AMakeUnit
@@ -25,6 +30,11 @@ namespace Singularity.PlatformActions
         public MakeStrongMilitrayUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
             mBuildingCost = new Dictionary<EResourceType, int> {{EResourceType.Steel, 3}, {EResourceType.Chip, 2}, {EResourceType.Fuel, 2}};
+        }
+
+        public override void CreateUnit()
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -35,11 +45,14 @@ namespace Singularity.PlatformActions
         protected Dictionary<EResourceType, int> mBuildingCost;
         protected Dictionary<EResourceType, int> mMissingResources;
         protected Dictionary<EResourceType, int> mToRequest;
+        protected Vector2 mOffset = new Vector2(200f);
 
         public AMakeUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
             State = PlatformActionState.Available;
         }
+
+        public abstract void CreateUnit();
 
         public override void Execute()
         {
@@ -62,6 +75,23 @@ namespace Singularity.PlatformActions
                 }
                 mDirector.GetDistributionManager.RequestResource(mPlatform, resource, this);
             }
+
+            mPlatform.GetPlatformResources().ForEach(action: r => GetResource(r.Type));
+
+            if (mMissingResources.Count <= 0)
+            {
+                CreateUnit();
+            }
+        }
+
+        protected void GetResource(EResourceType type)
+        {
+            if (!mMissingResources.ContainsKey(type)) return;
+            var res = mPlatform.GetResource(type);
+                
+            mMissingResources[type] -= 1;
+            if (mMissingResources[type] <= 0)
+                mMissingResources.Remove(type);
         }
 
         public override Dictionary<EResourceType, int> GetRequiredResources()

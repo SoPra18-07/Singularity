@@ -17,11 +17,14 @@ namespace Singularity.Levels
     {
         [DataMember]
         public GameScreen GameScreen { get; set; }
+
+        [DataMember]
+        public Camera Camera { get; set; }
+
+
         [DataMember]
         private GraphicsDeviceManager mGraphics;
         private Map.Map mMap;
-        [DataMember]
-        private Camera mCamera;
         [DataMember]
         private FogOfWar mFow;
         [DataMember]
@@ -59,12 +62,12 @@ namespace Singularity.Levels
             PlatformFactory.Init(null, platformCylTexture, platformDomeTexture, platformBlankTexture);
 
             //Map related stuff
-            mCamera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 800, 800);
-            mFow = new FogOfWar(mCamera, mGraphics.GraphicsDevice);
+            Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 800, 800);
+            mFow = new FogOfWar(Camera, mGraphics.GraphicsDevice);
             mMap = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.GraphicsDevice.Viewport, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
 
             //INITIALIZE SCREENS AND ADD THEM
-            GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, mMap, mCamera, mFow);
+            GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, mMap, Camera, mFow);
             mUi = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
 
             mScreenManager.AddScreen(GameScreen);
@@ -74,7 +77,7 @@ namespace Singularity.Levels
             //INGAME OBJECTS INITIALIZATION ===================================================
 
             //SetUnit
-            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, GameScreen, mUi);
+            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref mMap, GameScreen, mUi);
             GameScreen.AddObject(setUnit);
 
             //TESTMETHODS HERE =====================================

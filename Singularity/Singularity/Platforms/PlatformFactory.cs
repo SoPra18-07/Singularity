@@ -61,7 +61,7 @@ namespace Singularity.Platforms
                     return new Quarry(position, sDomeSheet, sBlankSheet, resourceMap, ref director, autoRegister);
 
                 case EPlatformType.Barracks:
-                    throw new NotImplementedException("Barracks have not yet been implemented");
+                    return new Barracks(position, sCylinderSheet, sBlankSheet, ref director);
 
                 case EPlatformType.Blank:
                     return new PlatformBlank(position, sBlankSheet, sBlankSheet, ref director);

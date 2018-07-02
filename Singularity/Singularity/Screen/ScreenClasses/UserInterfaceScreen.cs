@@ -7,6 +7,7 @@ using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platforms;
+using Singularity.Property;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -903,7 +904,7 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans12);
 
             mInfoBuildBarracks = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoLaserTower },
+                itemList: new List<IWindowItem> { infoBarracks },
                 size: mLibSans12.MeasureString("Build Barracks"),
                 borderColor: new Color(0, 0, 0),
                 centerColor: new Color(1f, 0.96f, 0.9f),
@@ -986,7 +987,15 @@ namespace Singularity.Screen.ScreenClasses
             #endregion
 
             //DEACTIVATE EVERYTHING TO ACTIVATE IT LATER
-            Deactivate();
+
+            if (GlobalVariables.DebugState)
+            {
+                Activate();
+            }
+            else
+            {
+                Deactivate();
+            }
         }
 
         public bool UpdateLower()
