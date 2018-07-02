@@ -279,6 +279,13 @@ namespace Singularity.Screen
                         }
                     }
 
+                    // double check to make sure it doesn't exceed MaxIncrement, otherwise set back
+                    if (mCurrentPage > MaxIncrement)
+                    {
+                        mCurrentPage = MaxIncrement;
+                        mCurrentX = MaxIncrement * mPageSize;
+                    }
+
                     // if page has changed : send out event with new current page
                     if (mLastPage != mCurrentPage)
                     {
