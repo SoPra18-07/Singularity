@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization;
-using Singularity.Platform;
+using Singularity.PlatformActions;
+using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Utils;
 
@@ -29,6 +30,19 @@ namespace Singularity.Units
             End = end;
             GetResource = res;
             Action = action;
+            Begin = Optional<PlatformBlank>.Of(null);
+        }
+
+        public bool Contains(int id)
+        {
+            if (End.IsPresent() && End.Get().Id == id)
+                return true;
+
+            if (Begin.IsPresent() && Begin.Get().Id == id)
+                return true;
+
+            if (!Action.IsPresent()) return false;
+            return Action.Get().Id == id;
         }
     }
 }

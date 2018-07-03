@@ -1,12 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
-using Singularity.Platform;
+using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
@@ -16,12 +14,12 @@ namespace Singularity.Levels
 {
     //Not sure whether this should be serialized, but I guess...
     [DataContract]
-    internal sealed class Skirmish
+    internal sealed class Skirmish : ILevel
     {
         [DataMember]
-        private GameScreen mGameScreen;
+        public GameScreen GameScreen { get; set; }
         [DataMember]
-        private GraphicsDevice mGraphics;
+        private GraphicsDeviceManager mGraphics;
         [DataMember]
         private Map.Map mMap;
         [DataMember]
@@ -30,17 +28,24 @@ namespace Singularity.Levels
         private FogOfWar mFow;
         [DataMember]
         private Director mDirector;
+        [DataMember]
+        private UserInterfaceScreen mUi;
+
+        [DataMember]
+        private IScreenManager mScreenManager;
 
         //GameObjects to initialize:
         [DataMember]
         private PlatformBlank mPlatform;
 
-        public Skirmish(GraphicsDevice graphics, ref Director dir, ContentManager content)
+        public Skirmish(GraphicsDeviceManager graphics, ref Director director, ContentManager content, IScreenManager screenmanager)
+
         {
-            mDirector = dir;
-            dir.GetStoryManager.SetLevelType(LevelType.Skirmish);
-            dir.GetStoryManager.LoadAchievements();
+            mDirector = director;
+            mDirector.GetStoryManager.SetLevelType(LevelType.Skirmish, this);
+            mDirector.GetStoryManager.LoadAchievements();
             mGraphics = graphics;
+            mScreenManager = screenmanager;
             LoadContent(content);
         }
 
@@ -53,23 +58,33 @@ namespace Singularity.Levels
             var milUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
 
-            //TODO: have a cone texture 
+            //TODO: have a cone texture
             PlatformFactory.Init(null, platformCylTexture, platformDomeTexture, platformBlankTexture);
 
             //Map related stuff
-            mCamera = new Camera(mGraphics, ref mDirector, 800, 800);
-            mFow = new FogOfWar(mCamera, mGraphics);
-            mMap = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.Viewport, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
+            mCamera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 800, 800);
+            mFow = new FogOfWar(mCamera, mGraphics.GraphicsDevice);
+            mMap = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.GraphicsDevice.Viewport, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
 
-            //INITIALIZE GAMESCREEN
-            mGameScreen = new GameScreen(mGraphics, ref mDirector, mMap, mCamera, mFow);
+            //INITIALIZE SCREENS AND ADD THEM TO THE SCREENMANAGER
+            GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, mMap, mCamera, mFow);
+            mUi = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
+            mDirector.GetUserInterfaceController.ControlledUserInterface = mUi;
+
+            mScreenManager.AddScreen(GameScreen);
+            mScreenManager.AddScreen(mUi);
 
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
             mPlatform = new PlatformBlank(new Vector2(1000, 1000), null, platformBlankTexture, ref mDirector);
+            GameScreen.AddObject(mPlatform);
 
             // this is done via the factory to test, so I can instantly see if something is some time off.
             var platform2 = PlatformFactory.Get(EPlatformType.Well, ref mDirector, 800, 1000, mMap.GetResourceMap());
+            GameScreen.AddObject(platform2);
+
+            var road1 = new Road(mPlatform, platform2, false);
+            GameScreen.AddObject(road1);
 
             //var platform2 = new Well(new Vector2(800, 1000), platformDomeTexture, platformBlankTexture, mMap.GetResourceMap(), ref mDirector);
             var platform3 = new Quarry(new Vector2(1200, 1200),
@@ -77,9 +92,22 @@ namespace Singularity.Levels
                 platformBlankTexture,
                 mMap.GetResourceMap(),
                 ref mDirector);
+            GameScreen.AddObject(platform3);
+            var road2 = new Road(platform2, platform3, false);
+            GameScreen.AddObject(road2);
+            var road3 = new Road(platform3, mPlatform, false);
+            GameScreen.AddObject(road3);
+
             var platform4 = new EnergyFacility(new Vector2(1000, 800),
                 platformDomeTexture,
                 platformBlankTexture, ref mDirector);
+            GameScreen.AddObject(platform4);
+            var road4 = new Road(mPlatform, platform4, false);
+            GameScreen.AddObject(road4);
+
+            var road5 = new Road(platform4, platform3, false);
+            GameScreen.AddObject(road5);
+
 
             //GenUnits
             var genUnit = new GeneralUnit(mPlatform, ref mDirector);
@@ -92,14 +120,8 @@ namespace Singularity.Levels
             var milUnit = new MilitaryUnit(new Vector2(2000, 700), milUnitSheet, mCamera, ref mDirector, ref mMap);
 
             //SetUnit
-            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, mGameScreen);
-
-            //Roads
-            var road1 = new Road(mPlatform, platform2, false);
-            var road2 = new Road(platform2, platform3, false);
-            var road3 = new Road(platform3, mPlatform, false);
-            var road4 = new Road(mPlatform, platform4, false);
-            var road5 = new Road(platform4, platform3, false);
+            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, GameScreen, mUi);
+            
 
             // Resources
             var res = new Resource(EResourceType.Trash, platform2.Center);
@@ -114,35 +136,22 @@ namespace Singularity.Levels
             platform2.StoreResource(res4);
             platform2.StoreResource(res5);
 
-            //Finally add the objects
-            //GAMESCREEN=====================
-            mGameScreen.AddObject(mPlatform);
-            mGameScreen.AddObject(platform2);
-            mGameScreen.AddObject(platform3);
-            mGameScreen.AddObject(platform4);
-            mGameScreen.AddObject(road1);
-            mGameScreen.AddObject(road2);
-            mGameScreen.AddObject(road3);
-            mGameScreen.AddObject(road4);
-            mGameScreen.AddObject(road5);
-            mGameScreen.AddObject(genUnit);
-            mGameScreen.AddObject(genUnit2);
-            mGameScreen.AddObject(genUnit3);
-            mGameScreen.AddObject(genUnit4);
-            mGameScreen.AddObject(genUnit5);
-            mGameScreen.AddObject(milUnit);
-            mGameScreen.AddObject(setUnit);
+            GameScreen.AddObject(genUnit);
+            GameScreen.AddObject(genUnit2);
+            GameScreen.AddObject(genUnit3);
+            GameScreen.AddObject(genUnit4);
+            GameScreen.AddObject(genUnit5);
+            GameScreen.AddObject(milUnit);
+            GameScreen.AddObject(setUnit);
 
 
-            //TESTMETHODS HERE =====================================
-            mDirector.GetDistributionManager.DistributeJobs(JobType.Idle, JobType.Production, 4);
-            mDirector.GetDistributionManager.TestAttributes();
-
+            //TESTMETHODS HERE ====================================
+            mDirector.GetDistributionManager.RequestResource(platform2, EResourceType.Oil, null);
         }
 
         public GameScreen GetGameScreen()
         {
-            return mGameScreen;
+            return GameScreen;
         }
     }
 }

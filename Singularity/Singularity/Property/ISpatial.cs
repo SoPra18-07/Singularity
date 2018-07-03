@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Runtime.Serialization;
+using Microsoft.Xna.Framework;
 
 namespace Singularity.Property
 {
@@ -10,7 +11,7 @@ namespace Singularity.Property
     /// thus store the "actual position on the current screen in relation to the camera". Those
     /// should be used when checking for the current position of this object.
     /// </summary>
-    public interface ISpatial : IDraw, IUpdate
+    public interface ISpatial : IDraw, IUpdate, IDie
     {
         /// <summary>
         /// The relative position of this object. Relative to the camera that is. These
@@ -32,12 +33,14 @@ namespace Singularity.Property
         /// The absolute position of this object. Unaffected by zoom/movement. These
         /// are used for the internal drawing method. These get set once for static objects.
         /// </summary>
+        [DataMember]
         Vector2 AbsolutePosition { set; get; }
 
         /// <summary>
         /// The absolute size of this object. Unaffected by zoom. These
         /// are used for the internal drawing method. These get normally set once in the game.
         /// </summary>
+        [DataMember]
         Vector2 AbsoluteSize { set; get; }
 
     }

@@ -311,13 +311,13 @@ namespace Singularity.Map
                     scrollChange = -0.1f;
                     break;
             }
-            
+
             if (!((mZoom + scrollChange) * MapConstants.MapWidth < mGraphics.Viewport.Width ||
                   (mZoom + scrollChange) * MapConstants.MapHeight < mGraphics.Viewport.Height))
             {
                 ZoomToTarget(new Vector2(mMouseX, mMouseY), scrollChange);
             }
-            
+
             return false;
         }
 

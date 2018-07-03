@@ -19,7 +19,6 @@ namespace Singularity.Screen
         private float mMax;
 
         private Vector2 mLastPosition;
-        private int mLastPages;
 
         // current x position of slider
         private float mCurrentX;
@@ -31,13 +30,17 @@ namespace Singularity.Screen
         private readonly bool mWithValue;
         private readonly bool mWithPages;
 
+        // current page the user is on, and last page the user was on
         private int mCurrentPage;
         private int mLastPage;
+
+        // total amount of pages previously had (to update slider when pages are added)
+        private int mLastPagesCount;
 
         // size of a page relative to the lenght of the slider bar
         private float mPageSize;
 
-        // font for writing the value string of the slider 
+        // font for writing the value string of the slider
         private readonly SpriteFont mFont;
         private String mStringValue;
 
@@ -51,7 +54,7 @@ namespace Singularity.Screen
 
         public event SliderMovingEventHandler SliderMoving;
 
-        // event handler for sending out event of page slider is located on 
+        // event handler for sending out event of page slider is located on
         public delegate void PageMovingEventHandler(object source, EventArgs args, int currentPage);
 
         public event PageMovingEventHandler PageMoving;
@@ -59,7 +62,7 @@ namespace Singularity.Screen
         #endregion
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="position"> position of the slider bar left hand corner</param>
         /// <param name="length"> length of the slider bar</param>
@@ -90,11 +93,10 @@ namespace Singularity.Screen
             mFont = font;
             ActiveWindow = true;
             Pages = pages;
-            mLastPages = pages;
+            mLastPagesCount = Pages;
             mDirector = director;
-            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
-            mDirector.GetInputManager.AddMousePositionListener(this);
-            Screen = screen;
+            mDirector.GetInputManager.AddMouseClickListener(iMouseClickListener: this, leftClickType: EClickType.Both, rightClickType: EClickType.Both);
+            mDirector.GetInputManager.AddMousePositionListener(iMouseListener: this);
 
             // if value box requested, initiate string value to 0
             if (mWithValue)
@@ -107,7 +109,7 @@ namespace Singularity.Screen
             {
                 mCurrentPage = 0;
                 mLastPage = 0;
-                MaxIncrement = pages;
+                MaxIncrement = Pages;
                 mPageSize = Size.X / Pages;
             }
         }
@@ -135,7 +137,7 @@ namespace Singularity.Screen
         /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
-            // if slider should be shown 
+            // if slider should be shown
             if (ActiveWindow)
             {
                 mMin = Position.X;
@@ -150,10 +152,10 @@ namespace Singularity.Screen
                 }
 
                 // if page increase or decrease, update position
-                if (!Pages.Equals(mLastPage))
+                if (!Pages.Equals(mLastPagesCount))
                 {
                     mCurrentX = (mMin + mCurrentPage * mPageSize);
-                    mLastPage = Pages;
+                    mLastPagesCount = Pages;
                 }
 
                 // if slider is left click them make it slave to the mouse
@@ -429,7 +431,7 @@ namespace Singularity.Screen
         //(length of bar, size of slider)
         public Vector2 Size { get; }
 
-        // can make slider not active (not drawn and nothing happens) 
+        // can make slider not active (not drawn and nothing happens)
         public bool ActiveWindow { get; set; }
 
         // can change the amount of pages available on slider bar

@@ -4,10 +4,11 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
+using Singularity.PlatformActions;
 using Singularity.Resources;
 using Singularity.Units;
 
-namespace Singularity.Platform
+namespace Singularity.Platforms
 {
     [DataContract()]
     class CommandCenter: PlatformBlank
@@ -21,14 +22,8 @@ namespace Singularity.Platform
         [DataMember]
         private List<GeneralUnit> mControlledUnits;
 
-        [DataMember]
-        private Director mDirector;
-
-        public CommandCenter(Vector2 position, Texture2D spritesheet, Texture2D baseSprite, ref Director dir): base(position, spritesheet, baseSprite, ref dir, EPlatformType.Command, -50)
+        public CommandCenter(Vector2 position, Texture2D spritesheet, Texture2D baseSprite, ref Director director, bool blueprintState=true): base(position, spritesheet, baseSprite, ref director, EPlatformType.Command, -50)
         {
-            mDirector = dir;
-            //Add possible Actions in this array
-            mIPlatformActions = new IPlatformAction[2];
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
@@ -36,7 +31,8 @@ namespace Singularity.Platform
             mSpritename = "Cylinders";
             SetPlatfromParameters();
             mControlledUnits = new List<GeneralUnit>();
-            dir.GetStoryManager.AddEnergy(5);
+            director.GetStoryManager.AddEnergy(5);
+            mIsBlueprint = blueprintState;
         }
 
         public override void Produce()

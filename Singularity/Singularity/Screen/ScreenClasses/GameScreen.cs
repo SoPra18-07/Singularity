@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
-using Singularity.Platform;
+using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Sound;
@@ -19,11 +19,11 @@ namespace Singularity.Screen.ScreenClasses
     /// Handles everything thats going on explicitly in the game.
     /// E.g. game objects, the map, camera. etc.
     /// </summary>
-    public class GameScreen : IScreen
+    public sealed class GameScreen : IScreen
     {
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
         public bool Loaded { get; set; }
-        
+
         // map and fog of war
         private readonly Map.Map mMap;
         private readonly FogOfWar mFow;
@@ -75,8 +75,8 @@ namespace Singularity.Screen.ScreenClasses
 
             mDirector = director;
 
-            //mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
-            //AddObject(mSelBox);
+            mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
+            AddObject(mSelBox);
 
         }
 
@@ -142,6 +142,9 @@ namespace Singularity.Screen.ScreenClasses
             mFow.Update(gametime);
 
             mTransformMatrix = mCamera.GetTransform();
+
+            // TODO: for some reason just adding to GameScreen in constructor does NOT call up Update method
+            mSelBox.Update(gametime);
         }
 
         public void LoadContent(ContentManager content)
@@ -205,7 +208,7 @@ namespace Singularity.Screen.ScreenClasses
             // subscribe every military unit to the selection box
             if (milUnit != null)
             {
-                //mSelBox.SelectingBox += milUnit.BoxSelected;
+                mSelBox.SelectingBox += milUnit.BoxSelected;
             }
 
             if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
@@ -239,7 +242,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>True if all given objects could be added to the screen, false otherwise</returns>
         public bool AddObjects<T>(IEnumerable<T> toAdd)
         {
-            bool isSuccessful = true;
+            var isSuccessful = true;
 
             foreach (var t in toAdd)
             {
@@ -325,7 +328,7 @@ namespace Singularity.Screen.ScreenClasses
 
         /// <summary>
         /// This get executed when a settler is transformed into a command center
-        /// Essentially this builds a command center 
+        /// Essentially this builds a command center
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="eventArgs"></param>
@@ -336,7 +339,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO eventually the EPlacementType should be instance but currently that
             // TODO requires a road to be place and therefore throws an exception !!!!!
 
-            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, (float)(v.Y-100)), mCylPlat, mBlankPlat, ref mDirector);
+            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, (float)(v.Y-100)), mCylPlat, mBlankPlat, ref mDirector, false);
             var genUnit = new GeneralUnit(cCenter, ref mDirector);
             var genUnit2 = new GeneralUnit(cCenter, ref mDirector);
 

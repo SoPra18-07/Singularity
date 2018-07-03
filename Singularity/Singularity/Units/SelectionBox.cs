@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -16,7 +12,7 @@ using Singularity.Screen;
 
 namespace Singularity.Units
 {
-    class SelectionBox : IDraw, IUpdate, IMouseClickListener, IMousePositionListener
+    public sealed class SelectionBox : IDraw, IUpdate, IMouseClickListener, IMousePositionListener
     {
         private Color mColor;
         private Vector2 mStartBox;
@@ -33,11 +29,11 @@ namespace Singularity.Units
         private Director mDirector;
 
         /// <summary>
-        /// Creates a selection box 
+        /// Creates a selection box
         /// </summary>
         /// <param name="color"></param>
         /// <param name="camera"></param>
-        /// <param name="manager"></param>
+        /// <param name="director"></param>
         public SelectionBox(Color color, Camera camera, ref Director director)
         {
             mColor = color;
@@ -56,12 +52,23 @@ namespace Singularity.Units
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            // if selection box has been created by user then draw
+            
+            if (mBoxExists)
+            {
+                // if selection box has been created by user then draw
+                spriteBatch.StrokedRectangle(new Vector2(mXStart, mYStart), mSizeBox, Color.White, Color.White, .8f, .5f, LayerConstants.FogOfWarLayer);
+            }
+        }
+
+        public void Update(GameTime gameTime)
+        {
             if (mBoxExists)
             {
                 mXStart = mStartBox.X;
                 mYStart = mStartBox.Y;
 
+                // calculate the left hand corner of the selection box based on 
+                // the starting position of where selection box was initiated
                 if (MouseCoordinates().X < mStartBox.X)
                 {
                     mXStart = MouseCoordinates().X;
@@ -72,14 +79,10 @@ namespace Singularity.Units
                     mYStart = MouseCoordinates().Y;
                 }
 
-                spriteBatch.StrokedRectangle(new Vector2(mXStart, mYStart), mSizeBox, Color.White, Color.White, .8f, .5f, LayerConstants.FogOfWarLayer);
-
+                // caculate current size of selection box based on mouse position and point of start
+                mSizeBox = new Vector2(Math.Abs(mStartBox.X - MouseCoordinates().X),
+                    Math.Abs(mStartBox.Y - MouseCoordinates().Y));
             }
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            mSizeBox = new Vector2(Math.Abs(mStartBox.X - MouseCoordinates().X), Math.Abs(mStartBox.Y - MouseCoordinates().Y));
         }
 
         public EScreen Screen { get; } = EScreen.GameScreen;
@@ -96,15 +99,18 @@ namespace Singularity.Units
                     {
                         mBoxExists = true;
                         mStartBox = MouseCoordinates();
-                        mSizeBox = MouseCoordinates();
+                        mSizeBox = new Vector2(0, 0);
+                        // can also be a simple click without a selection box, therefore pass on input
+                        return true;
                     }
-                    return false;
-            }
 
+                    else
+                    {
+                        return false;
+                    }
+            }
             return true;
         }
-
-
 
 
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
@@ -116,6 +122,9 @@ namespace Singularity.Units
                     if (mBoxExists)
                     {
                         mBoxExists = false;
+
+                        // if not an "accidental selection box" send out bounds
+                        // mil unit checks if intersected and sets its selected bool as true if yet
                         if (mSizeBox.X > 2 && mSizeBox.Y > 2)
                         {
                             mXStart = mStartBox.X;
@@ -132,9 +141,11 @@ namespace Singularity.Units
 
                             OnSelectingBox();
                         }
+                        return false;
                     }
-                    return false;
+                    return true;
             }
+
             return true;
         }
 
@@ -150,7 +161,7 @@ namespace Singularity.Units
                 Matrix.Invert(mCamera.GetTransform())).Y);
         }
 
-        #region NotUsedInputMouseActions
+     #region NotUsedInputMouseActions
         public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
 

@@ -1,9 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Singularity.Manager;
+using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Units;
+using Singularity.Utils;
 
-namespace Singularity.Platform
+namespace Singularity.PlatformActions
 {
 
 
@@ -18,6 +20,11 @@ namespace Singularity.Platform
         /// </summary>
         /// <value>The current state of the PlatformAction</value>
         PlatformActionState State { get; }
+
+        /// <summary>
+        /// Unique id of this PlatformAction.
+        /// </summary>
+        int Id { get; }
 
         /// <summary>
         /// Gets the required resources of the PlatformAction
@@ -50,7 +57,8 @@ namespace Singularity.Platform
         /// </summary>
         /// <param name="amount">The amount of units being UNassigned</param>
         /// <param name="job"></param>
-        void UnAssignUnits(int amount, JobType job);
+        /// <returns>A list containing the unassigned units.</returns>
+        List<GeneralUnit> UnAssignUnits(int amount, JobType job);
 
         /// <summary>
         /// Gets the JobType required for this PlatformAction. Can be several.
@@ -66,7 +74,10 @@ namespace Singularity.Platform
         /// <value>The assigned units.</value>
         Dictionary<GeneralUnit, JobType> AssignedUnits { get; }
 
-        PlatformBlank Platform { get; }
+        PlatformBlank Platform { get; set; }
+
+        bool Die();
+        void Kill(GeneralUnit generalUnit);
     }
 
 
@@ -74,20 +85,30 @@ namespace Singularity.Platform
 
     public abstract class APlatformAction : IPlatformAction
     {
-        protected readonly Dictionary<GeneralUnit, JobType> mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
-        protected readonly PlatformBlank mPlatform;
+        protected Dictionary<GeneralUnit, JobType> mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
+        protected PlatformBlank mPlatform;
+        protected readonly Director mDirector;
 
-        protected APlatformAction(PlatformBlank platform)
+        public int Id { get; }
+
+        protected APlatformAction(PlatformBlank platform, ref Director director)
         {
-             mPlatform = platform;
+            mPlatform = platform;
+            mDirector = director;
+            Id = IdGenerator.NextiD();
         }
 
 
-        public PlatformActionState State { get; private set; } = PlatformActionState.Active;
+        public PlatformActionState State { get; protected set; } = PlatformActionState.Active;
 
         public abstract List<JobType> UnitsRequired { get; }
 
-        PlatformBlank IPlatformAction.Platform => mPlatform;
+        PlatformBlank IPlatformAction.Platform
+        {
+            get { return mPlatform; }
+            set { mPlatform = value; }
+        }
+
         Dictionary<GeneralUnit, JobType> IPlatformAction.AssignedUnits => mAssignedUnits;
 
         /// <summary>
@@ -107,13 +128,10 @@ namespace Singularity.Platform
         /// (for finishing this action, or for producing the next resource etc)
         /// </summary>
         /// <returns>The required resources.</returns>
-        Dictionary<EResourceType, int> IPlatformAction.GetRequiredResources()
-        {
-            return new Dictionary<EResourceType, int>();
-        }
+        public abstract Dictionary<EResourceType, int> GetRequiredResources();
 
-        void IPlatformAction.UiToggleState()
-        {
+        public abstract void UiToggleState();
+        /* {
             switch (State)
             {
                 case PlatformActionState.Available:
@@ -126,15 +144,34 @@ namespace Singularity.Platform
                     throw new AccessViolationException("Someone/Something acccessed the state!!");
             }
         }
+        */
 
-        public void UnAssignUnits(int amount, JobType job)
+        public List<GeneralUnit> UnAssignUnits(int amount, JobType job)
         {
+            var list = new List<GeneralUnit>();
             foreach (var unit in mAssignedUnits.Keys)
             {
                 if (unit.Job != job || amount <= 0) continue;
                 mAssignedUnits.Remove(unit);
+                list.Add(unit);
                 amount -= 1;
             }
+
+            return list;
+        }
+
+        public bool Die()
+        {
+            mDirector.GetDistributionManager.Kill(this);
+            mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
+            mPlatform = null;
+
+            return true;
+        }
+
+        public void Kill(GeneralUnit unit)
+        {
+            mAssignedUnits.Remove(unit);
         }
     }
 }

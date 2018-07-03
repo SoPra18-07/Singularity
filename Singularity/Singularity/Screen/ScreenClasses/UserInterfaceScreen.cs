@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
-using Singularity.Platform;
+using Singularity.PlatformActions;
+using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Units;
 using Singularity.Utils;
@@ -50,6 +52,9 @@ namespace Singularity.Screen.ScreenClasses
 
         // director
         private Director mDirector;
+
+        // screen manager -- needed for pause menu
+        private IScreenManager mScreenManager;
 
         // user interface controller - updates the event log + selected platform window + unit distribution
         private UserInterfaceController mUserInterfaceController;
@@ -233,19 +238,15 @@ namespace Singularity.Screen.ScreenClasses
 
         #endregion
 
-        #region testing members
+        #region infoBar members
 
-        // TODO: DELETE TESTING
+        // info bar
+        private InfoBarWindowObject mInfoBar;
 
-        private Button mOkayButton;
 
-        private PopupWindow mTestPopupWindow;
-        private bool mActiveWindow;
 
-        private List<PopupWindow> mPopupWindowList;
-
-        private TextField mTextFieldTest;
-        private TextField mTextFieldTestPopup;
+        // units of info bar
+        // TODO : ??
 
         #endregion
 
@@ -257,7 +258,8 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="director"></param>
         /// <param name="mgraphics"></param>
         /// <param name="gameScreen"></param>
-        public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, GameScreen gameScreen)
+        /// <param name="stackScreenManager"></param>
+        public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, GameScreen gameScreen, IScreenManager stackScreenManager)
         {
             mStructureMap = gameScreen.GetMap().GetStructureMap();
             mResourceMap = gameScreen.GetMap().GetResourceMap();
@@ -265,6 +267,7 @@ namespace Singularity.Screen.ScreenClasses
             mCanBuildPlatform = true;
 
             mDirector = director;
+            mScreenManager = stackScreenManager;
             mInputManager = director.GetInputManager;
             mGraphics = mgraphics;
 
@@ -297,6 +300,9 @@ namespace Singularity.Screen.ScreenClasses
 
                 // reset position to standard position
                 ResetWindowsToStandardPositon();
+
+                // update infoBar width to fit the new resolution
+                mInfoBar.Width = mCurrentScreenWidth;
             }
 
             // update all windows
@@ -313,25 +319,8 @@ namespace Singularity.Screen.ScreenClasses
                 }
             }
 
-            #region testing
-
-            // TODO - DELETE TESTING OF POPUPWINDOW
-            if (!mActiveWindow)
-            {
-                if (mPopupWindowList.Contains(mTestPopupWindow))
-                {
-                    mPopupWindowList.Remove(mTestPopupWindow);
-                }
-            }
-            else
-            {
-                foreach (var window in mPopupWindowList)
-                {
-                    window.Update(gametime);
-                }
-            }
-
-            #endregion
+            // TODO : JUST FOR TESTING
+            mInfoBar.Update(gametime);
 
             if (mPlatformToPlace != null && mPlatformToPlace.IsFinished())
             {
@@ -349,12 +338,6 @@ namespace Singularity.Screen.ScreenClasses
                 window.Draw(spriteBatch);
             }
 
-            // TODO - DELETE TESTING OF POPUPWINDOW
-            foreach (var popupWindow in mPopupWindowList)
-            {
-                popupWindow.Draw(spriteBatch);
-            }
-
             foreach (var infoBox in mInfoBoxList)
             {
                 if (infoBox.Active)
@@ -362,6 +345,9 @@ namespace Singularity.Screen.ScreenClasses
                     infoBox.Draw(spriteBatch);
                 }
             }
+
+            // TODO : JUST FOR TESTING
+            mInfoBar.Draw(spriteBatch);
 
             spriteBatch.End();
         }
@@ -493,17 +479,6 @@ namespace Singularity.Screen.ScreenClasses
             #endregion
 
             // TODO
-            #region topBarWindow
-
-            // var topBarWindow = new WindowObject("", new Vector2(0, 0), new Vector2(topBarWidth, topBarHeight), borderColor, windowColor, 10f, 10f, false, mLibSans20, mInputManager, mGraphics);
-
-            // create items
-
-            // add all items
-
-            #endregion
-
-            // TODO
             #region eventLogWindow
 
             mEventLogWindow = new WindowObject("// EVENT LOG", new Vector2(0, 0), new Vector2(eventLogWidth, eventLogHeight), true, mLibSans14, mInputManager, mGraphics);
@@ -531,12 +506,8 @@ namespace Singularity.Screen.ScreenClasses
             mProductionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
 
 
-            //Subscribe Distr to sliders
-            //Still need to be implemented. A Container for all the sliders would be very useful!
-            //mDefSlider.SliderMoving += mDirector.GetDistributionManager.DefSlider();
-            //mBuildSlider.SliderMoving += mDirector.GetDistributionManager.BuildSlider();
-            //mLogisticsSlider.SliderMoving += mDirector.GetDistributionManager.LogisticsSlider();
-            //mProductionSlider.SliderMoving += mDirector.GetDistributionManager.ProductionSlider();
+            //This instance will handle the comunication between Sliders and DistributionManager.
+            var handler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mBuildSlider, mLogisticsSlider);
 
             // adding all items
             mCivilUnitsWindow.AddItem(mDefTextField);
@@ -1104,43 +1075,19 @@ namespace Singularity.Screen.ScreenClasses
 
             #endregion
 
+            // TODO
+            #region infoBarWindow
+
+            // NOTICE: this window is the only window which is compeletely created and managed in its own class
+            mInfoBar = new InfoBarWindowObject(borderColor, windowColor, mGraphics, mLibSans14, mDirector, mScreenManager, mCivilUnitsWindow, mResourceWindow, mEventLogWindow, mBuildMenuWindow, mSelectedPlatformWindow);
+
+            #endregion
+
             // called once to set positions
             ResetWindowsToStandardPositon();
 
-            // TODO : DELETE AFTER SPRINT
-            #region testing popup window
-            // TODO
-
-            mPopupWindowList = new List<PopupWindow>();
-
-            var testText2 =
-                "Neuronale Methoden werden vor allem dann eingesetzt, wenn es darum geht, " +
-                "aus schlechten oder verrauschten Daten Informationen zu gewinnen, aber " +
-                "auch Algorithmen, die sich neuen Situationen anpassen, also lernen, " +
-                "sind typisch fuer die Neuroinformatik. Dabei unterscheidet man grundsaetzlich " +
-                "ueberwachtes Lernen und unueberwachtes Lernen, ein Kompromiss zwischen beiden " +
-                "Techniken ist das Reinforcement-Lernen. Assoziativspeicher sind eine besondere " +
-                "Anwendung neuronaler Methoden, und damit oft Forschungsgegenstand der Neuroinformatik. " +
-                "Viele Anwendungen fuer kuenstliche neuronale Netze finden sich auch in der Mustererkennung und vor allem im Bildverstehen.";
-
-            var testWindowColor = new Color(0.27f, 0.5f, 0.7f, 0.8f);
-            var testBorderColor = new Color(0.68f, 0.933f, 0.933f, 0.8f);
-
-            mOkayButton = new Button("Okay", mLibSans12, Vector2.Zero, borderColor) { Opacity = 1f };
-
-            mActiveWindow = true;
-
-            mOkayButton.ButtonClicked += OnButtonClickOkayButton;
-
-            mTestPopupWindow = new PopupWindow("// POPUP", mOkayButton , new Vector2(mCurrentScreenWidth / 2 - 250 / 2, mCurrentScreenHeight / 2 - 250 / 2), new Vector2(250, 250), testBorderColor, testWindowColor, mLibSans14, mInputManager, mGraphics);
-
-            mTextFieldTestPopup = new TextField(testText2, Vector2.One, new Vector2(resourceWidth - 50, resourceHeight), mLibSans12, Color.White);
-
-            mTestPopupWindow.AddItem(mTextFieldTestPopup);
-
-            mPopupWindowList.Add(mTestPopupWindow);
-
-            #endregion
+            //DEACTIVATE EVERYTHING TO ACTIVATE IT LATER
+            Deactivate();
         }
 
         public bool UpdateLower()
@@ -1294,16 +1241,33 @@ namespace Singularity.Screen.ScreenClasses
             #endregion
         }
 
+        /// <summary>
+        /// Used to Deactivate the UI to activate it later (used by settler)
+        /// </summary>
+        public void Deactivate()
+        {
+            foreach (var window in mWindowList)
+            {
+                window.Active = false;
+            }
+            //Treat our special snowflake
+            mInfoBar.Active = false;
+        }
+
+        /// <summary>
+        /// Used to Activate the UI. This was thought to be used by the settler when he spawns the CommandCenter.
+        /// </summary>
+        public void Activate()
+        {
+            foreach (var window in mWindowList)
+            {
+                window.Active = true;
+            }
+            mInfoBar.Active = true;
+        }
+
         // TODO : ADD ALL BUILD PLATFORM ACTIONS
         #region button management
-
-        // TODO : DELETE - POPUP WINDOW TEST
-        private void OnButtonClickOkayButton(object sender, EventArgs eventArgs)
-        {
-            mActiveWindow = false;
-            mInputManager.RemoveMousePositionListener(mTestPopupWindow);
-            mInputManager.RemoveMouseWheelListener(mTestPopupWindow);
-        }
 
         // mouse click on basic list button opens the basic platform build menu
         private void OnButtonmBasicListClick(object sender, EventArgs eventArgs)
@@ -1312,8 +1276,6 @@ namespace Singularity.Screen.ScreenClasses
             mButtonBasicList.ActiveHorizontalCollection = true;
             mButtonSpecialList.ActiveHorizontalCollection = false;
             mButtonMilitaryList.ActiveHorizontalCollection = false;
-
-
         }
 
         // mouse click on special list button opens the special platform build menu
@@ -1397,7 +1359,7 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-            
+
             mPlatformToPlace = new PlatformPlacement(
                 EPlatformType.Quarry,
                 EPlacementType.MouseFollowAndRoad,
@@ -1886,6 +1848,8 @@ namespace Singularity.Screen.ScreenClasses
         {
             mMouseX = screenX;
             mMouseY = screenY;
+
+            System.Diagnostics.Debug.WriteLine(new Vector2(mMouseX, mMouseY));
         }
 
         public Rectangle Bounds { get; }

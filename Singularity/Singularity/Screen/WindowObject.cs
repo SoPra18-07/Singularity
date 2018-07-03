@@ -532,7 +532,7 @@ namespace Singularity.Screen
 
             // resharper wanted it this 'overseeable' way o.O
             // minimized + mouse on minimized window -> return false ... else true
-            return !mMinimized || (!(mMouseX > Position.X) || !(mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width) || 
+            return !mMinimized || (!(mMouseX > Position.X) || !(mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width) ||
                                    !(mMouseY > Position.Y) || !(mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height));
         }
 
@@ -736,7 +736,7 @@ namespace Singularity.Screen
         }
 
         // true if window is active (window + items in window will be drawn/updated) or inactive (not drawn/updated)
-        private bool Active { get; set; }
+        internal bool Active { get; set; }
 
         // position of the window
         public Vector2 Position { private get; set; }

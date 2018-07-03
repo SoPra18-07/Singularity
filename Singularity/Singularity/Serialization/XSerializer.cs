@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
 
-namespace Singularity.serialization
+namespace Singularity.Serialization
 {
     /// <summary>
     /// A Xml-Serializer that uses the NetDataContractSerializer for serialization. Besides serializing and deserializing it also has a

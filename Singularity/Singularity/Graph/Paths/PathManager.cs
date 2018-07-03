@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using Singularity.Exceptions;
 using Singularity.Units;
 
@@ -14,21 +16,27 @@ namespace Singularity.Graph.Paths
         /// <summary>
         /// All the graphs currently in the game
         /// </summary>
-        private readonly List<Graph> mGraphs;
+        private readonly Dictionary<int, Graph> mGraphs;
 
         public PathManager()
         {
-            mGraphs = new List<Graph>();
+            mGraphs = new Dictionary<int, Graph>();
         }
 
-        public void AddGraph(Graph graph)
+        public void AddGraph(int id, Graph graph)
         {
-            mGraphs.Add(graph);
+
+            if (mGraphs.ContainsKey(id))
+            {
+                mGraphs[id] = graph;
+                return;
+            }
+            mGraphs.Add(id, graph);
         }
 
-        public void RemoveGraph(Graph graph)
+        public void RemoveGraph(int id)
         {
-            mGraphs.Remove(graph);
+            mGraphs.Remove(id);
         }
 
 
@@ -39,7 +47,7 @@ namespace Singularity.Graph.Paths
         /// <param name="unit">The unit which requests a path</param>
         /// <param name="destination">The destination to which the path should lead</param>
         /// <returns></returns>
-        public IPath GetPath<T>(T unit, INode destination)
+        public IPath GetPath<T>(T unit, INode destination, int GraphIndex)
         {
             // the basic idea for military and general units to use the same method and the distinuishing
             // between the two is handled here.
@@ -48,14 +56,14 @@ namespace Singularity.Graph.Paths
 
             if (asGeneralUnit != null)
             {
-                return GetPathForGeneralUnits(asGeneralUnit, destination);
+                return GetPathForGeneralUnits(asGeneralUnit, destination, GraphIndex);
             }
 
             var asMilitaryUnit = unit as MilitaryUnit;
 
             if (asMilitaryUnit != null)
             {
-                return GetPathForMilitaryUnits(asMilitaryUnit, destination);
+                return GetPathForMilitaryUnits(asMilitaryUnit, destination, GraphIndex);
             }
 
             throw new InvalidGenericArgumentException(
@@ -64,14 +72,14 @@ namespace Singularity.Graph.Paths
 
         }
 
-        private IPath GetPathForGeneralUnits(GeneralUnit unit, INode destination)
+        private IPath GetPathForGeneralUnits(GeneralUnit unit, INode destination, int graphIndex)
         {
-            // todo: know which units are on which graph.
-            // todo: fix. @Ativolex @fkarg
-            return PathfindingFactory.GetPathfinding().AStar(mGraphs[0], unit.CurrentNode, destination);
+            //TODO: implement distribution on multiple graphs, then the following boolean expression can be removed
+
+            return PathfindingFactory.GetPathfinding().AStar(mGraphs[graphIndex], unit.CurrentNode, destination);
         }
 
-        private IPath GetPathForMilitaryUnits(MilitaryUnit unit, INode destination)
+        private IPath GetPathForMilitaryUnits(MilitaryUnit unit, INode destination, int graphIndex)
         {
             //todo: implement
             var pathfinding = PathfindingFactory.GetPathfinding();
