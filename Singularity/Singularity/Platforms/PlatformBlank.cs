@@ -8,11 +8,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Exceptions;
 using Singularity.Graph;
+using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.PlatformActions;
 using Singularity.Property;
 using Singularity.Resources;
+using Singularity.Screen;
 using Singularity.Units;
 using Singularity.Utils;
 
@@ -22,7 +24,7 @@ namespace Singularity.Platforms
     /// <inheritdoc cref="INode"/>
     /// <inheritdoc cref="ICollider"/>
     [DataContract]
-    public class PlatformBlank : IRevealing, INode, ICollider
+    public class PlatformBlank : IRevealing, INode, ICollider, IMouseClickListener
     {
 
         private int mGraphIndex;
@@ -102,6 +104,9 @@ namespace Singularity.Platforms
         private int mSheet;
         private int mSheetPosition;
 
+        // the userinterface controller to send all informations to
+        private readonly UserInterfaceController mUserInterfaceController;
+
 
         [DataMember]
         public Vector2 AbsolutePosition { get; set; }
@@ -178,6 +183,11 @@ namespace Singularity.Platforms
             Moved = false;
             UpdateValues();
 
+            // manage input
+            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+
+            // user interface controller
+            mUserInterfaceController = director.GetUserInterfaceController;
         }
 
         public void SetColor(Color color)
@@ -482,6 +492,13 @@ namespace Singularity.Platforms
         public void Update(GameTime t)
         {
             Uncollide();
+
+            Bounds = new Rectangle((int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
+
+            if (IsSelected)
+            {
+                mUserInterfaceController.SetDataOfSelectedPlatform(mType, GetPlatformResources(), GetAssignedUnits(), GetIPlatformActions());
+            }
         }
 
         private void Uncollide()
@@ -847,6 +864,37 @@ namespace Singularity.Platforms
         public int GetGraphIndex()
         {
             return mGraphIndex;
+        }
+
+        /// <summary>
+        /// true, if the platform is sleected in the UI
+        /// </summary>
+        public bool IsSelected { get; set; }
+
+        public EScreen Screen { get; } = EScreen.GameScreen;
+        public Rectangle Bounds { get; private set; }
+        public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
+        {
+            if (!withinBounds)
+            {
+                return true;
+            }
+
+            if (mouseAction == EMouseAction.LeftClick)
+            {
+                mUserInterfaceController.ActivateMe(this);
+            }
+            return false;
+        }
+
+        public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
+        {
+            return !withinBounds;
+        }
+
+        public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
+        {
+            return !withinBounds;
         }
     }
 }

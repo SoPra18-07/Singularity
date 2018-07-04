@@ -406,32 +406,32 @@ namespace Singularity.Screen.ScreenClasses
             mSelectedPlatformResourceList = new List<ResourceIWindowItem>();
 
             // resource-section-title
-            mSelectedPlatformResources = new TextField("Resources", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12, Color.White);
+            mSelectedPlatformResources = new TextField("Resources", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, 0), mLibSans12, Color.White);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformResources);
             // resource items
-            mSelectedPlatformChips = new ResourceIWindowItem(EResourceType.Chip, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
+            mSelectedPlatformChips = new ResourceIWindowItem(EResourceType.Chip, 0, new Vector2(mSelectedPlatformWindow.Size.X - 40, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformChips);
-            mSelectedPlatformConcrete = new ResourceIWindowItem(EResourceType.Concrete, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
+            mSelectedPlatformConcrete = new ResourceIWindowItem(EResourceType.Concrete, 0, new Vector2(mSelectedPlatformWindow.Size.X - 40, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformConcrete);
-            mSelectedPlatformCopper = new ResourceIWindowItem(EResourceType.Copper, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
+            mSelectedPlatformCopper = new ResourceIWindowItem(EResourceType.Copper, 0, new Vector2(mSelectedPlatformWindow.Size.X - 40, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformCopper);
-            mSelectedPlatformFuel = new ResourceIWindowItem(EResourceType.Fuel, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
+            mSelectedPlatformFuel = new ResourceIWindowItem(EResourceType.Fuel, 0, new Vector2(mSelectedPlatformWindow.Size.X - 40, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformFuel);
-            mSelectedPlatformMetal = new ResourceIWindowItem(EResourceType.Metal, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
+            mSelectedPlatformMetal = new ResourceIWindowItem(EResourceType.Metal, 0, new Vector2(mSelectedPlatformWindow.Size.X - 40, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformMetal);
-            mSelectedPlatformOil = new ResourceIWindowItem(EResourceType.Oil, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
+            mSelectedPlatformOil = new ResourceIWindowItem(EResourceType.Oil, 0, new Vector2(mSelectedPlatformWindow.Size.X - 40, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformOil);
-            mSelectedPlatformPlastic = new ResourceIWindowItem(EResourceType.Plastic, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
+            mSelectedPlatformPlastic = new ResourceIWindowItem(EResourceType.Plastic, 0, new Vector2(mSelectedPlatformWindow.Size.X - 40, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformPlastic);
-            mSelectedPlatformSand = new ResourceIWindowItem(EResourceType.Sand, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
+            mSelectedPlatformSand = new ResourceIWindowItem(EResourceType.Sand, 0, new Vector2(mSelectedPlatformWindow.Size.X - 40, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformSand);
-            mSelectedPlatformSilicon = new ResourceIWindowItem(EResourceType.Silicon, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
+            mSelectedPlatformSilicon = new ResourceIWindowItem(EResourceType.Silicon, 0, new Vector2(mSelectedPlatformWindow.Size.X - 40, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformSilicon);
-            mSelectedPlatformSteel = new ResourceIWindowItem(EResourceType.Steel, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
+            mSelectedPlatformSteel = new ResourceIWindowItem(EResourceType.Steel, 0, new Vector2(mSelectedPlatformWindow.Size.X - 40, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformSteel);
-            mSelectedPlatformStone = new ResourceIWindowItem(EResourceType.Stone, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
+            mSelectedPlatformStone = new ResourceIWindowItem(EResourceType.Stone, 0, new Vector2(mSelectedPlatformWindow.Size.X - 40, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformStone);
-            mSelectedPlatformWater = new ResourceIWindowItem(EResourceType.Water, 0, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10);
+            mSelectedPlatformWater = new ResourceIWindowItem(EResourceType.Water, 0, new Vector2(mSelectedPlatformWindow.Size.X - 40, 0), mLibSans10);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformWater);
             // add all resourcItems to list - 
             mSelectedPlatformResourceList.Add(mSelectedPlatformChips);
@@ -505,7 +505,6 @@ namespace Singularity.Screen.ScreenClasses
             mProductionTextField = new TextField("Production", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
             mProductionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
 
-
             //This instance will handle the comunication between Sliders and DistributionManager.
             var handler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mBuildSlider, mLogisticsSlider);
 
@@ -529,18 +528,18 @@ namespace Singularity.Screen.ScreenClasses
             mResourceWindow = new WindowObject("// RESOURCES", new Vector2(0, 0), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mInputManager, mGraphics);
 
             // create all items (these are simple starting values which will be updated automatically by the UI controller)
-            mResourceItemChip = new ResourceIWindowItem(EResourceType.Chip, 10, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
-            mResourceItemConcrete = new ResourceIWindowItem(EResourceType.Concrete, 20, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
-            mResourceItemCopper = new ResourceIWindowItem(EResourceType.Copper, 30, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
-            mResourceItemFuel = new ResourceIWindowItem(EResourceType.Fuel, 5000, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
-            mResourceItemMetal = new ResourceIWindowItem(EResourceType.Metal, 100, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
-            mResourceItemOil = new ResourceIWindowItem(EResourceType.Oil, 2343, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
-            mResourceItemPlastic = new ResourceIWindowItem(EResourceType.Plastic, 4, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
-            mResourceItemSand = new ResourceIWindowItem(EResourceType.Sand, 32, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
-            mResourceItemSilicon = new ResourceIWindowItem(EResourceType.Silicon, 543, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
-            mResourceItemSteel = new ResourceIWindowItem(EResourceType.Steel, 0, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
-            mResourceItemStone = new ResourceIWindowItem(EResourceType.Stone, 4365, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
-            mResourceItemWater = new ResourceIWindowItem(EResourceType.Water, 99, new Vector2(mResourceWindow.Size.X - 50, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemChip = new ResourceIWindowItem(EResourceType.Chip, 10, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemConcrete = new ResourceIWindowItem(EResourceType.Concrete, 20, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemCopper = new ResourceIWindowItem(EResourceType.Copper, 30, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemFuel = new ResourceIWindowItem(EResourceType.Fuel, 5000, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemMetal = new ResourceIWindowItem(EResourceType.Metal, 100, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemOil = new ResourceIWindowItem(EResourceType.Oil, 2343, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemPlastic = new ResourceIWindowItem(EResourceType.Plastic, 4, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemSand = new ResourceIWindowItem(EResourceType.Sand, 32, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemSilicon = new ResourceIWindowItem(EResourceType.Silicon, 543, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemSteel = new ResourceIWindowItem(EResourceType.Steel, 0, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemStone = new ResourceIWindowItem(EResourceType.Stone, 4365, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
+            mResourceItemWater = new ResourceIWindowItem(EResourceType.Water, 99, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
 
             // add all items to window
             mResourceWindow.AddItem(mResourceItemWater);
@@ -1128,15 +1127,30 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="unitAssignmentList"></param>
         /// <param name="actionsList"></param>
         public void SetSelectedPlatformValues(EPlatformType type,
-            IReadOnlyList<Resource> resourceAmountList,
+            IEnumerable<Resource> resourceAmountList,
             Dictionary<JobType, List<Pair<GeneralUnit, bool>>> unitAssignmentList,
-            IPlatformAction[] actionsList)
+            IEnumerable<IPlatformAction> actionsList)
         {
             // set window type
             mSelectedPlatformWindow.WindowName = type.ToString();
 
             #region resources
 
+            // reset all resource-amounts
+            mSelectedPlatformChips.Amount = 0;
+            mSelectedPlatformConcrete.Amount = 0;
+            mSelectedPlatformCopper.Amount = 0;
+            mSelectedPlatformFuel.Amount = 0;
+            mSelectedPlatformMetal.Amount = 0;
+            mSelectedPlatformOil.Amount = 0;
+            mSelectedPlatformPlastic.Amount = 0;
+            mSelectedPlatformSand.Amount = 0;
+            mSelectedPlatformSilicon.Amount = 0;
+            mSelectedPlatformSteel.Amount = 0;
+            mSelectedPlatformStone.Amount = 0;
+            mSelectedPlatformWater.Amount = 0;
+
+            // go through each resource from the list and add it to the corresponding amount
             foreach (var resource in resourceAmountList)
             {
                 switch (resource.Type)
@@ -1235,7 +1249,7 @@ namespace Singularity.Screen.ScreenClasses
 
             foreach (var action in actionsList)
             {
-                
+                //var test = new PlatformActionIWindowItem(action, mLibSans10, Vector2.One, Vector2.One);
             }
 
             #endregion
@@ -1848,8 +1862,6 @@ namespace Singularity.Screen.ScreenClasses
         {
             mMouseX = screenX;
             mMouseY = screenY;
-
-            System.Diagnostics.Debug.WriteLine(new Vector2(mMouseX, mMouseY));
         }
 
         public Rectangle Bounds { get; }
@@ -1858,7 +1870,6 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
-            // TODO : ? enable deselection of SelectedPlatform when clicking on a part of the screen that is not part of the UI and not a platform ?
             return true;
         }
 
