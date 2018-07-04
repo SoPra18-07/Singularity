@@ -18,31 +18,13 @@ namespace Singularity.Units
 {
     internal sealed class MilitaryUnit : ControllableUnit, IMouseClickListener, IMousePositionListener
     {
-        public EScreen Screen { get; private set; } = EScreen.GameScreen;
-
         private const int DefaultWidth = 150;
         private const int DefaultHeight = 75;
 
-        private const double Speed = 4;
+        private const float Speed = 4;
 
-        private int mColumn;
-        private int mRow;
-
-
-
-
-        private Vector2 mMovementVector;
-
-
-        private int mRotation;
         private readonly Texture2D mMilSheet;
         private readonly Texture2D mGlowTexture;
-
-        private bool mSelected;
-
-        private float mMouseX;
-
-        private float mMouseY;
 
         private readonly float mScale;
 
@@ -50,18 +32,7 @@ namespace Singularity.Units
 
         private bool mShoot;
 
-
-
-        public Vector2 RelativePosition { get; set; }
-
-        public Vector2 RelativeSize { get; set; }
-
-
-
-
-
-
-        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director, ref Map.Map map)
+        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Texture2D glowSpriteSheet, Camera camera, ref Director director, ref Map.Map map)
             : base(position, camera, ref director, ref map)
         {
             Health = 10;
@@ -85,62 +56,7 @@ namespace Singularity.Units
             mGlowTexture = glowSpriteSheet;
         }
 
-
-        /// <summary>
-        /// Rotates unit in order when selected in order to face
-        /// user mouse and eventually target destination.
-        /// </summary>
-        /// <param name="target"></param>
-        private void Rotate(Vector2 target)
-        {
-            // form a triangle from unit location to mouse location
-            // adjust to be at center of sprite
-            var x = target.X - (RelativePosition.X + RelativeSize.X / 2);
-            var y = target.Y - (RelativePosition.Y + RelativeSize.Y / 2);
-            var hypot = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
-
-            // calculate degree between formed triangle
-            double degree;
-            if (Math.Abs(hypot) < 0.01)
-            {
-                degree = 0;
-            }
-            else
-            {
-                degree = Math.Asin(y / hypot) * (180.0 / Math.PI);
-            }
-
-            // calculate rotation with increased degrees going counterclockwise
-            if (x >= 0)
-            {
-                mRotation = (int) Math.Round(270 - degree, MidpointRounding.AwayFromZero);
-            }
-            else
-            {
-                mRotation = (int) Math.Round(90 + degree, MidpointRounding.AwayFromZero);
-            }
-
-            // add 42 degrees since sprite sheet starts at sprite -42deg not 0
-            mRotation = (mRotation + 42) % 360;
-
-        }
-
-        /// <summary>
-        /// Defines the health of the unit, defaults to 10.
-        /// </summary>
-        private int Health { get; set; }
-
-
-        /// <summary>
-        /// Damages the unit by a certain amount.
-        /// </summary>
-        /// <param name="damage"></param>
-        public void MakeDamage(int damage)
-        {
-             Health -= damage;
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             // Draw military unit
             spriteBatch.Draw(
@@ -192,7 +108,7 @@ namespace Singularity.Units
         }
 
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
 
             //make sure to update the relative bounds rectangle enclosing this unit.
@@ -254,138 +170,6 @@ namespace Singularity.Units
             Rotate(target);
 
         }
-
-
-
-        /// <summary>
-        /// Checks whether the target position is reached or not.
-        /// </summary>
-        private bool HasReachedTarget()
-        {
-
-            if (!(Math.Abs(Center.X + mToAdd.X -
-                           mTargetPosition.X) < 8 &&
-                  Math.Abs(Center.Y + mToAdd.Y -
-                           mTargetPosition.Y) < 8))
-            {
-                return false;
-            }
-            mToAdd = Vector2.Zero;
-            return true;
-        }
-
-        private bool HasReachedWaypoint()
-        {
-            if (Math.Abs(Center.X + mToAdd.X - mPath.Peek().X) < 8
-                && Math.Abs(Center.Y + mToAdd.Y - mPath.Peek().Y) < 8)
-            {
-                Debug.WriteLine("Waypoint reached.");
-                Debug.WriteLine("Next waypoint: " +  mPath.Peek());
-                return true;
-            }
-
-            return false;
-        }
-
-        public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
-        {
-            // todo: someone look at the ReSharper warning following here:
-            var giveThrough = true;
-
-            switch (mouseAction)
-            {
-                case EMouseAction.LeftClick:
-                    // check for if the unit is selected, not moving, the click is not within the bounds of the unit, and the click was on the map.
-                    if (mSelected
-                        && !mIsMoving
-                        && !withinBounds
-                        && Map.Map.IsOnTop(new Rectangle((int) (mMouseX - RelativeSize.X / 2f),
-                                (int) (mMouseY - RelativeSize.Y / 2f),
-                                (int) RelativeSize.X,
-                                (int) RelativeSize.Y),
-                            mCamera))
-                    {
-                        if (mMap.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
-                            (int) mTargetPosition.X / MapConstants.GridWidth,
-                            (int) mTargetPosition.Y / MapConstants.GridWidth))
-                        {
-                            mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                                Matrix.Invert(mCamera.GetTransform()));
-
-                            FindPath(mTargetPosition, Center);
-                        }
-                    }
-
-
-                    if (withinBounds) {
-                        mSelected = true;
-                        giveThrough = false;
-                    }
-
-                    break;
-
-                case EMouseAction.RightClick:
-                    mSelected = false;
-                    break;
-            }
-
-            return giveThrough;
-        }
-
-        public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
-        {
-            return true;
-        }
-
-        public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
-        {
-            return true;
-        }
-
-        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
-        {
-            mMouseX = screenX;
-            mMouseY = screenY;
-        }
-
-        /// <summary>
-        /// Used to find the coordinates of the given Vector2 based on the overall map
-        /// instead of just the camera shot, returns Vector2 of absolute position
-        /// </summary>
-        /// <returns></returns>
-        private Vector2 MapCoordinates(Vector2 v)
-        {
-            return new Vector2(Vector2.Transform(new Vector2(v.X, v.Y),
-                Matrix.Invert(mCamera.GetTransform())).X, Vector2.Transform(new Vector2(v.X, v.Y),
-                Matrix.Invert(mCamera.GetTransform())).Y);
-        }
-
-        /// <summary>
-        /// This is called up every time a selection box is created
-        /// if MUnit bounds intersects with the selection box then it become selected
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /// <param name="position"> top left corner of the selection box</param>
-        /// <param name="size"> size of selection box</param>
-        public void BoxSelected(object sender, EventArgs e, Vector2 position, Vector2 size)
-        {
-            // create a rectangle from given parameters
-            Rectangle selBox = new Rectangle((int) position.X, (int) position.Y, (int) size.X, (int) size.Y);
-
-            // check if selection box intersects with MUnit bounds
-            if (selBox.Intersects(AbsBounds))
-            {
-                mSelected = true;
-            }
-        }
-
-        public bool Die()
-        {
-            // mDirector.GetMilitaryManager.Kill(this);
-            // todo: MilitaryManager implement
-
-            return true;
-        }
+        
     }
 }

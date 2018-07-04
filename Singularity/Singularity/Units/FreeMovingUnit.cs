@@ -22,48 +22,43 @@ namespace Singularity.Units
         /// </summary>
         public int Id { get; }
 
-        /// <summary>
-        /// Defines the health of the unit, defaults to 10.
-        /// </summary>
-        public int Health { get; set; }
-
         #region Movement Variables
 
         /// <summary>
         /// Indicates the vector that needs to be added to the current vector to indicate the movement
         /// direction.
         /// </summary>
-        internal Vector2 mToAdd;
+        protected Vector2 mToAdd;
 
         /// <summary>
         /// Target position that the unit wants to reach.
         /// </summary>
-        internal Vector2 mTargetPosition;
+        protected Vector2 mTargetPosition;
 
         /// <summary>
         /// Indicates if the unit is currently moving towards a target.
         /// </summary>
-        internal bool mIsMoving;
+        protected bool mIsMoving;
 
         /// <summary>
         /// Path the unit must take to get to the target position without colliding with obstacles.
         /// </summary>
-        internal Stack<Vector2> mPath;
+        protected Stack<Vector2> mPath;
 
         /// <summary>
         /// Stores the path the unit is taking so that it can be drawn for debugging.
         /// </summary>
-        internal Vector2[] mDebugPath;
+        protected Vector2[] mDebugPath;
 
         /// <summary>
         /// Provides a snapshot of the current bounds of the unit at every update call.
         /// </summary>
-        internal Rectangle mBoundsSnapshot;
+        protected Rectangle mBoundsSnapshot;
 
         /// <summary>
         /// Normalized vector to indicate direction of movement.
         /// </summary>
-        internal Vector2 mMovementVector;
+        protected Vector2 mMovementVector;
 
 
         #endregion
@@ -73,38 +68,38 @@ namespace Singularity.Units
         /// <summary>
         /// Stores a reference to the game director.
         /// </summary>
-        internal Director mDirector;
+        protected Director mDirector;
 
         /// <summary>
         /// MilitaryPathfinders enables pathfinding using jump point search or line of sight.
         /// </summary>
-        internal readonly MilitaryPathfinder mPathfinder;
+        protected readonly MilitaryPathfinder mPathfinder;
 
         /// <summary>
         /// Stores a reference to the game map.
         /// </summary>
-        internal Map.Map mMap;
+        protected Map.Map mMap;
 
         /// <summary>
         /// Stores the game camera.
         /// </summary>
-        internal readonly Camera mCamera;
+        protected readonly Camera mCamera;
 
         /// <summary>
         /// Provides IMouseClickListener its bounds to know when it is clicked
         /// </summary>
-        public Rectangle Bounds { get; internal set; }
+        public Rectangle Bounds { get; protected set; }
 
         /// <summary>
         /// Used by the camera to figure out where it is.
         /// </summary>
-        internal double mZoomSnapshot;
+        protected double mZoomSnapshot;
 
-        public Rectangle AbsBounds { get; internal set; }
+        public Rectangle AbsBounds { get; protected set; }
 
-        public bool[,] ColliderGrid { get; internal set; }
+        public bool[,] ColliderGrid { get; protected set; }
 
-        public int RevelationRadius { get; internal set; }
+        public int RevelationRadius { get; protected set; }
 
         public Vector2 RelativePosition { get; set; }
 
@@ -117,12 +112,12 @@ namespace Singularity.Units
         /// <summary>
         /// Indicates if a unit has moved between updates.
         /// </summary>
-        public bool Moved { get; internal set; }
+        public bool Moved { get; protected set; }
 
         /// <summary>
         /// Stores the center of a unit's position.
         /// </summary>
-        public Vector2 Center { get; internal set; }
+        public Vector2 Center { get; protected set; }
 
         public Vector2 AbsolutePosition { get; set; }
 
@@ -131,17 +126,17 @@ namespace Singularity.Units
         /// <summary>
         /// Value of the unit's rotation.
         /// </summary>
-        internal int mRotation;
+        protected int mRotation;
 
         /// <summary>
         /// Column of the spritesheet to be used in case the unit is a military unit.
         /// </summary>
-        internal int mColumn;
+        protected int mColumn;
 
         /// <summary>
         /// Row of the spritesheet to be used in case the unit is a military unit.
         /// </summary>
-        internal int mRow;
+        protected int mRow;
 
 
         #endregion
@@ -171,7 +166,7 @@ namespace Singularity.Units
         /// </summary>
         /// <param name="target">The target to which to move.</param>
         /// <param name="speed">Speed to go towards the target at.</param>
-        internal void MoveToTarget(Vector2 target, float speed)
+        protected void MoveToTarget(Vector2 target, float speed)
         {
 
             var movementVector = new Vector2(target.X - Center.X, target.Y - Center.Y);
@@ -181,7 +176,7 @@ namespace Singularity.Units
             AbsolutePosition = new Vector2((float)(AbsolutePosition.X + movementVector.X * speed), (float)(AbsolutePosition.Y + movementVector.Y * speed));
         }
 
-        internal void FindPath(Vector2 currentPosition, Vector2 targetPosition)
+        protected void FindPath(Vector2 currentPosition, Vector2 targetPosition)
         {
 
             mIsMoving = true;
@@ -207,7 +202,7 @@ namespace Singularity.Units
         /// <summary>
         /// Checks whether the target position is reached or not.
         /// </summary>
-        internal bool HasReachedTarget()
+        protected bool HasReachedTarget()
         {
 
             if (!(Math.Abs(Center.X + mToAdd.X -
@@ -225,7 +220,7 @@ namespace Singularity.Units
         /// Checks whether the next waypoint has been reached.
         /// </summary>
         /// <returns></returns>
-        internal bool HasReachedWaypoint()
+        protected bool HasReachedWaypoint()
         {
             if (Math.Abs(Center.X + mToAdd.X - mPath.Peek().X) < 8
                 && Math.Abs(Center.Y + mToAdd.Y - mPath.Peek().Y) < 8)
@@ -246,7 +241,7 @@ namespace Singularity.Units
         /// user mouse and eventually target destination.
         /// </summary>
         /// <param name="target"></param>
-        internal void Rotate(Vector2 target)
+        protected void Rotate(Vector2 target)
         {
             // form a triangle from unit location to mouse location
             // adjust to be at center of sprite
@@ -289,12 +284,42 @@ namespace Singularity.Units
 
         #endregion
 
+        #region Health, damage methods
+
+        /// <summary>
+        /// Defines the health of the unit, defaults to 10.
+        /// </summary>
+        public int Health { get; set; }
+
+        /// <summary>
+        /// Damages the unit by a certain amount.
+        /// </summary>
+        /// <param name="damage"></param>
+        public void MakeDamage(int damage)
+        {
+            Health -= damage;
+        }
+
         public bool Die()
         {
             // mDirector.GetMilitaryManager.Kill(this);
             // todo: MilitaryManager implement
 
             return true;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Used to find the coordinates of the given Vector2 based on the overall map
+        /// instead of just the camera shot, returns Vector2 of absolute position
+        /// </summary>
+        /// <returns></returns>
+        protected Vector2 MapCoordinates(Vector2 v)
+        {
+            return new Vector2(Vector2.Transform(new Vector2(v.X, v.Y),
+                Matrix.Invert(mCamera.GetTransform())).X, Vector2.Transform(new Vector2(v.X, v.Y),
+                Matrix.Invert(mCamera.GetTransform())).Y);
         }
     }
 }
