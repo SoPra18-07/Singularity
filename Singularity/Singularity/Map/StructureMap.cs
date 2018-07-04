@@ -139,7 +139,19 @@ namespace Singularity.Map
             mPlatforms.Remove(platform);
             mFow.RemoveRevealingObject(platform);
 
-            //TODO: update graphs on removal.
+            // first update the references to all the roads connected to this accordingly
+            foreach (var roads in platform.GetOutwardsEdges())
+            {
+                ((Road) roads).SourceAsNode = null;
+            }
+
+            foreach (var roads in platform.GetInwardsEdges())
+            {
+                ((Road) roads).DestinationAsNode = null;
+            }
+
+            // possible outcomes, no new graphs, 1 new graph, ..., n new graphs.
+            // TODO: no idea how to efficiently handle this, implementation needed
 
 
         }
@@ -205,8 +217,84 @@ namespace Singularity.Map
         {
             mRoads.Remove(road);
 
-            //TODO: adjust underlying graph structures.
+            var child = road.GetChild();
+            var parent = road.GetParent();
 
+            ((PlatformBlank)child).RemoveEdge(road);
+            ((PlatformBlank)parent).RemoveEdge(road);
+
+            //TODO: adjust underlying graph structures
+            // more accurately: we have two cases:
+            // 1. road gets destroyed -> two new seperate graphs get created
+            // because they only were connected by the road to be removed.
+            //
+            // 1.1 road gets destroyed -> graph doesn't change, since child reachability graph
+            // and parent reachability graph are the same even without the road. Just remove
+            // the road from the graph
+            // 
+            // 2. road gets destroyed -> the graph stays the same, just
+            // this road removed, this can be the case if either the child
+            // or parent of the road is not existent anymore.
+            //
+            // 3. road gets destroyed -> both parent and child were non existent
+            // not sure right now if this should be supportable, but lets
+            // just do it. This does nothing, but remove the road from
+            // the internal list of roads, since there should be no
+            // graph just containing one edge
+
+            // 1st check the 3rd case.
+            if (child == null && parent == null)
+            {
+                return;
+            }
+
+            // now check the 2nd case.
+            if (child == null || parent == null)
+            {
+                INode existent = null;
+
+                if (child != null)
+                {
+                    existent = child;
+                }
+
+                if (parent != null)
+                {
+                    existent = parent;
+                }
+
+                // this is all we have to do, refer to the 2nd case above if more explanation needed
+                mGraphIdToGraph[mPlatformToGraphId[(PlatformBlank) existent]].RemoveEdge(road);
+                return;
+            }
+
+            // now we're in the 1st case. But child and parent do exist. This is the main
+            // case in the game
+
+            var childReachableGraph = Bfs(child);
+            var parentReachableGraph = Bfs(parent);
+
+            // check whether both are still the same
+            if (childReachableGraph.Equals(parentReachableGraph))
+            {
+                mGraphIdToGraph[mPlatformToGraphId[(PlatformBlank) parent]].RemoveEdge(road);
+                return;
+            }
+
+            var newChildIndex = mGraphIdToGraph.Count;
+
+            // update the values for the child nodes, the parent nodes reuse their values.
+            foreach (var childNode in childReachableGraph.GetNodes())
+            {
+                mPlatformToGraphId[(PlatformBlank)childNode] = newChildIndex;
+                ((PlatformBlank)childNode).SetGraphIndex(newChildIndex);
+            }
+
+            mGraphIdToGraph[newChildIndex] = childReachableGraph;
+            mGraphIdToGraph[mPlatformToGraphId[(PlatformBlank) parent]] = parentReachableGraph;
+
+            mDirector.GetPathManager.AddGraph(newChildIndex, childReachableGraph);
+            mDirector.GetPathManager.AddGraph(mPlatformToGraphId[(PlatformBlank)parent], parentReachableGraph);
         }
 
         /// <summary>

@@ -144,7 +144,6 @@ namespace Singularity.Levels
             GameScreen.AddObject(milUnit);
             GameScreen.AddObject(setUnit);
 
-
             //TESTMETHODS HERE ====================================
             mDirector.GetDistributionManager.RequestResource(platform2, EResourceType.Oil, null);
         }

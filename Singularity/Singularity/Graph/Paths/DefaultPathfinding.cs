@@ -77,6 +77,11 @@ namespace Singularity.Graph.Paths
                 {
                     var neighbor = outgoing.GetChild();
 
+                    if (neighbor == null)
+                    {
+                        continue;
+                    }
+
                     if (closedList.Contains(neighbor))
                     {
                         continue;
@@ -101,6 +106,11 @@ namespace Singularity.Graph.Paths
                 foreach (var outgoing in current.GetInwardsEdges())
                 {
                     var neighbor = outgoing.GetParent();
+
+                    if (neighbor == null)
+                    {
+                        continue;
+                    }
 
                     if (closedList.Contains(neighbor))
                     {
