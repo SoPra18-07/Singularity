@@ -73,7 +73,7 @@ namespace Singularity.Serialization
         /// /// <param name="name">The name of the file. Don't forget to add .xml at the end!!!</param>
         public static void Save(object toSave, string name)
         {
-            var path = @"%USERPROFILE%\Saved Games\Singularity";
+            var path = @"%USERPROFILE%\Saved Games\Singularity\Saves";
             path = Environment.ExpandEnvironmentVariables(path);
             if (!Directory.Exists(path))
             {
@@ -98,6 +98,25 @@ namespace Singularity.Serialization
             }
             //One may implement additional logic here later
             return loadedObjects[0];
+        }
+
+        /// <summary>
+        /// Returns a list of the names of all GameSaves.
+        /// </summary>
+        /// <returns>An array containing the names of all Gamesaves.</returns>
+        public static string[] GetSaveNames()
+        {
+            var path = @"%USERPROFILE%\Saved Games\Singularity\Saves";
+            path = Environment.ExpandEnvironmentVariables(path);
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+                return new string[0];
+            }
+            else
+            {
+                return Directory.GetFiles(path);
+            }
         }
 
         /// <summary>

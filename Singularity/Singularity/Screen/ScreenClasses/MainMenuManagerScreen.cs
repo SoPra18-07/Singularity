@@ -324,7 +324,7 @@ namespace Singularity.Screen.ScreenClasses
         private void Initialize(Vector2 screenResolution, bool screenResolutionChanged, Game1 game)
         {
             mGameModeSelectScreen = new GameModeSelectScreen(screenResolution);
-            mLoadSelectScreen = new LoadSelectScreen();
+            mLoadSelectScreen = new LoadSelectScreen(screenResolution);
             mAchievementsScreen = new AchievementsScreen();
             mOptionsScreen = new OptionsScreen(screenResolution, screenResolutionChanged, game);
             mMenuBackgroundScreen = new MenuBackgroundScreen(screenResolution);
