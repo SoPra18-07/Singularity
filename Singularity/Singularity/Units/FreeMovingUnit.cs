@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
@@ -14,12 +15,17 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="ICollider"/>
     /// <inheritdoc cref="IRevealing"/>
-    class FreeMovingUnit : ICollider, IRevealing
+    abstract class FreeMovingUnit : ICollider, IRevealing
     {
         /// <summary>
         /// The unique ID of the unit.
         /// </summary>
         public int Id { get; }
+
+        /// <summary>
+        /// Defines the health of the unit, defaults to 10.
+        /// </summary>
+        public int Health { get; set; }
 
         #region Movement Variables
 
@@ -49,13 +55,20 @@ namespace Singularity.Units
         /// </summary>
         internal Vector2[] mDebugPath;
 
+        /// <summary>
+        /// Provides a snapshot of the current bounds of the unit at every update call.
+        /// </summary>
+        internal Rectangle mBoundsSnapshot;
+
+        /// <summary>
+        /// Normalized vector to indicate direction of movement.
+        /// </summary>
+        internal Vector2 mMovementVector;
+
 
         #endregion
 
-
-
-
-        #region Director and map/camera/library variables
+        #region Director/map/camera/library/fow Variables
 
         /// <summary>
         /// Stores a reference to the game director.
@@ -75,15 +88,7 @@ namespace Singularity.Units
         /// <summary>
         /// Stores the game camera.
         /// </summary>
-        private readonly Camera mCamera;
-
-        #endregion
-
-
-        /// <summary>
-        /// Provides a snapshot of the current bounds of the unit at every update call.
-        /// </summary>
-        internal Rectangle mBoundsSnapshot;
+        internal readonly Camera mCamera;
 
         /// <summary>
         /// Provides IMouseClickListener its bounds to know when it is clicked
@@ -95,35 +100,51 @@ namespace Singularity.Units
         /// </summary>
         internal double mZoomSnapshot;
 
-        
+        public Rectangle AbsBounds { get; internal set; }
+
+        public bool[,] ColliderGrid { get; internal set; }
+
+        public int RevelationRadius { get; internal set; }
+
+        public Vector2 RelativePosition { get; set; }
+
+        public Vector2 RelativeSize { get; set; }
+
+        #endregion
+
+        #region Positioning Variables
 
         /// <summary>
         /// Indicates if a unit has moved between updates.
         /// </summary>
         public bool Moved { get; internal set; }
-        
+
         /// <summary>
         /// Stores the center of a unit's position.
         /// </summary>
         public Vector2 Center { get; internal set; }
 
-        /// <summary>
-        /// Stores the unit's absolute position on the map, not relative to the camera.
-        /// </summary>
         public Vector2 AbsolutePosition { get; set; }
 
-        /// <summary>
-        /// Stores the unit's absolute size on the map, not relative to the camera.
-        /// </summary>
         public Vector2 AbsoluteSize { get; set; }
 
-        public int RevelationRadius { get; internal set; }
+        /// <summary>
+        /// Value of the unit's rotation.
+        /// </summary>
+        internal int mRotation;
 
-        public bool[,] ColliderGrid { get; }
+        /// <summary>
+        /// Column of the spritesheet to be used in case the unit is a military unit.
+        /// </summary>
+        internal int mColumn;
 
-        public Rectangle AbsBounds { get; internal set; }
+        /// <summary>
+        /// Row of the spritesheet to be used in case the unit is a military unit.
+        /// </summary>
+        internal int mRow;
 
 
+        #endregion
 
         /// <summary>
         /// Base class for units that are not stuck to the graph.
@@ -131,7 +152,7 @@ namespace Singularity.Units
         /// <param name="position"></param>
         /// <param name="director"></param>
         /// <param name="map"></param>
-        public FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
+        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
         {
             Id = IdGenerator.NextiD(); // id for the specific unit.
 
@@ -143,10 +164,13 @@ namespace Singularity.Units
             mPathfinder = new MilitaryPathfinder();
         }
 
+        #region Pathfinding Methods
+
         /// <summary>
         /// Calculates the direction the unit should be moving and moves it into that direction.
         /// </summary>
-        /// <param name="target">The target to which to move</param>
+        /// <param name="target">The target to which to move.</param>
+        /// <param name="speed">Speed to go towards the target at.</param>
         internal void MoveToTarget(Vector2 target, float speed)
         {
 
@@ -154,7 +178,7 @@ namespace Singularity.Units
             movementVector.Normalize();
             mToAdd += mMovementVector * (float)(mZoomSnapshot * speed);
 
-            AbsolutePosition = new Vector2((float)(AbsolutePosition.X + movementVector.X * Speed), (float)(AbsolutePosition.Y + movementVector.Y * Speed));
+            AbsolutePosition = new Vector2((float)(AbsolutePosition.X + movementVector.X * speed), (float)(AbsolutePosition.Y + movementVector.Y * speed));
         }
 
         internal void FindPath(Vector2 currentPosition, Vector2 targetPosition)
@@ -178,7 +202,99 @@ namespace Singularity.Units
 
             mBoundsSnapshot = Bounds;
             mZoomSnapshot = mCamera.GetZoom();
+        }
 
+        /// <summary>
+        /// Checks whether the target position is reached or not.
+        /// </summary>
+        internal bool HasReachedTarget()
+        {
+
+            if (!(Math.Abs(Center.X + mToAdd.X -
+                           mTargetPosition.X) < 8 &&
+                  Math.Abs(Center.Y + mToAdd.Y -
+                           mTargetPosition.Y) < 8))
+            {
+                return false;
+            }
+            mToAdd = Vector2.Zero;
+            return true;
+        }
+
+        /// <summary>
+        /// Checks whether the next waypoint has been reached.
+        /// </summary>
+        /// <returns></returns>
+        internal bool HasReachedWaypoint()
+        {
+            if (Math.Abs(Center.X + mToAdd.X - mPath.Peek().X) < 8
+                && Math.Abs(Center.Y + mToAdd.Y - mPath.Peek().Y) < 8)
+            {
+                // If the position is within 8 pixels of the waypoint, (i.e. it will overshoot the waypoint if it moves
+                // for one more update, do the following
+
+                Debug.WriteLine("Waypoint reached.");
+                Debug.WriteLine("Next waypoint: " + mPath.Peek());
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Rotates unit in order when selected in order to face
+        /// user mouse and eventually target destination.
+        /// </summary>
+        /// <param name="target"></param>
+        internal void Rotate(Vector2 target)
+        {
+            // form a triangle from unit location to mouse location
+            // adjust to be at center of sprite
+            var x = target.X - (RelativePosition.X + RelativeSize.X / 2);
+            var y = target.Y - (RelativePosition.Y + RelativeSize.Y / 2);
+            var hypot = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+
+            // calculate degree between formed triangle
+            double degree;
+            if (Math.Abs(hypot) < 0.01)
+            {
+                degree = 0;
+            }
+            else
+            {
+                degree = Math.Asin(y / hypot) * (180.0 / Math.PI);
+            }
+
+            // calculate rotation with increased degrees going counterclockwise
+            if (x >= 0)
+            {
+                mRotation = (int)Math.Round(270 - degree, MidpointRounding.AwayFromZero);
+            }
+            else
+            {
+                mRotation = (int)Math.Round(90 + degree, MidpointRounding.AwayFromZero);
+            }
+
+            // add 42 degrees since sprite sheet starts at sprite -42deg not 0
+            mRotation = (mRotation + 42) % 360;
+        }
+
+        #endregion
+
+        #region Abstract Methods
+
+        public abstract void Update(GameTime gametime);
+
+        public abstract void Draw(SpriteBatch spriteBatch);
+
+        #endregion
+
+        public bool Die()
+        {
+            // mDirector.GetMilitaryManager.Kill(this);
+            // todo: MilitaryManager implement
+
+            return true;
         }
     }
 }
