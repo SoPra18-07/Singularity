@@ -23,12 +23,7 @@ namespace Singularity.Units
         private const int DefaultWidth = 150;
         private const int DefaultHeight = 75;
 
-        private static readonly Color sSelectedColor = Color.Gray;
-        private static readonly Color sNotSelectedColor = Color.DarkGray;
-
         private const double Speed = 4;
-
-        private Color mColor;
 
         private int mColumn;
         private int mRow;
@@ -45,6 +40,7 @@ namespace Singularity.Units
         private Vector2 mTargetPosition;
         private int mRotation;
         public static Texture2D mMilSheet;
+        public static Texture2D mGlowTexture;
 
         private bool mSelected;
 
@@ -58,9 +54,9 @@ namespace Singularity.Units
 
         private Stack<Vector2> mPath;
 
-        private Director mDirector;
+        private readonly Director mDirector;
 
-        private MilitaryPathfinder mPathfinder;
+        private readonly MilitaryPathfinder mPathfinder;
 
         private Vector2[] mDebugPath; //TODO this is for debugging
 
@@ -111,9 +107,9 @@ namespace Singularity.Units
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
 
-            if (mMilSheet == null)
+            if (mMilSheet == null || mGlowTexture == null)
             {
-                throw new Exception("load the sMilSheet first!");
+                throw new Exception("load the MilSheet and GlowTexture first!");
             }
 
             mMap = map;
@@ -199,17 +195,33 @@ namespace Singularity.Units
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            // Draw military unit
             spriteBatch.Draw(
                 mMilSheet,
                 AbsolutePosition,
                 new Rectangle(150 * mColumn, 75 * mRow, (int) (AbsoluteSize.X / mScale), (int) (AbsoluteSize.Y / mScale)),
-                mColor,
+                mSelected ? Color.DarkGray : Color.Gray,
                 0f,
                 Vector2.Zero,
                 new Vector2(mScale),
                 SpriteEffects.None,
                 LayerConstants.MilitaryUnitLayer
                 );
+
+            // Draw the glow under it
+            if (mSelected)
+            {
+                spriteBatch.Draw(
+                    mGlowTexture,
+                    Vector2.Add(AbsolutePosition, new Vector2(-4.5f, -4.5f)),
+                    new Rectangle(172 * mColumn, 100 * mRow, 172, 100),
+                    Color.White,
+                    0f,
+                    Vector2.Zero,
+                    new Vector2(mScale),
+                    SpriteEffects.None,
+                    LayerConstants.MilitaryUnitLayer - 0.1f);
+            }
 
             if (GlobalVariables.DebugState)
             {
@@ -273,9 +285,6 @@ namespace Singularity.Units
             // these are values needed to properly get the current sprite out of the spritesheet.
             mRow = mRotation / 18;
             mColumn = (mRotation - mRow * 18) / 3;
-
-            //finally select the appropriate color for selected/deselected units.
-            mColor = mSelected ? sSelectedColor : sNotSelectedColor;
 
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * mScale / 2, AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
             AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * mScale), (int) (AbsoluteSize.Y * mScale));

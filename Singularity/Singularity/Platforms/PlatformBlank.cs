@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Runtime.Remoting.Channels;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -118,6 +120,9 @@ namespace Singularity.Platforms
 
         public bool[,] ColliderGrid { get; internal set; }
 
+        //This is for registering the platform at the DistrManager.
+        [DataMember]
+        public JobType Property { get; set; }
 
         public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36)
         {
@@ -196,7 +201,13 @@ namespace Singularity.Platforms
         public void Register()
         {
             //TODO: make this so we can also register defense platforms
-            mDirector.GetDistributionManager.Register(this, false);
+            if (Property == JobType.Production)
+            {
+                mDirector.GetDistributionManager.Register(this, false);
+            } else if (Property == JobType.Defense)
+            {
+                mDirector.GetDistributionManager.Register(this, true);
+            }
         }
 
         /// <summary>

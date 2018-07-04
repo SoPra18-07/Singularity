@@ -60,6 +60,7 @@ namespace Singularity.Levels
             var platformBlankTexture = content.Load<Texture2D>("PlatformBasic");
             var platformDomeTexture = content.Load<Texture2D>("Dome");
             var milUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
+            var milGlowSheet = content.Load<Texture2D>("UnitGlowSprite");
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
 
             //TODO: have a cone texture
