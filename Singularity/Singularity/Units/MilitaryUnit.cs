@@ -16,7 +16,7 @@ using Singularity.Utils;
 
 namespace Singularity.Units
 {
-    internal sealed class MilitaryUnit : ICollider, IRevealing, IMouseClickListener, IMousePositionListener
+    internal sealed class MilitaryUnit : ControllableUnit, IMouseClickListener, IMousePositionListener
     {
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
 
@@ -26,23 +26,19 @@ namespace Singularity.Units
         private static readonly Color sSelectedColor = Color.Gray;
         private static readonly Color sNotSelectedColor = Color.DarkGray;
 
-        private const double Speed = 4;
+        internal const float Speed = 4;
 
         private Color mColor;
 
         private int mColumn;
         private int mRow;
 
-        private bool mIsMoving;
-        private Rectangle mBoundsSnapshot;
-        private Vector2 mToAdd;
-        private double mZoomSnapshot;
+        
+
 
         private Vector2 mMovementVector;
 
-        private readonly Camera mCamera;
-
-        private Vector2 mTargetPosition;
+        
         private int mRotation;
         private readonly Texture2D mMilSheet;
 
@@ -52,70 +48,44 @@ namespace Singularity.Units
 
         private float mMouseY;
 
-        private readonly float mScale;
-
-        private Map.Map mMap;
-
-        private Stack<Vector2> mPath;
-
-        private Director mDirector;
-
-        private MilitaryPathfinder mPathfinder;
-
-        private Vector2[] mDebugPath; //TODO this is for debugging
+        private readonly float mScale;        
 
         private Vector2 mEnemyPosition;
 
         private bool mShoot;
 
-        public Vector2 AbsolutePosition { get; set; }
-
-        public Vector2 AbsoluteSize { get; set; }
+            
 
         public Vector2 RelativePosition { get; set; }
 
         public Vector2 RelativeSize { get; set; }
 
-        public Vector2 Center { get; private set; }
+        
 
-        public bool Moved { get; private set; }
-
-        public int RevelationRadius { get; private set; }
-
-        public Rectangle Bounds { get; private set; }
-
-        public Rectangle AbsBounds { get; private set; }
-
-        public bool[,] ColliderGrid { get; }
-
+        
+        
 
         public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director, ref Map.Map map)
+            : base(position, camera, ref director, ref map)
         {
-            Id = IdGenerator.NextiD(); // id for the specific unit.
             Health = 10;
 
             mScale = 0.4f;
 
-            AbsolutePosition = position;
             AbsoluteSize = new Vector2(DefaultWidth * mScale, DefaultHeight * mScale);
 
-            RevelationRadius = 500;
+            RevelationRadius = 400;
+
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * mScale / 2, AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
 
             Moved = false;
             mIsMoving = false;
-            mCamera = camera;
-
             mDirector = director;
 
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
 
             mMilSheet = spriteSheet;
-
-            mMap = map;
-
-            mPathfinder = new MilitaryPathfinder();
         }
 
 
@@ -162,21 +132,7 @@ namespace Singularity.Units
         /// Defines the health of the unit, defaults to 10.
         /// </summary>
         private int Health { get; set; }
-
-        /// <summary>
-        /// The unique ID of the unit.
-        /// </summary>
-        public int Id { get; }
-
-        /// <summary>
-        /// Used to set and get assignment. Assignment will potentially be implemented as a new type which
-        /// can be used to determine what assignment a unit has.
-        /// </summary>
-        public string Assignment
-        {
-            get; set; //TODO
-        }
-
+        
 
         /// <summary>
         /// Damages the unit by a certain amount.
@@ -184,7 +140,7 @@ namespace Singularity.Units
         /// <param name="damage"></param>
         public void MakeDamage(int damage)
         {
-             Health -= damage; // TODO
+             Health -= damage;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -251,12 +207,12 @@ namespace Singularity.Units
             {
                 if (!HasReachedWaypoint())
                 {
-                    MoveToTarget(mPath.Peek());
+                    MoveToTarget(mPath.Peek(), Speed);
                 }
                 else
                 {
                     mPath.Pop();
-                    MoveToTarget(mPath.Peek());
+                    MoveToTarget(mPath.Peek(), Speed);
                 }
             }
 
@@ -289,19 +245,7 @@ namespace Singularity.Units
 
         }
 
-        /// <summary>
-        /// Calculates the direction the unit should be moving and moves it into that direction.
-        /// </summary>
-        /// <param name="target">The target to which to move</param>
-        private void MoveToTarget(Vector2 target)
-        {
-
-            var movementVector = new Vector2(target.X - Center.X, target.Y - Center.Y);
-            movementVector.Normalize();
-            mToAdd += mMovementVector * (float) (mZoomSnapshot *  Speed);
-
-            AbsolutePosition = new Vector2((float) (AbsolutePosition.X + movementVector.X * Speed), (float) (AbsolutePosition.Y + movementVector.Y * Speed));
-        }
+        
 
         /// <summary>
         /// Checks whether the target position is reached or not.
@@ -329,10 +273,8 @@ namespace Singularity.Units
                 Debug.WriteLine("Next waypoint: " +  mPath.Peek());
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
@@ -353,38 +295,17 @@ namespace Singularity.Units
                                 (int) RelativeSize.Y),
                             mCamera))
                     {
-
-                        mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                            Matrix.Invert(mCamera.GetTransform()));
-
                         if (mMap.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
                             (int) mTargetPosition.X / MapConstants.GridWidth,
                             (int) mTargetPosition.Y / MapConstants.GridWidth))
                         {
-                            mIsMoving = true;
+                            mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
+                                Matrix.Invert(mCamera.GetTransform()));
 
-                            var currentPosition = Center;
-                            Debug.WriteLine("Starting path finding at: " + currentPosition.X + ", " + currentPosition.Y);
-                            Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
-
-                            mPath = new Stack<Vector2>();
-                            mPath = mPathfinder.FindPath(currentPosition,
-                                mTargetPosition,
-                                ref mMap);
-
-                            if (GlobalVariables.DebugState)
-                            {
-                                // TODO: DEBUG REGION
-                                mDebugPath = mPath.ToArray();
-                                // TODO: END DEBUG REGION
-                            }
-
-                            mBoundsSnapshot = Bounds;
-                            mZoomSnapshot = mCamera.GetZoom();
-                            giveThrough = true;
+                            FindPath(mTargetPosition, Center);
                         }
-
                     }
+                    
 
                     if (withinBounds) {
                         mSelected = true;
@@ -395,7 +316,6 @@ namespace Singularity.Units
 
                 case EMouseAction.RightClick:
                     mSelected = false;
-                    giveThrough = true;
                     break;
             }
 
