@@ -404,15 +404,10 @@ namespace Singularity.Units
         /// <returns></returns>
         private bool ReachedTarget(Vector2 target)
         {
-            /*if (mDestination.IsPresent())
-            {
-                CurrentNode = mDestination.Get();
-            }*/
 
             //since we're operating with float values we just want the distance to be smaller than 2 pixels.
             if (Vector2.Distance(AbsolutePosition, target) < 2)
             {
-                //mDestination = Optional<INode>.Of(null);
                 mIsMoving = false;
                 return true;
             }
