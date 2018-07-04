@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
@@ -15,31 +11,43 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="IMouseClickListener"/>
     /// <inheritdoc cref="IMousePositionListener"/>
-    abstract class ControllableUnit : FreeMovingUnit, IMouseClickListener, IMousePositionListener
+    /// <inheritdoc cref="FreeMovingUnit"/>
+    internal abstract class ControllableUnit : FreeMovingUnit, IMouseClickListener, IMousePositionListener
     {
+        #region Fields
+
         /// <summary>
         /// Indicates if the unit is currently selected.
         /// </summary>
         internal bool mSelected;
 
+        /// <summary>
+        /// Stores the current x position of the mouse
+        /// </summary>
         internal float mMouseX;
 
+        /// <summary>
+        /// Stores the current y position of the mouse
+        /// </summary>
         internal float mMouseY;
+
+        #endregion
+
 
         public EScreen Screen { get; } = EScreen.GameScreen;
 
         /// <summary>
-        /// Provides an abstract superclass for all controllable units
+        /// Provides an abstract superclass for all controllable units.
         /// </summary>
-        /// <param name="position"></param>
-        /// <param name="camera"></param>
-        /// <param name="director"></param>
-        /// <param name="map"></param>
+        /// <param name="position">Where the unit should be spawned.</param>
+        /// <param name="camera">Game camera being used.</param>
+        /// <param name="director">Reference to the game director.</param>
+        /// <param name="map">Reference to the game map.</param>
         protected ControllableUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
             : base(position, camera, ref director, ref map)
         {
-            
-
+            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            mDirector.GetInputManager.AddMousePositionListener(this);
         }
 
         #region Mouse Handlers
@@ -61,14 +69,14 @@ namespace Singularity.Units
                                 (int)RelativeSize.Y),
                             mCamera))
                     {
+                        mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
+                            Matrix.Invert(mCamera.GetTransform()));
+
                         if (mMap.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
                             (int)mTargetPosition.X / MapConstants.GridWidth,
                             (int)mTargetPosition.Y / MapConstants.GridWidth))
                         {
-                            mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                                Matrix.Invert(mCamera.GetTransform()));
-
-                            FindPath(mTargetPosition, Center);
+                            FindPath(Center, mTargetPosition);
                         }
                     }
 

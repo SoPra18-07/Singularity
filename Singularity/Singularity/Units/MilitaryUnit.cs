@@ -16,41 +16,55 @@ using Singularity.Utils;
 
 namespace Singularity.Units
 {
-    internal sealed class MilitaryUnit : ControllableUnit, IMouseClickListener, IMousePositionListener
+    /// <inheritdoc cref="ControllableUnit"/>
+    internal class MilitaryUnit : ControllableUnit
     {
+        /// <summary>
+        /// Default width of a unit before scaling.
+        /// </summary>
         private const int DefaultWidth = 150;
+
+        /// <summary>
+        /// Default height of a unit before scaling.
+        /// </summary>
         private const int DefaultHeight = 75;
 
-        private const float Speed = 4;
+        /// <summary>
+        /// Sprite sheet for military units.
+        /// </summary>
+        protected readonly Texture2D mMilSheet;
 
-        private readonly Texture2D mMilSheet;
+        /// <summary>
+        /// Sprite sheet for the glow effect when a unit is selected.
+        /// </summary>
         private readonly Texture2D mGlowTexture;
 
-        private readonly float mScale;
+        /// <summary>
+        /// Scalar for the unit size.
+        /// </summary>
+        protected const float Scale = 0.4f;
 
+        /// <summary>
+        /// Indicates the position the closest enemy is at.
+        /// </summary>
         private Vector2 mEnemyPosition;
 
+        /// <summary>
+        /// Indicates if the unit is currently shooting.
+        /// </summary>
         private bool mShoot;
 
         public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Texture2D glowSpriteSheet, Camera camera, ref Director director, ref Map.Map map)
             : base(position, camera, ref director, ref map)
         {
+            mSpeed = 4;
             Health = 10;
 
-            mScale = 0.4f;
-
-            AbsoluteSize = new Vector2(DefaultWidth * mScale, DefaultHeight * mScale);
+            AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
 
             RevelationRadius = 400;
 
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * mScale / 2, AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
-
-            Moved = false;
-            mIsMoving = false;
-            mDirector = director;
-
-            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
-            mDirector.GetInputManager.AddMousePositionListener(this);
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * Scale / 2, AbsolutePosition.Y + AbsoluteSize.Y * Scale / 2);
 
             mMilSheet = spriteSheet;
             mGlowTexture = glowSpriteSheet;
@@ -62,11 +76,11 @@ namespace Singularity.Units
             spriteBatch.Draw(
                 mMilSheet,
                 AbsolutePosition,
-                new Rectangle(150 * mColumn, 75 * mRow, (int) (AbsoluteSize.X / mScale), (int) (AbsoluteSize.Y / mScale)),
+                new Rectangle(150 * mColumn, 75 * mRow, (int) (AbsoluteSize.X / Scale), (int) (AbsoluteSize.Y / Scale)),
                 mSelected ? Color.DarkGray : Color.Gray,
                 0f,
                 Vector2.Zero,
-                new Vector2(mScale),
+                new Vector2(Scale),
                 SpriteEffects.None,
                 LayerConstants.MilitaryUnitLayer
                 );
@@ -81,7 +95,7 @@ namespace Singularity.Units
                     Color.White,
                     0f,
                     Vector2.Zero,
-                    new Vector2(mScale),
+                    new Vector2(Scale),
                     SpriteEffects.None,
                     LayerConstants.MilitaryUnitLayer - 0.1f);
             }
@@ -98,13 +112,15 @@ namespace Singularity.Units
                 }
             }
 
-            if (mShoot)
+            if (!mShoot)
             {
-                // draws a laser line a a slight glow around the line, then sets the shoot future off
-                spriteBatch.DrawLine(Center, MapCoordinates(mEnemyPosition), Color.White, 2);
-                spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), MapCoordinates(mEnemyPosition), Color.White * .2f, 6);
-                mShoot = false;
+                return;
             }
+
+            // draws a laser line a a slight glow around the line, then sets the shoot future off
+            spriteBatch.DrawLine(Center, MapCoordinates(mEnemyPosition), Color.White, 2);
+            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), MapCoordinates(mEnemyPosition), Color.White * .2f, 6);
+            mShoot = false;
         }
 
 
@@ -136,12 +152,12 @@ namespace Singularity.Units
             {
                 if (!HasReachedWaypoint())
                 {
-                    MoveToTarget(mPath.Peek(), Speed);
+                    MoveToTarget(mPath.Peek(), mSpeed);
                 }
                 else
                 {
                     mPath.Pop();
-                    MoveToTarget(mPath.Peek(), Speed);
+                    MoveToTarget(mPath.Peek(), mSpeed);
                 }
             }
 
@@ -149,8 +165,8 @@ namespace Singularity.Units
             mRow = mRotation / 18;
             mColumn = (mRotation - mRow * 18) / 3;
 
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * mScale / 2, AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
-            AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * mScale), (int) (AbsoluteSize.Y * mScale));
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * Scale / 2, AbsolutePosition.Y + AbsoluteSize.Y * Scale / 2);
+            AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * Scale), (int) (AbsoluteSize.Y * Scale));
             Moved = mIsMoving;
 
             //TODO this needs to be taken out once the military manager takes control of shooting
@@ -168,7 +184,6 @@ namespace Singularity.Units
             mShoot = true;
             mEnemyPosition = target;
             Rotate(target);
-
         }
         
     }

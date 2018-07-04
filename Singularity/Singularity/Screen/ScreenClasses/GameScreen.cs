@@ -53,7 +53,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <summary>
         /// The camera object which holds transformation values.
         /// </summary>
-        private Camera mCamera;
+        private readonly Camera mCamera;
 
         private SelectionBox mSelBox;
         private Texture2D mBlankPlat;
@@ -179,7 +179,7 @@ namespace Singularity.Screen.ScreenClasses
             var road = toAdd as Road;
             var platform = toAdd as PlatformBlank;
             var settler = toAdd as Settler;
-            var milUnit = toAdd as MilitaryUnit;
+            var conUnit = toAdd as ControllableUnit;
 
             if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
@@ -206,9 +206,9 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             // subscribe every military unit to the selection box
-            if (milUnit != null)
+            if (conUnit != null)
             {
-                mSelBox.SelectingBox += milUnit.BoxSelected;
+                mSelBox.SelectingBox += conUnit.BoxSelected;
             }
 
             if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
@@ -264,7 +264,7 @@ namespace Singularity.Screen.ScreenClasses
             var road = toRemove as Road;
             var platform = toRemove as PlatformBlank;
             var settler = toRemove as Settler;
-            var milUnit = toRemove as MilitaryUnit;
+            var controllableUnit = toRemove as ControllableUnit;
 
             if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
@@ -288,7 +288,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             // unsubscribe from this military unit when deleted
-            if (milUnit != null)
+            if (controllableUnit != null)
             {
                 //mSelBox.SelectingBox -= milUnit.BoxSelected;
             }

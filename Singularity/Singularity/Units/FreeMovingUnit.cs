@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
@@ -15,7 +12,7 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="ICollider"/>
     /// <inheritdoc cref="IRevealing"/>
-    abstract class FreeMovingUnit : ICollider, IRevealing
+    internal abstract class FreeMovingUnit : ICollider, IRevealing
     {
         /// <summary>
         /// The unique ID of the unit.
@@ -60,6 +57,7 @@ namespace Singularity.Units
         /// </summary>
         protected Vector2 mMovementVector;
 
+        protected float mSpeed;
 
         #endregion
 
@@ -142,11 +140,12 @@ namespace Singularity.Units
         #endregion
 
         /// <summary>
-        /// Base class for units that are not stuck to the graph.
+        /// Base abstract class for units that are not restricted to the graph.
         /// </summary>
-        /// <param name="position"></param>
-        /// <param name="director"></param>
-        /// <param name="map"></param>
+        /// <param name="position">Where the unit should be spawned.</param>
+        /// <param name="camera">Game camera being used.</param>
+        /// <param name="director">Reference to the game director.</param>
+        /// <param name="map">Reference to the game map.</param>
         protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
         {
             Id = IdGenerator.NextiD(); // id for the specific unit.
@@ -154,9 +153,14 @@ namespace Singularity.Units
             AbsolutePosition = position;
             mMap = map;
 
-            mCamera = camera;
+            Moved = false;
+            mIsMoving = false;
 
+            mDirector = director;
+            mCamera = camera;
             mPathfinder = new MilitaryPathfinder();
+
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
         }
 
         #region Pathfinding Methods
