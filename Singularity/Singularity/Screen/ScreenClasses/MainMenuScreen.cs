@@ -205,6 +205,14 @@ namespace Singularity.Screen.ScreenClasses
                         (float)Animations.Easing(1, 0, mTransitionStartTime, mTransitionDuration, gameTime);
                     break;
                 case EScreen.LoadSelectScreen:
+                    if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
+                    {
+                        TransitionRunning = false;
+                        mMenuOpacity = 0;
+                    }
+
+                    mMenuOpacity =
+                        (float)Animations.Easing(1, 0, mTransitionStartTime, mTransitionDuration, gameTime);
                     break;
                 case EScreen.MainMenuScreen:
                     if (mOriginScreen == EScreen.SplashScreen)
