@@ -246,18 +246,28 @@ namespace Singularity.Map
 
             foreach (var platformToAdd in mPlatformsToPlace)
             {
+
                 if (!platformToAdd.IsFinished())
                 {
                     platformToAdd.SetHovering(hovering);
                     platformToAdd.Update(gametime);
-                    return;
+                    continue;
                 }
+                if (platformToAdd.IsCanceled())
+                {
+                    platformToAdd.Update(gametime);
+                    toRemove.AddLast(platformToAdd);
+                    continue;
+                }
+
                 //platform is finished
+                toRemove.AddLast(platformToAdd);
+
                 AddPlatform(platformToAdd.GetPlatform());
                 platformToAdd.GetPlatform().Register();
                 platformToAdd.GetRoad().Place(platformToAdd.GetPlatform(), hovering);
                 AddRoad(platformToAdd.GetRoad());
-                toRemove.AddLast(platformToAdd);
+
             }
 
             foreach(var platformToRemove in toRemove)
