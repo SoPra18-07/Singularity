@@ -123,6 +123,7 @@ namespace Singularity.Levels
             //MilUnits
             var map = Map;
             MilitaryUnit.mMilSheet = milUnitSheet;
+            MilitaryUnit.mGlowTexture = milGlowSheet;
             var milUnit = new MilitaryUnit(new Vector2(2000, 700), Camera, ref mDirector, ref map);
 
             //SetUnit
