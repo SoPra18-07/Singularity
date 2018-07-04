@@ -23,24 +23,20 @@ namespace Singularity.Units
         private const int DefaultWidth = 150;
         private const int DefaultHeight = 75;
 
-        private static readonly Color sSelectedColor = Color.Gray;
-        private static readonly Color sNotSelectedColor = Color.DarkGray;
-
-        internal const float Speed = 4;
-
-        private Color mColor;
+        private const double Speed = 4;
 
         private int mColumn;
         private int mRow;
 
-        
+
 
 
         private Vector2 mMovementVector;
 
-        
+
         private int mRotation;
         private readonly Texture2D mMilSheet;
+        private readonly Texture2D mGlowTexture;
 
         private bool mSelected;
 
@@ -48,22 +44,22 @@ namespace Singularity.Units
 
         private float mMouseY;
 
-        private readonly float mScale;        
+        private readonly float mScale;
 
         private Vector2 mEnemyPosition;
 
         private bool mShoot;
 
-            
+
 
         public Vector2 RelativePosition { get; set; }
 
         public Vector2 RelativeSize { get; set; }
 
-        
 
-        
-        
+
+
+
 
         public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director, ref Map.Map map)
             : base(position, camera, ref director, ref map)
@@ -86,6 +82,7 @@ namespace Singularity.Units
             mDirector.GetInputManager.AddMousePositionListener(this);
 
             mMilSheet = spriteSheet;
+            mGlowTexture = glowSpriteSheet;
         }
 
 
@@ -132,7 +129,7 @@ namespace Singularity.Units
         /// Defines the health of the unit, defaults to 10.
         /// </summary>
         private int Health { get; set; }
-        
+
 
         /// <summary>
         /// Damages the unit by a certain amount.
@@ -145,17 +142,33 @@ namespace Singularity.Units
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            // Draw military unit
             spriteBatch.Draw(
                 mMilSheet,
                 AbsolutePosition,
                 new Rectangle(150 * mColumn, 75 * mRow, (int) (AbsoluteSize.X / mScale), (int) (AbsoluteSize.Y / mScale)),
-                mColor,
+                mSelected ? Color.DarkGray : Color.Gray,
                 0f,
                 Vector2.Zero,
                 new Vector2(mScale),
                 SpriteEffects.None,
                 LayerConstants.MilitaryUnitLayer
                 );
+
+            // Draw the glow under it
+            if (mSelected)
+            {
+                spriteBatch.Draw(
+                    mGlowTexture,
+                    Vector2.Add(AbsolutePosition, new Vector2(-4.5f, -4.5f)),
+                    new Rectangle(172 * mColumn, 100 * mRow, 172, 100),
+                    Color.White,
+                    0f,
+                    Vector2.Zero,
+                    new Vector2(mScale),
+                    SpriteEffects.None,
+                    LayerConstants.MilitaryUnitLayer - 0.1f);
+            }
 
             if (GlobalVariables.DebugState)
             {
@@ -220,9 +233,6 @@ namespace Singularity.Units
             mRow = mRotation / 18;
             mColumn = (mRotation - mRow * 18) / 3;
 
-            //finally select the appropriate color for selected/deselected units.
-            mColor = mSelected ? sSelectedColor : sNotSelectedColor;
-
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * mScale / 2, AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
             AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * mScale), (int) (AbsoluteSize.Y * mScale));
             Moved = mIsMoving;
@@ -245,7 +255,7 @@ namespace Singularity.Units
 
         }
 
-        
+
 
         /// <summary>
         /// Checks whether the target position is reached or not.
@@ -305,7 +315,7 @@ namespace Singularity.Units
                             FindPath(mTargetPosition, Center);
                         }
                     }
-                    
+
 
                     if (withinBounds) {
                         mSelected = true;
