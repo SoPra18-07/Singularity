@@ -33,6 +33,7 @@ namespace Singularity.Platforms
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Well;
             mSpritename = "Dome";
+            Property = JobType.Production;
             SetPlatfromParameters();
         }
 
