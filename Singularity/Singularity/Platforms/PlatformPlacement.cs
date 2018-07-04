@@ -66,15 +66,11 @@ namespace Singularity.Platforms
 
         private readonly Camera mCamera;
 
-        private readonly bool mSettler;
-
-        private readonly Vector2 mSetPosition;
-
         private readonly Director mDirector;
 
         private bool mUnregister;
 
-        public PlatformPlacement(EPlatformType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null, bool settler = false, Vector2 position = default(Vector2))
+        public PlatformPlacement(EPlatformType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null, Vector2 position = default(Vector2))
         {
             mUnregister = false;
 
@@ -84,9 +80,6 @@ namespace Singularity.Platforms
 
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
-
-            mSettler = settler;
-            mSetPosition = position;
 
             // for further information as to why which states refer to the documentation for mCurrentState
             switch (placementType)
@@ -142,17 +135,16 @@ namespace Singularity.Platforms
             switch (mCurrentState.GetState())
             {
                 case 1:
+                    mPlatform.ResetColor();
                     // for this, we want the platform to follow the mouse, and also be centered on the sprite.
-                    if (!mSettler)
+                    mPlatform.AbsolutePosition = new Vector2(mMouseX - mPlatform.AbsoluteSize.X / 2f,
+                        mMouseY - mPlatform.AbsoluteSize.Y / 2f);
+
+                    if (mHoveringPlatform == null)
                     {
-                        mPlatform.AbsolutePosition = new Vector2(mMouseX - mPlatform.AbsoluteSize.X / 2f,
-                            mMouseY - mPlatform.AbsoluteSize.Y / 2f);
+                        break;
                     }
-                    else
-                    {
-                        mPlatform.AbsolutePosition = new Vector2(mSetPosition.X - mPlatform.AbsoluteSize.X / 2f,
-                            mSetPosition.Y - mPlatform.AbsoluteSize.Y / 2f);
-                    }
+                    mPlatform.SetColor(Color.Red);
 
                     break;
 
@@ -193,7 +185,6 @@ namespace Singularity.Platforms
 
             if (mUnregister)
             {
-                Debug.WriteLine("unregister");
                 UnregisterFromInputManager();
             }
 
@@ -214,7 +205,7 @@ namespace Singularity.Platforms
                         mPlatform.UpdateValues();
 
                         //first check if the platform is even on the map, if not we don't want to progress, since it isn't a valid position
-                        if (!Map.Map.IsOnTop(mPlatform.AbsBounds))
+                        if (!Map.Map.IsOnTop(mPlatform.AbsBounds) || mHoveringPlatform != null)
                         {
                             break;
                         }

@@ -228,6 +228,17 @@ namespace Singularity.Map
                     continue;
                 }
 
+                foreach(var platformToAdd in mPlatformsToPlace)
+                {
+                    platformToAdd.GetPlatform().UpdateValues();
+                    if (!platformToAdd.GetPlatform().AbsBounds.Intersects(platform.AbsBounds))
+                    {
+                        continue;
+                    }
+                    hovering = platform;
+
+                }
+
                 if (!platform.AbsBounds.Intersects(new Rectangle((int) mMouseX, (int) mMouseY, 1, 1)))
                 {
                     continue;
@@ -249,6 +260,7 @@ namespace Singularity.Map
 
                 if (!platformToAdd.IsFinished())
                 {
+
                     platformToAdd.SetHovering(hovering);
                     platformToAdd.Update(gametime);
                     continue;
