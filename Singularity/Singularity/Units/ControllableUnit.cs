@@ -32,10 +32,7 @@ namespace Singularity.Units
         internal float mMouseY;
 
         #endregion
-
-
-        public EScreen Screen { get; } = EScreen.GameScreen;
-
+        
         /// <summary>
         /// Provides an abstract superclass for all controllable units.
         /// </summary>

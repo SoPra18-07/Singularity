@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
+using Singularity.Screen;
 using Singularity.Utils;
 
 namespace Singularity.Units
@@ -103,6 +104,8 @@ namespace Singularity.Units
 
         public Vector2 RelativeSize { get; set; }
 
+        public EScreen Screen { get; } = EScreen.GameScreen;
+
         #endregion
 
         #region Positioning Variables
@@ -148,6 +151,7 @@ namespace Singularity.Units
         /// <param name="map">Reference to the game map.</param>
         protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
         {
+            
             Id = IdGenerator.NextiD(); // id for the specific unit.
 
             AbsolutePosition = position;

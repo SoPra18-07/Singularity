@@ -18,15 +18,16 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="ControllableUnit"/>
     [DataContract]
-    internal sealed class Settler: ControllableUnit
+    internal sealed class Settler: ControllableUnit, IKeyListener
     {
-
-
         #region Declarations
         [DataMember]
         private GameScreen mGameScreen;
         [DataMember]
         private UserInterfaceScreen mUi;
+
+        [DataMember]
+        private bool mNeverMoved;
         #endregion
 
         /// <summary>
@@ -48,6 +49,10 @@ namespace Singularity.Units
 
             RevelationRadius = (int)AbsoluteSize.X * 3;
 
+            mDirector.GetInputManager.AddKeyListener(this);
+
+            mNeverMoved = true;
+
             mGameScreen = gameScreen;
             mUi = ui;
         }
@@ -67,7 +72,7 @@ namespace Singularity.Units
             if (BuildCommandCenter != null)
             {
                 //I commented it out, so we get no Errors due to no Multiple Graph Compatibility.
-                //BuildCommandCenter(this, EventArgs.Empty, AbsolutePosition, this);
+                // BuildCommandCenter(this, EventArgs.Empty, AbsolutePosition, this);
                 //Note: It doesnt matter if this is called multiple times from settlers other than the first settler. It will only set variables
                 //to true, that has been true already.
                 mUi.Activate();
@@ -138,6 +143,11 @@ namespace Singularity.Units
                 (int) (AbsoluteSize.Y));
             Moved = mIsMoving;
 
+            if (Moved)
+            {
+                mNeverMoved = false;
+            }
+
         }
         
         public void KeyTyped(KeyEvent keyEvent)
@@ -148,7 +158,7 @@ namespace Singularity.Units
             {
                 // if key b has been pressed and the settler unit is selected and its not moving
                 // --> send out event that deletes settler and adds a command center
-                if (key == Keys.B && mSelected && HasReachedTarget())
+                if ((key == Keys.B && mSelected && HasReachedTarget()) || mNeverMoved)
                 {
                     OnBuildCommandCenter();
                 }
