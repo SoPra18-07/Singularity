@@ -204,7 +204,7 @@ namespace Singularity.Units
             {
                 spriteBatch.Draw(
                     mGlowTexture,
-                    Vector2.Add(AbsolutePosition, new Vector2(-3.5f, -4f)),
+                    Vector2.Add(AbsolutePosition, new Vector2(-4.5f, -4.5f)),
                     new Rectangle(172 * mColumn, 100 * mRow, 172, 100),
                     Color.White,
                     0f,
