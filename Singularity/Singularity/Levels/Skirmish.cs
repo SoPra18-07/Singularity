@@ -56,6 +56,7 @@ namespace Singularity.Levels
             var platformBlankTexture = content.Load<Texture2D>("PlatformBasic");
             var platformDomeTexture = content.Load<Texture2D>("Dome");
             var milUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
+            var milGlowSheet = content.Load<Texture2D>("UnitGlowSprite");
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
 
             //TODO: have a cone texture
@@ -117,7 +118,7 @@ namespace Singularity.Levels
             var genUnit5 = new GeneralUnit(mPlatform, ref mDirector);
 
             //MilUnits
-            var milUnit = new MilitaryUnit(new Vector2(2000, 700), milUnitSheet, mCamera, ref mDirector, ref mMap);
+            var milUnit = new MilitaryUnit(new Vector2(2000, 700), milUnitSheet, milGlowSheet, mCamera, ref mDirector, ref mMap);
 
             //SetUnit
             var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, GameScreen, mUi);
