@@ -134,6 +134,14 @@ namespace Singularity.Screen.ScreenClasses
                 case EScreen.GameScreen:
                     break;
                 case EScreen.LoadSelectScreen:
+                    if (sPressed == "Load1")
+                    {
+                        break;
+                    }
+                    if (sPressed == "Back")
+                    {
+                        SwitchScreen(EScreen.MainMenuScreen, mLoadSelectScreen, mMainMenuScreen, gametime);
+                    }
                     break;
                 case EScreen.LoadingScreen:
                     mScreenManager.RemoveScreen();
