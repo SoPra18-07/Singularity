@@ -40,6 +40,10 @@ namespace Singularity.Units
         /// <param name="camera">Game camera being used.</param>
         /// <param name="director">Reference to the game director.</param>
         /// <param name="map">Reference to the game map.</param>
+        /// This abstract class is a subclass of FreeMovingUnit. It provides any of its subclasses the
+        /// ability to be selected and moved by the player. As such, most of this class is simply
+        /// mouse event handlers. Any object that is a subclass of this class is immediately
+        /// subscribed to mouse events by the gamescreen.
         protected ControllableUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
             : base(position, camera, ref director, ref map)
         {
