@@ -191,7 +191,7 @@ namespace Singularity.Units
                 mMilSheet,
                 AbsolutePosition,
                 new Rectangle(150 * mColumn, 75 * mRow, (int) (AbsoluteSize.X / mScale), (int) (AbsoluteSize.Y / mScale)),
-                Color.Gray,
+                mSelected ? Color.DarkGray : Color.Gray,
                 0f,
                 Vector2.Zero,
                 new Vector2(mScale),
@@ -205,7 +205,7 @@ namespace Singularity.Units
                 spriteBatch.Draw(
                     mGlowTexture,
                     Vector2.Add(AbsolutePosition, new Vector2(-3.5f, -4f)),
-                    new Rectangle(169 * mColumn, 98 * mRow, 169, 98),
+                    new Rectangle(172 * mColumn, 100 * mRow, 172, 100),
                     Color.White,
                     0f,
                     Vector2.Zero,
