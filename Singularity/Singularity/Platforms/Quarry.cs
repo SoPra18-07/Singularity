@@ -32,6 +32,7 @@ namespace Singularity.Platforms
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Quarry;
             mSpritename = "Dome";
+            Property = JobType.Production;
             SetPlatfromParameters();
         }
 

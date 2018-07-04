@@ -118,9 +118,9 @@ namespace Singularity.Units
         {
             //If its moving it cannot be assigned, since the unit only assigns itself when it reached the target (and stopped moving)
             //That also means, that the CurrentNode is the Producing platform, so we call that UnAssign method.
-            if (Job == JobType.Production && mAssigned && !mIsMoving)
+            if ((Job == JobType.Production || Job == JobType.Defense) && mTask.End.IsPresent())
             {
-                ((PlatformBlank)CurrentNode).UnAssignUnits(this, Job);
+                mTask.End.Get().UnAssignUnits(this, Job);
                 mAssigned = false;
             }
             Job = job;
@@ -139,6 +139,7 @@ namespace Singularity.Units
             //Check whether there is a Destination. (it should)
             if (mTask.End.IsPresent())
             {
+                //This only tells the platform that the unit is on the way! Use ShowedUp to tell the platform that the unit has arrived.
                 mTask.End.Get().AssignUnits(this, Job);
                 mDestination = Optional<INode>.Of(mTask.End.Get());
             }
@@ -394,7 +395,6 @@ namespace Singularity.Units
 
             // check whether we have reached the target after our move call.
             ReachedTarget(((PlatformBlank)CurrentNode).Center);
-
         }
 
         /// <summary>
@@ -404,15 +404,15 @@ namespace Singularity.Units
         /// <returns></returns>
         private bool ReachedTarget(Vector2 target)
         {
+            /*if (mDestination.IsPresent())
+            {
+                CurrentNode = mDestination.Get();
+            }*/
 
             //since we're operating with float values we just want the distance to be smaller than 2 pixels.
             if (Vector2.Distance(AbsolutePosition, target) < 2)
             {
-                if (mDestination.IsPresent())
-                {
-                    CurrentNode = mDestination.Get();
-                }
-                mDestination = Optional<INode>.Of(null);
+                //mDestination = Optional<INode>.Of(null);
                 mIsMoving = false;
                 return true;
             }

@@ -280,6 +280,8 @@ namespace Singularity.Manager
                     }
                 }
             }
+
+            TestAttributes();
         }
 
         /// <summary>
@@ -332,6 +334,7 @@ namespace Singularity.Manager
             for (var i = amount; i > 0; i--)
             {
 
+
                 //This means there are no Units to subtract
                 if (list[startindex].GetSecond() == 0)
                 {
@@ -363,7 +366,7 @@ namespace Singularity.Manager
                 transferunit.ChangeJob(JobType.Idle);
 
                 //Decrement index or begin at the right end again
-                if (startindex - 1 == 0)
+                if (startindex == 0)
                 {
                     startindex = list.Count - 1;
                 }
