@@ -31,8 +31,11 @@ namespace Singularity.Screen.ScreenClasses
         private SpriteFont mMLibSans36;
         private SpriteFont mMLibSans20;
 
-        private Button mMStoryButton;
-        private Button mMFreePlayButton;
+        private Button mSave1;
+        private Button mSave2;
+        private Button mSave3;
+        private Button mSave4;
+        private Button mSave5;
         private Button mMBackButton;
 
         // Transition variables
@@ -173,11 +176,8 @@ namespace Singularity.Screen.ScreenClasses
             mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter);
             mMSelectorTriangle = content.Load<Texture2D>("SelectorTriangle");
 
-            mMStoryButton = new Button("abc", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
-            mMFreePlayButton = new Button("def", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
+            
             mMBackButton = new Button(mMBackString, mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
-            mMButtonList.Add(mMStoryButton);
-            mMButtonList.Add(mMFreePlayButton);
             mMButtonList.Add(mMBackButton);
 
             mMStoryButton.ButtonReleased += MainMenuManagerScreen.OnStoryButtonReleased;
