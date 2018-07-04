@@ -65,7 +65,7 @@ namespace Singularity.Levels
             //Map related stuff
             mCamera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 800, 800);
             mFow = new FogOfWar(mCamera, mGraphics.GraphicsDevice);
-            mMap = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.GraphicsDevice.Viewport, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
+            mMap = new Map.Map(mapBackground, 20, 20, mFow, mCamera, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
 
             //INITIALIZE SCREENS AND ADD THEM TO THE SCREENMANAGER
             GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, mMap, mCamera, mFow);
