@@ -3,27 +3,27 @@ using Singularity.Utils;
 
 namespace Singularity.Levels
 {
-    [DataContract()]
+    [DataContract]
     internal sealed class Achievements
     {
 
         //The statistics of the Achievements.
-        [DataMember()]
+        [DataMember]
         Pair<int, bool> TrashBurned { get; set; }
 
-        [DataMember()]
+        [DataMember]
         bool FirstBuilding { get; set; }
 
-        [DataMember()]
+        [DataMember]
         bool TutorialFinished { get; set; }
 
-        [DataMember()]
+        [DataMember]
         Pair<int, bool> PlatformsBuilt { get; set; }
 
-        [DataMember()]
+        [DataMember]
         bool ReachedLvl5 { get; set; }
 
-        [DataMember()]
+        [DataMember]
         Pair<int, bool> UnitsBuilt { get; set; }
 
 

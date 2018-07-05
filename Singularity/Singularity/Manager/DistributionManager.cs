@@ -829,7 +829,7 @@ namespace Singularity.Manager
         public void Kill(IPlatformAction action)
         {
             // Strong assumption that a PlatformAction is only listed at most once here.
-            if (action.GetType() == typeof(BuildBluePrint))
+            if (action is BuildBluePrint)
             {
                 mBlueprintBuilds.Remove(mBlueprintBuilds.Find(b => b.Equals(action)));
             }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -46,7 +45,7 @@ namespace Singularity.Map
         /// <param name="width">The width of the map in number of tiles</param>
         /// <param name="height">The height of the map in number of tiles</param>
         /// <param name="fow">The FoW of the Map</param>
-        /// <param name="viewport">The viewport of the window</param>
+        /// <param name="camera">The camera of the window</param>
         /// <param name="director">A reference to the Director</param>
         /// <param name="initialResources">The initial resources of this map, if not specified there will not be any on the map</param>
         public Map(Texture2D backgroundTexture,

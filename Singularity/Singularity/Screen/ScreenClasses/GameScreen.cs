@@ -161,7 +161,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // This is for the creation of the Command Centers from the settlers
             mBlankPlat = content.Load<Texture2D>("PlatformBasic");
-            mCylPlat = content.Load<Texture2D>("Cylinders"); ;
+            mCylPlat = content.Load<Texture2D>("Cylinders");
         }
 
         public bool UpdateLower()
@@ -341,7 +341,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO eventually the EPlacementType should be instance but currently that
             // TODO requires a road to be place and therefore throws an exception !!!!!
 
-            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, (float)(v.Y-100)), mCylPlat, mBlankPlat, ref mDirector, false);
+            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, ref mDirector, false);
             var genUnit = new GeneralUnit(cCenter, ref mDirector);
             var genUnit2 = new GeneralUnit(cCenter, ref mDirector);
 

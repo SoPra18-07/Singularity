@@ -227,7 +227,7 @@ namespace Singularity.Screen.ScreenClasses
             mWindowList = new List<WindowObject>();
 
             // Initialize scissor window
-            mRasterizerState = new RasterizerState() { ScissorTestEnable = true };
+            mRasterizerState = new RasterizerState { ScissorTestEnable = true };
         }
 
         public void Update(GameTime gametime)

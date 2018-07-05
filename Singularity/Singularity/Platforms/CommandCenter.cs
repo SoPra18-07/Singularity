@@ -9,7 +9,7 @@ using Singularity.Units;
 
 namespace Singularity.Platforms
 {
-    [DataContract()]
+    [DataContract]
     class CommandCenter: PlatformBlank
     {
         [DataMember]

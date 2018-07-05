@@ -60,17 +60,17 @@ namespace Singularity.Screen
 
         #endregion
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="position"> position of the slider bar left hand corner</param>
-        /// <param name="length"> length of the slider bar</param>
-        /// <param name="sliderSize"> size of the slider (square)</param>
-        /// <param name="font"> font used for value display</param>
-        /// <param name="director"></param>
-        /// <param name="withValueBox"> specify if you want the value box : default yet</param>
-        /// <param name="withPages"> specify if you want pages: default no</param>
-        /// <param name="pages"> amout of pages you want</param>
+        ///  <summary>
+        /// 
+        ///  </summary>
+        ///  <param name="position"> position of the slider bar left hand corner</param>
+        ///  <param name="length"> length of the slider bar</param>
+        ///  <param name="sliderSize"> size of the slider (square)</param>
+        ///  <param name="font"> font used for value display</param>
+        ///  <param name="director"></param>
+        ///  <param name="withValueBox"> specify if you want the value box : default yet</param>
+        ///  <param name="withPages"> specify if you want pages: default no</param>
+        ///  <param name="pages"> amout of pages you want</param>
         public Slider(Vector2 position,
             int length,
             int sliderSize,
@@ -78,7 +78,7 @@ namespace Singularity.Screen
             ref Director director,
             bool withValueBox = true,
             bool withPages = false,
-            int pages = 0, EScreen screen = EScreen.UserInterfaceScreen)
+            int pages = 0)
         {
             Position = position;
             mLastPosition = position;
@@ -117,7 +117,7 @@ namespace Singularity.Screen
         {
             if (SliderMoving != null && ActiveWindow)
             {
-                SliderMoving(this, EventArgs.Empty, (mCurrentX / (mMax - mMin)));
+                SliderMoving(this, EventArgs.Empty, mCurrentX / (mMax - mMin));
             }
         }
 
@@ -146,23 +146,23 @@ namespace Singularity.Screen
                 // if Position has changed, update slider bar position based on change
                 if (!Position.Equals(mLastPosition))
                 {
-                    mCurrentX += (Position.X - mLastPosition.X);
+                    mCurrentX += Position.X - mLastPosition.X;
                     mLastPosition = Position;
                 }
 
                 // if page increase or decrease, update position
                 if (!Pages.Equals(mLastPagesCount))
                 {
-                    mCurrentX = (mMin + mCurrentPage * mPageSize);
+                    mCurrentX = mMin + mCurrentPage * mPageSize;
                     mLastPagesCount = Pages;
                 }
 
                 // if slider is left click them make it slave to the mouse
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                    Mouse.GetState().X >= mCurrentX - (Size.Y / 2) &&
-                    Mouse.GetState().X <= mCurrentX + (Size.Y / 2) &&
-                    Mouse.GetState().Y >= Position.Y - (Size.Y / 2) &&
-                    Mouse.GetState().Y <= Position.Y + (Size.Y / 2))
+                    Mouse.GetState().X >= mCurrentX - Size.Y / 2 &&
+                    Mouse.GetState().X <= mCurrentX + Size.Y / 2 &&
+                    Mouse.GetState().Y >= Position.Y - Size.Y / 2 &&
+                    Mouse.GetState().Y <= Position.Y + Size.Y / 2)
                 {
                     mSlave = true;
                 }
@@ -199,7 +199,7 @@ namespace Singularity.Screen
                     // calculate value of slide and convert to string
                     if (mWithValue)
                     {
-                        mStringValue = ((int) (((mCurrentX - mMin) / (mMax - mMin)) * 100)).ToString();
+                        mStringValue = ((int) ((mCurrentX - mMin) / (mMax - mMin) * 100)).ToString();
                     }
                 }
 
@@ -225,10 +225,10 @@ namespace Singularity.Screen
                         {
                             // move one page over if more than half way to next page covered by mouse
                             float distanceCovered = Mouse.GetState().X - mMin;
-                            if (Math.Abs((distanceCovered - (mCurrentPage * mPageSize))) > (.5 * mPageSize))
+                            if (Math.Abs(distanceCovered - mCurrentPage * mPageSize) > .5 * mPageSize)
                             {
                                 // move one page forward or backward depending on position relative to mouse
-                                if ((distanceCovered - (mCurrentPage * mPageSize)) > 0)
+                                if (distanceCovered - mCurrentPage * mPageSize > 0)
                                 {
                                     mCurrentPage += 1;
                                     mCurrentX += mPageSize;
@@ -251,19 +251,19 @@ namespace Singularity.Screen
                         }
 
                         // set max movement of mouse to max increment
-                        else if (Mouse.GetState().X > (MaxIncrement * mPageSize + mMin))
+                        else if (Mouse.GetState().X > MaxIncrement * mPageSize + mMin)
                         {
-                            mCurrentX = (MaxIncrement * mPageSize) + mMin;
+                            mCurrentX = MaxIncrement * mPageSize + mMin;
                             mCurrentPage = MaxIncrement;
                         }
 
                         else
                         {
                             float distanceCovered = Mouse.GetState().X - mMin;
-                            if (Math.Abs((distanceCovered - (mCurrentPage * mPageSize))) > (.5 * mPageSize))
+                            if (Math.Abs(distanceCovered - mCurrentPage * mPageSize) > .5 * mPageSize)
                             {
                                 // move one page forward or backward depending on position relative to mouse
-                                if ((distanceCovered - (mCurrentPage * mPageSize)) > 0)
+                                if (distanceCovered - mCurrentPage * mPageSize > 0)
                                 {
                                     mCurrentX += mPageSize;
                                     mCurrentPage += 1;
@@ -311,8 +311,8 @@ namespace Singularity.Screen
                     // draws rectangle to the right side of slider
                     spriteBatch.StrokedRectangle(
                         new Vector2(
-                            (mMax + Size.Y + 30) -
-                            (mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X / 2),
+                            mMax + Size.Y + 30 -
+                            mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X / 2,
                             Position.Y - 12 - mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).Y / 4),
                         new Vector2(mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X,
                             mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X),
@@ -326,10 +326,10 @@ namespace Singularity.Screen
                         // draws in value of slider in the center of display window
                         spriteBatch.DrawString(mFont,
                             origin: Vector2.Zero,
-                            position: new Vector2((mMax + Size.Y + 30) - (mFont.MeasureString(mStringValue).X / 2),
+                            position: new Vector2(mMax + Size.Y + 30 - mFont.MeasureString(mStringValue).X / 2,
                                 Position.Y - 12),
                             color: Color.White,
-                            text: mStringValue.ToString(),
+                            text: mStringValue,
                             rotation: 0f,
                             scale: 1f,
                             effects: SpriteEffects.None,
@@ -340,9 +340,9 @@ namespace Singularity.Screen
                         if (mPageSize > 3)
                         {
                             // draw page notches if they arent to close to another on bar
-                            for (int i = 0; i < (Pages + 1); i++)
+                            for (int i = 0; i < Pages + 1; i++)
                             {
-                                spriteBatch.DrawLine(new Vector2((Position.X + (i * (Size.X / Pages))), Position.Y - 2),
+                                spriteBatch.DrawLine(new Vector2(Position.X + i * (Size.X / Pages), Position.Y - 2),
                                     4,
                                     1.57f,
                                     Color.White * .8f,
@@ -354,7 +354,7 @@ namespace Singularity.Screen
                         spriteBatch.DrawString(mFont,
                             origin: Vector2.Zero,
                             position: new Vector2(
-                                (mMax + Size.Y + 30) - (mFont.MeasureString(mCurrentPage.ToString()).X / 2),
+                                mMax + Size.Y + 30 - mFont.MeasureString(mCurrentPage.ToString()).X / 2,
                                 Position.Y - 12),
                             color: Color.White,
                             text: mCurrentPage.ToString(),
@@ -370,7 +370,7 @@ namespace Singularity.Screen
 
                     // draws slider
                     spriteBatch.StrokedRectangle(
-                        new Vector2(mCurrentX - (Size.Y / 2), Position.Y - (Size.Y / 2)),
+                        new Vector2(mCurrentX - Size.Y / 2, Position.Y - Size.Y / 2),
                         new Vector2(Size.Y, Size.Y),
                         Color.Gray,
                         Color.Black,
@@ -391,10 +391,10 @@ namespace Singularity.Screen
                 // when left key is pressed and mouse within slider bounds then make slider slave to mouse
                 case EMouseAction.LeftClick:
 
-                    if (Mouse.GetState().X >= mCurrentX - (Size.Y / 2) &&
-                        Mouse.GetState().X <= mCurrentX + (Size.Y / 2) &&
-                        Mouse.GetState().Y >= Position.Y - (Size.Y / 2) &&
-                        Mouse.GetState().Y <= Position.Y + (Size.Y / 2))
+                    if (Mouse.GetState().X >= mCurrentX - Size.Y / 2 &&
+                        Mouse.GetState().X <= mCurrentX + Size.Y / 2 &&
+                        Mouse.GetState().Y >= Position.Y - Size.Y / 2 &&
+                        Mouse.GetState().Y <= Position.Y + Size.Y / 2)
                     {
                         mSlave = true;
                         return false;

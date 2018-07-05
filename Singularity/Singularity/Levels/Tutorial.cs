@@ -4,8 +4,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
-using Singularity.Screen;
 using Singularity.Platforms;
+using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 

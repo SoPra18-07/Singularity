@@ -127,7 +127,7 @@ namespace Singularity.Screen
             mCurrentScreenHeight = graphics.PreferredBackBufferHeight;
 
             // Initialize scissor window
-            mRasterizerState = new RasterizerState() { ScissorTestEnable = true };
+            mRasterizerState = new RasterizerState { ScissorTestEnable = true };
 
             Initialization();
 
@@ -182,7 +182,7 @@ namespace Singularity.Screen
             mCurrentScreenHeight = graphics.PreferredBackBufferHeight;
 
             // Initialize scissor window
-            mRasterizerState = new RasterizerState() { ScissorTestEnable = true };
+            mRasterizerState = new RasterizerState { ScissorTestEnable = true };
 
             Initialization();
 
@@ -236,7 +236,7 @@ namespace Singularity.Screen
             mCurrentScreenHeight = graphics.PreferredBackBufferHeight;
 
             // Initialize scissor window
-            mRasterizerState = new RasterizerState() { ScissorTestEnable = true };
+            mRasterizerState = new RasterizerState { ScissorTestEnable = true };
 
             Initialization();
 
@@ -384,7 +384,7 @@ namespace Singularity.Screen
             else if (!mMinimized)
             {
                 // input from inside the window is proccessed
-                Bounds = new Rectangle((int)Position.X, (int)Position.Y, (int)(Size.X), ((int)Size.Y));
+                Bounds = new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y);
             }
             else
             {
@@ -523,9 +523,7 @@ namespace Singularity.Screen
             }
 
             // everything following handles if the input is given through or not
-            if (!mMinimized &&
-                (mMouseX > Position.X && mMouseX < Position.X + Size.X &&
-                 mMouseY > Position.Y && mMouseY < Position.Y + Size.Y))
+            if (!mMinimized && (mMouseX > Position.X && mMouseX < Position.X + Size.X) && mMouseY > Position.Y && mMouseY < Position.Y + Size.Y)
                 // not minimized + mouse on window
             {
                 return false;
@@ -533,8 +531,7 @@ namespace Singularity.Screen
 
             // resharper wanted it this 'overseeable' way o.O
             // minimized + mouse on minimized window -> return false ... else true
-            return !mMinimized || (!(mMouseX > Position.X) || !(mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width) ||
-                                   !(mMouseY > Position.Y) || !(mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height));
+            return !mMinimized || (!(mMouseX > Position.X) || !(mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width)) || !(mMouseY > Position.Y) || !(mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height);
         }
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
@@ -612,9 +609,7 @@ namespace Singularity.Screen
 
             // everything following handles if the input is given through or not
 
-            if (!mMinimized &&
-                (mMouseX > Position.X && mMouseX < Position.X + Size.X &&
-                 mMouseY > Position.Y && mMouseY < Position.Y + Size.Y))
+            if (!mMinimized && (mMouseX > Position.X && mMouseX < Position.X + Size.X) && mMouseY > Position.Y && mMouseY < Position.Y + Size.Y)
                 // not minimized + mouse on window
             {
                 return false;
