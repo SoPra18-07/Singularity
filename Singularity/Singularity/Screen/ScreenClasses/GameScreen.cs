@@ -154,7 +154,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             AddObject(mMap);
 
-            AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
+            AddObjects(ResourceHelper.GetRandomlyDistributedResources(50));
 
             mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
             mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
