@@ -104,7 +104,6 @@
     <Compile Include="Levels\Skirmish.cs" />
     <Compile Include="Levels\Tutorial.cs" />
     <Compile Include="Libraries\Animations.cs" />
-    <Compile Include="Libraries\Bloom Filter.cs" />
     <Compile Include="Input\EClickType.cs" />
     <Compile Include="Input\IMouseClickListener.cs" />
     <Compile Include="Input\IMousePositionListener.cs" />
