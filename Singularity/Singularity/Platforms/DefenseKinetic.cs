@@ -12,9 +12,29 @@ namespace Singularity.Platforms
 {
     internal sealed class DefenseKinetic : DefenseBase
     {
-        
+
+        /// <summary>
+        /// Stores the amount of ammunition the platform currently has. Max is 50.
+        /// </summary>
         internal int AmmoCount { get; private set; }
 
+        /// <summary>
+        /// State of the platform.
+        /// </summary>
+        /// 0 means not requesting
+        /// 1 means requesting
+        /// 2 means has ammo and not requesting
+        /// 3 means full ammo and currently requesting
+        private bool mRequesting = false;
+
+        private int mTotalMaterialsRequested;
+
+        private double mLastRequestTime;
+
+        /// <summary>
+        /// Constructs a kinetic (i.e. uses ammunition) defense platform that automatically attacks
+        /// enemy units. This platform uses no energy but requires ammunition
+        /// </summary>
         internal DefenseKinetic(Vector2 position,
             Texture2D platformSpriteSheet,
             Texture2D baseSprite,
@@ -27,15 +47,37 @@ namespace Singularity.Platforms
 
         public override void Shoot(Vector2 target)
         {
-            if (AmmoCount < 1)
+            // TODO: See if any unit is here first to be able to shoot
+            AmmoCount--;
+            mShoot = true;
+            mEnemyPosition = target;
+        }
+        // TODO: Some way to calculate how many things are sent here
+
+        public override void Update(GameTime t)
+        {
+            if (!mRequesting)
+            {
+                if (AmmoCount == 0
+                    || (t.TotalGameTime.TotalMilliseconds - mLastRequestTime > 30000
+                        && AmmoCount < 50))
+                {
+                    // TODO: Change metal to ammo once armory is implemented
+                    mDirector.GetDistributionManager.RequestResource(this, EResourceType.Metal, null);
+                    mTotalMaterialsRequested++;
+                    mRequesting = true;
+                }
+            }
+
+            if (mRequesting && mTotalMaterialsRequested <= 50)
             {
                 mDirector.GetDistributionManager.RequestResource(this, EResourceType.Metal, null);
             }
-            else
+
+            if (mTotalMaterialsRequested == 50)
             {
-                AmmoCount--;
-                mShoot = true;
-                mEnemyPosition = target;
+                mRequesting = false;
+                mLastRequestTime = t.TotalGameTime.TotalMilliseconds;
             }
         }
     }

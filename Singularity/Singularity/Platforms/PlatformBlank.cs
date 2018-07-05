@@ -455,7 +455,7 @@ namespace Singularity.Platforms
         }
 
         /// <inheritdoc cref="Singularity.Property.IUpdate"/>
-        public void Update(GameTime t)
+        public virtual void Update(GameTime t)
         {
             Uncollide();
         }
