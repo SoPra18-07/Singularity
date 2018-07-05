@@ -18,12 +18,16 @@ namespace Singularity.Levels
     {
         [DataMember]
         public GameScreen GameScreen { get; set; }
+
+        public Camera Camera { get; set; }
+
+
+        public Map.Map Map { get; set; }
+
+        
+
         [DataMember]
         private GraphicsDeviceManager mGraphics;
-        [DataMember]
-        private Map.Map mMap;
-        [DataMember]
-        private Camera mCamera;
         [DataMember]
         private FogOfWar mFow;
         [DataMember]
@@ -56,18 +60,19 @@ namespace Singularity.Levels
             var platformBlankTexture = content.Load<Texture2D>("PlatformBasic");
             var platformDomeTexture = content.Load<Texture2D>("Dome");
             var milUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
+            var milGlowSheet = content.Load<Texture2D>("UnitGlowSprite");
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
 
             //TODO: have a cone texture
             PlatformFactory.Init(null, platformCylTexture, platformDomeTexture, platformBlankTexture);
 
             //Map related stuff
-            mCamera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 800, 800);
-            mFow = new FogOfWar(mCamera, mGraphics.GraphicsDevice);
-            mMap = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.GraphicsDevice.Viewport, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
+            Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 800, 800);
+            mFow = new FogOfWar(Camera, mGraphics.GraphicsDevice);
+            Map = new Map.Map(mapBackground, 20, 20, mFow, Camera, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
 
             //INITIALIZE SCREENS AND ADD THEM TO THE SCREENMANAGER
-            GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, mMap, mCamera, mFow);
+            GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
             mUi = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
 
             mScreenManager.AddScreen(GameScreen);
@@ -79,7 +84,7 @@ namespace Singularity.Levels
             GameScreen.AddObject(mPlatform);
 
             // this is done via the factory to test, so I can instantly see if something is some time off.
-            var platform2 = PlatformFactory.Get(EPlatformType.Well, ref mDirector, 800, 1000, mMap.GetResourceMap());
+            var platform2 = PlatformFactory.Get(EPlatformType.Well, ref mDirector, 800, 1000, Map.GetResourceMap());
             GameScreen.AddObject(platform2);
 
             var road1 = new Road(mPlatform, platform2, false);
@@ -89,7 +94,7 @@ namespace Singularity.Levels
             var platform3 = new Quarry(new Vector2(1200, 1200),
                 platformDomeTexture,
                 platformBlankTexture,
-                mMap.GetResourceMap(),
+                Map.GetResourceMap(),
                 ref mDirector);
             GameScreen.AddObject(platform3);
             var road2 = new Road(platform2, platform3, false);
@@ -116,10 +121,13 @@ namespace Singularity.Levels
             var genUnit5 = new GeneralUnit(mPlatform, ref mDirector);
 
             //MilUnits
-            var milUnit = new MilitaryUnit(new Vector2(2000, 700), milUnitSheet, mCamera, ref mDirector, ref mMap);
+            var map = Map;
+            MilitaryUnit.mMilSheet = milUnitSheet;
+            MilitaryUnit.mGlowTexture = milGlowSheet;
+            var milUnit = new MilitaryUnit(new Vector2(2000, 700), Camera, ref mDirector, ref map);
 
             //SetUnit
-            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, GameScreen, mUi);
+            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, mUi);
             
 
             // Resources
@@ -142,7 +150,6 @@ namespace Singularity.Levels
             GameScreen.AddObject(genUnit5);
             GameScreen.AddObject(milUnit);
             GameScreen.AddObject(setUnit);
-
 
             //TESTMETHODS HERE ====================================
             mDirector.GetDistributionManager.RequestResource(platform2, EResourceType.Oil, null);

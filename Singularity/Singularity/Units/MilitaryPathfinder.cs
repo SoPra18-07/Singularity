@@ -89,10 +89,19 @@ namespace Singularity.Units
                                gridPos.y * MapConstants.GridHeight);
         }
 
+        /// <summary>
+        /// Checks if a direct plath is clear of obstacles
+        /// </summary>
+        /// <param name="x">Starting x position.</param>
+        /// <param name="y">Starting y position.</param>
+        /// <param name="x2">Target x position.</param>
+        /// <param name="y2">Target y position.</param>
+        /// <param name="map">Reference to the game map.</param>
+        /// <returns></returns>
         public bool ClearDirectPath(int x, int y, int x2, int y2, ref Map.Map map)
         {
-            int w = x2 - x;
-            int h = y2 - y;
+            var w = x2 - x;
+            var h = y2 - y;
             int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
             if (w < 0)
             {
@@ -138,8 +147,8 @@ namespace Singularity.Units
 
                 dx2 = 0;
             }
-            int numerator = longest >> 1;
-            for (int i = 0; i <= longest; i++)
+            var numerator = longest >> 1;
+            for (var i = 0; i <= longest; i++)
             {
                 if (!map.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(x, y))
                 {
