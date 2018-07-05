@@ -45,7 +45,7 @@ namespace Singularity.Manager
         {
             mLevelType = level;
             mEnergyLevel = 0;
-            Time = new TimeSpan(0, 0, 0, 0, 0);
+            Time = new TimeSpan(0, 0, 0, 0);
             LoadAchievements();
 
             mUnits = new Dictionary<string, int>

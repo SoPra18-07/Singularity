@@ -122,7 +122,7 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool DrawLower()
         {
-            return true;
+            return false;
         }
 
         public void Update(GameTime gametime)
