@@ -32,7 +32,6 @@ namespace Singularity.Levels
 
         public override void LoadContent(ContentManager content)
         {
-            
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
             var platform1 = PlatformFactory.Get(EPlatformType.Blank, ref mDirector, 1000, 1000, Map.GetResourceMap());
@@ -96,7 +95,6 @@ namespace Singularity.Levels
             GameScreen.AddObjects(genUnit);
             GameScreen.AddObject(milUnit);
             GameScreen.AddObject(setUnit);
-
 
             //TESTMETHODS HERE ====================================
             mDirector.GetDistributionManager.RequestResource(platform2, EResourceType.Oil, null);

@@ -77,6 +77,7 @@ namespace Singularity.Screen
             CreateRectangularBounds();
             Opacity = 1;
             ActiveWindow = true;
+            mWithBorder = withBorder;
         }
 
 
@@ -101,6 +102,7 @@ namespace Singularity.Screen
             CreateRectangularBounds();
             Opacity = 1;
             ActiveWindow = true;
+            mWithBorder = withBorder;
         }
 
 

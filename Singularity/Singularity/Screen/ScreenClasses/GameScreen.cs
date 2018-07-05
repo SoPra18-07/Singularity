@@ -123,6 +123,12 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Update(GameTime gametime)
         {
+
+            foreach (var updateable in mUpdateables)
+            {
+                updateable.Update(gametime);
+            }
+
             foreach (var spatial in mSpatialObjects.Concat(mMap.GetStructureMap().GetPlatformList()))
             {
                 var collidingObject = spatial as ICollider;
@@ -142,14 +148,10 @@ namespace Singularity.Screen.ScreenClasses
             mFow.Update(gametime);
 
             mTransformMatrix = mCamera.GetTransform();
-
-            // TODO: for some reason just adding to GameScreen in constructor does NOT call up Update method
-            mSelBox.Update(gametime);
         }
 
         public void LoadContent(ContentManager content)
         {
-
             AddObject(mMap);
 
             AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));

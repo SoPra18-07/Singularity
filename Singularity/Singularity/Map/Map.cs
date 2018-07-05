@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -13,21 +14,27 @@ using Singularity.Resources;
 
 namespace Singularity.Map
 {
-    public sealed class Map : IDraw, IKeyListener
+    public sealed class Map : IDraw, IUpdate, IKeyListener
     {
         private readonly CollisionMap mCollisionMap;
-        public readonly StructureMap mStructureMap;
+        private readonly StructureMap mStructureMap;
         private readonly ResourceMap mResourceMap;
 
         private readonly int mWidth;
         private readonly int mHeight;
 
+        private readonly Camera mCamera;
+
         private readonly Texture2D mBackgroundTexture;
-        private readonly SpriteFont mLibSans12;
 
         private bool mDebug;
 
         private readonly FogOfWar mFow;
+
+        private int mXPosMin;
+        private int mXPosMax;
+        private int mYPosMin;
+        private int mYPosMax;
 
 
         /// <summary>
@@ -46,12 +53,14 @@ namespace Singularity.Map
             int width,
             int height,
             FogOfWar fow,
-            Viewport viewport,
+            Camera camera,
             ref Director director,
             IEnumerable<MapResource> initialResources = null)
         {
             mWidth = width;
             mHeight = height;
+
+            mCamera = camera;
 
             mBackgroundTexture = backgroundTexture;
             mDebug = GlobalVariables.DebugState;
@@ -74,6 +83,7 @@ namespace Singularity.Map
 
         public void Draw(SpriteBatch spriteBatch)
         {
+
             var x = 0;
             var y = 0;
             //draw the background texture
@@ -112,9 +122,15 @@ namespace Singularity.Map
 
                     var xpos = Math.Abs(value: row - column - (mWidth - 1));
                     var ypos = column + row;
+
+                    if (xpos < mYPosMin || xpos > mYPosMax || ypos < mXPosMin || ypos > mXPosMax)
+                    {
+                        continue;
+                    }
+
                     spriteBatch.Draw(texture: mBackgroundTexture,
                         position: new Vector2(x: xpos * 100, y: ypos * 50),
-                        sourceRectangle: new Rectangle(x: x * 200, y: y * 100, width: 200, height: 100),
+                        sourceRectangle: new Rectangle(x: x * MapConstants.TileWidth, y: y * MapConstants.TileHeight, width: MapConstants.TileWidth, height: MapConstants.TileHeight),
                         color: Color.White,
                         rotation: 0f,
                         origin: Vector2.Zero,
@@ -131,34 +147,7 @@ namespace Singularity.Map
                 return;
 
             }
-            //draw the collision map grid.
-            /*
-            for (int column = 0; column < mWidth; column++)
-            {
-                for (var i = 0; i < 5; i++)
-                {
-                    int xseparator = 20 * i;
-                    int yseparator = 10 * i;
-                    int xpos = column + mWidth;
-                    int ypos = column;
-                    int xpos2 = mWidth - column;
-                    spriteBatch.DrawLine(
-                        point: new Vector2(x: xpos * 100 + xseparator, y: ypos * 50 + yseparator),
-                        length: 2236.0679775f,
-                        angle: -0.463647609f + (float) Math.PI,
-                        color: Color.Blue,
-                        thickness: 1,
-                        layerDepth: LayerConstants.GridDebugLayer);
-                    spriteBatch.DrawLine(
-                        point: new Vector2(x: xpos2 * 100 - xseparator, y: ypos * 50 + yseparator),
-                        length: 2236.0679775f,
-                        angle: 0.463647609f,
-                        color: Color.Yellow,
-                        thickness: 1,
-                        layerDepth: LayerConstants.GridDebugLayer);
-                }
-            }
-            */
+
             var colMap = mCollisionMap.GetCollisionMap();
             var walkabilityGrid = mCollisionMap.GetWalkabilityGrid();
 
@@ -191,6 +180,19 @@ namespace Singularity.Map
 
 
         }
+
+        public void Update(GameTime gametime)
+        {
+
+            // -1 for the left/top limits since we want fluid transitions and not the effect of tiles "lagging behind".
+            mXPosMin = (int)(mCamera.GetRelativePosition().Y / 50) - 1;
+            mXPosMax = (int)(mCamera.GetRelativePosition().Y / 50 + mCamera.GetSize().Y / 50);
+
+            mYPosMin = (int)(mCamera.GetRelativePosition().X / 100) - 1;
+            mYPosMax = (int)(mCamera.GetRelativePosition().X / 100 +
+                                mCamera.GetSize().X / 100);
+        }
+
 
         public FogOfWar GetFogOfWar()
         {
@@ -325,5 +327,6 @@ namespace Singularity.Map
         {
 
         }
+
     }
 }
