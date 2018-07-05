@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Property;
-using System.Diagnostics;
 using System.Linq;
 using Singularity.Graph;
 using Singularity.Input;

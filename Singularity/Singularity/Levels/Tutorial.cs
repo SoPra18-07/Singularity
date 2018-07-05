@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,11 +17,16 @@ namespace Singularity.Levels
     {
         [DataMember]
         public GameScreen GameScreen { get; set; }
+
+        [DataMember]
+        public Camera Camera { get; set; }
+
+        [DataMember]
+        public Map.Map Map { get; private set; }
+
+
         [DataMember]
         private GraphicsDeviceManager mGraphics;
-        private Map.Map mMap;
-        [DataMember]
-        private Camera mCamera;
         [DataMember]
         private FogOfWar mFow;
         [DataMember]
@@ -53,7 +57,8 @@ namespace Singularity.Levels
             var platformCylTexture = content.Load<Texture2D>("Cylinders");
             var platformBlankTexture = content.Load<Texture2D>("PlatformBasic");
             var platformDomeTexture = content.Load<Texture2D>("Dome");
-            var milUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
+            MilitaryUnit.mMilSheet = content.Load<Texture2D>("UnitSpriteSheet");
+            MilitaryUnit.mGlowTexture = content.Load<Texture2D>("UnitGlowSprite");
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
 
             //TODO: have a cone texture 
@@ -65,7 +70,7 @@ namespace Singularity.Levels
             mMap = new Map.Map(mapBackground, 20, 20, mFow, mCamera, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
 
             //INITIALIZE SCREENS AND ADD THEM
-            GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, mMap, mCamera, mFow);
+            GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
             mUi = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
 
             mScreenManager.AddScreen(GameScreen);
@@ -75,7 +80,8 @@ namespace Singularity.Levels
             //INGAME OBJECTS INITIALIZATION ===================================================
 
             //SetUnit
-            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, GameScreen, mUi);
+            var map = Map;
+            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, mUi);
             GameScreen.AddObject(setUnit);
 
             //TESTMETHODS HERE =====================================

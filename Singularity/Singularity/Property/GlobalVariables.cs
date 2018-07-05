@@ -5,7 +5,7 @@
         /// <summary>
         /// Indicates whether the game is in debug mode or not
         /// </summary>
-        internal static bool DebugState { get; set; } = false;
+        internal static bool DebugState { get; set; } = true;
 
     }
 }
