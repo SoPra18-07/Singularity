@@ -11,7 +11,7 @@ using Singularity.Units;
 namespace Singularity.PlatformActions
 {
 
-    class MakeFastMilitaryUnit : AMakeUnit
+    internal sealed class MakeFastMilitaryUnit : AMakeUnit
     {
         public MakeFastMilitaryUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
@@ -20,12 +20,16 @@ namespace Singularity.PlatformActions
 
         public override void CreateUnit()
         {
-            var unit = MilitaryUnit.CreateMilitaryUnit(mPlatform.Center + mOffset, ref mDirector);
-
+            // unsure why this is a static method since it just returns a military unit anyways
+            // var unit = MilitaryUnit.CreateMilitaryUnit(mPlatform.Center + mOffset, ref mDirector);
+            
+            var camera = mDirector.GetStoryManager.Level.Camera;
+            var map = mDirector.GetStoryManager.Level.Map;
+            var unit = new MilitaryUnit(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
         }
     }
 
-    class MakeStrongMilitrayUnit : AMakeUnit
+    internal sealed class MakeStrongMilitrayUnit : AMakeUnit
     {
         public MakeStrongMilitrayUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
@@ -47,7 +51,7 @@ namespace Singularity.PlatformActions
         protected Dictionary<EResourceType, int> mToRequest;
         protected Vector2 mOffset = new Vector2(200f);
 
-        public AMakeUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
+        protected AMakeUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
             State = PlatformActionState.Available;
         }

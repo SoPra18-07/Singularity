@@ -462,7 +462,7 @@ namespace Singularity.Platforms
                     // Dome
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
-                        new Rectangle(148 * (mSheetPosition % 4), 109 * mSheetPosition / 4, 148, 109),
+                        new Rectangle(148 * (mSheetPosition % 4), 109 * (mSheetPosition / 4), 148, 109),
                         mColor * transparency,
                         0f,
                         Vector2.Zero,
