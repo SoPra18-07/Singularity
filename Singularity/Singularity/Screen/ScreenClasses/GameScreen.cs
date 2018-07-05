@@ -79,8 +79,8 @@ namespace Singularity.Screen.ScreenClasses
 
             mDirector = director;
 
-            mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
-            AddObject(mSelBox);
+            //mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
+            //AddObject(mSelBox);
 
         }
 
@@ -148,7 +148,7 @@ namespace Singularity.Screen.ScreenClasses
             mTransformMatrix = mCamera.GetTransform();
 
             // TODO: for some reason just adding to GameScreen in constructor does NOT call up Update method
-            mSelBox.Update(gametime);
+            //mSelBox.Update(gametime);
         }
 
         public void LoadContent(ContentManager content)
@@ -212,7 +212,7 @@ namespace Singularity.Screen.ScreenClasses
             // subscribe every military unit to the selection box
             if (milUnit != null)
             {
-                mSelBox.SelectingBox += milUnit.BoxSelected;
+                //mSelBox.SelectingBox += milUnit.BoxSelected;
             }
 
             if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
