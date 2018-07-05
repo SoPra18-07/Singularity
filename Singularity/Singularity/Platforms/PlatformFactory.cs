@@ -94,7 +94,7 @@ namespace Singularity.Platforms
                     return new Well(position, sDomeSheet, sBlankSheet, resourceMap, ref director, autoRegister);
 
                 case EPlatformType.Laser:
-                    throw new NotImplementedException("Laser facilites have not yet been implemented");
+                    return new DefenseLaser(position, sConeSheet, sBlankSheet, ref director);
 
                 default:
                     break;

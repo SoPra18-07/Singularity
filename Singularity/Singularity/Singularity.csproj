@@ -66,6 +66,7 @@
     <Compile Include="Manager\MilitaryManager.cs" />
     <Compile Include="PlatformActions\MakeUnit.cs" />
     <Compile Include="Platforms\Barracks.cs" />
+    <Compile Include="Platforms\DefenseLaser.cs" />
     <Compile Include="Platforms\DefenseKinetic.cs" />
     <Compile Include="Platforms\DefenseBase.cs" />
     <Compile Include="Platforms\EPlacementType.cs" />

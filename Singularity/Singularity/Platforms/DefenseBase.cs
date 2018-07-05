@@ -55,7 +55,7 @@ namespace Singularity.Platforms
             // Cone (Defense Platforms)
             // Draw the basic platform first
             spriteBatch.Draw(mPlatformBaseTexture,
-                Vector2.Add(AbsolutePosition, new Vector2(-3, 73)),
+                Vector2.Add(AbsolutePosition, new Vector2(0, 78)),
                 null,
                 Color.White * transparency,
                 0f,
