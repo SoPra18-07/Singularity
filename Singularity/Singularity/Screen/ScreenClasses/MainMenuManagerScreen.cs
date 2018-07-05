@@ -408,19 +408,6 @@ namespace Singularity.Screen.ScreenClasses
             sPressed = "Quit";
         }
 
-        /// <summary>
-        /// Used to create a new story mode game.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
-        public static void OnStoryButtonReleased(Object sender, EventArgs eventArgs)
-        {
-            // TODO: implement start game with story
-            throw new NotImplementedException("No story yet unfortunately");
-
-
-        }
-
 
         /// <summary>
         /// Used to go back to the main main menu screen.

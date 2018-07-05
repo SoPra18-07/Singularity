@@ -67,9 +67,10 @@ namespace Singularity.Levels
             mFow = new FogOfWar(mCamera, mGraphics.GraphicsDevice);
             mMap = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.GraphicsDevice.Viewport, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
 
-            //INITIALIZE SCREENS AND ADD THEM TO THE SCREENMANAGER
+            //INITIALIZE SCREENS
             GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, mMap, mCamera, mFow);
             Ui = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
+            Ui.LoadContent(content);
 
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms

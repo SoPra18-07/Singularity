@@ -182,7 +182,7 @@ namespace Singularity.Screen.ScreenClasses
             mMButtonList.Add(mMFreePlayButton);
             mMButtonList.Add(mMBackButton);
 
-            mMStoryButton.ButtonReleased += MainMenuManagerScreen.OnStoryButtonReleased;
+            mMStoryButton.ButtonReleased += LoadGameManagerScreen.OnStoryButtonReleased;
             mMFreePlayButton.ButtonReleased += LoadGameManagerScreen.OnSkirmishReleased;
             mMBackButton.ButtonReleased += MainMenuManagerScreen.OnBackButtonReleased;
 

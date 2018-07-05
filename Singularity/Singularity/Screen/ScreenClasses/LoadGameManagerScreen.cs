@@ -103,6 +103,7 @@ namespace Singularity.Screen.ScreenClasses
             if (mLoadingGame)
             {
                 mScreenManager.RemoveScreen();
+                mLoadingGame = false;
             }
 
             if (sResolutionChanged)
@@ -145,10 +146,12 @@ namespace Singularity.Screen.ScreenClasses
             //This means a save has to be loaded
             if (mName != "")
             {
-                var gameScreenToBe = XSerializer.Load(mName, false);
-                if (gameScreenToBe.IsPresent())
+                var levelToBe = XSerializer.Load(mName, false);
+                if (levelToBe.IsPresent())
                 {
-                    mGameScreen = (GameScreen)gameScreenToBe.Get();
+                    mLevel = (ILevel)levelToBe.Get();
+                    mGameScreen = mLevel.GameScreen;
+                    mUi = mLevel.Ui;
 
                     //Remove all screens above this screen, of course this only works if this screen is really on the bottom of the stack
                     for (var i = mScreenManager.GetScreenCount() - 1; i > 0; i--)
@@ -156,6 +159,7 @@ namespace Singularity.Screen.ScreenClasses
                         mScreenManager.RemoveScreen();
                     }
                     mScreenManager.AddScreen(mGameScreen);
+                    mScreenManager.AddScreen(mUi);
                     mScreenManager.AddScreen(mLoadingScreen);
                     mLoadingGame = true;
                     mName = "";
@@ -287,6 +291,18 @@ namespace Singularity.Screen.ScreenClasses
         public static void OnSkirmishReleased(Object sender, EventArgs eventArg)
         {
             sPressed = "Skirmish";
+        }
+
+        /// <summary>
+        /// Used to create a new story mode game.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        public static void OnStoryButtonReleased(Object sender, EventArgs eventArgs)
+        {
+            // TODO: implement start game with story
+            throw new NotImplementedException("No story yet unfortunately");
+
         }
         #endregion
 
