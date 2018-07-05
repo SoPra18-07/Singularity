@@ -32,12 +32,12 @@ namespace Singularity.Units
         /// <summary>
         /// Sprite sheet for military units.
         /// </summary>
-        protected readonly Texture2D mMilSheet;
+        internal static Texture2D mMilSheet;
 
         /// <summary>
         /// Sprite sheet for the glow effect when a unit is selected.
         /// </summary>
-        private readonly Texture2D mGlowTexture;
+        internal static Texture2D mGlowTexture;
 
         /// <summary>
         /// Scalar for the unit size.
@@ -54,7 +54,11 @@ namespace Singularity.Units
         /// </summary>
         private bool mShoot;
 
-        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Texture2D glowSpriteSheet, Camera camera, ref Director director, ref Map.Map map)
+        
+        public MilitaryUnit(Vector2 position,
+            Camera camera,
+            ref Director director,
+            ref Map.Map map)
             : base(position, camera, ref director, ref map)
         {
             mSpeed = 4;
@@ -65,25 +69,40 @@ namespace Singularity.Units
             RevelationRadius = 400;
 
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * Scale / 2, AbsolutePosition.Y + AbsoluteSize.Y * Scale / 2);
+        }
 
-            mMilSheet = spriteSheet;
-            mGlowTexture = glowSpriteSheet;
+        /// <summary>
+        /// Static method that can be called to create a new military unit
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="director"></param>
+        /// <returns></returns>
+        public static MilitaryUnit CreateMilitaryUnit(Vector2 position, ref Director director)
+        {
+            var map = director.GetStoryManager.Level.Map;
+            return new MilitaryUnit(position, director.GetStoryManager.Level.Camera, ref director, ref map);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            // makes sure that the textures are loaded
+            if (mMilSheet == null || mGlowTexture == null)
+            {
+                throw new Exception("load the MilSheet and GlowTexture first!");
+            }
+
             // Draw military unit
             spriteBatch.Draw(
-                mMilSheet,
-                AbsolutePosition,
-                new Rectangle(150 * mColumn, 75 * mRow, (int) (AbsoluteSize.X / Scale), (int) (AbsoluteSize.Y / Scale)),
-                mSelected ? Color.DarkGray : Color.Gray,
-                0f,
-                Vector2.Zero,
-                new Vector2(Scale),
-                SpriteEffects.None,
-                LayerConstants.MilitaryUnitLayer
-                );
+                            mMilSheet,
+                            AbsolutePosition,
+                            new Rectangle(150 * mColumn, 75 * mRow, (int)(AbsoluteSize.X / Scale), (int)(AbsoluteSize.Y / Scale)),
+                            mSelected ? Color.DarkGray : Color.Gray,
+                            0f,
+                            Vector2.Zero,
+                            new Vector2(Scale),
+                            SpriteEffects.None,
+                            LayerConstants.MilitaryUnitLayer
+                            );
 
             // Draw the glow under it
             if (mSelected)
@@ -122,7 +141,6 @@ namespace Singularity.Units
             spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), MapCoordinates(mEnemyPosition), Color.White * .2f, 6);
             mShoot = false;
         }
-
 
         public override void Update(GameTime gameTime)
         {

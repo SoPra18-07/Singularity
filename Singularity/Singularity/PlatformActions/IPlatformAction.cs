@@ -87,7 +87,7 @@ namespace Singularity.PlatformActions
     {
         protected Dictionary<GeneralUnit, JobType> mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
         protected PlatformBlank mPlatform;
-        protected readonly Director mDirector;
+        protected Director mDirector;
 
         public int Id { get; }
 

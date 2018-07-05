@@ -46,7 +46,7 @@ namespace Singularity.Units
         /// <param name="director">Reference to the game director.</param>
         /// <param name="map">Reference to the game map.</param>
         public EnemyUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director, ref Map.Map map) 
-            : base(position, spriteSheet, spriteSheet, camera, ref director, ref map)
+            : base(position, camera, ref director, ref map)
         {
             Health = 10; //TODO
 
