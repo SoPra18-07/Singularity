@@ -10,11 +10,13 @@ using Singularity.Resources;
 
 namespace Singularity.Platforms
 {
+    /// <inheritdoc cref="DefenseBase"/>
     internal sealed class DefenseLaser : DefenseBase
     {
-        
-        internal int AmmoCount { get; private set; }
-
+        /// <summary>
+        /// Constructs a Laser (i.e. uses energy) defense platform that automatically attacks
+        /// enemy units. This platform uses no ammunition but requires energy.
+        /// </summary>
         internal DefenseLaser(Vector2 position,
             Texture2D platformSpriteSheet,
             Texture2D baseSprite,

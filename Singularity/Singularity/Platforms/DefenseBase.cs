@@ -28,6 +28,9 @@ namespace Singularity.Platforms
         /// </summary>
         protected Vector2 mEnemyPosition;
 
+        /// <summary>
+        /// Represents an abstract class for all defense platforms. Implements their draw methods.
+        /// </summary>
         internal DefenseBase(Vector2 position,
             Texture2D platformSpriteSheet,
             Texture2D baseSprite,

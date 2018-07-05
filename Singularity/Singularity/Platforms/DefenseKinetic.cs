@@ -21,19 +21,22 @@ namespace Singularity.Platforms
         /// <summary>
         /// State of the platform.
         /// </summary>
-        /// 0 means not requesting
-        /// 1 means requesting
-        /// 2 means has ammo and not requesting
-        /// 3 means full ammo and currently requesting
         private bool mRequesting = false;
 
+        /// <summary>
+        /// Stores how many times materials have been requested between states
+        /// </summary>
         private int mTotalMaterialsRequested;
 
+        /// <summary>
+        /// Stores when the last material was requested so it will periodically request to reload to
+        /// maximum ammo.
+        /// </summary>
         private double mLastRequestTime;
 
         /// <summary>
         /// Constructs a kinetic (i.e. uses ammunition) defense platform that automatically attacks
-        /// enemy units. This platform uses no energy but requires ammunition
+        /// enemy units. This platform uses no energy but requires ammunition.
         /// </summary>
         internal DefenseKinetic(Vector2 position,
             Texture2D platformSpriteSheet,
@@ -69,7 +72,7 @@ namespace Singularity.Platforms
                 }
             }
 
-            if (mRequesting && mTotalMaterialsRequested <= 50)
+            if (mRequesting && mTotalMaterialsRequested + AmmoCount <= 50)
             {
                 mDirector.GetDistributionManager.RequestResource(this, EResourceType.Metal, null);
             }
