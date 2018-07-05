@@ -70,7 +70,7 @@ namespace Singularity.Map
         /// <param name="x">The initial x position of the camera</param>
         /// <param name="y">the initial y position of the camera</param>
         /// <param name="neo">If the neo Layout should be used for navigating instead of qwertz</param>
-        public Camera(GraphicsDevice graphics, ref Director director, int x = 0, int y = 0, bool neo = true)
+        public Camera(GraphicsDevice graphics, ref Director director, int x = 0, int y = 0, bool neo = false)
         {
 
             if (x < 0)
@@ -113,7 +113,6 @@ namespace Singularity.Map
 
         public void Update(GameTime gametime)
         {
-
             //finally update the matrix to all the fitting values.
             UpdateTransformMatrix();
         }
@@ -338,6 +337,24 @@ namespace Singularity.Map
         {
             mMouseX = screenX;
             mMouseY = screenY;
+        }
+
+        public Vector2 GetRelativePosition()
+        {
+            return Vector2.Transform(Vector2.Zero, Matrix.Invert(mTransform));
+        }
+
+        public void SetPosition(Vector2 position)
+        {
+            mX = position.X;
+            mY = position.Y;
+
+            ValidatePosition();
+        }
+
+        public Vector2 GetSize()
+        {
+            return new Vector2(mGraphics.Viewport.Width, mGraphics.Viewport.Height) / mZoom;
         }
     }
 }

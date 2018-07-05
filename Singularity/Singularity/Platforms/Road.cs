@@ -12,9 +12,9 @@ namespace Singularity.Platforms
 
         public Vector2 Destination { get; set; }
 
-        private INode SourceAsNode { get; set; }
+        public INode SourceAsNode { get; set; }
 
-        private INode DestinationAsNode { get; set; }
+        public INode DestinationAsNode { get; set; }
 
         private bool mBlueprint;
 
