@@ -53,7 +53,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             mHoloProjectionWidthScaling = 1f;
             mHoloProjectionHeightScaling = screenResolution.Y / 1024;
-            SetResolution(screenResolution);
+            SetResolution(screenResolution: screenResolution);
             CurrentScreen = EScreen.SplashScreen;
 
             TransitionRunning = false;
@@ -90,8 +90,8 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="screenResolution">Current viewport screen resolution</param>
         private void SetResolution(Vector2 screenResolution)
         {
-            mScreenCenter = new Vector2(screenResolution.X / 2, screenResolution.Y / 2);
-            mScreenResolutionScaling = new Vector2(screenResolution.X / 1280, screenResolution.Y / 1024);
+            mScreenCenter = new Vector2(x: screenResolution.X / 2, y: screenResolution.Y / 2);
+            mScreenResolutionScaling = new Vector2(x: screenResolution.X / 1280, y: screenResolution.Y / 1024);
             //SetHoloProjectionScaling(mHoloProjectionWidthScaling);
         }
 
@@ -138,8 +138,8 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="content">ContentManager for the entire game</param>
         public void LoadContent(ContentManager content)
         {
-            mGlowTexture2D = content.Load<Texture2D>("Glow");
-            mHoloProjectionTexture2D = content.Load<Texture2D>("HoloProjection");
+            mGlowTexture2D = content.Load<Texture2D>(assetName: "Glow");
+            mHoloProjectionTexture2D = content.Load<Texture2D>(assetName: "HoloProjection");
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace Singularity.Screen.ScreenClasses
         public void Update(GameTime gameTime)
         {
             // code for transitioning
-            Transition(gameTime);
+            Transition(gameTime: gameTime);
 
             Flicker();
         }
@@ -178,7 +178,7 @@ namespace Singularity.Screen.ScreenClasses
                         limit = limit - 10;
                     }
 
-                    mTargetHoloOpacity = rnd.Next(40, limit) / 100f;
+                    mTargetHoloOpacity = rnd.Next(minValue: 40, maxValue: limit) / 100f;
                 }
                 else
                 {
@@ -191,12 +191,12 @@ namespace Singularity.Screen.ScreenClasses
                         limit = limit + 10;
                     }
 
-                    mTargetHoloOpacity = rnd.Next(limit, 100) / 100f;
+                    mTargetHoloOpacity = rnd.Next(minValue: limit, maxValue: 100) / 100f;
                 }
 
                 mFlickerDirectionUp = !mFlickerDirectionUp;
 
-                mFlickerDuration = rnd.Next(10, 30);
+                mFlickerDuration = rnd.Next(minValue: 10, maxValue: 30);
                 mFlickerStep = (mTargetHoloOpacity - mHoloOpacity) / mFlickerDuration;
                 mFlickering = true;
             }
@@ -249,11 +249,11 @@ namespace Singularity.Screen.ScreenClasses
                     }
                     else
                     {
-                        mHoloProjectionWidthScaling = (float) Animations.Easing(mTransitionInitialValue,
-                            mTransitionTargetValue,
-                            mTransitionStartTime,
-                            mTransitionDuration,
-                            gameTime);
+                        mHoloProjectionWidthScaling = (float) Animations.Easing(startValue: mTransitionInitialValue,
+                            endValue: mTransitionTargetValue,
+                            startTime: mTransitionStartTime,
+                            duration: mTransitionDuration,
+                            gameTime: gameTime);
 
                         if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
                         {
@@ -264,11 +264,11 @@ namespace Singularity.Screen.ScreenClasses
                 }
                 else
                 {
-                    mHoloProjectionWidthScaling = (float) Animations.Easing(mTransitionInitialValue,
-                        mTransitionTargetValue,
-                        mTransitionStartTime,
-                        mTransitionDuration,
-                        gameTime);
+                    mHoloProjectionWidthScaling = (float) Animations.Easing(startValue: mTransitionInitialValue,
+                        endValue: mTransitionTargetValue,
+                        startTime: mTransitionStartTime,
+                        duration: mTransitionDuration,
+                        gameTime: gameTime);
 
                     if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
                     {
@@ -281,29 +281,29 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
+            spriteBatch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.AlphaBlend);
 
             // Draw glow
-            spriteBatch.Draw(mGlowTexture2D,
-                mScreenCenter,
-                null,
-                Color.AliceBlue,
-                0f,
-                new Vector2(609, 553),
-                mScreenResolutionScaling.X < mScreenResolutionScaling.Y ? mScreenResolutionScaling.X : mScreenResolutionScaling.Y, // Scales based on smaller scalar between height and width,
-                SpriteEffects.None,
-                1f);
+            spriteBatch.Draw(texture: mGlowTexture2D,
+                position: mScreenCenter,
+                sourceRectangle: null,
+                color: Color.AliceBlue,
+                rotation: 0f,
+                origin: new Vector2(x: 609, y: 553),
+                scale: mScreenResolutionScaling.X < mScreenResolutionScaling.Y ? mScreenResolutionScaling.X : mScreenResolutionScaling.Y, // Scales based on smaller scalar between height and width,
+                effects: SpriteEffects.None,
+                layerDepth: 1f);
 
             // draw holoProjection texture without scaling
-            spriteBatch.Draw(mHoloProjectionTexture2D,
-                new Vector2(mScreenCenter.X, mScreenCenter.Y * 2 - 20),
-                null,
-                Color.White * mHoloOpacity,
-                0f,
-                new Vector2(367, 1033),
-                new Vector2(mHoloProjectionWidthScaling, mHoloProjectionHeightScaling),
-                SpriteEffects.None,
-                0f);
+            spriteBatch.Draw(texture: mHoloProjectionTexture2D,
+                position: new Vector2(x: mScreenCenter.X, y: mScreenCenter.Y * 2 - 20),
+                sourceRectangle: null,
+                color: Color.White * mHoloOpacity,
+                rotation: 0f,
+                origin: new Vector2(x: 367, y: 1033),
+                scale: new Vector2(x: mHoloProjectionWidthScaling, y: mHoloProjectionHeightScaling),
+                effects: SpriteEffects.None,
+                layerDepth: 0f);
 
             /*
              Other draw call for holoprojection texture that resizes

@@ -19,7 +19,7 @@ namespace Singularity.Manager
             GetMilitaryManager = new MilitaryManager(); // TODO: Update this code if the MilitaryManager is not getting everything from the StructureMap or sth ...
                                                         // (like units telling it they exist and the like)
 
-            GetSoundManager.LoadContent(content);
+            GetSoundManager.LoadContent(contentManager: content);
             GetSoundManager.PlaySoundTrack();
 
 
@@ -40,9 +40,9 @@ namespace Singularity.Manager
         {
             if (isActive)
             {
-                GetInputManager.Update(gametime);
+                GetInputManager.Update(gametime: gametime);
             }
-            GetStoryManager.Update(gametime);
+            GetStoryManager.Update(time: gametime);
         }
     }
 }

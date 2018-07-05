@@ -131,13 +131,13 @@ namespace Singularity.Libraries
                 }
 
                 mBloomPreset = value;
-                SetBloomPreset(mBloomPreset);
+                SetBloomPreset(preset: mBloomPreset);
             }
         }
         private BloomPresets mBloomPreset;
 
 
-        private Texture2D BloomScreenTexture { set { mBloomParameterScreenTexture.SetValue(value); } }
+        private Texture2D BloomScreenTexture { set { mBloomParameterScreenTexture.SetValue(value: value); } }
         private Vector2 BloomInverseResolution
         {
             get { return mBloomInverseResolutionField; }
@@ -146,7 +146,7 @@ namespace Singularity.Libraries
                 if (value != mBloomInverseResolutionField)
                 {
                     mBloomInverseResolutionField = value;
-                    mBloomInverseResolutionParameter.SetValue(mBloomInverseResolutionField);
+                    mBloomInverseResolutionParameter.SetValue(value: mBloomInverseResolutionField);
                 }
             }
         }
@@ -161,10 +161,10 @@ namespace Singularity.Libraries
 
             set
             {
-                if (Math.Abs(mBloomRadius - value) > 0.001f)
+                if (Math.Abs(value: mBloomRadius - value) > 0.001f)
                 {
                     mBloomRadius = value;
-                    mBloomRadiusParameter.SetValue(mBloomRadius * mRadiusMultiplier);
+                    mBloomRadiusParameter.SetValue(value: mBloomRadius * mRadiusMultiplier);
                 }
 
             }
@@ -176,10 +176,10 @@ namespace Singularity.Libraries
             get { return mBloomStrength; }
             set
             {
-                if (Math.Abs(mBloomStrength - value) > 0.001f)
+                if (Math.Abs(value: mBloomStrength - value) > 0.001f)
                 {
                     mBloomStrength = value;
-                    mBloomStrengthParameter.SetValue(mBloomStrength * mBloomStrengthMultiplier);
+                    mBloomStrengthParameter.SetValue(value: mBloomStrength * mBloomStrengthMultiplier);
                 }
 
             }
@@ -191,10 +191,10 @@ namespace Singularity.Libraries
             get { return mBloomStreakLength; }
             set
             {
-                if (Math.Abs(mBloomStreakLength - value) > 0.001f)
+                if (Math.Abs(value: mBloomStreakLength - value) > 0.001f)
                 {
                     mBloomStreakLength = value;
-                    mBloomStreakLengthParameter.SetValue(mBloomStreakLength);
+                    mBloomStreakLengthParameter.SetValue(value: mBloomStreakLength);
                 }
             }
         }
@@ -204,10 +204,10 @@ namespace Singularity.Libraries
         {
             get { return mBloomThreshold; }
             set {
-                if (Math.Abs(mBloomThreshold - value) > 0.001f)
+                if (Math.Abs(value: mBloomThreshold - value) > 0.001f)
                 {
                     mBloomThreshold = value;
-                    mBloomThresholdParameter.SetValue(mBloomThreshold);
+                    mBloomThresholdParameter.SetValue(value: mBloomThreshold);
                 }
             }
         }
@@ -231,36 +231,36 @@ namespace Singularity.Libraries
         public void Load(GraphicsDevice graphicsDevice, ContentManager content, int width, int height, SurfaceFormat renderTargetFormat = SurfaceFormat.Color,  QuadRenderer quadRenderer = null)
         {
             mGraphicsDevice = graphicsDevice;
-            UpdateResolution(width, height);
+            UpdateResolution(width: width, height: height);
 
             //if quadRenderer == null -> new, otherwise not
-            mQuadRenderer = quadRenderer ?? new QuadRenderer(graphicsDevice);
+            mQuadRenderer = quadRenderer ?? new QuadRenderer(graphicsDevice: graphicsDevice);
 
             mRenderTargetFormat = renderTargetFormat;
 
             //Load the shader parameters and passes for cheap and easy access
-            mBloomEffect = content.Load<Effect>("Shaders/BloomFilter/Bloom");
-            mBloomInverseResolutionParameter = mBloomEffect.Parameters["InverseResolution"];
-            mBloomRadiusParameter = mBloomEffect.Parameters["Radius"];
-            mBloomStrengthParameter = mBloomEffect.Parameters["Strength"];
-            mBloomStreakLengthParameter = mBloomEffect.Parameters["StreakLength"];
-            mBloomThresholdParameter = mBloomEffect.Parameters["Threshold"];
+            mBloomEffect = content.Load<Effect>(assetName: "Shaders/BloomFilter/Bloom");
+            mBloomInverseResolutionParameter = mBloomEffect.Parameters[name: "InverseResolution"];
+            mBloomRadiusParameter = mBloomEffect.Parameters[name: "Radius"];
+            mBloomStrengthParameter = mBloomEffect.Parameters[name: "Strength"];
+            mBloomStreakLengthParameter = mBloomEffect.Parameters[name: "StreakLength"];
+            mBloomThresholdParameter = mBloomEffect.Parameters[name: "Threshold"];
 
             //For DirectX / Windows
-            mBloomParameterScreenTexture = mBloomEffect.Parameters["ScreenTexture"];
+            mBloomParameterScreenTexture = mBloomEffect.Parameters[name: "ScreenTexture"];
 
             //If we are on OpenGL it's different, load the other one then!
             if (mBloomParameterScreenTexture == null)
             {
                 //for OpenGL / CrossPlatform
-                mBloomParameterScreenTexture = mBloomEffect.Parameters["LinearSampler+ScreenTexture"];
+                mBloomParameterScreenTexture = mBloomEffect.Parameters[name: "LinearSampler+ScreenTexture"];
             }
 
-            mBloomPassExtract = mBloomEffect.Techniques["Extract"].Passes[0];
-            mBloomPassExtractLuminance = mBloomEffect.Techniques["ExtractLuminance"].Passes[0];
-            mBloomPassDownsample = mBloomEffect.Techniques["Downsample"].Passes[0];
-            mBloomPassUpsample = mBloomEffect.Techniques["Upsample"].Passes[0];
-            mBloomPassUpsampleLuminance = mBloomEffect.Techniques["UpsampleLuminance"].Passes[0];
+            mBloomPassExtract = mBloomEffect.Techniques[name: "Extract"].Passes[index: 0];
+            mBloomPassExtractLuminance = mBloomEffect.Techniques[name: "ExtractLuminance"].Passes[index: 0];
+            mBloomPassDownsample = mBloomEffect.Techniques[name: "Downsample"].Passes[index: 0];
+            mBloomPassUpsample = mBloomEffect.Techniques[name: "Upsample"].Passes[index: 0];
+            mBloomPassUpsampleLuminance = mBloomEffect.Techniques[name: "UpsampleLuminance"].Passes[index: 0];
 
             //An interesting blendstate for merging the initial image with the bloom.
             //BlendStateBloom = new BlendState();
@@ -273,7 +273,7 @@ namespace Singularity.Libraries
             BloomThreshold = 0.8f;
             //Setup the default preset values.
             //BloomPreset = BloomPresets.One;
-            SetBloomPreset(BloomPreset);
+            SetBloomPreset(preset: BloomPreset);
         }
 
         /// <summary>
@@ -393,19 +393,19 @@ namespace Singularity.Libraries
             //Check if we are initialized
             if(mGraphicsDevice==null)
             {
-                throw new Exception("Module not yet Loaded / Initialized. Use Load() first");
+                throw new Exception(message: "Module not yet Loaded / Initialized. Use Load() first");
             }
 
             //Change renderTarget resolution if different from what we expected. If lower than the inputTexture we gain performance.
             if (width != mWidth || height != mHeight)
             {
-                UpdateResolution(width, height);
+                UpdateResolution(width: width, height: height);
 
                 //Adjust the blur so it looks consistent across diferrent scalings
                 mRadiusMultiplier = (float)width / inputTexture.Width;
 
                 //Update our variables with the multiplier
-                SetBloomPreset(BloomPreset);
+                SetBloomPreset(preset: BloomPreset);
             }
 
             mGraphicsDevice.RasterizerState = RasterizerState.CullNone;
@@ -413,10 +413,10 @@ namespace Singularity.Libraries
 
             //EXTRACT  //Note: Is setRenderTargets(binding better?)
             //We extract the bright values which are above the Threshold and save them to Mip0
-            mGraphicsDevice.SetRenderTarget(mBloomRenderTarget2DMip0);
+            mGraphicsDevice.SetRenderTarget(renderTarget: mBloomRenderTarget2DMip0);
 
             BloomScreenTexture = inputTexture;
-            BloomInverseResolution = new Vector2(1.0f / mWidth, 1.0f / mHeight);
+            BloomInverseResolution = new Vector2(x: 1.0f / mWidth, y: 1.0f / mHeight);
 
             if (mBloomUseLuminance)
             {
@@ -427,18 +427,18 @@ namespace Singularity.Libraries
                 mBloomPassExtract.Apply();
             }
 
-            mQuadRenderer.RenderQuad(mGraphicsDevice, Vector2.One * -1, Vector2.One);
+            mQuadRenderer.RenderQuad(graphicsDevice: mGraphicsDevice, v1: Vector2.One * -1, v2: Vector2.One);
 
             //Now downsample to the next lower mip texture
             if (mBloomDownsamplePasses > 0)
             {
                 //DOWNSAMPLE TO MIP1
-                mGraphicsDevice.SetRenderTarget(mBloomRenderTarget2DMip1);
+                mGraphicsDevice.SetRenderTarget(renderTarget: mBloomRenderTarget2DMip1);
 
                 BloomScreenTexture = mBloomRenderTarget2DMip0;
                 //Pass
                 mBloomPassDownsample.Apply();
-                mQuadRenderer.RenderQuad(mGraphicsDevice, Vector2.One * -1, Vector2.One);
+                mQuadRenderer.RenderQuad(graphicsDevice: mGraphicsDevice, v1: Vector2.One * -1, v2: Vector2.One);
 
                 if (mBloomDownsamplePasses > 1)
                 {
@@ -446,53 +446,53 @@ namespace Singularity.Libraries
                     BloomInverseResolution *= 2;
 
                     //DOWNSAMPLE TO MIP2
-                    mGraphicsDevice.SetRenderTarget(mBloomRenderTarget2DMip2);
+                    mGraphicsDevice.SetRenderTarget(renderTarget: mBloomRenderTarget2DMip2);
 
                     BloomScreenTexture = mBloomRenderTarget2DMip1;
                     //Pass
                     mBloomPassDownsample.Apply();
-                    mQuadRenderer.RenderQuad(mGraphicsDevice, Vector2.One * -1, Vector2.One);
+                    mQuadRenderer.RenderQuad(graphicsDevice: mGraphicsDevice, v1: Vector2.One * -1, v2: Vector2.One);
 
                     if (mBloomDownsamplePasses > 2)
                     {
                         BloomInverseResolution *= 2;
 
                         //DOWNSAMPLE TO MIP3
-                        mGraphicsDevice.SetRenderTarget(mBloomRenderTarget2DMip3);
+                        mGraphicsDevice.SetRenderTarget(renderTarget: mBloomRenderTarget2DMip3);
 
                         BloomScreenTexture = mBloomRenderTarget2DMip2;
                         //Pass
                         mBloomPassDownsample.Apply();
-                        mQuadRenderer.RenderQuad(mGraphicsDevice, Vector2.One * -1, Vector2.One);
+                        mQuadRenderer.RenderQuad(graphicsDevice: mGraphicsDevice, v1: Vector2.One * -1, v2: Vector2.One);
 
                         if (mBloomDownsamplePasses > 3)
                         {
                             BloomInverseResolution *= 2;
 
                             //DOWNSAMPLE TO MIP4
-                            mGraphicsDevice.SetRenderTarget(mBloomRenderTarget2DMip4);
+                            mGraphicsDevice.SetRenderTarget(renderTarget: mBloomRenderTarget2DMip4);
 
                             BloomScreenTexture = mBloomRenderTarget2DMip3;
                             //Pass
                             mBloomPassDownsample.Apply();
-                            mQuadRenderer.RenderQuad(mGraphicsDevice, Vector2.One * -1, Vector2.One);
+                            mQuadRenderer.RenderQuad(graphicsDevice: mGraphicsDevice, v1: Vector2.One * -1, v2: Vector2.One);
 
                             if (mBloomDownsamplePasses > 4)
                             {
                                 BloomInverseResolution *= 2;
 
                                 //DOWNSAMPLE TO MIP5
-                                mGraphicsDevice.SetRenderTarget(mBloomRenderTarget2DMip5);
+                                mGraphicsDevice.SetRenderTarget(renderTarget: mBloomRenderTarget2DMip5);
 
                                 BloomScreenTexture = mBloomRenderTarget2DMip4;
                                 //Pass
                                 mBloomPassDownsample.Apply();
-                                mQuadRenderer.RenderQuad(mGraphicsDevice, Vector2.One * -1, Vector2.One);
+                                mQuadRenderer.RenderQuad(graphicsDevice: mGraphicsDevice, v1: Vector2.One * -1, v2: Vector2.One);
 
                                 ChangeBlendState();
 
                                 //UPSAMPLE TO MIP4
-                                mGraphicsDevice.SetRenderTarget(mBloomRenderTarget2DMip4);
+                                mGraphicsDevice.SetRenderTarget(renderTarget: mBloomRenderTarget2DMip4);
                                 BloomScreenTexture = mBloomRenderTarget2DMip5;
 
                                 BloomStrength = mBloomStrength5;
@@ -506,7 +506,7 @@ namespace Singularity.Libraries
                                     mBloomPassUpsample.Apply();
                                 }
 
-                                mQuadRenderer.RenderQuad(mGraphicsDevice, Vector2.One * -1, Vector2.One);
+                                mQuadRenderer.RenderQuad(graphicsDevice: mGraphicsDevice, v1: Vector2.One * -1, v2: Vector2.One);
 
                                 BloomInverseResolution /= 2;
                             }
@@ -514,7 +514,7 @@ namespace Singularity.Libraries
                             ChangeBlendState();
 
                             //UPSAMPLE TO MIP3
-                            mGraphicsDevice.SetRenderTarget(mBloomRenderTarget2DMip3);
+                            mGraphicsDevice.SetRenderTarget(renderTarget: mBloomRenderTarget2DMip3);
                             BloomScreenTexture = mBloomRenderTarget2DMip4;
 
                             BloomStrength = mBloomStrength4;
@@ -528,7 +528,7 @@ namespace Singularity.Libraries
                                 mBloomPassUpsample.Apply();
                             }
 
-                            mQuadRenderer.RenderQuad(mGraphicsDevice, Vector2.One * -1, Vector2.One);
+                            mQuadRenderer.RenderQuad(graphicsDevice: mGraphicsDevice, v1: Vector2.One * -1, v2: Vector2.One);
 
                             BloomInverseResolution /= 2;
 
@@ -537,7 +537,7 @@ namespace Singularity.Libraries
                         ChangeBlendState();
 
                         //UPSAMPLE TO MIP2
-                        mGraphicsDevice.SetRenderTarget(mBloomRenderTarget2DMip2);
+                        mGraphicsDevice.SetRenderTarget(renderTarget: mBloomRenderTarget2DMip2);
                         BloomScreenTexture = mBloomRenderTarget2DMip3;
 
                         BloomStrength = mBloomStrength3;
@@ -551,7 +551,7 @@ namespace Singularity.Libraries
                             mBloomPassUpsample.Apply();
                         }
 
-                        mQuadRenderer.RenderQuad(mGraphicsDevice, Vector2.One * -1, Vector2.One);
+                        mQuadRenderer.RenderQuad(graphicsDevice: mGraphicsDevice, v1: Vector2.One * -1, v2: Vector2.One);
 
                         BloomInverseResolution /= 2;
 
@@ -560,7 +560,7 @@ namespace Singularity.Libraries
                     ChangeBlendState();
 
                     //UPSAMPLE TO MIP1
-                    mGraphicsDevice.SetRenderTarget(mBloomRenderTarget2DMip1);
+                    mGraphicsDevice.SetRenderTarget(renderTarget: mBloomRenderTarget2DMip1);
                     BloomScreenTexture = mBloomRenderTarget2DMip2;
 
                     BloomStrength = mBloomStrength2;
@@ -574,7 +574,7 @@ namespace Singularity.Libraries
                         mBloomPassUpsample.Apply();
                     }
 
-                    mQuadRenderer.RenderQuad(mGraphicsDevice, Vector2.One * -1, Vector2.One);
+                    mQuadRenderer.RenderQuad(graphicsDevice: mGraphicsDevice, v1: Vector2.One * -1, v2: Vector2.One);
 
                     BloomInverseResolution /= 2;
                 }
@@ -582,7 +582,7 @@ namespace Singularity.Libraries
                 ChangeBlendState();
 
                 //UPSAMPLE TO MIP0
-                mGraphicsDevice.SetRenderTarget(mBloomRenderTarget2DMip0);
+                mGraphicsDevice.SetRenderTarget(renderTarget: mBloomRenderTarget2DMip0);
                 BloomScreenTexture = mBloomRenderTarget2DMip1;
 
                 BloomStrength = mBloomStrength1;
@@ -597,7 +597,7 @@ namespace Singularity.Libraries
                     mBloomPassUpsample.Apply();
                 }
 
-                mQuadRenderer.RenderQuad(mGraphicsDevice, Vector2.One * -1, Vector2.One);
+                mQuadRenderer.RenderQuad(graphicsDevice: mGraphicsDevice, v1: Vector2.One * -1, v2: Vector2.One);
             }
 
             //Note the final step could be done as a blend to the final texture.
@@ -626,24 +626,24 @@ namespace Singularity.Libraries
                 Dispose();
             }
 
-            mBloomRenderTarget2DMip0 = new RenderTarget2D(mGraphicsDevice,
-                width,
-                height, false, mRenderTargetFormat, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
-            mBloomRenderTarget2DMip1 = new RenderTarget2D(mGraphicsDevice,
-                width/2,
-                height/2, false, mRenderTargetFormat, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            mBloomRenderTarget2DMip2 = new RenderTarget2D(mGraphicsDevice,
-                width/4,
-                height/4, false, mRenderTargetFormat, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            mBloomRenderTarget2DMip3 = new RenderTarget2D(mGraphicsDevice,
-                width/8,
-                height/8, false, mRenderTargetFormat, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            mBloomRenderTarget2DMip4 = new RenderTarget2D(mGraphicsDevice,
-                width/16,
-                height/16, false, mRenderTargetFormat, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            mBloomRenderTarget2DMip5 = new RenderTarget2D(mGraphicsDevice,
-                width/32,
-                height/32, false, mRenderTargetFormat, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            mBloomRenderTarget2DMip0 = new RenderTarget2D(graphicsDevice: mGraphicsDevice,
+                width: width,
+                height: height, mipMap: false, preferredFormat: mRenderTargetFormat, preferredDepthFormat: DepthFormat.None, preferredMultiSampleCount: 0, usage: RenderTargetUsage.DiscardContents);
+            mBloomRenderTarget2DMip1 = new RenderTarget2D(graphicsDevice: mGraphicsDevice,
+                width: width/2,
+                height: height/2, mipMap: false, preferredFormat: mRenderTargetFormat, preferredDepthFormat: DepthFormat.None, preferredMultiSampleCount: 0, usage: RenderTargetUsage.PreserveContents);
+            mBloomRenderTarget2DMip2 = new RenderTarget2D(graphicsDevice: mGraphicsDevice,
+                width: width/4,
+                height: height/4, mipMap: false, preferredFormat: mRenderTargetFormat, preferredDepthFormat: DepthFormat.None, preferredMultiSampleCount: 0, usage: RenderTargetUsage.PreserveContents);
+            mBloomRenderTarget2DMip3 = new RenderTarget2D(graphicsDevice: mGraphicsDevice,
+                width: width/8,
+                height: height/8, mipMap: false, preferredFormat: mRenderTargetFormat, preferredDepthFormat: DepthFormat.None, preferredMultiSampleCount: 0, usage: RenderTargetUsage.PreserveContents);
+            mBloomRenderTarget2DMip4 = new RenderTarget2D(graphicsDevice: mGraphicsDevice,
+                width: width/16,
+                height: height/16, mipMap: false, preferredFormat: mRenderTargetFormat, preferredDepthFormat: DepthFormat.None, preferredMultiSampleCount: 0, usage: RenderTargetUsage.PreserveContents);
+            mBloomRenderTarget2DMip5 = new RenderTarget2D(graphicsDevice: mGraphicsDevice,
+                width: width/32,
+                height: height/32, mipMap: false, preferredFormat: mRenderTargetFormat, preferredDepthFormat: DepthFormat.None, preferredMultiSampleCount: 0, usage: RenderTargetUsage.PreserveContents);
         }
 
         /// <summary>

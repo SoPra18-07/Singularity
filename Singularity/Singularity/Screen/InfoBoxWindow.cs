@@ -15,17 +15,17 @@ namespace Singularity.Screen
     public class InfoBoxWindow : IDraw, IUpdate, IMousePositionListener
     {
         // list of items to put in info box
-        private readonly List<IWindowItem> mItemList;
+        protected readonly List<IWindowItem> mItemList;
 
         // size of info box
-        private Vector2 mSize;
+        protected Vector2 mSize;
 
         // colors for the info box rectangle
         private readonly Color mBorderColor;
         private readonly Color mCenterColor;
 
         // mouse Position
-        private Vector2 mMouse;
+        protected Vector2 mMouse;
 
         // bool to enable or disable the rectangle around the infoBox
         private readonly bool mBoxed;
@@ -40,11 +40,11 @@ namespace Singularity.Screen
         /// <param name="boundsRectangle">rectangle in which the windowBox is active</param>
         /// <param name="boxed">true, if window should have a border</param>
         /// <param name="director">the director</param>
-        public InfoBoxWindow(List<IWindowItem> itemList, Vector2 size, Color borderColor, Color centerColor, Rectangle boundsRectangle, bool boxed, Director director, bool mousePosition = true, Vector2 location = default(Vector2))
+        internal InfoBoxWindow(List<IWindowItem> itemList, Vector2 size, Color borderColor, Color centerColor, Rectangle boundsRectangle, bool boxed, Director director, bool mousePosition = true, Vector2 location = default(Vector2))
         {
             // set members
             mItemList = itemList;
-            mSize = new Vector2(size.X + 10, size.Y + 10);
+            mSize = new Vector2(x: size.X + 10, y: size.Y + 10);
             mBorderColor = borderColor;
             mCenterColor = centerColor;
             BoundRectangle = boundsRectangle;
@@ -53,7 +53,10 @@ namespace Singularity.Screen
             if (mousePosition)
             {
                 // window only active if mouse on Bound Rectangle
-                director.GetInputManager.AddMousePositionListener(this);
+                director.GetInputManager.AddMousePositionListener(iMouseListener: this);
+            }
+            else
+            {
                 mMouse = location;
             }
 
@@ -73,13 +76,13 @@ namespace Singularity.Screen
                 if (mBoxed)
                 {
                     // infoBox Rectangle
-                    spriteBatch.StrokedRectangle(new Vector2(Position.X, Position.Y), new Vector2(mSize.X, mSize.Y), mBorderColor, mCenterColor, 1f, 0.8f);
+                    spriteBatch.StrokedRectangle(location: new Vector2(x: Position.X, y: Position.Y), size: new Vector2(x: mSize.X, y: mSize.Y), colorBorder: mBorderColor, colorCenter: mCenterColor, opacityBorder: 1f, opacityCenter: 0.8f);
                 }
 
                 // draw all items of infoBox
                 foreach (var item in mItemList)
                 {
-                    item.Draw(spriteBatch);
+                    item.Draw(spriteBatch: spriteBatch);
                 }
             }
         }
@@ -93,7 +96,7 @@ namespace Singularity.Screen
             if (Active && OnRectangle)
             {
                 // update position to mouse position
-                Position = new Vector2(mMouse.X - mSize.X, mMouse.Y - mSize.Y);
+                Position = new Vector2(x: mMouse.X - mSize.X, y: mMouse.Y - mSize.Y);
 
                 // shifts the items from the top left corner to their position
                 var yShift = 5;
@@ -103,8 +106,8 @@ namespace Singularity.Screen
 
                 foreach (var item in mItemList)
                 {
-                    item.Update(gametime);
-                    item.Position = new Vector2(Position.X + 5, Position.Y + yShift);
+                    item.Update(gametime: gametime);
+                    item.Position = new Vector2(x: Position.X + 5, y: Position.Y + yShift);
 
                     yShift = (int)item.Size.Y + 5;
 
@@ -118,7 +121,7 @@ namespace Singularity.Screen
                     maxHeight = maxHeight + yShift;
                 }
 
-                mSize = new Vector2(maxWidth + 10, maxHeight);
+                mSize = new Vector2(x: maxWidth + 10, y: maxHeight);
             }
         }
 
@@ -128,7 +131,7 @@ namespace Singularity.Screen
             if (Active)
             {
                 // update mouse position
-                mMouse = new Vector2(screenX, screenY);
+                mMouse = new Vector2(x: screenX, y: screenY);
 
                 // infoBox is active if mouse on BoundRectangle (basically the button)
                 if (screenX >= BoundRectangle.X &&
@@ -146,7 +149,7 @@ namespace Singularity.Screen
         }
 
         // top left corner of infoBox
-        private Vector2 Position { get; set; }
+        protected Vector2 Position { get; set; }
 
         // true if the mouse is above the BoundRectangle
         private bool OnRectangle { get; set; }

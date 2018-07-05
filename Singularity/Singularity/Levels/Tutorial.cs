@@ -44,45 +44,46 @@ namespace Singularity.Levels
         public Tutorial(GraphicsDeviceManager graphics, ref Director director, ContentManager content, IScreenManager screenmanager)
         {
             mDirector = director;
-            mDirector.GetStoryManager.SetLevelType(LevelType.Tutorial, this);
+            mDirector.GetStoryManager.SetLevelType(leveltype: LevelType.Tutorial, level: this);
             mDirector.GetStoryManager.LoadAchievements();
             mGraphics = graphics;
             mScreenManager = screenmanager;
-            LoadContent(content);
+            LoadContent(content: content);
         }
 
         public void LoadContent(ContentManager content)
         {
             //Load stuff
-            var platformCylTexture = content.Load<Texture2D>("Cylinders");
-            var platformBlankTexture = content.Load<Texture2D>("PlatformBasic");
-            var platformDomeTexture = content.Load<Texture2D>("Dome");
-            MilitaryUnit.mMilSheet = content.Load<Texture2D>("UnitSpriteSheet");
-            MilitaryUnit.mGlowTexture = content.Load<Texture2D>("UnitGlowSprite");
-            var mapBackground = content.Load<Texture2D>("backgroundGrid");
+            var platformCylTexture = content.Load<Texture2D>(assetName: "Cylinders");
+            var platformBlankTexture = content.Load<Texture2D>(assetName: "PlatformBasic");
+            var platformDomeTexture = content.Load<Texture2D>(assetName: "Dome");
+            MilitaryUnit.mMilSheet = content.Load<Texture2D>(assetName: "UnitSpriteSheet");
+            MilitaryUnit.mGlowTexture = content.Load<Texture2D>(assetName: "UnitGlowSprite");
+            var mapBackground = content.Load<Texture2D>(assetName: "backgroundGrid");
+            var libSans12 = content.Load<SpriteFont>(assetName: "LibSans12");
 
             //TODO: have a cone texture 
-            PlatformFactory.Init(null, platformCylTexture, platformDomeTexture, platformBlankTexture);
+            PlatformFactory.Init(coneSheet: null, cylinderSheet: platformCylTexture, domeSheet: platformDomeTexture, blankSheet: platformBlankTexture, libSans12: libSans12);
 
             //Map related stuff
-            Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 800, 800);
-            mFow = new FogOfWar(Camera, mGraphics.GraphicsDevice);
-            Map = new Map.Map(mapBackground, 20, 20, mFow, Camera, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
+            Camera = new Camera(graphics: mGraphics.GraphicsDevice, director: ref mDirector, x: 800, y: 800);
+            mFow = new FogOfWar(camera: Camera, graphicsDevice: mGraphics.GraphicsDevice);
+            Map = new Map.Map(backgroundTexture: mapBackground, width: 20, height: 20, fow: mFow, camera: Camera, director: ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
 
             //INITIALIZE SCREENS AND ADD THEM
-            GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
-            mUi = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
+            GameScreen = new GameScreen(graphicsDevice: mGraphics.GraphicsDevice, director: ref mDirector, map: Map, camera: Camera, fow: mFow);
+            mUi = new UserInterfaceScreen(director: ref mDirector, mgraphics: mGraphics, gameScreen: GameScreen, stackScreenManager: mScreenManager);
 
-            mScreenManager.AddScreen(GameScreen);
-            mScreenManager.AddScreen(mUi);
+            mScreenManager.AddScreen(screen: GameScreen);
+            mScreenManager.AddScreen(screen: mUi);
 
 
             //INGAME OBJECTS INITIALIZATION ===================================================
 
             //SetUnit
             var map = Map;
-            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, mUi);
-            GameScreen.AddObject(setUnit);
+            var setUnit = new Settler(position: new Vector2(x: 1000, y: 1250), camera: Camera, director: ref mDirector, map: ref map, gameScreen: GameScreen, ui: mUi);
+            GameScreen.AddObject(toAdd: setUnit);
 
             //TESTMETHODS HERE =====================================
         }

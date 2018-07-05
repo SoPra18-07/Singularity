@@ -86,38 +86,38 @@ namespace Singularity.Screen
             Active = true;
 
             // the entire infoBar
-            Bounds = new Rectangle(0, 0, Width, 25);
+            Bounds = new Rectangle(x: 0, y: 0, width: Width, height: 25);
 
             // NOTICE : all buttons can start with position (0,0) since they will be positioned at the first update-call
             // pause button
-            mPauseButton = new Button(" ll ", mSpriteFont, new Vector2(0, 0)) {Opacity = 1f};
-            mInfoBarItemList.Add(mPauseButton);
+            mPauseButton = new Button(buttonText: " ll ", font: mSpriteFont, position: new Vector2(x: 0, y: 0)) {Opacity = 1f};
+            mInfoBarItemList.Add(item: mPauseButton);
             mPauseButton.ButtonReleased += PauseButtonReleased;
 
             // refined ressources TODO : update button text (texture or text)
-            mRefinedRessourcesButton = new Button("refined-Res", mSpriteFont, new Vector2(0, 0)) { Opacity = 1f };
-            mInfoBarItemList.Add(mRefinedRessourcesButton);
+            mRefinedRessourcesButton = new Button(buttonText: "refined-Res", font: mSpriteFont, position: new Vector2(x: 0, y: 0)) { Opacity = 1f };
+            mInfoBarItemList.Add(item: mRefinedRessourcesButton);
             // TODO : ADD DROPDOWN MENU mRefinedRessourcesButton.ButtonReleased += RefinedRessourcesButtonReleased;
 
             // raw ressources TODO : update button text (texture or text)
-            mRawRessourcesButton = new Button("raw", mSpriteFont, new Vector2(0, 0)) { Opacity = 1f };
-            mInfoBarItemList.Add(mRawRessourcesButton);
+            mRawRessourcesButton = new Button(buttonText: "raw", font: mSpriteFont, position: new Vector2(x: 0, y: 0)) { Opacity = 1f };
+            mInfoBarItemList.Add(item: mRawRessourcesButton);
             // TODO : ADD DROPDOWN MENU mRawRessourcesButton.ButtonReleased += RawRessourcesButtonReleased;
 
             // civil units TODO : is this a button or what object type is it?
-            mCivilUnitsButton = new Button("civil units", mSpriteFont, new Vector2(0, 0)) { Opacity = 1f };
-            mInfoBarItemList.Add(mCivilUnitsButton);
+            mCivilUnitsButton = new Button(buttonText: "civil units", font: mSpriteFont, position: new Vector2(x: 0, y: 0)) { Opacity = 1f };
+            mInfoBarItemList.Add(item: mCivilUnitsButton);
             // TODO : ADD DROPDOWN MENU mCivilUnitsButton.ButtonReleased += CivilUnitsButtonReleased;
 
             // add input manager to prevent other objects from behind the infoBar to get called through the infoBar
-            director.GetInputManager.AddMousePositionListener(this);
-            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.GetInputManager.AddMousePositionListener(iMouseListener: this);
+            director.GetInputManager.AddMouseClickListener(iMouseClickListener: this, leftClickType: EClickType.InBoundsOnly, rightClickType: EClickType.InBoundsOnly);
 
             // TODO : ADD TINY COLOR RECTANGLES BESIDE THE RESSOURCE BUTTONS
 
 
             // pause menu screen
-            mGamePauseScreen = new GamePauseScreen(new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), mScreenManager, mDirector);
+            mGamePauseScreen = new GamePauseScreen(screenSize: new Vector2(x: graphics.PreferredBackBufferWidth, y: graphics.PreferredBackBufferHeight), screenManager: mScreenManager, director: mDirector);
 
 
             // TODO :
@@ -133,16 +133,16 @@ namespace Singularity.Screen
         {
             if (Active)
             {
-                spriteBatch.StrokedRectangle(new Vector2(0, 0), new Vector2(Width, 25), mBordeColor, mFillColor, 1f, 1f);
-                spriteBatch.StrokedRectangle(new Vector2(Width - 25, 0), new Vector2(30, 25), mBordeColor, mFillColor, 1f, 1f);
+                spriteBatch.StrokedRectangle(location: new Vector2(x: 0, y: 0), size: new Vector2(x: Width, y: 25), colorBorder: mBordeColor, colorCenter: mFillColor, opacityBorder: 1f, opacityCenter: 1f);
+                spriteBatch.StrokedRectangle(location: new Vector2(x: Width - 25, y: 0), size: new Vector2(x: 30, y: 25), colorBorder: mBordeColor, colorCenter: mFillColor, opacityBorder: 1f, opacityCenter: 1f);
 
                 foreach (var item in mInfoBarItemList)
                 {
-                    item.Draw(spriteBatch);
+                    item.Draw(spriteBatch: spriteBatch);
                 }
 
-                spriteBatch.DrawString(mSpriteFont, DateTime.Now.ToShortTimeString(), new Vector2(mWidthDivision * 9, 2.5f), new Color(0,0,0));
-                spriteBatch.DrawString(mSpriteFont, mDirector.GetStoryManager.Time.ToString(), new Vector2(mWidthDivision * 7, 2.5f), new Color(1, 0, 0));
+                spriteBatch.DrawString(spriteFont: mSpriteFont, text: DateTime.Now.ToShortTimeString(), position: new Vector2(x: mWidthDivision * 9, y: 2.5f), color: new Color(r: 0,g: 0,b: 0));
+                spriteBatch.DrawString(spriteFont: mSpriteFont, text: mDirector.GetStoryManager.Time.ToString(), position: new Vector2(x: mWidthDivision * 7, y: 2.5f), color: new Color(r: 1, g: 0, b: 0));
             }
         }
 
@@ -161,17 +161,17 @@ namespace Singularity.Screen
 
                     mWidthDivision = Width / 10;
 
-                    Bounds = new Rectangle(0, 0, Width, 25);
+                    Bounds = new Rectangle(x: 0, y: 0, width: Width, height: 25);
 
-                    mPauseButton.Position = new Vector2(Width - 20, 2.5f);
-                    mCivilUnitsButton.Position = new Vector2(mWidthDivision * 1, 2.5f);
-                    mRefinedRessourcesButton.Position = new Vector2(mWidthDivision * 3, 2.5f);
-                    mRawRessourcesButton.Position = new Vector2(mWidthDivision * 5, 2.5f);
+                    mPauseButton.Position = new Vector2(x: Width - 20, y: 2.5f);
+                    mCivilUnitsButton.Position = new Vector2(x: mWidthDivision * 1, y: 2.5f);
+                    mRefinedRessourcesButton.Position = new Vector2(x: mWidthDivision * 3, y: 2.5f);
+                    mRawRessourcesButton.Position = new Vector2(x: mWidthDivision * 5, y: 2.5f);
                 }
                 mGameTime = gametime;
                 foreach (var item in mInfoBarItemList)
                 {
-                    item.Update(gametime);
+                    item.Update(gametime: gametime);
                 }
             }
         }
@@ -191,7 +191,7 @@ namespace Singularity.Screen
         // the pause button opens the pause menu screen
         private void PauseButtonReleased(object sender, EventArgs eventArgs)
         {
-            mScreenManager.AddScreen(mGamePauseScreen);
+            mScreenManager.AddScreen(screen: mGamePauseScreen);
         }
 
         // inputmanagement only prevents the input going through the infoBar
@@ -214,7 +214,7 @@ namespace Singularity.Screen
 
         public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
-            mMouse = new Vector2(screenX, screenY);
+            mMouse = new Vector2(x: screenX, y: screenY);
         }
 
         #endregion

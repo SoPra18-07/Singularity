@@ -16,7 +16,7 @@ namespace Singularity.Platforms
         [DataMember]
         private const int PlatformHeight = 127;
 
-        public Storage(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ref Director director): base(position, spritesheet, basesprite, ref director, EPlatformType.Storage, -50)
+        public Storage(Vector2 position, Texture2D spritesheet, Texture2D basesprite, SpriteFont libSans12, ref Director director): base(position: position, platformSpriteSheet: spritesheet, baseSprite: basesprite, libSans12Font: libSans12, director: ref director, type: EPlatformType.Storage, centerOffsetY: -50)
         {
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.

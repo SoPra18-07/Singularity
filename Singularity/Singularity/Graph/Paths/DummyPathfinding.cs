@@ -11,7 +11,7 @@
 
             foreach (var node in graph.GetNodes())
             {
-                path.AddNode(node);
+                path.AddNode(node: node);
             }
 
             return path;
@@ -23,7 +23,7 @@
 
             foreach (var node in graph.GetNodes())
             {
-                path.AddNode(node);
+                path.AddNode(node: node);
             }
 
             return path;

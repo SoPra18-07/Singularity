@@ -66,7 +66,7 @@ namespace Singularity.Map
         /// </summary>
         public StructureMap(FogOfWar fow, ref Director director)
         {
-            director.GetInputManager.AddMousePositionListener(this);
+            director.GetInputManager.AddMousePositionListener(iMouseListener: this);
 
             mFow = fow;
 
@@ -96,26 +96,26 @@ namespace Singularity.Map
         /// <param name="platform">The platform to be added</param>
         public void AddPlatform(PlatformBlank platform)
         {
-            mPlatforms.AddLast(platform);
-            mFow.AddRevealingObject(platform);
+            mPlatforms.AddLast(value: platform);
+            mFow.AddRevealingObject(revealingObject: platform);
 
             // first of all get the "connection graph" of the platform to add. The connection graph
             // describes the graph (nodes and edges) reachable from this platform
-            var graph = Bfs(platform);
+            var graph = Bfs(startingNode: platform);
 
             foreach (var node in graph.GetNodes())
             {
                 // if the platform in the current reachability graph isn't known then we don't do anything
-                if (!mPlatformToGraphId.ContainsKey((PlatformBlank) node))
+                if (!mPlatformToGraphId.ContainsKey(key: (PlatformBlank) node))
                 {
                     continue;
                 }
 
                 //if its known, we add our platform to it, since obviously we're connected to the same graph now.
-                var graphIndex = mPlatformToGraphId[(PlatformBlank)node];
-                mPlatformToGraphId[platform] = graphIndex;
-                mGraphIdToGraph[graphIndex].AddNode(platform);
-                platform.SetGraphIndex(graphIndex);
+                var graphIndex = mPlatformToGraphId[key: (PlatformBlank)node];
+                mPlatformToGraphId[key: platform] = graphIndex;
+                mGraphIdToGraph[key: graphIndex].AddNode(node: platform);
+                platform.SetGraphIndex(graphIndex: graphIndex);
                 return;
             }
 
@@ -123,10 +123,10 @@ namespace Singularity.Map
             // intuitively: "the reachability graph from this node is only this node"
             var index = mGraphIdToGraph.Count;
 
-            mGraphIdToGraph[index] = graph;
-            mPlatformToGraphId[platform] = index;
-            platform.SetGraphIndex(index);
-            mDirector.GetPathManager.AddGraph(index, graph);
+            mGraphIdToGraph[key: index] = graph;
+            mPlatformToGraphId[key: platform] = index;
+            platform.SetGraphIndex(graphIndex: index);
+            mDirector.GetPathManager.AddGraph(id: index, graph: graph);
         }
 
         /// <summary>
@@ -135,8 +135,8 @@ namespace Singularity.Map
         /// <param name="platform">The platform to be removed</param>
         public void RemovePlatform(PlatformBlank platform)
         {
-            mPlatforms.Remove(platform);
-            mFow.RemoveRevealingObject(platform);
+            mPlatforms.Remove(value: platform);
+            mFow.RemoveRevealingObject(revealingObject: platform);
 
             // first update the references to all the roads connected to this accordingly
             foreach (var roads in platform.GetOutwardsEdges())
@@ -161,50 +161,50 @@ namespace Singularity.Map
         /// <param name="road"></param>
         public void AddRoad(Road road)
         {
-            mRoads.AddLast(road);
+            mRoads.AddLast(value: road);
 
             // first check if two graphs got connected.
             // because we need to differ between road connected two graphs, or road was added to one graph only
 
-            if (mPlatformToGraphId[(PlatformBlank) road.GetChild()] !=
-                mPlatformToGraphId[(PlatformBlank) road.GetParent()])
+            if (mPlatformToGraphId[key: (PlatformBlank) road.GetChild()] !=
+                mPlatformToGraphId[key: (PlatformBlank) road.GetParent()])
             {
-                var childIndex = mPlatformToGraphId[(PlatformBlank) road.GetChild()];
-                var parentIndex = mPlatformToGraphId[(PlatformBlank) road.GetParent()];
+                var childIndex = mPlatformToGraphId[key: (PlatformBlank) road.GetChild()];
+                var parentIndex = mPlatformToGraphId[key: (PlatformBlank) road.GetParent()];
 
                 // since the graphes will get connected by this road, we first 
                 // get all the nodes and edges from both graphes
-                var connectGraphNodes = mGraphIdToGraph[childIndex].GetNodes()
-                    .Concat(mGraphIdToGraph[parentIndex].GetNodes()).ToList();
+                var connectGraphNodes = mGraphIdToGraph[key: childIndex].GetNodes()
+                    .Concat(second: mGraphIdToGraph[key: parentIndex].GetNodes()).ToList();
 
-                var connectGraphEdges = mGraphIdToGraph[childIndex].GetEdges()
-                    .Concat(mGraphIdToGraph[parentIndex].GetEdges()).ToList();
+                var connectGraphEdges = mGraphIdToGraph[key: childIndex].GetEdges()
+                    .Concat(second: mGraphIdToGraph[key: parentIndex].GetEdges()).ToList();
 
                 // don't forget to add the current road to the graph aswell
-                connectGraphEdges.Add(road);
+                connectGraphEdges.Add(item: road);
 
                 foreach (var node in connectGraphNodes)
                 {
                     // now we update our dictionary, such that all nodes formerly in the graph
                     // of the node road.GetChild() are now in the parent nodes graph.
                     // this is "arbitrary", we could also do it the other way around
-                    mPlatformToGraphId[(PlatformBlank) node] = parentIndex;
-                    ((PlatformBlank)node).SetGraphIndex(parentIndex);
+                    mPlatformToGraphId[key: (PlatformBlank) node] = parentIndex;
+                    ((PlatformBlank)node).SetGraphIndex(graphIndex: parentIndex);
                 }
 
                 // now we create the actual connected graph
-                var graph = new Graph.Graph(connectGraphNodes, connectGraphEdges);
+                var graph = new Graph.Graph(nodes: connectGraphNodes, edges: connectGraphEdges);
 
                 // the only thing left is to update the two former graph references
                 // and add the new graph
-                mGraphIdToGraph[childIndex] = null;
-                mGraphIdToGraph[parentIndex] = graph;
-                mDirector.GetPathManager.RemoveGraph(childIndex);
-                mDirector.GetPathManager.AddGraph(parentIndex, graph);
+                mGraphIdToGraph[key: childIndex] = null;
+                mGraphIdToGraph[key: parentIndex] = graph;
+                mDirector.GetPathManager.RemoveGraph(id: childIndex);
+                mDirector.GetPathManager.AddGraph(id: parentIndex, graph: graph);
                 return;
             }
             // the road was in the same graph, thus just add it to the graph
-            mGraphIdToGraph[mPlatformToGraphId[(PlatformBlank) road.GetChild()]].AddEdge(road);
+            mGraphIdToGraph[key: mPlatformToGraphId[key: (PlatformBlank) road.GetChild()]].AddEdge(edge: road);
 
         }
 
@@ -214,13 +214,13 @@ namespace Singularity.Map
         /// <param name="road">The road to be added to the game</param>
         public void RemoveRoad(Road road)
         {
-            mRoads.Remove(road);
+            mRoads.Remove(value: road);
 
             var child = road.GetChild();
             var parent = road.GetParent();
 
-            ((PlatformBlank)child).RemoveEdge(road);
-            ((PlatformBlank)parent).RemoveEdge(road);
+            ((PlatformBlank)child).RemoveEdge(edge: road);
+            ((PlatformBlank)parent).RemoveEdge(edge: road);
 
             //TODO: adjust underlying graph structures
             // more accurately: we have two cases:
@@ -263,20 +263,20 @@ namespace Singularity.Map
                 }
 
                 // this is all we have to do, refer to the 2nd case above if more explanation needed
-                mGraphIdToGraph[mPlatformToGraphId[(PlatformBlank) existent]].RemoveEdge(road);
+                mGraphIdToGraph[key: mPlatformToGraphId[key: (PlatformBlank) existent]].RemoveEdge(edge: road);
                 return;
             }
 
             // now we're in the 1st case. But child and parent do exist. This is the main
             // case in the game
 
-            var childReachableGraph = Bfs(child);
-            var parentReachableGraph = Bfs(parent);
+            var childReachableGraph = Bfs(startingNode: child);
+            var parentReachableGraph = Bfs(startingNode: parent);
 
             // check whether both are still the same
-            if (childReachableGraph.Equals(parentReachableGraph))
+            if (childReachableGraph.Equals(obj: parentReachableGraph))
             {
-                mGraphIdToGraph[mPlatformToGraphId[(PlatformBlank) parent]].RemoveEdge(road);
+                mGraphIdToGraph[key: mPlatformToGraphId[key: (PlatformBlank) parent]].RemoveEdge(edge: road);
                 return;
             }
 
@@ -285,15 +285,15 @@ namespace Singularity.Map
             // update the values for the child nodes, the parent nodes reuse their values.
             foreach (var childNode in childReachableGraph.GetNodes())
             {
-                mPlatformToGraphId[(PlatformBlank)childNode] = newChildIndex;
-                ((PlatformBlank)childNode).SetGraphIndex(newChildIndex);
+                mPlatformToGraphId[key: (PlatformBlank)childNode] = newChildIndex;
+                ((PlatformBlank)childNode).SetGraphIndex(graphIndex: newChildIndex);
             }
 
-            mGraphIdToGraph[newChildIndex] = childReachableGraph;
-            mGraphIdToGraph[mPlatformToGraphId[(PlatformBlank) parent]] = parentReachableGraph;
+            mGraphIdToGraph[key: newChildIndex] = childReachableGraph;
+            mGraphIdToGraph[key: mPlatformToGraphId[key: (PlatformBlank) parent]] = parentReachableGraph;
 
-            mDirector.GetPathManager.AddGraph(newChildIndex, childReachableGraph);
-            mDirector.GetPathManager.AddGraph(mPlatformToGraphId[(PlatformBlank)parent], parentReachableGraph);
+            mDirector.GetPathManager.AddGraph(id: newChildIndex, graph: childReachableGraph);
+            mDirector.GetPathManager.AddGraph(id: mPlatformToGraphId[key: (PlatformBlank)parent], graph: parentReachableGraph);
         }
 
         /// <summary>
@@ -307,26 +307,26 @@ namespace Singularity.Map
         {
             var visited = new Dictionary<INode, bool>();
             var queue = new Queue<INode>();
-            visited[startingNode] = true;
+            visited[key: startingNode] = true;
 
             var graph = new Graph.Graph();
 
-            queue.Enqueue(startingNode);
+            queue.Enqueue(item: startingNode);
 
             while (queue.Count > 0)
             {
                 var node = queue.Dequeue();
-                graph.AddNode(node);
-                graph.AddEdges(node.GetOutwardsEdges());
+                graph.AddNode(node: node);
+                graph.AddEdges(edges: node.GetOutwardsEdges());
 
                 foreach (var child in node.GetChilds())
                 {
-                    if (visited.ContainsKey(child))
+                    if (visited.ContainsKey(key: child))
                     {
                         continue;
                     }
-                    queue.Enqueue(child);
-                    visited[child] = true;
+                    queue.Enqueue(item: child);
+                    visited[key: child] = true;
                 }
             }
 
@@ -342,7 +342,7 @@ namespace Singularity.Map
         {
             foreach (var platformToAdd in mPlatformsToPlace)
             {
-                platformToAdd.Draw(spriteBatch);
+                platformToAdd.Draw(spriteBatch: spriteBatch);
             }
         }
 
@@ -350,12 +350,12 @@ namespace Singularity.Map
         {
             foreach(var platform in mPlatforms)
             {
-                platform.Draw(spriteBatch);
+                platform.Draw(spritebatch: spriteBatch);
             }
 
             foreach (var road in mRoads)
             {
-                road.Draw(spriteBatch);
+                road.Draw(spriteBatch: spriteBatch);
             }
         }
 
@@ -374,7 +374,7 @@ namespace Singularity.Map
 
             foreach (var platform in mPlatforms)
             {
-                platform.Update(gametime);
+                platform.Update(t: gametime);
 
                 // we only want to continue if we have platforms to place.
                 // the reason this is in this for loop is simply due to me
@@ -393,7 +393,7 @@ namespace Singularity.Map
 
                     // if our current platform doesn't intersect with the platform to be placed we 
                     // aren't hovering it, thus we continue to the next platform.
-                    if (!platformToAdd.GetPlatform().AbsBounds.Intersects(platform.AbsBounds))
+                    if (!platformToAdd.GetPlatform().AbsBounds.Intersects(value: platform.AbsBounds))
                     {
                         continue;
                     }
@@ -404,7 +404,7 @@ namespace Singularity.Map
                 }
 
                 // this is needed to fulfill the second hovering purpose mentioned.
-                if (!platform.AbsBounds.Intersects(new Rectangle((int) mMouseX, (int) mMouseY, 1, 1)))
+                if (!platform.AbsBounds.Intersects(value: new Rectangle(x: (int) mMouseX, y: (int) mMouseY, width: 1, height: 1)))
                 {
                     continue;
                 }
@@ -415,7 +415,7 @@ namespace Singularity.Map
 
             foreach (var road in mRoads)
             {
-                road.Update(gametime);
+                road.Update(gametime: gametime);
             }
 
             // we use this list to "mark" all the platformplacements to remove from the actual list. Since
@@ -428,33 +428,33 @@ namespace Singularity.Map
                 // that the building process got canceled
                 if (!platformToAdd.IsFinished())
                 {
-                    platformToAdd.SetHovering(hovering);
-                    platformToAdd.Update(gametime);
+                    platformToAdd.SetHovering(hovering: hovering);
+                    platformToAdd.Update(gametime: gametime);
                     continue;
                 }
                 // the platform is finished AND canceled. Make sure to remove it, and update it a last time so it can clean up all its references
                 // to other classes.
                 if (platformToAdd.IsCanceled())
                 {
-                    platformToAdd.Update(gametime);
-                    toRemove.AddLast(platformToAdd);
+                    platformToAdd.Update(gametime: gametime);
+                    toRemove.AddLast(value: platformToAdd);
                     continue;
                 }
 
                 //platform is finished
-                toRemove.AddLast(platformToAdd);
+                toRemove.AddLast(value: platformToAdd);
 
-                AddPlatform(platformToAdd.GetPlatform());
+                AddPlatform(platform: platformToAdd.GetPlatform());
                 platformToAdd.GetPlatform().Register();
-                platformToAdd.GetRoad().Place(platformToAdd.GetPlatform(), hovering);
-                AddRoad(platformToAdd.GetRoad());
+                platformToAdd.GetRoad().Place(source: platformToAdd.GetPlatform(), dest: hovering);
+                AddRoad(road: platformToAdd.GetRoad());
 
             }
 
             //finally make sure to remove the "marked" platformplacements to be removed
             foreach(var platformToRemove in toRemove)
             {
-                mPlatformsToPlace.Remove(platformToRemove);
+                mPlatformsToPlace.Remove(value: platformToRemove);
             }
         }
 
@@ -465,7 +465,7 @@ namespace Singularity.Map
         /// <param name="platformPlacement">The platformplacement to place</param>
         public void AddPlatformToPlace(PlatformPlacement platformPlacement)
         {
-            mPlatformsToPlace.AddLast(platformPlacement);
+            mPlatformsToPlace.AddLast(value: platformPlacement);
         }
 
         public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)

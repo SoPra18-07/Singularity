@@ -42,13 +42,13 @@ namespace Singularity.Resources
         {
             Type = type;
             AbsolutePosition = position;
-            AbsoluteSize = new Vector2(width, width * 0.6f);
+            AbsoluteSize = new Vector2(x: width, y: width * 0.6f);
 
             // maybe needs some tweaks, it was mentioned that more resources is in a relation with bigger resource representation
             // this needs adjustment as soon as we actually do something with resources.
             Amount = width;
 
-            mColor = new Color(Vector3.Multiply(ResourceHelper.GetColor(type).ToVector3(), 0.75f));
+            mColor = new Color(color: Vector3.Multiply(value1: ResourceHelper.GetColor(type: type).ToVector3(), scaleFactor: 0.75f));
             // mColor = ResourceHelper.GetColor(type);
 
         }
@@ -58,14 +58,14 @@ namespace Singularity.Resources
             if (Amount > 0)
             {
                 Amount -= 1;
-                return Optional<Resource>.Of(new Resource(Type, location));
+                return Optional<Resource>.Of(value: new Resource(type: Type, position: location));
             }
-            return Optional<Resource>.Of(null);
+            return Optional<Resource>.Of(value: null);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawEllipse(new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y), mColor, Amount / 2f, LayerConstants.MapResourceLayer);
+            spriteBatch.DrawEllipse(rect: new Rectangle(x: (int)AbsolutePosition.X, y: (int)AbsolutePosition.Y, width: (int)AbsoluteSize.X, height: (int)AbsoluteSize.Y), color: mColor, thickness: Amount / 2f, layer: LayerConstants.MapResourceLayer);
         }
 
         public void Update(GameTime gametime)

@@ -45,11 +45,11 @@ namespace Singularity.Units
         /// <param name="director">Reference to the game director.</param>
         /// <param name="map">Reference to the game map.</param>
         public EnemyUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director, ref Map.Map map) 
-            : base(position, camera, ref director, ref map)
+            : base(position: position, camera: camera, director: ref director, map: ref map)
         {
             Health = 10; //TODO
 
-            AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
+            AbsoluteSize = new Vector2(x: DefaultWidth * Scale, y: DefaultHeight * Scale);
 
             RevelationRadius = 0;
 
@@ -59,15 +59,15 @@ namespace Singularity.Units
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(
-                mMilSheet,
-                AbsolutePosition,
-                new Rectangle(150 * mColumn, 75 * mRow, (int)AbsoluteSize.X, (int)AbsoluteSize.Y),
-                mColor,
-                0f,
-                Vector2.Zero,
-                Vector2.One,
-                SpriteEffects.None,
-                LayerConstants.MilitaryUnitLayer
+                texture: mMilSheet,
+                position: AbsolutePosition,
+                sourceRectangle: new Rectangle(x: 150 * mColumn, y: 75 * mRow, width: (int)AbsoluteSize.X, height: (int)AbsoluteSize.Y),
+                color: mColor,
+                rotation: 0f,
+                origin: Vector2.Zero,
+                scale: Vector2.One,
+                effects: SpriteEffects.None,
+                layerDepth: LayerConstants.MilitaryUnitLayer
                 );
         }
 
@@ -83,11 +83,11 @@ namespace Singularity.Units
                 var dirY = (float)mRand.NextDouble() * MapConstants.MapHeight;
 
                 // Check if the target position is on the map.
-                if (!mIsMoving && Map.Map.IsOnTop(new Rectangle((int)(dirX - RelativeSize.X / 2f), (int)(dirY - RelativeSize.Y / 2f), (int)RelativeSize.X, (int)RelativeSize.Y), mCamera))
+                if (!mIsMoving && Map.Map.IsOnTop(rect: new Rectangle(x: (int)(dirX - RelativeSize.X / 2f), y: (int)(dirY - RelativeSize.Y / 2f), width: (int)RelativeSize.X, height: (int)RelativeSize.Y), camera: mCamera))
                 {
-                    Rotate(new Vector2(dirX, dirY));
+                    Rotate(target: new Vector2(x: dirX, y: dirY));
                     mIsMoving = true;
-                    mTargetPosition = new Vector2(dirX, dirY);
+                    mTargetPosition = new Vector2(x: dirX, y: dirY);
                     mBoundsSnapshot = Bounds;
                     mZoomSnapshot = mCamera.GetZoom();
                 }
@@ -95,7 +95,7 @@ namespace Singularity.Units
             
             //make sure to update the relative bounds rectangle enclosing this unit.
             Bounds = new Rectangle(
-                (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
+                x: (int)RelativePosition.X, y: (int)RelativePosition.Y, width: (int)RelativeSize.X, height: (int)RelativeSize.Y);
 
             if (HasReachedTarget())
             {
@@ -105,15 +105,15 @@ namespace Singularity.Units
             // calculate path to target position
             if (mIsMoving && !HasReachedTarget())
             {
-                MoveToTarget(mTargetPosition, mSpeed);
+                MoveToTarget(target: mTargetPosition, speed: mSpeed);
             }
 
             // these are values needed to properly get the current sprite out of the spritesheet.
             mRow = mRotation / 18;
             mColumn = (mRotation - mRow * 18) / 3;
             
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
-            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
+            Center = new Vector2(x: AbsolutePosition.X + AbsoluteSize.X / 2, y: AbsolutePosition.Y + AbsoluteSize.Y / 2);
+            AbsBounds = new Rectangle(x: (int)AbsolutePosition.X, y: (int)AbsolutePosition.Y, width: (int)AbsoluteSize.X, height: (int)AbsoluteSize.Y);
             Moved = mIsMoving;
 
         }

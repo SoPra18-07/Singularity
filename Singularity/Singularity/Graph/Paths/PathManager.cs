@@ -24,17 +24,17 @@ namespace Singularity.Graph.Paths
         public void AddGraph(int id, Graph graph)
         {
 
-            if (mGraphs.ContainsKey(id))
+            if (mGraphs.ContainsKey(key: id))
             {
-                mGraphs[id] = graph;
+                mGraphs[key: id] = graph;
                 return;
             }
-            mGraphs.Add(id, graph);
+            mGraphs.Add(key: id, value: graph);
         }
 
         public void RemoveGraph(int id)
         {
-            mGraphs.Remove(id);
+            mGraphs.Remove(key: id);
         }
 
 
@@ -55,18 +55,18 @@ namespace Singularity.Graph.Paths
 
             if (asGeneralUnit != null)
             {
-                return GetPathForGeneralUnits(asGeneralUnit, destination, graphIndex);
+                return GetPathForGeneralUnits(unit: asGeneralUnit, destination: destination, graphIndex: graphIndex);
             }
 
             var asMilitaryUnit = unit as MilitaryUnit;
 
             if (asMilitaryUnit != null)
             {
-                return GetPathForMilitaryUnits(asMilitaryUnit, destination, graphIndex);
+                return GetPathForMilitaryUnits(unit: asMilitaryUnit, destination: destination, graphIndex: graphIndex);
             }
 
             throw new InvalidGenericArgumentException(
-                "The given argument was not one for which paths are meant to be calculated. The following are" +
+                message: "The given argument was not one for which paths are meant to be calculated. The following are" +
                 "supported: MilitaryUnit and GeneralUnit.");
 
         }
@@ -75,7 +75,7 @@ namespace Singularity.Graph.Paths
         {
             //TODO: implement distribution on multiple graphs, then the following boolean expression can be removed
 
-            return PathfindingFactory.GetPathfinding().AStar(mGraphs[graphIndex], unit.CurrentNode, destination);
+            return PathfindingFactory.GetPathfinding().AStar(graph: mGraphs[key: graphIndex], start: unit.CurrentNode, destination: destination);
         }
 
         private IPath GetPathForMilitaryUnits(MilitaryUnit unit, INode destination, int graphIndex)

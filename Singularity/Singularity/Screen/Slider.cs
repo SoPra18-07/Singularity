@@ -84,7 +84,7 @@ namespace Singularity.Screen
             mLastPosition = position;
             mMin = Position.X;
             mMax = Position.X + length;
-            Size = new Vector2(length, sliderSize);
+            Size = new Vector2(x: length, y: sliderSize);
             mCurrentX = mMin;
             mValuePrevious = mMin;
             mWithValue = withValueBox;
@@ -117,7 +117,7 @@ namespace Singularity.Screen
         {
             if (SliderMoving != null && ActiveWindow)
             {
-                SliderMoving(this, EventArgs.Empty, mCurrentX / (mMax - mMin));
+                SliderMoving(source: this, args: EventArgs.Empty, percentMoved: mCurrentX / (mMax - mMin));
             }
         }
 
@@ -125,7 +125,7 @@ namespace Singularity.Screen
         {
             if (PageMoving != null && ActiveWindow)
             {
-                PageMoving(this, EventArgs.Empty, mCurrentPage);
+                PageMoving(source: this, args: EventArgs.Empty, currentPage: mCurrentPage);
             }
         }
 
@@ -144,14 +144,14 @@ namespace Singularity.Screen
                 mPageSize = Size.X / Pages;
 
                 // if Position has changed, update slider bar position based on change
-                if (!Position.Equals(mLastPosition))
+                if (!Position.Equals(other: mLastPosition))
                 {
                     mCurrentX += Position.X - mLastPosition.X;
                     mLastPosition = Position;
                 }
 
                 // if page increase or decrease, update position
-                if (!Pages.Equals(mLastPagesCount))
+                if (!Pages.Equals(obj: mLastPagesCount))
                 {
                     mCurrentX = mMin + mCurrentPage * mPageSize;
                     mLastPagesCount = Pages;
@@ -190,7 +190,7 @@ namespace Singularity.Screen
                     }
 
                     // if the bar hasn't increased by a full percent then dont send out an event
-                    if (Math.Abs(mCurrentX - mValuePrevious) > 0.009)
+                    if (Math.Abs(value: mCurrentX - mValuePrevious) > 0.009)
                     {
                         OnSliderMoving();
                         mValuePrevious = mCurrentX;
@@ -225,7 +225,7 @@ namespace Singularity.Screen
                         {
                             // move one page over if more than half way to next page covered by mouse
                             float distanceCovered = Mouse.GetState().X - mMin;
-                            if (Math.Abs(distanceCovered - mCurrentPage * mPageSize) > .5 * mPageSize)
+                            if (Math.Abs(value: distanceCovered - mCurrentPage * mPageSize) > .5 * mPageSize)
                             {
                                 // move one page forward or backward depending on position relative to mouse
                                 if (distanceCovered - mCurrentPage * mPageSize > 0)
@@ -260,7 +260,7 @@ namespace Singularity.Screen
                         else
                         {
                             float distanceCovered = Mouse.GetState().X - mMin;
-                            if (Math.Abs(distanceCovered - mCurrentPage * mPageSize) > .5 * mPageSize)
+                            if (Math.Abs(value: distanceCovered - mCurrentPage * mPageSize) > .5 * mPageSize)
                             {
                                 // move one page forward or backward depending on position relative to mouse
                                 if (distanceCovered - mCurrentPage * mPageSize > 0)
@@ -310,24 +310,24 @@ namespace Singularity.Screen
                 {
                     // draws rectangle to the right side of slider
                     spriteBatch.StrokedRectangle(
-                        new Vector2(
-                            mMax + Size.Y + 30 -
-                            mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X / 2,
-                            Position.Y - 12 - mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).Y / 4),
-                        new Vector2(mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X,
-                            mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X),
-                        Color.Gray,
-                        Color.Black,
-                        1,
-                        (float) 0.8);
+                        location: new Vector2(
+                            x: mMax + Size.Y + 30 -
+                            mFont.MeasureString(text: mMax.ToString(provider: CultureInfo.InvariantCulture)).X / 2,
+                            y: Position.Y - 12 - mFont.MeasureString(text: mMax.ToString(provider: CultureInfo.InvariantCulture)).Y / 4),
+                        size: new Vector2(x: mFont.MeasureString(text: mMax.ToString(provider: CultureInfo.InvariantCulture)).X,
+                            y: mFont.MeasureString(text: mMax.ToString(provider: CultureInfo.InvariantCulture)).X),
+                        colorBorder: Color.Gray,
+                        colorCenter: Color.Black,
+                        opacityBorder: 1,
+                        opacityCenter: (float) 0.8);
 
                     if (!mWithPages)
                     {
                         // draws in value of slider in the center of display window
-                        spriteBatch.DrawString(mFont,
+                        spriteBatch.DrawString(spriteFont: mFont,
                             origin: Vector2.Zero,
-                            position: new Vector2(mMax + Size.Y + 30 - mFont.MeasureString(mStringValue).X / 2,
-                                Position.Y - 12),
+                            position: new Vector2(x: mMax + Size.Y + 30 - mFont.MeasureString(text: mStringValue).X / 2,
+                                y: Position.Y - 12),
                             color: Color.White,
                             text: mStringValue,
                             rotation: 0f,
@@ -342,20 +342,20 @@ namespace Singularity.Screen
                             // draw page notches if they arent to close to another on bar
                             for (int i = 0; i < Pages + 1; i++)
                             {
-                                spriteBatch.DrawLine(new Vector2(Position.X + i * (Size.X / Pages), Position.Y - 2),
-                                    4,
-                                    1.57f,
-                                    Color.White * .8f,
-                                    1);
+                                spriteBatch.DrawLine(point: new Vector2(x: Position.X + i * (Size.X / Pages), y: Position.Y - 2),
+                                    length: 4,
+                                    angle: 1.57f,
+                                    color: Color.White * .8f,
+                                    thickness: 1);
                             }
                         }
 
                         // draws in page number of slider in the center of display window
-                        spriteBatch.DrawString(mFont,
+                        spriteBatch.DrawString(spriteFont: mFont,
                             origin: Vector2.Zero,
                             position: new Vector2(
-                                mMax + Size.Y + 30 - mFont.MeasureString(mCurrentPage.ToString()).X / 2,
-                                Position.Y - 12),
+                                x: mMax + Size.Y + 30 - mFont.MeasureString(text: mCurrentPage.ToString()).X / 2,
+                                y: Position.Y - 12),
                             color: Color.White,
                             text: mCurrentPage.ToString(),
                             rotation: 0f,
@@ -366,16 +366,16 @@ namespace Singularity.Screen
                     }
 
                     // draws slider bar
-                    spriteBatch.DrawLine(Position, Size.X, 0f, Color.White * 0.6f, 2);
+                    spriteBatch.DrawLine(point: Position, length: Size.X, angle: 0f, color: Color.White * 0.6f, thickness: 2);
 
                     // draws slider
                     spriteBatch.StrokedRectangle(
-                        new Vector2(mCurrentX - Size.Y / 2, Position.Y - Size.Y / 2),
-                        new Vector2(Size.Y, Size.Y),
-                        Color.Gray,
-                        Color.Black,
-                        (float) .5,
-                        (float) 0.8);
+                        location: new Vector2(x: mCurrentX - Size.Y / 2, y: Position.Y - Size.Y / 2),
+                        size: new Vector2(x: Size.Y, y: Size.Y),
+                        colorBorder: Color.Gray,
+                        colorCenter: Color.Black,
+                        opacityBorder: (float) .5,
+                        opacityCenter: (float) 0.8);
 
                 }
             }

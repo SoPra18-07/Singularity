@@ -84,21 +84,21 @@ namespace Singularity.Resources
             // make sure to only distribute basic resources
             EResourceType[] basicResources = {EResourceType.Water, EResourceType.Sand, EResourceType.Oil, EResourceType.Metal, EResourceType.Stone};
 
-            var resources = new List<MapResource>(amount);
+            var resources = new List<MapResource>(capacity: amount);
             var rnd = new Random();
 
             for (var i = 0; i < amount; i++)
             {
-                var xPos = rnd.Next(MapConstants.MapWidth - defaultWidth);
-                var yPos = rnd.Next(MapConstants.MapHeight - (int) (defaultWidth * 0.6f));
+                var xPos = rnd.Next(maxValue: MapConstants.MapWidth - defaultWidth);
+                var yPos = rnd.Next(maxValue: MapConstants.MapHeight - (int) (defaultWidth * 0.6f));
 
                 //check whether the rectangle enclosing the ellipse is on the map. Then the ellipse has to be on the map aswell
-                if (!Map.Map.IsOnTop(new Rectangle(xPos, yPos, defaultWidth, (int) (defaultWidth * 0.6f))))
+                if (!Map.Map.IsOnTop(rect: new Rectangle(x: xPos, y: yPos, width: defaultWidth, height: (int) (defaultWidth * 0.6f))))
                 {
                     amount++;
                     continue;
                 }
-                resources.Add(new MapResource(basicResources[rnd.Next(basicResources.Length - 1)], new Vector2(xPos, yPos), defaultWidth));
+                resources.Add(item: new MapResource(type: basicResources[rnd.Next(maxValue: basicResources.Length - 1)], position: new Vector2(x: xPos, y: yPos), width: defaultWidth));
 
             }
             return resources;

@@ -23,20 +23,20 @@ namespace Singularity.Units
         /// <returns>A list of Vector2 waypoints that the object must traverse to get to its destination</returns>
         internal Stack<Vector2> FindPath(Vector2 startPosition, Vector2 endPosition, ref Map.Map map)
         {
-            var startGridPos = VectorToGridPos(startPosition);
-            var endGridPos = VectorToGridPos(endPosition);
+            var startGridPos = VectorToGridPos(vector: startPosition);
+            var endGridPos = VectorToGridPos(vector: endPosition);
 
-            if (ClearDirectPath(startGridPos.x, startGridPos.y, endGridPos.x, endGridPos.y, ref map))
+            if (ClearDirectPath(x: startGridPos.x, y: startGridPos.y, x2: endGridPos.x, y2: endGridPos.y, map: ref map))
             {
-                var pathVector = new Stack<Vector2>(1);
-                pathVector.Push(endPosition);
+                var pathVector = new Stack<Vector2>(capacity: 1);
+                pathVector.Push(item: endPosition);
                 return pathVector;
             }
             else
             {
                 if (mJpParam != null)
                 {
-                    mJpParam.Reset(VectorToGridPos(startPosition), VectorToGridPos(endPosition));
+                    mJpParam.Reset(iStartPos: VectorToGridPos(vector: startPosition), iEndPos: VectorToGridPos(vector: endPosition));
                 }
                 else
                 {
@@ -48,19 +48,19 @@ namespace Singularity.Units
                         iMode: HeuristicMode.MANHATTAN);
                 }
 
-                var pathGrid = JumpPointFinder.FindPath(mJpParam);
+                var pathGrid = JumpPointFinder.FindPath(iParam: mJpParam);
 
-                var pathVector = new Stack<Vector2>(pathGrid.Count);
+                var pathVector = new Stack<Vector2>(capacity: pathGrid.Count);
 
-                pathVector.Push(endPosition);
+                pathVector.Push(item: endPosition);
 
 
-                Debug.WriteLine("Path:");
+                Debug.WriteLine(message: "Path:");
                 for (var i = pathGrid.Count - 1; i > 0; i--)
                 {
-                    var gridPos = GridPosToVector2(pathGrid[i]);
-                    Debug.WriteLine(gridPos.X + ", " + gridPos.Y);
-                    pathVector.Push(gridPos);
+                    var gridPos = GridPosToVector2(gridPos: pathGrid[index: i]);
+                    Debug.WriteLine(message: gridPos.X + ", " + gridPos.Y);
+                    pathVector.Push(item: gridPos);
                 }
 
                 return pathVector;
@@ -74,8 +74,8 @@ namespace Singularity.Units
         /// <returns>Corresponding grid positions</returns>
         private static GridPos VectorToGridPos(Vector2 vector)
         {
-            return new GridPos((int) Math.Floor(vector.X / MapConstants.GridWidth),
-                               (int) Math.Floor(vector.Y / MapConstants.GridHeight));
+            return new GridPos(iX: (int) Math.Floor(d: vector.X / MapConstants.GridWidth),
+                               iY: (int) Math.Floor(d: vector.Y / MapConstants.GridHeight));
         }
 
         /// <summary>
@@ -85,8 +85,8 @@ namespace Singularity.Units
         /// <returns>Corresponding Vector2 position</returns>
         private static Vector2 GridPosToVector2(GridPos gridPos)
         {
-            return new Vector2(gridPos.x * MapConstants.GridWidth,
-                               gridPos.y * MapConstants.GridHeight);
+            return new Vector2(x: gridPos.x * MapConstants.GridWidth,
+                               y: gridPos.y * MapConstants.GridHeight);
         }
 
         /// <summary>
@@ -130,12 +130,12 @@ namespace Singularity.Units
                 dx2 = 1;
             }
 
-            var longest = Math.Abs(w);
-            var shortest = Math.Abs(h);
+            var longest = Math.Abs(value: w);
+            var shortest = Math.Abs(value: h);
             if (!(longest > shortest))
             {
-                longest = Math.Abs(h);
-                shortest = Math.Abs(w);
+                longest = Math.Abs(value: h);
+                shortest = Math.Abs(value: w);
                 if (h < 0)
                 {
                     dy2 = -1;
@@ -150,7 +150,7 @@ namespace Singularity.Units
             var numerator = longest >> 1;
             for (var i = 0; i <= longest; i++)
             {
-                if (!map.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(x, y))
+                if (!map.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(iX: x, iY: y))
                 {
                     return false;
                 }
