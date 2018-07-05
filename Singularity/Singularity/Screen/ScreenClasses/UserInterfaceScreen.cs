@@ -14,7 +14,7 @@ namespace Singularity.Screen.ScreenClasses
     /// <summary>
     /// The UserInterfaceScreen contains everything of the player's UI
     /// </summary>
-    internal sealed class UserInterfaceScreen : IScreen, IMousePositionListener, IMouseClickListener
+    public sealed class UserInterfaceScreen : IScreen, IMousePositionListener, IMouseClickListener
     {
         #region memberVariables
 

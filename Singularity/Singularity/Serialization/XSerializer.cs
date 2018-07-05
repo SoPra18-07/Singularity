@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
+using Singularity.Utils;
 
 namespace Singularity.Serialization
 {
@@ -97,17 +98,39 @@ namespace Singularity.Serialization
         /// Load the Xml-file containing whatever data. Remember that in our Saves there should only be one object, contact me if you want to change that.
         /// It may be, that a typecast is needed since this method returns an object.
         /// </summary>
-        /// <param name="path">The Xml-file I was talking about</param>
-        /// <returns>The Object that has been loaded</returns>
-        public static object Load(string path)
+        /// <param name="name">The Xml-file-name I was talking about</param>
+        /// <param name="isAchievement">True if it is an Achievement you want to load, false if it is a GameSave</param>
+        /// <returns>An optional containing the object that has been loaded, or null if the specified xml file does not exist.</returns>
+        public static Optional<object> Load(string name, bool isAchievement)
         {
+            string path;
+            if (isAchievement)
+            {
+                path = @"%USERPROFILE%\Saved Games\Singularity";
+            }
+            else
+            {
+                path = @"%USERPROFILE%\Saved Games\Singularity\Saves";
+            }
+
+            if (!Directory.Exists(path))
+            {
+                return Optional<object>.Of(null);
+            }
+            path = Environment.ExpandEnvironmentVariables(path);
+            path += @"\" + name;
+            if (!File.Exists(path))
+            {
+                return Optional<object>.Of(null);
+            }
+
             var loadedObjects = Deserialize(path);
             if (loadedObjects.Count == 0)
             {
                 throw new IOException("There are no deserialized Objects. Most likely your .xml file is empty.");
             }
             //One may implement additional logic here later
-            return loadedObjects[0];
+            return Optional<object>.Of(loadedObjects[0]);
         }
 
         /// <summary>
@@ -125,7 +148,18 @@ namespace Singularity.Serialization
             }
             else
             {
-                return Directory.GetFiles(path);
+                var names = Directory.GetFiles(path);
+                var index = 0;
+
+                //Convert the paths of the files to their names
+                foreach (var filepath in names)
+                {
+                    var name = filepath.Substring(filepath.LastIndexOf('\\') + 1);
+                    names[index] = name;
+                    index++;
+                }
+
+                return names;
             }
         }
 

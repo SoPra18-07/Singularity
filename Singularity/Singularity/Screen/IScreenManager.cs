@@ -10,7 +10,7 @@ namespace Singularity.Screen
     /// added to it, always drawing and updating the "top"-Screen and possibly the screens
     /// below if they say so.
     /// </remarks>
-    internal interface IScreenManager : IUpdate, IDraw
+    public interface IScreenManager : IUpdate, IDraw
     {
         /// <summary>
         /// Adds the given screen to the screen manager as the "top" screen.
@@ -22,5 +22,10 @@ namespace Singularity.Screen
         /// Removes the "top" screen from the screen manager.
         /// </summary>
         void RemoveScreen();
+
+        /// <summary>
+        /// Returns the Count of screens currently registered at the manager.
+        /// </summary>
+        int GetScreenCount();
     }
 }

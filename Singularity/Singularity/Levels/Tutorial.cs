@@ -29,7 +29,7 @@ namespace Singularity.Levels
         private Director mDirector;
 
         [DataMember]
-        private UserInterfaceScreen mUi;
+        public UserInterfaceScreen Ui { get; set; }
         [DataMember]
         private IScreenManager mScreenManager;
 
@@ -66,16 +66,16 @@ namespace Singularity.Levels
 
             //INITIALIZE SCREENS AND ADD THEM
             GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, mMap, mCamera, mFow);
-            mUi = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
+            Ui = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
 
             mScreenManager.AddScreen(GameScreen);
-            mScreenManager.AddScreen(mUi);
+            mScreenManager.AddScreen(Ui);
 
 
             //INGAME OBJECTS INITIALIZATION ===================================================
 
             //SetUnit
-            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, GameScreen, mUi);
+            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, GameScreen, Ui);
             GameScreen.AddObject(setUnit);
 
             //TESTMETHODS HERE =====================================

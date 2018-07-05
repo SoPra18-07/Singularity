@@ -4,6 +4,7 @@ using Singularity.Levels;
 using Singularity.Manager;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
+using Singularity.Serialization;
 
 namespace Singularity
 {
@@ -71,6 +72,7 @@ namespace Singularity
         /// </summary>
         protected override void LoadContent()
         {
+
             var viewportResolution = new Vector2(GraphicsDevice.Viewport.Width,
                 GraphicsDevice.Viewport.Height);
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -79,19 +81,22 @@ namespace Singularity
             //This needs to be done because in the Constructor of Tutorial all Ingame-things (including screens) etc. are initialized and added
             mLevel = new Skirmish(mGraphics, ref mDirector, Content, mScreenManager);
 
-            mLoadGameManager = new LoadGameManagerScreen(viewportResolution, mScreenManager, this);
+            mLoadGameManager = new LoadGameManagerScreen(mGraphics, ref mDirector, Content, viewportResolution, mScreenManager, this);
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
             // Add the screens to the screen manager
-            // The idea is that the game screen is always at the bottom and stuff is added simply
-            // on top of it.
+            // The idea is that the game screen is one layer above the LoadGameManagerScreen, which is at the bottom and stuff is added simply
+            // on top of it. 
             //ATTENTION: THE INGAME SCREENS ARE HANDLED IN THE LEVELS NOW!
             mScreenManager.AddScreen(mLoadGameManager);
-            mScreenManager.AddScreen(mMainMenuManager); // TODO: This makes it so that the main menu is bypassed
+            mScreenManager.AddScreen(mMainMenuManager);
 
             // load and play Soundtrack as background music
             // todo this
             // director.GetSoundManager.LoadContent(Content);
             //_mSoundManager.PlaySoundTrack();
+
+            //For testing load
+            //XSerializer.Save(mLevel, "SwagSireDrizzle's_Game", false);
         }
 
         /// <summary>

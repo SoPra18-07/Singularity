@@ -40,6 +40,15 @@ namespace Singularity.Screen
 
         }
 
+        /// <summary>
+        /// A method called by the LoadGameManagerScreen to determine how many Screens it has to remove.
+        /// </summary>
+        /// <returns></returns>
+        public int GetScreenCount()
+        {
+            return mScreenStack.Count;
+        }
+
         public void AddScreen(IScreen screen)
         {
             mScreensToAdd.AddLast(screen);

@@ -9,7 +9,7 @@ namespace Singularity.Screen
     /// An abstraction for "Screens" used by an IScreenManager. Possible examples
     /// for IScreens would be "Game Screens", "Main Menu Screens", etc..
     /// </remarks>
-    internal interface IScreen : IUpdate, IDraw
+    public interface IScreen : IUpdate, IDraw
     {
         EScreen Screen { get; }
 

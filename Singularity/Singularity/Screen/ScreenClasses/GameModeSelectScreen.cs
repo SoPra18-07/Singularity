@@ -183,11 +183,11 @@ namespace Singularity.Screen.ScreenClasses
             mMButtonList.Add(mMBackButton);
 
             mMStoryButton.ButtonReleased += MainMenuManagerScreen.OnStoryButtonReleased;
-            mMFreePlayButton.ButtonReleased += MainMenuManagerScreen.OnFreePlayButtonReleased;
+            mMFreePlayButton.ButtonReleased += LoadGameManagerScreen.OnSkirmishReleased;
             mMBackButton.ButtonReleased += MainMenuManagerScreen.OnBackButtonReleased;
 
             mMStoryButton.ButtonHovering += OnStoryHover;
-            mMFreePlayButton.ButtonHovering += OnFreePlayHover;
+            mMFreePlayButton.ButtonHovering += OnSkirmishHover;
             mMBackButton.ButtonHovering += OnBackHover;
 
             Loaded = true;
@@ -226,7 +226,7 @@ namespace Singularity.Screen.ScreenClasses
             mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter);
         }
 
-        private void OnFreePlayHover(Object sender, EventArgs eventArgs)
+        private void OnSkirmishHover(Object sender, EventArgs eventArgs)
         {
             mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter + 50);
         }

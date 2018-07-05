@@ -118,14 +118,6 @@ namespace Singularity.Screen.ScreenClasses
                 case EScreen.AchievementsScreen:
                     break;
                 case EScreen.GameModeSelectScreen:
-                    if (sPressed == "Free Play")
-                    {
-                        mScreenManager.RemoveScreen();
-                        mScreenManager.RemoveScreen();
-                        mScreenManager.AddScreen(mLoadingScreen);
-                        mScreenState = EScreen.LoadingScreen;
-                    }
-
                     if (sPressed == "Back")
                     {
                         SwitchScreen(EScreen.MainMenuScreen, mGameModeSelectScreen, mMainMenuScreen, gametime);
@@ -142,10 +134,6 @@ namespace Singularity.Screen.ScreenClasses
                     {
                         SwitchScreen(EScreen.MainMenuScreen, mLoadSelectScreen, mMainMenuScreen, gametime);
                     }
-                    break;
-                case EScreen.LoadingScreen:
-                    mScreenManager.RemoveScreen();
-                    mScreenState = EScreen.GameScreen;
                     break;
                 case EScreen.MainMenuScreen:
                     if (sPressed == "Play")
@@ -304,8 +292,8 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>Bool. If true, then the screen below this will be updated.</returns>
         public bool UpdateLower()
         {
-            // below this screen is the game so it shouldn't update the game
-            return mScreenState == EScreen.LoadingScreen || mScreenState == EScreen.GameScreen;
+            // below this screen is the LoadGameManagerScreen so update!
+            return true;
         }
 
         /// <summary>
@@ -314,7 +302,8 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>Bool. If true, then the screen below this will be drawn.</returns>
         public bool DrawLower()
         {
-            return mScreenState == EScreen.LoadingScreen || mScreenState == EScreen.GameScreen;
+            //The loadgamemanagerscreen doesnt have to be drawn.
+            return false;
         }
 
         public static void SetResolution(Vector2 viewportResolution)
@@ -432,15 +421,6 @@ namespace Singularity.Screen.ScreenClasses
 
         }
 
-        /// <summary>
-        /// Used to create a new skirmish game.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
-        public static void OnFreePlayButtonReleased(Object sender, EventArgs eventArgs)
-        {
-            sPressed = "Free Play";
-        }
 
         /// <summary>
         /// Used to go back to the main main menu screen.

@@ -94,21 +94,16 @@ namespace Singularity.Manager
         /// </summary>
         internal void LoadAchievements()
         {
-            var path = @"%USERPROFILE%\Saved Games\Singularity";
-            path = Environment.ExpandEnvironmentVariables(path);
-            if (!Directory.Exists(path))
+            var achievements = XSerializer.Load(@"\Achievements.xml", true);
+            if (achievements.IsPresent())
             {
-                Directory.CreateDirectory(path);
-            }
-
-            if (File.Exists(path + @"\Achievements.xml"))
-            {
-                mAchievements = (Achievements)XSerializer.Load(path + @"\Achievements.xml");
+                mAchievements = (Achievements) achievements.Get();
             }
             else
             {
                 mAchievements = new Achievements();
             }
+
         }
 
         /// <summary>

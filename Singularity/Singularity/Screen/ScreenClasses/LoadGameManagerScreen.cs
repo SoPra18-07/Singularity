@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Singularity.Exceptions;
+using Singularity.Levels;
+using Singularity.Manager;
+using Singularity.Serialization;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -22,10 +27,20 @@ namespace Singularity.Screen.ScreenClasses
         /// and basically only handles the transition from LoadSelectScreen to the GameScreen (which has to be loaded) itself.
         /// </summary>
         private readonly IScreenManager mScreenManager;
-        private EScreen mScreenState;
+
+        //The name of the game to load
+        private string mName;
+
+        private bool mLoadingGame;
+
+        private ILevel mLevel;
+        private bool mNewGame;
 
         // All connecting screens
         private ITransitionableMenu mLoadingScreen;
+        private GameScreen mGameScreen;
+
+        private UserInterfaceScreen mUi;
 
         // Screen transition variables
         private static string sPressed;
@@ -38,22 +53,34 @@ namespace Singularity.Screen.ScreenClasses
         private static Vector2 sViewportResolution;
         private static bool sResolutionChanged;
 
+        private GraphicsDeviceManager mGraphics;
+        private Director mDirector;
+        private ContentManager mContent;
+
         /// <summary>
         /// Creates an instance of the LoadGameManagerScreen class
         /// </summary>
+        /// <param name="graphics">The Graphicsdevicemanager of the game</param>
+        /// <param name="director">The Director of the game</param>
+        /// <param name="content">The Contentmanager of the game</param>
         /// <param name="screenResolution">Screen resolution of the game.</param>
         /// <param name="screenManager">Stack screen manager of the game.</param>
         /// <param name="game">Used to pass on to the options screen to change game settings</param>
-        public LoadGameManagerScreen(Vector2 screenResolution, IScreenManager screenManager, Game1 game)
+        public LoadGameManagerScreen(GraphicsDeviceManager graphics, ref Director director, ContentManager content,Vector2 screenResolution, IScreenManager screenManager, Game1 game)
         {
             mScreenManager = screenManager;
             mGame = game;
+            mGraphics = graphics;
+            mDirector = director;
+            mContent = content;
 
             Initialize(screenResolution);
 
             sPressed = "None";
             sResolutionChanged = false;
-            mTransitionState = 0;
+            mLoadingGame = false;
+            mNewGame = false;
+            mName = "";
         }
 
         /// <summary>
@@ -72,142 +99,82 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
+            //Currently we give the GameScreen one cycle to load. Change that if you notice weird happenings during loading.
+            if (mLoadingGame)
+            {
+                mScreenManager.RemoveScreen();
+            }
+
             if (sResolutionChanged)
             {
                 Initialize(sViewportResolution);
                 sResolutionChanged = false;
             }
-            switch (mScreenState)
-            {
-                case EScreen.AchievementsScreen:
-                    break;
-                case EScreen.GameModeSelectScreen:
-                    if (sPressed == "Free Play")
-                    {
-                        mScreenManager.RemoveScreen();
-                        mScreenManager.RemoveScreen();
-                        mScreenManager.AddScreen(mLoadingScreen);
-                        mScreenState = EScreen.LoadingScreen;
-                    }
 
-                    if (sPressed == "Back")
-                    {
-                        SwitchScreen(EScreen.MainMenuScreen, mGameModeSelectScreen, mMainMenuScreen, gametime);
-                    }
+            switch (sPressed)
+            {
+                case "None":
+                    return;
+                case "Skirmish":
+                    mLevel = new Skirmish(mGraphics, ref mDirector, mContent, mScreenManager);
+                    mGameScreen = mLevel.GameScreen;
+                    mUi = mLevel.Ui;
+                    mNewGame = true;
                     break;
-                case EScreen.GameScreen:
+                case "Save1":
+                    mName = XSerializer.GetSaveNames()[1];
                     break;
-                case EScreen.LoadSelectScreen:
-                    if (sPressed == "Load1")
-                    {
-                        break;
-                    }
-                    if (sPressed == "Back")
-                    {
-                        SwitchScreen(EScreen.MainMenuScreen, mLoadSelectScreen, mMainMenuScreen, gametime);
-                    }
+                case "Save2":
+                    mName = XSerializer.GetSaveNames()[2];
                     break;
-                case EScreen.LoadingScreen:
+                case "Save3":
+                    mName = XSerializer.GetSaveNames()[3];
+                    break;
+                case "Save4":
+                    mName = XSerializer.GetSaveNames()[4];
+                    break;
+                case "Save5":
+                    mName = XSerializer.GetSaveNames()[5];
+                    break;
+                default:
+                    throw new InvalidGenericArgumentException(
+                        "Somehow the LoadGameManagerScreen was assigned to a button that he should not have been assigned to. Cannot handle" +
+                        "this State");
+            }
+
+            //This means a save has to be loaded
+            if (mName != "")
+            {
+                var gameScreenToBe = XSerializer.Load(mName, false);
+                if (gameScreenToBe.IsPresent())
+                {
+                    mGameScreen = (GameScreen)gameScreenToBe.Get();
+
+                    //Remove all screens above this screen, of course this only works if this screen is really on the bottom of the stack
+                    for (var i = mScreenManager.GetScreenCount() - 1; i > 0; i--)
+                    {
+                        mScreenManager.RemoveScreen();
+                    }
+                    mScreenManager.AddScreen(mGameScreen);
+                    mScreenManager.AddScreen(mLoadingScreen);
+                    mLoadingGame = true;
+                    mName = "";
+                }
+            } else if (mNewGame)
+            {
+                //Remove all screens above this screen, of course this only works if this screen is really on the bottom of the stack
+                for (var i = mScreenManager.GetScreenCount() - 1; i > 0; i--)
+                {
                     mScreenManager.RemoveScreen();
-                    mScreenState = EScreen.GameScreen;
-                    break;
-                case EScreen.MainMenuScreen:
-                    if (sPressed == "Play")
-                    {
-                        SwitchScreen(EScreen.GameModeSelectScreen, mMainMenuScreen, mGameModeSelectScreen, gametime);
-                    }
-
-                    if (sPressed == "Load")
-                    {
-                        SwitchScreen(EScreen.LoadSelectScreen, mMainMenuScreen, mLoadSelectScreen, gametime);
-                    }
-
-                    if (sPressed == "Options")
-                    {
-                        SwitchScreen(EScreen.OptionsScreen, mMainMenuScreen, mOptionsScreen, gametime);
-                    }
-
-                    if (sPressed == "Achievments")
-                    {
-                        SwitchScreen(EScreen.AchievementsScreen, mMainMenuScreen, mAchievementsScreen, gametime);
-                    }
-
-                    if (sPressed == "Quit")
-                    {
-                        mGame.Exit();
-                    }
-                    break;
-                case EScreen.OptionsScreen:
-                    if (sPressed == "Back")
-                    {
-                        SwitchScreen(EScreen.MainMenuScreen, mOptionsScreen, mMainMenuScreen, gametime);
-                    }
-                    break;
-                case EScreen.SplashScreen:
-                    if (Keyboard.GetState().GetPressedKeys().Length > 0
-                        || Mouse.GetState().LeftButton == ButtonState.Pressed
-                        || Mouse.GetState().RightButton == ButtonState.Pressed)
-                    {
-                        sPressed = "Pressed";
-                    }
-
-                    if (sPressed == "Pressed")
-                    {
-                        SwitchScreen(EScreen.MainMenuScreen, mSplashScreen, mMainMenuScreen, gametime);
-                    }
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                }
+                mScreenManager.AddScreen(mGameScreen);
+                mScreenManager.AddScreen(mLoadingScreen);
+                mLoadingGame = true;
+                mNewGame = false;
             }
-
+            sPressed = "None";
         }
 
-        /// <summary>
-        /// Automates the process of removing and adding new screens
-        /// that are part of the MainMenu to the stack manager.
-        /// </summary>
-        /// <param name="targetEScreen"></param>
-        /// <param name="originScreen"></param>
-        /// <param name="targetScreen"></param>
-        /// <param name="gameTime">Used for animations</param>
-        private void SwitchScreen(EScreen targetEScreen, ITransitionableMenu originScreen, ITransitionableMenu targetScreen, GameTime gameTime)
-        {
-            switch (mTransitionState)
-            {
-                case 0:
-                    // start the necessary transitions
-                    originScreen.TransitionTo(mScreenState, targetEScreen, gameTime);
-                    mMenuBackgroundScreen.TransitionTo(mScreenState, targetEScreen, gameTime);
-                    mTransitionState = 1;
-                    break;
-
-                case 1:
-                    // Wait for the origin screen to finish transitioning out
-                    if (!originScreen.TransitionRunning)
-                    {
-                        // once it is done transitioning out, remove it and add the target screen
-                        mScreenManager.RemoveScreen();
-                        mScreenManager.AddScreen(targetScreen);
-                        // then start transitioning the target screen
-                        targetScreen.TransitionTo(mScreenState, targetEScreen, gameTime);
-                        mTransitionState = 2;
-                    }
-                    break;
-                case 2:
-                    // now wait for the target screen to finish transitioning in
-                    if (!targetScreen.TransitionRunning)
-                    {
-                        // once it is done transitioning in, change the states of everyone to reflect the new state
-                        mScreenState = targetEScreen;
-                        sPressed = "None";
-                        mTransitionState = 0;
-                    }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
 
         /// <summary>
         /// Draws the content of this screen.
@@ -248,8 +215,6 @@ namespace Singularity.Screen.ScreenClasses
         /// Initialize the Loading Screen, by creating it with the desired resolution.
         /// </summary>
         /// <param name="screenResolution"></param>
-        /// <param name="screenResolutionChanged"></param>
-        /// <param name="game"></param>
         private void Initialize(Vector2 screenResolution)
         {
             mLoadingScreen = new LoadingScreen(screenResolution);
@@ -259,95 +224,71 @@ namespace Singularity.Screen.ScreenClasses
         #region MainMenuScreen Button Handlers
 
         /// <summary>
-        /// Receives Play button released event and changes sPressed
-        /// to result in screen change within Update method.
+        /// Receives Save1 button released event and changes sPressed
+        /// to result in Loading the game within Update method.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="eventArg"></param>
-        public static void OnPlayButtonReleased(Object sender, EventArgs eventArg)
+        public static void OnSave1Released(Object sender, EventArgs eventArg)
         {
-            sPressed = "Play";
+            sPressed = "Save1";
         }
 
         /// <summary>
-        /// Receives Load button released event and changes sPressed
-        /// to result in screen change within Update method.
+        /// Receives Save2 button released event and changes sPressed
+        /// to result in Loading the game within Update method.
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
-        public static void OnLoadButtonReleased(Object sender, EventArgs eventArgs)
+        /// <param name="eventArg"></param>
+        public static void OnSave2Released(Object sender, EventArgs eventArg)
         {
-            sPressed = "Load";
+            sPressed = "Save2";
         }
 
         /// <summary>
-        /// Receives Options button released event and changes sPressed
-        /// to result in screen change within Update method.
+        /// Receives Save3 button released event and changes sPressed
+        /// to result in Loading the game within Update method.
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
-        public static void OnOptionsButtonReleased(Object sender, EventArgs eventArgs)
+        /// <param name="eventArg"></param>
+        public static void OnSave3Released(Object sender, EventArgs eventArg)
         {
-            sPressed = "Options";
-
+            sPressed = "Save3";
         }
 
         /// <summary>
-        /// Receives Achievements button released event and changes sPressed
-        /// to result in screen change within Update method.
+        /// Receives Save4 button released event and changes sPressed
+        /// to result in Loading the game within Update method.
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
-        public static void OnAchievementsButtonReleased(Object sender, EventArgs eventArgs)
+        /// <param name="eventArg"></param>
+        public static void OnSave4Released(Object sender, EventArgs eventArg)
         {
-            sPressed = "Achievements";
+            sPressed = "Save4";
         }
 
         /// <summary>
-        /// Receives Quit button released event and
-        /// exits game.
+        /// Receives Save5 button released event and changes sPressed
+        /// to result in Loading the game within Update method.
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
-        public static void OnQuitButtonReleased(Object sender, EventArgs eventArgs)
+        /// <param name="eventArg"></param>
+        public static void OnSave5Released(Object sender, EventArgs eventArg)
         {
-            sPressed = "Quit";
+            sPressed = "Save5";
         }
 
         /// <summary>
-        /// Used to create a new story mode game.
+        /// Receives Save5 button released event and changes sPressed
+        /// to result in Loading the game within Update method.
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
-        public static void OnStoryButtonReleased(Object sender, EventArgs eventArgs)
+        /// <param name="eventArg"></param>
+        public static void OnSkirmishReleased(Object sender, EventArgs eventArg)
         {
-            // TODO: implement start game with story
-            throw new NotImplementedException("No story yet unfortunately");
-
-
-        }
-
-        /// <summary>
-        /// Used to create a new skirmish game.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
-        public static void OnFreePlayButtonReleased(Object sender, EventArgs eventArgs)
-        {
-            sPressed = "Free Play";
-        }
-
-        /// <summary>
-        /// Used to go back to the main main menu screen.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
-        public static void OnBackButtonReleased(Object sender, EventArgs eventArgs)
-        {
-            sPressed = "Back";
+            sPressed = "Skirmish";
         }
         #endregion
-
 
     }
 }

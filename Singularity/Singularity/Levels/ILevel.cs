@@ -13,5 +13,7 @@ namespace Singularity.Levels
 
         [DataMember]
         GameScreen GameScreen { get; set; }
+        [DataMember]
+        UserInterfaceScreen Ui { get; set; }
     }
 }

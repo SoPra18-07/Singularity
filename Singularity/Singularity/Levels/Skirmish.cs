@@ -19,6 +19,8 @@ namespace Singularity.Levels
         [DataMember]
         public GameScreen GameScreen { get; set; }
         [DataMember]
+        public UserInterfaceScreen Ui { get; set; }
+        [DataMember]
         private GraphicsDeviceManager mGraphics;
         [DataMember]
         private Map.Map mMap;
@@ -28,8 +30,6 @@ namespace Singularity.Levels
         private FogOfWar mFow;
         [DataMember]
         private Director mDirector;
-        [DataMember]
-        private UserInterfaceScreen mUi;
 
         [DataMember]
         private IScreenManager mScreenManager;
@@ -69,10 +69,7 @@ namespace Singularity.Levels
 
             //INITIALIZE SCREENS AND ADD THEM TO THE SCREENMANAGER
             GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, mMap, mCamera, mFow);
-            mUi = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
-
-            mScreenManager.AddScreen(GameScreen);
-            mScreenManager.AddScreen(mUi);
+            Ui = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
 
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
@@ -120,7 +117,7 @@ namespace Singularity.Levels
             var milUnit = new MilitaryUnit(new Vector2(2000, 700), milUnitSheet, milGlowSheet, mCamera, ref mDirector, ref mMap);
 
             //SetUnit
-            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, GameScreen, mUi);
+            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, GameScreen, Ui);
             
 
             // Resources

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,6 +15,7 @@ using Singularity.Units;
 
 namespace Singularity.Screen.ScreenClasses
 {
+    [DataContract]
     /// <inheritdoc cref="IScreen"/>
     /// <summary>
     /// Handles everything thats going on explicitly in the game.
@@ -21,7 +23,9 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     public sealed class GameScreen : IScreen
     {
+        [DataMember]
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
+        [DataMember]
         public bool Loaded { get; set; }
 
         // map and fog of war
