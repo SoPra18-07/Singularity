@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Map.Properties;
 using Singularity.Platforms;
 using Singularity.Property;
 
@@ -60,6 +61,8 @@ namespace Singularity.Screen.ScreenClasses
         private readonly StructureMap mStructureMap;
 
         private readonly ResourceMap mResourceMap;
+
+        private readonly Map.Map mMap;
 
         private readonly Camera mCamera;
 
@@ -208,6 +211,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="stackScreenManager"></param>
         public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, GameScreen gameScreen, IScreenManager stackScreenManager)
         {
+            mMap = gameScreen.GetMap();
             mStructureMap = gameScreen.GetMap().GetStructureMap();
             mResourceMap = gameScreen.GetMap().GetResourceMap();
             mCamera = gameScreen.GetCamera();
@@ -941,6 +945,18 @@ namespace Singularity.Screen.ScreenClasses
             mWindowList.Add(mBuildMenuWindow);
 
             #endregion
+
+            #endregion
+
+            #region MiniMap
+
+            // TODO: properly place the minimapObject to better fit with the rest. Don't change the size
+            // TODO: other than changing it in MapConstants, the +20 is for the padding left and right.
+            var minimap = new MiniMap(mMap, mCamera, content.Load<Texture2D>("minimap"));
+            var minimapObject = new WindowObject("", new Vector2(mCurrentScreenWidth - 12 - MapConstants.MiniMapWidth, mCurrentScreenHeight - 12 - MapConstants.MiniMapHeight), new Vector2(MapConstants.MiniMapWidth + 20, MapConstants.MiniMapHeight + 20), false, mLibSans12, mDirector.GetInputManager, mGraphics);
+            minimapObject.AddItem(minimap);
+
+            mWindowList.Add(minimapObject);
 
             #endregion
 
