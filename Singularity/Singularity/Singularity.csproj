@@ -72,6 +72,7 @@
     <Compile Include="Screen\InfoBoxWindow.cs" />
     <Compile Include="Property\GlobalVariables.cs" />
     <Compile Include="Screen\InfoBarWindowObject.cs" />
+    <Compile Include="Screen\PlatformInfoBox.cs" />
     <Compile Include="Screen\SliderHandler.cs" />
     <Compile Include="Units\ControllableUnit.cs" />
     <Compile Include="Units\EnemyUnit.cs" />

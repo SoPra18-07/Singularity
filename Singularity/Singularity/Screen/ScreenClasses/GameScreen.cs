@@ -77,7 +77,6 @@ namespace Singularity.Screen.ScreenClasses
 
             mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
             AddObject(mSelBox);
-
         }
 
         public void Draw(SpriteBatch spriteBatch)

@@ -12,7 +12,7 @@ namespace Singularity.Screen
     /// InfoBoxes are small boxes which can be used to quickly show a notice to the player. (With or without border)
     /// These boxes can contain IWindowItems and will be shown when the mouse is above a specific rectangle that needs to be set.
     /// </summary>
-    class InfoBoxWindow : IDraw, IUpdate, IMousePositionListener
+    public class InfoBoxWindow : IDraw, IUpdate, IMousePositionListener
     {
         // list of items to put in info box
         private readonly List<IWindowItem> mItemList;
@@ -40,7 +40,7 @@ namespace Singularity.Screen
         /// <param name="boundsRectangle">rectangle in which the windowBox is active</param>
         /// <param name="boxed">true, if window should have a border</param>
         /// <param name="director">the director</param>
-        public InfoBoxWindow(List<IWindowItem> itemList, Vector2 size, Color borderColor, Color centerColor, Rectangle boundsRectangle, bool boxed, Director director)
+        public InfoBoxWindow(List<IWindowItem> itemList, Vector2 size, Color borderColor, Color centerColor, Rectangle boundsRectangle, bool boxed, Director director, bool mousePosition = true, Vector2 location = default(Vector2))
         {
             // set members
             mItemList = itemList;
@@ -50,8 +50,12 @@ namespace Singularity.Screen
             BoundRectangle = boundsRectangle;
             mBoxed = boxed;
 
-            // window only active if mouse on Bound Rectangle
-            director.GetInputManager.AddMousePositionListener(this);
+            if (mousePosition)
+            {
+                // window only active if mouse on Bound Rectangle
+                director.GetInputManager.AddMousePositionListener(this);
+                mMouse = location;
+            }
 
             //BoundRectangle = boundsRectangle;
             OnRectangle = true;
@@ -84,7 +88,7 @@ namespace Singularity.Screen
         /// standard update method
         /// </summary>
         /// <param name="gametime"></param>
-        public void Update(GameTime gametime)
+        public virtual void Update(GameTime gametime)
         {
             if (Active && OnRectangle)
             {

@@ -11,6 +11,7 @@ using Singularity.Manager;
 using Singularity.PlatformActions;
 using Singularity.Property;
 using Singularity.Resources;
+using Singularity.Screen;
 using Singularity.Units;
 using Singularity.Utils;
 
@@ -93,7 +94,8 @@ namespace Singularity.Platforms
         public bool Moved { get; private set; }
 
         public int Id { get; }
-
+        
+        [DataMember]
         protected Director mDirector;
 
         // the sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome
@@ -115,6 +117,10 @@ namespace Singularity.Platforms
         private readonly float mCenterOffsetY;
 
         private Color mColor;
+
+        protected PlatformInfoBox mInfoBox;
+
+        public static SpriteFont mLibSans12;
 
         public bool[,] ColliderGrid { get; internal set; }
 
@@ -177,6 +183,28 @@ namespace Singularity.Platforms
             UpdateValues();
 
             Debug.WriteLine("PlatformBlank created");
+
+            mInfoBox = new PlatformInfoBox(new List<IWindowItem> { new TextField("PlattformInfo", AbsolutePosition, AbsoluteSize, mLibSans12) }, AbsoluteSize, new Color(0.86f, 0.86f, 0.86f), new Color(1f, 1, 1), new Rectangle((int)AbsolutePosition.X, (int) AbsolutePosition.Y + 160, (int) AbsoluteSize.X, (int) AbsoluteSize.Y), true, this, mDirector);
+
+            /*
+            var infoBuildBlank = new TextField("Blank Platform",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Blank Platform"),
+                mLibSans12);
+
+            mInfoBuildBlank = new InfoBoxWindow(
+                itemList: new List<IWindowItem> { infoBuildBlank },
+                size: mLibSans12.MeasureString("Blank Platform"),
+                borderColor: new Color(0.86f, 0.85f, 0.86f),
+                centerColor: new Color(1f, 1f, 1f),//(0.75f, 0.75f, 0.75f),
+                boundsRectangle: new Rectangle(
+                    (int)mBlankPlatformButton.Position.X,
+                    (int)mBlankPlatformButton.Position.Y,
+                    (int)mBlankPlatformButton.Size.X,
+                    (int)mBlankPlatformButton.Size.Y),
+                boxed: true,
+                director: mDirector);
+            // */
 
         }
 
@@ -469,6 +497,8 @@ namespace Singularity.Platforms
                         mLayer);
                     break;
             }
+
+            mInfoBox.Draw(spritebatch);
 
             // also draw the resources on top
 

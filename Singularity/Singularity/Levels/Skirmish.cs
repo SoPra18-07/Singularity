@@ -80,6 +80,7 @@ namespace Singularity.Levels
 
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
+            PlatformBlank.mLibSans12 = content.Load<SpriteFont>("LibSans12");
             mPlatform = new PlatformBlank(new Vector2(1000, 1000), null, platformBlankTexture, ref mDirector);
             GameScreen.AddObject(mPlatform);
 
