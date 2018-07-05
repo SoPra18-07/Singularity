@@ -172,6 +172,7 @@ namespace Singularity.Screen.ScreenClasses
                     mScreenManager.RemoveScreen();
                 }
                 mScreenManager.AddScreen(mGameScreen);
+                mScreenManager.AddScreen(mUi);
                 mScreenManager.AddScreen(mLoadingScreen);
                 mLoadingGame = true;
                 mNewGame = false;

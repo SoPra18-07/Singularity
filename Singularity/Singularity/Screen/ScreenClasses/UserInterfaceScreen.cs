@@ -982,7 +982,7 @@ namespace Singularity.Screen.ScreenClasses
             #endregion
 
             //DEACTIVATE EVERYTHING TO ACTIVATE IT LATER
-            Deactivate();
+            //Deactivate();
         }
 
         public bool UpdateLower()
