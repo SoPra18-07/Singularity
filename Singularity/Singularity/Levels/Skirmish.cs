@@ -33,13 +33,6 @@ namespace Singularity.Levels
         public override void LoadContent(ContentManager content)
         {
             
-            //INITIALIZE SCREENS AND ADD THEM TO THE SCREENMANAGER
-            GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
-            mUi = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
-
-            mScreenManager.AddScreen(GameScreen);
-            mScreenManager.AddScreen(mUi);
-
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
             var platform1 = PlatformFactory.Get(EPlatformType.Blank, ref mDirector, 1000, 1000, Map.GetResourceMap());

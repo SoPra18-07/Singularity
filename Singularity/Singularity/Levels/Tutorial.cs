@@ -53,31 +53,6 @@ namespace Singularity.Levels
 
         public void LoadContent(ContentManager content)
         {
-            //Load stuff
-            var platformConeTexture = content.Load<Texture2D>("Cones");
-            var platformCylTexture = content.Load<Texture2D>("Cylinders");
-            var platformBlankTexture = content.Load<Texture2D>("PlatformBasic");
-            var platformDomeTexture = content.Load<Texture2D>("Dome");
-            MilitaryUnit.mMilSheet = content.Load<Texture2D>("UnitSpriteSheet");
-            MilitaryUnit.mGlowTexture = content.Load<Texture2D>("UnitGlowSprite");
-            var mapBackground = content.Load<Texture2D>("backgroundGrid");
-
-            //TODO: have a cone texture
-            PlatformFactory.Init(platformConeTexture, platformCylTexture, platformDomeTexture, platformBlankTexture);
-
-            //Map related stuff
-            Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 800, 800);
-            mFow = new FogOfWar(Camera, mGraphics.GraphicsDevice);
-            Map = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.GraphicsDevice.Viewport, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
-
-            //INITIALIZE SCREENS AND ADD THEM
-            GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
-            mUi = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
-
-            mScreenManager.AddScreen(GameScreen);
-            mScreenManager.AddScreen(mUi);
-
-
             //INGAME OBJECTS INITIALIZATION ===================================================
 
             //SetUnit
