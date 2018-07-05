@@ -19,8 +19,6 @@ namespace Singularity.Platforms
 
         private static Texture2D sBlankSheet;
 
-        private static Director sDirector;
-
         /// <summary>
         /// Initializes the platform factory with the sprite sheets needed.
         /// </summary>

@@ -512,14 +512,17 @@ namespace Singularity.Platforms
 
         }
 
-        public void RemoveEdge(IEdge edge, EEdgeFacing facing)
+        public void RemoveEdge(IEdge edge)
         {
-            if (facing == EEdgeFacing.Inwards)
+            if (mInwardsEdges.Contains(edge))
             {
                 mInwardsEdges.Remove(edge);
-                return;
             }
-            mOutwardsEdges.Remove(edge);
+
+            if (mOutwardsEdges.Contains(edge))
+            {
+                mOutwardsEdges.Remove(edge);
+            }
 
         }
 
