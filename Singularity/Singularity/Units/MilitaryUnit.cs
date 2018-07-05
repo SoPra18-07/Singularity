@@ -39,8 +39,8 @@ namespace Singularity.Units
 
         private Vector2 mTargetPosition;
         private int mRotation;
-        private readonly Texture2D mMilSheet;
-        private readonly Texture2D mGlowTexture;
+        public static Texture2D mMilSheet;
+        public static Texture2D mGlowTexture;
 
         private bool mSelected;
 
@@ -85,7 +85,7 @@ namespace Singularity.Units
         public bool[,] ColliderGrid { get; }
 
 
-        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Texture2D glowSpriteSheet, Camera camera, ref Director director, ref Map.Map map)
+        public MilitaryUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
         {
             Id = IdGenerator.NextiD(); // id for the specific unit.
             Health = 10;
@@ -107,12 +107,21 @@ namespace Singularity.Units
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
 
-            mMilSheet = spriteSheet;
-            mGlowTexture = glowSpriteSheet;
+            if (mMilSheet == null || mGlowTexture == null)
+            {
+                throw new Exception("load the MilSheet and GlowTexture first!");
+            }
 
             mMap = map;
 
             mPathfinder = new MilitaryPathfinder();
+        }
+
+
+        public static MilitaryUnit CreateMilitaryUnit(Vector2 position, ref Director director)
+        {
+            var map = director.GetStoryManager.Level.Map;
+            return new MilitaryUnit(position, director.GetStoryManager.Level.Camera, ref director, ref map);
         }
 
 
@@ -264,7 +273,7 @@ namespace Singularity.Units
             {
                 if (!HasReachedWaypoint())
                 {
-                    MoveToTarget(mPath.Peek());
+                    MoveToTarget(target: mPath.Peek());
                 }
                 else
                 {
@@ -393,7 +402,6 @@ namespace Singularity.Units
                             mZoomSnapshot = mCamera.GetZoom();
                             giveThrough = true;
                         }
-
                     }
 
                     if (withinBounds) {
