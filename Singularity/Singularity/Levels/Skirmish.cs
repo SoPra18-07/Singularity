@@ -67,9 +67,9 @@ namespace Singularity.Levels
             PlatformFactory.Init(null, platformCylTexture, platformDomeTexture, platformBlankTexture);
 
             //Map related stuff
-            mCamera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 800, 800);
-            mFow = new FogOfWar(mCamera, mGraphics.GraphicsDevice);
-            mMap = new Map.Map(mapBackground, 20, 20, mFow, mCamera, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
+            Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 800, 800);
+            mFow = new FogOfWar(Camera, mGraphics.GraphicsDevice);
+            Map = new Map.Map(mapBackground, 20, 20, mFow, Camera, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
 
             //INITIALIZE SCREENS AND ADD THEM TO THE SCREENMANAGER
             GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
