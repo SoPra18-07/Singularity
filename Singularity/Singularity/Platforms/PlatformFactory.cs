@@ -79,7 +79,7 @@ namespace Singularity.Platforms
                     return new Junkyard(position, sDomeSheet, sBlankSheet, ref director);
 
                 case EPlatformType.Kinetic:
-                    throw new NotImplementedException("Kinetic Facilities have not yet been implemented");
+                    return new DefenseKinetic(position, sConeSheet, sBlankSheet, ref director);
 
                 case EPlatformType.Mine:
                     return new Mine(position, sDomeSheet, sBlankSheet, resourceMap, ref director, autoRegister);

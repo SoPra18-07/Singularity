@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Exceptions;
 using Singularity.Graph;
+using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.PlatformActions;
 using Singularity.Property;
@@ -49,19 +50,19 @@ namespace Singularity.Platforms
         /// Indicates the platform width
         /// </summary>
         [DataMember]
-        private const int PlatformWidth = 148;
+        protected const int PlatformWidth = 148;
 
         /// <summary>
         /// Indicates the platform height.
         /// </summary>
         [DataMember]
-        private const int PlatformHeight = 172;
+        protected const int PlatformHeight = 172;
 
         /// <summary>
         /// How much health the platform has
         /// </summary>
         [DataMember]
-        private int mHealth;
+        public int Health { get; private set; }
 
         /// <summary>
         /// Indicates if the platform is a "real" platform or a blueprint.
@@ -74,8 +75,8 @@ namespace Singularity.Platforms
         protected Dictionary<EResourceType, int> mCost;
         [DataMember]
         protected List<IPlatformAction> mIPlatformActions;
-        private readonly Texture2D mPlatformSpriteSheet;
-        private readonly Texture2D mPlatformBaseTexture;
+        protected readonly Texture2D mPlatformSpriteSheet;
+        protected readonly Texture2D mPlatformBaseTexture;
         [DataMember]
         protected string mSpritename;
         [DataMember]
@@ -85,6 +86,8 @@ namespace Singularity.Platforms
         protected List<Resource> mResources;
         [DataMember]
         protected Dictionary<EResourceType, int> mRequested;
+
+
 
         public Vector2 Center { get; set; }
 
@@ -98,9 +101,15 @@ namespace Singularity.Platforms
 
         protected Director mDirector;
 
-        // the sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome
-        private int mSheet;
-        private int mSheetPosition;
+        ///<summary>
+        /// The sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome.
+        /// </summary>
+        protected int mSheet;
+
+        /// <summary>
+        /// Where on the spritesheet the platform is located
+        /// </summary>
+        protected int mSheetPosition;
 
 
         [DataMember]
@@ -116,7 +125,7 @@ namespace Singularity.Platforms
         [DataMember]
         private readonly float mCenterOffsetY;
 
-        private Color mColor;
+        protected Color mColor = Color.White;
 
         public bool[,] ColliderGrid { get; internal set; }
 
@@ -128,8 +137,6 @@ namespace Singularity.Platforms
         {
 
             Id = IdGenerator.NextiD();
-
-            mColor = Color.White;
 
             mDirector = director;
 
@@ -148,7 +155,7 @@ namespace Singularity.Platforms
             // also sets the AbsoluteSize and collider grids
 
             //default?
-            mHealth = 100;
+            Health = 100;
 
             //I dont think this class has to register in the DistributionManager
             //Add possible Actions in this array
@@ -300,29 +307,15 @@ namespace Singularity.Platforms
         /// Get the Resources on the platform.
         /// </summary>
         /// <returns> a List containing the references to the resource-objects</returns>
-        public List<Resource> GetPlatformResources()
+        internal List<Resource> GetPlatformResources()
         {
             return mResources;
         }
 
-
-        /// <summary>
-        /// Get the health points of the platform
-        /// </summary>
-        /// <returns> the health points as integer</returns>
-        public int GetHealth()
+        public void MakeDamage(int damage)
         {
-            return mHealth;
-        }
-
-        /// <summary>
-        /// Heal the platform or inflict damage on it.
-        /// </summary>
-        /// <param name="damage">Positive values for healing, negative for damage</param>
-        public void TakeHealDamage(int damage)
-        {
-            mHealth += damage;
-            if (mHealth <= 0)
+            Health -= damage;
+            if (Health <= 0)
             {
                 if (mType == EPlatformType.Blank)
                 {
@@ -364,6 +357,8 @@ namespace Singularity.Platforms
             return Optional<Resource>.Of(foundresource);
         }
 
+
+
         /// <summary>
         /// Get the resources that are requested and the amount of it.
         /// </summary>
@@ -384,7 +379,7 @@ namespace Singularity.Platforms
         }
 
         /// <inheritdoc cref="Singularity.Property.IDraw"/>
-        public void Draw(SpriteBatch spritebatch)
+        public virtual void Draw(SpriteBatch spritebatch)
         {
             var transparency = mIsBlueprint ? 0.35f : 1f;
 
@@ -403,30 +398,9 @@ namespace Singularity.Platforms
                         LayerConstants.BasePlatformLayer);
                     break;
                 case 1:
-                    // Cone
-                    // Draw the basic platform first
-                    spritebatch.Draw(mPlatformBaseTexture,
-                        Vector2.Add(AbsolutePosition, new Vector2(-3, 73)),
-                        null,
-                        mColor * transparency,
-                        0f,
-                        Vector2.Zero,
-                        1f,
-                        SpriteEffects.None,
-                        LayerConstants.BasePlatformLayer);
-                    // then draw what's on top of that
-                    spritebatch.Draw(mPlatformSpriteSheet,
-                        AbsolutePosition,
-                        new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 148),
-                        mColor * transparency,
-                        0f,
-                        Vector2.Zero,
-                        1f,
-                        SpriteEffects.None,
-                        mLayer);
                     break;
                 case 2:
-                    // Cylinder
+                    // Cylinder (Unit Platforms
                     // Draw the basic platform first
                     spritebatch.Draw(mPlatformBaseTexture,
                         Vector2.Add(AbsolutePosition, new Vector2(0, 81)),
@@ -567,7 +541,7 @@ namespace Singularity.Platforms
 
 
         /// <summary>
-        /// Sets all the parameters to draw a platfrom properly and calculates the absolute size of a platform.
+        /// Sets all the parameters to draw a platform properly and calculates the absolute size of a platform.
         /// </summary>
         /// <returns>Absolute Size of a platform</returns>
         protected void SetPlatfromParameters()
@@ -769,7 +743,7 @@ namespace Singularity.Platforms
             SetPlatfromParameters();
 
             //default?
-            mHealth = 100;
+            Health = 100;
 
             mIPlatformActions.RemoveAll(a => a.Die());
 

@@ -67,7 +67,7 @@ namespace Singularity.Map
         }
 
         /// <see cref="CollisionMap.UpdateCollider(ICollider)"/>
-        public void UpdateCollider(ICollider collider)
+        internal void UpdateCollider(ICollider collider)
         {
             mCollisionMap.UpdateCollider(collider);
         }

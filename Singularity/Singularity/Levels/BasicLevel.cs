@@ -1,57 +1,66 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
-using Singularity.Screen;
 using Singularity.Platforms;
+using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 
 namespace Singularity.Levels
 {
-    //Not sure whether this should be serialized, but I guess...
-    [DataContract]
-    class Tutorial: ILevel
+    internal abstract class BasicLevel : ILevel
     {
         [DataMember]
         public GameScreen GameScreen { get; set; }
 
-        [DataMember]
         public Camera Camera { get; set; }
 
-        [DataMember]
-        public Map.Map Map { get; private set; }
+
+        public Map.Map Map { get; set; }
 
 
-        [DataMember]
-        private GraphicsDeviceManager mGraphics;
-        [DataMember]
-        private FogOfWar mFow;
-        [DataMember]
-        private Director mDirector;
 
         [DataMember]
-        private UserInterfaceScreen mUi;
-        [DataMember]
-        private IScreenManager mScreenManager;
+        protected GraphicsDeviceManager mGraphics;
 
-        //GameObjects to initialize:
         [DataMember]
-        private CommandCenter mPlatform;
+        protected FogOfWar mFow;
 
-        public Tutorial(GraphicsDeviceManager graphics, ref Director director, ContentManager content, IScreenManager screenmanager)
+        [DataMember]
+        protected Director mDirector;
+
+        [DataMember]
+        protected UserInterfaceScreen mUi;
+
+        [DataMember]
+        protected IScreenManager mScreenManager;
+
+        protected Texture2D mPlatformBlankTexture;
+
+        protected BasicLevel(GraphicsDeviceManager graphics,
+            ref Director director,
+            ContentManager content,
+            IScreenManager screenmanager)
+
         {
             mDirector = director;
-            mDirector.GetStoryManager.SetLevelType(LevelType.Tutorial, this);
+            mDirector.GetStoryManager.SetLevelType(LevelType.Skirmish, this);
             mDirector.GetStoryManager.LoadAchievements();
             mGraphics = graphics;
             mScreenManager = screenmanager;
-            LoadContent(content);
+
+            StandardInitialization(content);
         }
 
-        public void LoadContent(ContentManager content)
+        private void StandardInitialization(ContentManager content)
         {
             //Load stuff
             var platformConeTexture = content.Load<Texture2D>("Cones");
@@ -69,23 +78,8 @@ namespace Singularity.Levels
             Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 800, 800);
             mFow = new FogOfWar(Camera, mGraphics.GraphicsDevice);
             Map = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.GraphicsDevice.Viewport, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
-
-            //INITIALIZE SCREENS AND ADD THEM
-            GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
-            mUi = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
-
-            mScreenManager.AddScreen(GameScreen);
-            mScreenManager.AddScreen(mUi);
-
-
-            //INGAME OBJECTS INITIALIZATION ===================================================
-
-            //SetUnit
-            var map = Map;
-            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, mUi);
-            GameScreen.AddObject(setUnit);
-
-            //TESTMETHODS HERE =====================================
         }
+
+        public abstract void LoadContent(ContentManager content);
     }
 }
