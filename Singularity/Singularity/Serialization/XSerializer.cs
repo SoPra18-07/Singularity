@@ -70,10 +70,20 @@ namespace Singularity.Serialization
         /// The destination will be  %USERPROFILE%\Saved Games\Singularity (the directory will be created if it doesnt exist).
         /// </summary>
         /// <param name="toSave">The object that should be saved</param>
-        /// /// <param name="name">The name of the file. Don't forget to add .xml at the end!!!</param>
-        public static void Save(object toSave, string name)
+        /// <param name="name">The name of the file. Don't forget to add .xml at the end!!!</param>
+        /// /// <param name="isAchievement">True if you want to Save an Achievement class, false if its a GameSave</param>
+        public static void Save(object toSave, string name, bool isAchievement)
         {
-            var path = @"%USERPROFILE%\Saved Games\Singularity\Saves";
+            string path;
+            if (isAchievement)
+            {
+                path = @"%USERPROFILE%\Saved Games\Singularity";
+            }
+            else
+            {
+                path = @"%USERPROFILE%\Saved Games\Singularity\Saves";
+            }
+
             path = Environment.ExpandEnvironmentVariables(path);
             if (!Directory.Exists(path))
             {

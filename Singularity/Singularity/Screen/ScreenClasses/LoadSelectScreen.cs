@@ -247,8 +247,18 @@ namespace Singularity.Screen.ScreenClasses
             mMButtonList.Add(mSave5);
 
             mMBackButton.ButtonReleased += MainMenuManagerScreen.OnBackButtonReleased;
+            mSave1.ButtonReleased += LoadGameManagerScreen.OnSave1Released;
+            mSave2.ButtonReleased += LoadGameManagerScreen.OnSave2Released;
+            mSave3.ButtonReleased += LoadGameManagerScreen.OnSave3Released;
+            mSave4.ButtonReleased += LoadGameManagerScreen.OnSave4Released;
+            mSave5.ButtonReleased += LoadGameManagerScreen.OnSave5Released;
 
             mMBackButton.ButtonHovering += OnBackHover;
+            mSave1.ButtonHovering += OnSave1;
+            mSave2.ButtonHovering += OnSave2;
+            mSave3.ButtonHovering += OnSave3;
+            mSave4.ButtonHovering += OnSave4;
+            mSave5.ButtonHovering += OnSave5;
 
             Loaded = true;
         }
@@ -281,19 +291,34 @@ namespace Singularity.Screen.ScreenClasses
 
         #region Button Hover Handlers
 
-        private void OnStoryHover(Object sender, EventArgs eventArgs)
+        private void OnBackHover(Object sender, EventArgs eventArgs)
+        {
+            mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter + 250);
+        }
+
+        private void OnSave1(Object sender, EventArgs eventArgs)
         {
             mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter);
         }
 
-        private void OnFreePlayHover(Object sender, EventArgs eventArgs)
+        private void OnSave2(Object sender, EventArgs eventArgs)
         {
             mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter + 50);
         }
 
-        private void OnBackHover(Object sender, EventArgs eventArgs)
+        private void OnSave3(Object sender, EventArgs eventArgs)
         {
             mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter + 100);
+        }
+
+        private void OnSave4(Object sender, EventArgs eventArgs)
+        {
+            mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter + 150);
+        }
+
+        private void OnSave5(Object sender, EventArgs eventArgs)
+        {
+            mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter + 200);
         }
         #endregion
     }

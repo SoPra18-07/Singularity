@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -6,32 +10,22 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Singularity.Screen.ScreenClasses
 {
-    internal sealed class MainMenuManagerScreen : IScreen
+    class LoadGameManagerScreen : IScreen
     {
-        public EScreen Screen { get; private set; } = EScreen.MainMenuManagerScreen;
+        public EScreen Screen { get; private set; } = EScreen.LoadGameManagerScreen;
 
         public bool Loaded { get; set; }
 
         /// <inheritdoc cref="IScreen"/>
         /// <summary>
-        /// Manages the main menu. This is the screen that is second loaded into the stack screen manager
-        /// and loads all the other main menu screens. Also handles button events which involve switching
-        /// between menu screens.
+        /// Manages the Loading of the Level/GameScreen. This is the screen that is first loaded into the stack screen manager
+        /// and basically only handles the transition from LoadSelectScreen to the GameScreen (which has to be loaded) itself.
         /// </summary>
         private readonly IScreenManager mScreenManager;
         private EScreen mScreenState;
 
         // All connecting screens
-        private ITransitionableMenu mGameModeSelectScreen;
-        private ITransitionableMenu mLoadSelectScreen;
-        private ITransitionableMenu mAchievementsScreen;
-        private ITransitionableMenu mOptionsScreen;
-        private ITransitionableMenu mSplashScreen;
-        private ITransitionableMenu mMainMenuScreen;
         private ITransitionableMenu mLoadingScreen;
-
-        // Background
-        private MenuBackgroundScreen mMenuBackgroundScreen;
 
         // Screen transition variables
         private static string sPressed;
@@ -43,25 +37,19 @@ namespace Singularity.Screen.ScreenClasses
         // viewport resolution changes
         private static Vector2 sViewportResolution;
         private static bool sResolutionChanged;
-        private ContentManager mContent;
 
         /// <summary>
-        /// Creates an instance of the MainMenuManagerScreen class
+        /// Creates an instance of the LoadGameManagerScreen class
         /// </summary>
         /// <param name="screenResolution">Screen resolution of the game.</param>
         /// <param name="screenManager">Stack screen manager of the game.</param>
-        /// <param name="showSplash">Defines if the splash screen should be shown
-        /// (used when going back to main menu from within the game where showing the
-        /// splash screen would not be necessary).</param>
         /// <param name="game">Used to pass on to the options screen to change game settings</param>
-        public MainMenuManagerScreen(Vector2 screenResolution, IScreenManager screenManager, bool showSplash, Game1 game)
+        public LoadGameManagerScreen(Vector2 screenResolution, IScreenManager screenManager, Game1 game)
         {
             mScreenManager = screenManager;
             mGame = game;
 
-            Initialize(screenResolution, false, game);
-
-            mScreenState = showSplash ? EScreen.SplashScreen : EScreen.MainMenuScreen;
+            Initialize(screenResolution);
 
             sPressed = "None";
             sResolutionChanged = false;
@@ -74,29 +62,11 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="content">Content Manager that should handle the content loading</param>
         public void LoadContent(ContentManager content)
         {
-            mContent = content;
-
-            // Add screen to screen manager
-            mScreenManager.AddScreen(mMenuBackgroundScreen);
-
-            if (mScreenState == EScreen.SplashScreen)
-            {
-                mScreenManager.AddScreen(mSplashScreen);
-            }
-            else if (mScreenState == EScreen.MainMenuScreen)
-            {
-                mScreenManager.AddScreen(mMainMenuScreen);
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-
-
+            //This Screen has no content to load.
         }
 
         /// <summary>
-        /// Updates the state of the main menu and changes the screen that is currently being displayed
+        /// Updates the state of the LoadGameManager and changes to the game if the conditions are met.
         /// by the stack screen manager
         /// </summary>
         /// <param name="gametime"></param>
@@ -104,13 +74,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             if (sResolutionChanged)
             {
-                Initialize(sViewportResolution, sResolutionChanged, mGame);
-                // LoadScreenContents(mContent);
-                mScreenManager.RemoveScreen();
-                mScreenManager.RemoveScreen();
-                mMenuBackgroundScreen.TransitionTo(EScreen.OptionsScreen, EScreen.OptionsScreen, gametime);
-                mScreenManager.AddScreen(mMenuBackgroundScreen);
-                mScreenManager.AddScreen(mOptionsScreen);
+                Initialize(sViewportResolution);
                 sResolutionChanged = false;
             }
             switch (mScreenState)
@@ -243,50 +207,6 @@ namespace Singularity.Screen.ScreenClasses
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            /* old code
-            var origin = new EScreen();
-            // make sure that this isn't a switch to the gamescreen, represented by this being the screen that is passed
-            if (targetScreen != mLoadingScreen)
-            {
-                // check if the transition is running. If yes, then don't do anything
-                if (!mMenuBackgroundScreen.TransitionRunning)
-                {
-                    origin = mScreenState;
-                    // if the transition hasn't started, start it
-                    if (mMenuBackgroundScreen.CurrentScreen != eScreen)
-                    {
-                        mCurrentScreen.TransitionTo(origin, eScreen, gameTime);
-
-                        mMenuBackgroundScreen.TransitionTo(origin, eScreen, gameTime);
-                    }
-                    // if it is finish, "reset" the transition states.
-                    if (!mCurrentScreen.TransitionRunning)
-                    {
-                        mCurrentScreen = targetScreen;
-                        mScreenState = eScreen;
-                        sPressed = "None";
-                    }
-                }
-            }
-            // special switch case for loading screen
-            else
-            {
-                // remove menu background if it is a switch to gamescreen
-                mScreenManager.RemoveScreen();
-            }
-            // check to see if the transition out of the current screen is done but the transition in hasn't been completed yet
-            if (!mCurrentScreen.TransitionRunning && mCurrentScreen == targetScreen)
-            {
-                // once the transition is finished, remove the screen
-                mScreenManager.RemoveScreen();
-                // add the target screen and replace the current screen with that screen
-                mScreenManager.AddScreen(targetScreen);
-                targetScreen.TransitionTo(origin, eScreen, gameTime);
-                mCurrentScreen = targetScreen;
-
-            }
-            */
         }
 
         /// <summary>
@@ -304,8 +224,8 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>Bool. If true, then the screen below this will be updated.</returns>
         public bool UpdateLower()
         {
-            // below this screen is the game so it shouldn't update the game
-            return mScreenState == EScreen.LoadingScreen || mScreenState == EScreen.GameScreen;
+            //Below this screen is nothing so dont update anything.
+            return false;
         }
 
         /// <summary>
@@ -314,7 +234,8 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>Bool. If true, then the screen below this will be drawn.</returns>
         public bool DrawLower()
         {
-            return mScreenState == EScreen.LoadingScreen || mScreenState == EScreen.GameScreen;
+            //Below this screen is nothing so dont draw anything.
+            return false;
         }
 
         public static void SetResolution(Vector2 viewportResolution)
@@ -324,41 +245,15 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         /// <summary>
-        /// Initialize the main menu screen by creating all the screens
+        /// Initialize the Loading Screen, by creating it with the desired resolution.
         /// </summary>
         /// <param name="screenResolution"></param>
         /// <param name="screenResolutionChanged"></param>
         /// <param name="game"></param>
-        private void Initialize(Vector2 screenResolution, bool screenResolutionChanged, Game1 game)
+        private void Initialize(Vector2 screenResolution)
         {
-            mGameModeSelectScreen = new GameModeSelectScreen(screenResolution);
-            mLoadSelectScreen = new LoadSelectScreen(screenResolution);
-            mAchievementsScreen = new AchievementsScreen();
-            mOptionsScreen = new OptionsScreen(screenResolution, screenResolutionChanged, game);
-            mMenuBackgroundScreen = new MenuBackgroundScreen(screenResolution);
-            mSplashScreen = new SplashScreen(screenResolution);
-            mMainMenuScreen = new MainMenuScreen(screenResolution);
             mLoadingScreen = new LoadingScreen(screenResolution);
         }
-
-        /*
-        /// <summary>
-        /// Loads the contents of the main menu screens
-        /// </summary>
-        /// <param name="content">ContentManager that contains the content</param>
-        private void LoadScreenContents(ContentManager content)
-        {
-            // Load content for all the other menu screens
-            mMenuBackgroundScreen.LoadContent(content);
-            mSplashScreen.LoadContent(content);
-            mMainMenuScreen.LoadContent(content);
-            mGameModeSelectScreen.LoadContent(content);
-            mLoadSelectScreen.LoadContent(content);
-            mAchievementsScreen.LoadContent(content);
-            mOptionsScreen.LoadContent(content);
-            mLoadingScreen.LoadContent(content);
-        }
-        */
 
 
         #region MainMenuScreen Button Handlers
@@ -456,3 +351,4 @@ namespace Singularity.Screen.ScreenClasses
 
     }
 }
+

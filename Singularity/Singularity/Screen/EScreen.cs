@@ -15,6 +15,7 @@
         SplashScreen,
         StatisticsScreen,
         MainMenuManagerScreen,
-        UserInterfaceScreen
+        UserInterfaceScreen,
+        LoadGameManagerScreen
     }
 }
