@@ -158,7 +158,7 @@ namespace Singularity.Units
             {
                 // if key b has been pressed and the settler unit is selected and its not moving
                 // --> send out event that deletes settler and adds a command center
-                if ((key == Keys.B && mSelected && HasReachedTarget()) || mNeverMoved)
+                if (key == Keys.B && mSelected && (HasReachedTarget() || mNeverMoved))
                 {
                     OnBuildCommandCenter();
                 }
