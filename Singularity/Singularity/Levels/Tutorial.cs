@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,11 +17,16 @@ namespace Singularity.Levels
     {
         [DataMember]
         public GameScreen GameScreen { get; set; }
+
+        [DataMember]
+        public Camera Camera { get; set; }
+
+        [DataMember]
+        public Map.Map Map { get; private set; }
+
+
         [DataMember]
         private GraphicsDeviceManager mGraphics;
-        private Map.Map mMap;
-        [DataMember]
-        private Camera mCamera;
         [DataMember]
         private FogOfWar mFow;
         [DataMember]
@@ -53,27 +57,29 @@ namespace Singularity.Levels
             var platformCylTexture = content.Load<Texture2D>("Cylinders");
             var platformBlankTexture = content.Load<Texture2D>("PlatformBasic");
             var platformDomeTexture = content.Load<Texture2D>("Dome");
-            var milUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
+            MilitaryUnit.mMilSheet = content.Load<Texture2D>("UnitSpriteSheet");
+            MilitaryUnit.mGlowTexture = content.Load<Texture2D>("UnitGlowSprite");
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
 
             //TODO: have a cone texture 
             PlatformFactory.Init(null, platformCylTexture, platformDomeTexture, platformBlankTexture);
 
             //Map related stuff
-            mCamera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 800, 800);
-            mFow = new FogOfWar(mCamera, mGraphics.GraphicsDevice);
-            mMap = new Map.Map(mapBackground, 20, 20, mFow, mGraphics.GraphicsDevice.Viewport, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
+            Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 800, 800);
+            mFow = new FogOfWar(Camera, mGraphics.GraphicsDevice);
+            Map = new Map.Map(mapBackground, 20, 20, mFow, Camera, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
 
-            //INITIALIZE SCREENS
-            GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, mMap, mCamera, mFow);
+            //INITIALIZE SCREENS AND ADD THEM
+            GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
             Ui = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
             Ui.LoadContent(content);
-
 
             //INGAME OBJECTS INITIALIZATION ===================================================
 
             //SetUnit
-            var setUnit = new Settler(new Vector2(1000, 1250), mCamera, ref mDirector, ref mMap, GameScreen, Ui);
+            var map = Map;
+            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, Ui);
+
             GameScreen.AddObject(setUnit);
 
             //TESTMETHODS HERE =====================================

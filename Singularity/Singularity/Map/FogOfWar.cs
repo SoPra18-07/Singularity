@@ -33,11 +33,6 @@ namespace Singularity.Map
     {
 
         /// <summary>
-        /// This array holds bit values of whether the position (tile) was visited or not. Where 1 = visited and 0 = unvisited.
-        /// </summary>
-        private bool[,] mToDraw;
-
-        /// <summary>
         /// A list of all the objects which are able to reveal the fog of war.
         /// </summary>
         private readonly LinkedList<IRevealing> mRevealingObjects;

@@ -64,6 +64,7 @@
     <Compile Include="Manager\DistributionManager.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />
     <Compile Include="PlatformActions\MakeUnit.cs" />
+    <Compile Include="Platforms\Barracks.cs" />
     <Compile Include="Platforms\EPlacementType.cs" />
     <Compile Include="Platforms\PlatformFactory.cs" />
     <Compile Include="Platforms\PlatformPlacement.cs" />
@@ -73,7 +74,9 @@
     <Compile Include="Screen\InfoBarWindowObject.cs" />
     <Compile Include="Screen\ScreenClasses\LoadGameManagerScreen.cs" />
     <Compile Include="Screen\SliderHandler.cs" />
+    <Compile Include="Units\ControllableUnit.cs" />
     <Compile Include="Units\EnemyUnit.cs" />
+    <Compile Include="Units\FreeMovingUnit.cs" />
     <Compile Include="Units\SelectionBox.cs" />
     <Compile Include="Units\Settler.cs" />
     <Compile Include="Units\Task.cs" />
@@ -211,7 +214,6 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.config" />
     <None Include="app.manifest" />
-    <None Include="ClassDiagram1.cd" />
     <None Include="Content\Shaders\Bloom.fx" />
     <None Include="packages.config" />
   </ItemGroup>
