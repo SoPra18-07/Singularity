@@ -26,7 +26,7 @@ namespace Singularity.Platforms
         /// <summary>
         /// For defense platforms, indicates where there target is
         /// </summary>
-        protected Vector2 mEnemyPosition;
+        internal Vector2 EnemyPosition { get; set; }
 
         /// <summary>
         /// Represents an abstract class for all defense platforms. Implements their draw methods.
@@ -83,8 +83,8 @@ namespace Singularity.Platforms
             }
 
             // draws a laser line a a slight glow around the line, then sets the shoot future off
-            spriteBatch.DrawLine(Center, MapCoordinates(mEnemyPosition), Color.White, 2);
-            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), MapCoordinates(mEnemyPosition), Color.White * .2f, 6);
+            spriteBatch.DrawLine(Center, MapCoordinates(EnemyPosition), Color.White, 2);
+            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), MapCoordinates(EnemyPosition), Color.White * .2f, 6);
             mShoot = false;
         }
 

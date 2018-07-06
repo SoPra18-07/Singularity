@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
+using Singularity.PlatformActions;
 using Singularity.Resources;
 
 namespace Singularity.Platforms
@@ -44,6 +45,8 @@ namespace Singularity.Platforms
             ref Director director)
             : base(position, platformSpriteSheet, baseSprite, ref director, EPlatformType.Kinetic)
         {
+            //Add possible Actions in this array
+            mIPlatformActions.Add(new Shoot(platform: this, director: ref mDirector));
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
         }
@@ -53,12 +56,15 @@ namespace Singularity.Platforms
             // TODO: See if any unit is here first to be able to shoot
             AmmoCount--;
             mShoot = true;
-            mEnemyPosition = target;
+            EnemyPosition = target;
+
+            mIPlatformActions[0].Execute();
         }
         // TODO: Some way to calculate how many things are sent here
 
         public override void Update(GameTime t)
         {
+            // TODO: Impelement using platform actions (I'm not sure how to do this)
             if (!mRequesting)
             {
                 if (AmmoCount == 0
