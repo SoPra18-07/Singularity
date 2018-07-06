@@ -18,7 +18,7 @@ namespace Singularity.PlatformActions
             mBuildingCost = new Dictionary<EResourceType, int> { { EResourceType.Metal, 3 }, { EResourceType.Chip, 2 }, {EResourceType.Fuel, 1} };
         }
 
-        public override void CreateUnit()
+        protected override void CreateUnit()
         {
             // unsure why this is a static method since it just returns a military unit anyways
             // var unit = MilitaryUnit.CreateMilitaryUnit(mPlatform.Center + mOffset, ref mDirector);
@@ -36,9 +36,23 @@ namespace Singularity.PlatformActions
             mBuildingCost = new Dictionary<EResourceType, int> {{EResourceType.Steel, 3}, {EResourceType.Chip, 2}, {EResourceType.Fuel, 2}};
         }
 
-        public override void CreateUnit()
+        protected override void CreateUnit()
         {
             throw new NotImplementedException();
+        }
+    }
+
+    internal sealed class MakeGeneralUnit : AMakeUnit
+    {
+        public MakeGeneralUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
+        {
+            // Todo: update prices.
+            mBuildingCost = new Dictionary<EResourceType, int> { {EResourceType.Steel, 3} };
+        }
+
+        protected override void CreateUnit()
+        {
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(new GeneralUnit(mPlatform, ref mDirector));
         }
     }
 
@@ -56,11 +70,10 @@ namespace Singularity.PlatformActions
             State = PlatformActionState.Available;
         }
 
-        public abstract void CreateUnit();
+        protected abstract void CreateUnit();
 
         public override void Execute()
         {
-            // throw new NotImplementedException();
             // theres nothing a unit should be able to do, except bringing Resources.
         }
 
@@ -68,6 +81,8 @@ namespace Singularity.PlatformActions
 
         public void Update(GameTime gametime)
         {
+            if (State != PlatformActionState.Active)
+                return;
             if (mToRequest.Count > 0)
             {
                 var resource = mToRequest.Keys.ElementAt(0);

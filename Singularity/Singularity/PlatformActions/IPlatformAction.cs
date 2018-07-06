@@ -164,6 +164,7 @@ namespace Singularity.PlatformActions
         {
             mDirector.GetDistributionManager.Kill(this);
             mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
+            mPlatform.Kill(this);
             mPlatform = null;
 
             return true;

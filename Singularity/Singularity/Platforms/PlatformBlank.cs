@@ -164,7 +164,7 @@ namespace Singularity.Platforms
             };
 
             //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<EResourceType, int>();
+            mCost = new Dictionary<EResourceType, int> { {EResourceType.Metal, 2} };
 
             mResources = new List<Resource>();
 
@@ -180,6 +180,11 @@ namespace Singularity.Platforms
 
             Debug.WriteLine("PlatformBlank created");
 
+        }
+
+        internal void AddBlueprint(BuildBluePrint buildBluePrint)
+        {
+            mIPlatformActions.Add(buildBluePrint);
         }
 
         public void SetColor(Color color)
@@ -828,6 +833,11 @@ namespace Singularity.Platforms
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(road);
         }
 
+        public void Kill(IPlatformAction action)
+        {
+            mIPlatformActions.Remove(action);
+        }
+
         public IEnumerable<INode> GetChilds()
         {
             var childs = new List<INode>();
@@ -852,6 +862,33 @@ namespace Singularity.Platforms
         public int GetGraphIndex()
         {
             return mGraphIndex;
+        }
+
+        public string GetResourceString()
+        {
+            if (mResources.Count == 0)
+            {
+                return "";
+            }
+            var resString = "";
+            var cType = (EResourceType) 0;
+            var counter = 0;
+            foreach (var res in mResources)
+            {
+                if (counter > 0 && res.Type != cType)
+                {
+                    resString += cType + ": " + counter + ", ";
+                    counter = 0;
+                }
+                cType = res.Type;
+                counter++;
+            }
+            return resString + cType + ": " + counter;
+        }
+
+        public void Built()
+        {
+            mIsBlueprint = false;
         }
     }
 }

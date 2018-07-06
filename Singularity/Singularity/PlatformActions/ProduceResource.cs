@@ -77,26 +77,27 @@ namespace Singularity.PlatformActions
 
     public sealed class BuildBluePrint : AMakeUnit
     {
-        private Dictionary<EResourceType, int> mMRequiredResources;
+        private PlatformBlank mBuilding;
 
         public BuildBluePrint(PlatformBlank platform, PlatformBlank toBeBuilt, ref Director director) : base(
             platform: platform,
             director: ref director)
         {
-            mMRequiredResources = toBeBuilt.GetResourcesRequired();
+            mBuildingCost = toBeBuilt.GetResourcesRequired();
+            mBuilding = toBeBuilt;
         }
 
         public override List<JobType> UnitsRequired { get; } = new List<JobType> {JobType.Construction};
 
-        public override void CreateUnit()
+        protected override void CreateUnit()
         {
-            throw new NotImplementedException();
+            mBuilding.Built();
+            Die();
         }
 
         public override void Execute()
         {
-            throw new NotImplementedException();
-            // TODO: Build Blueprints!! (fkarg)
+
         }
 
         public override Dictionary<EResourceType, int> GetRequiredResources()
