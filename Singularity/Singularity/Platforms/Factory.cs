@@ -9,15 +9,15 @@ using Singularity.Units;
 
 namespace Singularity.Platforms
 {
-    [DataContract()]
+    [DataContract]
     class Factory: PlatformBlank
     {
-        [DataMember()]
+        [DataMember]
         private const int PlatformWidth = 144;
-        [DataMember()]
+        [DataMember]
         private const int PlatformHeight = 127;
 
-        public Factory(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ref Director director): base(position, spritesheet, basesprite, ref director, EPlatformType.Factory, -12)
+        public Factory(Vector2 position, Texture2D spritesheet, Texture2D basesprite, SpriteFont libSans12, ref Director director): base(position: position, platformSpriteSheet: spritesheet, libSans12Font: libSans12, baseSprite: basesprite, director: ref director, type: EPlatformType.Factory, centerOffsetY: -12)
         {
             //mIPlatformActions[0] = new ProduceFactoryResource(this);
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"

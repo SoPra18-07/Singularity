@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Singularity.Graph
 {
@@ -30,19 +31,19 @@ namespace Singularity.Graph
 
         public void AddNode(INode node)
         {
-            mNodes.Add(node);
+            mNodes.Add(item: node);
         }
 
         public void AddEdge(IEdge edge)
         {
-            mEdges.Remove(edge);
+            mEdges.Remove(item: edge);
         }
 
         public void AddNodes(IEnumerable<INode> nodes)
         {
             foreach(var node in nodes)
             {
-                AddNode(node);
+                AddNode(node: node);
             }
         }
 
@@ -50,25 +51,25 @@ namespace Singularity.Graph
         {
             foreach (var edge in edges)
             {
-                AddEdge(edge);
+                AddEdge(edge: edge);
             }
         }
 
         public void RemoveNode(INode node)
         {
-            mNodes.Remove(node);
+            mNodes.Remove(item: node);
         }
 
         public void RemoveEdge(IEdge edge)
         {
-            mEdges.Remove(edge);
+            mEdges.Remove(item: edge);
         }
 
         public void RemoveNodes(IEnumerable<INode> nodes)
         {
             foreach (var node in nodes)
             {
-                RemoveNode(node);
+                RemoveNode(node: node);
             }
         }
 
@@ -76,7 +77,7 @@ namespace Singularity.Graph
         {
             foreach (var edge in edges)
             {
-                RemoveEdge(edge);
+                RemoveEdge(edge: edge);
             }
         }
 
@@ -99,12 +100,12 @@ namespace Singularity.Graph
                 return false;
             }
 
-            if (!(graph.GetNodes().TrueForAll(GetNodes().Contains) && graph.GetNodes().Count == GetNodes().Count))
+            if (!(graph.GetNodes().TrueForAll(match: GetNodes().Contains) && graph.GetNodes().Count == GetNodes().Count))
             {
                 return false;
             }
 
-            if (!(graph.GetEdges().TrueForAll(GetEdges().Contains) && graph.GetEdges().Count == GetEdges().Count))
+            if (!(graph.GetEdges().TrueForAll(match: GetEdges().Contains) && graph.GetEdges().Count == GetEdges().Count))
             {
                 return false;
             }
@@ -112,6 +113,7 @@ namespace Singularity.Graph
 
         }
 
+        [SuppressMessage(category: "ReSharper", checkId: "BaseObjectGetHashCodeCallInGetHashCode")]
         public override int GetHashCode()
         {
             return base.GetHashCode() + mNodes.GetHashCode() * mEdges.GetHashCode();

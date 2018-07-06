@@ -8,7 +8,7 @@ using Singularity.Units;
 
 namespace Singularity.PlatformActions
 {
-    public class ProduceWellResource : APlatformResourceAction
+    public sealed class ProduceWellResource : APlatformResourceAction
     {
         // The ResourceMap is needed for actually 'producing' the resources.
         private readonly ResourceMap mResourceMap;
@@ -22,15 +22,15 @@ namespace Singularity.PlatformActions
 
         public override void Execute()
         {
-            var res = mResourceMap.GetWellResource(mPlatform.AbsolutePosition);
+            var res = mResourceMap.GetWellResource(location: mPlatform.AbsolutePosition);
             if (res.IsPresent())
             {
-                mPlatform.StoreResource(res.Get());
+                mPlatform.StoreResource(resource: res.Get());
             }
         }
     }
 
-    public class ProduceQuarryResource : APlatformResourceAction
+    public sealed class ProduceQuarryResource : APlatformResourceAction
     {
         // The ResourceMap is needed for actually 'producing' the resources.
         private ResourceMap mResourceMap;
@@ -44,15 +44,15 @@ namespace Singularity.PlatformActions
 
         public override void Execute()
         {
-            var res = mResourceMap.GetQuarryResource(mPlatform.AbsolutePosition);
+            var res = mResourceMap.GetQuarryResource(location: mPlatform.AbsolutePosition);
             if (res.IsPresent())
             {
-                mPlatform.StoreResource(res.Get());
+                mPlatform.StoreResource(resource: res.Get());
             }
         }
     }
 
-    public class ProduceMineResource : APlatformResourceAction
+    public sealed class ProduceMineResource : APlatformResourceAction
     {
         // The ResourceMap is needed for actually 'producing' the resources.
         private ResourceMap mResourceMap;
@@ -66,10 +66,10 @@ namespace Singularity.PlatformActions
 
         public override void Execute()
         {
-            var res = mResourceMap.GetMineResource(mPlatform.AbsolutePosition);
+            var res = mResourceMap.GetMineResource(location: mPlatform.AbsolutePosition);
             if (res.IsPresent())
             {
-                mPlatform.StoreResource(res.Get());
+                mPlatform.StoreResource(resource: res.Get());
             }
         }
     }
@@ -109,7 +109,7 @@ namespace Singularity.PlatformActions
 
     public abstract class APlatformResourceAction : APlatformAction
     {
-        protected APlatformResourceAction(PlatformBlank platform, ref Director director) : base(platform, ref director)
+        protected APlatformResourceAction(PlatformBlank platform, ref Director director) : base(platform: platform, director: ref director)
         {
         }
 
@@ -118,16 +118,16 @@ namespace Singularity.PlatformActions
             switch (State)
             {
                 case PlatformActionState.Active:
-                    mDirector.GetDistributionManager.PausePlatformAction(this);
+                    mDirector.GetDistributionManager.PausePlatformAction(action: this);
                     State = PlatformActionState.Available;
                     break;
                 case PlatformActionState.Available:
-                    //TODO: You dont request Units anymore. Are there other things to be changed too then?
-                    //mDirector.GetDistributionManager.RequestUnits(mPlatform, JobType.Production, this);
+                    // TODO: You dont request Units anymore. Are there other things to be changed too then?
+                    // mDirector.GetDistributionManager.RequestUnits(mPlatform, JobType.Production, this);
                     State = PlatformActionState.Active;
                     break;
                 default:
-                    throw new AccessViolationException("Someone/Something acccessed the state!!");
+                    throw new AccessViolationException(message: "Someone/Something acccessed the state!!");
             }
         }
 

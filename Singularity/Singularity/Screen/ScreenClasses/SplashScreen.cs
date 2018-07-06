@@ -46,9 +46,9 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="screenResolution">Viewport resolution used for scaling.</param>
         public SplashScreen(Vector2 screenResolution)
         {
-            mMLogoPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 3);
-            mMSingularityTextPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 + 150);
-            mMTextPosition = new Vector2(screenResolution.X / 2, screenResolution.Y / 2 + 250);
+            mMLogoPosition = new Vector2(x: screenResolution.X / 2, y: screenResolution.Y / 3);
+            mMSingularityTextPosition = new Vector2(x: screenResolution.X / 2, y: screenResolution.Y / 2 + 150);
+            mMTextPosition = new Vector2(x: screenResolution.X / 2, y: screenResolution.Y / 2 + 250);
 
             // logo should fill 0.42 * screen height
             mMScaleMultiplier = screenResolution.Y * 0.42f / 557f;
@@ -76,9 +76,9 @@ namespace Singularity.Screen.ScreenClasses
                         break;
 
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(originScreen),
-                            originScreen,
-                            "Tried going from splash screen to somewhere inaccessible.");
+                        throw new ArgumentOutOfRangeException(paramName: nameof(originScreen),
+                            actualValue: originScreen,
+                            message: "Tried going from splash screen to somewhere inaccessible.");
                 }
             }
         }
@@ -88,10 +88,10 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="content">Content Manager that should handle the content loading</param>
         public void LoadContent(ContentManager content)
         {
-            mMLogoTexture2D = content.Load<Texture2D>("Logo");
-            mMSingularityText = content.Load<Texture2D>("SingularityText");
-            mMLibSans20 = content.Load<SpriteFont>("LibSans20");
-            mMStringCenter = new Vector2(mMLibSans20.MeasureString(mMContinueString).X / 2, mMLibSans20.MeasureString(mMContinueString).Y / 2);
+            mMLogoTexture2D = content.Load<Texture2D>(assetName: "Logo");
+            mMSingularityText = content.Load<Texture2D>(assetName: "SingularityText");
+            mMLibSans20 = content.Load<SpriteFont>(assetName: "LibSans20");
+            mMStringCenter = new Vector2(x: mMLibSans20.MeasureString(text: mMContinueString).X / 2, y: mMLibSans20.MeasureString(text: mMContinueString).Y / 2);
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace Singularity.Screen.ScreenClasses
                         mMSecondFrame = !mMSecondFrame;
                         break;
                     case 5:
-                        mMHoloOpacity = (float)Animations.Easing(1f, 0f, mMTransitionStartTime, mMTransitionDuration, gametime);
+                        mMHoloOpacity = (float)Animations.Easing(startValue: 1f, endValue: 0f, startTime: mMTransitionStartTime, duration: mMTransitionDuration, gameTime: gametime);
 
                         if (gametime.TotalGameTime.TotalMilliseconds >= mMTransitionStartTime + mMTransitionDuration)
                         {
@@ -177,8 +177,8 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.Begin();
 
             // Draw the logo
-            spriteBatch.Draw(mMLogoTexture2D,
-                origin: new Vector2(308, 279),
+            spriteBatch.Draw(texture: mMLogoTexture2D,
+                origin: new Vector2(x: 308, y: 279),
                 position: mMLogoPosition,
                 color: Color.AliceBlue * mMHoloOpacity,
                 rotation: 0f,
@@ -188,8 +188,8 @@ namespace Singularity.Screen.ScreenClasses
                 effects: SpriteEffects.None);
 
             // Draw the mSingularityText
-            spriteBatch.Draw(mMSingularityText,
-                origin: new Vector2(322, 41),
+            spriteBatch.Draw(texture: mMSingularityText,
+                origin: new Vector2(x: 322, y: 41),
                 position: mMSingularityTextPosition,
                 color: Color.AliceBlue * mMHoloOpacity,
                 rotation: 0f,
@@ -199,10 +199,10 @@ namespace Singularity.Screen.ScreenClasses
                 effects: SpriteEffects.None);
 
             // Draw the text
-            spriteBatch.DrawString(mMLibSans20,
+            spriteBatch.DrawString(spriteFont: mMLibSans20,
                 origin: mMStringCenter,
                 position: mMTextPosition,
-                color: new Color(new Vector3(.9137f, .9058f, .8314f)) * mMHoloOpacity * mMTextOpacity,
+                color: new Color(color: new Vector3(x: .9137f, y: .9058f, z: .8314f)) * mMHoloOpacity * mMTextOpacity,
                 text: mMContinueString,
                 rotation: 0f,
                 scale: mMScaleMultiplier,

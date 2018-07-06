@@ -118,7 +118,7 @@ namespace Singularity.PlatformActions
         /// <param name="job">Job.</param>
         void IPlatformAction.AssignUnit(GeneralUnit unit, JobType job)
         {
-            mAssignedUnits.Add(unit, job);
+            mAssignedUnits.Add(key: unit, value: job);
         }
 
         public abstract void Execute();
@@ -152,8 +152,8 @@ namespace Singularity.PlatformActions
             foreach (var unit in mAssignedUnits.Keys)
             {
                 if (unit.Job != job || amount <= 0) continue;
-                mAssignedUnits.Remove(unit);
-                list.Add(unit);
+                mAssignedUnits.Remove(key: unit);
+                list.Add(item: unit);
                 amount -= 1;
             }
 
@@ -162,7 +162,7 @@ namespace Singularity.PlatformActions
 
         public bool Die()
         {
-            mDirector.GetDistributionManager.Kill(this);
+            mDirector.GetDistributionManager.Kill(action: this);
             mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
             mPlatform.Kill(this);
             mPlatform = null;
@@ -172,7 +172,7 @@ namespace Singularity.PlatformActions
 
         public void Kill(GeneralUnit unit)
         {
-            mAssignedUnits.Remove(unit);
+            mAssignedUnits.Remove(key: unit);
         }
     }
 }

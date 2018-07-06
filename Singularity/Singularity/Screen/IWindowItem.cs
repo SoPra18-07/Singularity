@@ -3,9 +3,8 @@ using Singularity.Property;
 
 namespace Singularity.Screen
 {
-    interface IWindowItem : IUpdate, IDraw
+    public interface IWindowItem : IUpdate, IDraw
     {
-        //TODO implement the methods specific to IWindowItem
         Vector2 Position { get; set; }
 
         Vector2 Size { get; }

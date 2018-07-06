@@ -6,7 +6,7 @@ namespace Singularity.Exceptions
     {
         public InvalidGenericArgumentException() { }
 
-        public InvalidGenericArgumentException(string message) : base(message) { }
+        public InvalidGenericArgumentException(string message) : base(message: message) { }
 
     }
 }

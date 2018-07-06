@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Singularity.Resources;
 using Singularity.Utils;
-using System.Linq;
 
 namespace Singularity.Map
 {
@@ -33,32 +33,32 @@ namespace Singularity.Map
             }
 
             mLocationCache = new Dictionary<Vector2, List<MapResource>>();
-            mResourceMap = new List<MapResource>(initialResources);
+            mResourceMap = new List<MapResource>(collection: initialResources);
         }
 
 
         public Optional<Resource> GetWellResource(Vector2 location)
         {
-            var resourcesWell = GetResources(location).Where(r => r.Type == EResourceType.Water || r.Type == EResourceType.Oil).ToList();
+            var resourcesWell = GetResources(location: location).Where(predicate: r => r.Type == EResourceType.Water || r.Type == EResourceType.Oil).ToList();
             if (resourcesWell.Count() <= 0)
             {
-                return Optional<Resource>.Of(null);
+                return Optional<Resource>.Of(value: null);
             }
-            return resourcesWell[0].Get(location);
+            return resourcesWell[index: 0].Get(location: location);
         }
 
         public Optional<Resource> GetQuarryResource(Vector2 location) {
-            return Optional<Resource>.Of(new Resource(EResourceType.Stone, location));
+            return Optional<Resource>.Of(value: new Resource(type: EResourceType.Stone, position: location));
             // this is reference-based and totally fine, since there'll be only references then ... we don't care about that, and as soon as the references are all gone, the GC will take care of it. :)
             // (but yes, actually this could break, since we rely heavily on how c# handles references and stuff.)
         }
 
         public Optional<Resource> GetMineResource(Vector2 location) {
-            var resourcesMine = GetResources(location).Where(r => r.Type == EResourceType.Metal).ToList();
+            var resourcesMine = GetResources(location: location).Where(predicate: r => r.Type == EResourceType.Metal).ToList();
             if (resourcesMine.Count() <= 0) {
-                return Optional<Resource>.Of(null);
+                return Optional<Resource>.Of(value: null);
             }
-            return resourcesMine[0].Get(location);
+            return resourcesMine[index: 0].Get(location: location);
         }
 
         /// <summary>
@@ -71,25 +71,25 @@ namespace Singularity.Map
             // note, the location cache is probably reason number 1 if bugs occur with resources being there even though they shouldn't be,
             // we need to take care, that the resources are getting properly removed.
 
-            if (mLocationCache[location] != null)
+            if (mLocationCache[key: location] != null)
             {
-                return mLocationCache[location];
+                return mLocationCache[key: location];
             }
 
             var foundResources = new List<MapResource>();
 
             foreach (var resource in mResourceMap)
             {
-                if (new Rectangle((int) resource.RelativePosition.X,
-                    (int)resource.RelativePosition.Y,
-                    (int)resource.RelativeSize.X,
-                    (int)resource.RelativeSize.Y).Intersects(new Rectangle((int)location.X, (int)location.Y, 1, 1)))
+                if (new Rectangle(x: (int) resource.RelativePosition.X,
+                    y: (int)resource.RelativePosition.Y,
+                    width: (int)resource.RelativeSize.X,
+                    height: (int)resource.RelativeSize.Y).Intersects(value: new Rectangle(x: (int)location.X, y: (int)location.Y, width: 1, height: 1)))
                 {
-                    foundResources.Add(resource);
+                    foundResources.Add(item: resource);
                 }
             }
 
-            mLocationCache[location] = foundResources;
+            mLocationCache[key: location] = foundResources;
 
             return foundResources;
         }
@@ -100,7 +100,7 @@ namespace Singularity.Map
         /// <param name="toRemove">The resource to remove</param>
         public void RemoveResource(MapResource toRemove)
         {
-            mResourceMap.Remove(toRemove);
+            mResourceMap.Remove(item: toRemove);
             mLocationCache.Clear();
         }
     }

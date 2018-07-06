@@ -44,8 +44,8 @@ namespace Singularity.Graph.Paths
         /// <param name="node">The node to add</param>
         public void AddNode(INode node)
         {
-            mNodePath.Enqueue(node);
-            mPath.Enqueue(((IRevealing)node).Center);
+            mNodePath.Enqueue(item: node);
+            mPath.Enqueue(item: ((IRevealing)node).Center);
         }
     }
 }
