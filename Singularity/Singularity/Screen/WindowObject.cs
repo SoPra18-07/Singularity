@@ -760,7 +760,7 @@ namespace Singularity.Screen
         internal bool Active { get; set; }
 
         // position of the window
-        public Vector2 Position { private get; set; }
+        public Vector2 Position { get; set; }
 
         // size of the window
         public Vector2 Size { get; }

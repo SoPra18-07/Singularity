@@ -184,6 +184,13 @@ namespace Singularity.Screen.ScreenClasses
 
         #endregion
 
+        #region
+
+        // minimap window
+        private WindowObject mMinimapWindow;
+
+        #endregion
+
         #region testing members
 
         // TODO: DELETE TESTING
@@ -953,10 +960,10 @@ namespace Singularity.Screen.ScreenClasses
             // TODO: properly place the minimapObject to better fit with the rest. Don't change the size
             // TODO: other than changing it in MapConstants, the +20 is for the padding left and right.
             var minimap = new MiniMap(mMap, mCamera, content.Load<Texture2D>("minimap"));
-            var minimapObject = new WindowObject("", new Vector2(mCurrentScreenWidth - 12 - MapConstants.MiniMapWidth, mCurrentScreenHeight - 12 - MapConstants.MiniMapHeight), new Vector2(MapConstants.MiniMapWidth + 20, MapConstants.MiniMapHeight + 20), false, mLibSans12, mDirector.GetInputManager, mGraphics);
-            minimapObject.AddItem(minimap);
+            mMinimapWindow = new WindowObject("", new Vector2(0,0), new Vector2(MapConstants.MiniMapWidth + 20, MapConstants.MiniMapHeight + 20), false, mLibSans12, mDirector.GetInputManager, mGraphics);
+            mMinimapWindow.AddItem(minimap);
 
-            mWindowList.Add(minimapObject);
+            mWindowList.Add(mMinimapWindow);
 
             #endregion
 
@@ -1029,11 +1036,17 @@ namespace Singularity.Screen.ScreenClasses
             // civil units position
             mCivilUnitsWindow.Position = new Vector2(12, 12 + 25);
 
-            // build menu position
-            mBuildMenuWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mBuildMenuWindow.Size.X, mCurrentScreenHeight - 12 - mBuildMenuWindow.Size.Y);
-
             // event log position
             mEventLogWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mEventLogWindow.Size.X, 12 + 25);
+
+            // build menu position
+            mBuildMenuWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mBuildMenuWindow.Size.X, mEventLogWindow.Position.Y + mEventLogWindow.Size.Y + 12);
+
+            // minimap position (-32 due to 12 padding + the window size is 20 bigger than the map
+            mMinimapWindow.Position = new Vector2(
+                mCurrentScreenWidth - 32 - MapConstants.MiniMapWidth,
+                mCurrentScreenHeight - 32 - MapConstants.MiniMapHeight
+                );
         }
 
         /// <summary>
