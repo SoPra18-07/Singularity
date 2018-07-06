@@ -245,6 +245,18 @@
 /processorParam:TextureFormat=Color
 /build:UnitGlowSprite.png
 
+#begin minimap.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:minimap.png
+
 #begin LibSans10.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

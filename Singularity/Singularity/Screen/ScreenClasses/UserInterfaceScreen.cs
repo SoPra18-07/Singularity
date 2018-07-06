@@ -7,6 +7,7 @@ using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.PlatformActions;
+using Singularity.Map.Properties;
 using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Resources;
@@ -70,6 +71,8 @@ namespace Singularity.Screen.ScreenClasses
         private readonly StructureMap mStructureMap;
 
         private readonly ResourceMap mResourceMap;
+
+        private readonly Map.Map mMap;
 
         private readonly Camera mCamera;
 
@@ -252,6 +255,14 @@ namespace Singularity.Screen.ScreenClasses
         #endregion
 
         #region infoBar members
+        #region
+
+        // minimap window
+        private WindowObject mMinimapWindow;
+
+        #endregion
+
+        #region testing members
 
         // info bar - the info bar is entirely managed in it's own class, therefore there's no need to define members here
         private InfoBarWindowObject mInfoBar;
@@ -269,6 +280,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="stackScreenManager"></param>
         public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, GameScreen gameScreen, IScreenManager stackScreenManager)
         {
+            mMap = gameScreen.GetMap();
             mStructureMap = gameScreen.GetMap().GetStructureMap();
             mResourceMap = gameScreen.GetMap().GetResourceMap();
             mCamera = gameScreen.GetCamera();
@@ -1065,8 +1077,11 @@ namespace Singularity.Screen.ScreenClasses
             // event log position
             mEventLogWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mEventLogWindow.Size.X, 12 + 25);
 
+            // event log position
+            mEventLogWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mEventLogWindow.Size.X, 12 + 25);
+
             // build menu position
-            mBuildMenuWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mBuildMenuWindow.Size.X, mCurrentScreenHeight - 12 - mBuildMenuWindow.Size.Y);
+            mBuildMenuWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mBuildMenuWindow.Size.X, mEventLogWindow.Position.Y + mEventLogWindow.Size.Y + 12);
 
             // selected platform position
             mSelectedPlatformWindow.Position = new Vector2(mCurrentScreenWidth / 2f - mSelectedPlatformWindow.Size.X / 2, mCurrentScreenHeight - mSelectedPlatformWindow.Size.Y - 12);
