@@ -19,8 +19,6 @@ namespace Singularity.Platforms
 
         private static Texture2D sBlankSheet;
 
-        private static Director sDirector;
-
         /// <summary>
         /// Initializes the platform factory with the sprite sheets needed.
         /// </summary>
@@ -61,7 +59,7 @@ namespace Singularity.Platforms
                     return new Quarry(position, sDomeSheet, sBlankSheet, resourceMap, ref director, autoRegister);
 
                 case EPlatformType.Barracks:
-                    return new Quarry(position, sDomeSheet, sBlankSheet, resourceMap, ref director, autoRegister);
+                    return new Barracks(position, sCylinderSheet, sBlankSheet, ref director);
 
                 case EPlatformType.Blank:
                     return new PlatformBlank(position, sBlankSheet, sBlankSheet, ref director);

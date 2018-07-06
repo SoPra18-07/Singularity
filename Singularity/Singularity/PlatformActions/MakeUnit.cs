@@ -11,22 +11,35 @@ using Singularity.Units;
 namespace Singularity.PlatformActions
 {
 
-    class MakeFastMilitaryUnit : AMakeUnit
+    internal sealed class MakeFastMilitaryUnit : AMakeUnit
     {
         public MakeFastMilitaryUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
             mBuildingCost = new Dictionary<EResourceType, int> { { EResourceType.Metal, 3 }, { EResourceType.Chip, 2 }, {EResourceType.Fuel, 1} };
         }
 
+        public override void CreateUnit()
+        {
+            // unsure why this is a static method since it just returns a military unit anyways
+            // var unit = MilitaryUnit.CreateMilitaryUnit(mPlatform.Center + mOffset, ref mDirector);
+            
+            var camera = mDirector.GetStoryManager.Level.Camera;
+            var map = mDirector.GetStoryManager.Level.Map;
+            var unit = new MilitaryUnit(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
+        }
     }
 
-    class MakeStrongMilitrayUnit : AMakeUnit
+    internal sealed class MakeStrongMilitrayUnit : AMakeUnit
     {
         public MakeStrongMilitrayUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
             mBuildingCost = new Dictionary<EResourceType, int> {{EResourceType.Steel, 3}, {EResourceType.Chip, 2}, {EResourceType.Fuel, 2}};
         }
 
+        public override void CreateUnit()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 
@@ -36,11 +49,14 @@ namespace Singularity.PlatformActions
         protected Dictionary<EResourceType, int> mBuildingCost;
         protected Dictionary<EResourceType, int> mMissingResources;
         protected Dictionary<EResourceType, int> mToRequest;
+        protected Vector2 mOffset = new Vector2(200f);
 
-        public AMakeUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
+        protected AMakeUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
             State = PlatformActionState.Available;
         }
+
+        public abstract void CreateUnit();
 
         public override void Execute()
         {
@@ -63,6 +79,23 @@ namespace Singularity.PlatformActions
                 }
                 mDirector.GetDistributionManager.RequestResource(mPlatform, resource, this);
             }
+
+            mPlatform.GetPlatformResources().ForEach(action: r => GetResource(r.Type));
+
+            if (mMissingResources.Count <= 0)
+            {
+                CreateUnit();
+            }
+        }
+
+        protected void GetResource(EResourceType type)
+        {
+            if (!mMissingResources.ContainsKey(type)) return;
+            var res = mPlatform.GetResource(type);
+                
+            mMissingResources[type] -= 1;
+            if (mMissingResources[type] <= 0)
+                mMissingResources.Remove(type);
         }
 
         public override Dictionary<EResourceType, int> GetRequiredResources()

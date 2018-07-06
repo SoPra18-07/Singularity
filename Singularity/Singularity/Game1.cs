@@ -18,7 +18,6 @@ namespace Singularity
         // Screens
         private ILevel mLevel;
         private MainMenuManagerScreen mMainMenuManager;
-        private UserInterfaceScreen mUserInterfaceScreen;
 
         // Sprites!
         private SpriteBatch mSpriteBatch;
@@ -79,15 +78,10 @@ namespace Singularity
             mLevel = new Skirmish(mGraphics, ref mDirector, Content, mScreenManager);
 
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
-
-            // Add the screens to the screen manager
-            // The idea is that the game screen is always at the bottom and stuff is added simply
-            // on top of it.
             //ATTENTION: THE INGAME SCREENS ARE HANDLED IN THE LEVELS NOW!
             //mScreenManager.AddScreen(mMainMenuManager); // TODO: This makes it so that the main menu is bypassed
 
-            // load and play Soundtrack as background music
-            // todo this
+            // TODO: load and play Soundtrack as background music
             // director.GetSoundManager.LoadContent(Content);
             //_mSoundManager.PlaySoundTrack();
         }

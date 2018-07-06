@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Remoting.Channels;
@@ -10,7 +11,6 @@ using Singularity.Exceptions;
 using Singularity.Graph;
 using Singularity.Input;
 using Singularity.Manager;
-using Singularity.Map;
 using Singularity.PlatformActions;
 using Singularity.Property;
 using Singularity.Resources;
@@ -195,6 +195,8 @@ namespace Singularity.Platforms
 
             // user interface controller
             mUserInterfaceController = director.GetUserInterfaceController;
+            Debug.WriteLine("PlatformBlank created");
+
         }
 
         public void SetColor(Color color)
@@ -368,7 +370,7 @@ namespace Singularity.Platforms
         public Optional<Resource> GetResource(EResourceType resourcetype)
         {
             // TODO: reservation of Resources (and stuff)? Nah lets not do this
-            var index = mResources.FindIndex(x => x.Type == resourcetype);
+            var index = mResources.FindIndex(x => x.Type == resourcetype); // (FindIndex returns -1 if not found)
             if (index < 0)
             {
                 return Optional<Resource>.Of(null);
@@ -433,7 +435,7 @@ namespace Singularity.Platforms
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
                         new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 148),
-                        Color.White * transparency,
+                        mColor * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
@@ -477,7 +479,7 @@ namespace Singularity.Platforms
                     // Dome
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
-                        new Rectangle(148 * (mSheetPosition % 4), 109 * (int) Math.Floor(mSheetPosition / 4d), 148, 109),
+                        new Rectangle(148 * (mSheetPosition % 4), 109 * (mSheetPosition / 4), 148, 109),
                         mColor * transparency,
                         0f,
                         Vector2.Zero,
@@ -555,14 +557,17 @@ namespace Singularity.Platforms
 
         }
 
-        public void RemoveEdge(IEdge edge, EEdgeFacing facing)
+        public void RemoveEdge(IEdge edge)
         {
-            if (facing == EEdgeFacing.Inwards)
+            if (mInwardsEdges.Contains(edge))
             {
                 mInwardsEdges.Remove(edge);
-                return;
             }
-            mOutwardsEdges.Remove(edge);
+
+            if (mOutwardsEdges.Contains(edge))
+            {
+                mOutwardsEdges.Remove(edge);
+            }
 
         }
 

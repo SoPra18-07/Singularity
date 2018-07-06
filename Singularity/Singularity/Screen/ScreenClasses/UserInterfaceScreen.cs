@@ -8,6 +8,7 @@ using Singularity.Manager;
 using Singularity.Map;
 using Singularity.PlatformActions;
 using Singularity.Platforms;
+using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
 using Singularity.Utils;
@@ -1012,7 +1013,15 @@ namespace Singularity.Screen.ScreenClasses
             ResetWindowsToStandardPositon();
 
             //DEACTIVATE EVERYTHING TO ACTIVATE IT LATER
-            Deactivate();
+
+            if (GlobalVariables.DebugState)
+            {
+                Activate();
+            }
+            else
+            {
+                Deactivate();
+            }
         }
 
         public bool UpdateLower()
