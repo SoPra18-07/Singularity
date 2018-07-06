@@ -418,8 +418,7 @@ namespace Singularity.Units
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawCircle(AbsolutePosition, 10, 20, Color.DarkOliveGreen, 10, LayerConstants.GeneralUnitLayer);
-
+            spriteBatch.StrokedCircle(AbsolutePosition, 10, Color.AntiqueWhite, Color.Black, LayerConstants.GeneralUnitLayer);
             if (Carrying.IsPresent())
             {
                 Carrying.Get().Draw(spriteBatch);
