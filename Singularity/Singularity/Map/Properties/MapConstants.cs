@@ -8,14 +8,14 @@ namespace Singularity.Map.Properties
     internal static class MapConstants
     {
         /// <summary>
-        /// The width of the Grid used for collision detection in pixels.
+        /// The width of the mini map. The MapWidth should be dividable by this, otherwise minimap data might be offset by a little.
         /// </summary>
-        public const int FogOfWarGridWidth = 10;
+        public const int MiniMapWidth = 250;
 
         /// <summary>
-        /// The height of the Grid used for collision detection in pixels.
+        /// The height of the mini map. The MapHeight should be dividable by this, otherwise minimap data might be offset by a little.
         /// </summary>
-        public const int FogOfWarGridHeight = 10;
+        public const int MiniMapHeight = 125;
 
         /// <summary>
         /// The width of the Grid used for collision detection in pixels.
