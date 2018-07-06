@@ -80,6 +80,9 @@ namespace Singularity.Units
         [DataMember]
         private Optional<INode> mDestination;
 
+        [DataMember]
+        public int Graphid { get; set; }
+
         /// <summary>
         /// The speed the unit moves at.
         /// </summary>
@@ -152,6 +155,8 @@ namespace Singularity.Units
             {
                 mAssignedAction = null;
             }
+            //This is needed so the unit will not first go to the end of their previous task
+            mNodeQueue = new Queue<INode>();
         }
 
 

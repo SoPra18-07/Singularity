@@ -86,6 +86,9 @@ namespace Singularity.Platforms
         [DataMember]
         protected Dictionary<EResourceType, int> mRequested;
 
+        [DataMember]
+        public int Graphid { get; set; }
+
         public Vector2 Center { get; set; }
 
         public int RevelationRadius { get; } = 200;

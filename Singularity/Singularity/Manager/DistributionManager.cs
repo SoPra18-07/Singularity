@@ -652,44 +652,94 @@ namespace Singularity.Manager
 
         /// <summary>
         /// A method called by the DistributionManager in case a new platform is registered, then it will redistribute all the units.
-        /// Basically calculates what units to send to the newly registered platform to stay fair in unit distribution. Afterwards sends the
-        /// units to the new platform.
+        /// BE SURE ALL THE UNITS THAT ARE ON THE PLATFORM ARE REGISTERED IN THE DISTRIBUTIONMANAGER OTHERWISE THIS WILL FAIL!
         /// </summary>
         /// <param name="platform">The newly registered platform</param>
         /// <param name="isDefense">Is true if its a DefensePlatform, false otherwise</param>
-        private void NewlyDistribute(PlatformBlank platform, bool isDefense)
+        /// <param name="alreadyonplatform">The amount of units already working on the platform</param>
+        private void NewlyDistribute(PlatformBlank platform, bool isDefense, int alreadyonplatform)
         {
+            var job = isDefense ? JobType.Defense : JobType.Production;
+            var joblist = isDefense ? mDefense : mProduction;
             if (isDefense)
             {
                 // + 1 because we didnt add the new platform yet
                 var times = mDefense.Count / (mDefPlatforms.Count + 1);
-                var list = GetUnitsFairly(times, mDefPlatforms, false);
-
-                foreach (var unit in list)
+                if (times > alreadyonplatform)
                 {
-                    //We have to re-add the units to the job list because GetUnitsFairly did unassign them
-                    mDefense.Add(unit);
-                    //Also unassigns the unit.
-                    unit.AssignTask(new Task(JobType.Defense, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
-                }
+                    times = times - alreadyonplatform;
 
-                mDefPlatforms.Add(new Pair<PlatformBlank, int>(platform, list.Count));
+                    var list = GetUnitsFairly(times, mDefPlatforms, true);
+
+                    foreach (var unit in list)
+                    {
+                        //We have to re-add the units to the job list because GetUnitsFairly did unassign them
+                        mDefense.Add(unit);
+                        //Also unassigns the unit.
+                        unit.AssignTask(new Task(JobType.Defense, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
+                    }
+
+                    mDefPlatforms.Add(new Pair<PlatformBlank, int>(platform, list.Count));
+                }
+                else if (times < alreadyonplatform)
+                {
+                    times = alreadyonplatform - times;
+                    var units = new List<GeneralUnit>();
+                    GeneralUnit transferunit;
+                    for (var i = times; i > 0; i--)
+                    {
+                        transferunit = platform.GetAssignedUnits()[job].First().GetFirst();
+                        units.Add(transferunit);
+                        mIdle.Add(transferunit);
+                        joblist.Remove(transferunit);
+                        transferunit.ChangeJob(JobType.Idle);
+                    }
+                    AssignUnitsFairly(units, true);
+                }
+                else
+                {
+                    mDefPlatforms.Add(new Pair<PlatformBlank, int>(platform, alreadyonplatform));
+                }
             }
             else
             {
                 // + 1 because we didnt add the new platform yet
                 var times = mProduction.Count / (mProdPlatforms.Count + 1);
-                var list = GetUnitsFairly(times, mProdPlatforms, false);
-
-                foreach (var unit in list)
+                if (times > alreadyonplatform)
                 {
-                    //We have to re-add the units to the job list because GetUnitsFairly did unassign them
-                    mProduction.Add(unit);
-                    //Also unassigns the unit.
-                    unit.AssignTask(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
-                }
+                    times = times - alreadyonplatform;
 
-                mProdPlatforms.Add(new Pair<PlatformBlank, int>(platform, list.Count));
+                    var list = GetUnitsFairly(times, mProdPlatforms, false);
+
+                    foreach (var unit in list)
+                    {
+                        //We have to re-add the units to the job list because GetUnitsFairly did unassign them
+                        mProduction.Add(unit);
+                        //Also unassigns the unit.
+                        unit.AssignTask(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
+                    }
+
+                    mProdPlatforms.Add(new Pair<PlatformBlank, int>(platform, list.Count));
+                }
+                else if (times < alreadyonplatform)
+                {
+                    times = alreadyonplatform - times;
+                    var units = new List<GeneralUnit>();
+                    GeneralUnit transferunit;
+                    for (var i = times; i > 0; i--)
+                    {
+                        transferunit = platform.GetAssignedUnits()[job].First().GetFirst();
+                        units.Add(transferunit);
+                        mIdle.Add(transferunit);
+                        joblist.Remove(transferunit);
+                        transferunit.ChangeJob(JobType.Idle);
+                    }
+                    AssignUnitsFairly(units, false);
+                }
+                else
+                {
+                    mProdPlatforms.Add(new Pair<PlatformBlank, int>(platform, alreadyonplatform));
+                }
             }
         }
 
@@ -811,27 +861,106 @@ namespace Singularity.Manager
         }
 
         /// <summary>
-        /// Is called by producing and defending Platforms when they are created.
+        /// Is called by producing and defending Platforms when they are created or added to the distributionmanager.
         /// </summary>
         /// <param name="platform">The platform itself</param>
         /// <param name="isDef">Is true, when the platform is a defending platform, false otherwise (only producing platforms should register themselves besides defending ones)</param>
         public void Register(PlatformBlank platform, bool isDef)
         {
+            var job = isDef ? JobType.Defense : JobType.Production;
+            var joblist = isDef ? mDefense : mProduction;
+            var alreadyonplatform = 0;
+            if (platform.GetAssignedUnits()[job].Count > 0)
+            {
+                alreadyonplatform = platform.GetAssignedUnits()[job].Count;
+            }
+
+            //Make sure the units are added to their joblist if they arent already.
+            foreach (var unitbool in platform.GetAssignedUnits()[job])
+            {
+                if (!joblist.Contains(unitbool.GetFirst()))
+                {
+                    joblist.Add(unitbool.GetFirst());
+                }
+            }
             if (isDef)
             {
                 //Make sure the new platform gets some units
-                NewlyDistribute(platform, true);
+                NewlyDistribute(platform, true, alreadyonplatform);
             }
             else
             {
                 //Make sure the new platform gets some units
-                NewlyDistribute(platform, false);
+                NewlyDistribute(platform, false, alreadyonplatform);
             }
         }
         #endregion
 
-        public void Unregister(PlatformBlank platform, bool isDef)
+        /// <summary>
+        /// Unregister platforms from the DistributionManager.
+        /// This changes the graph the distributionmanager knows and is only needed for Producing or Defending platforms.
+        /// </summary>
+        /// <param name="platforms">The platforms you want to unregister.</param>
+        /// <param name="isDef">True if they are defending platforms, false if they are producing platforms</param>
+        /// /// <param name="inactivate">True if the platform is not truly removed from the graph but inactivated, false if it is removed from the graph</param>
+        public void Unregister(List<PlatformBlank> platforms, bool isDef, bool inactivate)
         {
+            var list = isDef ? mDefPlatforms : mProdPlatforms;
+            var job = isDef ? JobType.Defense : JobType.Production;
+            var joblist = isDef ? mDefense : mProduction;
+            var unitstodistribute = new List<GeneralUnit>();
+            Pair<PlatformBlank, int> pair;
+
+            //REMOVE PLATFORMS, COLLECT THEIR UNITS
+            foreach (var platform in platforms)
+            {
+                //No longer observe platform
+                pair = list.Find(x => x.GetFirst().Equals(platform));
+                list.Remove(pair);
+
+                var units = platform.GetAssignedUnits()[job];
+                //In this case just collect every unit on the platform and redistribute it (redistribution later in code).
+                if (inactivate)
+                {
+                    foreach (var unitbool in units)
+                    {
+                        unitstodistribute.Add(unitbool.GetFirst());
+                        //Unassigns itself from its platform
+                        unitbool.GetFirst().ChangeJob(JobType.Idle);
+                    }
+
+                }
+                //In this case look if every assigned unit is on the same graph as the platform and handle it
+                else
+                {
+                    foreach (var unitbool in units)
+                    {
+                        //In this case they are on the platform
+                        if (unitbool.GetSecond())
+                        {
+                            //Remove unit from this joblist to no longer influence this unit.
+                            joblist.Remove(unitbool.GetFirst());
+                        }
+                        else
+                        {
+                            //It will arrive, so just handle it as if it had already arrived at the platform
+                            if (unitbool.GetFirst().Graphid == platform.Graphid)
+                            {
+                                joblist.Remove(unitbool.GetFirst());
+                            }
+                            //It will not arrive, so it has to be redistributed!
+                            else
+                            {
+                                unitstodistribute.Add(unitbool.GetFirst());
+                                //Unassigns itself from its platform
+                                unitbool.GetFirst().ChangeJob(JobType.Idle);
+                            }
+                        }
+                    }
+                }
+            }
+            //If there are any units to redistribute do it now
+            AssignUnitsFairly(unitstodistribute, isDef);
 
         }
 
