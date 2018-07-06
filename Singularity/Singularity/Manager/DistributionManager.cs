@@ -943,6 +943,7 @@ namespace Singularity.Manager
                         }
                         else
                         {
+                            //TODO: Use TargetGraphid, it shouldnt have a graphid itself!!!!!!!
                             //It will arrive, so just handle it as if it had already arrived at the platform
                             if (unitbool.GetFirst().Graphid == platform.Graphid)
                             {
