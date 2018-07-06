@@ -39,7 +39,7 @@ namespace Singularity
 
             mGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
 
-            mDirector = new Director(Content);
+            mDirector = new Director(Content, mGraphics);
 
 
             mScreenManager = new StackScreenManager(Content, mDirector.GetInputManager);
@@ -58,7 +58,7 @@ namespace Singularity
             mGraphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
             mGraphics.PreferredBackBufferWidth = 1080;
             mGraphics.PreferredBackBufferHeight = 720;
-            mGraphics.IsFullScreen = true;
+            mGraphics.IsFullScreen = false;
             mGraphics.ApplyChanges();
 
             base.Initialize();

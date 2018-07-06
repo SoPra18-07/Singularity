@@ -2,157 +2,154 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Input;
 using Singularity.Manager;
 using Singularity.PlatformActions;
-using Singularity.Platforms;
-using Singularity.Resources;
-using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 
 namespace Singularity.Screen
 {
-    class PlatformActionIWindowItem : IWindowItem, IMousePositionListener
+    sealed class PlatformActionIWindowItem : IWindowItem
     {
         // action name
-        private TextField mNameTextField;
-
-        // action state
-        private TextField mStateTextField;
+        private readonly TextField mNameTextField;
 
         // action state toggler button
-        private Button mStateToggleButton;
+        private readonly Button mStateToggleButton;
 
         // horizontal collection containing name, state + button
-        private HorizontalCollection mCollection;
-
-        // infobox items list
-        private List<IWindowItem> mInfoBoxItemsList;
+        private readonly HorizontalCollection mCollection;
 
         // infoBox for required resources / units
-        private InfoBoxWindow mInfoBoxRequirements;
+        private readonly InfoBoxWindow mInfoBoxRequirements;
 
-        // list of all items to be able to comfortably iterate through them in update + draw method
-        private List<IWindowItem> mItemList;
+        // button has been clicked on - to prevent the button from keeping firing
+        private bool mClicked;
 
-        // spritefont
-        private SpriteFont mSpriteFont;
-
-        // platform action
-        private IPlatformAction mPlatformAction;
-
-        // mouse position
-        private Vector2 mMousePos;
-
-        // units
-        private int mProductionUnits;
-        private int mConstructions;
-        private int mLogistics;
-        private int mDefense;
-
-        // resources
-
-        public PlatformActionIWindowItem(IPlatformAction platformAction, SpriteFont spriteFont, Vector2 size, Vector2 position, Director director)
+        public PlatformActionIWindowItem(IPlatformAction platformAction, SpriteFont spriteFont, Vector2 position, Vector2 size, Director director)
         {
-            mSpriteFont = spriteFont;
-            Size = size;
+            Size = new Vector2(size.X, spriteFont.MeasureString("A").Y * 2 + 5);
             Position = position;
 
-            var name = "? Name ?";
+            ActiveWindow = true;
+
+            // infobox items list
+            var infoBoxItemsList = new List<IWindowItem>();
+
+            // get action description
+            var name = platformAction.ToString().Split('.')[2];
 
             mNameTextField = new TextField(
                 text: name, 
                 position: Vector2.Zero, 
-                size: new Vector2(mSpriteFont.MeasureString(name).X, 0), // the size of the textfield should be as big as the string it contains
-                spriteFont: mSpriteFont, 
+                size: new Vector2(spriteFont.MeasureString(name).X, 0), // the size of the textfield should be as big as the string it contains
+                spriteFont: spriteFont, 
                 color: Color.White);
 
-            mStateTextField = new TextField(
+            var stateTextField = new TextField(
                 text: platformAction.State.ToString(), 
                 position: Vector2.Zero, 
-                size: new Vector2(mSpriteFont.MeasureString(platformAction.State.ToString()).X, 0), // the size of the textfield should be as big as the string it contains
-                spriteFont: mSpriteFont,
+                size: new Vector2(spriteFont.MeasureString(platformAction.State.ToString()).X, 0), // the size of the textfield should be as big as the string it contains
+                spriteFont: spriteFont,
                 color: Color.White);
 
-            mStateToggleButton = new Button("toggle", mSpriteFont, Vector2.Zero);
+            mStateToggleButton = new Button("switchState", spriteFont, Vector2.Zero) {Opacity = 1f};
 
-            mStateToggleButton.ButtonClicked += ToggleButton;
+            var emptyToShift = new TextField(
+                text: "",
+                position: Vector2.Zero,
+                size: new Vector2(spriteFont.MeasureString(platformAction.State.ToString()).X, 0), // the size of the textfield should be as big as the string it contains
+                spriteFont: spriteFont,
+                color: Color.White);
+
+            mStateToggleButton.ButtonClicked += ActivateToggle;
+            mStateToggleButton.ButtonReleased += ToggleButton;
             mStateToggleButton.ButtonHovering += ShowRequirements;
             mStateToggleButton.ButtonHoveringEnd += HideRequirements;
 
-            mCollection = new HorizontalCollection(new List<IWindowItem> {mNameTextField, mStateTextField, mStateToggleButton}, Size, Position);
 
-            mItemList = new List<IWindowItem> {mNameTextField, mStateTextField, mStateToggleButton, mCollection};
+            mCollection = new HorizontalCollection(new List<IWindowItem> {stateTextField, mStateToggleButton, emptyToShift}, Size, Position);
 
-            mInfoBoxItemsList = new List<IWindowItem>();
+            // add unit requirements
 
-            mProductionUnits = 0;
-            mConstructions = 0;
-            mLogistics = 0;
-            mDefense = 0;
+            var productionUnits = 0;
+            var constructionUnits = 0;
+            var logisticUnits = 0;
+            var defenseUnits = 0;
 
             foreach (var units in platformAction.UnitsRequired)
             {
                 switch (units)
                 {
                     case JobType.Production:
-                        mProductionUnits += 1;
+                        productionUnits += 1;
                         break;
                     case JobType.Construction:
-                        mConstructions += 1;
+                        constructionUnits += 1;
                         break;
                     case JobType.Logistics:
-                        mLogistics += 1;
+                        logisticUnits += 1;
                         break;
                     case JobType.Defense:
-                        mDefense += 1;
+                        defenseUnits += 1;
                         break;
                 }
             }
 
-            if (mProductionUnits > 0)
+            if (productionUnits > 0)
             {
-                var productionUnits = new TextField(mProductionUnits + " production", Vector2.Zero, Vector2.Zero, mSpriteFont, Color.White);
-                mInfoBoxItemsList.Add(productionUnits);
+                infoBoxItemsList.Add(new TextField(productionUnits + " production units",
+                    Vector2.Zero,
+                    spriteFont.MeasureString(productionUnits + " prouduction units"),
+                    spriteFont,
+                    Color.White));
             }
 
-            if (mConstructions > 0)
+            if (constructionUnits > 0)
             {
-                var constructionUnits = new TextField(mConstructions + " construction", Vector2.Zero, Vector2.Zero, mSpriteFont, Color.White);
-                mInfoBoxItemsList.Add(constructionUnits);
+                infoBoxItemsList.Add(new TextField(constructionUnits + " construction units",
+                    Vector2.Zero,
+                    spriteFont.MeasureString(constructionUnits + " construction units"),
+                    spriteFont,
+                    Color.White));
             }
 
-            if (mLogistics > 0)
+            if (logisticUnits > 0)
             {
-                var logisticsUnits = new TextField(mLogistics + " logistics", Vector2.Zero, Vector2.Zero, mSpriteFont, Color.White);
-                mInfoBoxItemsList.Add(logisticsUnits);
+                infoBoxItemsList.Add(new TextField(logisticUnits + " logistics units",
+                    Vector2.Zero,
+                    spriteFont.MeasureString(logisticUnits + " logistics units"),
+                    spriteFont,
+                    Color.White));
             }
 
-            if (mDefense > 0)
+            if (defenseUnits > 0)
             {
-                var defenseUnits = new TextField(mDefense + " defense", Vector2.Zero, Vector2.Zero, mSpriteFont, Color.White);
-                mInfoBoxItemsList.Add(defenseUnits);
+                infoBoxItemsList.Add(new TextField(defenseUnits + " defense units",
+                    Vector2.Zero,
+                    spriteFont.MeasureString(defenseUnits + " defense units"),
+                    spriteFont,
+                    Color.White));
             }
 
             foreach (var resource in platformAction.GetRequiredResources())
             {
-                var currentResource = new ResourceIWindowItem(resource.Key, resource.Value, Vector2.Zero, mSpriteFont);
-                mInfoBoxItemsList.Add(currentResource);
+                infoBoxItemsList.Add(new ResourceIWindowItem(resource.Key, resource.Value, Vector2.Zero, spriteFont));
             }
 
-            //mInfoBoxRequirements = new InfoBoxWindow(mInfoBoxItemsList, Vector2.Zero, Color.White, Color.White,  );
+            mInfoBoxRequirements = new InfoBoxWindow(infoBoxItemsList, Vector2.Zero, Color.White, Color.Black, true, director);
         }
 
         public void Update(GameTime gametime)
         {
             if (ActiveWindow)
             {
-                mCollection.Position = Position;
+                mInfoBoxRequirements.Update(gametime);
+                mNameTextField.Position = Position;
 
-                foreach (var item in mItemList)
-                {
-                    item.Update(gametime);
-                }
+                mCollection.Position = new Vector2(Position.X, Position.Y + mNameTextField.Size.Y + 5);
+
+                mStateToggleButton.Update(gametime);
+                mCollection.Update(gametime);
             }
         }
 
@@ -160,34 +157,39 @@ namespace Singularity.Screen
         {
             if (ActiveWindow)
             {
-                foreach (var item in mItemList)
-                {
-                    item.Draw(spriteBatch);
-                }
+                mCollection.Draw(spriteBatch);
+                mNameTextField.Draw(spriteBatch);
+
+                mInfoBoxRequirements.Draw(spriteBatch);
             }
+        }
+
+        private void ActivateToggle(object sender, EventArgs eventArgs)
+        {
+            mClicked = true;
         }
 
         private void ToggleButton(object sender, EventArgs eventArgs)
         {
-            mPlatformAction.UiToggleState();
+            if (mClicked)
+            {
+                Console.Out.WriteLine("toggling");
+                //mPlatformAction.UiToggleState(); TODO : crashes
+            }
         }
 
         private void ShowRequirements(object sender, EventArgs eventArgs)
         {
-
+            mInfoBoxRequirements.Active = true;
         }
 
         private void HideRequirements(object sender, EventArgs eventArgs)
         {
-
+            mInfoBoxRequirements.Active = false;
         }
 
         public Vector2 Position { get; set; }
         public Vector2 Size { get; }
         public bool ActiveWindow { get; set; }
-        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
-        {
-            mMousePos = new Vector2(screenX, screenY);
-        }
     }
 }

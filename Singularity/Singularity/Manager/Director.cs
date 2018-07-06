@@ -10,7 +10,7 @@ namespace Singularity.Manager
     public class Director
     {
 
-        public Director(ContentManager content)
+        public Director(ContentManager content, GraphicsDeviceManager graphics)
         {
             GetInputManager = new InputManager();
             GetStoryManager = new StoryManager();
@@ -19,7 +19,8 @@ namespace Singularity.Manager
             GetDistributionManager = new DistributionManager();
             GetMilitaryManager = new MilitaryManager(); // TODO: Update this code if the MilitaryManager is not getting everything from the StructureMap or sth ...
                                                         // (like units telling it they exist and the like)
-            GetUserInterfaceController = new UserInterfaceController();
+            GetUserInterfaceController = new UserInterfaceController(this);
+            GetGraphicsDeviceManager = graphics;
 
             GetSoundManager.LoadContent(content);
             GetSoundManager.PlaySoundTrack();
@@ -39,6 +40,7 @@ namespace Singularity.Manager
 
         public UserInterfaceController GetUserInterfaceController { get; }
 
+        public GraphicsDeviceManager GetGraphicsDeviceManager { get; }
 
         public void Update(GameTime gametime, bool isActive)
         {

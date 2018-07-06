@@ -71,7 +71,6 @@ namespace Singularity.Screen
                 if (spriteFont.MeasureString(word).X > size.X)
                     // split single words too long for the given width
                 {
-                    Console.Out.WriteLine(word);
                     var workingWord = word;
                     var newLength = 0;
 

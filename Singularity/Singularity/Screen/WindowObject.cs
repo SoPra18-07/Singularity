@@ -675,9 +675,6 @@ namespace Singularity.Screen
                     }
                 }
                 #endregion
-
-                // calculate the movement
-                var movementVector = new Vector2(Position.X - positionOld.X, Position.Y - positionOld.Y);
             }
 
             #endregion
@@ -746,5 +743,10 @@ namespace Singularity.Screen
 
         // the window name is the windows title
         public string WindowName { private get; set; }
+
+        public void ResetScrollValue()
+        {
+            mItemScrolledValue = 0;
+        }
     }
 }

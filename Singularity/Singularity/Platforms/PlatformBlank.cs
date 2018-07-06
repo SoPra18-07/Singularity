@@ -31,6 +31,14 @@ namespace Singularity.Platforms
 
         private float mLayer;
 
+        // true, if this platform has already sent data since activation
+        private bool mDataSent;
+
+        // previous values sent to the UIController - used to only send data if the values have been updated
+        private List<Resource> mPrevResources;
+        private Dictionary<JobType, List<Pair<GeneralUnit, bool>>> mPrevUnitAssignments;
+        private List<IPlatformAction> mPrevPlatformActions;
+
         /// <summary>
         /// List of inwards facing edges/roads towards the platform.
         /// </summary>
@@ -106,7 +114,6 @@ namespace Singularity.Platforms
 
         // the userinterface controller to send all informations to
         private readonly UserInterfaceController mUserInterfaceController;
-
 
         [DataMember]
         public Vector2 AbsolutePosition { get; set; }
@@ -495,9 +502,30 @@ namespace Singularity.Platforms
 
             Bounds = new Rectangle((int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
 
-            if (IsSelected)
+            // set the mDataSent bool to false if there was a change in platform infos since the data was sent last time
+            // or if the platform is not selected, so that if it gets selected it will send the current data to the UIController
+            if (mPrevResources != GetPlatformResources() ||
+                mPrevUnitAssignments != GetAssignedUnits() ||
+                mPrevPlatformActions != GetIPlatformActions() ||
+                !IsSelected)
             {
-                mUserInterfaceController.SetDataOfSelectedPlatform(mType, GetPlatformResources(), GetAssignedUnits(), GetIPlatformActions());
+                mDataSent = false;
+            }
+
+            // manage updating of values in the UI
+            if (IsSelected && !mDataSent)
+                // the platform is selected + the current data has yet to be sent then
+            {
+                // update previous values
+                mPrevResources = GetPlatformResources();
+                mPrevUnitAssignments = GetAssignedUnits();
+                mPrevPlatformActions = GetIPlatformActions();
+
+                // send data to UIController
+                mUserInterfaceController.SetDataOfSelectedPlatform(Id, mType, GetPlatformResources(), GetAssignedUnits(), GetIPlatformActions());
+
+                // set the bool for sent-data to true, since the data has just been sent
+                mDataSent = true;
             }
         }
 

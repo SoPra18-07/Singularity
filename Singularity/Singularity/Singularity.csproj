@@ -8,7 +8,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{34A890E2-4E4D-4B3C-914F-1316E6461513}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Singularity</RootNamespace>
     <AssemblyName>Singularity</AssemblyName>
@@ -75,6 +75,7 @@
     <Compile Include="Screen\ResourceIWindowItem.cs" />
     <Compile Include="Screen\InfoBarWindowObject.cs" />
     <Compile Include="Screen\SliderHandler.cs" />
+    <Compile Include="Screen\TextAndAmountIWindowItem.cs" />
     <Compile Include="Units\EnemyUnit.cs" />
     <Compile Include="Units\SelectionBox.cs" />
     <Compile Include="Units\Settler.cs" />
