@@ -51,7 +51,7 @@ namespace Singularity.Screen
         }
 
         /// <summary>
-        /// Returns the idle units amount
+        /// Returns the idle-units amount
         /// </summary>
         /// <returns>amount of idle units</returns>
         public int GetIdleUnits()

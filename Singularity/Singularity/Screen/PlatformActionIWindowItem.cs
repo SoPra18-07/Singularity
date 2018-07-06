@@ -30,7 +30,7 @@ namespace Singularity.Screen
             Size = new Vector2(size.X, spriteFont.MeasureString("A").Y * 2 + 5);
             Position = position;
 
-            ActiveWindow = true;
+            ActiveInWindow = true;
 
             // infobox items list
             var infoBoxItemsList = new List<IWindowItem>();
@@ -141,7 +141,7 @@ namespace Singularity.Screen
 
         public void Update(GameTime gametime)
         {
-            if (ActiveWindow)
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
             {
                 mInfoBoxRequirements.Update(gametime);
                 mNameTextField.Position = Position;
@@ -155,7 +155,7 @@ namespace Singularity.Screen
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (ActiveWindow)
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
             {
                 mCollection.Draw(spriteBatch);
                 mNameTextField.Draw(spriteBatch);
@@ -190,6 +190,8 @@ namespace Singularity.Screen
 
         public Vector2 Position { get; set; }
         public Vector2 Size { get; }
-        public bool ActiveWindow { get; set; }
+        public bool ActiveInWindow { get; set; }
+        public bool InactiveInSelectedPlatformWindow { get; set; }
+        public bool OutOfScissorRectangle { get; set; }
     }
 }

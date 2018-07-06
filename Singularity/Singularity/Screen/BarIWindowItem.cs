@@ -14,7 +14,7 @@ namespace Singularity.Screen
             Position = new Vector2(0, 0);
             Size = size;
             mColor = color;
-            ActiveWindow = true;
+            ActiveInWindow = true;
         }
 
         public void Update(GameTime gametime)
@@ -24,11 +24,16 @@ namespace Singularity.Screen
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawRectangle(Position, new Vector2(Size.X - 40 , 1), mColor);
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
+            {
+                spriteBatch.DrawRectangle(Position, new Vector2(Size.X - 40, 1), mColor);
+            }
         }
 
         public Vector2 Position { get; set; }
         public Vector2 Size { get; }
-        public bool ActiveWindow { get; set; }
+        public bool ActiveInWindow { get; set; }
+        public bool InactiveInSelectedPlatformWindow { get; set; }
+        public bool OutOfScissorRectangle { get; set; }
     }
 }

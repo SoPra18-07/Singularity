@@ -35,7 +35,7 @@ namespace Singularity.Screen
             // update size
             Size = new Vector2(size.X, spriteFont.MeasureString(mSplittedText).Y);
 
-            ActiveWindow = true;
+            ActiveInWindow = true;
         }
 
         public void Update(GameTime gametime)
@@ -45,7 +45,10 @@ namespace Singularity.Screen
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(mSpriteFont, mSplittedText, Position, mColor);
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
+            {
+                spriteBatch.DrawString(mSpriteFont, mSplittedText, Position, mColor);
+            }
         }
 
         /// <summary>
@@ -130,6 +133,9 @@ namespace Singularity.Screen
         /// <summary>
         ///
         /// </summary>
-        public bool ActiveWindow { get; set; }
+        public bool ActiveInWindow { get; set; }
+
+        public bool InactiveInSelectedPlatformWindow { get; set; }
+        public bool OutOfScissorRectangle { get; set; }
     }
 }

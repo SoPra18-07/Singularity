@@ -330,7 +330,7 @@ namespace Singularity.Screen
                 // draw IWindowItems
                 foreach (var item in mItemList)
                 {
-                    if (item.ActiveWindow)
+                    if (item.ActiveInWindow && !item.InactiveInSelectedPlatformWindow)
                     {
                         item.Draw(spriteBatch);
                     }
@@ -398,11 +398,23 @@ namespace Singularity.Screen
             mCombinedItemsSize = 0;
             foreach (var item in mItemList)
             {
-                if (item.ActiveWindow)
+                if (item.ActiveInWindow && !item.InactiveInSelectedPlatformWindow)
                 {
                     item.Update(gametime);
 
                     item.Position = localItemPos;
+
+                    if (item.Position.Y < mScissorRectangle.Y - item.Size.Y ||
+                        item.Position.Y > mScissorRectangle.Y + mScissorRectangle.Height)
+                        // if the item goes completely out of the scissor rectangle's range -> deactivate it
+                        // (to prevent buttons/... from being active out of window)
+                    {
+                        item.OutOfScissorRectangle = true;
+                    }
+                    else
+                    {
+                        item.OutOfScissorRectangle = false;
+                    }
 
                     mCombinedItemsSize += mObjectPadding + item.Size.Y;
 
@@ -410,11 +422,17 @@ namespace Singularity.Screen
                 }
             }
 
-            // bottom of all items combined
-            mItemPosBottom = new Vector2(localItemPos.X, localItemPos.Y);
-
             // check if the window is overflowed with items
             mScrollable = mCombinedItemsSize > mScissorRectangle.Height;
+
+            // prevent the window from being scrolled while unscrollable
+            if (!mScrollable)
+            {
+                mItemScrolledValue = 0;
+            }
+
+            // bottom of all items combined
+            mItemPosBottom = new Vector2(localItemPos.X, localItemPos.Y);
 
             // set the window rectangle
             mWindowRectangle = new Rectangle(
@@ -557,7 +575,7 @@ namespace Singularity.Screen
                         // disable all items due to minimization
                         foreach (var item in mItemList)
                         {
-                            item.ActiveWindow = false;
+                            item.ActiveInWindow = false;
                         }
                     }
                 else if (mMinimized)
@@ -569,7 +587,7 @@ namespace Singularity.Screen
                         // enable all items due to maximization
                         foreach (var item in mItemList)
                         {
-                            item.ActiveWindow = true;
+                            item.ActiveInWindow = true;
                         }
 
                         // catch window being out of screen at the bottom after maximization

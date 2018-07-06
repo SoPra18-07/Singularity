@@ -39,47 +39,55 @@ namespace Singularity.Screen
             // set position to automatically fit the text height
             Size = new Vector2(size.X, mSpriteFont.MeasureString(mResourceText).Y);
 
-            ActiveWindow = true;
+            ActiveInWindow = true;
 
         }
 
         public void Update(GameTime gametime)
         {
-            // update the positions
-            mColorPosition = new Vector2(Position.X, Position.Y + Size.Y / 4);
-            mTextPosition = new Vector2(Position.X + Size.Y, Position.Y);
-            mAmountPosition = new Vector2(Position.X + Size.X - mSpriteFont.MeasureString(Amount.ToString()).X, Position.Y);
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
+            {
+                // update the positions
+                mColorPosition = new Vector2(Position.X, Position.Y + Size.Y / 4);
+                mTextPosition = new Vector2(Position.X + Size.Y, Position.Y);
+                mAmountPosition = new Vector2(Position.X + Size.X - mSpriteFont.MeasureString(Amount.ToString()).X, Position.Y);
 
-            // TODO : ? UPDATE FOR THE UI RESOURCE WINDOW ?
+                // TODO : ? UPDATE FOR THE UI RESOURCE WINDOW ?
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            // draw the color rectangle at the beginning
-            spriteBatch.StrokedRectangle(
-                location: mColorPosition,
-                size: new Vector2(Size.Y - Size.Y / 2, Size.Y - Size.Y / 2), 
-                colorBorder: Color.White, 
-                colorCenter: mTypeColor,
-                opacityBorder: 1f,
-                opacityCenter: 1f);
-            // draw the resource text
-            spriteBatch.DrawString(
-                spriteFont: mSpriteFont, 
-                text: mResourceText, 
-                position: mTextPosition, 
-                color: Color.White);
-            // draw the amount aligned to the right side 
-            spriteBatch.DrawString(
-                spriteFont: mSpriteFont,
-                text: Amount.ToString(),
-                position: mAmountPosition, 
-                color: Color.White);
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
+            {
+                // draw the color rectangle at the beginning
+                spriteBatch.StrokedRectangle(
+                    location: mColorPosition,
+                    size: new Vector2(Size.Y - Size.Y / 2, Size.Y - Size.Y / 2),
+                    colorBorder: Color.White,
+                    colorCenter: mTypeColor,
+                    opacityBorder: 1f,
+                    opacityCenter: 1f);
+                // draw the resource text
+                spriteBatch.DrawString(
+                    spriteFont: mSpriteFont,
+                    text: mResourceText,
+                    position: mTextPosition,
+                    color: Color.White);
+                // draw the amount aligned to the right side 
+                spriteBatch.DrawString(
+                    spriteFont: mSpriteFont,
+                    text: Amount.ToString(),
+                    position: mAmountPosition,
+                    color: Color.White);
+            }
         }
 
         public Vector2 Position { get; set; }
         public Vector2 Size { get; }
-        public bool ActiveWindow { get; set; }
+        public bool ActiveInWindow { get; set; }
+        public bool InactiveInSelectedPlatformWindow { get; set; }
+        public bool OutOfScissorRectangle { get; set; }
 
         // the amount of resources
         public int Amount { get; set; }

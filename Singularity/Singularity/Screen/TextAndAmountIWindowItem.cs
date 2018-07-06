@@ -46,7 +46,7 @@ namespace Singularity.Screen
             Size = new Vector2(size.X, mSpriteFont.MeasureString("A").Y);
             mColor = color;
 
-            ActiveWindow = true;
+            ActiveInWindow = true;
         }
         public void Update(GameTime gametime)
         {
@@ -55,15 +55,20 @@ namespace Singularity.Screen
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            // draw the text to the item's left side
-            spriteBatch.DrawString(mSpriteFont, mText, Position, mColor);
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
+            {
+                // draw the text to the item's left side
+                spriteBatch.DrawString(mSpriteFont, mText, Position, mColor);
 
-            // draw the amount to the item's right side
-            spriteBatch.DrawString(mSpriteFont, Amount.ToString(), new Vector2(Position.X + Size.X - mSpriteFont.MeasureString(Amount.ToString()).X - 40, Position.Y), mColor);
+                // draw the amount to the item's right side
+                spriteBatch.DrawString(mSpriteFont, Amount.ToString(), new Vector2(Position.X + Size.X - mSpriteFont.MeasureString(Amount.ToString()).X - 40, Position.Y), mColor);
+            }
         }
 
         public Vector2 Position { get; set; }
         public Vector2 Size { get; }
-        public bool ActiveWindow { get; set; }
+        public bool ActiveInWindow { get; set; }
+        public bool InactiveInSelectedPlatformWindow { get; set; }
+        public bool OutOfScissorRectangle { get; set; }
     }
 }
