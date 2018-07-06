@@ -125,6 +125,7 @@ namespace Singularity.Levels
             MilitaryUnit.mMilSheet = milUnitSheet;
             MilitaryUnit.mGlowTexture = milGlowSheet;
             var milUnit = new MilitaryUnit(new Vector2(2000, 700), Camera, ref mDirector, ref map);
+            var mil2 = new MilitaryUnit(new Vector2(2200, 700), Camera, ref mDirector, ref map);
 
             //SetUnit
             var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, mUi);
@@ -149,6 +150,7 @@ namespace Singularity.Levels
             GameScreen.AddObject(genUnit4);
             GameScreen.AddObject(genUnit5);
             GameScreen.AddObject(milUnit);
+            GameScreen.AddObject(mil2);
             GameScreen.AddObject(setUnit);
 
             //TESTMETHODS HERE ====================================
