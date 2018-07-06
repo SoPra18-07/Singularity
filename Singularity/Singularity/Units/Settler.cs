@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,9 +8,7 @@ using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
-using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
-using Singularity.Utils;
 
 namespace Singularity.Units
 {
