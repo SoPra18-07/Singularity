@@ -40,9 +40,9 @@ namespace Singularity.Screen.ScreenClasses
             mScreenManager = screenManager;
 
             // StatisticsScreen
-            mStatisticsScreen = new StatisticsScreen(screenSize: screenSize, screenManager: screenManager, director: director);
+            mStatisticsScreen = new StatisticsScreen(screenSize, screenManager, director);
 
-            Position = new Vector2(x: screenSize.X / 2 - 150, y: screenSize.Y / 2 - 200);
+            Position = new Vector2(screenSize.X / 2 - 150, screenSize.Y / 2 - 200);
             mPrevPosition = Position;
         }
 
@@ -53,9 +53,9 @@ namespace Singularity.Screen.ScreenClasses
         /// that take place over time </param>
         public void Update(GameTime gametime)
         {
-            mAchievementButton.Update(gametime: gametime);
-            mStatisticsButton.Update(gametime: gametime);
-            mCloseButton.Update(gametime: gametime);
+            mAchievementButton.Update(gametime);
+            mStatisticsButton.Update(gametime);
+            mCloseButton.Update(gametime);
         }
 
         /// <summary>
@@ -66,10 +66,10 @@ namespace Singularity.Screen.ScreenClasses
         {
             spriteBatch.Begin();
 
-            spriteBatch.StrokedRectangle(location: Position, size: new Vector2(x: 300,y: 400), colorBorder: Color.White, colorCenter: new Color(r: 0.27f, g: 0.5f, b: 0.7f, alpha: 0.8f), opacityBorder: 1f, opacityCenter: 1f);
-            mAchievementButton.Draw(spriteBatch: spriteBatch);
-            mStatisticsButton.Draw(spriteBatch: spriteBatch);
-            mCloseButton.Draw(spriteBatch: spriteBatch);
+            spriteBatch.StrokedRectangle(Position, new Vector2(300,400), Color.White, new Color(0.27f, 0.5f, 0.7f, 0.8f), 1f, 1f);
+            mAchievementButton.Draw(spriteBatch);
+            mStatisticsButton.Draw(spriteBatch);
+            mCloseButton.Draw(spriteBatch);
 
             spriteBatch.End();
         }
@@ -80,11 +80,11 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="content">Content Manager that should handle the content loading</param>
         public void LoadContent(ContentManager content)
         {
-            mLibSans20 = content.Load<SpriteFont>(assetName: "LibSans20");
+            mLibSans20 = content.Load<SpriteFont>("LibSans20");
 
-            mAchievementButton = new Button(buttonText: "Achievements", font: mLibSans20, position: new Vector2(x: Position.X + 20, y: Position.Y + 80)) { Opacity = 1f };
-            mStatisticsButton = new Button(buttonText: "Statistics", font: mLibSans20, position: new Vector2(x: Position.X + 20, y: Position.Y + 180)) { Opacity = 1f };
-            mCloseButton = new Button(buttonText: "Close", font: mLibSans20, position: new Vector2(x: Position.X + 20, y: Position.Y + 280)) { Opacity = 1f };
+            mAchievementButton = new Button("Achievements", mLibSans20, new Vector2(Position.X + 20, Position.Y + 80)) { Opacity = 1f };
+            mStatisticsButton = new Button("Statistics", mLibSans20, new Vector2(Position.X + 20, Position.Y + 180)) { Opacity = 1f };
+            mCloseButton = new Button("Close", mLibSans20, new Vector2(Position.X + 20, Position.Y + 280)) { Opacity = 1f };
 
             mAchievementButton.ButtonReleased += AchievementButtonReleased;
             mStatisticsButton.ButtonReleased += StatisticsButtonReleased;
@@ -114,13 +114,13 @@ namespace Singularity.Screen.ScreenClasses
         private void AchievementButtonReleased(object sender, EventArgs eventArgs)
         {
             // TODO : ADD PARAMETERS IF NEEDED (FOR EXAMPLE GRAPHICS DEVICE TO CALCULATE POSITIONS/SIZES
-            mScreenManager.AddScreen(screen: new AchievementsScreen());
+            mScreenManager.AddScreen(new AchievementsScreen());
         }
 
         private void StatisticsButtonReleased(object sender, EventArgs eventArgs)
         {
             // TODO : ADD PARAMETERS IF NEEDED (FOR EXAMPLE GRAPHICS DEVICE TO CALCULATE POSITIONS/SIZES
-            mScreenManager.AddScreen(screen: mStatisticsScreen);
+            mScreenManager.AddScreen(mStatisticsScreen);
         }
 
         private void CloseButtonReleased(object sender, EventArgs eventArgs)

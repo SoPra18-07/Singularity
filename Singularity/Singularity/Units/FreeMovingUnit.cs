@@ -168,7 +168,7 @@ namespace Singularity.Units
             mCamera = camera;
             mPathfinder = new MilitaryPathfinder();
 
-            Center = new Vector2(x: AbsolutePosition.X + AbsoluteSize.X / 2, y: AbsolutePosition.Y + AbsoluteSize.Y / 2);
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
         }
 
         #region Pathfinding Methods
@@ -181,24 +181,24 @@ namespace Singularity.Units
         protected void MoveToTarget(Vector2 target, float speed)
         {
 
-            var movementVector = new Vector2(x: target.X - Center.X, y: target.Y - Center.Y);
+            var movementVector = new Vector2(target.X - Center.X, target.Y - Center.Y);
             movementVector.Normalize();
             mToAdd += mMovementVector * (float)(mZoomSnapshot * speed);
 
-            AbsolutePosition = new Vector2(x: AbsolutePosition.X + movementVector.X * speed, y: AbsolutePosition.Y + movementVector.Y * speed);
+            AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X * speed, AbsolutePosition.Y + movementVector.Y * speed);
         }
 
         protected void FindPath(Vector2 currentPosition, Vector2 targetPosition)
         {
 
             mIsMoving = true;
-            Debug.WriteLine(message: "Starting path finding at: " + currentPosition.X + ", " + currentPosition.Y);
-            Debug.WriteLine(message: "Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
+            Debug.WriteLine("Starting path finding at: " + currentPosition.X + ", " + currentPosition.Y);
+            Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
 
             mPath = new Stack<Vector2>();
-            mPath = mPathfinder.FindPath(startPosition: currentPosition,
-                endPosition: mTargetPosition,
-                map: ref mMap);
+            mPath = mPathfinder.FindPath(currentPosition,
+                mTargetPosition,
+                ref mMap);
 
             if (GlobalVariables.DebugState)
             {
@@ -217,9 +217,9 @@ namespace Singularity.Units
         protected bool HasReachedTarget()
         {
 
-            if (!(Math.Abs(value: Center.X + mToAdd.X -
+            if (!(Math.Abs(Center.X + mToAdd.X -
                            mTargetPosition.X) < 8 &&
-                  Math.Abs(value: Center.Y + mToAdd.Y -
+                  Math.Abs(Center.Y + mToAdd.Y -
                            mTargetPosition.Y) < 8))
             {
                 return false;
@@ -234,14 +234,14 @@ namespace Singularity.Units
         /// <returns></returns>
         protected bool HasReachedWaypoint()
         {
-            if (Math.Abs(value: Center.X + mToAdd.X - mPath.Peek().X) < 8
-                && Math.Abs(value: Center.Y + mToAdd.Y - mPath.Peek().Y) < 8)
+            if (Math.Abs(Center.X + mToAdd.X - mPath.Peek().X) < 8
+                && Math.Abs(Center.Y + mToAdd.Y - mPath.Peek().Y) < 8)
             {
                 // If the position is within 8 pixels of the waypoint, (i.e. it will overshoot the waypoint if it moves
                 // for one more update, do the following
 
-                Debug.WriteLine(message: "Waypoint reached.");
-                Debug.WriteLine(message: "Next waypoint: " + mPath.Peek());
+                Debug.WriteLine("Waypoint reached.");
+                Debug.WriteLine("Next waypoint: " + mPath.Peek());
                 return true;
             }
 
@@ -259,27 +259,27 @@ namespace Singularity.Units
             // adjust to be at center of sprite
             var x = target.X - (RelativePosition.X + RelativeSize.X / 2);
             var y = target.Y - (RelativePosition.Y + RelativeSize.Y / 2);
-            var hypot = Math.Sqrt(d: Math.Pow(x: x, y: 2) + Math.Pow(x: y, y: 2));
+            var hypot = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
 
             // calculate degree between formed triangle
             double degree;
-            if (Math.Abs(value: hypot) < 0.01)
+            if (Math.Abs(hypot) < 0.01)
             {
                 degree = 0;
             }
             else
             {
-                degree = Math.Asin(d: y / hypot) * (180.0 / Math.PI);
+                degree = Math.Asin(y / hypot) * (180.0 / Math.PI);
             }
 
             // calculate rotation with increased degrees going counterclockwise
             if (x >= 0)
             {
-                mRotation = (int)Math.Round(value: 270 - degree, mode: MidpointRounding.AwayFromZero);
+                mRotation = (int)Math.Round(270 - degree, MidpointRounding.AwayFromZero);
             }
             else
             {
-                mRotation = (int)Math.Round(value: 90 + degree, mode: MidpointRounding.AwayFromZero);
+                mRotation = (int)Math.Round(90 + degree, MidpointRounding.AwayFromZero);
             }
 
             // add 42 degrees since sprite sheet starts at sprite -42deg not 0
@@ -329,9 +329,9 @@ namespace Singularity.Units
         /// <returns></returns>
         protected Vector2 MapCoordinates(Vector2 v)
         {
-            return new Vector2(x: Vector2.Transform(position: new Vector2(x: v.X, y: v.Y),
-                matrix: Matrix.Invert(matrix: mCamera.GetTransform())).X, y: Vector2.Transform(position: new Vector2(x: v.X, y: v.Y),
-                matrix: Matrix.Invert(matrix: mCamera.GetTransform())).Y);
+            return new Vector2(Vector2.Transform(new Vector2(v.X, v.Y),
+                Matrix.Invert(mCamera.GetTransform())).X, Vector2.Transform(new Vector2(v.X, v.Y),
+                Matrix.Invert(mCamera.GetTransform())).Y);
         }
     }
 }

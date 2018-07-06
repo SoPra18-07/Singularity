@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platforms;
@@ -13,7 +14,7 @@ namespace Singularity.PlatformActions
         // The ResourceMap is needed for actually 'producing' the resources.
         private readonly ResourceMap mResourceMap;
 
-        public ProduceWellResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform: platform, director: ref director)
+        public ProduceWellResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, ref director)
         {
             mResourceMap = resourceMap;
         }
@@ -22,10 +23,10 @@ namespace Singularity.PlatformActions
 
         public override void Execute()
         {
-            var res = mResourceMap.GetWellResource(location: mPlatform.AbsolutePosition);
+            var res = mResourceMap.GetWellResource(mPlatform.AbsolutePosition);
             if (res.IsPresent())
             {
-                mPlatform.StoreResource(resource: res.Get());
+                mPlatform.StoreResource(res.Get());
             }
         }
     }
@@ -35,7 +36,7 @@ namespace Singularity.PlatformActions
         // The ResourceMap is needed for actually 'producing' the resources.
         private ResourceMap mResourceMap;
 
-        public ProduceQuarryResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform: platform, director: ref director)
+        public ProduceQuarryResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, ref director)
         {
             mResourceMap = resourceMap;
         }
@@ -44,10 +45,10 @@ namespace Singularity.PlatformActions
 
         public override void Execute()
         {
-            var res = mResourceMap.GetQuarryResource(location: mPlatform.AbsolutePosition);
+            var res = mResourceMap.GetQuarryResource(mPlatform.AbsolutePosition);
             if (res.IsPresent())
             {
-                mPlatform.StoreResource(resource: res.Get());
+                mPlatform.StoreResource(res.Get());
             }
         }
     }
@@ -57,7 +58,7 @@ namespace Singularity.PlatformActions
         // The ResourceMap is needed for actually 'producing' the resources.
         private ResourceMap mResourceMap;
 
-        public ProduceMineResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform: platform, director: ref director)
+        public ProduceMineResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, ref director)
         {
             mResourceMap = resourceMap;
         }
@@ -66,10 +67,10 @@ namespace Singularity.PlatformActions
 
         public override void Execute()
         {
-            var res = mResourceMap.GetMineResource(location: mPlatform.AbsolutePosition);
+            var res = mResourceMap.GetMineResource(mPlatform.AbsolutePosition);
             if (res.IsPresent())
             {
-                mPlatform.StoreResource(resource: res.Get());
+                mPlatform.StoreResource(res.Get());
             }
         }
     }
@@ -80,17 +81,25 @@ namespace Singularity.PlatformActions
         private PlatformBlank mBuilding;
 
         public BuildBluePrint(PlatformBlank platform, PlatformBlank toBeBuilt, ref Director director) : base(
-            platform: platform,
-            director: ref director)
+            platform,
+            ref director)
         {
-            mBuildingCost = toBeBuilt.GetResourcesRequired();
+            mBuildingCost = new Dictionary<EResourceType, int>(toBeBuilt.GetResourcesRequired());
             mBuilding = toBeBuilt;
+
+            Debug.WriteLine(mBuildingCost.Count);
+            Debug.WriteLine(toBeBuilt.GetResourcesRequired().Count);
+            UiToggleState();
+            Debug.WriteLine(mBuildingCost.Count);
+            Debug.WriteLine(mMissingResources.Count);
+            Debug.WriteLine(mToRequest.Count);
         }
 
         public override List<JobType> UnitsRequired { get; } = new List<JobType> {JobType.Construction};
 
         protected override void CreateUnit()
         {
+            Debug.WriteLine("Building Platform!");
             mBuilding.Built();
             Die();
         }
@@ -99,17 +108,12 @@ namespace Singularity.PlatformActions
         {
 
         }
-
-        public override Dictionary<EResourceType, int> GetRequiredResources()
-        {
-            return new Dictionary<EResourceType, int>();
-        }
     }
 
 
     public abstract class APlatformResourceAction : APlatformAction
     {
-        protected APlatformResourceAction(PlatformBlank platform, ref Director director) : base(platform: platform, director: ref director)
+        protected APlatformResourceAction(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
         }
 
@@ -118,7 +122,7 @@ namespace Singularity.PlatformActions
             switch (State)
             {
                 case PlatformActionState.Active:
-                    mDirector.GetDistributionManager.PausePlatformAction(action: this);
+                    mDirector.GetDistributionManager.PausePlatformAction(this);
                     State = PlatformActionState.Available;
                     break;
                 case PlatformActionState.Available:
@@ -127,7 +131,7 @@ namespace Singularity.PlatformActions
                     State = PlatformActionState.Active;
                     break;
                 default:
-                    throw new AccessViolationException(message: "Someone/Something acccessed the state!!");
+                    throw new AccessViolationException("Someone/Something acccessed the state!!");
             }
         }
 

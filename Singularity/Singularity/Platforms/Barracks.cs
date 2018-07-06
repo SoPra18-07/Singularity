@@ -9,13 +9,13 @@ namespace Singularity.Platforms
     internal class Barracks : PlatformBlank
     {
         public Barracks(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libSans12, ref Director director)
-            : base(position: position, platformSpriteSheet: platformSpriteSheet, baseSprite: baseSprite, libSans12Font: libSans12, director: ref director, type: EPlatformType.Barracks)
+            : base(position, platformSpriteSheet, baseSprite, libSans12, ref director, EPlatformType.Barracks)
         {
 
-            mIPlatformActions.Add(item: new MakeFastMilitaryUnit(platform: this, director: ref director));
-            mIPlatformActions.Add(item: new MakeStrongMilitrayUnit(platform: this, director: ref director));
+            mIPlatformActions.Add(new MakeFastMilitaryUnit(this, ref director));
+            mIPlatformActions.Add(new MakeStrongMilitrayUnit(this, ref director));
 
-            Debug.WriteLine(message: "Barracks created.");
+            Debug.WriteLine("Barracks created.");
         }
     }
 }

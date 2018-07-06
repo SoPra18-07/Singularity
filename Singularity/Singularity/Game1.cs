@@ -33,15 +33,15 @@ namespace Singularity
 
         internal Game1()
         {
-            mGraphics = new GraphicsDeviceManager(game: this);
+            mGraphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
             mGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
 
-            mDirector = new Director(content: Content);
+            mDirector = new Director(Content);
 
 
-            mScreenManager = new StackScreenManager(contentManager: Content, inputManager: mDirector.GetInputManager);
+            mScreenManager = new StackScreenManager(Content, mDirector.GetInputManager);
 
         }
 
@@ -69,15 +69,15 @@ namespace Singularity
         /// </summary>
         protected override void LoadContent()
         {
-            var viewportResolution = new Vector2(x: GraphicsDevice.Viewport.Width,
-                y: GraphicsDevice.Viewport.Height);
+            var viewportResolution = new Vector2(GraphicsDevice.Viewport.Width,
+                GraphicsDevice.Viewport.Height);
             // Create a new SpriteBatch, which can be used to draw textures.
-            mSpriteBatch = new SpriteBatch(graphicsDevice: GraphicsDevice);
+            mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
             //This needs to be done because in the Constructor of Tutorial all Ingame-things (including screens) etc. are initialized and added
-            mLevel = new Skirmish(graphics: mGraphics, director: ref mDirector, content: Content, screenmanager: mScreenManager);
+            mLevel = new Skirmish(mGraphics, ref mDirector, Content, mScreenManager);
 
-            mMainMenuManager = new MainMenuManagerScreen(screenResolution: viewportResolution, screenManager: mScreenManager, showSplash: true, game: this);
+            mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
             //ATTENTION: THE INGAME SCREENS ARE HANDLED IN THE LEVELS NOW!
             //mScreenManager.AddScreen(mMainMenuManager); // TODO: This makes it so that the main menu is bypassed
 
@@ -102,9 +102,9 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            mDirector.Update(gametime: gameTime, isActive: IsActive);
-            mScreenManager.Update(gametime: gameTime);
-            base.Update(gameTime: gameTime);
+            mDirector.Update(gameTime, IsActive);
+            mScreenManager.Update(gameTime);
+            base.Update(gameTime);
         }
 
         /// <summary>
@@ -113,10 +113,10 @@ namespace Singularity
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(color: Color.Black);
+            GraphicsDevice.Clear(Color.Black);
 
-            mScreenManager.Draw(spriteBatch: mSpriteBatch);
-            base.Draw(gameTime: gameTime);
+            mScreenManager.Draw(mSpriteBatch);
+            base.Draw(gameTime);
         }
     }
 }

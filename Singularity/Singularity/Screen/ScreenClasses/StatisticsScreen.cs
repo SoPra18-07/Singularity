@@ -52,7 +52,7 @@ namespace Singularity.Screen.ScreenClasses
             mDirector = director;
             
 
-            Position = new Vector2(x: screenSize.X / 2 - 205, y: screenSize.Y / 2 - 225);
+            Position = new Vector2(screenSize.X / 2 - 205, screenSize.Y / 2 - 225);
             mPrevPosition = Position;
 
         }
@@ -64,7 +64,7 @@ namespace Singularity.Screen.ScreenClasses
         /// that take place over time </param>
         public void Update(GameTime gametime)
         {
-            mCloseButton.Update(gametime: gametime);
+            mCloseButton.Update(gametime);
         }
 
         /// <summary>
@@ -73,10 +73,10 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="content">Content Manager that should handle the content loading</param>
         public void LoadContent(ContentManager content)
         {
-            mLibSans20 = content.Load<SpriteFont>(assetName: "LibSans20");
-            mLibSans14 = content.Load<SpriteFont>(assetName: "LibSans14");
+            mLibSans20 = content.Load<SpriteFont>("LibSans20");
+            mLibSans14 = content.Load<SpriteFont>("LibSans14");
 
-            mCloseButton = new Button(buttonText: "Close", font: mLibSans20, position: new Vector2(x: Position.X + 167, y: Position.Y + 410)) { Opacity = 1f };
+            mCloseButton = new Button("Close", mLibSans20, new Vector2(Position.X + 167, Position.Y + 410)) { Opacity = 1f };
 
             mCloseButton.ButtonReleased += CloseButtonReleased;
         }
@@ -89,27 +89,27 @@ namespace Singularity.Screen.ScreenClasses
         {
             spriteBatch.Begin();
 
-            spriteBatch.FillRectangle(location: Position, size: new Vector2(x: 400, y: 450), color: new Color(r: 0.27f, g: 0.5f, b: 0.7f, alpha: 1f), angle: 0f);
-            mCloseButton.Draw(spriteBatch: spriteBatch);
+            spriteBatch.FillRectangle(Position, new Vector2(400, 450), new Color(0.27f, 0.5f, 0.7f, 1f), 0f);
+            mCloseButton.Draw(spriteBatch);
             // Draw the window name and stats names.
-            spriteBatch.DrawString(spriteFont: mLibSans20, text: StatisticsStr, position: new Vector2(x: Position.X + 145, y: Position.Y + 10), color: Color.Black);
-            spriteBatch.DrawString(spriteFont: mLibSans14, text: TimeStr, position: new Vector2(x: Position.X + 60, y: Position.Y + 60), color: Color.Black);
-            spriteBatch.DrawString(spriteFont: mLibSans14, text: UnitsCreatedStr, position: new Vector2(x: Position.X + 60, y: Position.Y + 110), color: Color.Black);
-            spriteBatch.DrawString(spriteFont: mLibSans14, text: UnitsLostStr, position: new Vector2(x: Position.X + 60, y: Position.Y + 150), color: Color.Black);
-            spriteBatch.DrawString(spriteFont: mLibSans14, text: UnitsKilledStr, position: new Vector2(x: Position.X + 60, y: Position.Y + 190), color: Color.Black);
-            spriteBatch.DrawString(spriteFont: mLibSans14, text: ResourcesStr, position: new Vector2(x: Position.X + 60, y: Position.Y + 240), color: Color.Black);
-            spriteBatch.DrawString(spriteFont: mLibSans14, text: PlatformsCreatedStr, position: new Vector2(x: Position.X + 60, y: Position.Y + 290), color: Color.Black);
-            spriteBatch.DrawString(spriteFont: mLibSans14, text: PlatformsLostStr, position: new Vector2(x: Position.X + 60, y: Position.Y + 370), color: Color.Black);
-            spriteBatch.DrawString(spriteFont: mLibSans14, text: PlatformsDestroyedStr, position: new Vector2(x: Position.X + 60, y: Position.Y + 330), color: Color.Black);
+            spriteBatch.DrawString(mLibSans20, StatisticsStr, new Vector2(Position.X + 145, Position.Y + 10), Color.Black);
+            spriteBatch.DrawString(mLibSans14, TimeStr, new Vector2(Position.X + 60, Position.Y + 60), Color.Black);
+            spriteBatch.DrawString(mLibSans14, UnitsCreatedStr, new Vector2(Position.X + 60, Position.Y + 110), Color.Black);
+            spriteBatch.DrawString(mLibSans14, UnitsLostStr, new Vector2(Position.X + 60, Position.Y + 150), Color.Black);
+            spriteBatch.DrawString(mLibSans14, UnitsKilledStr, new Vector2(Position.X + 60, Position.Y + 190), Color.Black);
+            spriteBatch.DrawString(mLibSans14, ResourcesStr, new Vector2(Position.X + 60, Position.Y + 240), Color.Black);
+            spriteBatch.DrawString(mLibSans14, PlatformsCreatedStr, new Vector2(Position.X + 60, Position.Y + 290), Color.Black);
+            spriteBatch.DrawString(mLibSans14, PlatformsLostStr, new Vector2(Position.X + 60, Position.Y + 370), Color.Black);
+            spriteBatch.DrawString(mLibSans14, PlatformsDestroyedStr, new Vector2(Position.X + 60, Position.Y + 330), Color.Black);
             // Draw the stats behind their names, live from the StoryManager.
-            spriteBatch.DrawString(spriteFont: mLibSans14, text: mDirector.GetStoryManager.Time.ToString(), position: new Vector2(x: Position.X + 110, y: Position.Y + 60), color: Color.Black);
-            spriteBatch.DrawString(spriteFont: mLibSans14, text: mDirector.GetStoryManager.mUnits[key: "created"].ToString(), position: new Vector2(x: Position.X + 180, y: Position.Y + 110), color: Color.LawnGreen);
-            spriteBatch.DrawString(spriteFont: mLibSans14, text: mDirector.GetStoryManager.mUnits[key: "lost"].ToString(), position: new Vector2(x: Position.X + 180, y: Position.Y + 150), color: Color.Red);
-            spriteBatch.DrawString(spriteFont: mLibSans14, text: mDirector.GetStoryManager.mUnits[key: "killed"].ToString(), position: new Vector2(x: Position.X + 180, y: Position.Y + 190), color: Color.Black);
-            spriteBatch.DrawString(spriteFont: mLibSans14, text: mDirector.GetStoryManager.mResources.Sum(selector: x => x.Value).ToString(), position: new Vector2(x: Position.X + 245, y: Position.Y + 240), color: Color.LawnGreen);
-            spriteBatch.DrawString(spriteFont: mLibSans14, text: mDirector.GetStoryManager.mPlatforms[key: "created"].ToString(), position: new Vector2(x: Position.X + 240, y: Position.Y + 290), color: Color.LawnGreen);
-            spriteBatch.DrawString(spriteFont: mLibSans14, text: mDirector.GetStoryManager.mPlatforms[key: "lost"].ToString(), position: new Vector2(x: Position.X + 240, y: Position.Y + 370), color: Color.Red);
-            spriteBatch.DrawString(spriteFont: mLibSans14, text: mDirector.GetStoryManager.mPlatforms[key: "destroyed"].ToString(), position: new Vector2(x: Position.X + 240, y: Position.Y + 330), color: Color.Black);
+            spriteBatch.DrawString(mLibSans14, mDirector.GetStoryManager.Time.ToString(), new Vector2(Position.X + 110, Position.Y + 60), Color.Black);
+            spriteBatch.DrawString(mLibSans14, mDirector.GetStoryManager.mUnits["created"].ToString(), new Vector2(Position.X + 180, Position.Y + 110), Color.LawnGreen);
+            spriteBatch.DrawString(mLibSans14, mDirector.GetStoryManager.mUnits["lost"].ToString(), new Vector2(Position.X + 180, Position.Y + 150), Color.Red);
+            spriteBatch.DrawString(mLibSans14, mDirector.GetStoryManager.mUnits["killed"].ToString(), new Vector2(Position.X + 180, Position.Y + 190), Color.Black);
+            spriteBatch.DrawString(mLibSans14, mDirector.GetStoryManager.mResources.Sum(x => x.Value).ToString(), new Vector2(Position.X + 245, Position.Y + 240), Color.LawnGreen);
+            spriteBatch.DrawString(mLibSans14, mDirector.GetStoryManager.mPlatforms["created"].ToString(), new Vector2(Position.X + 240, Position.Y + 290), Color.LawnGreen);
+            spriteBatch.DrawString(mLibSans14, mDirector.GetStoryManager.mPlatforms["lost"].ToString(), new Vector2(Position.X + 240, Position.Y + 370), Color.Red);
+            spriteBatch.DrawString(mLibSans14, mDirector.GetStoryManager.mPlatforms["destroyed"].ToString(), new Vector2(Position.X + 240, Position.Y + 330), Color.Black);
 
             spriteBatch.End();
         }

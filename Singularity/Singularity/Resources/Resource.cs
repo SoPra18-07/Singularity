@@ -32,7 +32,7 @@ namespace Singularity.Resources
         {
             Type = type;
             AbsolutePosition = position;
-            AbsoluteSize = new Vector2(x: 10, y: 10);
+            AbsoluteSize = new Vector2(10, 10);
         }
 
         public void Follow(GeneralUnit unit)
@@ -41,17 +41,17 @@ namespace Singularity.Resources
 
             // the actual targetPosition is a certain distance (usually 50) from the unit, in the direction of the unit.
             var diff = unit.AbsolutePosition - AbsolutePosition;
-            if (Geometry.Length(vec: diff) > 40)
+            if (Geometry.Length(diff) > 40)
             {
-                var targetPosition = diff - 40 * Geometry.NormalizeVector(vector: diff) + AbsolutePosition;
+                var targetPosition = diff - 40 * Geometry.NormalizeVector(diff) + AbsolutePosition;
 
                 var factor = 0.4f; // experimental. seems to be a good value though.
 
-                var movementVector = Vector2.Multiply(value1: Geometry.NormalizeVector(vector: mVelocity), scaleFactor: factor) + Vector2.Multiply(value1: Geometry.NormalizeVector(vector: new Vector2(x: targetPosition.X - AbsolutePosition.X, y: targetPosition.Y - AbsolutePosition.Y)), scaleFactor: 1 - factor);
+                var movementVector = Vector2.Multiply(Geometry.NormalizeVector(mVelocity), factor) + Vector2.Multiply(Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y)), 1 - factor);
 
                 mVelocity = movementVector * Speed;
             } else {
-                mVelocity = Vector2.Multiply(value1: mVelocity, scaleFactor: 0.93f);
+                mVelocity = Vector2.Multiply(mVelocity, 0.93f);
             }
             AbsolutePosition = AbsolutePosition + mVelocity;
 
@@ -67,7 +67,7 @@ namespace Singularity.Resources
         /// </summary>
         public void UnFollow()
         {
-            mFollowing = Optional<GeneralUnit>.Of(value: null);
+            mFollowing = Optional<GeneralUnit>.Of(null);
         }
 
         /// <summary>
@@ -76,20 +76,20 @@ namespace Singularity.Resources
         /// <param name="direction"></param>
         public void Move(Vector2 direction)
         {
-            mVelocity += Geometry.NormalizeVector(vector: direction) * Speed;
+            mVelocity += Geometry.NormalizeVector(direction) * Speed;
         }
 
         public void Draw(SpriteBatch spriteBatch)
 		{
-			spriteBatch.DrawCircle(center: AbsolutePosition, radius: 6, sides: 20, color: ResourceHelper.GetColor(type: Type), thickness: 6, layerDepth: LayerConstants.ResourceLayer);
-            spriteBatch.DrawCircle(center: AbsolutePosition, radius: 7, sides: 20, color: Color.Black, thickness: 1, layerDepth: LayerConstants.ResourceLayer);
+			spriteBatch.DrawCircle(AbsolutePosition, 6, 20, ResourceHelper.GetColor(Type), 6, LayerConstants.ResourceLayer);
+            spriteBatch.DrawCircle(AbsolutePosition, 7, 20, Color.Black, 1, LayerConstants.ResourceLayer);
         }
 
         public void Update(GameTime gametime)
         {
             // Resoucres only update their location (if on a platform).
             AbsolutePosition += mVelocity;
-            mVelocity = Vector2.Multiply(value1: mVelocity, scaleFactor: 0.8f);
+            mVelocity = Vector2.Multiply(mVelocity, 0.8f);
         }
 
         public bool Die()

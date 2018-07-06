@@ -76,8 +76,8 @@ namespace Singularity.Screen.ScreenClasses
 
             mDirector = director;
 
-            mSelBox = new SelectionBox(color: Color.White, camera: mCamera, director: ref mDirector);
-            AddObject(toAdd: mSelBox);
+            mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
+            AddObject(mSelBox);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -85,33 +85,33 @@ namespace Singularity.Screen.ScreenClasses
 
             // if you're interested in whats going on here, refer to the documentation of the FogOfWar class.
 
-            spriteBatch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.AlphaBlend, samplerState: null, depthStencilState: null, rasterizerState: null, effect: null, transformMatrix: mTransformMatrix);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mTransformMatrix);
 
             foreach (var drawable in mDrawables)
             {
-                drawable.Draw(spriteBatch: spriteBatch);
+                drawable.Draw(spriteBatch);
             }
 
             spriteBatch.End();
 
-            mFow.DrawMasks(spriteBatch: spriteBatch);
+            mFow.DrawMasks(spriteBatch);
 
-            spriteBatch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.AlphaBlend, samplerState: null, depthStencilState: mFow.GetApplyMaskStencilState(), rasterizerState: null, effect: null, transformMatrix: mTransformMatrix);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, mFow.GetApplyMaskStencilState(), null, null, mTransformMatrix);
 
-            mMap.GetStructureMap().Draw(spriteBatch: spriteBatch);
+            mMap.GetStructureMap().Draw(spriteBatch);
 
             foreach (var spatial in mSpatialObjects)
             {
-                spatial.Draw(spriteBatch: spriteBatch);
+                spatial.Draw(spriteBatch);
             }
 
             spriteBatch.End();
 
-            mFow.FillInvertedMask(spriteBatch: spriteBatch);
+            mFow.FillInvertedMask(spriteBatch);
 
-            spriteBatch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.AlphaBlend, samplerState: null, depthStencilState: null, rasterizerState: null, effect: null, transformMatrix: mTransformMatrix);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mTransformMatrix);
 
-            mMap.GetStructureMap().DrawAboveFow(spriteBatch: spriteBatch);
+            mMap.GetStructureMap().DrawAboveFow(spriteBatch);
 
             spriteBatch.End();
         }
@@ -126,43 +126,43 @@ namespace Singularity.Screen.ScreenClasses
 
             foreach (var updateable in mUpdateables)
             {
-                updateable.Update(gametime: gametime);
+                updateable.Update(gametime);
             }
 
-            foreach (var spatial in mSpatialObjects.Concat(second: mMap.GetStructureMap().GetPlatformList()))
+            foreach (var spatial in mSpatialObjects.Concat(mMap.GetStructureMap().GetPlatformList()))
             {
                 var collidingObject = spatial as ICollider;
 
                 if (collidingObject != null)
                 {
-                    mMap.UpdateCollider(collider: collidingObject);
+                    mMap.UpdateCollider(collidingObject);
                 }
 
-                spatial.RelativePosition = Vector2.Transform(position: spatial.AbsolutePosition, matrix: mCamera.GetTransform());
+                spatial.RelativePosition = Vector2.Transform(spatial.AbsolutePosition, mCamera.GetTransform());
                 spatial.RelativeSize = spatial.AbsoluteSize * mCamera.GetZoom();
 
-                spatial.Update(gametime: gametime);
+                spatial.Update(gametime);
             }
-            mMap.GetStructureMap().Update(gametime: gametime);
+            mMap.GetStructureMap().Update(gametime);
 
-            mFow.Update(gametime: gametime);
+            mFow.Update(gametime);
 
             mTransformMatrix = mCamera.GetTransform();
         }
 
         public void LoadContent(ContentManager content)
         {
-            AddObject(toAdd: mMap);
+            AddObject(mMap);
 
-            AddObjects(toAdd: ResourceHelper.GetRandomlyDistributedResources(amount: 5));
+            AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
 
-            mDirector.GetSoundManager.SetLevelThemeMusic(name: "Tutorial");
-            mDirector.GetSoundManager.SetSoundPhase(soundPhase: SoundPhase.Build);
+            mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
+            mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
 
             // This is for the creation of the Command Centers from the settlers
-            mBlankPlat = content.Load<Texture2D>(assetName: "PlatformBasic");
-            mCylPlat = content.Load<Texture2D>(assetName: "Cylinders");
-            mLibSans12 = content.Load<SpriteFont>(assetName: "LibSans12");
+            mBlankPlat = content.Load<Texture2D>("PlatformBasic");
+            mCylPlat = content.Load<Texture2D>("Cylinders");
+            mLibSans12 = content.Load<SpriteFont>("LibSans12");
         }
 
         public bool UpdateLower()
@@ -184,20 +184,20 @@ namespace Singularity.Screen.ScreenClasses
             var settler = toAdd as Settler;
             var conUnit = toAdd as ControllableUnit;
 
-            if (!typeof(IDraw).IsAssignableFrom(c: typeof(T)) && !typeof(IUpdate).IsAssignableFrom(c: typeof(T)) && road == null && platform == null)
+            if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
                 return false;
             }
 
             if (road != null)
             {
-                mMap.AddRoad(road: road);
+                mMap.AddRoad(road);
                 return true;
             }
 
             if (platform != null)
             {
-                mMap.AddPlatform(platform: platform);
+                mMap.AddPlatform(platform);
                 return true;
             }
 
@@ -214,24 +214,24 @@ namespace Singularity.Screen.ScreenClasses
                 mSelBox.SelectingBox += conUnit.BoxSelected;
             }
 
-            if (typeof(IRevealing).IsAssignableFrom(c: typeof(T)))
+            if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
             {
-                mFow.AddRevealingObject(revealingObject: (IRevealing)toAdd);
+                mFow.AddRevealingObject((IRevealing)toAdd);
             }
 
-            if (typeof(ISpatial).IsAssignableFrom(c: typeof(T)))
+            if (typeof(ISpatial).IsAssignableFrom(typeof(T)))
             {
-                mSpatialObjects.AddLast(value: (ISpatial) toAdd);
+                mSpatialObjects.AddLast((ISpatial) toAdd);
                 return true;
             }
 
-            if (typeof(IDraw).IsAssignableFrom(c: typeof(T)))
+            if (typeof(IDraw).IsAssignableFrom(typeof(T)))
             {
-                mDrawables.AddLast(value: (IDraw)toAdd);
+                mDrawables.AddLast((IDraw)toAdd);
             }
-            if (typeof(IUpdate).IsAssignableFrom(c: typeof(T)))
+            if (typeof(IUpdate).IsAssignableFrom(typeof(T)))
             {
-                mUpdateables.AddLast(value: (IUpdate)toAdd);
+                mUpdateables.AddLast((IUpdate)toAdd);
             }
             return true;
 
@@ -249,7 +249,7 @@ namespace Singularity.Screen.ScreenClasses
 
             foreach (var t in toAdd)
             {
-                isSuccessful = isSuccessful && AddObject(toAdd: t);
+                isSuccessful = isSuccessful && AddObject(t);
             }
 
             return isSuccessful;
@@ -269,19 +269,19 @@ namespace Singularity.Screen.ScreenClasses
             var settler = toRemove as Settler;
             var controllableUnit = toRemove as ControllableUnit;
 
-            if (!typeof(IDraw).IsAssignableFrom(c: typeof(T)) && !typeof(IUpdate).IsAssignableFrom(c: typeof(T)) && road == null && platform == null)
+            if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
                 return false;
             }
 
             if (road != null)
             {
-                mMap.RemoveRoad(road: road);
+                mMap.RemoveRoad(road);
             }
 
             if (platform != null)
             {
-                mMap.RemovePlatform(platform: platform);
+                mMap.RemovePlatform(platform);
             }
 
             // TODO don't know if this is necessary, but unsubscribe GameScreen from this instance event
@@ -296,24 +296,24 @@ namespace Singularity.Screen.ScreenClasses
                 //mSelBox.SelectingBox -= milUnit.BoxSelected;
             }
 
-            if (typeof(IRevealing).IsAssignableFrom(c: typeof(T)))
+            if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
             {
-                mFow.RemoveRevealingObject(revealingObject: (IRevealing)toRemove);
+                mFow.RemoveRevealingObject((IRevealing)toRemove);
             }
 
-            if (typeof(ISpatial).IsAssignableFrom(c: typeof(T)))
+            if (typeof(ISpatial).IsAssignableFrom(typeof(T)))
             {
-                mSpatialObjects.Remove(value: (ISpatial)toRemove);
+                mSpatialObjects.Remove((ISpatial)toRemove);
                 return true;
             }
 
-            if (typeof(IDraw).IsAssignableFrom(c: typeof(T)))
+            if (typeof(IDraw).IsAssignableFrom(typeof(T)))
             {
-                mDrawables.Remove(value: (IDraw)toRemove);
+                mDrawables.Remove((IDraw)toRemove);
             }
-            if (typeof(IUpdate).IsAssignableFrom(c: typeof(T)))
+            if (typeof(IUpdate).IsAssignableFrom(typeof(T)))
             {
-                mUpdateables.Remove(value: (IUpdate)toRemove);
+                mUpdateables.Remove((IUpdate)toRemove);
             }
             return true;
         }
@@ -342,17 +342,17 @@ namespace Singularity.Screen.ScreenClasses
             // TODO eventually the EPlacementType should be instance but currently that
             // TODO requires a road to be place and therefore throws an exception !!!!!
 
-            CommandCenter cCenter = new CommandCenter(position: new Vector2(x: v.X-55, y: v.Y-100), spritesheet: mCylPlat, baseSprite: mBlankPlat, libSans12: mLibSans12, director: ref mDirector, blueprintState: false);
-            var genUnit = new GeneralUnit(platform: cCenter, director: ref mDirector);
-            var genUnit2 = new GeneralUnit(platform: cCenter, director: ref mDirector);
+            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, mLibSans12, ref mDirector, false);
+            var genUnit = new GeneralUnit(cCenter, ref mDirector);
+            var genUnit2 = new GeneralUnit(cCenter, ref mDirector);
 
             // adds the command center to the GameScreen, as well as two general units
-            AddObject(toAdd: cCenter);
-            AddObject(toAdd: genUnit);
-            AddObject(toAdd: genUnit2);
+            AddObject(cCenter);
+            AddObject(genUnit);
+            AddObject(genUnit2);
 
             // removes the settler from the GameScreen
-            RemoveObject(toRemove: s);
+            RemoveObject(s);
         }
 
 

@@ -44,10 +44,10 @@ namespace Singularity.Units
         /// mouse event handlers. Any object that is a subclass of this class is immediately
         /// subscribed to mouse events by the gamescreen.
         protected ControllableUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
-            : base(position: position, camera: camera, director: ref director, map: ref map)
+            : base(position, camera, ref director, ref map)
         {
-            mDirector.GetInputManager.AddMouseClickListener(iMouseClickListener: this, leftClickType: EClickType.Both, rightClickType: EClickType.Both);
-            mDirector.GetInputManager.AddMousePositionListener(iMouseListener: this);
+            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            mDirector.GetInputManager.AddMousePositionListener(this);
         }
 
         #region Mouse Handlers
@@ -63,20 +63,20 @@ namespace Singularity.Units
                     if (mSelected
                         && !mIsMoving
                         && !withinBounds
-                        && Map.Map.IsOnTop(rect: new Rectangle(x: (int)(mMouseX - RelativeSize.X / 2f),
-                                y: (int)(mMouseY - RelativeSize.Y / 2f),
-                                width: (int)RelativeSize.X,
-                                height: (int)RelativeSize.Y),
-                            camera: mCamera))
+                        && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f),
+                                (int)(mMouseY - RelativeSize.Y / 2f),
+                                (int)RelativeSize.X,
+                                (int)RelativeSize.Y),
+                            mCamera))
                     {
-                        mTargetPosition = Vector2.Transform(position: new Vector2(x: Mouse.GetState().X, y: Mouse.GetState().Y),
-                            matrix: Matrix.Invert(matrix: mCamera.GetTransform()));
+                        mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
+                            Matrix.Invert(mCamera.GetTransform()));
 
                         if (mMap.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
-                            iX: (int)mTargetPosition.X / MapConstants.GridWidth,
-                            iY: (int)mTargetPosition.Y / MapConstants.GridWidth))
+                            (int)mTargetPosition.X / MapConstants.GridWidth,
+                            (int)mTargetPosition.Y / MapConstants.GridWidth))
                         {
-                            FindPath(currentPosition: Center, targetPosition: mTargetPosition);
+                            FindPath(Center, mTargetPosition);
                         }
                     }
 
@@ -124,10 +124,10 @@ namespace Singularity.Units
         public void BoxSelected(object sender, EventArgs e, Vector2 position, Vector2 size)
         {
             // create a rectangle from given parameters
-            Rectangle selBox = new Rectangle(x: (int)position.X, y: (int)position.Y, width: (int)size.X, height: (int)size.Y);
+            Rectangle selBox = new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y);
 
             // check if selection box intersects with MUnit bounds
-            if (selBox.Intersects(value: AbsBounds))
+            if (selBox.Intersects(AbsBounds))
             {
                 mSelected = true;
             }

@@ -15,7 +15,7 @@ namespace Singularity.Platforms
         [DataMember]
         private const int PlatformHeight = 127;
 
-        public EnergyFacility(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libSans12, ref Director director) : base(position: position, platformSpriteSheet: platformSpriteSheet, baseSprite: baseSprite, libSans12Font: libSans12, director: ref director, type: EPlatformType.Energy, centerOffsetY: -50)
+        public EnergyFacility(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libSans12, ref Director director) : base(position, platformSpriteSheet, baseSprite, libSans12, ref director, EPlatformType.Energy, -50)
         {
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Something like "Hello InstanceThatManagesEnergyLevels I exist now(Myself)"
@@ -28,12 +28,12 @@ namespace Singularity.Platforms
 
         public void TurnOn(StoryManager story)
         {
-            story.AddEnergy(energy: 20);
+            story.AddEnergy(20);
         }
 
         public void TurnOff(StoryManager story)
         {
-            story.AddEnergy(energy: -20);
+            story.AddEnergy(-20);
         }
     }
 }

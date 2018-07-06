@@ -29,9 +29,9 @@ namespace Singularity.Utils
             }
             else
             {
-                throw new ArgumentOutOfRangeException(paramName: nameof(initialState),
-                    actualValue: initialState,
-                    message: "The given argument has to be between 1 and 3 (inclusive).");
+                throw new ArgumentOutOfRangeException(nameof(initialState),
+                    initialState,
+                    "The given argument has to be between 1 and 3 (inclusive).");
             }
         }
 

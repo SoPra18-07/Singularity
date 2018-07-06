@@ -219,9 +219,9 @@ namespace Singularity.Screen.ScreenClasses
             mGraphics = mgraphics;
 
             // initialize input manager
-            mInputManager.AddMousePositionListener(iMouseListener: this);
-            mInputManager.AddMouseClickListener(iMouseClickListener: this, leftClickType: EClickType.InBoundsOnly, rightClickType: EClickType.InBoundsOnly);
-            Bounds = new Rectangle(x: 0,y: 0, width: mgraphics.PreferredBackBufferWidth, height: mgraphics.PreferredBackBufferHeight);
+            mInputManager.AddMousePositionListener(this);
+            mInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            Bounds = new Rectangle(0,0, mgraphics.PreferredBackBufferWidth, mgraphics.PreferredBackBufferHeight);
 
             // create the windowList
             mWindowList = new List<WindowObject>();
@@ -252,35 +252,35 @@ namespace Singularity.Screen.ScreenClasses
             // update all windows
             foreach (var window in mWindowList)
             {
-                window.Update(gametime: gametime);
+                window.Update(gametime);
             }
 
             foreach (var infoBox in mInfoBoxList)
             {
                 if (infoBox.Active)
                 {
-                    infoBox.Update(gametime: gametime);
+                    infoBox.Update(gametime);
                 }
             }
 
             // TODO : JUST FOR TESTING
-            mInfoBar.Update(gametime: gametime);
+            mInfoBar.Update(gametime);
 
             #region testing
 
             // TODO - DELETE TESTING OF POPUPWINDOW
             if (!mActiveWindow)
             {
-                if (mPopupWindowList.Contains(item: mTestPopupWindow))
+                if (mPopupWindowList.Contains(mTestPopupWindow))
                 {
-                    mPopupWindowList.Remove(item: mTestPopupWindow);
+                    mPopupWindowList.Remove(mTestPopupWindow);
                 }
             }
             else
             {
                 foreach (var window in mPopupWindowList)
                 {
-                    window.Update(gametime: gametime);
+                    window.Update(gametime);
                 }
             }
 
@@ -294,30 +294,30 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend, samplerState: null, depthStencilState: null, rasterizerState: mRasterizerState);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, mRasterizerState);
 
             // draw all windows
             foreach (var window in mWindowList)
             {
-                window.Draw(spriteBatch: spriteBatch);
+                window.Draw(spriteBatch);
             }
 
             // TODO - DELETE TESTING OF POPUPWINDOW
             foreach (var popupWindow in mPopupWindowList)
             {
-                popupWindow.Draw(spriteBatch: spriteBatch);
+                popupWindow.Draw(spriteBatch);
             }
 
             foreach (var infoBox in mInfoBoxList)
             {
                 if (infoBox.Active)
                 {
-                    infoBox.Draw(spriteBatch: spriteBatch);
+                    infoBox.Draw(spriteBatch);
                 }
             }
 
             // TODO : JUST FOR TESTING
-            mInfoBar.Draw(spriteBatch: spriteBatch);
+            mInfoBar.Draw(spriteBatch);
 
             spriteBatch.End();
         }
@@ -325,13 +325,13 @@ namespace Singularity.Screen.ScreenClasses
         public void LoadContent(ContentManager content)
         {
             // load all spritefonts
-            mLibSans20 = content.Load<SpriteFont>(assetName: "LibSans20");
-            mLibSans14 = content.Load<SpriteFont>(assetName: "LibSans14");
-            mLibSans12 = content.Load<SpriteFont>(assetName: "LibSans12");
+            mLibSans20 = content.Load<SpriteFont>("LibSans20");
+            mLibSans14 = content.Load<SpriteFont>("LibSans14");
+            mLibSans12 = content.Load<SpriteFont>("LibSans12");
 
             // Texture Loading
-            mBlankPlatformTexture = content.Load<Texture2D>(assetName: "PlatformBasic");
-            mOtherPlatformTexture = content.Load<Texture2D>(assetName: "PlatformSpriteSheet");
+            mBlankPlatformTexture = content.Load<Texture2D>("PlatformBasic");
+            mOtherPlatformTexture = content.Load<Texture2D>("PlatformSpriteSheet");
 
             // resolution
             mCurrentScreenWidth = mGraphics.PreferredBackBufferWidth;
@@ -340,8 +340,8 @@ namespace Singularity.Screen.ScreenClasses
             mPrevScreenHeight = mCurrentScreenHeight;
 
             // change color for the border or the filling of all userinterface windows here
-            var windowColor = new Color(r: 0.27f, g: 0.5f, b: 0.7f, alpha: 0.8f);
-            var borderColor = new Color(r: 0.68f, g: 0.933f, b: 0.933f, alpha: .8f);
+            var windowColor = new Color(0.27f, 0.5f, 0.7f, 0.8f);
+            var borderColor = new Color(0.68f, 0.933f, 0.933f, .8f);
 
             #region windows size calculation
 
@@ -371,59 +371,59 @@ namespace Singularity.Screen.ScreenClasses
             #region infoBarWindow
 
             // NOTICE: this window is the only window which is compeletely created and managed in its own class due to very different tasks
-            mInfoBar = new InfoBarWindowObject(borderColor: borderColor, fillColor: windowColor, graphics: mGraphics, spriteFont: mLibSans14, director: mDirector, screenManager: mScreenManager);
+            mInfoBar = new InfoBarWindowObject(borderColor, windowColor, mGraphics, mLibSans14, mDirector, mScreenManager);
 
             #endregion
 
             // TODO
             #region eventLogWindow
 
-            mEventLogWindow = new WindowObject(windowName: "// EVENT LOG", position: new Vector2(x: 0, y: 0), size: new Vector2(x: eventLogWidth, y: eventLogHeight), minimizable: true, spriteFont: mLibSans14, inputManager: mInputManager, graphics: mGraphics);
+            mEventLogWindow = new WindowObject("// EVENT LOG", new Vector2(0, 0), new Vector2(eventLogWidth, eventLogHeight), true, mLibSans14, mInputManager, mGraphics);
 
                 // create items
 
                 // add all items
 
-                mWindowList.Add(item: mEventLogWindow);
+                mWindowList.Add(mEventLogWindow);
 
                 #endregion
 
             #region civilUnitsWindow
 
-            mCivilUnitsWindow = new WindowObject(windowName: "// CIVIL UNITS", position: new Vector2(x: 0, y: 0), size: new Vector2(x: civilUnitsWidth, y: civilUnitsHeight), colorBorder: borderColor, colorFill: windowColor, borderPadding: 10, objectPadding: 20, minimizable: true, spriteFont: mLibSans14, inputManager: mInputManager, graphics: mGraphics);
+            mCivilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(0, 0), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 10, 20, true, mLibSans14, mInputManager, mGraphics);
 
             // create items
             //TODO: Create an object representing the Idle units at the moment. Something like "Idle: 24" should be enough
-            mDefTextField = new TextField(text: "Defense", position: Vector2.Zero, size: new Vector2(x: civilUnitsWidth, y: civilUnitsWidth), spriteFont: mLibSans12);
-            mDefSlider = new Slider(position: Vector2.Zero, length: 150, sliderSize: 10, font: mLibSans12, director: ref mDirector, withValueBox: true, withPages: true, pages: 5);
-            mBuildTextField = new TextField(text: "Build", position: Vector2.Zero, size: new Vector2(x: civilUnitsWidth, y: civilUnitsWidth), spriteFont: mLibSans12);
-            mBuildSlider = new Slider(position: Vector2.Zero, length: 150, sliderSize: 10, font: mLibSans12, director: ref mDirector, withValueBox: true, withPages: true, pages: 5);
-            mLogisticsTextField = new TextField(text: "Logistics", position: Vector2.Zero, size: new Vector2(x: civilUnitsWidth, y: civilUnitsWidth), spriteFont: mLibSans12);
-            mLogisticsSlider = new Slider(position: Vector2.Zero, length: 150, sliderSize: 10, font: mLibSans12, director: ref mDirector, withValueBox: true, withPages: true, pages: 5);
-            mProductionTextField = new TextField(text: "Production", position: Vector2.Zero, size: new Vector2(x: civilUnitsWidth, y: civilUnitsWidth), spriteFont: mLibSans12);
-            mProductionSlider = new Slider(position: Vector2.Zero, length: 150, sliderSize: 10, font: mLibSans12, director: ref mDirector, withValueBox: true, withPages: true, pages: 5);
+            mDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
+            mDefSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true, 5);
+            mBuildTextField = new TextField("Build", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
+            mBuildSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true, 5);
+            mLogisticsTextField = new TextField("Logistics", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
+            mLogisticsSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true, 5);
+            mProductionTextField = new TextField("Production", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12);
+            mProductionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true, 5);
 
             //This instance will handle the comunication between Sliders and DistributionManager.
-            var handler = new SliderHandler(director: ref mDirector, def: mDefSlider, prod: mProductionSlider, constr: mBuildSlider, logi: mLogisticsSlider);
+            var handler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mBuildSlider, mLogisticsSlider);
 
             // adding all items
-            mCivilUnitsWindow.AddItem(item: mDefTextField);
-            mCivilUnitsWindow.AddItem(item: mDefSlider);
-            mCivilUnitsWindow.AddItem(item: mBuildTextField);
-            mCivilUnitsWindow.AddItem(item: mBuildSlider);
-            mCivilUnitsWindow.AddItem(item: mLogisticsTextField);
-            mCivilUnitsWindow.AddItem(item: mLogisticsSlider);
-            mCivilUnitsWindow.AddItem(item: mProductionTextField);
-            mCivilUnitsWindow.AddItem(item: mProductionSlider);
+            mCivilUnitsWindow.AddItem(mDefTextField);
+            mCivilUnitsWindow.AddItem(mDefSlider);
+            mCivilUnitsWindow.AddItem(mBuildTextField);
+            mCivilUnitsWindow.AddItem(mBuildSlider);
+            mCivilUnitsWindow.AddItem(mLogisticsTextField);
+            mCivilUnitsWindow.AddItem(mLogisticsSlider);
+            mCivilUnitsWindow.AddItem(mProductionTextField);
+            mCivilUnitsWindow.AddItem(mProductionSlider);
 
-            mWindowList.Add(item: mCivilUnitsWindow);
+            mWindowList.Add(mCivilUnitsWindow);
 
             #endregion
 
             // TODO
             #region resourceWindow
 
-            mResourceWindow = new WindowObject(windowName: "// RESOURCES", position: new Vector2(x: 0, y: 0), size: new Vector2(x: resourceWidth, y: resourceHeight), minimizable: true, spriteFont: mLibSans14, inputManager: mInputManager, graphics: mGraphics);
+            mResourceWindow = new WindowObject("// RESOURCES", new Vector2(0, 0), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mInputManager, mGraphics);
 
             // create items
 
@@ -441,72 +441,72 @@ namespace Singularity.Screen.ScreenClasses
                 "Quisque semper feugiat diam, eu posuere mi posuere ac. Vestibulum posuere posuere semper. " +
                 "Pellentesque nec lacinia nulla, sit amet scelerisque justo.";
 
-            mTextFieldTest = new TextField(text: testText, position: Vector2.One, size: new Vector2(x: resourceWidth - 50, y: resourceHeight), spriteFont: mLibSans12);
+            mTextFieldTest = new TextField(testText, Vector2.One, new Vector2(resourceWidth - 50, resourceHeight), mLibSans12);
 
-            mResourceWindow.AddItem(item: mTextFieldTest);
+            mResourceWindow.AddItem(mTextFieldTest);
 
             #endregion
 
-            mWindowList.Add(item: mResourceWindow);
+            mWindowList.Add(mResourceWindow);
 
             #endregion
 
             // TODO
             #region buildMenuWindow
 
-            mBuildMenuWindow = new WindowObject(windowName: "// BUILDMENU", position: new Vector2(x: 0, y: 0), size: new Vector2(x: buildMenuWidth, y: buildMenuHeight), minimizable: true, spriteFont: mLibSans14, inputManager: mInputManager, graphics: mGraphics);
+            mBuildMenuWindow = new WindowObject("// BUILDMENU", new Vector2(0, 0), new Vector2(buildMenuWidth, buildMenuHeight), true, mLibSans14, mInputManager, mGraphics);
 
             #region button definitions
 
             // blank platform button
-            mBlankPlatformButton = new Button(scale: 0.25f, buttonTexture: mBlankPlatformTexture, position: Vector2.Zero, withBorder: true);
+            mBlankPlatformButton = new Button(0.25f, mBlankPlatformTexture, Vector2.Zero, true);
             mBlankPlatformButton.ButtonClicked += OnButtonmBlankPlatformClick;
             mBlankPlatformButton.ButtonReleased += OnButtonmBlankPlatformReleased;
             mBlankPlatformButton.ButtonHovering += OnButtonmBlankPlatformHovering;
             mBlankPlatformButton.ButtonHoveringEnd += OnButtonmBlankPlatformHoveringEnd;
 
             // open basic list button
-            mBasicListButton = new Button(scale: 0.25f, buttonTexture: mBlankPlatformTexture, position: Vector2.Zero, withBorder: true);
+            mBasicListButton = new Button(0.25f, mBlankPlatformTexture, Vector2.Zero, true);
             mBasicListButton.ButtonClicked += OnButtonmBasicListClick;
             mBasicListButton.ButtonHovering += OnButtonmBasicListHovering;
             mBasicListButton.ButtonHoveringEnd += OnButtonmBasicListHoveringEnd;
 
             // open special list button
-            mSpecialListButton = new Button(scale: 0.25f, buttonTexture: mBlankPlatformTexture, position: Vector2.Zero, withBorder: true);
+            mSpecialListButton = new Button(0.25f, mBlankPlatformTexture, Vector2.Zero, true);
             mSpecialListButton.ButtonClicked += OnButtonmSpecialListClick;
             mSpecialListButton.ButtonHovering += OnButtonmSpecialListHovering;
             mSpecialListButton.ButtonHoveringEnd += OnButtonmSpecialListHoveringEnd;
 
             // open military list button
-            mMilitaryListButton = new Button(scale: 0.25f, buttonTexture: mBlankPlatformTexture, position: Vector2.Zero, withBorder: true);
+            mMilitaryListButton = new Button(0.25f, mBlankPlatformTexture, Vector2.Zero, true);
             mMilitaryListButton.ButtonClicked += OnButtonmMilitaryListClick;
             mMilitaryListButton.ButtonHovering += OnButtonmMilitaryListHovering;
             mMilitaryListButton.ButtonHoveringEnd += OnButtonmMilitaryListHoveringEnd;
 
 
             // junkyard platform button
-            mJunkyardPlatformButton = new Button(scale: 0.25f, buttonTexture: mOtherPlatformTexture, sourceRectangle: new Rectangle(x: 0, y: 2 * 175 + 2 * 130, width: 150, height: 130), position: Vector2.Zero, withBorder: true);
+            mJunkyardPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 2 * 130, 150, 130), Vector2.Zero, true);
             mJunkyardPlatformButton.ButtonClicked += OnButtonmJunkyardPlatformClick;
             mJunkyardPlatformButton.ButtonReleased += OnButtonmJunkyardPlatformReleased;
             mJunkyardPlatformButton.ButtonHovering += OnButtonmJunkyardPlatformHovering;
             mJunkyardPlatformButton.ButtonHoveringEnd += OnButtonmJunkyardPlatformHoveringEnd;
 
             // quarry platform button
-            mQuarryPlatformButton = new Button(scale: 0.25f, buttonTexture: mOtherPlatformTexture, sourceRectangle: new Rectangle(x: 0, y: 2 * 175 + 3 * 130 + 2 * 175 + 2 * 130, width: 150, height: 130), position: Vector2.Zero, withBorder: true);
+            mQuarryPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 3 * 130 + 2 * 175 + 2 * 130, 150, 130), Vector2.Zero, true);
             mQuarryPlatformButton.ButtonClicked += OnButtonmQuarryPlatformClick;
             mQuarryPlatformButton.ButtonReleased += OnButtonmQuarryPlatformReleased;
             mQuarryPlatformButton.ButtonHovering += OnButtonmQuarryPlatformHovering;
             mQuarryPlatformButton.ButtonHoveringEnd += OnButtonmQuarryPlatformHoveringEnd;
 
             // mine platform button
-            mMinePlatformButton = new Button(scale: 0.25f, buttonTexture: mOtherPlatformTexture, sourceRectangle: new Rectangle(x: 0, y: 2 * 175 + 3 * 130 + 2 * 175, width: 150, height: 130), position: Vector2.Zero, withBorder: true);
+            mMinePlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 3 * 130 + 2 * 175, 150, 130), Vector2.Zero, true);
             mMinePlatformButton.ButtonClicked += OnButtonmMinePlatformClick;
             mMinePlatformButton.ButtonReleased += OnButtonmMinePlatformReleased;
             mMinePlatformButton.ButtonHovering += OnButtonmMinePlatformHovering;
             mMinePlatformButton.ButtonHoveringEnd += OnButtonmMinePlatformHoveringEnd;
 
             // well platform button
-            mWellPlatformButton = new Button(scale: 0.25f, buttonTexture: mOtherPlatformTexture, sourceRectangle: new Rectangle(x: 0, y: 2 * 175 + 3 * 130 + 2 * 175 + 4 * 130, width: 150, height: 130), position: Vector2.Zero, withBorder: true);
+            mWellPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 3 * 130 + 2 * 175 + 4 * 130, 150, 130), Vector2.Zero, true);
             mWellPlatformButton.ButtonClicked += OnButtonmWellPlatformClick;
             mWellPlatformButton.ButtonReleased += OnButtonmWellPlatformReleased;
             mWellPlatformButton.ButtonHovering += OnButtonmWellPlatformHovering;
@@ -514,28 +514,28 @@ namespace Singularity.Screen.ScreenClasses
 
 
             // factory platform button
-            mFactoryPlatformButton = new Button(scale: 0.25f, buttonTexture: mOtherPlatformTexture, sourceRectangle: new Rectangle(x: 0, y: 2 * 175 + 130, width: 150, height: 130), position: Vector2.Zero, withBorder: true);
+            mFactoryPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 130, 150, 130), Vector2.Zero, true);
             mFactoryPlatformButton.ButtonClicked += OnButtonmFactoryPlatformClick;
             mFactoryPlatformButton.ButtonReleased += OnButtonmFactoryPlatformReleased;
             mFactoryPlatformButton.ButtonHovering += OnButtonmFactoryPlatformHovering;
             mFactoryPlatformButton.ButtonHoveringEnd += OnButtonmFactoryPlatformHoveringEnd;
 
             // storage platform button
-            mStoragePlatformButton = new Button(scale: 0.25f, buttonTexture: mOtherPlatformTexture, sourceRectangle: new Rectangle(x: 0, y: 2 * 175 + 3 * 130 + 2 * 175 + 3 * 130, width: 150, height: 130), position: Vector2.Zero, withBorder: true);
+            mStoragePlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 3 * 130 + 2 * 175 + 3 * 130, 150, 130), Vector2.Zero, true);
             mStoragePlatformButton.ButtonClicked += OnButtonmStoragePlatformClick;
             mStoragePlatformButton.ButtonReleased += OnButtonmStoragePlatformReleased;
             mStoragePlatformButton.ButtonHovering += OnButtonmStoragePlatformHovering;
             mStoragePlatformButton.ButtonHoveringEnd += OnButtonmStoragePlatformHoveringEnd;
 
             // powerhouse platform button
-            mPowerhousePlatformButton = new Button(scale: 0.25f, buttonTexture: mOtherPlatformTexture, sourceRectangle: new Rectangle(x: 0, y: 2 * 175, width: 150, height: 130), position: Vector2.Zero, withBorder: true);
+            mPowerhousePlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175, 150, 130), Vector2.Zero, true);
             mPowerhousePlatformButton.ButtonClicked += OnButtonmPowerhousePlatformClick;
             mPowerhousePlatformButton.ButtonReleased += OnButtonmPowerhousePlatformReleased;
             mPowerhousePlatformButton.ButtonHovering += OnButtonmPowerhousePlatformHovering;
             mPowerhousePlatformButton.ButtonHoveringEnd += OnButtonmPowerhousePlatformHoveringEnd;
 
             // commandcenter platform button
-            mCommandcenterPlatformButton = new Button(scale: 0.25f, buttonTexture: mOtherPlatformTexture, sourceRectangle: new Rectangle(x: 0, y: 1 * 175, width: 150, height: 175), position: Vector2.Zero, withBorder: true);
+            mCommandcenterPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 1 * 175, 150, 175), Vector2.Zero, true);
             mCommandcenterPlatformButton.ButtonClicked += OnButtonmCommandcenterPlatformClick;
             mCommandcenterPlatformButton.ButtonReleased += OnButtonmCommandcenterPlatformReleased;
             mCommandcenterPlatformButton.ButtonHovering += OnButtonmCommandcenterPlatformHovering;
@@ -543,28 +543,28 @@ namespace Singularity.Screen.ScreenClasses
 
 
             // armory platform button
-            mArmoryPlatformButton = new Button(scale: 0.25f, buttonTexture: mOtherPlatformTexture, sourceRectangle: new Rectangle(x: 0, y: 2 * 175 + 3 * 130 + 2 * 175 + 1 * 130, width: 150, height: 130), position: Vector2.Zero, withBorder: true);
+            mArmoryPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 3 * 130 + 2 * 175 + 1 * 130, 150, 130), Vector2.Zero, true);
             mArmoryPlatformButton.ButtonClicked += OnButtonmArmoryPlatformClick;
             mArmoryPlatformButton.ButtonReleased += OnButtonmArmoryPlatformReleased;
             mArmoryPlatformButton.ButtonHovering += OnButtonmArmoryPlatformHovering;
             mArmoryPlatformButton.ButtonHoveringEnd += OnButtonmArmoryPlatformHoveringEnd;
 
             // kineticTower platform button
-            mKineticTowerPlatformButton = new Button(scale: 0.25f, buttonTexture: mOtherPlatformTexture, sourceRectangle: new Rectangle(x: 0, y: 2 * 175 + 3 * 130, width: 150, height: 170), position: Vector2.Zero, withBorder: true);
+            mKineticTowerPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 3 * 130, 150, 170), Vector2.Zero, true);
             mKineticTowerPlatformButton.ButtonClicked += OnButtonmKineticTowerPlatformClick;
             mKineticTowerPlatformButton.ButtonReleased += OnButtonmKineticTowerPlatformReleased;
             mKineticTowerPlatformButton.ButtonHovering += OnButtonmKineticTowerPlatformHovering;
             mKineticTowerPlatformButton.ButtonHoveringEnd += OnButtonmKineticTowerPlatformHoveringEnd;
 
             // laserTower platform button
-            mLaserTowerPlatformButton = new Button(scale: 0.25f, buttonTexture: mOtherPlatformTexture, sourceRectangle: new Rectangle(x: 0, y: 2 * 175 + 3 * 130 + 1 * 175, width: 150, height: 170), position: Vector2.Zero, withBorder: true);
+            mLaserTowerPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 3 * 130 + 1 * 175, 150, 170), Vector2.Zero, true);
             mLaserTowerPlatformButton.ButtonClicked += OnButtonmLaserTowerPlatformClick;
             mLaserTowerPlatformButton.ButtonReleased += OnButtonmLaserTowerPlatformReleased;
             mLaserTowerPlatformButton.ButtonHovering += OnButtonmLaserTowerPlatformHovering;
             mLaserTowerPlatformButton.ButtonHoveringEnd += OnButtonmLaserTowerPlatformHoveringEnd;
 
             // barracks platform button
-            mBarracksPlatformButton = new Button(scale: 0.25f, buttonTexture: mOtherPlatformTexture, sourceRectangle: new Rectangle(x: 0, y: 0 * 175, width: 150, height: 175), position: Vector2.Zero, withBorder: true);
+            mBarracksPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 0 * 175, 150, 175), Vector2.Zero, true);
             mBarracksPlatformButton.ButtonClicked += OnButtonmBarracksPlatformClick;
             mBarracksPlatformButton.ButtonReleased += OnButtonmBarracksPlatformReleased;
             mBarracksPlatformButton.ButtonHovering += OnButtonmBarracksPlatformHovering;
@@ -578,340 +578,340 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList = new List<InfoBoxWindow>();
 
             // Build Blank Platform info
-            var infoBuildBlank = new TextField(text: "Blank Platform",
-                position: Vector2.Zero,
-                size: mLibSans12.MeasureString(text: "Blank Platform"),
-                spriteFont: mLibSans12);
+            var infoBuildBlank = new TextField("Blank Platform",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Blank Platform"),
+                mLibSans12);
 
             mInfoBuildBlank = new InfoBoxWindow(
-                itemList: new List<IWindowItem> {infoBuildBlank},
-                size: mLibSans12.MeasureString(text: "Blank Platform"),
-                borderColor: new Color(r: 0.86f, g: 0.85f, b: 0.86f),
-                centerColor: new Color(r: 1f, g: 1f, b: 1f),//(0.75f, 0.75f, 0.75f),
-                boundsRectangle: new Rectangle(
-                    x: (int) mBlankPlatformButton.Position.X,
-                    y: (int) mBlankPlatformButton.Position.Y,
-                    width: (int) mBlankPlatformButton.Size.X,
-                    height: (int) mBlankPlatformButton.Size.Y),
-                boxed: true,
-                director: mDirector);
+                new List<IWindowItem> {infoBuildBlank},
+                mLibSans12.MeasureString("Blank Platform"),
+                new Color(0.86f, 0.85f, 0.86f),
+                new Color(1f, 1f, 1f),//(0.75f, 0.75f, 0.75f),
+                new Rectangle(
+                    (int) mBlankPlatformButton.Position.X,
+                    (int) mBlankPlatformButton.Position.Y,
+                    (int) mBlankPlatformButton.Size.X,
+                    (int) mBlankPlatformButton.Size.Y),
+                true,
+                mDirector);
 
-            mInfoBoxList.Add(item: mInfoBuildBlank);
+            mInfoBoxList.Add(mInfoBuildBlank);
 
             // Open Basic List info
-            var infoBasicList = new TextField(text: "Basic Building Menu",
-                position: Vector2.Zero,
-                size: mLibSans12.MeasureString(text: "Basic Building Menu"),
-                spriteFont: mLibSans12);
+            var infoBasicList = new TextField("Basic Building Menu",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Basic Building Menu"),
+                mLibSans12);
 
             mInfoBasicList = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoBasicList },
-                size: mLibSans12.MeasureString(text: "Basic Building Menu"),
-                borderColor: new Color(r: 0, g: 0, b: 0),
-                centerColor: new Color(r: 1f, g: 0.96f, b: 0.9f),
-                boundsRectangle: new Rectangle(
-                    x: (int)mBasicListButton.Position.X,
-                    y: (int)mBasicListButton.Position.Y,
-                    width: (int)mBasicListButton.Size.X,
-                    height: (int)mBasicListButton.Size.Y),
-                boxed: true,
-                director: mDirector);
+                new List<IWindowItem> { infoBasicList },
+                mLibSans12.MeasureString("Basic Building Menu"),
+                new Color(0, 0, 0),
+                new Color(1f, 0.96f, 0.9f),
+                new Rectangle(
+                    (int)mBasicListButton.Position.X,
+                    (int)mBasicListButton.Position.Y,
+                    (int)mBasicListButton.Size.X,
+                    (int)mBasicListButton.Size.Y),
+                true,
+                mDirector);
 
-            mInfoBoxList.Add(item: mInfoBasicList);
+            mInfoBoxList.Add(mInfoBasicList);
 
             // Open Special List info
-            var infoSpecialList = new TextField(text: "Special Building Menu",
-                position: Vector2.Zero,
-                size: mLibSans12.MeasureString(text: "Special Building Menu"),
-                spriteFont: mLibSans12);
+            var infoSpecialList = new TextField("Special Building Menu",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Special Building Menu"),
+                mLibSans12);
 
             mInfoSpecialList = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoSpecialList },
-                size: mLibSans12.MeasureString(text: "Special Building Menu"),
-                borderColor: new Color(r: 0, g: 0, b: 0),
-                centerColor: new Color(r: 1f, g: 0.96f, b: 0.9f),
-                boundsRectangle: new Rectangle(
-                    x: (int)mSpecialListButton.Position.X,
-                    y: (int)mSpecialListButton.Position.Y,
-                    width: (int)mSpecialListButton.Size.X,
-                    height: (int)mSpecialListButton.Size.Y),
-                boxed: true,
-                director: mDirector);
+                new List<IWindowItem> { infoSpecialList },
+                mLibSans12.MeasureString("Special Building Menu"),
+                new Color(0, 0, 0),
+                new Color(1f, 0.96f, 0.9f),
+                new Rectangle(
+                    (int)mSpecialListButton.Position.X,
+                    (int)mSpecialListButton.Position.Y,
+                    (int)mSpecialListButton.Size.X,
+                    (int)mSpecialListButton.Size.Y),
+                true,
+                mDirector);
 
-            mInfoBoxList.Add(item: mInfoSpecialList);
+            mInfoBoxList.Add(mInfoSpecialList);
 
             // Open Military List info
-            var infoMilitaryList = new TextField(text: "Military Building Menu",
-                position: Vector2.Zero,
-                size: mLibSans12.MeasureString(text: "Military Building Menu"),
-                spriteFont: mLibSans12);
+            var infoMilitaryList = new TextField("Military Building Menu",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Military Building Menu"),
+                mLibSans12);
 
             mInfoMilitaryList = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoMilitaryList },
-                size: mLibSans12.MeasureString(text: "Military Building Menu"),
-                borderColor: new Color(r: 0, g: 0, b: 0),
-                centerColor: new Color(r: 1f, g: 0.96f, b: 0.9f),
-                boundsRectangle: new Rectangle(
-                    x: (int)mMilitaryListButton.Position.X,
-                    y: (int)mMilitaryListButton.Position.Y,
-                    width: (int)mMilitaryListButton.Size.X,
-                    height: (int)mMilitaryListButton.Size.Y),
-                boxed: true,
-                director: mDirector);
+                new List<IWindowItem> { infoMilitaryList },
+                mLibSans12.MeasureString("Military Building Menu"),
+                new Color(0, 0, 0),
+                new Color(1f, 0.96f, 0.9f),
+                new Rectangle(
+                    (int)mMilitaryListButton.Position.X,
+                    (int)mMilitaryListButton.Position.Y,
+                    (int)mMilitaryListButton.Size.X,
+                    (int)mMilitaryListButton.Size.Y),
+                true,
+                mDirector);
 
-            mInfoBoxList.Add(item: mInfoMilitaryList);
+            mInfoBoxList.Add(mInfoMilitaryList);
 
             // Build Junkyard info
-            var infoJunkyard = new TextField(text: "Build Junkyard",
-                position: Vector2.Zero,
-                size: mLibSans12.MeasureString(text: "Build Junkyard"),
-                spriteFont: mLibSans12);
+            var infoJunkyard = new TextField("Build Junkyard",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Build Junkyard"),
+                mLibSans12);
 
             mInfoBuildJunkyard = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoJunkyard },
-                size: mLibSans12.MeasureString(text: "Build Junkyard"),
-                borderColor: new Color(r: 0, g: 0, b: 0),
-                centerColor: new Color(r: 1f, g: 0.96f, b: 0.9f),
-                boundsRectangle: new Rectangle(
-                    x: (int)mJunkyardPlatformButton.Position.X,
-                    y: (int)mJunkyardPlatformButton.Position.Y,
-                    width: (int)mJunkyardPlatformButton.Size.X,
-                    height: (int)mJunkyardPlatformButton.Size.Y),
-                boxed: true,
-                director: mDirector);
+                new List<IWindowItem> { infoJunkyard },
+                mLibSans12.MeasureString("Build Junkyard"),
+                new Color(0, 0, 0),
+                new Color(1f, 0.96f, 0.9f),
+                new Rectangle(
+                    (int)mJunkyardPlatformButton.Position.X,
+                    (int)mJunkyardPlatformButton.Position.Y,
+                    (int)mJunkyardPlatformButton.Size.X,
+                    (int)mJunkyardPlatformButton.Size.Y),
+                true,
+                mDirector);
 
-            mInfoBoxList.Add(item: mInfoBuildJunkyard);
+            mInfoBoxList.Add(mInfoBuildJunkyard);
 
             // Build Quarry info
-            var infoQuarry = new TextField(text: "Build Quarry",
-                position: Vector2.Zero,
-                size: mLibSans12.MeasureString(text: "Build Quarry"),
-                spriteFont: mLibSans12);
+            var infoQuarry = new TextField("Build Quarry",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Build Quarry"),
+                mLibSans12);
 
             mInfoBuildQuarry = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoQuarry },
-                size: mLibSans12.MeasureString(text: "Build Quarry"),
-                borderColor: new Color(r: 0, g: 0, b: 0),
-                centerColor: new Color(r: 1f, g: 0.96f, b: 0.9f),
-                boundsRectangle: new Rectangle(
-                    x: (int)mQuarryPlatformButton.Position.X,
-                    y: (int)mQuarryPlatformButton.Position.Y,
-                    width: (int)mQuarryPlatformButton.Size.X,
-                    height: (int)mQuarryPlatformButton.Size.Y),
-                boxed: true,
-                director: mDirector);
+                new List<IWindowItem> { infoQuarry },
+                mLibSans12.MeasureString("Build Quarry"),
+                new Color(0, 0, 0),
+                new Color(1f, 0.96f, 0.9f),
+                new Rectangle(
+                    (int)mQuarryPlatformButton.Position.X,
+                    (int)mQuarryPlatformButton.Position.Y,
+                    (int)mQuarryPlatformButton.Size.X,
+                    (int)mQuarryPlatformButton.Size.Y),
+                true,
+                mDirector);
 
-            mInfoBoxList.Add(item: mInfoBuildQuarry);
+            mInfoBoxList.Add(mInfoBuildQuarry);
 
             // Build Mine info
-            var infoMine = new TextField(text: "Build Mine",
-                position: Vector2.Zero,
-                size: mLibSans12.MeasureString(text: "Build Mine"),
-                spriteFont: mLibSans12);
+            var infoMine = new TextField("Build Mine",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Build Mine"),
+                mLibSans12);
 
             mInfoBuildMine = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoMine },
-                size: mLibSans12.MeasureString(text: "Build Mine"),
-                borderColor: new Color(r: 0, g: 0, b: 0),
-                centerColor: new Color(r: 1f, g: 0.96f, b: 0.9f),
-                boundsRectangle: new Rectangle(
-                    x: (int)mMinePlatformButton.Position.X,
-                    y: (int)mMinePlatformButton.Position.Y,
-                    width: (int)mMinePlatformButton.Size.X,
-                    height: (int)mMinePlatformButton.Size.Y),
-                boxed: true,
-                director: mDirector);
+                new List<IWindowItem> { infoMine },
+                mLibSans12.MeasureString("Build Mine"),
+                new Color(0, 0, 0),
+                new Color(1f, 0.96f, 0.9f),
+                new Rectangle(
+                    (int)mMinePlatformButton.Position.X,
+                    (int)mMinePlatformButton.Position.Y,
+                    (int)mMinePlatformButton.Size.X,
+                    (int)mMinePlatformButton.Size.Y),
+                true,
+                mDirector);
 
-            mInfoBoxList.Add(item: mInfoBuildMine);
+            mInfoBoxList.Add(mInfoBuildMine);
 
             // Build Well info
-            var infoWell = new TextField(text: "Build Well",
-                position: Vector2.Zero,
-                size: mLibSans12.MeasureString(text: "Build Well"),
-                spriteFont: mLibSans12);
+            var infoWell = new TextField("Build Well",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Build Well"),
+                mLibSans12);
 
             mInfoBuildWell = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoWell },
-                size: mLibSans12.MeasureString(text: "Build Well"),
-                borderColor: new Color(r: 0, g: 0, b: 0),
-                centerColor: new Color(r: 1f, g: 0.96f, b: 0.9f),
-                boundsRectangle: new Rectangle(
-                    x: (int)mWellPlatformButton.Position.X,
-                    y: (int)mWellPlatformButton.Position.Y,
-                    width: (int)mWellPlatformButton.Size.X,
-                    height: (int)mWellPlatformButton.Size.Y),
-                boxed: true,
-                director: mDirector);
+                new List<IWindowItem> { infoWell },
+                mLibSans12.MeasureString("Build Well"),
+                new Color(0, 0, 0),
+                new Color(1f, 0.96f, 0.9f),
+                new Rectangle(
+                    (int)mWellPlatformButton.Position.X,
+                    (int)mWellPlatformButton.Position.Y,
+                    (int)mWellPlatformButton.Size.X,
+                    (int)mWellPlatformButton.Size.Y),
+                true,
+                mDirector);
 
-            mInfoBoxList.Add(item: mInfoBuildWell);
+            mInfoBoxList.Add(mInfoBuildWell);
 
             // Build Factory info
-            var infoFactory = new TextField(text: "Build Factory",
-                position: Vector2.Zero,
-                size: mLibSans12.MeasureString(text: "Build Factory"),
-                spriteFont: mLibSans12);
+            var infoFactory = new TextField("Build Factory",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Build Factory"),
+                mLibSans12);
 
             mInfoBuildFactory = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoFactory },
-                size: mLibSans12.MeasureString(text: "Build Factory"),
-                borderColor: new Color(r: 0, g: 0, b: 0),
-                centerColor: new Color(r: 1f, g: 0.96f, b: 0.9f),
-                boundsRectangle: new Rectangle(
-                    x: (int)mFactoryPlatformButton.Position.X,
-                    y: (int)mFactoryPlatformButton.Position.Y,
-                    width: (int)mFactoryPlatformButton.Size.X,
-                    height: (int)mFactoryPlatformButton.Size.Y),
-                boxed: true,
-                director: mDirector);
+                new List<IWindowItem> { infoFactory },
+                mLibSans12.MeasureString("Build Factory"),
+                new Color(0, 0, 0),
+                new Color(1f, 0.96f, 0.9f),
+                new Rectangle(
+                    (int)mFactoryPlatformButton.Position.X,
+                    (int)mFactoryPlatformButton.Position.Y,
+                    (int)mFactoryPlatformButton.Size.X,
+                    (int)mFactoryPlatformButton.Size.Y),
+                true,
+                mDirector);
 
-            mInfoBoxList.Add(item: mInfoBuildFactory);
+            mInfoBoxList.Add(mInfoBuildFactory);
 
             // Build Storage info
-            var infoStorage = new TextField(text: "Build Storage",
-                position: Vector2.Zero,
-                size: mLibSans12.MeasureString(text: "Build Storage"),
-                spriteFont: mLibSans12);
+            var infoStorage = new TextField("Build Storage",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Build Storage"),
+                mLibSans12);
 
             mInfoBuildStorage = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoStorage },
-                size: mLibSans12.MeasureString(text: "Build Storage"),
-                borderColor: new Color(r: 0, g: 0, b: 0),
-                centerColor: new Color(r: 1f, g: 0.96f, b: 0.9f),
-                boundsRectangle: new Rectangle(
-                    x: (int)mStoragePlatformButton.Position.X,
-                    y: (int)mStoragePlatformButton.Position.Y,
-                    width: (int)mStoragePlatformButton.Size.X,
-                    height: (int)mStoragePlatformButton.Size.Y),
-                boxed: true,
-                director: mDirector);
+                new List<IWindowItem> { infoStorage },
+                mLibSans12.MeasureString("Build Storage"),
+                new Color(0, 0, 0),
+                new Color(1f, 0.96f, 0.9f),
+                new Rectangle(
+                    (int)mStoragePlatformButton.Position.X,
+                    (int)mStoragePlatformButton.Position.Y,
+                    (int)mStoragePlatformButton.Size.X,
+                    (int)mStoragePlatformButton.Size.Y),
+                true,
+                mDirector);
 
-            mInfoBoxList.Add(item: mInfoBuildStorage);
+            mInfoBoxList.Add(mInfoBuildStorage);
 
             // Build Powerhouse info
-            var infoPowerhouse = new TextField(text: "Build Powerhouse",
-                position: Vector2.Zero,
-                size: mLibSans12.MeasureString(text: "Build Powerhouse"),
-                spriteFont: mLibSans12);
+            var infoPowerhouse = new TextField("Build Powerhouse",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Build Powerhouse"),
+                mLibSans12);
 
             mInfoBuildPowerhouse = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoPowerhouse },
-                size: mLibSans12.MeasureString(text: "Build Powerhouse"),
-                borderColor: new Color(r: 0, g: 0, b: 0),
-                centerColor: new Color(r: 1f, g: 0.96f, b: 0.9f),
-                boundsRectangle: new Rectangle(
-                    x: (int)mPowerhousePlatformButton.Position.X,
-                    y: (int)mPowerhousePlatformButton.Position.Y,
-                    width: (int)mPowerhousePlatformButton.Size.X,
-                    height: (int)mPowerhousePlatformButton.Size.Y),
-                boxed: true,
-                director: mDirector);
+                new List<IWindowItem> { infoPowerhouse },
+                mLibSans12.MeasureString("Build Powerhouse"),
+                new Color(0, 0, 0),
+                new Color(1f, 0.96f, 0.9f),
+                new Rectangle(
+                    (int)mPowerhousePlatformButton.Position.X,
+                    (int)mPowerhousePlatformButton.Position.Y,
+                    (int)mPowerhousePlatformButton.Size.X,
+                    (int)mPowerhousePlatformButton.Size.Y),
+                true,
+                mDirector);
 
-            mInfoBoxList.Add(item: mInfoBuildPowerhouse);
+            mInfoBoxList.Add(mInfoBuildPowerhouse);
 
             // Build Commandcenter info
-            var infoCommandcenter = new TextField(text: "Build Commandcenter",
-                position: Vector2.Zero,
-                size: mLibSans12.MeasureString(text: "Build Commandcenter"),
-                spriteFont: mLibSans12);
+            var infoCommandcenter = new TextField("Build Commandcenter",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Build Commandcenter"),
+                mLibSans12);
 
             mInfoBuildCommandcenter = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoCommandcenter },
-                size: mLibSans12.MeasureString(text: "Build Commandcenter"),
-                borderColor: new Color(r: 0, g: 0, b: 0),
-                centerColor: new Color(r: 1f, g: 0.96f, b: 0.9f),
-                boundsRectangle: new Rectangle(
-                    x: (int)mCommandcenterPlatformButton.Position.X,
-                    y: (int)mCommandcenterPlatformButton.Position.Y,
-                    width: (int)mCommandcenterPlatformButton.Size.X,
-                    height: (int)mCommandcenterPlatformButton.Size.Y),
-                boxed: true,
-                director: mDirector);
+                new List<IWindowItem> { infoCommandcenter },
+                mLibSans12.MeasureString("Build Commandcenter"),
+                new Color(0, 0, 0),
+                new Color(1f, 0.96f, 0.9f),
+                new Rectangle(
+                    (int)mCommandcenterPlatformButton.Position.X,
+                    (int)mCommandcenterPlatformButton.Position.Y,
+                    (int)mCommandcenterPlatformButton.Size.X,
+                    (int)mCommandcenterPlatformButton.Size.Y),
+                true,
+                mDirector);
 
-            mInfoBoxList.Add(item: mInfoBuildCommandcenter);
+            mInfoBoxList.Add(mInfoBuildCommandcenter);
 
             // Build Armory info
-            var infoArmory = new TextField(text: "Build Armory",
-                position: Vector2.Zero,
-                size: mLibSans12.MeasureString(text: "Build Armory"),
-                spriteFont: mLibSans12);
+            var infoArmory = new TextField("Build Armory",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Build Armory"),
+                mLibSans12);
 
             mInfoBuildArmory = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoArmory },
-                size: mLibSans12.MeasureString(text: "Build Armory"),
-                borderColor: new Color(r: 0, g: 0, b: 0),
-                centerColor: new Color(r: 1f, g: 0.96f, b: 0.9f),
-                boundsRectangle: new Rectangle(
-                    x: (int)mArmoryPlatformButton.Position.X,
-                    y: (int)mArmoryPlatformButton.Position.Y,
-                    width: (int)mArmoryPlatformButton.Size.X,
-                    height: (int)mArmoryPlatformButton.Size.Y),
-                boxed: true,
-                director: mDirector);
+                new List<IWindowItem> { infoArmory },
+                mLibSans12.MeasureString("Build Armory"),
+                new Color(0, 0, 0),
+                new Color(1f, 0.96f, 0.9f),
+                new Rectangle(
+                    (int)mArmoryPlatformButton.Position.X,
+                    (int)mArmoryPlatformButton.Position.Y,
+                    (int)mArmoryPlatformButton.Size.X,
+                    (int)mArmoryPlatformButton.Size.Y),
+                true,
+                mDirector);
 
-            mInfoBoxList.Add(item: mInfoBuildArmory);
+            mInfoBoxList.Add(mInfoBuildArmory);
 
             // Build Kinetic Tower info
-            var infoKineticTower = new TextField(text: "Build Kinetic Tower",
-                position: Vector2.Zero,
-                size: mLibSans12.MeasureString(text: "Build Kinetic Tower"),
-                spriteFont: mLibSans12);
+            var infoKineticTower = new TextField("Build Kinetic Tower",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Build Kinetic Tower"),
+                mLibSans12);
 
             mInfoBuildKineticTower = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoKineticTower },
-                size: mLibSans12.MeasureString(text: "Build Kinetic Tower"),
-                borderColor: new Color(r: 0, g: 0, b: 0),
-                centerColor: new Color(r: 1f, g: 0.96f, b: 0.9f),
-                boundsRectangle: new Rectangle(
-                    x: (int)mKineticTowerPlatformButton.Position.X,
-                    y: (int)mKineticTowerPlatformButton.Position.Y,
-                    width: (int)mKineticTowerPlatformButton.Size.X,
-                    height: (int)mKineticTowerPlatformButton.Size.Y),
-                boxed: true,
-                director: mDirector);
+                new List<IWindowItem> { infoKineticTower },
+                mLibSans12.MeasureString("Build Kinetic Tower"),
+                new Color(0, 0, 0),
+                new Color(1f, 0.96f, 0.9f),
+                new Rectangle(
+                    (int)mKineticTowerPlatformButton.Position.X,
+                    (int)mKineticTowerPlatformButton.Position.Y,
+                    (int)mKineticTowerPlatformButton.Size.X,
+                    (int)mKineticTowerPlatformButton.Size.Y),
+                true,
+                mDirector);
 
-            mInfoBoxList.Add(item: mInfoBuildKineticTower);
+            mInfoBoxList.Add(mInfoBuildKineticTower);
 
             // Build Laser Tower info
-            var infoLaserTower = new TextField(text: "Build Laser Tower",
-                position: Vector2.Zero,
-                size: mLibSans12.MeasureString(text: "Build Laser Tower"),
-                spriteFont: mLibSans12);
+            var infoLaserTower = new TextField("Build Laser Tower",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Build Laser Tower"),
+                mLibSans12);
 
             mInfoBuildLaserTower = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoLaserTower },
-                size: mLibSans12.MeasureString(text: "Build Laser Tower"),
-                borderColor: new Color(r: 0, g: 0, b: 0),
-                centerColor: new Color(r: 1f, g: 0.96f, b: 0.9f),
-                boundsRectangle: new Rectangle(
-                    x: (int)mLaserTowerPlatformButton.Position.X,
-                    y: (int)mLaserTowerPlatformButton.Position.Y,
-                    width: (int)mLaserTowerPlatformButton.Size.X,
-                    height: (int)mLaserTowerPlatformButton.Size.Y),
-                boxed: true,
-                director: mDirector);
+                new List<IWindowItem> { infoLaserTower },
+                mLibSans12.MeasureString("Build Laser Tower"),
+                new Color(0, 0, 0),
+                new Color(1f, 0.96f, 0.9f),
+                new Rectangle(
+                    (int)mLaserTowerPlatformButton.Position.X,
+                    (int)mLaserTowerPlatformButton.Position.Y,
+                    (int)mLaserTowerPlatformButton.Size.X,
+                    (int)mLaserTowerPlatformButton.Size.Y),
+                true,
+                mDirector);
 
-            mInfoBoxList.Add(item: mInfoBuildLaserTower);
+            mInfoBoxList.Add(mInfoBuildLaserTower);
 
             // Build Barracks info
-            var infoBarracks = new TextField(text: "Build Barracks",
-                position: Vector2.Zero,
-                size: mLibSans12.MeasureString(text: "Build Barracks"),
-                spriteFont: mLibSans12);
+            var infoBarracks = new TextField("Build Barracks",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Build Barracks"),
+                mLibSans12);
 
             mInfoBuildBarracks = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoBarracks },
-                size: mLibSans12.MeasureString(text: "Build Barracks"),
-                borderColor: new Color(r: 0, g: 0, b: 0),
-                centerColor: new Color(r: 1f, g: 0.96f, b: 0.9f),
-                boundsRectangle: new Rectangle(
-                    x: (int)mBarracksPlatformButton.Position.X,
-                    y: (int)mBarracksPlatformButton.Position.Y,
-                    width: (int)mBarracksPlatformButton.Size.X,
-                    height: (int)mBarracksPlatformButton.Size.Y),
-                boxed: true,
-                director: mDirector);
+                new List<IWindowItem> { infoBarracks },
+                mLibSans12.MeasureString("Build Barracks"),
+                new Color(0, 0, 0),
+                new Color(1f, 0.96f, 0.9f),
+                new Rectangle(
+                    (int)mBarracksPlatformButton.Position.X,
+                    (int)mBarracksPlatformButton.Position.Y,
+                    (int)mBarracksPlatformButton.Size.X,
+                    (int)mBarracksPlatformButton.Size.Y),
+                true,
+                mDirector);
 
-            mInfoBoxList.Add(item: mInfoBuildBarracks);
+            mInfoBoxList.Add(mInfoBuildBarracks);
 
             #endregion
 
@@ -923,22 +923,22 @@ namespace Singularity.Screen.ScreenClasses
             var specialList = new List<IWindowItem> { mJunkyardPlatformButton, mQuarryPlatformButton, mMinePlatformButton, mWellPlatformButton };
             var militaryList = new List<IWindowItem> { mArmoryPlatformButton, mKineticTowerPlatformButton, mLaserTowerPlatformButton, mBarracksPlatformButton };
             // create the horizontalCollection objects which process the button-row placement
-            mButtonTopList = new HorizontalCollection(itemList: topList, size: new Vector2(x: buildMenuWidth - 30, y: mBlankPlatformButton.Size.X), position: Vector2.Zero);
-            mButtonBasicList = new HorizontalCollection(itemList: basicList, size: new Vector2(x: buildMenuWidth - 30, y: mBlankPlatformButton.Size.X), position: Vector2.Zero);
-            mButtonSpecialList = new HorizontalCollection(itemList: specialList, size: new Vector2(x: buildMenuWidth - 30, y: mBlankPlatformButton.Size.X), position: Vector2.Zero);
-            mButtonMilitaryList = new HorizontalCollection(itemList: militaryList, size: new Vector2(x: buildMenuWidth - 30, y: mBlankPlatformButton.Size.X), position: Vector2.Zero);
+            mButtonTopList = new HorizontalCollection(topList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
+            mButtonBasicList = new HorizontalCollection(basicList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
+            mButtonSpecialList = new HorizontalCollection(specialList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
+            mButtonMilitaryList = new HorizontalCollection(militaryList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
             // add the all horizontalCollection to the build menu window, but deactivate all but topList
             // (they get activated if the corresponding button is pressed)
-            mBuildMenuWindow.AddItem(item: mButtonTopList);
-            mBuildMenuWindow.AddItem(item: mButtonBasicList);
+            mBuildMenuWindow.AddItem(mButtonTopList);
+            mBuildMenuWindow.AddItem(mButtonBasicList);
             mButtonBasicList.ActiveHorizontalCollection = true;
-            mBuildMenuWindow.AddItem(item: mButtonSpecialList);
+            mBuildMenuWindow.AddItem(mButtonSpecialList);
             mButtonSpecialList.ActiveHorizontalCollection = false;
-            mBuildMenuWindow.AddItem(item: mButtonMilitaryList);
+            mBuildMenuWindow.AddItem(mButtonMilitaryList);
             mButtonMilitaryList.ActiveHorizontalCollection = false;
 
             // add the build menu to the UI's windowList
-            mWindowList.Add(item: mBuildMenuWindow);
+            mWindowList.Add(mBuildMenuWindow);
 
             #endregion
 
@@ -962,22 +962,22 @@ namespace Singularity.Screen.ScreenClasses
                 "Anwendung neuronaler Methoden, und damit oft Forschungsgegenstand der Neuroinformatik. " +
                 "Viele Anwendungen fuer kuenstliche neuronale Netze finden sich auch in der Mustererkennung und vor allem im Bildverstehen.";
 
-            var testWindowColor = new Color(r: 0.27f, g: 0.5f, b: 0.7f, alpha: 0.8f);
-            var testBorderColor = new Color(r: 0.68f, g: 0.933f, b: 0.933f, alpha: 0.8f);
+            var testWindowColor = new Color(0.27f, 0.5f, 0.7f, 0.8f);
+            var testBorderColor = new Color(0.68f, 0.933f, 0.933f, 0.8f);
 
-            mOkayButton = new Button(buttonText: "Okay", font: mLibSans12, position: Vector2.Zero, color: borderColor) { Opacity = 1f };
+            mOkayButton = new Button("Okay", mLibSans12, Vector2.Zero, borderColor) { Opacity = 1f };
 
             mActiveWindow = true;
 
             mOkayButton.ButtonClicked += OnButtonClickOkayButton;
 
-            mTestPopupWindow = new PopupWindow(windowName: "// POPUP", button: mOkayButton , position: new Vector2(x: mCurrentScreenWidth / 2 - 250 / 2, y: mCurrentScreenHeight / 2 - 250 / 2), size: new Vector2(x: 250, y: 250), colorBorder: testBorderColor, colorFill: testWindowColor, spriteFontTitle: mLibSans14, inputManager: mInputManager, graphics: mGraphics);
+            mTestPopupWindow = new PopupWindow("// POPUP", mOkayButton , new Vector2(mCurrentScreenWidth / 2 - 250 / 2, mCurrentScreenHeight / 2 - 250 / 2), new Vector2(250, 250), testBorderColor, testWindowColor, mLibSans14, mInputManager, mGraphics);
 
-            mTextFieldTestPopup = new TextField(text: testText2, position: Vector2.One, size: new Vector2(x: resourceWidth - 50, y: resourceHeight), spriteFont: mLibSans12);
+            mTextFieldTestPopup = new TextField(testText2, Vector2.One, new Vector2(resourceWidth - 50, resourceHeight), mLibSans12);
 
-            mTestPopupWindow.AddItem(item: mTextFieldTestPopup);
+            mTestPopupWindow.AddItem(mTextFieldTestPopup);
 
-            mPopupWindowList.Add(item: mTestPopupWindow);
+            mPopupWindowList.Add(mTestPopupWindow);
 
             #endregion
 
@@ -1008,16 +1008,16 @@ namespace Singularity.Screen.ScreenClasses
         private void ResetWindowsToStandardPositon()
         {
             // resource window position
-            mResourceWindow.Position = new Vector2(x: 12, y: mCurrentScreenHeight - 12 - mResourceWindow.Size.Y);
+            mResourceWindow.Position = new Vector2(12, mCurrentScreenHeight - 12 - mResourceWindow.Size.Y);
 
             // civil units position
-            mCivilUnitsWindow.Position = new Vector2(x: 12, y: 12 + 25);
+            mCivilUnitsWindow.Position = new Vector2(12, 12 + 25);
 
             // build menu position
-            mBuildMenuWindow.Position = new Vector2(x: mCurrentScreenWidth - 12 - mBuildMenuWindow.Size.X, y: mCurrentScreenHeight - 12 - mBuildMenuWindow.Size.Y);
+            mBuildMenuWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mBuildMenuWindow.Size.X, mCurrentScreenHeight - 12 - mBuildMenuWindow.Size.Y);
 
             // event log position
-            mEventLogWindow.Position = new Vector2(x: mCurrentScreenWidth - 12 - mEventLogWindow.Size.X, y: 12 + 25);
+            mEventLogWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mEventLogWindow.Size.X, 12 + 25);
         }
 
         /// <summary>
@@ -1052,8 +1052,8 @@ namespace Singularity.Screen.ScreenClasses
         private void OnButtonClickOkayButton(object sender, EventArgs eventArgs)
         {
             mActiveWindow = false;
-            mInputManager.RemoveMousePositionListener(iMouseListener: mTestPopupWindow);
-            mInputManager.RemoveMouseWheelListener(iMouseWheelListener: mTestPopupWindow);
+            mInputManager.RemoveMousePositionListener(mTestPopupWindow);
+            mInputManager.RemoveMouseWheelListener(mTestPopupWindow);
         }
 
         // mouse click on basic list button opens the basic platform build menu
@@ -1094,16 +1094,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                platformType: EPlatformType.Blank,
-                placementType: EPlacementType.MouseFollowAndRoad,
-                screen: EScreen.UserInterfaceScreen,
-                camera: mCamera,
-                director: ref mDirector,
-                x: 0f,
-                y: 0f,
-                resourceMap: mResourceMap);
+                EPlatformType.Blank,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
 
@@ -1122,16 +1122,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                platformType: EPlatformType.Junkyard,
-                placementType: EPlacementType.MouseFollowAndRoad,
-                screen: EScreen.UserInterfaceScreen,
-                camera: mCamera,
-                director: ref mDirector,
-                x: 0f,
-                y: 0f,
-                resourceMap: mResourceMap);
+                EPlatformType.Junkyard,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1148,16 +1148,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                platformType: EPlatformType.Quarry,
-                placementType: EPlacementType.MouseFollowAndRoad,
-                screen: EScreen.UserInterfaceScreen,
-                camera: mCamera,
-                director: ref mDirector,
-                x: 0f,
-                y: 0f,
-                resourceMap: mResourceMap);
+                EPlatformType.Quarry,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1174,16 +1174,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                platformType: EPlatformType.Mine,
-                placementType: EPlacementType.MouseFollowAndRoad,
-                screen: EScreen.UserInterfaceScreen,
-                camera: mCamera,
-                director: ref mDirector,
-                x: 0f,
-                y: 0f,
-                resourceMap: mResourceMap);
+                EPlatformType.Mine,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1200,16 +1200,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                platformType: EPlatformType.Well,
-                placementType: EPlacementType.MouseFollowAndRoad,
-                screen: EScreen.UserInterfaceScreen,
-                camera: mCamera,
-                director: ref mDirector,
-                x: 0f,
-                y: 0f,
-                resourceMap: mResourceMap);
+                EPlatformType.Well,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1226,16 +1226,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                platformType: EPlatformType.Factory,
-                placementType: EPlacementType.MouseFollowAndRoad,
-                screen: EScreen.UserInterfaceScreen,
-                camera: mCamera,
-                director: ref mDirector,
-                x: 0f,
-                y: 0f,
-                resourceMap: mResourceMap);
+                EPlatformType.Factory,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1252,16 +1252,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                platformType: EPlatformType.Storage,
-                placementType: EPlacementType.MouseFollowAndRoad,
-                screen: EScreen.UserInterfaceScreen,
-                camera: mCamera,
-                director: ref mDirector,
-                x: 0f,
-                y: 0f,
-                resourceMap: mResourceMap);
+                EPlatformType.Storage,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1278,16 +1278,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                platformType: EPlatformType.Energy,
-                placementType: EPlacementType.MouseFollowAndRoad,
-                screen: EScreen.UserInterfaceScreen,
-                camera: mCamera,
-                director: ref mDirector,
-                x: 0f,
-                y: 0f,
-                resourceMap: mResourceMap);
+                EPlatformType.Energy,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1304,16 +1304,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                platformType: EPlatformType.Command,
-                placementType: EPlacementType.MouseFollowAndRoad,
-                screen: EScreen.UserInterfaceScreen,
-                camera: mCamera,
-                director: ref mDirector,
-                x: 0f,
-                y: 0f,
-                resourceMap: mResourceMap);
+                EPlatformType.Command,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1339,16 +1339,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                platformType: EPlatformType.Kinetic,
-                placementType: EPlacementType.MouseFollowAndRoad,
-                screen: EScreen.UserInterfaceScreen,
-                camera: mCamera,
-                director: ref mDirector,
-                x: 0f,
-                y: 0f,
-                resourceMap: mResourceMap);
+                EPlatformType.Kinetic,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1365,16 +1365,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                platformType: EPlatformType.Laser,
-                placementType: EPlacementType.MouseFollowAndRoad,
-                screen: EScreen.UserInterfaceScreen,
-                camera: mCamera,
-                director: ref mDirector,
-                x: 0f,
-                y: 0f,
-                resourceMap: mResourceMap);
+                EPlatformType.Laser,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1391,16 +1391,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                platformType: EPlatformType.Barracks,
-                placementType: EPlacementType.MouseFollowAndRoad,
-                screen: EScreen.UserInterfaceScreen,
-                camera: mCamera,
-                director: ref mDirector,
-                x: 0f,
-                y: 0f,
-                resourceMap: mResourceMap);
+                EPlatformType.Barracks,
+                EPlacementType.MouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1420,7 +1420,7 @@ namespace Singularity.Screen.ScreenClasses
         private void OnButtonmBlankPlatformHovering(object sender, EventArgs eventArgs)
         {
             mInfoBuildBlank.Active = true;
-            mInfoBuildBlank.BoundRectangle = new Rectangle(x: (int)mBlankPlatformButton.Position.X, y: (int)mBlankPlatformButton.Position.Y, width: (int)mBlankPlatformButton.Size.X, height: (int)mBlankPlatformButton.Size.Y);
+            mInfoBuildBlank.BoundRectangle = new Rectangle((int)mBlankPlatformButton.Position.X, (int)mBlankPlatformButton.Position.Y, (int)mBlankPlatformButton.Size.X, (int)mBlankPlatformButton.Size.Y);
         }
         private void OnButtonmBlankPlatformHoveringEnd(object sender, EventArgs eventArgs)
         {
@@ -1433,7 +1433,7 @@ namespace Singularity.Screen.ScreenClasses
         private void OnButtonmBasicListHovering(object sender, EventArgs eventArgs)
         {
             mInfoBasicList.Active = true;
-            mInfoBasicList.BoundRectangle = new Rectangle(x: (int)mBasicListButton.Position.X, y: (int)mBasicListButton.Position.Y, width: (int)mBasicListButton.Size.X, height: (int)mBasicListButton.Size.Y);
+            mInfoBasicList.BoundRectangle = new Rectangle((int)mBasicListButton.Position.X, (int)mBasicListButton.Position.Y, (int)mBasicListButton.Size.X, (int)mBasicListButton.Size.Y);
         }
         private void OnButtonmBasicListHoveringEnd(object sender, EventArgs eventArgs)
         {
@@ -1446,7 +1446,7 @@ namespace Singularity.Screen.ScreenClasses
         private void OnButtonmSpecialListHovering(object sender, EventArgs eventArgs)
         {
             mInfoSpecialList.Active = true;
-            mInfoSpecialList.BoundRectangle = new Rectangle(x: (int)mSpecialListButton.Position.X, y: (int)mSpecialListButton.Position.Y, width: (int)mSpecialListButton.Size.X, height: (int)mSpecialListButton.Size.Y);
+            mInfoSpecialList.BoundRectangle = new Rectangle((int)mSpecialListButton.Position.X, (int)mSpecialListButton.Position.Y, (int)mSpecialListButton.Size.X, (int)mSpecialListButton.Size.Y);
         }
         private void OnButtonmSpecialListHoveringEnd(object sender, EventArgs eventArgs)
         {
@@ -1459,7 +1459,7 @@ namespace Singularity.Screen.ScreenClasses
         private void OnButtonmMilitaryListHovering(object sender, EventArgs eventArgs)
         {
             mInfoMilitaryList.Active = true;
-            mInfoMilitaryList.BoundRectangle = new Rectangle(x: (int)mMilitaryListButton.Position.X, y: (int)mMilitaryListButton.Position.Y, width: (int)mMilitaryListButton.Size.X, height: (int)mMilitaryListButton.Size.Y);
+            mInfoMilitaryList.BoundRectangle = new Rectangle((int)mMilitaryListButton.Position.X, (int)mMilitaryListButton.Position.Y, (int)mMilitaryListButton.Size.X, (int)mMilitaryListButton.Size.Y);
         }
         private void OnButtonmMilitaryListHoveringEnd(object sender, EventArgs eventArgs)
         {
@@ -1472,7 +1472,7 @@ namespace Singularity.Screen.ScreenClasses
         private void OnButtonmJunkyardPlatformHovering(object sender, EventArgs eventArgs)
         {
             mInfoBuildJunkyard.Active = true;
-            mInfoBuildJunkyard.BoundRectangle = new Rectangle(x: (int)mJunkyardPlatformButton.Position.X, y: (int)mJunkyardPlatformButton.Position.Y, width: (int)mJunkyardPlatformButton.Size.X, height: (int)mJunkyardPlatformButton.Size.Y);
+            mInfoBuildJunkyard.BoundRectangle = new Rectangle((int)mJunkyardPlatformButton.Position.X, (int)mJunkyardPlatformButton.Position.Y, (int)mJunkyardPlatformButton.Size.X, (int)mJunkyardPlatformButton.Size.Y);
         }
         private void OnButtonmJunkyardPlatformHoveringEnd(object sender, EventArgs eventArgs)
         {
@@ -1485,7 +1485,7 @@ namespace Singularity.Screen.ScreenClasses
         private void OnButtonmQuarryPlatformHovering(object sender, EventArgs eventArgs)
         {
             mInfoBuildQuarry.Active = true;
-            mInfoBuildQuarry.BoundRectangle = new Rectangle(x: (int)mQuarryPlatformButton.Position.X, y: (int)mQuarryPlatformButton.Position.Y, width: (int)mQuarryPlatformButton.Size.X, height: (int)mQuarryPlatformButton.Size.Y);
+            mInfoBuildQuarry.BoundRectangle = new Rectangle((int)mQuarryPlatformButton.Position.X, (int)mQuarryPlatformButton.Position.Y, (int)mQuarryPlatformButton.Size.X, (int)mQuarryPlatformButton.Size.Y);
         }
         private void OnButtonmQuarryPlatformHoveringEnd(object sender, EventArgs eventArgs)
         {
@@ -1498,7 +1498,7 @@ namespace Singularity.Screen.ScreenClasses
         private void OnButtonmMinePlatformHovering(object sender, EventArgs eventArgs)
         {
             mInfoBuildMine.Active = true;
-            mInfoBuildMine.BoundRectangle = new Rectangle(x: (int)mMinePlatformButton.Position.X, y: (int)mMinePlatformButton.Position.Y, width: (int)mMinePlatformButton.Size.X, height: (int)mMinePlatformButton.Size.Y);
+            mInfoBuildMine.BoundRectangle = new Rectangle((int)mMinePlatformButton.Position.X, (int)mMinePlatformButton.Position.Y, (int)mMinePlatformButton.Size.X, (int)mMinePlatformButton.Size.Y);
         }
         private void OnButtonmMinePlatformHoveringEnd(object sender, EventArgs eventArgs)
         {
@@ -1511,7 +1511,7 @@ namespace Singularity.Screen.ScreenClasses
         private void OnButtonmWellPlatformHovering(object sender, EventArgs eventArgs)
         {
             mInfoBuildWell.Active = true;
-            mInfoBuildWell.BoundRectangle = new Rectangle(x: (int)mWellPlatformButton.Position.X, y: (int)mWellPlatformButton.Position.Y, width: (int)mWellPlatformButton.Size.X, height: (int)mWellPlatformButton.Size.Y);
+            mInfoBuildWell.BoundRectangle = new Rectangle((int)mWellPlatformButton.Position.X, (int)mWellPlatformButton.Position.Y, (int)mWellPlatformButton.Size.X, (int)mWellPlatformButton.Size.Y);
         }
         private void OnButtonmWellPlatformHoveringEnd(object sender, EventArgs eventArgs)
         {
@@ -1524,7 +1524,7 @@ namespace Singularity.Screen.ScreenClasses
         private void OnButtonmFactoryPlatformHovering(object sender, EventArgs eventArgs)
         {
             mInfoBuildFactory.Active = true;
-            mInfoBuildFactory.BoundRectangle = new Rectangle(x: (int)mFactoryPlatformButton.Position.X, y: (int)mFactoryPlatformButton.Position.Y, width: (int)mFactoryPlatformButton.Size.X, height: (int)mFactoryPlatformButton.Size.Y);
+            mInfoBuildFactory.BoundRectangle = new Rectangle((int)mFactoryPlatformButton.Position.X, (int)mFactoryPlatformButton.Position.Y, (int)mFactoryPlatformButton.Size.X, (int)mFactoryPlatformButton.Size.Y);
         }
         private void OnButtonmFactoryPlatformHoveringEnd(object sender, EventArgs eventArgs)
         {
@@ -1537,7 +1537,7 @@ namespace Singularity.Screen.ScreenClasses
         private void OnButtonmStoragePlatformHovering(object sender, EventArgs eventArgs)
         {
             mInfoBuildStorage.Active = true;
-            mInfoBuildStorage.BoundRectangle = new Rectangle(x: (int)mStoragePlatformButton.Position.X, y: (int)mStoragePlatformButton.Position.Y, width: (int)mStoragePlatformButton.Size.X, height: (int)mStoragePlatformButton.Size.Y);
+            mInfoBuildStorage.BoundRectangle = new Rectangle((int)mStoragePlatformButton.Position.X, (int)mStoragePlatformButton.Position.Y, (int)mStoragePlatformButton.Size.X, (int)mStoragePlatformButton.Size.Y);
         }
         private void OnButtonmStoragePlatformHoveringEnd(object sender, EventArgs eventArgs)
         {
@@ -1550,7 +1550,7 @@ namespace Singularity.Screen.ScreenClasses
         private void OnButtonmPowerhousePlatformHovering(object sender, EventArgs eventArgs)
         {
             mInfoBuildPowerhouse.Active = true;
-            mInfoBuildPowerhouse.BoundRectangle = new Rectangle(x: (int)mPowerhousePlatformButton.Position.X, y: (int)mPowerhousePlatformButton.Position.Y, width: (int)mPowerhousePlatformButton.Size.X, height: (int)mPowerhousePlatformButton.Size.Y);
+            mInfoBuildPowerhouse.BoundRectangle = new Rectangle((int)mPowerhousePlatformButton.Position.X, (int)mPowerhousePlatformButton.Position.Y, (int)mPowerhousePlatformButton.Size.X, (int)mPowerhousePlatformButton.Size.Y);
         }
         private void OnButtonmPowerhousePlatformHoveringEnd(object sender, EventArgs eventArgs)
         {
@@ -1563,7 +1563,7 @@ namespace Singularity.Screen.ScreenClasses
         private void OnButtonmCommandcenterPlatformHovering(object sender, EventArgs eventArgs)
         {
             mInfoBuildCommandcenter.Active = true;
-            mInfoBuildCommandcenter.BoundRectangle = new Rectangle(x: (int)mCommandcenterPlatformButton.Position.X, y: (int)mCommandcenterPlatformButton.Position.Y, width: (int)mCommandcenterPlatformButton.Size.X, height: (int)mCommandcenterPlatformButton.Size.Y);
+            mInfoBuildCommandcenter.BoundRectangle = new Rectangle((int)mCommandcenterPlatformButton.Position.X, (int)mCommandcenterPlatformButton.Position.Y, (int)mCommandcenterPlatformButton.Size.X, (int)mCommandcenterPlatformButton.Size.Y);
         }
         private void OnButtonmCommandcenterPlatformHoveringEnd(object sender, EventArgs eventArgs)
         {
@@ -1576,7 +1576,7 @@ namespace Singularity.Screen.ScreenClasses
         private void OnButtonmArmoryPlatformHovering(object sender, EventArgs eventArgs)
         {
             mInfoBuildArmory.Active = true;
-            mInfoBuildArmory.BoundRectangle = new Rectangle(x: (int)mArmoryPlatformButton.Position.X, y: (int)mArmoryPlatformButton.Position.Y, width: (int)mArmoryPlatformButton.Size.X, height: (int)mArmoryPlatformButton.Size.Y);
+            mInfoBuildArmory.BoundRectangle = new Rectangle((int)mArmoryPlatformButton.Position.X, (int)mArmoryPlatformButton.Position.Y, (int)mArmoryPlatformButton.Size.X, (int)mArmoryPlatformButton.Size.Y);
         }
         private void OnButtonmArmoryPlatformHoveringEnd(object sender, EventArgs eventArgs)
         {
@@ -1589,7 +1589,7 @@ namespace Singularity.Screen.ScreenClasses
         private void OnButtonmKineticTowerPlatformHovering(object sender, EventArgs eventArgs)
         {
             mInfoBuildKineticTower.Active = true;
-            mInfoBuildKineticTower.BoundRectangle = new Rectangle(x: (int)mKineticTowerPlatformButton.Position.X, y: (int)mKineticTowerPlatformButton.Position.Y, width: (int)mKineticTowerPlatformButton.Size.X, height: (int)mKineticTowerPlatformButton.Size.Y);
+            mInfoBuildKineticTower.BoundRectangle = new Rectangle((int)mKineticTowerPlatformButton.Position.X, (int)mKineticTowerPlatformButton.Position.Y, (int)mKineticTowerPlatformButton.Size.X, (int)mKineticTowerPlatformButton.Size.Y);
         }
         private void OnButtonmKineticTowerPlatformHoveringEnd(object sender, EventArgs eventArgs)
         {
@@ -1602,7 +1602,7 @@ namespace Singularity.Screen.ScreenClasses
         private void OnButtonmLaserTowerPlatformHovering(object sender, EventArgs eventArgs)
         {
             mInfoBuildLaserTower.Active = true;
-            mInfoBuildLaserTower.BoundRectangle = new Rectangle(x: (int)mLaserTowerPlatformButton.Position.X, y: (int)mLaserTowerPlatformButton.Position.Y, width: (int)mLaserTowerPlatformButton.Size.X, height: (int)mLaserTowerPlatformButton.Size.Y);
+            mInfoBuildLaserTower.BoundRectangle = new Rectangle((int)mLaserTowerPlatformButton.Position.X, (int)mLaserTowerPlatformButton.Position.Y, (int)mLaserTowerPlatformButton.Size.X, (int)mLaserTowerPlatformButton.Size.Y);
         }
         private void OnButtonmLaserTowerPlatformHoveringEnd(object sender, EventArgs eventArgs)
         {
@@ -1615,7 +1615,7 @@ namespace Singularity.Screen.ScreenClasses
         private void OnButtonmBarracksPlatformHovering(object sender, EventArgs eventArgs)
         {
             mInfoBuildBarracks.Active = true;
-            mInfoBuildBarracks.BoundRectangle = new Rectangle(x: (int)mBarracksPlatformButton.Position.X, y: (int)mBarracksPlatformButton.Position.Y, width: (int)mBarracksPlatformButton.Size.X, height: (int)mBarracksPlatformButton.Size.Y);
+            mInfoBuildBarracks.BoundRectangle = new Rectangle((int)mBarracksPlatformButton.Position.X, (int)mBarracksPlatformButton.Position.Y, (int)mBarracksPlatformButton.Size.X, (int)mBarracksPlatformButton.Size.Y);
         }
         private void OnButtonmBarracksPlatformHoveringEnd(object sender, EventArgs eventArgs)
         {

@@ -95,10 +95,10 @@ namespace Singularity.Units
         public GeneralUnit(PlatformBlank platform, ref Director director)
         {
             Id = IdGenerator.NextiD();
-            mDestination = Optional<INode>.Of(value: null);
+            mDestination = Optional<INode>.Of(null);
 
             CurrentNode = platform;
-            Carrying = Optional<Resource>.Of(value: null);
+            Carrying = Optional<Resource>.Of(null);
 
             AbsolutePosition = ((IRevealing) platform).Center;
             mPathQueue = new Queue<Vector2>();
@@ -106,7 +106,7 @@ namespace Singularity.Units
 
             mIsMoving = false;
             mDirector = director;
-            mDirector.GetDistributionManager.Register(unit: this);
+            mDirector.GetDistributionManager.Register(this);
             mDone = true;
         }
 
@@ -120,7 +120,7 @@ namespace Singularity.Units
             //That also means, that the CurrentNode is the Producing platform, so we call that UnAssign method.
             if ((Job == JobType.Production || Job == JobType.Defense) && mTask.End.IsPresent())
             {
-                mTask.End.Get().UnAssignUnits(unit: this, job: Job);
+                mTask.End.Get().UnAssignUnits(this, Job);
                 mAssigned = false;
             }
             Job = job;
@@ -135,13 +135,13 @@ namespace Singularity.Units
         {
             mDone = false;
             mTask = task;
-            ChangeJob(job: mTask.Job);
+            ChangeJob(mTask.Job);
             //Check whether there is a Destination. (it should)
             if (mTask.End.IsPresent())
             {
                 //This only tells the platform that the unit is on the way! Use ShowedUp to tell the platform that the unit has arrived.
-                mTask.End.Get().AssignUnits(unit: this, job: Job);
-                mDestination = Optional<INode>.Of(value: mTask.End.Get());
+                mTask.End.Get().AssignUnits(this, Job);
+                mDestination = Optional<INode>.Of(mTask.End.Get());
             }
 
             if (mTask.Action.IsPresent())
@@ -170,11 +170,11 @@ namespace Singularity.Units
                     {
                         mDone = false;
 
-                        mTask = mDirector.GetDistributionManager.RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(value: null));
+                        mTask = mDirector.GetDistributionManager.RequestNewTask(this, Job, Optional<IPlatformAction>.Of(null));
                         //Check if the given destination is null (it shouldnt)
                         if (mTask.End.IsPresent())
                         {
-                            mDestination = Optional<INode>.Of(value: mTask.End.Get());
+                            mDestination = Optional<INode>.Of(mTask.End.Get());
                         }
                     }
 
@@ -189,11 +189,11 @@ namespace Singularity.Units
 
                 case JobType.Production:
                     //You arrived at your destination and you now want to work.
-                    if(!mIsMoving && !mDone && CurrentNode.Equals(obj: mTask.End.Get()))
+                    if(!mIsMoving && !mDone && CurrentNode.Equals(mTask.End.Get()))
                     {
                         if (!mAssigned)
                         {
-                            mTask.End.Get().ShowedUp(unit: this, job: Job);
+                            mTask.End.Get().ShowedUp(this, Job);
                             mAssigned = true;
                         }
                     }
@@ -202,11 +202,11 @@ namespace Singularity.Units
 
                 case JobType.Defense:
                     //You arrived at your destination and you now want to work.
-                    if (!mIsMoving && !mDone && CurrentNode.Equals(obj: mTask.End.Get()))
+                    if (!mIsMoving && !mDone && CurrentNode.Equals(mTask.End.Get()))
                     {
                         if (!mAssigned)
                         {
-                            mTask.End.Get().ShowedUp(unit: this, job: Job);
+                            mTask.End.Get().ShowedUp(this, Job);
                             mAssigned = true;
                         }
                     }
@@ -220,7 +220,7 @@ namespace Singularity.Units
 
                     if (Carrying.IsPresent())
                     {
-                        Carrying.Get().Follow(unit: this);
+                        Carrying.Get().Follow(this);
                     }
                     break;
 
@@ -230,7 +230,7 @@ namespace Singularity.Units
 
                     if (Carrying.IsPresent())
                     {
-                        Carrying.Get().Follow(unit: this);
+                        Carrying.Get().Follow(this);
                     }
                     break;
             }
@@ -245,12 +245,12 @@ namespace Singularity.Units
             {
                 mDone = false;
 
-                mTask = mDirector.GetDistributionManager.RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(value: null));
+                mTask = mDirector.GetDistributionManager.RequestNewTask(this, Job, Optional<IPlatformAction>.Of(null));
                 //First go to the location where you want to get your Resource from
                 //Check if the given destination is null (it shouldnt).
                 if (mTask.Begin.IsPresent())
                 {
-                    mDestination = Optional<INode>.Of(value: mTask.Begin.Get());
+                    mDestination = Optional<INode>.Of(mTask.Begin.Get());
                 }
                 else
                 {
@@ -260,14 +260,14 @@ namespace Singularity.Units
             }
 
             //This means we arrived at the point we want to pick up a Resource
-            if (mTask.Begin.IsPresent() && CurrentNode.Equals(obj: mTask.Begin.Get()) &&
-                ReachedTarget(target: mTask.Begin.Get().Center))
+            if (mTask.Begin.IsPresent() && CurrentNode.Equals(mTask.Begin.Get()) &&
+                ReachedTarget(mTask.Begin.Get().Center))
             {
                 if (!Carrying.IsPresent())
                 {
                     if (mTask.GetResource != null)
                     {
-                        PickUp(resource: (EResourceType)mTask.GetResource);
+                        PickUp((EResourceType)mTask.GetResource);
                     }
 
                     //Failed to get resource, because no Resources were present. Tell the DistributionManager and consider your work done.
@@ -279,14 +279,14 @@ namespace Singularity.Units
                             {
                                 if (mTask.GetResource != null)
                                 {
-                                    mDirector.GetDistributionManager.RequestResource(platform: mTask.End.Get(), resource: (EResourceType)mTask.GetResource, action: mTask.Action.Get());
+                                    mDirector.GetDistributionManager.RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get());
                                 }
                             }
                             else
                             {
                                 if (mTask.GetResource != null)
                                 {
-                                    mDirector.GetDistributionManager.RequestResource(platform: mTask.End.Get(), resource: (EResourceType)mTask.GetResource, action: null);
+                                    mDirector.GetDistributionManager.RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null);
                                 }
                             }
                         }
@@ -296,14 +296,14 @@ namespace Singularity.Units
                             {
                                 if (mTask.GetResource != null)
                                 {
-                                    mDirector.GetDistributionManager.RequestResource(platform: mTask.End.Get(), resource: (EResourceType)mTask.GetResource, action: mTask.Action.Get(), isbuilding: true);
+                                    mDirector.GetDistributionManager.RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get(), true);
                                 }
                             }
                             else
                             {
                                 if (mTask.GetResource != null)
                                 {
-                                    mDirector.GetDistributionManager.RequestResource(platform: mTask.End.Get(), resource: (EResourceType)mTask.GetResource, action: null, isbuilding: true);
+                                    mDirector.GetDistributionManager.RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null, true);
                                 }
                             }
                         }
@@ -314,20 +314,20 @@ namespace Singularity.Units
                 //Everything went fine with picking up, so now move on to your final destination
                 if (mTask.End.IsPresent() && !mDone)
                 {
-                    mDestination = Optional<INode>.Of(value: mTask.End.Get());
+                    mDestination = Optional<INode>.Of(mTask.End.Get());
                 }
             }
 
             //This means we arrived at the point we want to leave the Resource and consider our work done
-            if (mTask.End.IsPresent() && CurrentNode.Equals(obj: mTask.End.Get()) &&
-                ReachedTarget(target: mTask.End.Get().Center))
+            if (mTask.End.IsPresent() && CurrentNode.Equals(mTask.End.Get()) &&
+                ReachedTarget(mTask.End.Get().Center))
             {
                 //Dont have to ask for carrying.ispresent here because in that case we wouldnt even reach this code
                 if (Carrying.IsPresent())
                 {
                     var res = Carrying.Get();
                     res.UnFollow();
-                    ((PlatformBlank)CurrentNode).StoreResource(resource: res);
+                    ((PlatformBlank)CurrentNode).StoreResource(res);
                     Carrying = Optional<Resource>.Of(null);
                 }
 
@@ -339,7 +339,7 @@ namespace Singularity.Units
         {
             if (mTask.Begin.Get().GetPlatformResources().Count > 0)
             {
-                var res = ((PlatformBlank) CurrentNode).GetResource(resourcetype: resource);
+                var res = ((PlatformBlank) CurrentNode).GetResource(resource);
                 if (res.IsPresent())
                 {
                     Carrying = res;
@@ -359,9 +359,9 @@ namespace Singularity.Units
 
             mIsMoving = true;
 
-            var movementVector = Geometry.NormalizeVector(vector: new Vector2(x: targetPosition.X - AbsolutePosition.X, y: targetPosition.Y - AbsolutePosition.Y));
+            var movementVector = Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y));
 
-            AbsolutePosition = new Vector2(x: AbsolutePosition.X + movementVector.X * Speed, y: AbsolutePosition.Y + movementVector.Y * Speed);
+            AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X * Speed, AbsolutePosition.Y + movementVector.Y * Speed);
         }
 
         private void RegulateMovement()
@@ -372,7 +372,7 @@ namespace Singularity.Units
             // current nodequeue is empty (the path)
             if (mDestination.IsPresent() && mNodeQueue.Count <= 0 && !mIsMoving)
             {
-                mNodeQueue = mDirector.GetPathManager.GetPath(unit: this, destination: mDestination.Get(), graphIndex: ((PlatformBlank)mDestination.Get()).GetGraphIndex()).GetNodePath();
+                mNodeQueue = mDirector.GetPathManager.GetPath(this, mDestination.Get(), ((PlatformBlank)mDestination.Get()).GetGraphIndex()).GetNodePath();
 
                 CurrentNode = mNodeQueue.Dequeue();
             }
@@ -383,19 +383,19 @@ namespace Singularity.Units
             }
 
             // update the current node to move to after the last one got reached.
-            if (ReachedTarget(target: ((PlatformBlank)CurrentNode).Center) && mNodeQueue.Count > 0)
+            if (ReachedTarget(((PlatformBlank)CurrentNode).Center) && mNodeQueue.Count > 0)
             {
                 CurrentNode = mNodeQueue.Dequeue();
             }
 
             // finally move to the current node.
-            if (mTask.End.IsPresent() && (!ReachedTarget(target: ((PlatformBlank)CurrentNode).Center) || !mTask.End.Get().Equals(other: CurrentNode)))
+            if (mTask.End.IsPresent() && (!ReachedTarget(((PlatformBlank)CurrentNode).Center) || !mTask.End.Get().Equals(CurrentNode)))
             {
-                Move(targetPosition: ((PlatformBlank)CurrentNode).Center);
+                Move(((PlatformBlank)CurrentNode).Center);
             }
 
             // check whether we have reached the target after our move call.
-            ReachedTarget(target: ((PlatformBlank)CurrentNode).Center);
+            ReachedTarget(((PlatformBlank)CurrentNode).Center);
         }
 
         /// <summary>
@@ -407,7 +407,7 @@ namespace Singularity.Units
         {
 
             //since we're operating with float values we just want the distance to be smaller than 2 pixels.
-            if (Vector2.Distance(value1: AbsolutePosition, value2: target) < 2)
+            if (Vector2.Distance(AbsolutePosition, target) < 2)
             {
                 mIsMoving = false;
                 return true;
@@ -422,21 +422,21 @@ namespace Singularity.Units
             spriteBatch.StrokedCircle(AbsolutePosition, 10, Color.AntiqueWhite, Color.Black, LayerConstants.GeneralUnitLayer);
             if (Carrying.IsPresent())
             {
-                Carrying.Get().Draw(spriteBatch: spriteBatch);
+                Carrying.Get().Draw(spriteBatch);
             }
         }
 
         public bool Die()
         {
-            mTask = new Task(job: Job, end: Optional<PlatformBlank>.Of(value: null), res: null, action: Optional<IPlatformAction>.Of(value: null));
+            mTask = new Task(Job, Optional<PlatformBlank>.Of(null), null, Optional<IPlatformAction>.Of(null));
             if (Carrying.IsPresent())
             {
                 Carrying.Get().Die();
-                Carrying = Optional<Resource>.Of(value: null);
+                Carrying = Optional<Resource>.Of(null);
             }
 
-            mDirector.GetDistributionManager.Kill(unit: this);
-            mAssignedAction.Kill(generalUnit: this);
+            mDirector.GetDistributionManager.Kill(this);
+            mAssignedAction.Kill(this);
 
 
             return true;
@@ -444,9 +444,9 @@ namespace Singularity.Units
 
         public void Kill(int id)
         {
-            if (mTask.Contains(id: id))
+            if (mTask.Contains(id))
             {
-                mTask = mDirector.GetDistributionManager.RequestNewTask(unit: this, job: Job, assignedAction: null);
+                mTask = mDirector.GetDistributionManager.RequestNewTask(this, Job, null);
                 // also the mAssignedTask-platformaction is included in this.
             }
         }

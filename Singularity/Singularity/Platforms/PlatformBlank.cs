@@ -185,16 +185,16 @@ namespace Singularity.Platforms
             Moved = false;
             UpdateValues();
 
-            Debug.WriteLine(message: "PlatformBlank created");
+            Debug.WriteLine("PlatformBlank created");
 
             var str = GetResourceString();
             mInfoBox = new PlatformInfoBox(
-                itemList: new List<IWindowItem>
+                new List<IWindowItem>
                 {
-                    new TextField(text: str, position: AbsolutePosition + new Vector2(x: 0, y: AbsoluteSize.Y + 10), size: mLibSans12.MeasureString(text: str), spriteFont: mLibSans12)
+                    new TextField(str, AbsolutePosition + new Vector2(0, AbsoluteSize.Y + 10), mLibSans12.MeasureString(str), mLibSans12)
                 }, 
-                size: mLibSans12.MeasureString(str),
-                platform: this, director: mDirector);
+                mLibSans12.MeasureString(str),
+                this, mDirector);
 
             /*
             var infoBuildBlank = new TextField("Blank Platform",
@@ -235,8 +235,8 @@ namespace Singularity.Platforms
 
         public void UpdateValues()
         {
-            AbsBounds = new Rectangle(x: (int)AbsolutePosition.X, y: (int)AbsolutePosition.Y, width: (int)AbsoluteSize.X, height: (int)AbsoluteSize.Y);
-            Center = new Vector2(x: AbsolutePosition.X + AbsoluteSize.X / 2, y: AbsolutePosition.Y + AbsoluteSize.Y + mCenterOffsetY);
+            AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y + mCenterOffsetY);
         }
 
         public void Register()
@@ -244,10 +244,10 @@ namespace Singularity.Platforms
             //TODO: make this so we can also register defense platforms
             if (Property == JobType.Production)
             {
-                mDirector.GetDistributionManager.Register(platform: this, isDef: false);
+                mDirector.GetDistributionManager.Register(this, false);
             } else if (Property == JobType.Defense)
             {
-                mDirector.GetDistributionManager.Register(platform: this, isDef: true);
+                mDirector.GetDistributionManager.Register(this, true);
             }
         }
 
@@ -267,7 +267,7 @@ namespace Singularity.Platforms
         /// <param name="job">The Job to be done by the unit</param>
         public void AssignUnits(GeneralUnit unit, JobType job)
         {
-            mAssignedUnits[key: job].Add(item: new Pair<GeneralUnit, bool>(firstValue: unit, secondValue: false));
+            mAssignedUnits[job].Add(new Pair<GeneralUnit, bool>(unit, false));
         }
 
         /// <summary>
@@ -277,13 +277,13 @@ namespace Singularity.Platforms
         /// <param name="job"></param>
         public void ShowedUp(GeneralUnit unit, JobType job)
         {
-            var pair = mAssignedUnits[key: job].Find(match: x => x.GetFirst().Equals(obj: unit));
+            var pair = mAssignedUnits[job].Find(x => x.GetFirst().Equals(unit));
             if (pair == null)
             {
-                throw new InvalidGenericArgumentException(message: "There is no such unit! => Something went wrong...");
+                throw new InvalidGenericArgumentException("There is no such unit! => Something went wrong...");
             }
-            mAssignedUnits[key: job].Remove(item: pair);
-            mAssignedUnits[key: job].Add(item: new Pair<GeneralUnit, bool>(firstValue: unit, secondValue: true));
+            mAssignedUnits[job].Remove(pair);
+            mAssignedUnits[job].Add(new Pair<GeneralUnit, bool>(unit, true));
         }
 
         /// <summary>
@@ -293,8 +293,8 @@ namespace Singularity.Platforms
         /// <param name="job">The Job of the unit</param>
         public void UnAssignUnits(GeneralUnit unit, JobType job)
         {
-            var pair = mAssignedUnits[key: job].Find(match: x => x.GetFirst().Equals(obj: unit));
-            mAssignedUnits[key: job].Remove(item: pair);
+            var pair = mAssignedUnits[job].Find(x => x.GetFirst().Equals(unit));
+            mAssignedUnits[job].Remove(pair);
         }
 
         public virtual void Produce()
@@ -383,7 +383,7 @@ namespace Singularity.Platforms
         /// <param name="resource"> the resource to be added to the platform </param>
         public void StoreResource(Resource resource)
         {
-            mResources.Add(item: resource);
+            mResources.Add(resource);
             mResources = mResources.OrderBy(r => r.Type).ToList();
             Uncollide();
         }
@@ -396,15 +396,15 @@ namespace Singularity.Platforms
         public Optional<Resource> GetResource(EResourceType resourcetype)
         {
             // TODO: reservation of Resources (and stuff)? Nah lets not do this
-            var index = mResources.FindIndex(match: x => x.Type == resourcetype); // (FindIndex returns -1 if not found)
+            var index = mResources.FindIndex(x => x.Type == resourcetype); // (FindIndex returns -1 if not found)
             if (index < 0)
             {
-                return Optional<Resource>.Of(value: null);
+                return Optional<Resource>.Of(null);
             }
 
-            var foundresource = mResources[index: index];
-            mResources.RemoveAt(index: index);
-            return Optional<Resource>.Of(value: foundresource);
+            var foundresource = mResources[index];
+            mResources.RemoveAt(index);
+            return Optional<Resource>.Of(foundresource);
         }
 
         /// <summary>
@@ -423,7 +423,7 @@ namespace Singularity.Platforms
         /// <param name="number">the number of that resource</param>
         public void SetmRequested(EResourceType resource, int number)
         {
-            mRequested.Add(key: resource, value: number);
+            mRequested.Add(resource, number);
         }
 
         /// <inheritdoc cref="Singularity.Property.IDraw"/>
@@ -435,88 +435,88 @@ namespace Singularity.Platforms
             {
                 case 0:
                     // Basic platform
-                    spritebatch.Draw(texture: mPlatformBaseTexture,
-                        position: AbsolutePosition,
-                        sourceRectangle: null,
-                        color: mColor * transparency,
-                        rotation: 0f,
-                        origin: Vector2.Zero,
-                        scale: 1f,
-                        effects: SpriteEffects.None,
-                        layerDepth: LayerConstants.BasePlatformLayer);
+                    spritebatch.Draw(mPlatformBaseTexture,
+                        AbsolutePosition,
+                        null,
+                        mColor * transparency,
+                        0f,
+                        Vector2.Zero,
+                        1f,
+                        SpriteEffects.None,
+                        LayerConstants.BasePlatformLayer);
                     break;
                 case 1:
                     // Cone
                     // Draw the basic platform first
-                    spritebatch.Draw(texture: mPlatformBaseTexture,
-                        position: Vector2.Add(value1: AbsolutePosition, value2: new Vector2(x: -3, y: 73)),
-                        sourceRectangle: null,
-                        color: mColor * transparency,
-                        rotation: 0f,
-                        origin: Vector2.Zero,
-                        scale: 1f,
-                        effects: SpriteEffects.None,
-                        layerDepth: LayerConstants.BasePlatformLayer);
+                    spritebatch.Draw(mPlatformBaseTexture,
+                        Vector2.Add(AbsolutePosition, new Vector2(-3, 73)),
+                        null,
+                        mColor * transparency,
+                        0f,
+                        Vector2.Zero,
+                        1f,
+                        SpriteEffects.None,
+                        LayerConstants.BasePlatformLayer);
                     // then draw what's on top of that
-                    spritebatch.Draw(texture: mPlatformSpriteSheet,
-                        position: AbsolutePosition,
-                        sourceRectangle: new Rectangle(x: PlatformWidth * mSheetPosition, y: 0, width: 148, height: 148),
-                        color: mColor * transparency,
-                        rotation: 0f,
-                        origin: Vector2.Zero,
-                        scale: 1f,
-                        effects: SpriteEffects.None,
-                        layerDepth: mLayer);
+                    spritebatch.Draw(mPlatformSpriteSheet,
+                        AbsolutePosition,
+                        new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 148),
+                        mColor * transparency,
+                        0f,
+                        Vector2.Zero,
+                        1f,
+                        SpriteEffects.None,
+                        mLayer);
                     break;
                 case 2:
                     // Cylinder
                     // Draw the basic platform first
-                    spritebatch.Draw(texture: mPlatformBaseTexture,
-                        position: Vector2.Add(value1: AbsolutePosition, value2: new Vector2(x: 0, y: 81)),
-                        sourceRectangle: null,
-                        color: mColor * transparency,
-                        rotation: 0f,
-                        origin: Vector2.Zero,
-                        scale: 1f,
-                        effects: SpriteEffects.None,
-                        layerDepth: LayerConstants.BasePlatformLayer);
+                    spritebatch.Draw(mPlatformBaseTexture,
+                        Vector2.Add(AbsolutePosition, new Vector2(0, 81)),
+                        null,
+                        mColor * transparency,
+                        0f,
+                        Vector2.Zero,
+                        1f,
+                        SpriteEffects.None,
+                        LayerConstants.BasePlatformLayer);
                     // then draw what's on top of that
-                    spritebatch.Draw(texture: mPlatformSpriteSheet,
-                        position: AbsolutePosition,
-                        sourceRectangle: new Rectangle(x: PlatformWidth * mSheetPosition, y: 0, width: 148, height: 153),
-                        color: mColor * transparency,
-                        rotation: 0f,
-                        origin: Vector2.Zero,
-                        scale: 1f,
-                        effects: SpriteEffects.None,
-                        layerDepth: mLayer);
+                    spritebatch.Draw(mPlatformSpriteSheet,
+                        AbsolutePosition,
+                        new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 153),
+                        mColor * transparency,
+                        0f,
+                        Vector2.Zero,
+                        1f,
+                        SpriteEffects.None,
+                        mLayer);
                     break;
                 case 3:
                     // Draw the basic platform first
-                    spritebatch.Draw(texture: mPlatformBaseTexture,
-                        position: Vector2.Add(value1: AbsolutePosition, value2: new Vector2(x: -3, y: 38)),
-                        sourceRectangle: null,
-                        color: mColor * transparency,
-                        rotation: 0f,
-                        origin: Vector2.Zero,
-                        scale: 1f,
-                        effects: SpriteEffects.None,
-                        layerDepth: LayerConstants.BasePlatformLayer);
+                    spritebatch.Draw(mPlatformBaseTexture,
+                        Vector2.Add(AbsolutePosition, new Vector2(-3, 38)),
+                        null,
+                        mColor * transparency,
+                        0f,
+                        Vector2.Zero,
+                        1f,
+                        SpriteEffects.None,
+                        LayerConstants.BasePlatformLayer);
                     // Dome
-                    spritebatch.Draw(texture: mPlatformSpriteSheet,
-                        position: AbsolutePosition,
-                        sourceRectangle: new Rectangle(x: 148 * (mSheetPosition % 4), y: 109 * (mSheetPosition / 4), width: 148, height: 109),
-                        color: mColor * transparency,
-                        rotation: 0f,
-                        origin: Vector2.Zero,
-                        scale: 1f,
-                        effects: SpriteEffects.None,
-                        layerDepth: mLayer);
+                    spritebatch.Draw(mPlatformSpriteSheet,
+                        AbsolutePosition,
+                        new Rectangle(148 * (mSheetPosition % 4), 109 * (mSheetPosition / 4), 148, 109),
+                        mColor * transparency,
+                        0f,
+                        Vector2.Zero,
+                        1f,
+                        SpriteEffects.None,
+                        mLayer);
                     break;
             }
 
             mInfoBox.UpdateString(GetResourceString());
-            mInfoBox.Draw(spriteBatch: spritebatch);
+            mInfoBox.Draw(spritebatch);
 
             // also draw the resources on top
             /*
@@ -530,6 +530,14 @@ namespace Singularity.Platforms
         /// <inheritdoc cref="Singularity.Property.IUpdate"/>
         public void Update(GameTime t)
         {
+            foreach (var iPlatformAction in mIPlatformActions)
+            {
+                if (iPlatformAction is BuildBluePrint)
+                {
+                    var b = iPlatformAction as BuildBluePrint;
+                    b.Update();
+                }
+            }
             Uncollide();
         }
 
@@ -552,23 +560,23 @@ namespace Singularity.Platforms
         {
             if (facing == EEdgeFacing.Inwards)
             {
-                mInwardsEdges.Add(item: edge);
+                mInwardsEdges.Add(edge);
                 return;
             }
-            mOutwardsEdges.Add(item: edge);
+            mOutwardsEdges.Add(edge);
 
         }
 
         public void RemoveEdge(IEdge edge)
         {
-            if (mInwardsEdges.Contains(item: edge))
+            if (mInwardsEdges.Contains(edge))
             {
-                mInwardsEdges.Remove(item: edge);
+                mInwardsEdges.Remove(edge);
             }
 
-            if (mOutwardsEdges.Contains(item: edge))
+            if (mOutwardsEdges.Contains(edge))
             {
-                mOutwardsEdges.Remove(item: edge);
+                mOutwardsEdges.Remove(edge);
             }
 
         }
@@ -604,7 +612,7 @@ namespace Singularity.Platforms
             return mType == b.GetType();
         }
 
-        [SuppressMessage(category: "ReSharper", checkId: "NonReadonlyMemberInGetHashCode")]
+        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
         public override int GetHashCode()
         {
             return AbsoluteSize.GetHashCode() * 17 + AbsolutePosition.GetHashCode() + mType.GetHashCode();
@@ -622,103 +630,103 @@ namespace Singularity.Platforms
             {
                 case EPlatformType.Blank:
                     mSheet = 0;
-                    AbsBounds = new Rectangle(x: (int)AbsolutePosition.X,
-                        y: (int)AbsolutePosition.Y,
-                        width: PlatformWidth,
-                        height: 88);
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        88);
                     break;
                 case EPlatformType.Energy:
                     mSheet = 3;
-                    AbsBounds = new Rectangle(x: (int)AbsolutePosition.X,
-                        y: (int)AbsolutePosition.Y,
-                        width: PlatformWidth,
-                        height: 127);
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        127);
                     break;
                 case EPlatformType.Factory:
                     mSheetPosition = 1;
                     mSheet = 3;
-                    AbsBounds = new Rectangle(x: (int)AbsolutePosition.X,
-                        y: (int)AbsolutePosition.Y,
-                        width: PlatformWidth,
-                        height: 127);
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        127);
                     break;
                 case EPlatformType.Junkyard:
                     mSheetPosition = 2;
                     mSheet = 3;
-                    AbsBounds = new Rectangle(x: (int)AbsolutePosition.X,
-                        y: (int)AbsolutePosition.Y,
-                        width: PlatformWidth,
-                        height: 127);
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        127);
                     break;
                 case EPlatformType.Mine:
                     mSheetPosition = 3;
                     mSheet = 3;
-                    AbsBounds = new Rectangle(x: (int)AbsolutePosition.X,
-                        y: (int)AbsolutePosition.Y,
-                        width: PlatformWidth,
-                        height: 127);
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        127);
                     break;
                 case EPlatformType.Packaging:
                     mSheetPosition = 4;
                     mSheet = 3;
-                    AbsBounds = new Rectangle(x: (int)AbsolutePosition.X,
-                        y: (int)AbsolutePosition.Y,
-                        width: PlatformWidth,
-                        height: 127);
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        127);
                     break;
                 case EPlatformType.Quarry:
                     mSheetPosition = 5;
                     mSheet = 3;
-                    AbsBounds = new Rectangle(x: (int)AbsolutePosition.X,
-                        y: (int)AbsolutePosition.Y,
-                        width: PlatformWidth,
-                        height: 127);
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        127);
                     break;
                 case EPlatformType.Storage:
                     mSheetPosition = 6;
                     mSheet = 3;
-                    AbsBounds = new Rectangle(x: (int)AbsolutePosition.X,
-                        y: (int)AbsolutePosition.Y,
-                        width: PlatformWidth,
-                        height: 127);
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        127);
                     break;
                 case EPlatformType.Well:
                     mSheetPosition = 7;
                     mSheet = 3;
-                    AbsBounds = new Rectangle(x: (int)AbsolutePosition.X,
-                        y: (int)AbsolutePosition.Y,
-                        width: PlatformWidth,
-                        height: 127);
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        127);
                     break;
                 case EPlatformType.Kinetic:
                     mSheet = 1;
-                    AbsBounds = new Rectangle(x: (int)AbsolutePosition.X,
-                        y: (int)AbsolutePosition.Y,
-                        width: PlatformWidth,
-                        height: 165);
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        165);
                     break;
                 case EPlatformType.Laser:
                     mSheet = 1;
                     mSheetPosition = 1;
-                    AbsBounds = new Rectangle(x: (int)AbsolutePosition.X,
-                        y: (int)AbsolutePosition.Y,
-                        width: PlatformWidth,
-                        height: 165);
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        165);
                     break;
                 case EPlatformType.Barracks:
                     mSheet = 2;
                     mSheetPosition = 1;
-                    AbsBounds = new Rectangle(x: (int)AbsolutePosition.X,
-                        y: (int)AbsolutePosition.Y,
-                        width: PlatformWidth,
-                        height: 170);
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        170);
                     break;
                 case EPlatformType.Command:
                     mSheet = 2;
-                    AbsBounds = new Rectangle(x: (int)AbsolutePosition.X,
-                        y: (int)AbsolutePosition.Y,
-                        width: PlatformWidth,
-                        height: 170);
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        PlatformWidth,
+                        170);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -728,7 +736,7 @@ namespace Singularity.Platforms
             {
                 case 0:
                     // basic platforms
-                    AbsoluteSize = new Vector2(x: 148, y: 85);
+                    AbsoluteSize = new Vector2(148, 85);
                     ColliderGrid = new [,]
                     {
                         { false, true,  true,  true,  true,  true,  true,  false },
@@ -741,7 +749,7 @@ namespace Singularity.Platforms
                     break;
                 case 1:
                     // cones
-                    AbsoluteSize = new Vector2(x: 148, y: 165);
+                    AbsoluteSize = new Vector2(148, 165);
                     ColliderGrid = new [,]
                     {
                         { false, false, false, false, false, false, false, false },
@@ -758,7 +766,7 @@ namespace Singularity.Platforms
                     break;
                 case 2:
                     // cylinders
-                    AbsoluteSize = new Vector2(x: 148, y: 170);
+                    AbsoluteSize = new Vector2(148, 170);
                     ColliderGrid = new [,]
                     {
                         { false, false, false, false, false, false, false, false },
@@ -775,7 +783,7 @@ namespace Singularity.Platforms
                     break;
                 case 3:
                     // domes
-                    AbsoluteSize = new Vector2(x: 148, y: 126);
+                    AbsoluteSize = new Vector2(148, 126);
                     ColliderGrid = new [,]
                     {
                         { false, false, false, false, false, false, false, false },
@@ -789,7 +797,7 @@ namespace Singularity.Platforms
                     };
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(paramName: "Attempted to use a spritesheet "
+                    throw new ArgumentOutOfRangeException("Attempted to use a spritesheet "
                         + "for platforms that doesn't exist.");
             }
         }
@@ -805,7 +813,7 @@ namespace Singularity.Platforms
         public void DieBlank()
         {
 
-            mDirector.GetDistributionManager.Kill(platform: this);
+            mDirector.GetDistributionManager.Kill(this);
 
 
             mColor = Color.White;
@@ -816,18 +824,18 @@ namespace Singularity.Platforms
             //default?
             mHealth = 100;
 
-            mIPlatformActions.RemoveAll(match: a => a.Die());
+            mIPlatformActions.RemoveAll(a => a.Die());
 
-            mAssignedUnits[key: JobType.Idle].RemoveAll(match: p => p.GetSecond() && p.GetFirst().Die());
-            mAssignedUnits[key: JobType.Defense].RemoveAll(match: p => p.GetSecond() && p.GetFirst().Die());
-            mAssignedUnits[key: JobType.Construction].RemoveAll(match: p => p.GetSecond() && p.GetFirst().Die());
-            mAssignedUnits[key: JobType.Logistics].RemoveAll(match: p => p.GetSecond() && p.GetFirst().Die());
-            mAssignedUnits[key: JobType.Production].RemoveAll(match: p => p.GetSecond() && p.GetFirst().Die());
+            mAssignedUnits[JobType.Idle].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
+            mAssignedUnits[JobType.Defense].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
+            mAssignedUnits[JobType.Construction].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
+            mAssignedUnits[JobType.Logistics].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
+            mAssignedUnits[JobType.Production].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
 
 
-            mResources.RemoveAll(match: r => r.Die());
-            mResources = new List<Resource> {new Resource(type: EResourceType.Trash, position: Center), new Resource(type: EResourceType.Trash, position: Center),
-                new Resource(type: EResourceType.Trash, position: Center), new Resource(type: EResourceType.Trash, position: Center), new Resource(type: EResourceType.Trash, position: Center)};
+            mResources.RemoveAll(r => r.Die());
+            mResources = new List<Resource> {new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center),
+                new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center)};
 
             mRequested = new Dictionary<EResourceType, int>();
 
@@ -848,26 +856,26 @@ namespace Singularity.Platforms
 
             // removing the PlatformActions first
 
-            mInwardsEdges.RemoveAll(match: e => ((Road) e).Die());
-            mOutwardsEdges.RemoveAll(match: e => ((Road) e).Die()); // this is indirectly calling the Kill(road) function below
+            mInwardsEdges.RemoveAll(e => ((Road) e).Die());
+            mOutwardsEdges.RemoveAll(e => ((Road) e).Die()); // this is indirectly calling the Kill(road) function below
 
 
-            mResources.RemoveAll(match: r => r.Die());
+            mResources.RemoveAll(r => r.Die());
 
-            mIPlatformActions.ForEach(action: a => a.Platform = null);
-            mIPlatformActions.RemoveAll(match: a => a.Die());
-            mDirector.GetDistributionManager.Kill(platform: this);
-            mDirector.GetStoryManager.StructureMap.RemovePlatform(platform: this);
-            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(toRemove: this);
+            mIPlatformActions.ForEach(a => a.Platform = null);
+            mIPlatformActions.RemoveAll(a => a.Die());
+            mDirector.GetDistributionManager.Kill(this);
+            mDirector.GetStoryManager.StructureMap.RemovePlatform(this);
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             return true;
         }
 
         public void Kill(IEdge road)
         {
-            mInwardsEdges.Remove(item: road);
-            mOutwardsEdges.Remove(item: road);
-            mDirector.GetStoryManager.StructureMap.RemoveRoad(road: (Road) road);
-            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(toRemove: road);
+            mInwardsEdges.Remove(road);
+            mOutwardsEdges.Remove(road);
+            mDirector.GetStoryManager.StructureMap.RemoveRoad((Road) road);
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(road);
         }
 
         public void Kill(IPlatformAction action)
@@ -881,12 +889,12 @@ namespace Singularity.Platforms
 
             foreach (var outgoing in GetOutwardsEdges())
             {
-                childs.Add(item: outgoing.GetChild());
+                childs.Add(outgoing.GetChild());
             }
 
             foreach (var ingoing in GetInwardsEdges())
             {
-                childs.Add(item: ingoing.GetParent());
+                childs.Add(ingoing.GetParent());
             }
             return childs;
         }
@@ -926,6 +934,7 @@ namespace Singularity.Platforms
         public void Built()
         {
             mIsBlueprint = false;
+            // Todo: move registering at the distributionmanager etc here.
         }
     }
 }

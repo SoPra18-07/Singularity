@@ -15,7 +15,7 @@ namespace Singularity.Platforms
         [DataMember]
         private const int PlatformHeight = 127;
 
-        public Junkyard(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libSans12, ref Director director) : base(position: position, platformSpriteSheet: platformSpriteSheet, baseSprite: baseSprite, libSans12Font: libSans12, director: ref director, type: EPlatformType.Junkyard, centerOffsetY: -50)
+        public Junkyard(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libSans12, ref Director director) : base(position, platformSpriteSheet, baseSprite, libSans12, ref director, EPlatformType.Junkyard, -50)
         {
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
@@ -31,7 +31,7 @@ namespace Singularity.Platforms
             {
                 if (resource.Type == EResourceType.Trash)
                 {
-                    mResources.Remove(item: resource);
+                    mResources.Remove(resource);
                     mDirector.GetStoryManager.Trash();
                 }
             }

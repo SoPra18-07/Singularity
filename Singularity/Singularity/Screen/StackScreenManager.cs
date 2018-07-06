@@ -42,7 +42,7 @@ namespace Singularity.Screen
 
         public void AddScreen(IScreen screen)
         {
-            mScreensToAdd.AddLast(value: screen);
+            mScreensToAdd.AddLast(screen);
         }
 
         public void RemoveScreen()
@@ -57,7 +57,7 @@ namespace Singularity.Screen
             // LinkedList.addLast(mScreenStack.pop()) for every element in the stack, thus the
             // formerly "top" item in the stack is now the first item in the linked list. This
             // removes the "reverse-list" effort.
-            var screens = new LinkedList<IScreen>(collection: mScreenStack);
+            var screens = new LinkedList<IScreen>(mScreenStack);
 
             /*
              * Ok, so basically our stack is from bottom to top. The list screens
@@ -74,13 +74,13 @@ namespace Singularity.Screen
                 if (!currentScreen.Loaded)
                 {
                     //make sure to load the content as soon as we want to do something with the screen
-                    currentScreen.LoadContent(content: mContentManager);
+                    currentScreen.LoadContent(mContentManager);
                     currentScreen.Loaded = true;
                 }
 
-                mInputManager.AddScreen(screen: currentScreen.Screen);
+                mInputManager.AddScreen(currentScreen.Screen);
 
-                testScreens.AddLast(value: currentScreen);
+                testScreens.AddLast(currentScreen);
 
                 if (!currentScreen.UpdateLower())
                 {
@@ -93,7 +93,7 @@ namespace Singularity.Screen
 
             foreach (var currentScreen in reversed)
             {
-                currentScreen.Update(gametime: gameTime);
+                currentScreen.Update(gameTime);
             }
 
             for (var i = 0; i < mScreenRemovalCounter; i++)
@@ -106,7 +106,7 @@ namespace Singularity.Screen
 
             foreach (var screen in mScreensToAdd)
             {
-                mScreenStack.Push(item: screen);
+                mScreenStack.Push(screen);
             }
 
             mScreensToAdd.Clear();
@@ -115,14 +115,14 @@ namespace Singularity.Screen
         public void Draw(SpriteBatch spriteBatch)
         {
             // Same as the comment in Update.
-            var screens = new LinkedList<IScreen>(collection: mScreenStack);
+            var screens = new LinkedList<IScreen>(mScreenStack);
 
             var testScreens = new LinkedList<IScreen>();
 
             foreach (var currentScreen in screens)
             {
 
-                testScreens.AddLast(value: currentScreen);
+                testScreens.AddLast(currentScreen);
 
                 if (!currentScreen.DrawLower())
                 {
@@ -141,7 +141,7 @@ namespace Singularity.Screen
                     break;
                 }
 
-                currentScreen.Draw(spriteBatch: spriteBatch);
+                currentScreen.Draw(spriteBatch);
             }
         }
     }
