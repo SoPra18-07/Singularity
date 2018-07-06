@@ -74,6 +74,7 @@ namespace Singularity.Levels
             //INITIALIZE SCREENS AND ADD THEM TO THE SCREENMANAGER
             GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
             mUi = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
+            mDirector.GetUserInterfaceController.ControlledUserInterface = mUi;
 
             mScreenManager.AddScreen(GameScreen);
             mScreenManager.AddScreen(mUi);

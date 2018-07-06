@@ -9,10 +9,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Exceptions;
 using Singularity.Graph;
+using Singularity.Input;
 using Singularity.Manager;
 using Singularity.PlatformActions;
 using Singularity.Property;
 using Singularity.Resources;
+using Singularity.Screen;
 using Singularity.Units;
 using Singularity.Utils;
 
@@ -22,12 +24,20 @@ namespace Singularity.Platforms
     /// <inheritdoc cref="INode"/>
     /// <inheritdoc cref="ICollider"/>
     [DataContract]
-    public class PlatformBlank : IRevealing, INode, ICollider
+    public class PlatformBlank : IRevealing, INode, ICollider, IMouseClickListener
     {
 
         private int mGraphIndex;
 
         private float mLayer;
+
+        // true, if this platform has already sent data since activation
+        private bool mDataSent;
+
+        // previous values sent to the UIController - used to only send data if the values have been updated
+        private List<Resource> mPrevResources;
+        private Dictionary<JobType, List<Pair<GeneralUnit, bool>>> mPrevUnitAssignments;
+        private List<IPlatformAction> mPrevPlatformActions;
 
         /// <summary>
         /// List of inwards facing edges/roads towards the platform.
@@ -102,6 +112,8 @@ namespace Singularity.Platforms
         private int mSheet;
         private int mSheetPosition;
 
+        // the userinterface controller to send all informations to
+        private readonly UserInterfaceController mUserInterfaceController;
 
         [DataMember]
         public Vector2 AbsolutePosition { get; set; }
@@ -178,6 +190,11 @@ namespace Singularity.Platforms
             Moved = false;
             UpdateValues();
 
+            // manage input
+            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+
+            // user interface controller
+            mUserInterfaceController = director.GetUserInterfaceController;
             Debug.WriteLine("PlatformBlank created");
 
         }
@@ -484,6 +501,34 @@ namespace Singularity.Platforms
         public void Update(GameTime t)
         {
             Uncollide();
+
+            Bounds = new Rectangle((int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
+
+            // set the mDataSent bool to false if there was a change in platform infos since the data was sent last time
+            // or if the platform is not selected, so that if it gets selected it will send the current data to the UIController
+            if (mPrevResources != GetPlatformResources() ||
+                mPrevUnitAssignments != GetAssignedUnits() ||
+                mPrevPlatformActions != GetIPlatformActions() ||
+                !IsSelected)
+            {
+                mDataSent = false;
+            }
+
+            // manage updating of values in the UI
+            if (IsSelected && !mDataSent)
+                // the platform is selected + the current data has yet to be sent then
+            {
+                // update previous values
+                mPrevResources = GetPlatformResources();
+                mPrevUnitAssignments = GetAssignedUnits();
+                mPrevPlatformActions = GetIPlatformActions();
+
+                // send data to UIController
+                mUserInterfaceController.SetDataOfSelectedPlatform(Id, mType, GetPlatformResources(), GetAssignedUnits(), GetIPlatformActions());
+
+                // set the bool for sent-data to true, since the data has just been sent
+                mDataSent = true;
+            }
         }
 
         private void Uncollide()
@@ -852,6 +897,37 @@ namespace Singularity.Platforms
         public int GetGraphIndex()
         {
             return mGraphIndex;
+        }
+
+        /// <summary>
+        /// true, if the platform is sleected in the UI
+        /// </summary>
+        public bool IsSelected { get; set; }
+
+        public EScreen Screen { get; } = EScreen.GameScreen;
+        public Rectangle Bounds { get; private set; }
+        public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
+        {
+            if (!withinBounds)
+            {
+                return true;
+            }
+
+            if (mouseAction == EMouseAction.LeftClick)
+            {
+                mUserInterfaceController.ActivateMe(this);
+            }
+            return false;
+        }
+
+        public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
+        {
+            return !withinBounds;
+        }
+
+        public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
+        {
+            return !withinBounds;
         }
     }
 }

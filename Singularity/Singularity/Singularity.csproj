@@ -63,6 +63,8 @@
     <Compile Include="Levels\ILevel.cs" />
     <Compile Include="Manager\DistributionManager.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />
+    <Compile Include="Screen\BarIWindowItem.cs" />
+    <Compile Include="Screen\PlatformActionIWindowItem.cs" />
     <Compile Include="PlatformActions\MakeUnit.cs" />
     <Compile Include="Platforms\Barracks.cs" />
     <Compile Include="Platforms\EPlacementType.cs" />
@@ -71,9 +73,11 @@
     <Compile Include="Property\IDie.cs" />
     <Compile Include="Screen\InfoBoxWindow.cs" />
     <Compile Include="Property\GlobalVariables.cs" />
+    <Compile Include="Screen\ResourceIWindowItem.cs" />
     <Compile Include="Screen\InfoBarWindowObject.cs" />
     <Compile Include="Screen\SliderHandler.cs" />
     <Compile Include="Units\ControllableUnit.cs" />
+    <Compile Include="Screen\TextAndAmountIWindowItem.cs" />
     <Compile Include="Units\EnemyUnit.cs" />
     <Compile Include="Units\FreeMovingUnit.cs" />
     <Compile Include="Units\SelectionBox.cs" />
@@ -175,6 +179,7 @@
     <Compile Include="Property\IUpdate.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Screen\UserInterfaceController.cs" />
     <Compile Include="Utils\State3.cs" />
     <Compile Include="Utils\Geometry.cs" />
     <Compile Include="Screen\IScreen.cs" />

@@ -245,3 +245,10 @@
 /processorParam:TextureFormat=Color
 /build:UnitGlowSprite.png
 
+#begin LibSans10.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:LibSans10.spritefont
+
