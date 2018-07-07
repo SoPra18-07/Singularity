@@ -65,18 +65,6 @@ namespace Singularity.Units
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * Scale / 2, AbsolutePosition.Y + AbsoluteSize.Y * Scale / 2);
         }
 
-        /// <summary>
-        /// Static method that can be called to create a new military unit
-        /// </summary>
-        /// <param name="position"></param>
-        /// <param name="director"></param>
-        /// <returns></returns>
-        public static MilitaryUnit CreateMilitaryUnit(Vector2 position, ref Director director)
-        {
-            var map = director.GetStoryManager.Level.Map;
-            return new MilitaryUnit(position, director.GetStoryManager.Level.Camera, ref director, ref map);
-        }
-
         public override void Draw(SpriteBatch spriteBatch)
         {
             // makes sure that the textures are loaded

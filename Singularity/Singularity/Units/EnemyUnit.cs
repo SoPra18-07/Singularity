@@ -40,11 +40,10 @@ namespace Singularity.Units
         /// Enemy units controlled by AI and opposed to the player.
         /// </summary>
         /// <param name="position">Where the unit should be spawned.</param>
-        /// <param name="spriteSheet">Military unit sprite sheet.</param>
         /// <param name="camera">Game camera being used.</param>
         /// <param name="director">Reference to the game director.</param>
         /// <param name="map">Reference to the game map.</param>
-        public EnemyUnit(Vector2 position, Texture2D spriteSheet, Camera camera, ref Director director, ref Map.Map map) 
+        public EnemyUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map) 
             : base(position, camera, ref director, ref map)
         {
             Health = 10; //TODO

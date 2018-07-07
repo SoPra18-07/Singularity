@@ -59,17 +59,17 @@ namespace Singularity.Levels
             var platformCylTexture = content.Load<Texture2D>("Cylinders");
             var platformBlankTexture = content.Load<Texture2D>("PlatformBasic");
             var platformDomeTexture = content.Load<Texture2D>("Dome");
-            var milUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
-            var milGlowSheet = content.Load<Texture2D>("UnitGlowSprite");
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
 
             //TODO: have a cone texture
             PlatformFactory.Init(null, platformCylTexture, platformDomeTexture, platformBlankTexture);
 
             //Map related stuff
-            Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 800, 800);
+            Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 3000, 3000);
             mFow = new FogOfWar(Camera, mGraphics.GraphicsDevice);
-            Map = new Map.Map(mapBackground, 20, 20, mFow, Camera, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
+            var map = new Map.Map(mapBackground, 60, 60, mFow, Camera, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
+            mDirector.GetMilitaryManager.SetMap(ref map);
+            Map = map;
 
             //INITIALIZE SCREENS AND ADD THEM TO THE SCREENMANAGER
             GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
@@ -81,18 +81,18 @@ namespace Singularity.Levels
 
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
-            mPlatform = new PlatformBlank(new Vector2(1000, 1000), null, platformBlankTexture, ref mDirector);
+            mPlatform = new PlatformBlank(new Vector2(3000, 3000), null, platformBlankTexture, ref mDirector);
             GameScreen.AddObject(mPlatform);
 
             // this is done via the factory to test, so I can instantly see if something is some time off.
-            var platform2 = PlatformFactory.Get(EPlatformType.Well, ref mDirector, 800, 1000, Map.GetResourceMap());
+            var platform2 = PlatformFactory.Get(EPlatformType.Well, ref mDirector, 2800, 3000, Map.GetResourceMap());
             GameScreen.AddObject(platform2);
 
             var road1 = new Road(mPlatform, platform2, false);
             GameScreen.AddObject(road1);
 
             //var platform2 = new Well(new Vector2(800, 1000), platformDomeTexture, platformBlankTexture, mMap.GetResourceMap(), ref mDirector);
-            var platform3 = new Quarry(new Vector2(1200, 1200),
+            var platform3 = new Quarry(new Vector2(3200, 3200),
                 platformDomeTexture,
                 platformBlankTexture,
                 Map.GetResourceMap(),
@@ -103,7 +103,7 @@ namespace Singularity.Levels
             var road3 = new Road(platform3, mPlatform, false);
             GameScreen.AddObject(road3);
 
-            var platform4 = new EnergyFacility(new Vector2(1000, 800),
+            var platform4 = new EnergyFacility(new Vector2(3000, 2800),
                 platformDomeTexture,
                 platformBlankTexture, ref mDirector);
             GameScreen.AddObject(platform4);
@@ -122,13 +122,10 @@ namespace Singularity.Levels
             var genUnit5 = new GeneralUnit(mPlatform, ref mDirector);
 
             //MilUnits
-            var map = Map;
-            MilitaryUnit.mMilSheet = milUnitSheet;
-            MilitaryUnit.mGlowTexture = milGlowSheet;
-            var milUnit = new MilitaryUnit(new Vector2(2000, 700), Camera, ref mDirector, ref map);
+            var milUnit = new MilitaryUnit(new Vector2(5000, 2700), Camera, ref mDirector, ref map);
 
             //SetUnit
-            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, mUi);
+            var setUnit = new Settler(new Vector2(3000, 3250), Camera, ref mDirector, ref map, GameScreen, mUi);
             
 
             // Resources
@@ -149,8 +146,7 @@ namespace Singularity.Levels
             GameScreen.AddObject(genUnit3);
             GameScreen.AddObject(genUnit4);
             GameScreen.AddObject(genUnit5);
-            GameScreen.AddObject(milUnit);
-            GameScreen.AddObject(setUnit);
+            GameScreen.AddObjects(mDirector.GetMilitaryManager.Units);
 
             //TESTMETHODS HERE ====================================
             mDirector.GetDistributionManager.RequestResource(platform2, EResourceType.Oil, null);

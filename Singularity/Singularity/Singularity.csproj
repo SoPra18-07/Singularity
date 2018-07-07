@@ -65,6 +65,8 @@
     <Compile Include="Manager\DistributionManager.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />
     <Compile Include="Map\MiniMap.cs" />
+    <Compile Include="Map\UnitMap.cs" />
+    <Compile Include="Map\UnitMapTile.cs" />
     <Compile Include="PlatformActions\MakeUnit.cs" />
     <Compile Include="Platforms\Barracks.cs" />
     <Compile Include="Platforms\EPlacementType.cs" />

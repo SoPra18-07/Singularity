@@ -22,6 +22,7 @@ namespace Singularity.Manager
             GetSoundManager.LoadContent(content);
             GetSoundManager.PlaySoundTrack();
 
+            GetMilitaryManager.LoadContents(content);
 
             // Dd}{_:
         }
