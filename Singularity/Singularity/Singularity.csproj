@@ -65,6 +65,11 @@
     <Compile Include="Manager\DistributionManager.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />
     <Compile Include="PlatformActions\ConsumeResource.cs" />
+    <Compile Include="Exceptions\MiniMapProportionsOffException.cs" />
+    <Compile Include="Levels\ILevel.cs" />
+    <Compile Include="Manager\DistributionManager.cs" />
+    <Compile Include="Manager\MilitaryManager.cs" />
+    <Compile Include="Map\MiniMap.cs" />
     <Compile Include="PlatformActions\MakeUnit.cs" />
     <Compile Include="PlatformActions\Shoot.cs" />
     <Compile Include="Platforms\Barracks.cs" />
@@ -80,6 +85,7 @@
     <Compile Include="Screen\InfoBoxWindow.cs" />
     <Compile Include="Property\GlobalVariables.cs" />
     <Compile Include="Screen\InfoBarWindowObject.cs" />
+    <Compile Include="Screen\ScreenClasses\DebugScreen.cs" />
     <Compile Include="Screen\SliderHandler.cs" />
     <Compile Include="Units\ControllableUnit.cs" />
     <Compile Include="Units\EnemyUnit.cs" />

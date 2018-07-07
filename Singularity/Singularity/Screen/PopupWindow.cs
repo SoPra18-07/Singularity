@@ -137,7 +137,7 @@ namespace Singularity.Screen
             mButton.Position = new Vector2(mButtonBorderRectangle.X + 5, mButtonBorderRectangle.Y + 5);
 
             // Initialize scissor window
-            mRasterizerState = new RasterizerState() { ScissorTestEnable = true };
+            mRasterizerState = new RasterizerState { ScissorTestEnable = true };
 
             inputManager.AddMouseWheelListener(this);
             inputManager.AddMousePositionListener(this);

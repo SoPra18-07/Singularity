@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Singularity.Resources;
 using Singularity.Utils;
-using System.Linq;
 
 namespace Singularity.Map
 {
@@ -104,6 +104,15 @@ namespace Singularity.Map
             mLocationCache[location] = foundResources;
 
             return foundResources;
+        }
+
+        /// <summary>
+        /// Gets the list of all the resources currently in the game
+        /// </summary>
+        /// <returns>The list mentioned</returns>
+        public List<MapResource> GetAllResources()
+        {
+            return mResourceMap;
         }
 
         /// <summary>

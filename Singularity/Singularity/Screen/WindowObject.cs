@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
@@ -127,7 +128,7 @@ namespace Singularity.Screen
             mCurrentScreenHeight = graphics.PreferredBackBufferHeight;
 
             // Initialize scissor window
-            mRasterizerState = new RasterizerState() { ScissorTestEnable = true };
+            mRasterizerState = new RasterizerState { ScissorTestEnable = true };
 
             Initialization();
 
@@ -182,7 +183,7 @@ namespace Singularity.Screen
             mCurrentScreenHeight = graphics.PreferredBackBufferHeight;
 
             // Initialize scissor window
-            mRasterizerState = new RasterizerState() { ScissorTestEnable = true };
+            mRasterizerState = new RasterizerState { ScissorTestEnable = true };
 
             Initialization();
 
@@ -236,7 +237,7 @@ namespace Singularity.Screen
             mCurrentScreenHeight = graphics.PreferredBackBufferHeight;
 
             // Initialize scissor window
-            mRasterizerState = new RasterizerState() { ScissorTestEnable = true };
+            mRasterizerState = new RasterizerState { ScissorTestEnable = true };
 
             Initialization();
 
@@ -258,6 +259,11 @@ namespace Singularity.Screen
             // calculate resizing by screensize
             mMinimizationSize = 20;
             mTitleSizeY = 720 / 26;
+            if (mWindowName == "")
+            {
+                mTitleSizeY = 0;
+                mMinimizationSize = 0;
+            }
 
             // int to save scroll values
             mItemScrolledValue = 0;
@@ -360,6 +366,10 @@ namespace Singularity.Screen
             }
 
             // draw window title + bar
+            if (mWindowName == "")
+            {
+                return;
+            }
             spriteBatch.DrawString(mSpriteFont, mWindowName, new Vector2(Position.X + mMinimizationSize / 2f, Position.Y + mMinimizationSize / 2f), new Color(255, 255, 255));
             spriteBatch.DrawRectangle(mTitleBarRectangle, mColorBorder, 1);
         }
@@ -384,7 +394,7 @@ namespace Singularity.Screen
             else if (!mMinimized)
             {
                 // input from inside the window is proccessed
-                Bounds = new Rectangle((int)Position.X, (int)Position.Y, (int)(Size.X), ((int)Size.Y));
+                Bounds = new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y);
             }
             else
             {
@@ -477,6 +487,10 @@ namespace Singularity.Screen
             mScrollBarRectangle = CalcScrollbarRectangle(mScissorRectangle, mCombinedItemsSize
             );
 
+            if (mWindowName == "")
+            {
+                return;
+            }
             // set the rectangle of the title bar
             mTitleBarRectangle = new Rectangle(
                 x: (int)Position.X + mMinimizationSize / 2,
@@ -523,9 +537,7 @@ namespace Singularity.Screen
             }
 
             // everything following handles if the input is given through or not
-            if (!mMinimized &&
-                (mMouseX > Position.X && mMouseX < Position.X + Size.X &&
-                 mMouseY > Position.Y && mMouseY < Position.Y + Size.Y))
+            if (!mMinimized && (mMouseX > Position.X && mMouseX < Position.X + Size.X) && mMouseY > Position.Y && mMouseY < Position.Y + Size.Y)
                 // not minimized + mouse on window
             {
                 return false;
@@ -533,8 +545,7 @@ namespace Singularity.Screen
 
             // resharper wanted it this 'overseeable' way o.O
             // minimized + mouse on minimized window -> return false ... else true
-            return !mMinimized || (!(mMouseX > Position.X) || !(mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width) ||
-                                   !(mMouseY > Position.Y) || !(mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height));
+            return !mMinimized || (!(mMouseX > Position.X) || !(mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width)) || !(mMouseY > Position.Y) || !(mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height);
         }
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
@@ -590,7 +601,13 @@ namespace Singularity.Screen
                 mMouseX < Position.X + Position.X + Size.X &&
                 mMouseY > Position.Y &&
                 mMouseY < Position.Y + mTitleSizeY + mMinimizationSize &&
-                !mClickOnTitleBar)
+                !mClickOnTitleBar ||
+                (mWindowName == "" && 
+                 mMouseX > Position.X &&
+                 mMouseX < Position.X + Position.X + Size.X &&
+                 mMouseY > Position.Y &&
+                 mMouseY < Position.Y + Position.Y + Size.Y &&
+                 !mClickOnTitleBar))
                 // mouse above the title rectangle
                 {
                     if (!(mMouseX >= mMinimizationRectangle.X &&
@@ -612,9 +629,7 @@ namespace Singularity.Screen
 
             // everything following handles if the input is given through or not
 
-            if (!mMinimized &&
-                (mMouseX > Position.X && mMouseX < Position.X + Size.X &&
-                 mMouseY > Position.Y && mMouseY < Position.Y + Size.Y))
+            if (!mMinimized && (mMouseX > Position.X && mMouseX < Position.X + Size.X) && mMouseY > Position.Y && mMouseY < Position.Y + Size.Y)
                 // not minimized + mouse on window
             {
                 return false;
@@ -740,7 +755,7 @@ namespace Singularity.Screen
         internal bool Active { get; set; }
 
         // position of the window
-        public Vector2 Position { private get; set; }
+        public Vector2 Position { get; set; }
 
         // size of the window
         public Vector2 Size { get; }

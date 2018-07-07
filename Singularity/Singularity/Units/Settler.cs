@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,9 +8,7 @@ using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
-using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
-using Singularity.Utils;
 
 namespace Singularity.Units
 {
@@ -87,7 +83,7 @@ namespace Singularity.Units
             spriteBatch.StrokedRectangle(AbsolutePosition,
                 AbsoluteSize,
                 Color.Gray,
-                (mSelected) ? Color.Wheat : Color.Beige,
+                mSelected ? Color.Wheat : Color.Beige,
                 .8f,
                 1f,
                 LayerConstants.MilitaryUnitLayer);
@@ -139,8 +135,8 @@ namespace Singularity.Units
 
             AbsBounds = new Rectangle((int) AbsolutePosition.X + 16,
                 (int) AbsolutePosition.Y + 11,
-                (int) (AbsoluteSize.X),
-                (int) (AbsoluteSize.Y));
+                (int) AbsoluteSize.X,
+                (int) AbsoluteSize.Y);
             Moved = mIsMoving;
 
             if (Moved)
@@ -158,7 +154,7 @@ namespace Singularity.Units
             {
                 // if key b has been pressed and the settler unit is selected and its not moving
                 // --> send out event that deletes settler and adds a command center
-                if (key == Keys.B && mSelected && (HasReachedTarget() || mNeverMoved))
+                if (key == Keys.B && mSelected && HasReachedTarget() || mNeverMoved)
                 {
                     OnBuildCommandCenter();
                 }
