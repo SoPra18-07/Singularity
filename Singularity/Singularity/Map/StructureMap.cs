@@ -172,7 +172,7 @@ namespace Singularity.Map
                 var childIndex = mPlatformToGraphId[(PlatformBlank) road.GetChild()];
                 var parentIndex = mPlatformToGraphId[(PlatformBlank) road.GetParent()];
 
-                // since the graphes will get connected by this road, we first 
+                // since the graphes will get connected by this road, we first
                 // get all the nodes and edges from both graphes
                 var connectGraphNodes = mGraphIdToGraph[childIndex].GetNodes()
                     .Concat(mGraphIdToGraph[parentIndex].GetNodes()).ToList();
@@ -230,7 +230,7 @@ namespace Singularity.Map
             // 1.1 road gets destroyed -> graph doesn't change, since child reachability graph
             // and parent reachability graph are the same even without the road. Just remove
             // the road from the graph
-            // 
+            //
             // 2. road gets destroyed -> the graph stays the same, just
             // this road removed, this can be the case if either the child
             // or parent of the road is not existent anymore.
@@ -362,12 +362,12 @@ namespace Singularity.Map
         public void Update(GameTime gametime)
         {
             // the platform which currently gets hovered. This only gets set if we actually need it
-            // e.g. when we have a "to be placed platform" currently in the game. This also 
+            // e.g. when we have a "to be placed platform" currently in the game. This also
             // fulfills multiple purposes.
             // First is when the platform to be placed is in its
             // first state, then the hovering refers to the platform which is under the platform
             // to place. This is needed to make sure that the platform to be placed doesn't get
-            // placed ontop of another. 
+            // placed ontop of another.
             // The second is when the platform to be placed is in its second state,
             // then the hovering refers to the platform the road snaps to.
             PlatformBlank hovering = null;
@@ -391,7 +391,7 @@ namespace Singularity.Map
                     // these don't get updated automatically.
                     platformToAdd.GetPlatform().UpdateValues();
 
-                    // if our current platform doesn't intersect with the platform to be placed we 
+                    // if our current platform doesn't intersect with the platform to be placed we
                     // aren't hovering it, thus we continue to the next platform.
                     if (!platformToAdd.GetPlatform().AbsBounds.Intersects(platform.AbsBounds))
                     {

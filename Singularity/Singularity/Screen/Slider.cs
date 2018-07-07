@@ -61,7 +61,7 @@ namespace Singularity.Screen
         #endregion
 
         ///  <summary>
-        /// 
+        ///
         ///  </summary>
         ///  <param name="position"> position of the slider bar left hand corner</param>
         ///  <param name="length"> length of the slider bar</param>

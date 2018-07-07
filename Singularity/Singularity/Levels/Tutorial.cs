@@ -61,7 +61,7 @@ namespace Singularity.Levels
             MilitaryUnit.mGlowTexture = content.Load<Texture2D>("UnitGlowSprite");
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
 
-            //TODO: have a cone texture 
+            //TODO: have a cone texture
             PlatformFactory.Init(null, platformCylTexture, platformDomeTexture, platformBlankTexture);
 
             //Map related stuff
