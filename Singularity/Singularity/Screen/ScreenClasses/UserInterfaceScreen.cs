@@ -254,13 +254,14 @@ namespace Singularity.Screen.ScreenClasses
 
         #endregion
 
-        #region infoBar members
-        #region
+        #region minimap members
 
         // minimap window
         private WindowObject mMinimapWindow;
 
         #endregion
+
+        #region infoBar members
 
         // info bar - the info bar is entirely managed in it's own class, therefore there's no need to define members here
         private InfoBarWindowObject mInfoBar;
@@ -1034,6 +1035,18 @@ namespace Singularity.Screen.ScreenClasses
 
             #endregion
 
+            #region MiniMap
+
+            // TODO: properly place the minimapObject to better fit with the rest. Don't change the size
+            // TODO: other than changing it in MapConstants, the +20 is for the padding left and right.
+            var minimap = new MiniMap(mMap, mCamera, content.Load<Texture2D>("minimap"));
+            mMinimapWindow = new WindowObject("", new Vector2(0, 0), new Vector2(MapConstants.MiniMapWidth + 20, MapConstants.MiniMapHeight + 20), false, mLibSans12, mDirector.GetInputManager, mGraphics);
+            mMinimapWindow.AddItem(minimap);
+
+            mWindowList.Add(mMinimapWindow);
+
+            #endregion
+
             // called once to set positions + called everytime the resolution changes
             ResetWindowsToStandardPositon();
 
@@ -1075,14 +1088,17 @@ namespace Singularity.Screen.ScreenClasses
             // event log position
             mEventLogWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mEventLogWindow.Size.X, 12 + 25);
 
-            // event log position
-            mEventLogWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mEventLogWindow.Size.X, 12 + 25);
-
             // build menu position
             mBuildMenuWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mBuildMenuWindow.Size.X, mEventLogWindow.Position.Y + mEventLogWindow.Size.Y + 12);
 
-            // selected platform position
+            // selected platform window position
             mSelectedPlatformWindow.Position = new Vector2(mCurrentScreenWidth / 2f - mSelectedPlatformWindow.Size.X / 2, mCurrentScreenHeight - mSelectedPlatformWindow.Size.Y - 12);
+
+            // minimap position (-32 due to 12 padding + the window size is 20 bigger than the map
+            mMinimapWindow.Position = new Vector2(
+                mCurrentScreenWidth - 32 - MapConstants.MiniMapWidth,
+                mCurrentScreenHeight - 32 - MapConstants.MiniMapHeight
+            );
         }
 
         /// <summary>
