@@ -41,18 +41,16 @@ namespace Singularity.Resources
 
             // the actual targetPosition is a certain distance (usually 50) from the unit, in the direction of the unit.
             var diff = unit.AbsolutePosition - AbsolutePosition;
-            if (Geometry.Length(diff) > 40)
+            var dist = (float) Geometry.Length(diff);
+            var targetPosition = diff - 40 * Geometry.NormalizeVector(diff) + AbsolutePosition;
+
+            var factor = 0.4f; // experimental. seems to be a good value though.
+            var movementVector = Vector2.Multiply(Geometry.NormalizeVector(mVelocity), factor) + Vector2.Multiply(Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y)), 1 - factor);
+            mVelocity = movementVector * Speed;
+            if (dist < 40)
             {
-                var targetPosition = diff - 40 * Geometry.NormalizeVector(diff) + AbsolutePosition;
-
-                var factor = 0.4f; // experimental. seems to be a good value though.
-
-                var movementVector = Vector2.Multiply(Geometry.NormalizeVector(mVelocity), factor) + Vector2.Multiply(Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y)), 1 - factor);
-
-                mVelocity = movementVector * Speed;
-            } else {
-                mVelocity = Vector2.Multiply(mVelocity, 0.93f);
-            }
+                Vector2.Multiply(mVelocity, dist / 40f);
+            } 
             AbsolutePosition = AbsolutePosition + mVelocity;
 
         }
