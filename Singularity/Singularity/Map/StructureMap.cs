@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Graph;
+using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Property;
-using System.Linq;
-using Singularity.Graph;
-using Singularity.Input;
 
 namespace Singularity.Map
 {

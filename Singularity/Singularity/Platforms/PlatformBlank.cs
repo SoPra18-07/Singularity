@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Runtime.Remoting.Channels;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -697,7 +695,7 @@ namespace Singularity.Platforms
                         { false, false, false, false, false, false, false, false }
                     };
                     break;
-                case (1):
+                case 1:
                     // cones
                     AbsoluteSize = new Vector2(148, 165);
                     ColliderGrid = new [,]
@@ -714,7 +712,7 @@ namespace Singularity.Platforms
                         { false, false, false, false, false, false, false, false }
                     };
                     break;
-                case (2):
+                case 2:
                     // cylinders
                     AbsoluteSize = new Vector2(148, 170);
                     ColliderGrid = new [,]
@@ -731,7 +729,7 @@ namespace Singularity.Platforms
                         { false, false, false, false, false, false, false, false }
                     };
                     break;
-                case (3):
+                case 3:
                     // domes
                     AbsoluteSize = new Vector2(148, 126);
                     ColliderGrid = new [,]
