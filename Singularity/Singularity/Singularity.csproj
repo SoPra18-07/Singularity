@@ -66,7 +66,6 @@
     <Compile Include="Manager\MilitaryManager.cs" />
     <Compile Include="PlatformActions\ConsumeResource.cs" />
     <Compile Include="Exceptions\MiniMapProportionsOffException.cs" />
-    <Compile Include="Levels\ILevel.cs" />
     <Compile Include="Manager\DistributionManager.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />
     <Compile Include="Map\MiniMap.cs" />
