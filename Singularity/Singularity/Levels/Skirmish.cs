@@ -24,7 +24,7 @@ namespace Singularity.Levels
 
         public Map.Map Map { get; set; }
 
-        
+
 
         [DataMember]
         private GraphicsDeviceManager mGraphics;
@@ -130,7 +130,7 @@ namespace Singularity.Levels
 
             //SetUnit
             var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, mUi);
-            
+
 
             // Resources
             var res = new Resource(EResourceType.Metal, platform2.Center);

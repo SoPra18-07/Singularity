@@ -23,7 +23,7 @@ namespace Singularity.PlatformActions
         {
             // unsure why this is a static method since it just returns a military unit anyways
             // var unit = MilitaryUnit.CreateMilitaryUnit(mPlatform.Center + mOffset, ref mDirector);
-            
+
             var camera = mDirector.GetStoryManager.Level.Camera;
             var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryUnit(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
@@ -103,7 +103,7 @@ namespace Singularity.PlatformActions
                 mDirector.GetDistributionManager.RequestResource(mPlatform, resource, this);
                 Debug.WriteLine("Requested " + resource + " just now. Waiting. (" + mPlatform.Id + ")");
             }
-            
+
             mPlatform.GetPlatformResources().ForEach(r => GetResource(r.Type));
 
             if (mMissingResources.Count <= 0)
@@ -116,7 +116,7 @@ namespace Singularity.PlatformActions
         {
             if (!mMissingResources.ContainsKey(type)) return;
             var unused = mPlatform.GetResource(type);
-                
+
             mMissingResources[type] -= 1;
             if (mMissingResources[type] <= 0)
                 mMissingResources.Remove(type);
