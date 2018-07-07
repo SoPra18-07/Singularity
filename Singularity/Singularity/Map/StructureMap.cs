@@ -468,6 +468,21 @@ namespace Singularity.Map
             mPlatformsToPlace.AddLast(platformPlacement);
         }
 
+        public int GetGraphCount()
+        {
+            var graphs = 0;
+
+            for (var i = 0; i < mGraphIdToGraph.Count; i++)
+            {
+                if (mGraphIdToGraph[i] != null)
+                {
+                    graphs++;
+                }
+            }
+
+            return graphs;
+        }
+
         public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
             mMouseX = worldX;
