@@ -21,7 +21,7 @@ namespace Singularity.Screen.ScreenClasses
         // Fonts
         private SpriteFont mLibSans20;
         private SpriteFont mLibSans14;
-        
+
         // Text stored as string variables to allow for easy changes, if needed.
         private const string StatisticsStr = "Statistics";
         private const string TimeStr = "Time:";
@@ -50,7 +50,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             mScreenManager = screenManager;
             mDirector = director;
-            
+
 
             Position = new Vector2(x: screenSize.X / 2 - 205, y: screenSize.Y / 2 - 225);
             mPrevPosition = Position;

@@ -214,7 +214,7 @@ namespace Singularity.Units
                     break;
 
                 case JobType.Logistics:
-                    
+
                     HandleTransport();
                     RegulateMovement();
 

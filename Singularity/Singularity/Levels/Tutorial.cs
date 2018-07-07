@@ -62,7 +62,7 @@ namespace Singularity.Levels
             var mapBackground = content.Load<Texture2D>(assetName: "backgroundGrid");
             var libSans12 = content.Load<SpriteFont>(assetName: "LibSans12");
 
-            //TODO: have a cone texture 
+            //TODO: have a cone texture
             PlatformFactory.Init(coneSheet: null, cylinderSheet: platformCylTexture, domeSheet: platformDomeTexture, blankSheet: platformBlankTexture, libSans12: libSans12);
 
             //Map related stuff

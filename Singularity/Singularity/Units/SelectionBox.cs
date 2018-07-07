@@ -51,7 +51,7 @@ namespace Singularity.Units
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            
+
             if (mBoxExists)
             {
                 // if selection box has been created by user then draw
@@ -66,7 +66,7 @@ namespace Singularity.Units
                 mXStart = mStartBox.X;
                 mYStart = mStartBox.Y;
 
-                // calculate the left hand corner of the selection box based on 
+                // calculate the left hand corner of the selection box based on
                 // the starting position of where selection box was initiated
                 if (MouseCoordinates().X < mStartBox.X)
                 {

@@ -95,7 +95,7 @@ namespace Singularity.Platforms
         public bool Moved { get; private set; }
 
         public int Id { get; }
-        
+
         [DataMember]
         protected Director mDirector;
 
@@ -148,7 +148,7 @@ namespace Singularity.Platforms
             mOutwardsEdges = new List<IEdge>();
 
             AbsolutePosition = position;
-            
+
             mLibSans12 = libSans12Font;
 
             SetPlatfromParameters(); // this changes the draw parameters based on the platform type but
@@ -192,7 +192,7 @@ namespace Singularity.Platforms
                 itemList: new List<IWindowItem>
                 {
                     new TextField(text: str, position: AbsolutePosition + new Vector2(x: 0, y: AbsoluteSize.Y + 10), size: mLibSans12.MeasureString(text: str), spriteFont: mLibSans12)
-                }, 
+                },
                 size: mLibSans12.MeasureString(str),
                 platform: this, director: mDirector);
 

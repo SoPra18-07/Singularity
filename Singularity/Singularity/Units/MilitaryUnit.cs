@@ -48,7 +48,7 @@ namespace Singularity.Units
         /// </summary>
         private bool mShoot;
 
-        
+
         public MilitaryUnit(Vector2 position,
             Camera camera,
             ref Director director,
@@ -197,6 +197,6 @@ namespace Singularity.Units
             mEnemyPosition = target;
             Rotate(target: target);
         }
-        
+
     }
 }
