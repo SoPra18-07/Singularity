@@ -34,6 +34,9 @@ namespace Singularity.Platforms
         // true, if this platform has already sent data since activation
         private bool mDataSent;
 
+        // determines whether the platform has already been added to the inputManager
+        private bool mAddedToInputManager;
+
         // previous values sent to the UIController - used to only send data if the values have been updated
         private List<Resource> mPrevResources;
         private Dictionary<JobType, List<Pair<GeneralUnit, bool>>> mPrevUnitAssignments;
@@ -189,9 +192,6 @@ namespace Singularity.Platforms
 
             Moved = false;
             UpdateValues();
-
-            // manage input
-            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
 
             // user interface controller
             mUserInterfaceController = director.GetUserInterfaceController;
@@ -503,6 +503,13 @@ namespace Singularity.Platforms
             Uncollide();
 
             Bounds = new Rectangle((int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
+
+            if (!mAddedToInputManager)
+            {
+                // add this platform to inputManager once
+                mDirector.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+                mAddedToInputManager = true;
+            }
 
             // set the mDataSent bool to false if there was a change in platform infos since the data was sent last time
             // or if the platform is not selected, so that if it gets selected it will send the current data to the UIController

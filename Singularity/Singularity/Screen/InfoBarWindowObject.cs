@@ -41,12 +41,12 @@ namespace Singularity.Screen
         private readonly Button mMinimapButton;
 
         // the 6 windows do toggle via buttons
-        private WindowObject mCivilUnitsWindow;
-        private WindowObject mResourceWindow;
-        private WindowObject mEventLogWindow;
-        private WindowObject mBuildMenuWindow;
-        private WindowObject mSelectedPlatformWindow;
-        private WindowObject mMinimapWindow;
+        private readonly WindowObject mCivilUnitsWindow;
+        private readonly WindowObject mResourceWindow;
+        private readonly WindowObject mEventLogWindow;
+        private readonly WindowObject mBuildMenuWindow;
+        private readonly WindowObject mSelectedPlatformWindow;
+        private readonly WindowObject mMinimapWindow;
 
         // just a simple division of the infoBar to be able to place it's buttons at one of X possible locations
         private int mWidthPadding;
@@ -77,13 +77,14 @@ namespace Singularity.Screen
         /// <param name="borderColor">the color used for the infoBar's border</param>
         /// <param name="fillColor">the color used to fill the infoBar</param>
         /// <param name="spriteFont">font used for buttons and text</param>
-        /// <param name="director">director</param>
         /// <param name="screenManager">the games screenManager</param>
         /// <param name="civilUnitsWindow">the civilUnitsWindow to close/open</param>
         /// <param name="resourceWindow">the resourceWindow to close/open</param>
         /// <param name="eventLogWindow">the eventLogWindow to close/open</param>
         /// <param name="buildMenuWindow">the buildMenuWindow to close/open</param>
         /// <param name="selectedPlatformWindow">the selectedPlatformWindow to close/open</param>
+        /// <param name="minimapWindow">the minimapWindow to close/open</param>
+        /// <param name="director">director</param>
         public InfoBarWindowObject(
             Color borderColor, 
             Color fillColor, 
@@ -94,6 +95,7 @@ namespace Singularity.Screen
             WindowObject eventLogWindow,
             WindowObject buildMenuWindow,
             WindowObject selectedPlatformWindow,
+            WindowObject minimapWindow,
             Director director)
         {
             // set member variables - for further commenting see declaration of member variables
@@ -107,7 +109,7 @@ namespace Singularity.Screen
             mEventLogWindow = eventLogWindow;
             mBuildMenuWindow = buildMenuWindow;
             mSelectedPlatformWindow = selectedPlatformWindow;
-            // TODO:  mMinimapWindow = minimapWindow;
+            mMinimapWindow = minimapWindow;
 
             mInfoBarItemList = new List<IWindowItem>();
 
@@ -252,34 +254,40 @@ namespace Singularity.Screen
             mScreenManager.AddScreen(mGamePauseScreen);
         }
 
+        // toggles the civilUnits window opened/closed
         private void TogglerCivilUnits(object sender, EventArgs eventArgs)
         {
             mCivilUnitsWindow.Active = !mCivilUnitsWindow.Active;
         }
 
+        // toggles the resource window opened/closed
         private void TogglerResource(object sender, EventArgs eventArgs)
         {
             mResourceWindow.Active = !mResourceWindow.Active;
         }
 
+        // toggles the eventLog window opened/closed
         private void TogglerEventLog(object sender, EventArgs eventArgs)
         {
             mEventLogWindow.Active = !mEventLogWindow.Active;
         }
 
+        // toggles the buildMenu window opened/closed
         private void TogglerBuildMenu(object sender, EventArgs eventArgs)
         {
             mBuildMenuWindow.Active = !mBuildMenuWindow.Active;
         }
 
+        // toggles the selectedPlatform window opened/closed
         private void TogglerSelectedPlatform(object sender, EventArgs eventArgs)
         {
             mSelectedPlatformWindow.Active = !mSelectedPlatformWindow.Active;
         }
 
+        // toggles the minimap window opened/closed
         private void TogglerMinimap(object sender, EventArgs eventArgs)
         {
-            // TODO : ADD AFTER IMPLEMENTATION
+            mMinimapWindow.Active = !mMinimapWindow.Active;
         }
 
         #endregion

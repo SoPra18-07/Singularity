@@ -1028,13 +1028,6 @@ namespace Singularity.Screen.ScreenClasses
 
             #endregion
 
-            #region infoBarWindow
-
-            // NOTICE: this window is the only window which is compeletely created and managed in its own class
-            mInfoBar = new InfoBarWindowObject(borderColor, windowColor, mLibSans14, mScreenManager, mCivilUnitsWindow, mResourceWindow, mEventLogWindow, mBuildMenuWindow, mSelectedPlatformWindow, mDirector);
-
-            #endregion
-
             #region MiniMap
 
             // TODO: properly place the minimapObject to better fit with the rest. Don't change the size
@@ -1044,6 +1037,13 @@ namespace Singularity.Screen.ScreenClasses
             mMinimapWindow.AddItem(minimap);
 
             mWindowList.Add(mMinimapWindow);
+
+            #endregion
+
+            #region infoBarWindow
+
+            // NOTICE: this window is the only window which is compeletely created and managed in its own class
+            mInfoBar = new InfoBarWindowObject(borderColor, windowColor, mLibSans14, mScreenManager, mCivilUnitsWindow, mResourceWindow, mEventLogWindow, mBuildMenuWindow, mSelectedPlatformWindow, mMinimapWindow, mDirector);
 
             #endregion
 
