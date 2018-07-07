@@ -60,19 +60,27 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Exceptions\MiniMapProportionsOffException.cs" />
+    <Compile Include="Levels\BasicLevel.cs" />
     <Compile Include="Levels\ILevel.cs" />
     <Compile Include="Manager\DistributionManager.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />
     <Compile Include="Screen\BarIWindowItem.cs" />
     <Compile Include="Screen\PlatformActionIWindowItem.cs" />
+    <Compile Include="PlatformActions\ConsumeResource.cs" />
+    <Compile Include="Exceptions\MiniMapProportionsOffException.cs" />
     <Compile Include="Map\MiniMap.cs" />
     <Compile Include="PlatformActions\MakeUnit.cs" />
+    <Compile Include="PlatformActions\Shoot.cs" />
     <Compile Include="Platforms\Barracks.cs" />
+    <Compile Include="Platforms\DefenseLaser.cs" />
+    <Compile Include="Platforms\DefenseKinetic.cs" />
+    <Compile Include="Platforms\DefenseBase.cs" />
     <Compile Include="Platforms\EPlacementType.cs" />
     <Compile Include="Platforms\PlatformFactory.cs" />
     <Compile Include="Platforms\PlatformPlacement.cs" />
+    <Compile Include="Property\IDamageable.cs" />
     <Compile Include="Property\IDie.cs" />
+    <Compile Include="Property\IShooting.cs" />
     <Compile Include="Screen\InfoBoxWindow.cs" />
     <Compile Include="Property\GlobalVariables.cs" />
     <Compile Include="Screen\ResourceIWindowItem.cs" />
@@ -105,7 +113,6 @@
     <Compile Include="Levels\Skirmish.cs" />
     <Compile Include="Levels\Tutorial.cs" />
     <Compile Include="Libraries\Animations.cs" />
-    <Compile Include="Libraries\Bloom Filter.cs" />
     <Compile Include="Input\EClickType.cs" />
     <Compile Include="Input\IMouseClickListener.cs" />
     <Compile Include="Input\IMousePositionListener.cs" />

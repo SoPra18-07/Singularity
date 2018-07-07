@@ -48,7 +48,8 @@ namespace Singularity.Resources
             // this needs adjustment as soon as we actually do something with resources.
             Amount = width;
 
-            mColor = ResourceHelper.GetColor(type);
+            mColor = new Color(Vector3.Multiply(ResourceHelper.GetColor(type).ToVector3(), 0.75f));
+            // mColor = ResourceHelper.GetColor(type);
 
         }
 
@@ -69,7 +70,7 @@ namespace Singularity.Resources
 
         public void Update(GameTime gametime)
         {
-            //TODO: implement update code
+            // There is no update code.
         }
 
         public bool Die()

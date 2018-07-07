@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Singularity.Graph
 {
@@ -112,6 +113,7 @@ namespace Singularity.Graph
 
         }
 
+        [SuppressMessage("ReSharper", "BaseObjectGetHashCodeCallInGetHashCode")]
         public override int GetHashCode()
         {
             return base.GetHashCode() + mNodes.GetHashCode() * mEdges.GetHashCode();
