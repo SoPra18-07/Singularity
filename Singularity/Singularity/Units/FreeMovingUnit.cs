@@ -149,11 +149,13 @@ namespace Singularity.Units
         /// <param name="camera">Game camera being used.</param>
         /// <param name="director">Reference to the game director.</param>
         /// <param name="map">Reference to the game map.</param>
+        /// <remarks>
         /// FreeMovingUnit is an abstract class that can be implemented to allow free movement outside
         /// of the graphs that represent bases in the game. It provides implementations to allow for
         /// the camera to understand movement and zoom on the object, holds references of the director and
         /// map, and implements pathfinding for objects on the map. It also allows subclasses to have
         /// health and to be damaged.
+        /// </remarks>
         protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
         {
             Id = IdGenerator.NextiD(); // id for the specific unit.

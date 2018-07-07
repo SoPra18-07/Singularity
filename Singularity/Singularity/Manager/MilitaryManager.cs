@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Property;
 using Singularity.Units;
 
 namespace Singularity.Manager
 {
-    public class MilitaryManager
+    public class MilitaryManager : IUpdate
     {
         private Map.Map mMap;
 
-        internal List<FreeMovingUnit> Units;
+        internal List<MilitaryUnit> Units;
+        
 
         internal void SetMap(ref Map.Map map)
         {
@@ -26,6 +29,15 @@ namespace Singularity.Manager
             MilitaryUnit.mGlowTexture = milGlowSheet;
         }
 
+        internal void AddUnit(Vector2 position)
+        {
 
+        }
+
+
+        public void Update(GameTime gametime)
+        {
+            
+        }
     }
 }
