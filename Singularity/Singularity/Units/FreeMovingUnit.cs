@@ -13,7 +13,7 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="ICollider"/>
     /// <inheritdoc cref="IRevealing"/>
-    internal abstract class FreeMovingUnit : ICollider, IRevealing
+    internal abstract class FreeMovingUnit : ARevealing, ICollider
     {
         /// <summary>
         /// The unique ID of the unit.
@@ -98,8 +98,6 @@ namespace Singularity.Units
 
         public bool[,] ColliderGrid { get; protected set; }
 
-        public int RevelationRadius { get; protected set; }
-
         public Vector2 RelativePosition { get; set; }
 
         public Vector2 RelativeSize { get; set; }
@@ -115,10 +113,8 @@ namespace Singularity.Units
         /// </summary>
         public bool Moved { get; protected set; }
 
-        /// <summary>
-        /// Stores the center of a unit's position.
-        /// </summary>
-        public Vector2 Center { get; protected set; }
+        // already in ARevealing
+        // public Vector2 Center { get; protected set; }
 
         public Vector2 AbsolutePosition { get; set; }
 

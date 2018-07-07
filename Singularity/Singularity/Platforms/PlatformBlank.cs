@@ -20,7 +20,7 @@ namespace Singularity.Platforms
     /// <inheritdoc cref="INode"/>
     /// <inheritdoc cref="ICollider"/>
     [DataContract]
-    public class PlatformBlank : IRevealing, INode, ICollider
+    public class PlatformBlank : ARevealing, INode, ICollider
     {
 
         private int mGraphIndex;
@@ -84,9 +84,11 @@ namespace Singularity.Platforms
         [DataMember]
         protected Dictionary<EResourceType, int> mRequested;
 
-        public Vector2 Center { get; set; }
+        // already in ARevealing
+        // public Vector2 Center { get; set; }
 
-        public int RevelationRadius { get; } = 200;
+        // also in ARevealing. But still needs to be set in the constructor.
+        // public int RevelationRadius { get; } = 200;
 
         public Rectangle AbsBounds { get; internal set; }
 
@@ -136,6 +138,7 @@ namespace Singularity.Platforms
             mLayer = LayerConstants.PlatformLayer;
 
             mType = type;
+            RevelationRadius = 200;
 
             mInwardsEdges = new List<IEdge>();
             mOutwardsEdges = new List<IEdge>();
@@ -176,7 +179,6 @@ namespace Singularity.Platforms
             Moved = false;
             UpdateValues();
 
-            Debug.WriteLine("PlatformBlank created");
 
         }
 
@@ -219,7 +221,7 @@ namespace Singularity.Platforms
 
         /// <summary>
         /// Assign Units to this platform.
-        /// </summary>
+        // </summary>
         /// <param name="unit">The unit to be assigned.</param>
         /// <param name="job">The Job to be done by the unit</param>
         public void AssignUnits(GeneralUnit unit, JobType job)

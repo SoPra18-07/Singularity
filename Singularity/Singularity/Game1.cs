@@ -27,7 +27,7 @@ namespace Singularity
         private readonly IScreenManager mScreenManager;
 
 
-        //
+        // The Director.
         private Director mDirector;
 
 

@@ -62,6 +62,8 @@ namespace Singularity.Map
         /// </summary>
         private readonly Camera mCamera;
 
+        private readonly GraphicsDevice mGraphics;
+
         /// <summary>
         /// Creates a new FogOfWar object for the given mapTexture.
         /// </summary>
@@ -72,6 +74,7 @@ namespace Singularity.Map
         {
 
             mCamera = camera;
+            mGraphics = graphicsDevice;
 
             mRevealingObjects = new LinkedList<IRevealing>();
 
@@ -105,7 +108,7 @@ namespace Singularity.Map
 
 
 
-            mAlphaComparator = new AlphaTestEffect(graphicsDevice)
+            mAlphaComparator = new AlphaTestEffect(mGraphics)
             {
                 Projection = mCamera.GetStencilProjection(),
                 VertexColorEnabled = true,
@@ -126,7 +129,13 @@ namespace Singularity.Map
 
             foreach (var revealing in mRevealingObjects)
             {
-                spriteBatch.DrawCircle(revealing.Center, revealing.RevelationRadius, 100, Color.Transparent, revealing.RevelationRadius);
+                // ogirinal version:
+                // spriteBatch.DrawCircle(revealing.Center, revealing.RevelationRadius, 100, Color.Transparent, revealing.RevelationRadius / 2f);
+                // version inbetween:
+                // var rect = new Rectangle(revealing.Center.X - revealing.RevelationRadius.X, revealing.Center.Y - revealing.RevelationRadius.Y, revealing.RevelationRadius.X, revealing.RelevationRadius.Y / 2f);
+                // spriteBatch.DrawEllipse(rect, Color.Transparent, revealing.RevelationRadius.Y / 4f);
+                // performant version:
+                spriteBatch.Draw(revealing.RevealingTexture, new Vector2(revealing.Center.X - revealing.RevelationRadius, revealing.Center.Y - revealing.RevelationRadius / 2), Color.Transparent);
             }
 
             spriteBatch.End();
@@ -152,6 +161,7 @@ namespace Singularity.Map
         /// <param name="revealingObject">The object which can reveal the fog of war.</param>
         public void AddRevealingObject(IRevealing revealingObject)
         {
+            revealingObject.LoadContent(mGraphics);
             mRevealingObjects.AddLast(revealingObject);
         }
 
