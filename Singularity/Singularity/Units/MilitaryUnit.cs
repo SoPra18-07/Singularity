@@ -11,7 +11,7 @@ using Singularity.Sound;
 namespace Singularity.Units
 {
     /// <inheritdoc cref="ControllableUnit"/>
-    internal class MilitaryUnit : ControllableUnit
+    internal class MilitaryUnit : ControllableUnit, IShooting
     {
         /// <summary>
         /// Default width of a unit before scaling.
@@ -36,7 +36,7 @@ namespace Singularity.Units
         /// <summary>
         /// Scalar for the unit size.
         /// </summary>
-        protected const float Scale = 0.4f;
+        private const float Scale = 0.4f;
 
         /// <summary>
         /// Indicates the position the closest enemy is at.
@@ -48,6 +48,20 @@ namespace Singularity.Units
         /// </summary>
         private bool mShoot;
 
+        /// <summary>
+        /// Indicates the shooting range of the unit.
+        /// </summary>
+        private int mRange;
+
+        /// <summary>
+        /// Color of the unit while selected.
+        /// </summary>
+        protected Color mSelectedColor = Color.DarkGray;
+
+        /// <summary>
+        /// Color of the unit while not selected
+        /// </summary>
+        protected Color mColor = Color.Gray;
         
         public MilitaryUnit(Vector2 position,
             Camera camera,
@@ -55,8 +69,8 @@ namespace Singularity.Units
             ref Map.Map map)
             : base(position, camera, ref director, ref map)
         {
-            mSpeed = 4;
-            Health = 10;
+            mSpeed = MilitaryUnitStats.StandardSpeed;
+            Health = MilitaryUnitStats.StandardHealth;
 
             AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
 
@@ -78,7 +92,7 @@ namespace Singularity.Units
                             mMilSheet,
                             AbsolutePosition,
                             new Rectangle(150 * mColumn, 75 * mRow, (int)(AbsoluteSize.X / Scale), (int)(AbsoluteSize.Y / Scale)),
-                            mSelected ? Color.DarkGray : Color.Gray,
+                            mSelected ? mSelectedColor : mColor,
                             0f,
                             Vector2.Zero,
                             new Vector2(Scale),

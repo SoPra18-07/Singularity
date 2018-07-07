@@ -9,7 +9,7 @@ using Singularity.Property;
 namespace Singularity.Units
 {
     /// <inheritdoc cref="MilitaryUnit"/>
-    internal sealed class EnemyUnit : MilitaryUnit
+    internal sealed class EnemyUnit : FreeMovingUnit
     {
         /// <summary>
         /// Default width of a unit before scaling.
@@ -32,9 +32,19 @@ namespace Singularity.Units
         private float mElapsedTime;
 
         /// <summary>
+        /// Scalar for the unit size.
+        /// </summary>
+        private const float Scale = 0.4f;
+
+        /// <summary>
         /// Random seed to calculate paths.
         /// </summary>
         private readonly Random mRand = new Random();
+
+        /// <summary>
+        /// The spriteSheet used to draw enemy units.
+        /// </summary>
+        private readonly Texture2D mMilSheet = MilitaryUnit.mMilSheet;
 
         /// <summary>
         /// Enemy units controlled by AI and opposed to the player.
@@ -46,13 +56,12 @@ namespace Singularity.Units
         public EnemyUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map) 
             : base(position, camera, ref director, ref map)
         {
-            Health = 10; //TODO
-
             AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
 
             RevelationRadius = 0;
 
-            mSpeed = 4;
+            mSpeed = MilitaryUnitStats.StandardSpeed;
+            Health = MilitaryUnitStats.StandardHealth;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
