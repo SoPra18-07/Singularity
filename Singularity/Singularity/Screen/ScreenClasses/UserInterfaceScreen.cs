@@ -262,8 +262,6 @@ namespace Singularity.Screen.ScreenClasses
 
         #endregion
 
-        #region testing members
-
         // info bar - the info bar is entirely managed in it's own class, therefore there's no need to define members here
         private InfoBarWindowObject mInfoBar;
 
@@ -558,7 +556,7 @@ namespace Singularity.Screen.ScreenClasses
 
             #endregion
 
-            // TODO : FIND OUT WHAT THE RESOURCE WINDOW IS SUPPOSED TO SHOW - IMPLEMENT IT
+            // TODO : WHAT IS THE RESOURCE WINDOW SUPPOSED TO SHOW ? - IMPLEMENT IT
             #region resourceWindow
 
             mResourceWindow = new WindowObject("// RESOURCES", new Vector2(0, 0), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mInputManager, mGraphics);

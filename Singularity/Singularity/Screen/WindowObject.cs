@@ -258,7 +258,7 @@ namespace Singularity.Screen
             // calculate resizing by screensize
             mMinimizationSize = 20;
             mTitleSizeY = 720 / 26;
-            if (mWindowName == "")
+            if (WindowName == "")
             {
                 mTitleSizeY = 0;
                 mMinimizationSize = 0;
@@ -365,11 +365,11 @@ namespace Singularity.Screen
             }
 
             // draw window title + bar
-            if (mWindowName == "")
+            if (WindowName == "")
             {
                 return;
             }
-            spriteBatch.DrawString(mSpriteFont, mWindowName, new Vector2(Position.X + mMinimizationSize / 2f, Position.Y + mMinimizationSize / 2f), new Color(255, 255, 255));
+            spriteBatch.DrawString(mSpriteFont, WindowName, new Vector2(Position.X + mMinimizationSize / 2f, Position.Y + mMinimizationSize / 2f), new Color(255, 255, 255));
             spriteBatch.DrawRectangle(mTitleBarRectangle, mColorBorder, 1);
         }
 
@@ -504,7 +504,7 @@ namespace Singularity.Screen
             mScrollBarRectangle = CalcScrollbarRectangle(mScissorRectangle, mCombinedItemsSize
             );
 
-            if (mWindowName == "")
+            if (WindowName == "")
             {
                 return;
             }
@@ -622,7 +622,7 @@ namespace Singularity.Screen
                 mMouseY > Position.Y &&
                 mMouseY < Position.Y + mTitleSizeY + mMinimizationSize &&
                 !mClickOnTitleBar ||
-                (mWindowName == "" && 
+                (WindowName == "" && 
                  mMouseX > Position.X &&
                  mMouseX < Position.X + Position.X + Size.X &&
                  mMouseY > Position.Y &&
