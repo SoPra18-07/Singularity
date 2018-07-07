@@ -95,7 +95,7 @@ namespace Singularity.Units
         public GeneralUnit(PlatformBlank platform, ref Director director)
         {
             Id = IdGenerator.NextiD();
-            mDestination = Optional<INode>.Of(value: null);
+            mDestination = Optional<INode>.Of(null);
 
             CurrentNode = platform;
             Carrying = Optional<Resource>.Of(value: null);
@@ -260,8 +260,8 @@ namespace Singularity.Units
             }
 
             //This means we arrived at the point we want to pick up a Resource
-            if (mTask.Begin.IsPresent() && CurrentNode.Equals(obj: mTask.Begin.Get()) &&
-                ReachedTarget(target: mTask.Begin.Get().Center))
+            if (mTask.Begin.IsPresent() && CurrentNode.Equals(mTask.Begin.Get()) &&
+                ReachedTarget(mTask.Begin.Get().Center))
             {
                 if (!Carrying.IsPresent())
                 {
@@ -319,8 +319,8 @@ namespace Singularity.Units
             }
 
             //This means we arrived at the point we want to leave the Resource and consider our work done
-            if (mTask.End.IsPresent() && CurrentNode.Equals(obj: mTask.End.Get()) &&
-                ReachedTarget(target: mTask.End.Get().Center))
+            if (mTask.End.IsPresent() && CurrentNode.Equals(mTask.End.Get()) &&
+                ReachedTarget(mTask.End.Get().Center))
             {
                 //Dont have to ask for carrying.ispresent here because in that case we wouldnt even reach this code
                 if (Carrying.IsPresent())

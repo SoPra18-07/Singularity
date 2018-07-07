@@ -48,7 +48,7 @@ namespace Singularity.Resources
             // this needs adjustment as soon as we actually do something with resources.
             Amount = width;
 
-            mColor = new Color(color: Vector3.Multiply(value1: ResourceHelper.GetColor(type: type).ToVector3(), scaleFactor: 0.75f));
+            mColor = new Color(Vector3.Multiply(ResourceHelper.GetColor(type).ToVector3(), 0.75f));
             // mColor = ResourceHelper.GetColor(type);
 
         }

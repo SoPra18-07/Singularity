@@ -162,7 +162,7 @@ namespace Singularity.Platforms
                     mConnectionRoad.Destination = mHoveringPlatform.Center;
 
                     // we only color the platform red if the distance to the platform hovered is too great
-                    if (Vector2.Distance(value1: mHoveringPlatform.Center, value2: mPlatform.Center) >
+                    if (Vector2.Distance(mHoveringPlatform.Center, mPlatform.Center) >
                         mPlatform.RevelationRadius + mHoveringPlatform.RevelationRadius)
                     {
                         mPlatform.SetColor(color: Color.Red);
@@ -230,7 +230,7 @@ namespace Singularity.Platforms
                         }
 
                         // this limits two platforms to only be connectable by a road if the road isn't in the fog of war this was requested by felix
-                        if (Vector2.Distance(value1: mHoveringPlatform.Center, value2: mPlatform.Center) <=
+                        if (Vector2.Distance(mHoveringPlatform.Center, mPlatform.Center) <=
                                 mPlatform.RevelationRadius + mHoveringPlatform.RevelationRadius)
                         {
                             mCurrentState.NextState();

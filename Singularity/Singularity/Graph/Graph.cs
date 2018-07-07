@@ -113,7 +113,7 @@ namespace Singularity.Graph
 
         }
 
-        [SuppressMessage(category: "ReSharper", checkId: "BaseObjectGetHashCodeCallInGetHashCode")]
+        [SuppressMessage("ReSharper", "BaseObjectGetHashCodeCallInGetHashCode")]
         public override int GetHashCode()
         {
             return base.GetHashCode() + mNodes.GetHashCode() * mEdges.GetHashCode();

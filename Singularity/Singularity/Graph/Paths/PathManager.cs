@@ -55,14 +55,14 @@ namespace Singularity.Graph.Paths
 
             if (asGeneralUnit != null)
             {
-                return GetPathForGeneralUnits(unit: asGeneralUnit, destination: destination, graphIndex: graphIndex);
+                return GetPathForGeneralUnits(asGeneralUnit, destination, graphIndex);
             }
 
             var asMilitaryUnit = unit as MilitaryUnit;
 
             if (asMilitaryUnit != null)
             {
-                return GetPathForMilitaryUnits(unit: asMilitaryUnit, destination: destination, graphIndex: graphIndex);
+                return GetPathForMilitaryUnits(asMilitaryUnit, destination, graphIndex);
             }
 
             throw new InvalidGenericArgumentException(

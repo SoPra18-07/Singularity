@@ -394,7 +394,7 @@ namespace Singularity.Screen
             else if (!mMinimized)
             {
                 // input from inside the window is proccessed
-                Bounds = new Rectangle(x: (int)Position.X, y: (int)Position.Y, width: (int)Size.X, height: (int)Size.Y);
+                Bounds = new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y);
             }
             else
             {

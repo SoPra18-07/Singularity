@@ -225,7 +225,7 @@ namespace Singularity.Screen
                         {
                             // move one page over if more than half way to next page covered by mouse
                             float distanceCovered = Mouse.GetState().X - mMin;
-                            if (Math.Abs(value: distanceCovered - mCurrentPage * mPageSize) > .5 * mPageSize)
+                            if (Math.Abs(distanceCovered - mCurrentPage * mPageSize) > .5 * mPageSize)
                             {
                                 // move one page forward or backward depending on position relative to mouse
                                 if (distanceCovered - mCurrentPage * mPageSize > 0)
@@ -260,7 +260,7 @@ namespace Singularity.Screen
                         else
                         {
                             float distanceCovered = Mouse.GetState().X - mMin;
-                            if (Math.Abs(value: distanceCovered - mCurrentPage * mPageSize) > .5 * mPageSize)
+                            if (Math.Abs(distanceCovered - mCurrentPage * mPageSize) > .5 * mPageSize)
                             {
                                 // move one page forward or backward depending on position relative to mouse
                                 if (distanceCovered - mCurrentPage * mPageSize > 0)
@@ -310,24 +310,24 @@ namespace Singularity.Screen
                 {
                     // draws rectangle to the right side of slider
                     spriteBatch.StrokedRectangle(
-                        location: new Vector2(
-                            x: mMax + Size.Y + 30 -
-                            mFont.MeasureString(text: mMax.ToString(provider: CultureInfo.InvariantCulture)).X / 2,
-                            y: Position.Y - 12 - mFont.MeasureString(text: mMax.ToString(provider: CultureInfo.InvariantCulture)).Y / 4),
-                        size: new Vector2(x: mFont.MeasureString(text: mMax.ToString(provider: CultureInfo.InvariantCulture)).X,
-                            y: mFont.MeasureString(text: mMax.ToString(provider: CultureInfo.InvariantCulture)).X),
-                        colorBorder: Color.Gray,
-                        colorCenter: Color.Black,
-                        opacityBorder: 1,
-                        opacityCenter: (float) 0.8);
+                        new Vector2(
+                            mMax + Size.Y + 30 -
+                            mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X / 2,
+                            Position.Y - 12 - mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).Y / 4),
+                        new Vector2(mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X,
+                            mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X),
+                        Color.Gray,
+                        Color.Black,
+                        1,
+                        (float) 0.8);
 
                     if (!mWithPages)
                     {
                         // draws in value of slider in the center of display window
                         spriteBatch.DrawString(spriteFont: mFont,
                             origin: Vector2.Zero,
-                            position: new Vector2(x: mMax + Size.Y + 30 - mFont.MeasureString(text: mStringValue).X / 2,
-                                y: Position.Y - 12),
+                            position: new Vector2(mMax + Size.Y + 30 - mFont.MeasureString(mStringValue).X / 2,
+                                Position.Y - 12),
                             color: Color.White,
                             text: mStringValue,
                             rotation: 0f,
