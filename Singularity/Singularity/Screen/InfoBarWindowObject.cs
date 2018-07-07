@@ -141,8 +141,8 @@ namespace Singularity.Screen
                     item.Draw(spriteBatch: spriteBatch);
                 }
 
-                spriteBatch.DrawString(spriteFont: mSpriteFont, text: DateTime.Now.ToShortTimeString(), position: new Vector2(x: mWidthDivision * 9, y: 2.5f), color: new Color(r: 0,g: 0,b: 0));
-                spriteBatch.DrawString(spriteFont: mSpriteFont, text: mDirector.GetStoryManager.Time.ToString(), position: new Vector2(x: mWidthDivision * 7, y: 2.5f), color: new Color(r: 1, g: 0, b: 0));
+                spriteBatch.DrawString(mSpriteFont, DateTime.Now.ToShortTimeString(), new Vector2(mWidthDivision * 9, 2.5f), new Color(0,0,0));
+                spriteBatch.DrawString(mSpriteFont, mDirector.GetStoryManager.GetIngameTime().ToString(), new Vector2(mWidthDivision * 7, 2.5f), new Color(1, 0, 0));
             }
         }
 

@@ -199,7 +199,7 @@ namespace Singularity.Manager
         /// <returns>The ingame time as TimeSpan</returns>
         public TimeSpan GetIngameTime()
         {
-            return Time;
+            return new TimeSpan(Time.Hours, Time.Minutes, Time.Seconds);
         }
 
         /// <summary>

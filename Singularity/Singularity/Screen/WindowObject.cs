@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
@@ -258,6 +259,11 @@ namespace Singularity.Screen
             // calculate resizing by screensize
             mMinimizationSize = 20;
             mTitleSizeY = 720 / 26;
+            if (mWindowName == "")
+            {
+                mTitleSizeY = 0;
+                mMinimizationSize = 0;
+            }
 
             // int to save scroll values
             mItemScrolledValue = 0;
@@ -360,8 +366,12 @@ namespace Singularity.Screen
             }
 
             // draw window title + bar
-            spriteBatch.DrawString(spriteFont: mSpriteFont, text: mWindowName, position: new Vector2(x: Position.X + mMinimizationSize / 2f, y: Position.Y + mMinimizationSize / 2f), color: new Color(r: 255, g: 255, b: 255));
-            spriteBatch.DrawRectangle(rect: mTitleBarRectangle, color: mColorBorder, thickness: 1);
+            if (mWindowName == "")
+            {
+                return;
+            }
+            spriteBatch.DrawString(mSpriteFont, mWindowName, new Vector2(Position.X + mMinimizationSize / 2f, Position.Y + mMinimizationSize / 2f), new Color(255, 255, 255));
+            spriteBatch.DrawRectangle(mTitleBarRectangle, mColorBorder, 1);
         }
 
         public void Update(GameTime gametime)
@@ -477,6 +487,10 @@ namespace Singularity.Screen
             mScrollBarRectangle = CalcScrollbarRectangle(scissorRectangle: mScissorRectangle, combinedItemsSize: mCombinedItemsSize
             );
 
+            if (mWindowName == "")
+            {
+                return;
+            }
             // set the rectangle of the title bar
             mTitleBarRectangle = new Rectangle(
                 x: (int)Position.X + mMinimizationSize / 2,
@@ -587,7 +601,13 @@ namespace Singularity.Screen
                 mMouseX < Position.X + Position.X + Size.X &&
                 mMouseY > Position.Y &&
                 mMouseY < Position.Y + mTitleSizeY + mMinimizationSize &&
-                !mClickOnTitleBar)
+                !mClickOnTitleBar ||
+                (mWindowName == "" && 
+                 mMouseX > Position.X &&
+                 mMouseX < Position.X + Position.X + Size.X &&
+                 mMouseY > Position.Y &&
+                 mMouseY < Position.Y + Position.Y + Size.Y &&
+                 !mClickOnTitleBar))
                 // mouse above the title rectangle
                 {
                     if (!(mMouseX >= mMinimizationRectangle.X &&
@@ -735,7 +755,7 @@ namespace Singularity.Screen
         internal bool Active { get; set; }
 
         // position of the window
-        public Vector2 Position { private get; set; }
+        public Vector2 Position { get; set; }
 
         // size of the window
         public Vector2 Size { get; }

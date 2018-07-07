@@ -73,8 +73,9 @@ namespace Singularity.Levels
             Map = new Map.Map(backgroundTexture: mapBackground, width: 20, height: 20, fow: mFow, camera: Camera, director: ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
 
             //INITIALIZE SCREENS AND ADD THEM TO THE SCREENMANAGER
-            GameScreen = new GameScreen(graphicsDevice: mGraphics.GraphicsDevice, director: ref mDirector, map: Map, camera: Camera, fow: mFow);
-            mUi = new UserInterfaceScreen(director: ref mDirector, mgraphics: mGraphics, gameScreen: GameScreen, stackScreenManager: mScreenManager);
+            GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
+            mUi = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
+            var debugScreen = new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
 
             mScreenManager.AddScreen(screen: GameScreen);
             mScreenManager.AddScreen(screen: mUi);

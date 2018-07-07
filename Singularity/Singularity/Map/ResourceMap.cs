@@ -95,6 +95,15 @@ namespace Singularity.Map
         }
 
         /// <summary>
+        /// Gets the list of all the resources currently in the game
+        /// </summary>
+        /// <returns>The list mentioned</returns>
+        public List<MapResource> GetAllResources()
+        {
+            return mResourceMap;
+        }
+
+        /// <summary>
         /// Removes the given resource from the resource map.
         /// </summary>
         /// <param name="toRemove">The resource to remove</param>

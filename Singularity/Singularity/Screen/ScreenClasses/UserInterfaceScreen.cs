@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Map.Properties;
 using Singularity.Platforms;
 using Singularity.Property;
 
@@ -60,6 +61,8 @@ namespace Singularity.Screen.ScreenClasses
         private readonly StructureMap mStructureMap;
 
         private readonly ResourceMap mResourceMap;
+
+        private readonly Map.Map mMap;
 
         private readonly Camera mCamera;
 
@@ -181,6 +184,13 @@ namespace Singularity.Screen.ScreenClasses
 
         #endregion
 
+        #region
+
+        // minimap window
+        private WindowObject mMinimapWindow;
+
+        #endregion
+
         #region testing members
 
         // TODO: DELETE TESTING
@@ -208,6 +218,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="stackScreenManager"></param>
         public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, GameScreen gameScreen, IScreenManager stackScreenManager)
         {
+            mMap = gameScreen.GetMap();
             mStructureMap = gameScreen.GetMap().GetStructureMap();
             mResourceMap = gameScreen.GetMap().GetResourceMap();
             mCamera = gameScreen.GetCamera();
@@ -944,6 +955,18 @@ namespace Singularity.Screen.ScreenClasses
 
             #endregion
 
+            #region MiniMap
+
+            // TODO: properly place the minimapObject to better fit with the rest. Don't change the size
+            // TODO: other than changing it in MapConstants, the +20 is for the padding left and right.
+            var minimap = new MiniMap(mMap, mCamera, content.Load<Texture2D>("minimap"));
+            mMinimapWindow = new WindowObject("", new Vector2(0,0), new Vector2(MapConstants.MiniMapWidth + 20, MapConstants.MiniMapHeight + 20), false, mLibSans12, mDirector.GetInputManager, mGraphics);
+            mMinimapWindow.AddItem(minimap);
+
+            mWindowList.Add(mMinimapWindow);
+
+            #endregion
+
             ResetWindowsToStandardPositon();
 
             // TODO : DELETE AFTER SPRINT
@@ -1013,11 +1036,17 @@ namespace Singularity.Screen.ScreenClasses
             // civil units position
             mCivilUnitsWindow.Position = new Vector2(x: 12, y: 12 + 25);
 
-            // build menu position
-            mBuildMenuWindow.Position = new Vector2(x: mCurrentScreenWidth - 12 - mBuildMenuWindow.Size.X, y: mCurrentScreenHeight - 12 - mBuildMenuWindow.Size.Y);
-
             // event log position
-            mEventLogWindow.Position = new Vector2(x: mCurrentScreenWidth - 12 - mEventLogWindow.Size.X, y: 12 + 25);
+            mEventLogWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mEventLogWindow.Size.X, 12 + 25);
+
+            // build menu position
+            mBuildMenuWindow.Position = new Vector2(mCurrentScreenWidth - 12 - mBuildMenuWindow.Size.X, mEventLogWindow.Position.Y + mEventLogWindow.Size.Y + 12);
+
+            // minimap position (-32 due to 12 padding + the window size is 20 bigger than the map
+            mMinimapWindow.Position = new Vector2(
+                mCurrentScreenWidth - 32 - MapConstants.MiniMapWidth,
+                mCurrentScreenHeight - 32 - MapConstants.MiniMapHeight
+                );
         }
 
         /// <summary>

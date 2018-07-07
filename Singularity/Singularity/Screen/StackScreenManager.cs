@@ -13,7 +13,7 @@ namespace Singularity.Screen
     /// for the screens to maintain a stacked view of all current screens, allowing to cascade
     /// through all of them if needed.
     /// </remarks>
-    internal sealed class StackScreenManager : IScreenManager
+    public sealed class StackScreenManager : IScreenManager
     {
         /// <summary>
         /// The stack holding all the currently added screens.
@@ -143,6 +143,11 @@ namespace Singularity.Screen
 
                 currentScreen.Draw(spriteBatch: spriteBatch);
             }
+        }
+
+        public IScreen Peek()
+        {
+            return mScreenStack.Peek();
         }
     }
 }

@@ -173,6 +173,15 @@ namespace Singularity.Map
         {
             return mApplyMaskStencilState;
         }
+
+        /// <summary>
+        /// Gets all the revealing objects currently in the game.
+        /// </summary>
+        /// <returns>A list of all the revealing objects in the game</returns>
+        public LinkedList<IRevealing> GetRevealingObjects()
+        {
+            return mRevealingObjects;
+        }
     }
 }
 

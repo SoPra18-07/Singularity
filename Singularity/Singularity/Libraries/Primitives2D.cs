@@ -781,12 +781,12 @@ namespace Singularity.Libraries
         /// <param name="radius">size of the radius</param>
         /// <param name="colorBorder">color of the border of circle (1 pixel)</param>
         /// <param name="colorCenter"> color of the center of circle</param>
-        public static void StrokedCircle(this SpriteBatch spriteBatch, Vector2 center, int radius, Color colorBorder, Color colorCenter)
+        public static void StrokedCircle(this SpriteBatch spriteBatch, Vector2 center, int radius, Color colorBorder, Color colorCenter, float layer)
         {
             // 3 pixel wide border of the circle
-            DrawCircle(spriteBatch: spriteBatch, center: center, radius: radius, sides: 100, color: colorBorder, thickness: 1);
+            DrawCircle(spriteBatch, center, radius, 100, colorBorder, 1, layer);
             // fills the circle
-            DrawCircle(spriteBatch: spriteBatch, center: center, radius: radius - 1, sides: 100, color: colorCenter, thickness: radius - 1);
+            DrawCircle(spriteBatch, center, radius - 1, 100, colorCenter, radius - 1, layer);
         }
 
         #endregion
