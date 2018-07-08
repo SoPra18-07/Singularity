@@ -34,19 +34,19 @@ namespace Singularity.Levels
         {
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
-            var platform1 = PlatformFactory.Get(EPlatformType.Blank, ref mDirector, 1000, 1000, Map.GetResourceMap());
+            var platform1 = PlatformFactory.Get(EPlatformType.Blank, ref mDirector, 3000, 3000, Map.GetResourceMap());
             
             GameScreen.AddObject(platform1);
 
             // this is done via the factory to test, so I can instantly see if something is some time off.
-            var platform2 = PlatformFactory.Get(EPlatformType.Well, ref mDirector, 800, 1000, Map.GetResourceMap());
+            var platform2 = PlatformFactory.Get(EPlatformType.Well, ref mDirector, 2800, 3000, Map.GetResourceMap());
             GameScreen.AddObject(platform2);
 
             var road1 = new Road(platform1, platform2, false);
             GameScreen.AddObject(road1);
 
             //var platform2 = new Well(new Vector2(800, 1000), platformDomeTexture, platformBlankTexture, mMap.GetResourceMap(), ref mDirector);
-            var platform3 = PlatformFactory.Get(EPlatformType.Quarry, ref mDirector, 1200, 1200, Map.GetResourceMap());
+            var platform3 = PlatformFactory.Get(EPlatformType.Quarry, ref mDirector, 3200, 3200, Map.GetResourceMap());
             
             GameScreen.AddObject(platform3);
             var road2 = new Road(platform2, platform3, false);
@@ -54,7 +54,7 @@ namespace Singularity.Levels
             var road3 = new Road(platform3, platform1, false);
             GameScreen.AddObject(road3);
 
-            var platform4 = PlatformFactory.Get(EPlatformType.Energy, ref mDirector, 1000, 800, Map.GetResourceMap());
+            var platform4 = PlatformFactory.Get(EPlatformType.Energy, ref mDirector, 3000, 2800, Map.GetResourceMap());
 
             GameScreen.AddObject(platform4);
             var road4 = new Road(platform1, platform4, false);
@@ -73,10 +73,10 @@ namespace Singularity.Levels
 
             //MilUnits
             var map = Map;
-            var milUnit = new MilitaryUnit(new Vector2(2000, 700), Camera, ref mDirector, ref map);
+            var milUnit = new MilitaryUnit(new Vector2(3000, 2700), Camera, ref mDirector, ref map);
 
             //SetUnit
-            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, mUi);
+            var setUnit = new Settler(new Vector2(3000, 3250), Camera, ref mDirector, ref map, GameScreen, mUi);
             
 
             // Resources
