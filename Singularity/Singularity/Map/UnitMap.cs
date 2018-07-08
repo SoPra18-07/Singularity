@@ -110,13 +110,13 @@ namespace Singularity.Map
         }
 
         /// <summary>
-        /// Returns all units in tiles adjacent to the given unit.
+        /// Returns all units in and in adjacent tile around it.
         /// </summary>
-        /// <param name="unit"></param>
+        /// <param name="tilePosition">Tile position whose units and adjacent units is requested.</param>
         /// <returns>List of all free moving units in adjacent tiles.</returns>
-        internal List<ICollider> GetAdjacentUnits(ICollider unit)
+        internal List<ICollider> GetAdjacentUnits(Vector2 tilePosition)
         {
-            var centerTile = VectorToTilePos(unit.AbsolutePosition);
+            var centerTile = VectorToTilePos(tilePosition);
 
             // checks to see if adjacent tiles exist
             var n = centerTile.Y >= 1;

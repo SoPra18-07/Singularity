@@ -23,17 +23,22 @@ namespace Singularity.Manager
         /// <summary>
         /// A list of friendly military (i.e. capable of shooting) units.
         /// </summary>
-        private Dictionary<MilitaryUnit, Vector2> FriendlyMilitary = new Dictionary<MilitaryUnit, Vector2>();
+        private readonly List<MilitaryUnit> mFriendlyMilitary = new List<MilitaryUnit>();
 
         /// <summary>
         /// A list of friendly defense platforms.
         /// </summary>
-        private Dictionary<DefenseBase, Vector2> FriendlyDefensePlatforms = new Dictionary<DefenseBase, Vector2>();
+        private readonly List<DefenseBase> mFriendlyDefensePlatforms = new List<DefenseBase>();
 
         /// <summary>
         /// A list of friendly targets (i.e. platforms and settlers that can be damaged).
         /// </summary>
-        private Dictionary<IDamageable, Vector2> FriendlyDamageables;
+        private readonly List<PlatformBlank> mFriendlyPlatforms = new List<PlatformBlank>();
+
+        /// <summary>
+        /// A list of friendly settlers
+        /// </summary>
+        private List<Settler> mFriendlySettler = new List<Settler>();
 
         #endregion
 
@@ -42,17 +47,22 @@ namespace Singularity.Manager
         /// <summary>
         /// A list of hostile military (i.e. capable of shooting) units.
         /// </summary>
-        private Dictionary<EnemyUnit, Vector2> HostileMilitary = new Dictionary<EnemyUnit, Vector2>();
+        private readonly List<EnemyUnit> mHostileMilitary = new List<EnemyUnit>();
 
         /// <summary>
-        /// A list of hostile defense platforms.
+        /// A list of hsotile defense platforms.
         /// </summary>
-        private Dictionary<DefenseBase, Vector2> HostileDefensePlatforms = new Dictionary<DefenseBase, Vector2>();
-        
+        private readonly List<DefenseBase> mHostileDefensePlatforms = new List<DefenseBase>();
+
         /// <summary>
         /// A list of hostile targets (i.e. platforms and settlers that can be damaged).
         /// </summary>
-        private Dictionary<IDamageable, Vector2> HostileDamageables;
+        private readonly List<PlatformBlank> mHostilePlatforms = new List<PlatformBlank>();
+
+        /// <summary>
+        /// A list of hostile settlers
+        /// </summary>
+        private List<Settler> mHostileSettler = new List<Settler>();
 
         #endregion
         /// <remarks>
@@ -67,6 +77,10 @@ namespace Singularity.Manager
             mUnitMap = map.GetUnitMap();
         }
 
+        /// <summary>
+        /// Adds a new platform to the military manager. This also adds it to the UnitMap.
+        /// </summary>
+        /// <param name="platform">Any type of platform which can be damaged (i.e. all platforms)</param>
         internal void AddPlatform(PlatformBlank platform)
         {
             var defensePlatform = platform as DefenseBase;
@@ -77,56 +91,165 @@ namespace Singularity.Manager
             {
                 if (platform.Friendly)
                 {
-                    FriendlyDefensePlatforms.Add(defensePlatform, position);
+                    mFriendlyDefensePlatforms.Add(defensePlatform);
                 }
                 else
                 {
-                    HostileDefensePlatforms.Add(defensePlatform, position);
+                    mHostileDefensePlatforms.Add(defensePlatform);
                 }
             }
             // otherwise, if it is friendly, add to friendly list.
             else if (platform.Friendly)
             {
-                FriendlyDamageables.Add(platform, position);
+                mFriendlyPlatforms.Add(platform);
             }
             // finally, if not, then add to hostile list.
             else
             {
-                HostileDamageables.Add(platform, position);
+                mHostilePlatforms.Add(platform);
             }
 
             mUnitMap.AddUnit(platform, position);
         }
 
+        /// <summary>
+        /// Adds a FreeMovingUnit object to the military manager. This also adds it to the UnitMap.
+        /// </summary>
+        /// <param name="unit">The unit to be added to the manager.</param>
         internal void AddUnit(FreeMovingUnit unit)
         {
             var friendlyMilitary = unit as MilitaryUnit;
             var hostileMilitary = unit as EnemyUnit;
             var settler = unit as Settler;
 
-            var position = mUnitMap.VectorToTilePos()
-
             if (settler != null)
             {
-                FriendlyDamageables.Add(settler, );
+                if (settler.Friendly)
+                {
+                    mFriendlySettler.Add(settler);
+                }
+                else
+                {
+                    mHostileSettler.Add(settler);
+                }
             }
 
             else if (friendlyMilitary != null)
             {
-                FriendlyMilitary.Add(friendlyMilitary);
+                mFriendlyMilitary.Add(friendlyMilitary);
             }
             else if (hostileMilitary != null)
             {
-                HostileMilitary.Add(hostileMilitary);
+                mHostileMilitary.Add(hostileMilitary);
             }
-            
+
+            mUnitMap.RemoveUnit(unit);
+        }
+
+        /// <summary>
+        /// Removes a platform from the Military Manager (i.e. it died).
+        /// </summary>
+        /// <param name="platform">The platform to be removed.</param>
+        internal void RemovePlatform(PlatformBlank platform)
+        {
+            var defensePlatform = platform as DefenseBase;
+
+            // Figure out if it is a defense platform. If yes, then figure out if it is friendly
+            if (defensePlatform != null)
+            {
+                if (platform.Friendly)
+                {
+                    mFriendlyDefensePlatforms.Remove(defensePlatform);
+                }
+                else
+                {
+                    mHostileDefensePlatforms.Remove(defensePlatform);
+                }
+            }
+            // otherwise, if it is friendly, add to friendly list.
+            else if (platform.Friendly)
+            {
+                mFriendlyPlatforms.Remove(platform);
+            }
+            // finally, if not, then add to hostile list.
+            else
+            {
+                mHostilePlatforms.Remove(platform);
+            }
+
+            mUnitMap.RemoveUnit(platform);
+        }
+
+        /// <summary>
+        /// Removes a unit from the Military Manager (i.e. it died).
+        /// </summary>
+        /// <param name="unit">The unit to be removed.</param>
+        internal void RemoveUnit(FreeMovingUnit unit)
+        {
+            var friendlyMilitary = unit as MilitaryUnit;
+            var hostileMilitary = unit as EnemyUnit;
+            var settler = unit as Settler;
+
+            if (settler != null)
+            {
+                if (settler.Friendly)
+                {
+                    mFriendlySettler.Remove(settler);
+                }
+                else
+                {
+                    mHostileSettler.Remove(settler);
+                }
+            }
+
+            else if (friendlyMilitary != null)
+            {
+                mFriendlyMilitary.Remove(friendlyMilitary);
+            }
+            else if (hostileMilitary != null)
+            {
+                mHostileMilitary.Remove(hostileMilitary);
+            }
+
+            mUnitMap.RemoveUnit(unit);
         }
     
 
 
         public void Update(GameTime gametime)
         {
-            
+            foreach (var unit in mFriendlyMilitary)
+            {
+                // iterate through each friendly unit, if there's a target nearby, shoot it.
+                if (unit.Moved)
+                {
+                    mUnitMap.MoveUnit(unit);
+                }
+
+                var adjacentUnits = mUnitMap.GetAdjacentUnits(unit.AbsolutePosition);
+                foreach (var adjacentUnit in adjacentUnits)
+                {
+                    if (adjacentUnit.Friendly != true)
+                    {
+                        if (M)
+                    }
+                }
+            }
+
+            foreach (var turret in mFriendlyDefensePlatforms)
+            {
+                // iterate through each friendly turret, if there's a target nearby, shoot it.
+            }
+
+            foreach (var unit in HostileMilitary)
+            {
+                // iterate through each hostile unit, if there's a target nearby, shoot it.
+            }
+
+            foreach (var turret in HostileDefensePlatforms)
+            {
+                // iterate through each hostile turret, if there's a target nearby, shoot it.
+            }
         }
     }
 }
