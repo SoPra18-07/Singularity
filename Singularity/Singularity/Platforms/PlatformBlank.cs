@@ -109,7 +109,7 @@ namespace Singularity.Platforms
         private bool mIsActive;
 
         [DataMember]
-        private bool mWasManuallyDeactivated;
+        private bool mIsManuallyDeactivated;
 
 
 
@@ -901,7 +901,7 @@ namespace Singularity.Platforms
         {
             if (manually)
             {
-                mWasManuallyDeactivated = false;
+                mIsManuallyDeactivated = false;
             }
             mIsActive = true;
             ResetColor();
@@ -913,7 +913,7 @@ namespace Singularity.Platforms
         {
             if (manually)
             {
-                mWasManuallyDeactivated = true;
+                mIsManuallyDeactivated = true;
             }
 
             mIsActive = false;
@@ -926,7 +926,7 @@ namespace Singularity.Platforms
 
         public bool IsManuallyDeactivated()
         {
-            return mWasManuallyDeactivated;
+            return mIsManuallyDeactivated;
         }
 
         public int GetProvidingEnergy()
