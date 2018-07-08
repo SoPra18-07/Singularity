@@ -257,3 +257,10 @@
 /processorParam:TextureFormat=Color
 /build:minimap.png
 
+#begin LibSans10.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:LibSans10.spritefont
+

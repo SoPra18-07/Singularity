@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -31,7 +32,7 @@ namespace Singularity.Screen
             Size = size;
             mSizeBackup = size;
             Position = position;
-            ActiveWindow = true;
+            ActiveInWindow = true;
             ActiveHorizontalCollection = true;
             mPadding = CalcPadding(itemList, size);
 
@@ -54,7 +55,7 @@ namespace Singularity.Screen
             Size = !ActiveHorizontalCollection ? new Vector2(0, -10) : mSizeBackup;
 
             // activate items in itemList if window + list are active
-            if (ActiveWindow && ActiveHorizontalCollection)
+            if (ActiveInWindow && ActiveHorizontalCollection && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
             {
                 // shift from the left border to place all items
                 float shift = 0;
@@ -62,7 +63,7 @@ namespace Singularity.Screen
                 // activate items, set position, update shift
                 foreach (var item in mItemList)
                 {
-                    item.ActiveWindow = true; // activate all objects if the window is active in case they got deactivated
+                    item.ActiveInWindow = true; // activate all objects if the window is active in case they got deactivated
                     item.Update(gametime);
                     item.Position = new Vector2(Position.X + shift, Position.Y);
                     shift = shift + item.Size.X * 0.25f + mPadding;
@@ -73,7 +74,7 @@ namespace Singularity.Screen
                 // since the window or the list are inactive -> deactivate all objects in list
                 foreach (var item in mItemList)
                 {
-                    item.ActiveWindow = false;
+                    item.ActiveInWindow = false;
                 }
             }
         }
@@ -84,7 +85,7 @@ namespace Singularity.Screen
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (ActiveWindow && ActiveHorizontalCollection)
+            if (ActiveInWindow && ActiveHorizontalCollection && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
             {
                 foreach (var item in mItemList)
                 {
@@ -116,7 +117,11 @@ namespace Singularity.Screen
         // size of the horizontalCollection
         public Vector2 Size { get; private set; }
         // true if the window that holds this item is active, else false
-        public bool ActiveWindow { get; set; }
+        public bool ActiveInWindow { get; set; }
+
+        public bool InactiveInSelectedPlatformWindow { get; set; }
+        public bool OutOfScissorRectangle { get; set; }
+
         // true if this horizontalCollection is active, else false
         public bool ActiveHorizontalCollection { private get; set; }
     }
