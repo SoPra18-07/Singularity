@@ -80,7 +80,7 @@ namespace Singularity.Platforms
                     return new Junkyard(position, sDomeSheet, sBlankSheet, sLibSans12, ref director);
 
                 case EPlatformType.Kinetic:
-                    throw new NotImplementedException("Kinetic Facilities have not yet been implemented");
+                    return new DefenseKinetic(position, sConeSheet, sBlankSheet, ref director);
 
                 case EPlatformType.Mine:
                     return new Mine(position, sDomeSheet, sBlankSheet, libSans12: sLibSans12, resource: resourceMap, director: ref director, autoRegister: autoRegister);
@@ -95,7 +95,7 @@ namespace Singularity.Platforms
                     return new Well(position, sDomeSheet, sBlankSheet, libSans12: sLibSans12, resource: resourceMap, director: ref director, autoRegister: autoRegister);
 
                 case EPlatformType.Laser:
-                    throw new NotImplementedException("Laser facilites have not yet been implemented");
+                    return new DefenseLaser(position, sConeSheet, sBlankSheet, ref director);
 
                 default:
                     break;

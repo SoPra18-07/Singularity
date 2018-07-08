@@ -12,6 +12,8 @@ namespace Singularity.Platforms
     [DataContract]
     class CommandCenter: PlatformBlank
     {
+        private const int ProvidingEnergy = 20;
+
         [DataMember]
         private const int PlatformWidth = 200;
 
@@ -25,6 +27,9 @@ namespace Singularity.Platforms
         {
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
+
+            mProvidingEnergy = ProvidingEnergy;
+
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Command;
             mSpritename = "Cylinders";

@@ -10,6 +10,8 @@ namespace Singularity.Platforms
     [DataContract]
     internal sealed class EnergyFacility : PlatformBlank
     {
+        private const int ProvidingEnergy = 20;
+
         [DataMember]
         private const int PlatformWidth = 144;
         [DataMember]
@@ -23,6 +25,8 @@ namespace Singularity.Platforms
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Energy;
             mSpritename = "Dome";
+            mProvidingEnergy = ProvidingEnergy;
+
             SetPlatfromParameters();
         }
 

@@ -11,7 +11,7 @@ using Singularity.Sound;
 namespace Singularity.Units
 {
     /// <inheritdoc cref="ControllableUnit"/>
-    internal class MilitaryUnit : ControllableUnit
+    internal class MilitaryUnit : ControllableUnit, IShooting
     {
         /// <summary>
         /// Default width of a unit before scaling.

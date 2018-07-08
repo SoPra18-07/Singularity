@@ -119,7 +119,9 @@ namespace Singularity.PlatformActions
 
             mMissingResources[type] -= 1;
             if (mMissingResources[type] <= 0)
+            {
                 mMissingResources.Remove(type);
+            }
         }
 
         public override Dictionary<EResourceType, int> GetRequiredResources()

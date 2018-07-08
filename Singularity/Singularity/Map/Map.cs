@@ -13,7 +13,7 @@ using Singularity.Resources;
 
 namespace Singularity.Map
 {
-    public sealed class Map : IDraw, IUpdate, IKeyListener
+    public sealed class Map : IDraw, IUpdate
     {
         private readonly CollisionMap mCollisionMap;
         private readonly StructureMap mStructureMap;
@@ -25,8 +25,6 @@ namespace Singularity.Map
         private readonly Camera mCamera;
 
         private readonly Texture2D mBackgroundTexture;
-
-        private bool mDebug;
 
         private readonly FogOfWar mFow;
 
@@ -62,7 +60,6 @@ namespace Singularity.Map
             mCamera = camera;
 
             mBackgroundTexture = backgroundTexture;
-            mDebug = GlobalVariables.DebugState;
 
             mFow = fow;
 
@@ -70,12 +67,11 @@ namespace Singularity.Map
             mStructureMap = new StructureMap(fow, ref director);
             mResourceMap = new ResourceMap(initialResources);
 
-            director.GetInputManager.AddKeyListener(this);
             director.GetStoryManager.StructureMap = mStructureMap;
         }
 
         /// <see cref="CollisionMap.UpdateCollider(ICollider)"/>
-        public void UpdateCollider(ICollider collider)
+        internal void UpdateCollider(ICollider collider)
         {
             mCollisionMap.UpdateCollider(collider);
         }
@@ -141,7 +137,7 @@ namespace Singularity.Map
 
 
             //make sure to only draw the grid if a texture is given.
-            if (!mDebug)
+            if (!GlobalVariables.DebugState)
             {
                 return;
 
@@ -302,28 +298,6 @@ namespace Singularity.Map
                    IsOnTop(new Vector2(rect.X + rect.Width, rect.Y), camera) &&
                    IsOnTop(new Vector2(rect.X, rect.Y + rect.Height), camera) &&
                    IsOnTop(new Vector2(rect.X + rect.Width, rect.Y + rect.Height), camera);
-
-        }
-
-        public void KeyTyped(KeyEvent keyEvent)
-        {
-            foreach (var key in keyEvent.CurrentKeys)
-            {
-                if (key == Keys.F4)
-                {
-                    GlobalVariables.DebugState = !GlobalVariables.DebugState;
-                    mDebug = !mDebug;
-                }
-            }
-        }
-
-        public void KeyPressed(KeyEvent keyEvent)
-        {
-
-        }
-
-        public void KeyReleased(KeyEvent keyEvent)
-        {
 
         }
 
