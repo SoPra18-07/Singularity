@@ -131,6 +131,7 @@ namespace Singularity.Map
             // intuitively: "the reachability graph from this node is only this node"
             var index = mGraphIdToGraph.Count;
 
+            mGraphIdToEnergyLevel[index] = 0;
             mGraphIdToGraph[index] = graph;
             mPlatformToGraphId[platform] = index;
             platform.SetGraphIndex(index);
@@ -207,6 +208,11 @@ namespace Singularity.Map
                 // and add the new graph
                 mGraphIdToGraph[childIndex] = null;
                 mGraphIdToGraph[parentIndex] = graph;
+
+                mGraphIdToEnergyLevel[parentIndex] =
+                    mGraphIdToEnergyLevel[parentIndex] + mGraphIdToEnergyLevel[childIndex];
+                mGraphIdToEnergyLevel[childIndex] = 0;
+
                 mDirector.GetPathManager.RemoveGraph(childIndex);
                 mDirector.GetPathManager.AddGraph(parentIndex, graph);
                 return;
@@ -479,32 +485,23 @@ namespace Singularity.Map
 
         private void UpdateEnergyLevel(int graphId)
         {
-            // happens when we first set the value here
-            if (mGraphIdToEnergyLevel.Count <= graphId)
-            {
-                mGraphIdToEnergyLevel[graphId] = 0;
-            }
-
             var wasNegative = mGraphIdToEnergyLevel[graphId] < 0;
-
-            // the temp energy level is the energy level which is considered WITHOUT the platforms
-            // that got manually deactivated;
-            var tempEnergyLevel = 0;
 
             mGraphIdToEnergyLevel[graphId] = 0;
 
             foreach (var node in mGraphIdToGraph[graphId].GetNodes())
             {
-                if (!((PlatformBlank) node).IsManuallyDeactivated())
+                if (((PlatformBlank) node).IsManuallyDeactivated())
                 {
-                    tempEnergyLevel += ((PlatformBlank) node).GetProvidingEnergy();
-                    tempEnergyLevel -= ((PlatformBlank) node).GetDrainingEnergy();
+                    continue;
                 }
 
                 mGraphIdToEnergyLevel[graphId] = mGraphIdToEnergyLevel[graphId] + ((PlatformBlank) node).GetProvidingEnergy();
                 mGraphIdToEnergyLevel[graphId] = mGraphIdToEnergyLevel[graphId] - ((PlatformBlank) node).GetDrainingEnergy();
             }
-            CheckEnergyLevel(graphId, wasNegative, tempEnergyLevel);
+            Debug.WriteLine(mGraphIdToEnergyLevel[graphId]);
+
+            CheckEnergyLevel(graphId, wasNegative);
         }
 
         /// <summary>
@@ -538,17 +535,17 @@ namespace Singularity.Map
             mMouseY = worldY;
         }
 
-        private void CheckEnergyLevel(int graphId, bool wasNegative, int tempEnergyLevel)
+        private void CheckEnergyLevel(int graphId, bool wasNegative)
         {
             // energy level was positive and still is
-            if (!wasNegative && tempEnergyLevel >= 0)
+            if (!wasNegative && mGraphIdToEnergyLevel[graphId] >= 0)
             {
                 return;
             }
 
             // energy level was negative and is positive considering all the platforms that weren't manually deactivated
             // -> reactivate all the platforms which weren't manually deactivated
-            if (wasNegative && tempEnergyLevel >= 0)
+            if (wasNegative && mGraphIdToEnergyLevel[graphId] >= 0)
             {
                 foreach (var node in mGraphIdToGraph[graphId].GetNodes())
                 {
@@ -558,11 +555,6 @@ namespace Singularity.Map
                     }
                     ((PlatformBlank)node).Activate(false);
                 }
-                return;
-            }
-
-            if (mGraphIdToEnergyLevel[graphId] > 0)
-            {
                 return;
             }
 
