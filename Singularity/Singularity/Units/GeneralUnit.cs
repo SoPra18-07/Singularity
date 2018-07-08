@@ -134,9 +134,31 @@ namespace Singularity.Units
             }
 
             //Finish what you started.
-            if ((Job == JobType.Logistics || Job == JobType.Construction) && Carrying.IsPresent())
+            if (Job == JobType.Logistics || Job == JobType.Construction)
             {
-                mFinishTask = true;
+                if (Carrying.IsPresent())
+                {
+                    mFinishTask = true;
+                }
+                else
+                {
+                    //Put the task back in the Queue.
+                    var isbuilding = Job == JobType.Construction;
+                    if (mTask.Action.IsPresent())
+                    {
+                        if (mTask.GetResource != null)
+                        {
+                            mDirector.GetDistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get(), isbuilding);
+                        }
+                    }
+                    else
+                    {
+                        if (mTask.GetResource != null)
+                        {
+                            mDirector.GetDistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null, isbuilding);
+                        }
+                    }
+                }
             }
             Job = job;
         }
