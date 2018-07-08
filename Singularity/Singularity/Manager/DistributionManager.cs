@@ -922,7 +922,6 @@ namespace Singularity.Manager
                 NewlyDistribute(platform, false, alreadyonplatform);
             }
         }
-        #endregion
 
         /// <summary>
         /// Unregister platforms from the DistributionManager.
@@ -953,6 +952,7 @@ namespace Singularity.Manager
                     foreach (var unitbool in new List<Pair<GeneralUnit, bool>>(units))
                     {
                         unitstodistribute.Add(unitbool.GetFirst());
+                        joblist.Remove(unitbool.GetFirst());
                         //Unassigns itself from its platform
                         unitbool.GetFirst().ChangeJob(JobType.Idle);
                     }
@@ -989,8 +989,10 @@ namespace Singularity.Manager
             }
             //If there are any units to redistribute do it now
             AssignUnitsFairly(unitstodistribute, isDef);
+            mHandler.ForceSliderPages();
 
         }
+        #endregion
 
         public void PausePlatformAction(IPlatformAction action)
         {

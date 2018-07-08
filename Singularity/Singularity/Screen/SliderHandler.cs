@@ -57,10 +57,11 @@ namespace Singularity.Screen
             mConstructionSlider.Pages = total;
             mLogisticsSlider.Pages = total;
 
-            mCurrentPages[0] = mDefSlider.CurrentPage();
-            mCurrentPages[1] = mConstructionSlider.CurrentPage();
-            mCurrentPages[2] = mLogisticsSlider.CurrentPage();
-            mCurrentPages[3] = mProductionSlider.CurrentPage();
+
+            mCurrentPages[0] = distr.GetJobCount(JobType.Defense);
+            mCurrentPages[1] = distr.GetJobCount(JobType.Construction);
+            mCurrentPages[2] = distr.GetJobCount(JobType.Logistics);
+            mCurrentPages[3] = distr.GetJobCount(JobType.Production);
 
             //If true, there are no defending platforms
             if (distr.GetRestrictions(true))
@@ -69,7 +70,7 @@ namespace Singularity.Screen
             }
             else
             {
-                mDefSlider.MaxIncrement = mDefSlider.CurrentPage() + free;
+                mDefSlider.MaxIncrement = mDefSlider.GetCurrentPage() + free;
             }
 
             if (distr.GetRestrictions(false))
@@ -78,12 +79,23 @@ namespace Singularity.Screen
             }
             else
             {
-                mProductionSlider.MaxIncrement = mProductionSlider.CurrentPage() + free;
+                mProductionSlider.MaxIncrement = mProductionSlider.GetCurrentPage() + free;
             }
-            mConstructionSlider.MaxIncrement = mConstructionSlider.CurrentPage() + free;
-            mLogisticsSlider.MaxIncrement = mLogisticsSlider.CurrentPage() + free;
+            mConstructionSlider.MaxIncrement = mConstructionSlider.GetCurrentPage() + free;
+            mLogisticsSlider.MaxIncrement = mLogisticsSlider.GetCurrentPage() + free;
 
 
+        }
+
+        /// <summary>
+        /// Used to force the sliders to take the values matching the DistributionManager. Somehow like refresh but it sets new pagevalues.
+        /// </summary>
+        public void ForceSliderPages()
+        {
+            mDefSlider.SetCurrentPage(mDirector.GetDistributionManager.GetJobCount(JobType.Defense));
+            mProductionSlider.SetCurrentPage(mDirector.GetDistributionManager.GetJobCount(JobType.Production));
+            mConstructionSlider.SetCurrentPage(mDirector.GetDistributionManager.GetJobCount(JobType.Construction));
+            mLogisticsSlider.SetCurrentPage(mDirector.GetDistributionManager.GetJobCount(JobType.Logistics));
         }
 
         public void DefListen(object sender, EventArgs eventArgs, int page)
