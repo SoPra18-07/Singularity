@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Singularity.Units;
+using Singularity.Property;
 
 namespace Singularity.Map
 {
@@ -49,7 +45,7 @@ namespace Singularity.Map
         /// Adds a unit to the UnitMap.
         /// </summary>
         /// <param name="unit"></param>
-        internal void AddUnit(FreeMovingUnit unit)
+        internal void AddUnit(ICollider unit)
         {
             // first calculate which tile the unit is on
             var pos = VectorToTilePos(unit.AbsolutePosition);
@@ -62,7 +58,7 @@ namespace Singularity.Map
         /// </summary>
         /// <param name="unit"></param>
         /// <param name="unitPos">Precalculated tile position for optimization.</param>
-        private void AddUnit(FreeMovingUnit unit, Vector2 unitPos)
+        private void AddUnit(ICollider unit, Vector2 unitPos)
         {
             // then put the unit on the grid
             mUnitGrid[(int) unitPos.X, (int) unitPos.Y].UnitList.Add(unit);
@@ -75,7 +71,7 @@ namespace Singularity.Map
         /// Moves a unit that already exists on the UnitMap.
         /// </summary>
         /// <param name="unit"></param>
-        internal void MoveUnit(FreeMovingUnit unit)
+        internal void MoveUnit(ICollider unit)
         {
             // first check if the unit moved out of its current tile
             var newPos = VectorToTilePos(unit.AbsolutePosition);
@@ -95,7 +91,7 @@ namespace Singularity.Map
         /// Removes a unit from the UnitMap.
         /// </summary>
         /// <param name="unit">The unit to be removed.</param>
-        internal void RemoveUnit(FreeMovingUnit unit)
+        internal void RemoveUnit(ICollider unit)
         {
             var position = VectorToTilePos(unit.AbsolutePosition);
 
@@ -107,7 +103,7 @@ namespace Singularity.Map
         /// </summary>
         /// <param name="unit"></param>
         /// <param name="unitPos">Precalculated tile position for optimization.</param>
-        private void RemoveUnit(FreeMovingUnit unit, Vector2 unitPos)
+        private void RemoveUnit(ICollider unit, Vector2 unitPos)
         {
             mUnitGrid[(int) unitPos.X, (int) unitPos.Y].UnitList.Remove(unit);
             mLookupTable.Remove(unit.Id);
@@ -118,7 +114,7 @@ namespace Singularity.Map
         /// </summary>
         /// <param name="unit"></param>
         /// <returns>List of all free moving units in adjacent tiles.</returns>
-        internal List<FreeMovingUnit> GetAdjacentUnits(FreeMovingUnit unit)
+        internal List<ICollider> GetAdjacentUnits(ICollider unit)
         {
             var centerTile = VectorToTilePos(unit.AbsolutePosition);
 
@@ -133,7 +129,7 @@ namespace Singularity.Map
             var sw = s && w;
             var se = s && e;
 
-            var unitList = new List<FreeMovingUnit>();
+            var unitList = new List<ICollider>();
 
             unitList.AddRange(mUnitGrid[(int)centerTile.X, (int)centerTile.Y].UnitList);
 

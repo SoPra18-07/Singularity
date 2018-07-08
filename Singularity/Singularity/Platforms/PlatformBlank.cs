@@ -155,7 +155,9 @@ namespace Singularity.Platforms
         [DataMember]
         private readonly float mCenterOffsetY;
 
-        protected Color mColor;
+        protected Color mColor = Color.White;
+
+        protected Color mColorBase;
 
         public bool[,] ColliderGrid { get; internal set; }
 
@@ -176,7 +178,7 @@ namespace Singularity.Platforms
 
             mType = type;
 
-            mColor = friendly ? Color.White : Color.Red;
+            mColorBase = friendly ? Color.White : Color.Red;
 
             mInwardsEdges = new List<IEdge>();
             mOutwardsEdges = new List<IEdge>();
@@ -443,7 +445,7 @@ namespace Singularity.Platforms
                     spritebatch.Draw(mPlatformBaseTexture,
                         Vector2.Add(AbsolutePosition, new Vector2(0, 81)),
                         null,
-                        mColor * transparency,
+                        mColorBase * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
@@ -453,7 +455,7 @@ namespace Singularity.Platforms
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
                         new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 153),
-                        Color.White * transparency,
+                        mColor * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
@@ -465,7 +467,7 @@ namespace Singularity.Platforms
                     spritebatch.Draw(mPlatformBaseTexture,
                         Vector2.Add(AbsolutePosition, new Vector2(-3, 38)),
                         null,
-                        mColor * transparency,
+                        mColorBase * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
@@ -475,7 +477,7 @@ namespace Singularity.Platforms
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
                         new Rectangle(148 * (mSheetPosition % 4), 109 * (mSheetPosition / 4), 148, 109),
-                        Color.White * transparency,
+                        mColor * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
