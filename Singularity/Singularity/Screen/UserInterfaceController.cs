@@ -42,13 +42,14 @@ namespace Singularity.Screen
         public void SetDataOfSelectedPlatform(
             int id,
             bool isActive,
+            bool isManuallyDeactivated,
             EPlatformType type,
             List<Resource> resourceAmountList,
             Dictionary<JobType, List<Pair<GeneralUnit, bool>>> unitAssignmentDict,
             List<IPlatformAction> actionsArray)
         {
             // set/update data in UI
-            ControlledUserInterface.SetSelectedPlatformValues(id, isActive, type, resourceAmountList, unitAssignmentDict, actionsArray);
+            ControlledUserInterface.SetSelectedPlatformValues(id, isActive, isManuallyDeactivated, type, resourceAmountList, unitAssignmentDict, actionsArray);
         }
 
         /// <summary>

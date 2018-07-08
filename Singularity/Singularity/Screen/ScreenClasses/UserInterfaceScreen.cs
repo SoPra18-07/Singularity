@@ -92,7 +92,9 @@ namespace Singularity.Screen.ScreenClasses
         private Button mSelectedPlatformDeactivatePlatformButton;
         private Button mSelectedPlatformActivatePlatformButton;
         private ActivationIWindowItem mSelectedPlatformActiveItem;
-        private ActivationIWindowItem mSelectedPlatformDeactiveItem;
+
+        // auto deactivated platform textfield
+        private TextField mSelectedPlatformIsAutoDeactivatedText;
 
         // textFields of selectedPlatformWindow titles
         private Button mSelectedPlatformResourcesButton;
@@ -441,6 +443,11 @@ namespace Singularity.Screen.ScreenClasses
             mSelectedPlatformActiveItem = new ActivationIWindowItem(mSelectedPlatformDeactivatePlatformButton, mSelectedPlatformActivatePlatformButton,selectedPlatformWidth, ref mDirector);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformActiveItem);
 
+            // auto-deactivaed textfield
+            mSelectedPlatformIsAutoDeactivatedText = new TextField("FORCE DEACTIVATED", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12, Color.Red);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformIsAutoDeactivatedText);
+            mSelectedPlatformIsAutoDeactivatedText.ActiveInWindow = false;
+
             // resource-section-title
             //mSelectedPlatformResourcesButton = new TextField("Resources", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, 0), mLibSans12, Color.White);
             mSelectedPlatformResourcesButton = new Button("Resources", mLibSans12, Vector2.Zero, Color.White) { Opacity = 1f };
@@ -521,6 +528,24 @@ namespace Singularity.Screen.ScreenClasses
             mSelectedPlatformActionsButton = new Button("Actions", mLibSans12, Vector2.Zero, Color.White) {Opacity = 1f};
             mSelectedPlatformActionsButton.ButtonReleased += CloseActionsInSelectedWindow;
             mSelectedPlatformWindow.AddItem(mSelectedPlatformActionsButton);
+
+            // deactivate all items from selectedPlatformWindow since no platform is selected
+            mSelectedPlatformActivatePlatformButton.ActiveInWindow = false;
+            mSelectedPlatformDeactivatePlatformButton.ActiveInWindow = false;
+            foreach (var item in mSelectedPlatformActionList)
+            {
+                item.ActiveInWindow = false;
+            }
+
+            foreach (var item in mSelectedPlatformResourcesList)
+            {
+                item.ActiveInWindow = false;
+            }
+
+            foreach (var item in mSelectedPlatformUnitAssignmentList)
+            {
+                item.ActiveInWindow = false;
+            }
 
             mWindowList.Add(mSelectedPlatformWindow);
 
@@ -1127,6 +1152,7 @@ namespace Singularity.Screen.ScreenClasses
         public void SetSelectedPlatformValues(
             int id,
             bool isActive,
+            bool isManuallyDeactivated,
             EPlatformType type,
             IEnumerable<Resource> resourceAmountList,
             Dictionary<JobType, List<Pair<GeneralUnit, bool>>> unitAssignmentList,
@@ -1137,16 +1163,25 @@ namespace Singularity.Screen.ScreenClasses
 
             #region active/deactive
 
-            // manage activate/deactivate button
-            if (isActive)
+            // manage activate/deactivate
+            if (!isManuallyDeactivated)
             {
-                mSelectedPlatformDeactivatePlatformButton.InactiveInSelectedPlatformWindow = false;
-                mSelectedPlatformActivatePlatformButton.InactiveInSelectedPlatformWindow = true;
+                mSelectedPlatformDeactivatePlatformButton.ActiveInWindow = false;
+                mSelectedPlatformActivatePlatformButton.ActiveInWindow = true;
             }
             else
             {
-                mSelectedPlatformDeactivatePlatformButton.InactiveInSelectedPlatformWindow = true;
-                mSelectedPlatformActivatePlatformButton.InactiveInSelectedPlatformWindow = false;
+                mSelectedPlatformDeactivatePlatformButton.ActiveInWindow = true;
+                mSelectedPlatformActivatePlatformButton.ActiveInWindow = false;
+            }
+
+            if (!isActive && !isManuallyDeactivated)
+            {
+                mSelectedPlatformIsAutoDeactivatedText.ActiveInWindow = true;
+            }
+            else
+            {
+                mSelectedPlatformIsAutoDeactivatedText.ActiveInWindow = false;
             }
 
             #endregion
