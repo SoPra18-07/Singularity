@@ -146,7 +146,7 @@ namespace Singularity.Units
         /// </summary>
         private void AbortTask()
         {
-            //TODO: This. Also dont forget to put the task back in the task queue.
+            //TODO: This. Also dont forget to put the task back in the task queue, but not sure if this is necessary. Talk with felix about that.
         }
 
 
