@@ -499,7 +499,6 @@ namespace Singularity.Map
                 mGraphIdToEnergyLevel[graphId] = mGraphIdToEnergyLevel[graphId] + ((PlatformBlank) node).GetProvidingEnergy();
                 mGraphIdToEnergyLevel[graphId] = mGraphIdToEnergyLevel[graphId] - ((PlatformBlank) node).GetDrainingEnergy();
             }
-            Debug.WriteLine(mGraphIdToEnergyLevel[graphId]);
 
             CheckEnergyLevel(graphId, wasNegative);
         }
