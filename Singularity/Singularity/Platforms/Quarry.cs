@@ -18,12 +18,8 @@ namespace Singularity.Platforms
         [DataMember]
         private const int PlatformHeight = 127;
 
-        public Quarry(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, ref Director director, bool autoRegister = true): base(position, platformSpriteSheet, baseSprite, ref director, EPlatformType.Quarry, -50)
+        public Quarry(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, ref Director director): base(position, platformSpriteSheet, baseSprite, ref director, EPlatformType.Quarry, -50)
         {
-            if (autoRegister)
-            {
-                director.GetDistributionManager.Register(this, false);
-            }
 
             //Add possible Actions in this array
             mIPlatformActions.Add(new ProduceQuarryResource(platform: this, resourceMap: resource, director: ref mDirector));

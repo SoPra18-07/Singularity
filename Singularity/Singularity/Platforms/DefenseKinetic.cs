@@ -72,7 +72,7 @@ namespace Singularity.Platforms
                         && AmmoCount < 50))
                 {
                     // TODO: Change metal to ammo once armory is implemented
-                    mDirector.GetDistributionManager.RequestResource(this, EResourceType.Metal, null);
+                    mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).RequestResource(this, EResourceType.Metal, null);
                     mTotalMaterialsRequested++;
                     mRequesting = true;
                 }
@@ -80,7 +80,7 @@ namespace Singularity.Platforms
 
             if (mRequesting && mTotalMaterialsRequested + AmmoCount <= 50)
             {
-                mDirector.GetDistributionManager.RequestResource(this, EResourceType.Metal, null);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).RequestResource(this, EResourceType.Metal, null);
             }
 
             if (mTotalMaterialsRequested == 50)

@@ -11,6 +11,7 @@ using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Sound;
 using Singularity.Units;
+using Singularity.Utils;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -196,6 +197,8 @@ namespace Singularity.Screen.ScreenClasses
 
             if (platform != null)
             {
+                //TODO: Remove this Register if Building is implemented
+                platform.Register();
                 mMap.AddPlatform(platform);
                 return true;
             }
@@ -341,9 +344,11 @@ namespace Singularity.Screen.ScreenClasses
             // TODO eventually the EPlacementType should be instance but currently that
             // TODO requires a road to be place and therefore throws an exception !!!!!
 
+            var graphid = IdGenerator.NextiD();
+            mDirector.GetDistributionDirector.AddManager(graphid);
             CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, ref mDirector, false);
-            var genUnit = new GeneralUnit(cCenter, ref mDirector);
-            var genUnit2 = new GeneralUnit(cCenter, ref mDirector);
+            var genUnit = new GeneralUnit(cCenter, ref mDirector, graphid);
+            var genUnit2 = new GeneralUnit(cCenter, ref mDirector, graphid);
 
             // adds the command center to the GameScreen, as well as two general units
             AddObject(cCenter);

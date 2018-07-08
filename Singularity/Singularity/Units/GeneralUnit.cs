@@ -26,8 +26,6 @@ namespace Singularity.Units
         [DataMember]
         private bool mFinishTask;
         [DataMember]
-        private int? mTargetId;
-        [DataMember]
         private Queue<Vector2> mPathQueue; // the queue of platform center locations
         [DataMember]
         private Queue<INode> mNodeQueue;
@@ -85,6 +83,9 @@ namespace Singularity.Units
         [DataMember]
         public int TargetGraphid { get; set; }
 
+        [DataMember]
+        public int Graphid { get; set; }
+
         /// <summary>
         /// The speed the unit moves at.
         /// </summary>
@@ -98,8 +99,9 @@ namespace Singularity.Units
         [DataMember]
         public bool Active { get; set; }
 
-        public GeneralUnit(PlatformBlank platform, ref Director director)
+        public GeneralUnit(PlatformBlank platform, ref Director director, int graphid)
         {
+            Graphid = graphid;
             Id = IdGenerator.NextiD();
             mDestination = Optional<INode>.Of(null);
 
@@ -112,7 +114,7 @@ namespace Singularity.Units
 
             mIsMoving = false;
             mDirector = director;
-            mDirector.GetDistributionManager.Register(this);
+            mDirector.GetDistributionDirector.GetManager(Graphid).Register(this);
             mDone = true;
             mFinishTask = false;
         }
@@ -164,7 +166,7 @@ namespace Singularity.Units
                 //This only tells the platform that the unit is on the way! Use ShowedUp to tell the platform that the unit has arrived.
                 mTask.End.Get().AssignUnits(this, Job);
                 mDestination = Optional<INode>.Of(mTask.End.Get());
-                TargetGraphid = mTask.End.Get().Graphid;
+                TargetGraphid = mTask.End.Get().GetGraphIndex();
             }
 
             if (mTask.Action.IsPresent())
@@ -193,9 +195,9 @@ namespace Singularity.Units
             {
                 RegulateMovement();
                 if (Carrying.IsPresent())
-                {
-                    Carrying.Get().Follow(this);
-                }
+                        {
+                            Carrying.Get().Follow(this);
+                        }
                 //This means we arrived at the point we want to leave the Resource and consider our work done
                 if (mTask.End.IsPresent() && CurrentNode.Equals(mTask.End.Get()) &&
                     ReachedTarget(mTask.End.Get().Center))
@@ -222,12 +224,12 @@ namespace Singularity.Units
                         {
                             mDone = false;
 
-                            mTask = mDirector.GetDistributionManager.RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
+                            mTask = mDirector.GetDistributionDirector.GetManager(Graphid).RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
                             //Check if the given destination is null (it shouldnt)
                             if (mTask.End.IsPresent())
                             {
                                 mDestination = Optional<INode>.Of(mTask.End.Get());
-                                TargetGraphid = mTask.End.Get().Graphid;
+                                TargetGraphid = mTask.End.Get().GetGraphIndex();
                             }
                         }
 
@@ -299,13 +301,13 @@ namespace Singularity.Units
             {
                 mDone = false;
 
-                mTask = mDirector.GetDistributionManager.RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
+                mTask = mDirector.GetDistributionDirector.GetManager(Graphid).RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
                 //First go to the location where you want to get your Resource from
                 //Check if the given destination is null (it shouldnt).
                 if (mTask.Begin.IsPresent())
                 {
                     mDestination = Optional<INode>.Of(mTask.Begin.Get());
-                    TargetGraphid = mTask.Begin.Get().Graphid;
+                    TargetGraphid = mTask.Begin.Get().GetGraphIndex();
                 }
                 else
                 {
@@ -334,14 +336,14 @@ namespace Singularity.Units
                             {
                                 if (mTask.GetResource != null)
                                 {
-                                    mDirector.GetDistributionManager.RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get());
+                                    mDirector.GetDistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get());
                                 }
                             }
                             else
                             {
                                 if (mTask.GetResource != null)
                                 {
-                                    mDirector.GetDistributionManager.RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null);
+                                    mDirector.GetDistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null);
                                 }
                             }
                         }
@@ -351,14 +353,14 @@ namespace Singularity.Units
                             {
                                 if (mTask.GetResource != null)
                                 {
-                                    mDirector.GetDistributionManager.RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get(), true);
+                                    mDirector.GetDistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get(), true);
                                 }
                             }
                             else
                             {
                                 if (mTask.GetResource != null)
                                 {
-                                    mDirector.GetDistributionManager.RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null, true);
+                                    mDirector.GetDistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null, true);
                                 }
                             }
                         }
@@ -370,7 +372,7 @@ namespace Singularity.Units
                 if (mTask.End.IsPresent() && !mDone)
                 {
                     mDestination = Optional<INode>.Of(mTask.End.Get());
-                    TargetGraphid = mTask.End.Get().Graphid;
+                    TargetGraphid = mTask.End.Get().GetGraphIndex();
                 }
             }
 
@@ -490,9 +492,8 @@ namespace Singularity.Units
                 Carrying = Optional<Resource>.Of(null);
             }
 
-            mDirector.GetDistributionManager.Kill(this);
+            mDirector.GetDistributionDirector.GetManager(Graphid).Kill(this);
             mAssignedAction.Kill(this);
-
 
             return true;
         }
@@ -501,7 +502,7 @@ namespace Singularity.Units
         {
             if (mTask.Contains(id))
             {
-                mTask = mDirector.GetDistributionManager.RequestNewTask(this, Job, null);
+                mTask = mDirector.GetDistributionDirector.GetManager(Graphid).RequestNewTask(this, Job, null);
                 // also the mAssignedTask-platformaction is included in this.
             }
         }

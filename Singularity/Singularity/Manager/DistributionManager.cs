@@ -53,8 +53,11 @@ namespace Singularity.Manager
         [DataMember]
         private List<Pair<PlatformBlank, int>> mDefPlatforms;
 
+        [DataMember]
+        private int mGraphId;
 
-        public DistributionManager()
+
+        public DistributionManager(int graphid)
         {
             //Lists of Units of different Jobtypes
             mIdle = new List<GeneralUnit>();
@@ -78,6 +81,7 @@ namespace Singularity.Manager
 
             mRandom = new Random();
             mKilled = new List<Pair<int, int>>();
+            mGraphId = graphid;
         }
 
         public void TestAttributes()
@@ -86,6 +90,15 @@ namespace Singularity.Manager
             Console.Out.WriteLine(mIdle.Count);
             Console.Out.WriteLine(mProdPlatforms[1].GetFirst().mType + " " + mProdPlatforms[1].GetSecond());
             Console.Out.WriteLine(mProdPlatforms[0].GetFirst().mType + " " + mProdPlatforms[0].GetSecond());
+        }
+
+        /// <summary>
+        /// Deactivates tasks requested by a certain action.
+        /// </summary>
+        /// <param name="removeaction">The Action I was talking about</param>
+        private void DeactivateAction(IPlatformAction removeaction)
+        {
+            mPlatformActions.Remove(removeaction);
         }
 
         #region Looking for Resources
@@ -171,7 +184,7 @@ namespace Singularity.Manager
 
         #endregion
 
-        #region Getters
+        #region Getters and Setters
         /// <summary>
         /// Gets the total amount of Units INDIRECTLY assigned. So this will not include directly assigned units.
         /// </summary>
@@ -184,6 +197,125 @@ namespace Singularity.Manager
             total += mDefense.Count;
             total += mLogistics.Count;
             return total;
+        }
+
+        /// <summary>
+        /// Gets the Lists of unit in that Job.
+        /// </summary>
+        /// <param name="job">The job I was talking about</param>
+        /// <returns>The list I was talking about</returns>
+        internal List<GeneralUnit> GetJobUnits(JobType job)
+        {
+            switch (job)
+            {
+                case JobType.Idle:
+                    return mIdle;
+                case JobType.Production:
+                    return mProduction;
+                case JobType.Construction:
+                    return mConstruction;
+                case JobType.Defense:
+                    return mDefense;
+                case JobType.Logistics:
+                    return mLogistics;
+                case JobType.Manual:
+                    return mManual;
+                default:
+                    throw new InvalidGenericArgumentException("There is no such Job!");
+            }
+        }
+
+        /// <summary>
+        /// Sets the Joblists of this DistributionManager
+        /// </summary>
+        /// <param name="joblist">The list to set</param>
+        /// <param name="job">The job</param>
+        internal void SetJobUnits(List<GeneralUnit> joblist, JobType job)
+        {
+            switch (job)
+            {
+                case JobType.Idle:
+                    mIdle = joblist;
+                    break;
+                case JobType.Production:
+                    mProduction = joblist;
+                    break;
+                case JobType.Construction:
+                    mConstruction = joblist;
+                    break;
+                case JobType.Defense:
+                    mDefense = joblist;
+                    break;
+                case JobType.Logistics:
+                    mLogistics = joblist;
+                    break;
+                case JobType.Manual:
+                    mManual = joblist;
+                    break;
+                default:
+                    throw new InvalidGenericArgumentException("There is no such Job!");
+            }
+        }
+
+        /// <summary>
+        /// Sets the Tasks of this DM
+        /// </summary>
+        /// <param name="taskqueue">The tasks to set</param>
+        /// <param name="isBuilding">True if you want to set the Buildingtasks, false if you want to set the Transporttasks</param>
+        internal void SetTasks(Queue<Task> taskqueue, bool isBuilding)
+        {
+            if (isBuilding)
+            {
+                mBuildingResources = taskqueue;
+            }
+
+            mRefiningOrStoringResources = taskqueue;
+
+        }
+
+        /// <summary>
+        /// Return the Tasks this DistributionManager received and saved.
+        /// </summary>
+        /// <param name="isBuilding">True if you want the Build-Tasks, false otherwise</param>
+        /// <returns>The Build-Tasks or the Transport-Tasks</returns>
+        internal Queue<Task> GetTasks(bool isBuilding)
+        {
+            if (isBuilding)
+            {
+                return mBuildingResources;
+            }
+
+            return mRefiningOrStoringResources;
+        }
+
+        /// <summary>
+        /// Get the Platforms this DistributionManager is observing.
+        /// </summary>
+        /// <param name="isDef">True if you want to get the Defending platforms, false if you want to get the Producing platforms</param>
+        /// <returns>A list containing the platforms you requested paired with how many units work there</returns>
+        internal List<Pair<PlatformBlank, int>> GetPlatforms(bool isDef)
+        {
+            if (isDef)
+            {
+                return mDefPlatforms;
+            }
+
+            return mProdPlatforms;
+        }
+
+        /// <summary>
+        /// Set the Platforms this DistributionManager is observing
+        /// </summary>
+        /// <param name="platformlist">The list you want to set it to. Has to contain pairs with how many units work on the corresponding platform</param>
+        /// <param name="isDef">True if you want to set the Defending platforms, false if you want to set the Producing platforms</param>
+        internal void SetPlatforms(List<Pair<PlatformBlank, int>> platformlist, bool isDef)
+        {
+            if (isDef)
+            {
+                mDefPlatforms = platformlist;
+            }
+
+            mProdPlatforms = platformlist;
         }
 
         /// <summary>
@@ -303,6 +435,12 @@ namespace Singularity.Manager
                         return nulltask;
                     }
                     task = mBuildingResources.Dequeue();
+                    //This means that the Action is paused.
+                    if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()))
+                    {
+                        mBuildingResources.Enqueue(task);
+                        task = RequestNewTask(unit, job, assignedAction);
+                    }
                     if (task.End.IsPresent() && task.GetResource != null)
                     {
                         var begin = FindBegin(task.End.Get(), (EResourceType)task.GetResource);
@@ -336,6 +474,12 @@ namespace Singularity.Manager
                         return nulltask;
                     }
                     task = mRefiningOrStoringResources.Dequeue();
+                    //This means that the Action is paused.
+                    if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()))
+                    {
+                        mRefiningOrStoringResources.Enqueue(task);
+                        task = RequestNewTask(unit, job, assignedAction);
+                    }
                     if (task.End.IsPresent() && task.GetResource != null)
                     {
                         var begin = FindBegin(task.End.Get(), (EResourceType)task.GetResource);
@@ -879,6 +1023,16 @@ namespace Singularity.Manager
         }
 
         /// <summary>
+        /// Is called to add the unit with a certain job.
+        /// </summary>
+        /// <param name="unit">the unit that has been mentioned</param>
+        /// <param name="job">the job of the unit.</param>
+        public void Register(GeneralUnit unit, JobType job)
+        {
+            GetJobUnits(job).Add(unit);
+        }
+
+        /// <summary>
         /// This will be called from the SliderHandler when its created.
         /// It just registers its reference, so the DistributionManager can communicate with it.
         /// </summary>
@@ -970,9 +1124,8 @@ namespace Singularity.Manager
                         }
                         else
                         {
-                            //TODO: Use TargetGraphid, it shouldnt have a graphid itself!!!!!!!
                             //It will arrive, so just handle it as if it had already arrived at the platform
-                            if (unitbool.GetFirst().TargetGraphid == platform.GetGraphIndex())
+                            if (unitbool.GetFirst().Graphid == platform.GetGraphIndex())
                             {
                                 joblist.Remove(unitbool.GetFirst());
                             }
@@ -985,6 +1138,10 @@ namespace Singularity.Manager
                             }
                         }
                     }
+
+                    // the first in the pair is the id, the second is the TTL
+                    // we tell the manager we killed the platform, but we didnt really kill it.
+                    mKilled.Add(new Pair<int, int>(platform.Id, Math.Max(mBuildingResources.Count, mRefiningOrStoringResources.Count)));
                 }
             }
             //If there are any units to redistribute do it now
@@ -1035,7 +1192,6 @@ namespace Singularity.Manager
 
         public void Kill(GeneralUnit unit)
         {
-            unit.Die();
             var lists = new List<List<GeneralUnit>> {mIdle, mLogistics, mConstruction, mProduction, mDefense, mManual};
             lists.ForEach(l => l.Remove(unit));
         }

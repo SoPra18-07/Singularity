@@ -107,9 +107,6 @@ namespace Singularity.Platforms
         protected Dictionary<EResourceType, int> mRequested;
 
         [DataMember]
-        public int Graphid { get; set; }
-
-        [DataMember]
         private bool mIsActive;
 
         [DataMember]
@@ -239,10 +236,10 @@ namespace Singularity.Platforms
         {
             if (IsProduction())
             {
-                mDirector.GetDistributionManager.Register(this, false);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, false);
             } else if (IsDefense())
             {
-                mDirector.GetDistributionManager.Register(this, true);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, true);
             }
         }
 
@@ -805,7 +802,7 @@ namespace Singularity.Platforms
         public void DieBlank()
         {
 
-            mDirector.GetDistributionManager.Kill(this);
+            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
 
 
             mColor = Color.White;
@@ -856,7 +853,7 @@ namespace Singularity.Platforms
 
             mIPlatformActions.ForEach(a => a.Platform = null);
             mIPlatformActions.RemoveAll(a => a.Die());
-            mDirector.GetDistributionManager.Kill(this);
+            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
             mDirector.GetStoryManager.StructureMap.RemovePlatform(this);
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             return true;
@@ -898,6 +895,7 @@ namespace Singularity.Platforms
 
         public void Activate(bool manually)
         {
+            //TODO: Tell the PlatformAction to request everything it needs again.
             if (manually)
             {
                 mIsManuallyDeactivated = false;
@@ -907,10 +905,10 @@ namespace Singularity.Platforms
             //Only reregister the platforms if they are defense or production platforms
             if (IsDefense())
             {
-                mDirector.GetDistributionManager.Register(this, true);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, true);
             }else if (IsProduction())
             {
-                mDirector.GetDistributionManager.Register(this, false);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, false);
             }
         }
 
@@ -962,13 +960,13 @@ namespace Singularity.Platforms
             {
                 var selflist = new List<PlatformBlank>();
                 selflist.Add(this);
-                mDirector.GetDistributionManager.Unregister(selflist, true, true);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, true, true);
             }
             else if (IsProduction())
             {
                 var selflist = new List<PlatformBlank>();
                 selflist.Add(this);
-                mDirector.GetDistributionManager.Unregister(selflist, false, true);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, false, true);
             }
         }
 
