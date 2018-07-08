@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Graph;
+using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Property;
-using System.Linq;
-using Singularity.Graph;
-using Singularity.Input;
 
 namespace Singularity.Map
 {
@@ -47,6 +47,11 @@ namespace Singularity.Map
         private readonly Dictionary<int, Graph.Graph> mGraphIdToGraph;
 
         /// <summary>
+        /// A dictioanry mapping graph IDs to the energy level of the graph
+        /// </summary>
+        private readonly Dictionary<int, int> mGraphIdToEnergyLevel;
+
+        /// <summary>
         /// The Fog of war of the current game
         /// </summary>
         private readonly FogOfWar mFow;
@@ -72,6 +77,7 @@ namespace Singularity.Map
 
             mPlatformToGraphId = new Dictionary<PlatformBlank, int>();
             mGraphIdToGraph = new Dictionary<int, Graph.Graph>();
+            mGraphIdToEnergyLevel = new Dictionary<int, int>();
 
             mDirector = director;
 
@@ -456,6 +462,8 @@ namespace Singularity.Map
             {
                 mPlatformsToPlace.Remove(platformToRemove);
             }
+
+            // now update the energy level of all graphs
         }
 
         /// <summary>
@@ -487,6 +495,19 @@ namespace Singularity.Map
         {
             mMouseX = worldX;
             mMouseY = worldY;
+        }
+
+        private void CheckEnergyLevel(int graphId)
+        {
+            if (mGraphIdToEnergyLevel[graphId] > 0)
+            {
+                return;
+            }
+
+            foreach (var node in mGraphIdToGraph[graphId].GetNodes())
+            {
+                ((PlatformBlank)node).Deactivate();
+            }
         }
     }
 }
