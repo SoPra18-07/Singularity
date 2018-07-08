@@ -20,6 +20,6 @@
         /// <summary>
         /// Means the platform will be placed at the given position, but a road needs to be connected to it.
         /// </summary>
-        OnlyRoad,
+        OnlyRoad
     }
 }

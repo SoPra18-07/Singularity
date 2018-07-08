@@ -2,7 +2,7 @@
 
 namespace Singularity.Property
 {
-    public interface ICollider : ISpatial
+    internal interface ICollider : ISpatial, IDamageable
     {
         /// <summary>
         /// Provides a lookup table for which spaces have a collider in them and which don't within the bounding box

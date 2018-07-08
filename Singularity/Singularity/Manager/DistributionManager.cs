@@ -973,7 +973,7 @@ namespace Singularity.Manager
                         {
                             //TODO: Use TargetGraphid, it shouldnt have a graphid itself!!!!!!!
                             //It will arrive, so just handle it as if it had already arrived at the platform
-                            if (unitbool.GetFirst().TargetGraphid == platform.Graphid)
+                            if (unitbool.GetFirst().TargetGraphid == platform.GetGraphIndex())
                             {
                                 joblist.Remove(unitbool.GetFirst());
                             }
@@ -1017,7 +1017,7 @@ namespace Singularity.Manager
         public void Kill(IPlatformAction action)
         {
             // Strong assumption that a PlatformAction is only listed at most once here.
-            if (action.GetType() == typeof(BuildBluePrint))
+            if (action is BuildBluePrint)
             {
                 mBlueprintBuilds.Remove(mBlueprintBuilds.Find(b => b.Equals(action)));
             }
