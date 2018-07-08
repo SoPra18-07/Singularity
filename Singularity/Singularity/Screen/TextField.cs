@@ -12,6 +12,7 @@ namespace Singularity.Screen
 
         private readonly string mSplittedText;
         private readonly SpriteFont mSpriteFont;
+        private readonly Color mColor;
 
         /// <summary>
         /// Creates a TextField which is automatically multilined to fit the size
@@ -20,11 +21,13 @@ namespace Singularity.Screen
         /// <param name="position">top left corner of the field</param>
         /// <param name="size">size of the text field</param>
         /// <param name="spriteFont">spritefont for the text</param>
-        public TextField(string text, Vector2 position, Vector2 size, SpriteFont spriteFont)
+        /// <param name="color">text color</param>
+        public TextField(string text, Vector2 position, Vector2 size, SpriteFont spriteFont, Color color)
         {
             // use parameter-variables
             Position = position;
             mSpriteFont = spriteFont;
+            mColor = color;
 
             // split text to fit size-width
             mSplittedText = SplitLineToMultiline(text: text, size: size, spriteFont: spriteFont);
@@ -32,7 +35,7 @@ namespace Singularity.Screen
             // update size
             Size = new Vector2(x: size.X, y: spriteFont.MeasureString(text: mSplittedText).Y);
 
-            ActiveWindow = true;
+            ActiveInWindow = true;
         }
 
         public void Update(GameTime gametime)
@@ -42,7 +45,10 @@ namespace Singularity.Screen
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(spriteFont: mSpriteFont, text: mSplittedText, position: Position, color: new Color(r: 0,g: 0,b: 0));
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
+            {
+                spriteBatch.DrawString(mSpriteFont, mSplittedText, Position, mColor);
+            }
         }
 
         /// <summary>
@@ -68,7 +74,6 @@ namespace Singularity.Screen
                 if (spriteFont.MeasureString(text: word).X > size.X)
                     // split single words too long for the given width
                 {
-                    Console.Out.WriteLine(value: word);
                     var workingWord = word;
                     var newLength = 0;
 
@@ -128,6 +133,9 @@ namespace Singularity.Screen
         /// <summary>
         ///
         /// </summary>
-        public bool ActiveWindow { get; set; }
+        public bool ActiveInWindow { get; set; }
+
+        public bool InactiveInSelectedPlatformWindow { get; set; }
+        public bool OutOfScissorRectangle { get; set; }
     }
 }

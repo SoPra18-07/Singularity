@@ -61,6 +61,18 @@ namespace Singularity.Map
             return resourcesMine[index: 0].Get(location: location);
         }
 
+        // TODO
+        public Optional<Resource> GetAmmoResource(Vector2 location)
+        {
+            var resourceAmmo = GetResources(location).Where(r => r.Type == EResourceType.Metal).ToList();
+            if (!resourceAmmo.Any())
+            {
+                return Optional<Resource>.Of(null);
+            }
+            return resourceAmmo[0].Get(location);
+        }
+
+
         /// <summary>
         /// Returns an optional value of resources on the given location.
         /// </summary>

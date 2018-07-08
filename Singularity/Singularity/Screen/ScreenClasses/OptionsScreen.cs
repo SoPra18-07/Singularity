@@ -438,11 +438,6 @@ namespace Singularity.Screen.ScreenClasses
             MainMenuManagerScreen.SetResolution(viewportResolution: new Vector2(x: 960, y: 720));
         }
 
-        private void OnAntialiasingReleased(Object sender, EventArgs eventArgs)
-        {
-            // potentially impossible
-        }
-
         private void OnMuteReleased(Object sender, EventArgs eventArgs)
         {
             MediaPlayer.IsMuted = !MediaPlayer.IsMuted;

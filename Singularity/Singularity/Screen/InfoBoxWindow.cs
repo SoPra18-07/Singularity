@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
@@ -30,6 +31,9 @@ namespace Singularity.Screen
         // bool to enable or disable the rectangle around the infoBox
         private readonly bool mBoxed;
 
+        // counter to prevent the infoBox showing up at the wrong position by updating the position first before drawing
+        private int mCounter;
+
         /// <summary>
         /// Creates a info box which is displayed above the mouse position
         /// </summary>
@@ -40,14 +44,13 @@ namespace Singularity.Screen
         /// <param name="boundsRectangle">rectangle in which the windowBox is active</param>
         /// <param name="boxed">true, if window should have a border</param>
         /// <param name="director">the director</param>
-        internal InfoBoxWindow(List<IWindowItem> itemList, Vector2 size, Color borderColor, Color centerColor, Rectangle boundsRectangle, bool boxed, Director director, bool mousePosition = true, Vector2 location = default(Vector2))
+        public InfoBoxWindow(List<IWindowItem> itemList, Vector2 size, Color borderColor, Color centerColor, Rectangle boundsRectangle, bool boxed, Director director, bool mousePosition = true, Vector2 location = default(Vector2))
         {
             // set members
             mItemList = itemList;
             mSize = new Vector2(x: size.X + 10, y: size.Y + 10);
             mBorderColor = borderColor;
             mCenterColor = centerColor;
-            BoundRectangle = boundsRectangle;
             mBoxed = boxed;
 
             if (mousePosition)
@@ -60,9 +63,8 @@ namespace Singularity.Screen
                 mMouse = location;
             }
 
-            //BoundRectangle = boundsRectangle;
-            OnRectangle = true;
-            Active = true;
+            Active = false;
+            mCounter = 0;
         }
 
         /// <summary>
@@ -71,7 +73,7 @@ namespace Singularity.Screen
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (Active && OnRectangle)
+            if (Active && mCounter > 10)
             {
                 if (mBoxed)
                 {
@@ -93,13 +95,13 @@ namespace Singularity.Screen
         /// <param name="gametime"></param>
         public virtual void Update(GameTime gametime)
         {
-            if (Active && OnRectangle)
+            if (Active)
             {
                 // update position to mouse position
                 Position = new Vector2(x: mMouse.X - mSize.X, y: mMouse.Y - mSize.Y);
 
                 // shifts the items from the top left corner to their position
-                var yShift = 5;
+                var yShift = 2;
                 //
                 float maxWidth = 0;
                 float maxHeight = 0;
@@ -121,43 +123,29 @@ namespace Singularity.Screen
                     maxHeight = maxHeight + yShift;
                 }
 
-                mSize = new Vector2(x: maxWidth + 10, y: maxHeight);
+                mSize = new Vector2(maxWidth + 10, maxHeight);
+
+                ++mCounter;
+            }
+            else
+            {
+                mCounter = 0;
             }
         }
 
-        // mousePosition updates the onRectangle bool
         public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
             if (Active)
             {
                 // update mouse position
                 mMouse = new Vector2(x: screenX, y: screenY);
-
-                // infoBox is active if mouse on BoundRectangle (basically the button)
-                if (screenX >= BoundRectangle.X &&
-                    screenX <= BoundRectangle.X + BoundRectangle.Width &&
-                    screenY >= BoundRectangle.Y &&
-                    screenY <= BoundRectangle.Y + BoundRectangle.Height)
-                {
-                    OnRectangle = true;
-                }
-                else
-                {
-                    OnRectangle = false;
-                }
             }
         }
 
         // top left corner of infoBox
         protected Vector2 Position { get; set; }
 
-        // true if the mouse is above the BoundRectangle
-        private bool OnRectangle { get; set; }
-
         // true if the infoBox is active
         public bool Active { get; set; }
-
-        // Rectangle in which the mouse has to be for the InfoBox to be active
-        public Rectangle BoundRectangle { private get; set; }
     }
 }

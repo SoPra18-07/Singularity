@@ -152,8 +152,8 @@ namespace Singularity.PlatformActions
             foreach (var unit in mAssignedUnits.Keys)
             {
                 if (unit.Job != job || amount <= 0) continue;
-                mAssignedUnits.Remove(key: unit);
-                list.Add(item: unit);
+                mAssignedUnits.Remove(unit);
+                list.Add(unit);
                 amount -= 1;
             }
 

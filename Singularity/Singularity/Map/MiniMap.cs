@@ -70,7 +70,9 @@ namespace Singularity.Map
 
         public Vector2 Size { get; private set; }
 
-        public bool ActiveWindow { get; set; }
+        public bool ActiveInWindow { get; set; }
+        public bool InactiveInSelectedPlatformWindow { get; set; }
+        public bool OutOfScissorRectangle { get; set; }
 
         public MiniMap(Map map, Camera camera, Texture2D minimapTexture)
         {
@@ -93,7 +95,7 @@ namespace Singularity.Map
 
             Size = new Vector2(MapConstants.MiniMapWidth, MapConstants.MiniMapHeight);
             Position = new Vector2(0, 0);
-            ActiveWindow = true;
+            ActiveInWindow = true;
         }
 
 
