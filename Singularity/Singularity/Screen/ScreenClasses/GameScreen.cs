@@ -197,6 +197,7 @@ namespace Singularity.Screen.ScreenClasses
             if (platform != null)
             {
                 mMap.AddPlatform(platform);
+                mDirector.GetMilitaryManager.
                 return true;
             }
 

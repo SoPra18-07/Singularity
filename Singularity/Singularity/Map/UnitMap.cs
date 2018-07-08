@@ -9,7 +9,7 @@ using Singularity.Units;
 
 namespace Singularity.Map
 {
-    public sealed class UnitMap
+    internal sealed class UnitMap
     {
         /// <summary>
         /// Stores which units are in which grid position on the map.
