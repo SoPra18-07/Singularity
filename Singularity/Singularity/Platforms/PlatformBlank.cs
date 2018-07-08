@@ -891,6 +891,16 @@ namespace Singularity.Platforms
             return mGraphIndex;
         }
 
+        public void Activate()
+        {
+            mIsActive = true;
+        }
+
+        public void Deactivate()
+        {
+            mIsActive = false;
+        }
+
         /// <summary>
         /// true, if the platform is sleected in the UI
         /// </summary>
