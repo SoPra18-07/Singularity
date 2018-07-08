@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
@@ -54,7 +54,7 @@ namespace Singularity.Screen
         // size of the rectangle in the top right corner of the window which minimizes the window when clicked on
         private int mMinimizationSize;
 
-        // true when the window's windowItems and the padding between them
+        // true when the window's windowItems and the padding between them are too big for the scissorRectangle's height
         private bool mScrollable; // = false as default value
 
         // activates the window movement after a mouse click on the title bar
@@ -517,6 +517,60 @@ namespace Singularity.Screen
                 );
         }
 
+        /// <summary>
+        /// Calculate the scrollbar
+        /// </summary>
+        /// <param name="scissorRectangle">the scissorrectangle used to cut the winodw</param>
+        /// <param name="combinedItemsSize">the size of all items combined with padding</param>
+        /// <returns></returns>
+        private Rectangle CalcScrollbarRectangle(Rectangle scissorRectangle, float combinedItemsSize)
+        {
+            // scrollbar to scrollbarRectangleBorder has the same ratio as scissorRectangle to combinedItemSize
+            var sizeY = scissorRectangle.Height / combinedItemsSize * mScrollBarBorderRectangle.Height;
+
+            // number of possible steps
+            var numberOfSteps = (combinedItemsSize - scissorRectangle.Height) / 10;
+            // number of times scrolled down
+            var numberOfStepsTaken = (scissorRectangle.Y - mItemPosTop.Y) / 10;
+            // step size for the scrollbar
+            var stepSize = (mScrollBarBorderRectangle.Height - sizeY) / numberOfSteps;
+            // calculate new position
+            var positionY = mScrollBarBorderRectangle.Y + numberOfStepsTaken * stepSize + 3;
+
+            return new Rectangle((int)(Position.X + Size.X - mMinimizationSize + 2), (int)positionY, mMinimizationSize - 4, (int)sizeY);
+        }
+
+        /// <summary>
+        /// Automatically scroll to end if possible
+        /// </summary>
+        public void AutoScrolledToEnd()
+        {
+            // only scroll if the window is scrollable
+            if (mScrollable)
+            {
+                // set scroll value to maximum-scrolled-value
+                // divide by 10 and at the end multiply by ten to catch bad scroll values (since scrolling jumps +/- 10)
+                mItemScrolledValue = - 10 * ((int)mCombinedItemsSize / 10 - mScissorRectangle.Height / 10);
+            }
+        }
+
+        // true if window is active (window + items in window will be drawn/updated) or inactive (not drawn/updated)
+        internal bool Active { get; set; }
+
+        // position of the window
+        public Vector2 Position { get; set; }
+
+        // size of the window
+        public Vector2 Size { get; }
+
+        // the window name is the windows title
+        public string WindowName { private get; set; }
+
+        public void ResetScrollValue()
+        {
+            mItemScrolledValue = 0;
+        }
+
         #region InputManagement
 
         public Rectangle Bounds { get; private set; }
@@ -538,14 +592,14 @@ namespace Singularity.Screen
                 {
                     case EMouseAction.ScrollUp:
                         if (!(mItemPosTop.Y > Position.Y + mTitleSizeY + 1.5 * mMinimizationSize))
-                            // stop from overflowing
+                        // stop from overflowing
                         {
                             mItemScrolledValue += +10;
                         }
                         break;
                     case EMouseAction.ScrollDown:
                         if (!(mItemPosBottom.Y < Position.Y + Size.Y))
-                            // stop from overflowing
+                        // stop from overflowing
                         {
                             mItemScrolledValue += -10;
                         }
@@ -554,8 +608,9 @@ namespace Singularity.Screen
             }
 
             // everything following handles if the input is given through or not
+
             if (!mMinimized && (mMouseX > Position.X && mMouseX < Position.X + Size.X) && mMouseY > Position.Y && mMouseY < Position.Y + Size.Y)
-                // not minimized + mouse on window
+            // not minimized + mouse on window
             {
                 return false;
             }
@@ -567,6 +622,7 @@ namespace Singularity.Screen
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
+            
             if (mouseAction == EMouseAction.LeftClick && withinBounds && Active)
             {
                 #region minimization
@@ -589,7 +645,7 @@ namespace Singularity.Screen
                             item.ActiveInWindow = false;
                         }
                     }
-                else if (mMinimized)
+                    else if (mMinimized)
                     // LeftClick on Minimize-Button, window IS minimized
                     // -> use regular rectangles + move window back in screen if outside
                     {
@@ -614,17 +670,17 @@ namespace Singularity.Screen
 
                 #region window movement initiation
 
-            if (mMouseX > Position.X &&
-                mMouseX < Position.X + Position.X + Size.X &&
-                mMouseY > Position.Y &&
-                mMouseY < Position.Y + mTitleSizeY + mMinimizationSize &&
-                !mClickOnTitleBar ||
-                (WindowName == "" && 
-                 mMouseX > Position.X &&
-                 mMouseX < Position.X + Position.X + Size.X &&
-                 mMouseY > Position.Y &&
-                 mMouseY < Position.Y + Position.Y + Size.Y &&
-                 !mClickOnTitleBar))
+                if (mMouseX > Position.X &&
+                    mMouseX < Position.X + Position.X + Size.X &&
+                    mMouseY > Position.Y &&
+                    mMouseY < Position.Y + mTitleSizeY + mMinimizationSize &&
+                    !mClickOnTitleBar ||
+                    (WindowName == "" &&
+                     mMouseX > Position.X &&
+                     mMouseX < Position.X + Position.X + Size.X &&
+                     mMouseY > Position.Y &&
+                     mMouseY < Position.Y + Position.Y + Size.Y &&
+                     !mClickOnTitleBar))
                 // mouse above the title rectangle
                 {
                     if (!(mMouseX >= mMinimizationRectangle.X &&
@@ -647,7 +703,7 @@ namespace Singularity.Screen
             // everything following handles if the input is given through or not
 
             if (!mMinimized && (mMouseX > Position.X && mMouseX < Position.X + Size.X) && mMouseY > Position.Y && mMouseY < Position.Y + Size.Y)
-                // not minimized + mouse on window
+            // not minimized + mouse on window
             {
                 return false;
             }
@@ -663,7 +719,7 @@ namespace Singularity.Screen
             #region window movement
 
             if (mClickOnTitleBar && Active)
-                // enable single window movement + no reaction when deactivated
+            // enable single window movement + no reaction when deactivated
             {
                 // backup old window position to calculate the movement
                 var positionOld = Position;
@@ -684,7 +740,7 @@ namespace Singularity.Screen
 
                 // catch top / bottom
                 if (!mMinimized)
-                    // full window
+                // full window
                 {
                     if (Position.Y < 0)
                     {
@@ -696,7 +752,7 @@ namespace Singularity.Screen
                     }
                 }
                 else
-                    // minimized window
+                // minimized window
                 {
                     if (Position.Y < 0)
                     {
@@ -718,7 +774,7 @@ namespace Singularity.Screen
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
             if (!Active)
-                // window deactivated
+            // window deactivated
             {
                 return true;
             }
@@ -731,7 +787,7 @@ namespace Singularity.Screen
         public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
             if (!Active)
-                // window is deactivated
+            // window is deactivated
             {
                 return;
             }
@@ -741,45 +797,5 @@ namespace Singularity.Screen
             mMouseY = screenY;
         }
         #endregion
-
-        /// <summary>
-        /// Calculate the scrollbar
-        /// </summary>
-        /// <param name="scissorRectangle">the scissorrectangle used to cut the winodw</param>
-        /// <param name="combinedItemsSize">the size of all items combined with padding</param>
-        /// <returns></returns>
-        private Rectangle CalcScrollbarRectangle(Rectangle scissorRectangle, float combinedItemsSize)
-        {
-            // scrollbar to scrollbarRectangleBorder has the same ratio as scissorRectangle to combinedItemSize
-            var sizeY = scissorRectangle.Height / combinedItemsSize * mScrollBarBorderRectangle.Height;
-
-            // number of possible steps
-            var numberOfSteps = (combinedItemsSize - scissorRectangle.Height) / 10;
-            // number of times scrolled down
-            var numberOfStepsTaken = (scissorRectangle.Y - mItemPosTop.Y) / 10;
-            // step size for the scrollbar
-            var stepSize = (mScrollBarBorderRectangle.Height - sizeY) / numberOfSteps;
-            // calculate new position
-            var positionY = mScrollBarBorderRectangle.Y + numberOfStepsTaken * stepSize + 3;
-
-            return new Rectangle((int)(Position.X + Size.X - mMinimizationSize + 2), (int)positionY, mMinimizationSize - 4, (int)sizeY);
-        }
-
-        // true if window is active (window + items in window will be drawn/updated) or inactive (not drawn/updated)
-        internal bool Active { get; set; }
-
-        // position of the window
-        public Vector2 Position { get; set; }
-
-        // size of the window
-        public Vector2 Size { get; }
-
-        // the window name is the windows title
-        public string WindowName { private get; set; }
-
-        public void ResetScrollValue()
-        {
-            mItemScrolledValue = 0;
-        }
     }
 }

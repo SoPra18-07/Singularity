@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -1307,6 +1308,14 @@ namespace Singularity.Screen.ScreenClasses
             }
         }
 
+        public void UpdateEventLog(EventLogIWindowItem newEvent, EventLogIWindowItem oldEvent)
+        {
+            mEventLogWindow.DeleteItem(oldEvent);
+
+            mEventLogWindow.AddItem(newEvent);
+            mEventLogWindow.AutoScrolledToEnd();
+        }
+
         /// <summary>
         /// Used to Deactivate the UI to activate it later (used by settler)
         /// </summary>
@@ -1926,6 +1935,7 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
+            mDirector.GetEventLog.AddEvent("testing", new Vector2(500,500));
             return true;
         }
 

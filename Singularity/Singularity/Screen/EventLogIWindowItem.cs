@@ -5,17 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Manager;
 
 namespace Singularity.Screen
 {
-    class EventLogIWindowItem : IWindowItem
+    public sealed class EventLogIWindowItem : IWindowItem
     {
         private Vector2 mPositionOfEvent;
 
         private readonly Button mPositionButton;
         private readonly TextField mText;
 
-        public EventLogIWindowItem(string text, Vector2 positionOfEvent, float width, SpriteFont spriteFont)
+        private readonly InfoBoxWindow mInfoBox;
+
+        public EventLogIWindowItem(string text, Vector2 positionOfEvent, float width, SpriteFont spriteFont, Director director)
         {
             mPositionOfEvent = positionOfEvent;
 
@@ -29,6 +32,8 @@ namespace Singularity.Screen
             Size = new Vector2(width, mText.Size.Y);
 
             Position = Vector2.Zero;
+
+            mInfoBox = new InfoBoxWindow(new List<IWindowItem> { new TextField("To event", Vector2.Zero, spriteFont.MeasureString("To event"), spriteFont, Color.White) }, spriteFont.MeasureString("To event"), Color.White, Color.Black, true, director);
 
             ActiveInWindow = true;
         }
@@ -56,12 +61,12 @@ namespace Singularity.Screen
 
         private void ShowInfoBox(object sender, EventArgs eventArgs)
         {
-            // TODO
+            mInfoBox.Active = true;
         }
 
         private void HideInfoBox(object sender, EventArgs eventArgs)
         {
-            // TODO
+            mInfoBox.Active = false;
         }
 
         private void JumpToPosition(object sender, EventArgs eventArgs)

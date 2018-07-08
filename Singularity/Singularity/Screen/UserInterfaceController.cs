@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Singularity.Manager;
 using Singularity.PlatformActions;
 using Singularity.Platforms;
@@ -85,6 +86,9 @@ namespace Singularity.Screen
             mActivePlatform.IsSelected = false;
         }
 
-        // TODO : ADD EVENT LOG CONTROLLING
+        public void UpdateEventLog(EventLogIWindowItem newEvent, EventLogIWindowItem oldEvent)
+        {
+            ControlledUserInterface?.UpdateEventLog(newEvent, oldEvent);
+        }
     }
 }

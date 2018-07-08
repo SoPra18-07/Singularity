@@ -20,6 +20,7 @@ namespace Singularity.Manager
             GetMilitaryManager = new MilitaryManager(); // TODO: Update this code if the MilitaryManager is not getting everything from the StructureMap or sth ...
                                                         // (like units telling it they exist and the like)
             GetUserInterfaceController = new UserInterfaceController(this);
+            GetEventLog = new EventLog(GetUserInterfaceController, this, content);
             GetGraphicsDeviceManager = graphics;
 
             GetSoundManager.LoadContent(content);
@@ -41,6 +42,8 @@ namespace Singularity.Manager
         public UserInterfaceController GetUserInterfaceController { get; }
 
         public GraphicsDeviceManager GetGraphicsDeviceManager { get; }
+
+        public EventLog GetEventLog { get; }
 
         public void Update(GameTime gametime, bool isActive)
         {
