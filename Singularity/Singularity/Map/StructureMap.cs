@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -464,6 +465,44 @@ namespace Singularity.Map
             }
 
             // now update the energy level of all graphs
+            foreach (var graphId in mGraphIdToGraph.Keys)
+            {
+                if (mGraphIdToGraph[graphId] == null)
+                {
+                    continue;
+                }
+
+                UpdateEnergyLevel(graphId);
+            }
+        }
+
+        private void UpdateEnergyLevel(int graphId)
+        {
+            // happens when we first set the value here
+            if (mGraphIdToEnergyLevel.Count <= graphId)
+            {
+                mGraphIdToEnergyLevel[graphId] = 0;
+            }
+
+            var wasNegative = mGraphIdToEnergyLevel[graphId] < 0;
+
+            mGraphIdToEnergyLevel[graphId] = 0;
+
+            foreach (var node in mGraphIdToGraph[graphId].GetNodes())
+            {
+                // we only want the energy level of active platforms
+                if (!((PlatformBlank) node).IsActive())
+                {
+                    continue;
+                }
+
+                mGraphIdToEnergyLevel[graphId] = mGraphIdToEnergyLevel[graphId] + ((PlatformBlank) node).GetProvidingEnergy();
+                mGraphIdToEnergyLevel[graphId] = mGraphIdToEnergyLevel[graphId] - ((PlatformBlank) node).GetDrainingEnergy();
+            }
+
+            Debug.WriteLine(mGraphIdToEnergyLevel[graphId]);
+
+            CheckEnergyLevel(graphId, wasNegative);
         }
 
         /// <summary>
@@ -497,13 +536,21 @@ namespace Singularity.Map
             mMouseY = worldY;
         }
 
-        private void CheckEnergyLevel(int graphId)
+        private void CheckEnergyLevel(int graphId, bool wasNegative)
         {
-            if (mGraphIdToEnergyLevel[graphId] > 0)
+            // energy level was positive and still is
+            if (!wasNegative && mGraphIdToEnergyLevel[graphId] >= 0)
             {
                 return;
             }
 
+            // energy level was negative and is positive now
+            if (wasNegative && mGraphIdToEnergyLevel[graphId] >= 0)
+            {
+                return;
+            }
+
+            // energy level was something and is now negative
             foreach (var node in mGraphIdToGraph[graphId].GetNodes())
             {
                 ((PlatformBlank)node).Deactivate();

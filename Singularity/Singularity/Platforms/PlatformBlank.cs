@@ -894,11 +894,28 @@ namespace Singularity.Platforms
         public void Activate()
         {
             mIsActive = true;
+            //TODO: actually active the platform again -> distributionmanager and stuff
         }
 
         public void Deactivate()
         {
             mIsActive = false;
+            //TODO: actually deactivate the platform -> distributinmanager and stuff
+        }
+
+        public int GetProvidingEnergy()
+        {
+            return mProvidingEnergy;
+        }
+
+        public int GetDrainingEnergy()
+        {
+            return mDrainingEnergy;
+        }
+
+        public bool IsActive()
+        {
+            return mIsActive;
         }
 
         /// <summary>
