@@ -66,8 +66,24 @@ namespace Singularity.Screen
             mCurrentPages[2] = mLogisticsSlider.CurrentPage();
             mCurrentPages[3] = mProductionSlider.CurrentPage();
 
-            mDefSlider.MaxIncrement = mDefSlider.CurrentPage() + free;
-            mProductionSlider.MaxIncrement = mProductionSlider.CurrentPage() + free;
+            //If true, there are no defending platforms
+            if (distr.GetRestrictions(true))
+            {
+                mDefSlider.MaxIncrement = 0;
+            }
+            else
+            {
+                mDefSlider.MaxIncrement = mDefSlider.CurrentPage() + free;
+            }
+
+            if (distr.GetRestrictions(false))
+            {
+                mProductionSlider.MaxIncrement = 0;
+            }
+            else
+            {
+                mProductionSlider.MaxIncrement = mProductionSlider.CurrentPage() + free;
+            }
             mConstructionSlider.MaxIncrement = mConstructionSlider.CurrentPage() + free;
             mLogisticsSlider.MaxIncrement = mLogisticsSlider.CurrentPage() + free;
 

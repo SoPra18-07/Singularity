@@ -81,7 +81,7 @@ namespace Singularity.Units
         private Optional<INode> mDestination;
 
         [DataMember]
-        public int Graphid { get; set; }
+        public int TargetGraphid { get; set; }
 
         /// <summary>
         /// The speed the unit moves at.
@@ -145,6 +145,7 @@ namespace Singularity.Units
                 //This only tells the platform that the unit is on the way! Use ShowedUp to tell the platform that the unit has arrived.
                 mTask.End.Get().AssignUnits(this, Job);
                 mDestination = Optional<INode>.Of(mTask.End.Get());
+                TargetGraphid = mTask.End.Get().Graphid;
             }
 
             if (mTask.Action.IsPresent())
@@ -180,6 +181,7 @@ namespace Singularity.Units
                         if (mTask.End.IsPresent())
                         {
                             mDestination = Optional<INode>.Of(mTask.End.Get());
+                            TargetGraphid = mTask.End.Get().Graphid;
                         }
                     }
 
@@ -242,7 +244,7 @@ namespace Singularity.Units
         }
 
         /// <summary>
-        /// Logistics and Construction resemble each other very much, so this is the method to handle both
+        /// Logistics and Construction resemble each other very much, so this is the method to handle both.
         /// </summary>
         private void HandleTransport()
         {
@@ -256,6 +258,7 @@ namespace Singularity.Units
                 if (mTask.Begin.IsPresent())
                 {
                     mDestination = Optional<INode>.Of(mTask.Begin.Get());
+                    TargetGraphid = mTask.Begin.Get().Graphid;
                 }
                 else
                 {
@@ -320,6 +323,7 @@ namespace Singularity.Units
                 if (mTask.End.IsPresent() && !mDone)
                 {
                     mDestination = Optional<INode>.Of(mTask.End.Get());
+                    TargetGraphid = mTask.End.Get().Graphid;
                 }
             }
 

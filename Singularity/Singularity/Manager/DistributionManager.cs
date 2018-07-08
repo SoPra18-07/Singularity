@@ -187,9 +187,25 @@ namespace Singularity.Manager
         }
 
         /// <summary>
+        /// Used to determine whether there are no defending or producing platforms.
+        /// </summary>
+        /// <param name="isDefense">A bool to determine whether you are asking for defending or producing platforms.</param>
+        /// <returns>False if there are such platforms, true otherwise</returns>
+        public bool GetRestrictions(bool isDefense)
+        {
+            if (isDefense)
+            {
+                return mDefPlatforms.Count == 0;
+            }
+
+            return mProdPlatforms.Count == 0;
+        }
+
+        /// <summary>
         /// Get the total amount of Units INDIRECTLY assigned in a Job.
         /// </summary>
-        /// <returns></returns>
+        /// <param name="job">The job I was talking about.</param>
+        /// <returns>The total amount of Units Inridectly assigned in the given job, as an int.</returns>
         public int GetJobCount(JobType job)
         {
             switch (job)
@@ -581,6 +597,7 @@ namespace Singularity.Manager
         /// <summary>
         /// Is called internally by the Distributionmanager to Assign Units to the production or the defense, without destroying the balance of the numbers
         /// of units at the platforms. The units will have the corresponding job afterwards.
+        /// If there are no platforms for production or defense, the job will stay Idle afterwards
         /// </summary>
         /// <param name="toassign">The units to assign</param>
         /// <param name="isDefense"></param>
@@ -602,6 +619,17 @@ namespace Singularity.Manager
             var startindex = 0;
             var highassign = int.MinValue;
             var search = true;
+
+            if (list.Count == 0)
+            {
+                //Dont let them change the job to production or defense when there are no platforms to work on.
+                foreach (var unit in toassign)
+                {
+                    mIdle.Add(unit);
+                }
+                return;
+            }
+
             //SEARCH INDEX
             //iterate through the list, from the left side this time (see GetUnitsFairly) and search the index of the platforms with less units
             for (var i = 0; search; i++)
@@ -945,7 +973,7 @@ namespace Singularity.Manager
                         {
                             //TODO: Use TargetGraphid, it shouldnt have a graphid itself!!!!!!!
                             //It will arrive, so just handle it as if it had already arrived at the platform
-                            if (unitbool.GetFirst().Graphid == platform.Graphid)
+                            if (unitbool.GetFirst().TargetGraphid == platform.Graphid)
                             {
                                 joblist.Remove(unitbool.GetFirst());
                             }
