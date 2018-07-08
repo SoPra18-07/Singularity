@@ -28,7 +28,7 @@ namespace Singularity.Platforms
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
 
-            mProvidingEnergy = 20;
+            mProvidingEnergy = ProvidingEnergy;
 
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Command;
