@@ -22,7 +22,7 @@ namespace Singularity.Manager
             GetUserInterfaceController = new UserInterfaceController(this);
             GetGraphicsDeviceManager = graphics;
 
-            GetSoundManager.LoadContent(content);
+            GetSoundManager.LoadContent(contentManager: content);
             GetSoundManager.PlaySoundTrack();
 
 
@@ -46,9 +46,9 @@ namespace Singularity.Manager
         {
             if (isActive)
             {
-                GetInputManager.Update(gametime);
+                GetInputManager.Update(gametime: gametime);
             }
-            GetStoryManager.Update(gametime);
+            GetStoryManager.Update(time: gametime);
         }
     }
 }

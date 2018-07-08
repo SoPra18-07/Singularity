@@ -349,19 +349,19 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, mRasterizerState);
+            spriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend, samplerState: null, depthStencilState: null, rasterizerState: mRasterizerState);
 
             // draw all windows
             foreach (var window in mWindowList)
             {
-                window.Draw(spriteBatch);
+                window.Draw(spriteBatch: spriteBatch);
             }
 
             foreach (var infoBox in mInfoBoxList)
             {
                 if (infoBox.Active)
                 {
-                    infoBox.Draw(spriteBatch);
+                    infoBox.Draw(spriteBatch: spriteBatch);
                 }
             }
 
@@ -379,8 +379,8 @@ namespace Singularity.Screen.ScreenClasses
             mLibSans10 = content.Load<SpriteFont>("LibSans10");
 
             // Texture Loading
-            mBlankPlatformTexture = content.Load<Texture2D>("PlatformBasic");
-            mOtherPlatformTexture = content.Load<Texture2D>("PlatformSpriteSheet");
+            mBlankPlatformTexture = content.Load<Texture2D>(assetName: "PlatformBasic");
+            mOtherPlatformTexture = content.Load<Texture2D>(assetName: "PlatformSpriteSheet");
 
             // set resolution values TODO : GET GRAPHICS FROM DIRECTOR
             mCurrentScreenWidth = mDirector.GetGraphicsDeviceManager.PreferredBackBufferWidth;
@@ -389,8 +389,8 @@ namespace Singularity.Screen.ScreenClasses
             mPrevScreenHeight = mCurrentScreenHeight;
 
             // change color for the border or the filling of all userinterface windows here
-            var windowColor = new Color(0.27f, 0.5f, 0.7f, 0.8f);
-            var borderColor = new Color(0.68f, 0.933f, 0.933f, .8f);
+            var windowColor = new Color(r: 0.27f, g: 0.5f, b: 0.7f, alpha: 0.8f);
+            var borderColor = new Color(r: 0.68f, g: 0.933f, b: 0.933f, alpha: .8f);
 
             #region windows size calculation
 
@@ -525,7 +525,7 @@ namespace Singularity.Screen.ScreenClasses
 
             #region civilUnitsWindow
 
-            mCivilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(0, 0), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 10, 20, true, mLibSans14, mInputManager, mGraphics);
+            mCivilUnitsWindow = new WindowObject(windowName: "// CIVIL UNITS", position: new Vector2(x: 0, y: 0), size: new Vector2(x: civilUnitsWidth, y: civilUnitsHeight), colorBorder: borderColor, colorFill: windowColor, borderPadding: 10, objectPadding: 20, minimizable: true, spriteFont: mLibSans14, inputManager: mInputManager, graphics: mGraphics);
 
             // create items
             mDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
@@ -540,7 +540,7 @@ namespace Singularity.Screen.ScreenClasses
             mIdleUnitsTextAndAmount = new TextAndAmountIWindowItem("Idle", 0, Vector2.Zero, new Vector2(civilUnitsWidth, 0), mLibSans12, Color.White );
 
             //This instance will handle the comunication between Sliders and DistributionManager.
-            var handler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mBuildSlider, mLogisticsSlider);
+            var handler = new SliderHandler(director: ref mDirector, def: mDefSlider, prod: mProductionSlider, constr: mBuildSlider, logi: mLogisticsSlider);
 
             // adding all items
             mCivilUnitsWindow.AddItem(mIdleUnitsTextAndAmount);
@@ -553,14 +553,14 @@ namespace Singularity.Screen.ScreenClasses
             mCivilUnitsWindow.AddItem(mProductionTextField);
             mCivilUnitsWindow.AddItem(mProductionSlider);
 
-            mWindowList.Add(mCivilUnitsWindow);
+            mWindowList.Add(item: mCivilUnitsWindow);
 
             #endregion
 
             // TODO : WHAT IS THE RESOURCE WINDOW SUPPOSED TO SHOW ? - IMPLEMENT IT
             #region resourceWindow
 
-            mResourceWindow = new WindowObject("// RESOURCES", new Vector2(0, 0), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mInputManager, mGraphics);
+            mResourceWindow = new WindowObject(windowName: "// RESOURCES", position: new Vector2(x: 0, y: 0), size: new Vector2(x: resourceWidth, y: resourceHeight), minimizable: true, spriteFont: mLibSans14, inputManager: mInputManager, graphics: mGraphics);
 
             // create all items (these are simple starting values which will be updated automatically by the UI controller)
             mResourceItemChip = new ResourceIWindowItem(EResourceType.Chip, 10, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
@@ -597,7 +597,7 @@ namespace Singularity.Screen.ScreenClasses
 
             #region buildMenuWindow
 
-            mBuildMenuWindow = new WindowObject("// BUILDMENU", new Vector2(0, 0), new Vector2(buildMenuWidth, buildMenuHeight), true, mLibSans14, mInputManager, mGraphics);
+            mBuildMenuWindow = new WindowObject(windowName: "// BUILDMENU", position: new Vector2(x: 0, y: 0), size: new Vector2(x: buildMenuWidth, y: buildMenuHeight), minimizable: true, spriteFont: mLibSans14, inputManager: mInputManager, graphics: mGraphics);
 
             #region button definitions
 
@@ -727,9 +727,9 @@ namespace Singularity.Screen.ScreenClasses
             var infoBuildBlank = new TextField("Build Blank Platform",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Blank Platform"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
-            
+
             var infoBuildBlankResource1 = new ResourceIWindowItem(EResourceType.Chip, 2, mLibSans10.MeasureString("Build Blank Platform"), mLibSans10);
 
             mInfoBuildBlank = new InfoBoxWindow(
@@ -740,7 +740,7 @@ namespace Singularity.Screen.ScreenClasses
                 boxed: true,
                 director: mDirector);
 
-            mInfoBoxList.Add(mInfoBuildBlank);
+            mInfoBoxList.Add(item: mInfoBuildBlank);
 
             // Open Basic List info
             var infoBasicList = new TextField("Basic Building Menu",
@@ -757,13 +757,13 @@ namespace Singularity.Screen.ScreenClasses
                 boxed: true,
                 director: mDirector);
 
-            mInfoBoxList.Add(mInfoBasicList);
+            mInfoBoxList.Add(item: mInfoBasicList);
 
             // Open Special List info
             var infoSpecialList = new TextField("Special Building Menu",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Special Building Menu"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoSpecialList = new InfoBoxWindow(
@@ -774,13 +774,13 @@ namespace Singularity.Screen.ScreenClasses
                 boxed: true,
                 director: mDirector);
 
-            mInfoBoxList.Add(mInfoSpecialList);
+            mInfoBoxList.Add(item: mInfoSpecialList);
 
             // Open Military List info
             var infoMilitaryList = new TextField("Military Building Menu",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Military Building Menu"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoMilitaryList = new InfoBoxWindow(
@@ -791,13 +791,13 @@ namespace Singularity.Screen.ScreenClasses
                 boxed: true,
                 director: mDirector);
 
-            mInfoBoxList.Add(mInfoMilitaryList);
+            mInfoBoxList.Add(item: mInfoMilitaryList);
 
             // Build Junkyard info
             var infoJunkyard = new TextField("Build Junkyard",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Junkyard"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildJunkyard = new InfoBoxWindow(
@@ -808,13 +808,13 @@ namespace Singularity.Screen.ScreenClasses
                 boxed: true,
                 director: mDirector);
 
-            mInfoBoxList.Add(mInfoBuildJunkyard);
+            mInfoBoxList.Add(item: mInfoBuildJunkyard);
 
             // Build Quarry info
             var infoQuarry = new TextField("Build Quarry",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Quarry"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildQuarry = new InfoBoxWindow(
@@ -825,13 +825,13 @@ namespace Singularity.Screen.ScreenClasses
                 boxed: true,
                 director: mDirector);
 
-            mInfoBoxList.Add(mInfoBuildQuarry);
+            mInfoBoxList.Add(item: mInfoBuildQuarry);
 
             // Build Mine info
             var infoMine = new TextField("Build Mine",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Mine"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildMine = new InfoBoxWindow(
@@ -842,13 +842,13 @@ namespace Singularity.Screen.ScreenClasses
                 boxed: true,
                 director: mDirector);
 
-            mInfoBoxList.Add(mInfoBuildMine);
+            mInfoBoxList.Add(item: mInfoBuildMine);
 
             // Build Well info
             var infoWell = new TextField("Build Well",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Well"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildWell = new InfoBoxWindow(
@@ -859,7 +859,7 @@ namespace Singularity.Screen.ScreenClasses
                 boxed: true,
                 director: mDirector);
 
-            mInfoBoxList.Add(mInfoBuildWell);
+            mInfoBoxList.Add(item: mInfoBuildWell);
 
             // Build Factory info
             var infoFactory = new TextField("Build Factory",
@@ -876,13 +876,13 @@ namespace Singularity.Screen.ScreenClasses
                 boxed: true,
                 director: mDirector);
 
-            mInfoBoxList.Add(mInfoBuildFactory);
+            mInfoBoxList.Add(item: mInfoBuildFactory);
 
             // Build Storage info
             var infoStorage = new TextField("Build Storage",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Storage"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildStorage = new InfoBoxWindow(
@@ -893,13 +893,13 @@ namespace Singularity.Screen.ScreenClasses
                 boxed: true,
                 director: mDirector);
 
-            mInfoBoxList.Add(mInfoBuildStorage);
+            mInfoBoxList.Add(item: mInfoBuildStorage);
 
             // Build Powerhouse info
             var infoPowerhouse = new TextField("Build Powerhouse",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Powerhouse"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildPowerhouse = new InfoBoxWindow(
@@ -910,13 +910,13 @@ namespace Singularity.Screen.ScreenClasses
                 boxed: true,
                 director: mDirector);
 
-            mInfoBoxList.Add(mInfoBuildPowerhouse);
+            mInfoBoxList.Add(item: mInfoBuildPowerhouse);
 
             // Build Commandcenter info
             var infoCommandcenter = new TextField("Build Commandcenter",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Commandcenter"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildCommandcenter = new InfoBoxWindow(
@@ -927,13 +927,13 @@ namespace Singularity.Screen.ScreenClasses
                 boxed: true,
                 director: mDirector);
 
-            mInfoBoxList.Add(mInfoBuildCommandcenter);
+            mInfoBoxList.Add(item: mInfoBuildCommandcenter);
 
             // Build Armory info
             var infoArmory = new TextField("Build Armory",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Armory"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildArmory = new InfoBoxWindow(
@@ -944,13 +944,13 @@ namespace Singularity.Screen.ScreenClasses
                 boxed: true,
                 director: mDirector);
 
-            mInfoBoxList.Add(mInfoBuildArmory);
+            mInfoBoxList.Add(item: mInfoBuildArmory);
 
             // Build Kinetic Tower info
             var infoKineticTower = new TextField("Build Kinetic Tower",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Kinetic Tower"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildKineticTower = new InfoBoxWindow(
@@ -961,13 +961,13 @@ namespace Singularity.Screen.ScreenClasses
                 boxed: true,
                 director: mDirector);
 
-            mInfoBoxList.Add(mInfoBuildKineticTower);
+            mInfoBoxList.Add(item: mInfoBuildKineticTower);
 
             // Build Laser Tower info
             var infoLaserTower = new TextField("Build Laser Tower",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Laser Tower"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildLaserTower = new InfoBoxWindow(
@@ -978,13 +978,13 @@ namespace Singularity.Screen.ScreenClasses
                 boxed: true,
                 director: mDirector);
 
-            mInfoBoxList.Add(mInfoBuildLaserTower);
+            mInfoBoxList.Add(item: mInfoBuildLaserTower);
 
             // Build Barracks info
             var infoBarracks = new TextField("Build Barracks",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Barracks"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildBarracks = new InfoBoxWindow(
@@ -995,7 +995,7 @@ namespace Singularity.Screen.ScreenClasses
                 boxed: true,
                 director: mDirector);
 
-            mInfoBoxList.Add(mInfoBuildBarracks);
+            mInfoBoxList.Add(item: mInfoBuildBarracks);
 
             #endregion
 
@@ -1007,22 +1007,22 @@ namespace Singularity.Screen.ScreenClasses
             var specialList = new List<IWindowItem> { mJunkyardPlatformButton, mQuarryPlatformButton, mMinePlatformButton, mWellPlatformButton };
             var militaryList = new List<IWindowItem> { mArmoryPlatformButton, mKineticTowerPlatformButton, mLaserTowerPlatformButton, mBarracksPlatformButton };
             // create the horizontalCollection objects which process the button-row placement
-            mButtonTopList = new HorizontalCollection(topList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
-            mButtonBasicList = new HorizontalCollection(basicList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
-            mButtonSpecialList = new HorizontalCollection(specialList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
-            mButtonMilitaryList = new HorizontalCollection(militaryList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
+            mButtonTopList = new HorizontalCollection(itemList: topList, size: new Vector2(x: buildMenuWidth - 30, y: mBlankPlatformButton.Size.X), position: Vector2.Zero);
+            mButtonBasicList = new HorizontalCollection(itemList: basicList, size: new Vector2(x: buildMenuWidth - 30, y: mBlankPlatformButton.Size.X), position: Vector2.Zero);
+            mButtonSpecialList = new HorizontalCollection(itemList: specialList, size: new Vector2(x: buildMenuWidth - 30, y: mBlankPlatformButton.Size.X), position: Vector2.Zero);
+            mButtonMilitaryList = new HorizontalCollection(itemList: militaryList, size: new Vector2(x: buildMenuWidth - 30, y: mBlankPlatformButton.Size.X), position: Vector2.Zero);
             // add the all horizontalCollection to the build menu window, but deactivate all but topList
             // (they get activated if the corresponding button is pressed)
-            mBuildMenuWindow.AddItem(mButtonTopList);
-            mBuildMenuWindow.AddItem(mButtonBasicList);
+            mBuildMenuWindow.AddItem(item: mButtonTopList);
+            mBuildMenuWindow.AddItem(item: mButtonBasicList);
             mButtonBasicList.ActiveHorizontalCollection = true;
-            mBuildMenuWindow.AddItem(mButtonSpecialList);
+            mBuildMenuWindow.AddItem(item: mButtonSpecialList);
             mButtonSpecialList.ActiveHorizontalCollection = false;
-            mBuildMenuWindow.AddItem(mButtonMilitaryList);
+            mBuildMenuWindow.AddItem(item: mButtonMilitaryList);
             mButtonMilitaryList.ActiveHorizontalCollection = false;
 
             // add the build menu to the UI's windowList
-            mWindowList.Add(mBuildMenuWindow);
+            mWindowList.Add(item: mBuildMenuWindow);
 
             #endregion
 
@@ -1080,7 +1080,7 @@ namespace Singularity.Screen.ScreenClasses
         private void ResetWindowsToStandardPositon()
         {
             // civil units position
-            mCivilUnitsWindow.Position = new Vector2(12, 12 + 25);
+            mCivilUnitsWindow.Position = new Vector2(x: 12, y: 12 + 25);
 
             // resource window position
             mResourceWindow.Position = new Vector2(12, mCurrentScreenHeight - 12 - mResourceWindow.Size.Y);
@@ -1371,16 +1371,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                EPlatformType.Blank,
-                EPlacementType.MouseFollowAndRoad,
-                EScreen.UserInterfaceScreen,
-                mCamera,
-                ref mDirector,
-                0f,
-                0f,
-                mResourceMap);
+                platformType: EPlatformType.Blank,
+                placementType: EPlacementType.MouseFollowAndRoad,
+                screen: EScreen.UserInterfaceScreen,
+                camera: mCamera,
+                director: ref mDirector,
+                x: 0f,
+                y: 0f,
+                resourceMap: mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
 
             mCanBuildPlatform = false;
 
@@ -1399,16 +1399,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                EPlatformType.Junkyard,
-                EPlacementType.MouseFollowAndRoad,
-                EScreen.UserInterfaceScreen,
-                mCamera,
-                ref mDirector,
-                0f,
-                0f,
-                mResourceMap);
+                platformType: EPlatformType.Junkyard,
+                placementType: EPlacementType.MouseFollowAndRoad,
+                screen: EScreen.UserInterfaceScreen,
+                camera: mCamera,
+                director: ref mDirector,
+                x: 0f,
+                y: 0f,
+                resourceMap: mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1425,16 +1425,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                EPlatformType.Quarry,
-                EPlacementType.MouseFollowAndRoad,
-                EScreen.UserInterfaceScreen,
-                mCamera,
-                ref mDirector,
-                0f,
-                0f,
-                mResourceMap);
+                platformType: EPlatformType.Quarry,
+                placementType: EPlacementType.MouseFollowAndRoad,
+                screen: EScreen.UserInterfaceScreen,
+                camera: mCamera,
+                director: ref mDirector,
+                x: 0f,
+                y: 0f,
+                resourceMap: mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1451,16 +1451,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                EPlatformType.Mine,
-                EPlacementType.MouseFollowAndRoad,
-                EScreen.UserInterfaceScreen,
-                mCamera,
-                ref mDirector,
-                0f,
-                0f,
-                mResourceMap);
+                platformType: EPlatformType.Mine,
+                placementType: EPlacementType.MouseFollowAndRoad,
+                screen: EScreen.UserInterfaceScreen,
+                camera: mCamera,
+                director: ref mDirector,
+                x: 0f,
+                y: 0f,
+                resourceMap: mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1477,16 +1477,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                EPlatformType.Well,
-                EPlacementType.MouseFollowAndRoad,
-                EScreen.UserInterfaceScreen,
-                mCamera,
-                ref mDirector,
-                0f,
-                0f,
-                mResourceMap);
+                platformType: EPlatformType.Well,
+                placementType: EPlacementType.MouseFollowAndRoad,
+                screen: EScreen.UserInterfaceScreen,
+                camera: mCamera,
+                director: ref mDirector,
+                x: 0f,
+                y: 0f,
+                resourceMap: mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1503,16 +1503,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                EPlatformType.Factory,
-                EPlacementType.MouseFollowAndRoad,
-                EScreen.UserInterfaceScreen,
-                mCamera,
-                ref mDirector,
-                0f,
-                0f,
-                mResourceMap);
+                platformType: EPlatformType.Factory,
+                placementType: EPlacementType.MouseFollowAndRoad,
+                screen: EScreen.UserInterfaceScreen,
+                camera: mCamera,
+                director: ref mDirector,
+                x: 0f,
+                y: 0f,
+                resourceMap: mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1529,16 +1529,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                EPlatformType.Storage,
-                EPlacementType.MouseFollowAndRoad,
-                EScreen.UserInterfaceScreen,
-                mCamera,
-                ref mDirector,
-                0f,
-                0f,
-                mResourceMap);
+                platformType: EPlatformType.Storage,
+                placementType: EPlacementType.MouseFollowAndRoad,
+                screen: EScreen.UserInterfaceScreen,
+                camera: mCamera,
+                director: ref mDirector,
+                x: 0f,
+                y: 0f,
+                resourceMap: mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1555,16 +1555,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                EPlatformType.Energy,
-                EPlacementType.MouseFollowAndRoad,
-                EScreen.UserInterfaceScreen,
-                mCamera,
-                ref mDirector,
-                0f,
-                0f,
-                mResourceMap);
+                platformType: EPlatformType.Energy,
+                placementType: EPlacementType.MouseFollowAndRoad,
+                screen: EScreen.UserInterfaceScreen,
+                camera: mCamera,
+                director: ref mDirector,
+                x: 0f,
+                y: 0f,
+                resourceMap: mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1581,16 +1581,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                EPlatformType.Command,
-                EPlacementType.MouseFollowAndRoad,
-                EScreen.UserInterfaceScreen,
-                mCamera,
-                ref mDirector,
-                0f,
-                0f,
-                mResourceMap);
+                platformType: EPlatformType.Command,
+                placementType: EPlacementType.MouseFollowAndRoad,
+                screen: EScreen.UserInterfaceScreen,
+                camera: mCamera,
+                director: ref mDirector,
+                x: 0f,
+                y: 0f,
+                resourceMap: mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1616,16 +1616,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                EPlatformType.Kinetic,
-                EPlacementType.MouseFollowAndRoad,
-                EScreen.UserInterfaceScreen,
-                mCamera,
-                ref mDirector,
-                0f,
-                0f,
-                mResourceMap);
+                platformType: EPlatformType.Kinetic,
+                placementType: EPlacementType.MouseFollowAndRoad,
+                screen: EScreen.UserInterfaceScreen,
+                camera: mCamera,
+                director: ref mDirector,
+                x: 0f,
+                y: 0f,
+                resourceMap: mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1642,16 +1642,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                EPlatformType.Laser,
-                EPlacementType.MouseFollowAndRoad,
-                EScreen.UserInterfaceScreen,
-                mCamera,
-                ref mDirector,
-                0f,
-                0f,
-                mResourceMap);
+                platformType: EPlatformType.Laser,
+                placementType: EPlacementType.MouseFollowAndRoad,
+                screen: EScreen.UserInterfaceScreen,
+                camera: mCamera,
+                director: ref mDirector,
+                x: 0f,
+                y: 0f,
+                resourceMap: mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }
@@ -1668,16 +1668,16 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new PlatformPlacement(
-                EPlatformType.Barracks,
-                EPlacementType.MouseFollowAndRoad,
-                EScreen.UserInterfaceScreen,
-                mCamera,
-                ref mDirector,
-                0f,
-                0f,
-                mResourceMap);
+                platformType: EPlatformType.Barracks,
+                placementType: EPlacementType.MouseFollowAndRoad,
+                screen: EScreen.UserInterfaceScreen,
+                camera: mCamera,
+                director: ref mDirector,
+                x: 0f,
+                y: 0f,
+                resourceMap: mResourceMap);
 
-            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+            mStructureMap.AddPlatformToPlace(platformPlacement: mPlatformToPlace);
 
             mCanBuildPlatform = false;
         }

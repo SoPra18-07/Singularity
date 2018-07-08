@@ -32,7 +32,7 @@ namespace Singularity.Libraries
 
             // x is a separate var to make it easier to read as well.
             var x = gameTime.TotalGameTime.TotalMilliseconds - startTime;
-            return startValue + range * (-Math.Cos(x * Math.PI / duration) / 2 + 0.5d);
+            return startValue + range * (-Math.Cos(d: x * Math.PI / duration) / 2 + 0.5d);
         }
     }
 }

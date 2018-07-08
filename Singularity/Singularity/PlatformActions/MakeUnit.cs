@@ -13,7 +13,7 @@ namespace Singularity.PlatformActions
 
     internal sealed class MakeFastMilitaryUnit : AMakeUnit
     {
-        public MakeFastMilitaryUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
+        public MakeFastMilitaryUnit(PlatformBlank platform, ref Director director) : base(platform: platform, director: ref director)
         {
             mBuildingCost = new Dictionary<EResourceType, int> { { EResourceType.Metal, 3 }, { EResourceType.Chip, 2 }, {EResourceType.Fuel, 1} };
         }
@@ -22,16 +22,16 @@ namespace Singularity.PlatformActions
         {
             // unsure why this is a static method since it just returns a military unit anyways
             // var unit = MilitaryUnit.CreateMilitaryUnit(mPlatform.Center + mOffset, ref mDirector);
-            
+
             var camera = mDirector.GetStoryManager.Level.Camera;
             var map = mDirector.GetStoryManager.Level.Map;
-            var unit = new MilitaryUnit(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
+            var unit = new MilitaryUnit(position: mPlatform.Center + mOffset, camera: camera, director: ref mDirector, map: ref map);
         }
     }
 
     internal sealed class MakeStrongMilitrayUnit : AMakeUnit
     {
-        public MakeStrongMilitrayUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
+        public MakeStrongMilitrayUnit(PlatformBlank platform, ref Director director) : base(platform: platform, director: ref director)
         {
             mBuildingCost = new Dictionary<EResourceType, int> {{EResourceType.Steel, 3}, {EResourceType.Chip, 2}, {EResourceType.Fuel, 2}};
         }
@@ -49,9 +49,9 @@ namespace Singularity.PlatformActions
         protected Dictionary<EResourceType, int> mBuildingCost;
         protected Dictionary<EResourceType, int> mMissingResources;
         protected Dictionary<EResourceType, int> mToRequest;
-        protected Vector2 mOffset = new Vector2(200f);
+        protected Vector2 mOffset = new Vector2(value: 200f);
 
-        protected AMakeUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
+        protected AMakeUnit(PlatformBlank platform, ref Director director) : base(platform: platform, director: ref director)
         {
             State = PlatformActionState.Available;
         }
@@ -70,17 +70,17 @@ namespace Singularity.PlatformActions
         {
             if (mToRequest.Count > 0)
             {
-                var resource = mToRequest.Keys.ElementAt(0);
-                if (mToRequest[resource] <= 1)
+                var resource = mToRequest.Keys.ElementAt(index: 0);
+                if (mToRequest[key: resource] <= 1)
                 {
-                    mToRequest.Remove(resource);
+                    mToRequest.Remove(key: resource);
                 } else {
-                    mToRequest[resource] = mToRequest[resource] - 1;
+                    mToRequest[key: resource] = mToRequest[key: resource] - 1;
                 }
-                mDirector.GetDistributionManager.RequestResource(mPlatform, resource, this);
+                mDirector.GetDistributionManager.RequestResource(platform: mPlatform, resource: resource, action: this);
             }
 
-            mPlatform.GetPlatformResources().ForEach(action: r => GetResource(r.Type));
+            mPlatform.GetPlatformResources().ForEach(action: r => GetResource(type: r.Type));
 
             if (mMissingResources.Count <= 0)
             {
@@ -90,18 +90,12 @@ namespace Singularity.PlatformActions
 
         protected void GetResource(EResourceType type)
         {
-            if (!mMissingResources.ContainsKey(type))
-            {
-                return;
-            }
+            if (!mMissingResources.ContainsKey(key: type)) return;
+            var res = mPlatform.GetResource(resourcetype: type);
 
-            var res = mPlatform.GetResource(type);
-                
-            mMissingResources[type] -= 1;
-            if (mMissingResources[type] <= 0)
-            {
-                mMissingResources.Remove(type);
-            }
+            mMissingResources[key: type] -= 1;
+            if (mMissingResources[key: type] <= 0)
+                mMissingResources.Remove(key: type);
         }
 
         public override Dictionary<EResourceType, int> GetRequiredResources()
@@ -114,16 +108,16 @@ namespace Singularity.PlatformActions
             switch (State)
             {
                 case PlatformActionState.Available:
-                    mMissingResources = new Dictionary<EResourceType, int>(mBuildingCost);
-                    mToRequest = new Dictionary<EResourceType, int>(mMissingResources);
+                    mMissingResources = new Dictionary<EResourceType, int>(dictionary: mBuildingCost);
+                    mToRequest = new Dictionary<EResourceType, int>(dictionary: mMissingResources);
                     State = PlatformActionState.Active;
                     break;
                 case PlatformActionState.Active:
-                    mDirector.GetDistributionManager.PausePlatformAction(this);
+                    mDirector.GetDistributionManager.PausePlatformAction(action: this);
                     State = PlatformActionState.Available;
                     break;
                 default:
-                    throw new AccessViolationException("Someone/Something acccessed the state!!");
+                    throw new AccessViolationException(message: "Someone/Something acccessed the state!!");
             }
         }
     }

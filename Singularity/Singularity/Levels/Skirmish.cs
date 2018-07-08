@@ -18,15 +18,22 @@ namespace Singularity.Levels
     [DataContract]
     internal sealed class Skirmish : BasicLevel
     {
-        
+        [DataMember]
+        public GameScreen GameScreen { get; set; }
+
+        public Camera Camera { get; set; }
+
+
+        public Map.Map Map { get; set; }
+
 
         public Skirmish(GraphicsDeviceManager graphics,
             ref Director director,
             ContentManager content,
-            IScreenManager screenmanager) 
+            IScreenManager screenmanager)
             : base(graphics, ref director, content, screenmanager)
         {
-            
+
             LoadContent(content);
         }
 
@@ -35,19 +42,19 @@ namespace Singularity.Levels
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
             var platform1 = PlatformFactory.Get(EPlatformType.Blank, ref mDirector, 1000, 1000, Map.GetResourceMap());
-            
+
             GameScreen.AddObject(platform1);
 
             // this is done via the factory to test, so I can instantly see if something is some time off.
-            var platform2 = PlatformFactory.Get(EPlatformType.Well, ref mDirector, 800, 1000, Map.GetResourceMap());
-            GameScreen.AddObject(platform2);
+            var platform2 = PlatformFactory.Get(type: EPlatformType.Well, director: ref mDirector, x: 800, y: 1000, resourceMap: Map.GetResourceMap());
+            GameScreen.AddObject(toAdd: platform2);
 
             var road1 = new Road(platform1, platform2, false);
             GameScreen.AddObject(road1);
 
             //var platform2 = new Well(new Vector2(800, 1000), platformDomeTexture, platformBlankTexture, mMap.GetResourceMap(), ref mDirector);
             var platform3 = PlatformFactory.Get(EPlatformType.Quarry, ref mDirector, 1200, 1200, Map.GetResourceMap());
-            
+
             GameScreen.AddObject(platform3);
             var road2 = new Road(platform2, platform3, false);
             GameScreen.AddObject(road2);
@@ -76,8 +83,8 @@ namespace Singularity.Levels
             var milUnit = new MilitaryUnit(new Vector2(2000, 700), Camera, ref mDirector, ref map);
 
             //SetUnit
-            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, mUi);
-            
+            var setUnit = new Settler(position: new Vector2(x: 1000, y: 1250), camera: Camera, director: ref mDirector, map: ref map, gameScreen: GameScreen, ui: mUi);
+
 
             // Resources
             var res = new Resource(EResourceType.Trash, platform2.Center);
@@ -97,7 +104,7 @@ namespace Singularity.Levels
             GameScreen.AddObject(setUnit);
 
             //TESTMETHODS HERE ====================================
-            mDirector.GetDistributionManager.RequestResource(platform2, EResourceType.Oil, null);
+            mDirector.GetDistributionManager.RequestResource(platform: platform2, resource: EResourceType.Oil, action: null);
         }
 
         public GameScreen GetGameScreen()

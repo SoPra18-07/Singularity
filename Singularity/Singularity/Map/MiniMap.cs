@@ -17,7 +17,7 @@ namespace Singularity.Map
     /// platforms are represented with dots, as are military units (in the future). The original idea was to put
     /// EVERYTHING on the minimap, roads, resources, enemy units, enemy buildings, etc. The
     /// "true" purpose of a minimap is to be able to see everything at once at first glance without having to
-    /// move the games camera to that exact location. 
+    /// move the games camera to that exact location.
     /// </summary>
     public sealed class MiniMap : IWindowItem
     {
@@ -143,7 +143,7 @@ namespace Singularity.Map
         public void Update(GameTime gametime)
         {
             // only update UpdateMilliInterval milliseconds. The basic idea was to refetch all the gameobjects every second
-            // but I decided to just pass the reference which makes things alot easier. 
+            // but I decided to just pass the reference which makes things alot easier.
 
             // TODO: this could be replaced with an initialize method, that sets the reference as soons as all of them
             // TODO: are actually in the memory. For now this is fine.

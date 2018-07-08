@@ -18,7 +18,7 @@ namespace Singularity.Levels
         public Tutorial(GraphicsDeviceManager graphics,
             ref Director director,
             ContentManager content,
-            IScreenManager screenmanager) 
+            IScreenManager screenmanager)
             : base(graphics, ref director, content, screenmanager)
         {
             LoadContent(content);
@@ -30,8 +30,8 @@ namespace Singularity.Levels
 
             //SetUnit
             var map = Map;
-            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, mUi);
-            GameScreen.AddObject(setUnit);
+            var setUnit = new Settler(position: new Vector2(x: 1000, y: 1250), camera: Camera, director: ref mDirector, map: ref map, gameScreen: GameScreen, ui: mUi);
+            GameScreen.AddObject(toAdd: setUnit);
 
             //TESTMETHODS HERE =====================================
         }

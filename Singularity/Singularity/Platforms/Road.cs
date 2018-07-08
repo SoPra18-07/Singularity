@@ -66,7 +66,7 @@ namespace Singularity.Platforms
                 Destination = source.Center;
             }else
             {
-                Place(source, destination);
+                Place(source: source, dest: destination);
             }
             Blueprint = blueprint;
 
@@ -85,15 +85,15 @@ namespace Singularity.Platforms
             Source = source.Center;
             Destination = dest.Center;
 
-            source.AddEdge(this, EEdgeFacing.Outwards);
-            dest.AddEdge(this, EEdgeFacing.Inwards);
+            source.AddEdge(edge: this, facing: EEdgeFacing.Outwards);
+            dest.AddEdge(edge: this, facing: EEdgeFacing.Inwards);
 
         }
 
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawLine(Source, Destination, mBlueprint ?  new Color(new Vector4(.1803922f, 0.2078431f, .3803922f, .5f)) : new Color(new Vector3(.75f, .75f, .75f)), 5f, LayerConstants.RoadLayer);
+            spriteBatch.DrawLine(point1: Source, point2: Destination, color: mBlueprint ?  new Color(color: new Vector4(x: .1803922f, y: 0.2078431f, z: .3803922f, w: .5f)) : new Color(color: new Vector3(x: .75f, y: .75f, z: .75f)), thickness: 5f, layerDepth: LayerConstants.RoadLayer);
         }
 
         public void Update(GameTime gametime)
@@ -113,13 +113,13 @@ namespace Singularity.Platforms
 
         public float GetCost()
         {
-            return Vector2.Distance(Source, Destination);
+            return Vector2.Distance(value1: Source, value2: Destination);
         }
 
         public bool Die()
         {
-            ((PlatformBlank) SourceAsNode).Kill(this);
-            ((PlatformBlank) DestinationAsNode).Kill(this);
+            ((PlatformBlank) SourceAsNode).Kill(road: this);
+            ((PlatformBlank) DestinationAsNode).Kill(road: this);
             return true;
         }
     }

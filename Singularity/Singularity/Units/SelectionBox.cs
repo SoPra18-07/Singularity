@@ -38,24 +38,24 @@ namespace Singularity.Units
             mColor = color;
             mCamera = camera;
             mDirector = director;
-            director.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
-            director.GetInputManager.AddMousePositionListener(this);
+            director.GetInputManager.AddMouseClickListener(iMouseClickListener: this, leftClickType: EClickType.Both, rightClickType: EClickType.Both);
+            director.GetInputManager.AddMousePositionListener(iMouseListener: this);
         }
 
 
         // event includes location an size of created selection box
         private void OnSelectingBox()
         {
-            SelectingBox?.Invoke(this, EventArgs.Empty, new Vector2(mXStart, mYStart), mSizeBox);
+            SelectingBox?.Invoke(source: this, args: EventArgs.Empty, leftCorner: new Vector2(x: mXStart, y: mYStart), size: mSizeBox);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            
+
             if (mBoxExists)
             {
                 // if selection box has been created by user then draw
-                spriteBatch.StrokedRectangle(new Vector2(mXStart, mYStart), mSizeBox, Color.White, Color.White, .8f, .5f, LayerConstants.FogOfWarLayer);
+                spriteBatch.StrokedRectangle(location: new Vector2(x: mXStart, y: mYStart), size: mSizeBox, colorBorder: Color.White, colorCenter: Color.White, opacityBorder: .8f, opacityCenter: .5f, layer: LayerConstants.FogOfWarLayer);
             }
         }
 
@@ -66,7 +66,7 @@ namespace Singularity.Units
                 mXStart = mStartBox.X;
                 mYStart = mStartBox.Y;
 
-                // calculate the left hand corner of the selection box based on 
+                // calculate the left hand corner of the selection box based on
                 // the starting position of where selection box was initiated
                 if (MouseCoordinates().X < mStartBox.X)
                 {
@@ -79,8 +79,8 @@ namespace Singularity.Units
                 }
 
                 // caculate current size of selection box based on mouse position and point of start
-                mSizeBox = new Vector2(Math.Abs(mStartBox.X - MouseCoordinates().X),
-                    Math.Abs(mStartBox.Y - MouseCoordinates().Y));
+                mSizeBox = new Vector2(x: Math.Abs(value: mStartBox.X - MouseCoordinates().X),
+                    y: Math.Abs(value: mStartBox.Y - MouseCoordinates().Y));
             }
         }
 
@@ -98,7 +98,7 @@ namespace Singularity.Units
                     {
                         mBoxExists = true;
                         mStartBox = MouseCoordinates();
-                        mSizeBox = new Vector2(0, 0);
+                        mSizeBox = new Vector2(x: 0, y: 0);
                         // can also be a simple click without a selection box, therefore pass on input
                         return true;
                     }
@@ -155,9 +155,9 @@ namespace Singularity.Units
         /// <returns></returns>
         private Vector2 MouseCoordinates()
         {
-            return new Vector2(Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                Matrix.Invert(mCamera.GetTransform())).X, Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                Matrix.Invert(mCamera.GetTransform())).Y);
+            return new Vector2(x: Vector2.Transform(position: new Vector2(x: Mouse.GetState().X, y: Mouse.GetState().Y),
+                matrix: Matrix.Invert(matrix: mCamera.GetTransform())).X, y: Vector2.Transform(position: new Vector2(x: Mouse.GetState().X, y: Mouse.GetState().Y),
+                matrix: Matrix.Invert(matrix: mCamera.GetTransform())).Y);
         }
 
      #region NotUsedInputMouseActions

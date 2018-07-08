@@ -64,16 +64,17 @@ namespace Singularity.Map
             mFow = fow;
 
             mCollisionMap = new CollisionMap();
-            mStructureMap = new StructureMap(fow, ref director);
-            mResourceMap = new ResourceMap(initialResources);
+            mStructureMap = new StructureMap(fow: fow, director: ref director);
+            mResourceMap = new ResourceMap(initialResources: initialResources);
 
+            // director.GetInputManager.AddKeyListener(iKeyListener: this);
             director.GetStoryManager.StructureMap = mStructureMap;
         }
 
         /// <see cref="CollisionMap.UpdateCollider(ICollider)"/>
         internal void UpdateCollider(ICollider collider)
         {
-            mCollisionMap.UpdateCollider(collider);
+            mCollisionMap.UpdateCollider(collider: collider);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -146,17 +147,17 @@ namespace Singularity.Map
             var colMap = mCollisionMap.GetCollisionMap();
             var walkabilityGrid = mCollisionMap.GetWalkabilityGrid();
 
-            for (var columnCount = 0; columnCount <= colMap.GetLength(0); columnCount++)
+            for (var columnCount = 0; columnCount <= colMap.GetLength(dimension: 0); columnCount++)
             {
 
                 spriteBatch.DrawLine(
-                    new Vector2(columnCount * MapConstants.GridWidth, 0), MapConstants.MapHeight, MathHelper.Pi / 2f, Color.Blue, 1, LayerConstants.GridDebugLayer);
+                    point: new Vector2(x: columnCount * MapConstants.GridWidth, y: 0), length: MapConstants.MapHeight, angle: MathHelper.Pi / 2f, color: Color.Blue, thickness: 1, layerDepth: LayerConstants.GridDebugLayer);
             }
 
-            for (var rowCount = 0; rowCount <= colMap.GetLength(0); rowCount++)
+            for (var rowCount = 0; rowCount <= colMap.GetLength(dimension: 0); rowCount++)
             {
                 spriteBatch.DrawLine(
-                    new Vector2(0, rowCount * MapConstants.GridHeight), MapConstants.MapWidth, 0, Color.Yellow, 1, LayerConstants.GridDebugLayer);
+                    point: new Vector2(x: 0, y: rowCount * MapConstants.GridHeight), length: MapConstants.MapWidth, angle: 0, color: Color.Yellow, thickness: 1, layerDepth: LayerConstants.GridDebugLayer);
             }
 
 
@@ -165,7 +166,7 @@ namespace Singularity.Map
             {
                 for (var j = 0; j < colMap.GetLength(dimension: 1); j ++)
                 {
-                    if (!walkabilityGrid.IsWalkableAt(i, j))
+                    if (!walkabilityGrid.IsWalkableAt(iX: i, iY: j))
                     {
                         spriteBatch.FillRectangle(rect: new Rectangle(x: i * MapConstants.GridWidth, y: j * MapConstants.GridHeight, width: MapConstants.GridWidth, height: MapConstants.GridHeight),
                             color: new Color(color: new Vector4(x: 1, y: 0, z: 0, w: 0.2f)), angle: 0f, layer: LayerConstants.CollisionDebugLayer);
@@ -197,23 +198,23 @@ namespace Singularity.Map
         /// <see cref="StructureMap.AddPlatform(PlatformBlank)"/>
         public void AddPlatform(PlatformBlank platform)
         {
-            mStructureMap.AddPlatform(platform);
+            mStructureMap.AddPlatform(platform: platform);
         }
 
         /// <see cref="StructureMap.RemovePlatform(PlatformBlank)"/>
         public void RemovePlatform(PlatformBlank platform)
         {
-            mStructureMap.RemovePlatform(platform);
+            mStructureMap.RemovePlatform(platform: platform);
         }
 
         public void AddRoad(Road road)
         {
-            mStructureMap.AddRoad(road);
+            mStructureMap.AddRoad(road: road);
         }
 
         public void RemoveRoad(Road road)
         {
-            mStructureMap.RemoveRoad(road);
+            mStructureMap.RemoveRoad(road: road);
         }
 
         public StructureMap GetStructureMap()
@@ -255,26 +256,26 @@ namespace Singularity.Map
              */
 
             var worldSpacePosition =
-                camera == null ? position : Vector2.Transform(position, Matrix.Invert(camera.GetTransform()));
+                camera == null ? position : Vector2.Transform(position: position, matrix: Matrix.Invert(matrix: camera.GetTransform()));
 
 
             var sign = Math.Sign(
-                (MapConstants.sTop.X - MapConstants.sLeft.X) * (worldSpacePosition.Y - MapConstants.sLeft.Y) -
+                value: (MapConstants.sTop.X - MapConstants.sLeft.X) * (worldSpacePosition.Y - MapConstants.sLeft.Y) -
                 (MapConstants.sTop.Y - MapConstants.sLeft.Y) * (worldSpacePosition.X - MapConstants.sLeft.X)
             );
 
             var sign2 = Math.Sign(
-                (MapConstants.sLeft.X - MapConstants.sBottom.X) * (worldSpacePosition.Y - MapConstants.sBottom.Y) -
+                value: (MapConstants.sLeft.X - MapConstants.sBottom.X) * (worldSpacePosition.Y - MapConstants.sBottom.Y) -
                 (MapConstants.sLeft.Y - MapConstants.sBottom.Y) * (worldSpacePosition.X - MapConstants.sBottom.X)
             );
 
             var sign3 = Math.Sign(
-                (MapConstants.sRight.X - MapConstants.sTop.X) * (worldSpacePosition.Y - MapConstants.sTop.Y) -
+                value: (MapConstants.sRight.X - MapConstants.sTop.X) * (worldSpacePosition.Y - MapConstants.sTop.Y) -
                 (MapConstants.sRight.Y - MapConstants.sTop.Y) * (worldSpacePosition.X - MapConstants.sTop.X)
             );
 
             var sign4 = Math.Sign(
-                (MapConstants.sBottom.X - MapConstants.sRight.X) * (worldSpacePosition.Y - MapConstants.sRight.Y) -
+                value: (MapConstants.sBottom.X - MapConstants.sRight.X) * (worldSpacePosition.Y - MapConstants.sRight.Y) -
                 (MapConstants.sBottom.Y - MapConstants.sRight.Y) * (worldSpacePosition.X - MapConstants.sRight.X)
             );
 
@@ -294,10 +295,10 @@ namespace Singularity.Map
             // simple logic, this yields true if all of them are true and false if one is false. One can easily convince himself,
             // that if all the "edge" points of the rectangle are on the map then the rectangle is on the map.
 
-            return IsOnTop(new Vector2(rect.X, rect.Y), camera) &&
-                   IsOnTop(new Vector2(rect.X + rect.Width, rect.Y), camera) &&
-                   IsOnTop(new Vector2(rect.X, rect.Y + rect.Height), camera) &&
-                   IsOnTop(new Vector2(rect.X + rect.Width, rect.Y + rect.Height), camera);
+            return IsOnTop(position: new Vector2(x: rect.X, y: rect.Y), camera: camera) &&
+                   IsOnTop(position: new Vector2(x: rect.X + rect.Width, y: rect.Y), camera: camera) &&
+                   IsOnTop(position: new Vector2(x: rect.X, y: rect.Y + rect.Height), camera: camera) &&
+                   IsOnTop(position: new Vector2(x: rect.X + rect.Width, y: rect.Y + rect.Height), camera: camera);
 
         }
 

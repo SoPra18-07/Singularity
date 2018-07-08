@@ -83,7 +83,7 @@ namespace Singularity.Manager
         /// <param name="unit">the unit that has been created</param>
         public void Register(GeneralUnit unit)
         {
-            mIdle.Add(unit);
+            mIdle.Add(item: unit);
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace Singularity.Manager
                     return mProduction.Count;
                 default:
                     throw new InvalidGenericArgumentException(
-                        "There are no other Jobs! Or at least there weren't any when this was coded...");
+                        message: "There are no other Jobs! Or at least there weren't any when this was coded...");
             }
         }
 
@@ -144,21 +144,21 @@ namespace Singularity.Manager
             if (isDef)
             {
                 //Make sure the new platform gets some units
-                NewlyDistribute(platform, true);
+                NewlyDistribute(platform: platform, isDefense: true);
             }
             else
             {
                 //Make sure the new platform gets some units
-                NewlyDistribute(platform, false);
+                NewlyDistribute(platform: platform, isDefense: false);
             }
         }
 
         public void TestAttributes()
         {
-            Console.Out.WriteLine(mProduction.Count);
-            Console.Out.WriteLine(mIdle.Count);
-            Console.Out.WriteLine(mProdPlatforms[1].GetFirst().mType + " " + mProdPlatforms[1].GetSecond());
-            Console.Out.WriteLine(mProdPlatforms[0].GetFirst().mType + " " + mProdPlatforms[0].GetSecond());
+            Console.Out.WriteLine(value: mProduction.Count);
+            Console.Out.WriteLine(value: mIdle.Count);
+            Console.Out.WriteLine(value: mProdPlatforms[index: 1].GetFirst().mType + " " + mProdPlatforms[index: 1].GetSecond());
+            Console.Out.WriteLine(value: mProdPlatforms[index: 0].GetFirst().mType + " " + mProdPlatforms[index: 0].GetSecond());
         }
 
         /// <summary>
@@ -188,7 +188,7 @@ namespace Singularity.Manager
                     oldlist = mDefense;
                     break;
                 default:
-                    throw new InvalidGenericArgumentException("You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
+                    throw new InvalidGenericArgumentException(message: "You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
 
             }
             List<GeneralUnit> newlist;
@@ -210,7 +210,7 @@ namespace Singularity.Manager
                     newlist = mDefense;
                     break;
                 default:
-                    throw new InvalidGenericArgumentException("You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
+                    throw new InvalidGenericArgumentException(message: "You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
             }
 
             //Production and Defense have to be distributed differently than the other jobs because we want to assure fairness
@@ -220,27 +220,27 @@ namespace Singularity.Manager
                 //Get the units to change jobs here
                 if (oldj == JobType.Production)
                 {
-                    list = GetUnitsFairly(amount, mProdPlatforms, false);
+                    list = GetUnitsFairly(amount: amount, list: mProdPlatforms, isDefense: false);
                 }
                 else
                 {
-                    list = GetUnitsFairly(amount, mDefPlatforms, false);
+                    list = GetUnitsFairly(amount: amount, list: mDefPlatforms, isDefense: false);
                 }
 
                 //Now actually change their Jobs.
                 if (newj == JobType.Production)
                 {
-                    AssignUnitsFairly(list, false);
+                    AssignUnitsFairly(toassign: list, isDefense: false);
                 }else if (newj == JobType.Defense)
                 {
-                    AssignUnitsFairly(list, true);
+                    AssignUnitsFairly(toassign: list, isDefense: true);
                 }
                 else
                 {
                     foreach (var unit in list)
                     {
-                        newlist.Add(unit);
-                        unit.ChangeJob(newj);
+                        newlist.Add(item: unit);
+                        unit.ChangeJob(job: newj);
                     }
                 }
             }
@@ -255,27 +255,27 @@ namespace Singularity.Manager
                     }
 
                     //Pick a random Unit and change its job
-                    var rand = mRandom.Next(0, oldlist.Count);
-                    var unassigned = oldlist.ElementAt(rand);
-                    unassigned.ChangeJob(JobType.Idle);
-                    oldlist.Remove(unassigned);
-                    list.Add(unassigned);
+                    var rand = mRandom.Next(minValue: 0, maxValue: oldlist.Count);
+                    var unassigned = oldlist.ElementAt(index: rand);
+                    unassigned.ChangeJob(job: JobType.Idle);
+                    oldlist.Remove(item: unassigned);
+                    list.Add(item: unassigned);
                 }
 
                 if (newj == JobType.Production)
                 {
-                    AssignUnitsFairly(list, false);
+                    AssignUnitsFairly(toassign: list, isDefense: false);
                 }
                 else if (newj == JobType.Defense)
                 {
-                    AssignUnitsFairly(list, true);
+                    AssignUnitsFairly(toassign: list, isDefense: true);
                 }
                 else
                 {
                     foreach (var unit in list)
                     {
-                        newlist.Add(unit);
-                        unit.ChangeJob(newj);
+                        newlist.Add(item: unit);
+                        unit.ChangeJob(job: newj);
                     }
                 }
             }
@@ -314,9 +314,9 @@ namespace Singularity.Manager
                 }
 
                 //Relys on fairness
-                if (lowassign >= list[i].GetSecond())
+                if (lowassign >= list[index: i].GetSecond())
                 {
-                    lowassign = list[i].GetSecond();
+                    lowassign = list[index: i].GetSecond();
                 }
                 else
                 {
@@ -335,12 +335,12 @@ namespace Singularity.Manager
 
 
                 //This means there are no Units to subtract
-                if (list[startindex].GetSecond() == 0)
+                if (list[index: startindex].GetSecond() == 0)
                 {
                     return units;
                 }
 
-                var platUnits = list[startindex].GetFirst().GetAssignedUnits();
+                var platUnits = list[index: startindex].GetFirst().GetAssignedUnits();
 
                 JobType job;
                 List<GeneralUnit> joblist;
@@ -357,12 +357,12 @@ namespace Singularity.Manager
 
                 //Remove the first unit in the AssignedUnitList. The unit will unassign itself. Then add the unit to our unitslist.
                 //Also dont forget to decrement the number in the tuple, and to delete the unit from the joblist.
-                var transferunit = platUnits[job].First().GetFirst();
-                units.Add(transferunit);
-                joblist.Remove(transferunit);
-                var number = list[startindex].GetSecond() - 1;
-                list[startindex] = new Pair<PlatformBlank, int>(list[startindex].GetFirst(), number);
-                transferunit.ChangeJob(JobType.Idle);
+                var transferunit = platUnits[key: job].First().GetFirst();
+                units.Add(item: transferunit);
+                joblist.Remove(item: transferunit);
+                var number = list[index: startindex].GetSecond() - 1;
+                list[index: startindex] = new Pair<PlatformBlank, int>(firstValue: list[index: startindex].GetFirst(), secondValue: number);
+                transferunit.ChangeJob(job: JobType.Idle);
 
                 //Decrement index or begin at the right end again
                 if (startindex == 0)
@@ -411,14 +411,14 @@ namespace Singularity.Manager
                     search = false;
                     startindex = 0;
                 }
-                if (highassign <= list[i].GetSecond())
+                if (highassign <= list[index: i].GetSecond())
                 {
-                    highassign = list[i].GetSecond();
+                    highassign = list[index: i].GetSecond();
                 }
                 else
                 {
                     //Found the place to increment units
-                    highassign = list[i].GetSecond();
+                    highassign = list[index: i].GetSecond();
                     search = false;
                     startindex = i;
                 }
@@ -427,18 +427,18 @@ namespace Singularity.Manager
             //ADD THE GIVEN UNITS/GIVE THEM THE TASKS
             foreach (var unit in toassign)
             {
-                var goTo = list[startindex].GetFirst();
+                var goTo = list[index: startindex].GetFirst();
                 if (job == JobType.Defense)
                 {
-                    mDefense.Add(unit);
+                    mDefense.Add(item: unit);
                 }
                 else
                 {
-                    mProduction.Add(unit);
+                    mProduction.Add(item: unit);
                 }
                 //The unit will change its job when calling this
-                unit.AssignTask(new Task(job, Optional<PlatformBlank>.Of(goTo), null, Optional<IPlatformAction>.Of(null)));
-                list[startindex] = new Pair<PlatformBlank, int>(goTo, list[startindex].GetSecond() + 1);
+                unit.AssignTask(task: new Task(job: job, end: Optional<PlatformBlank>.Of(value: goTo), res: null, action: Optional<IPlatformAction>.Of(value: null)));
+                list[index: startindex] = new Pair<PlatformBlank, int>(firstValue: goTo, secondValue: list[index: startindex].GetSecond() + 1);
                 if (startindex == list.Count - 1)
                 {
                     startindex = 0;
@@ -461,33 +461,33 @@ namespace Singularity.Manager
             {
                 // + 1 because we didnt add the new platform yet
                 var times = mDefense.Count / (mDefPlatforms.Count + 1);
-                var list = GetUnitsFairly(times, mDefPlatforms, false);
+                var list = GetUnitsFairly(amount: times, list: mDefPlatforms, isDefense: false);
 
                 foreach (var unit in list)
                 {
                     //We have to re-add the units to the job list because GetUnitsFairly did unassign them
-                    mDefense.Add(unit);
+                    mDefense.Add(item: unit);
                     //Also unassigns the unit.
-                    unit.AssignTask(new Task(JobType.Defense, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
+                    unit.AssignTask(task: new Task(job: JobType.Defense, end: Optional<PlatformBlank>.Of(value: platform), res: null, action: Optional<IPlatformAction>.Of(value: null)));
                 }
 
-                mDefPlatforms.Add(new Pair<PlatformBlank, int>(platform, list.Count));
+                mDefPlatforms.Add(item: new Pair<PlatformBlank, int>(firstValue: platform, secondValue: list.Count));
             }
             else
             {
                 // + 1 because we didnt add the new platform yet
                 var times = mProduction.Count / (mProdPlatforms.Count + 1);
-                var list = GetUnitsFairly(times, mProdPlatforms, false);
+                var list = GetUnitsFairly(amount: times, list: mProdPlatforms, isDefense: false);
 
                 foreach (var unit in list)
                 {
                     //We have to re-add the units to the job list because GetUnitsFairly did unassign them
-                    mProduction.Add(unit);
+                    mProduction.Add(item: unit);
                     //Also unassigns the unit.
-                    unit.AssignTask(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
+                    unit.AssignTask(task: new Task(job: JobType.Production, end: Optional<PlatformBlank>.Of(value: platform), res: null, action: Optional<IPlatformAction>.Of(value: null)));
                 }
 
-                mProdPlatforms.Add(new Pair<PlatformBlank, int>(platform, list.Count));
+                mProdPlatforms.Add(item: new Pair<PlatformBlank, int>(firstValue: platform, secondValue: list.Count));
             }
         }
 
@@ -518,17 +518,17 @@ namespace Singularity.Manager
                     oldlist = mLogistics;
                     break;
                 default:
-                    throw new InvalidGenericArgumentException("You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
+                    throw new InvalidGenericArgumentException(message: "You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
             }
 
             //COLLECT THE UNITS
             List<GeneralUnit> list;
             if (job == JobType.Defense)
             {
-                list = GetUnitsFairly(amount, mDefPlatforms, true);
+                list = GetUnitsFairly(amount: amount, list: mDefPlatforms, isDefense: true);
             }else if (job == JobType.Production)
             {
-                list = GetUnitsFairly(amount, mProdPlatforms, false);
+                list = GetUnitsFairly(amount: amount, list: mProdPlatforms, isDefense: false);
             }
             else
             {
@@ -536,16 +536,16 @@ namespace Singularity.Manager
                 for (var i = amount; i >= 0; i--)
                 {
                     //Change the job of a random unit
-                    var rand = mRandom.Next(0, oldlist.Count);
-                    var removeit = oldlist.ElementAt(rand);
-                    list.Add(removeit);
+                    var rand = mRandom.Next(minValue: 0, maxValue: oldlist.Count);
+                    var removeit = oldlist.ElementAt(index: rand);
+                    list.Add(item: removeit);
                 }
             }
 
             foreach (var unit in list)
             {
-                mManual.Add(unit);
-                action.AssignUnit(unit, job);
+                mManual.Add(item: unit);
+                action.AssignUnit(unit: unit, job: job);
                 if (job == JobType.Production)
                 {
 
@@ -569,12 +569,12 @@ namespace Singularity.Manager
         /// <param name="action">The platformaction of which they shall be unassigned</param>
         public void ManualUnassign(JobType job, int amount, IPlatformAction action)
         {
-            var list = action.UnAssignUnits(amount, job);
+            var list = action.UnAssignUnits(amount: amount, job: job);
             foreach (var unit in list)
             {
-                mManual.Remove(unit);
-                unit.ChangeJob(JobType.Idle);
-                mIdle.Add(unit);
+                mManual.Remove(item: unit);
+                unit.ChangeJob(job: JobType.Idle);
+                mIdle.Add(item: unit);
             }
 
             if (mHandler != null)
@@ -595,11 +595,11 @@ namespace Singularity.Manager
             //TODO: Create Action references, when interfaces were created.
             if (isbuilding)
             {
-                mBuildingResources.Enqueue(new Task(JobType.Construction, Optional<PlatformBlank>.Of(platform), resource, Optional<IPlatformAction>.Of(action)));
+                mBuildingResources.Enqueue(item: new Task(job: JobType.Construction, end: Optional<PlatformBlank>.Of(value: platform), res: resource, action: Optional<IPlatformAction>.Of(value: action)));
             }
             else
             {
-                mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, Optional<PlatformBlank>.Of(platform), resource, Optional<IPlatformAction>.Of(action)));
+                mRefiningOrStoringResources.Enqueue(item: new Task(job: JobType.Logistics, end: Optional<PlatformBlank>.Of(value: platform), res: resource, action: Optional<IPlatformAction>.Of(value: action)));
             }
         }
 
@@ -622,105 +622,105 @@ namespace Singularity.Manager
                     //That way the unit will only travel one node per task, but that makes it more reactive.
                     foreach (var edge in unit.CurrentNode.GetInwardsEdges())
                     {
-                        nodes.Add(edge.GetParent());
+                        nodes.Add(item: edge.GetParent());
                     }
                     foreach (var edge in unit.CurrentNode.GetOutwardsEdges())
                     {
-                        nodes.Add(edge.GetChild());
+                        nodes.Add(item: edge.GetChild());
                     }
 
                     if (nodes.Count == 0)
                     {
                         //Could be very inefficient, since the Units will bombard the DistributionManager with asks for tasks when there is only one platform
                         //connected to theirs
-                        nodes.Add(unit.CurrentNode);
+                        nodes.Add(item: unit.CurrentNode);
                     }
-                    var rndnmbr = mRandom.Next(0, nodes.Count);
+                    var rndnmbr = mRandom.Next(minValue: 0, maxValue: nodes.Count);
                     //Just give them the inside of the Optional action witchout checking because
                     //it doesnt matter anyway if its null if the unit is idle.
-                    return new Task(job, Optional<PlatformBlank>.Of((PlatformBlank) nodes.ElementAt(rndnmbr)), null, assignedAction);
+                    return new Task(job: job, end: Optional<PlatformBlank>.Of(value: (PlatformBlank) nodes.ElementAt(index: rndnmbr)), res: null, action: assignedAction);
 
                 case JobType.Production:
-                    throw new InvalidGenericArgumentException("You shouldnt ask for Production tasks, you just assign units to production.");
+                    throw new InvalidGenericArgumentException(message: "You shouldnt ask for Production tasks, you just assign units to production.");
 
                 case JobType.Defense:
-                    throw new InvalidGenericArgumentException("You shouldnt ask for Defense tasks, you just assign units to defense.");
+                    throw new InvalidGenericArgumentException(message: "You shouldnt ask for Defense tasks, you just assign units to defense.");
 
                 case JobType.Construction:
                     if (mBuildingResources.Count == 0)
                     {
-                        var nulltask = new Task(JobType.Logistics,
-                            Optional<PlatformBlank>.Of(null),
-                            null,
-                            Optional<IPlatformAction>.Of(null));
-                        nulltask.Begin = Optional<PlatformBlank>.Of(null);
+                        var nulltask = new Task(job: JobType.Logistics,
+                            end: Optional<PlatformBlank>.Of(value: null),
+                            res: null,
+                            action: Optional<IPlatformAction>.Of(value: null));
+                        nulltask.Begin = Optional<PlatformBlank>.Of(value: null);
                         return nulltask;
                     }
                     task = mBuildingResources.Dequeue();
                     if (task.End.IsPresent() && task.GetResource != null)
                     {
-                        var begin = FindBegin(task.End.Get(), (EResourceType)task.GetResource);
+                        var begin = FindBegin(destination: task.End.Get(), res: (EResourceType)task.GetResource);
                         //Use BFS to find the place you want to get your resources from
                         if (begin != null)
                         {
-                            task.Begin = Optional<PlatformBlank>.Of(begin);
+                            task.Begin = Optional<PlatformBlank>.Of(value: begin);
                         }
                         else
                         {
                             //TODO: Talk with felix about how this could affect the killing thing
-                            mBuildingResources.Enqueue(task);
+                            mBuildingResources.Enqueue(item: task);
                             //This means the unit will identify this task as "do nothing" and ask again.
                             task.Begin = null;
                         }
                     }
                     else
                     {
-                        throw new InvalidGenericArgumentException("There is a task in your queue that is faulty. Check the RequestResource method!!!");
+                        throw new InvalidGenericArgumentException(message: "There is a task in your queue that is faulty. Check the RequestResource method!!!");
                     }
                     break;
 
                 case JobType.Logistics:
                     if (mRefiningOrStoringResources.Count == 0)
                     {
-                        var nulltask = new Task(JobType.Logistics,
-                            Optional<PlatformBlank>.Of(null),
-                            null,
-                            Optional<IPlatformAction>.Of(null));
-                        nulltask.Begin = Optional<PlatformBlank>.Of(null);
+                        var nulltask = new Task(job: JobType.Logistics,
+                            end: Optional<PlatformBlank>.Of(value: null),
+                            res: null,
+                            action: Optional<IPlatformAction>.Of(value: null));
+                        nulltask.Begin = Optional<PlatformBlank>.Of(value: null);
                         return nulltask;
                     }
                     task = mRefiningOrStoringResources.Dequeue();
                     if (task.End.IsPresent() && task.GetResource != null)
                     {
-                        var begin = FindBegin(task.End.Get(), (EResourceType)task.GetResource);
+                        var begin = FindBegin(destination: task.End.Get(), res: (EResourceType)task.GetResource);
                         //Use BFS to find the place you want to get your resources from
                         if (begin != null)
                         {
-                            task.Begin = Optional<PlatformBlank>.Of(begin);
+                            task.Begin = Optional<PlatformBlank>.Of(value: begin);
                         }
                         else
                         {
                             //TODO: Talk with felix about how this could affect the killing thing
-                            mRefiningOrStoringResources.Enqueue(task);
+                            mRefiningOrStoringResources.Enqueue(item: task);
                             //This means the unit will identify this task as "do nothing" and ask again.
                             task.Begin = null;
                         }
                     }
                     else
                     {
-                        throw new InvalidGenericArgumentException("There is a task in your queue that is faulty. Check the RequestResource method!!!");
+                        throw new InvalidGenericArgumentException(message: "There is a task in your queue that is faulty. Check the RequestResource method!!!");
                     }
                     break;
 
                 default:
-                    throw new InvalidGenericArgumentException("Your requested JobType does not exist.");
+                    throw new InvalidGenericArgumentException(message: "Your requested JobType does not exist.");
             }
 
-            mKilled = mKilled.Select(p => new Pair<int, int>(p.GetFirst(), p.GetSecond() - 1)).ToList();
+            mKilled = mKilled.Select(selector: p => new Pair<int, int>(firstValue: p.GetFirst(), secondValue: p.GetSecond() - 1)).ToList();
             if (mKilled != null)
             {
-                mKilled.RemoveAll(p => p.GetSecond() < 0);
-                return mKilled.TrueForAll(p => !task.Contains(p.GetFirst())) ? task : RequestNewTask(unit, job, assignedAction);
+                mKilled.RemoveAll(match: p => p.GetSecond() < 0);
+                return mKilled.TrueForAll(match: p => !task.Contains(id: p.GetFirst())) ? task : RequestNewTask(unit: unit, job: job, assignedAction: assignedAction);
             }
 
             return task;
@@ -741,7 +741,7 @@ namespace Singularity.Manager
             var nextpreviouslevel = new List<PlatformBlank>();
 
             var currentlevel = new List<PlatformBlank>();
-            currentlevel.Add(destination);
+            currentlevel.Add(item: destination);
 
             var nextlevel = new List<PlatformBlank>();
 
@@ -756,7 +756,7 @@ namespace Singularity.Manager
                     {
                         var candidatePlatform = (PlatformBlank)edge.GetParent();
                         //If true, we have already visited this platform
-                        if (previouslevel.Contains(platform) || nextpreviouslevel.Contains(platform))
+                        if (previouslevel.Contains(item: platform) || nextpreviouslevel.Contains(item: platform))
                         {
                             continue;
                         }
@@ -770,14 +770,14 @@ namespace Singularity.Manager
                             return candidatePlatform;
                         }
 
-                        nextlevel.Add(candidatePlatform);
+                        nextlevel.Add(item: candidatePlatform);
                     }
 
                     foreach (var edge in platform.GetOutwardsEdges())
                     {
                         var candidatePlatform = (PlatformBlank)edge.GetChild();
                         //If true, we have already visited this platform
-                        if (previouslevel.Contains(platform) || nextpreviouslevel.Contains(platform))
+                        if (previouslevel.Contains(item: platform) || nextpreviouslevel.Contains(item: platform))
                         {
                             continue;
                         }
@@ -790,10 +790,10 @@ namespace Singularity.Manager
                             }
                             return candidatePlatform;
                         }
-                        nextlevel.Add(candidatePlatform);
+                        nextlevel.Add(item: candidatePlatform);
                     }
                     //mark that you have visited this platform now
-                    nextpreviouslevel.Add(platform);
+                    nextpreviouslevel.Add(item: platform);
                 }
 
                 //Update levels
@@ -818,12 +818,12 @@ namespace Singularity.Manager
         public void Kill(PlatformBlank platform)
         {
             // Strong assumption that a platform is only listed at most once in either of these.
-            mProdPlatforms.Remove(mProdPlatforms.Find(p => p.GetFirst().Equals(platform)));
-            mDefPlatforms.Remove(mDefPlatforms.Find(p => p.GetFirst().Equals(platform)));
+            mProdPlatforms.Remove(item: mProdPlatforms.Find(match: p => p.GetFirst().Equals(other: platform)));
+            mDefPlatforms.Remove(item: mDefPlatforms.Find(match: p => p.GetFirst().Equals(other: platform)));
             var lists = new List<List<GeneralUnit>> { mIdle, mLogistics, mConstruction, mProduction, mDefense, mManual };
-            lists.ForEach(l => l.ForEach(u => u.Kill(platform.Id)));
+            lists.ForEach(action: l => l.ForEach(action: u => u.Kill(id: platform.Id)));
             // the first in the pair is the id, the second is the TTL
-            mKilled.Add(new Pair<int, int>(platform.Id, Math.Max(mBuildingResources.Count, mRefiningOrStoringResources.Count)));
+            mKilled.Add(item: new Pair<int, int>(firstValue: platform.Id, secondValue: Math.Max(val1: mBuildingResources.Count, val2: mRefiningOrStoringResources.Count)));
         }
 
         public void Kill(IPlatformAction action)
@@ -831,24 +831,24 @@ namespace Singularity.Manager
             // Strong assumption that a PlatformAction is only listed at most once here.
             if (action is BuildBluePrint)
             {
-                mBlueprintBuilds.Remove(mBlueprintBuilds.Find(b => b.Equals(action)));
+                mBlueprintBuilds.Remove(item: mBlueprintBuilds.Find(match: b => b.Equals(obj: action)));
             }
             else
             {
-                mPlatformActions.Remove(mPlatformActions.Find(p => p.Equals(action)));
+                mPlatformActions.Remove(item: mPlatformActions.Find(match: p => p.Equals(obj: action)));
             }
 
             var lists = new List<List<GeneralUnit>> { mIdle, mLogistics, mConstruction, mProduction, mDefense, mManual };
-            lists.ForEach(l => l.ForEach(u => u.Kill(action.Id)));
+            lists.ForEach(action: l => l.ForEach(action: u => u.Kill(id: action.Id)));
             // the first in the pair is the id, the second is the TTL
-            mKilled.Add(new Pair<int, int>(action.Id, Math.Max(mBuildingResources.Count, mRefiningOrStoringResources.Count)));
+            mKilled.Add(item: new Pair<int, int>(firstValue: action.Id, secondValue: Math.Max(val1: mBuildingResources.Count, val2: mRefiningOrStoringResources.Count)));
         }
 
         public void Kill(GeneralUnit unit)
         {
             unit.Die();
             var lists = new List<List<GeneralUnit>> {mIdle, mLogistics, mConstruction, mProduction, mDefense, mManual};
-            lists.ForEach(l => l.Remove(unit));
+            lists.ForEach(action: l => l.Remove(item: unit));
         }
 #endregion
     }

@@ -35,17 +35,17 @@ namespace Singularity.Units
         /// <param name="map">Reference to the game map.</param>
         /// <param name="gameScreen">Gamescreen of the game so that the settler can build platforms.</param>
         /// <param name="ui">UI of the game so the settler can edit the UI.</param>
-        public Settler(Vector2 position, Camera camera, ref Director director, ref Map.Map map, GameScreen gameScreen, UserInterfaceScreen ui) 
-            : base(position, camera, ref director, ref map)
+        public Settler(Vector2 position, Camera camera, ref Director director, ref Map.Map map, GameScreen gameScreen, UserInterfaceScreen ui)
+            : base(position: position, camera: camera, director: ref director, map: ref map)
         {
             mSpeed = 4;
             Health = 10;
 
-            AbsoluteSize = new Vector2(20, 20);
+            AbsoluteSize = new Vector2(x: 20, y: 20);
 
             RevelationRadius = (int)AbsoluteSize.X * 3;
 
-            mDirector.GetInputManager.AddKeyListener(this);
+            mDirector.GetInputManager.AddKeyListener(iKeyListener: this);
 
             mNeverMoved = true;
 
@@ -76,17 +76,17 @@ namespace Singularity.Units
         }
         #endregion
 
-        
+
         public override void Draw(SpriteBatch spriteBatch)
         {
             // Draws settler as stroked rectangle
-            spriteBatch.StrokedRectangle(AbsolutePosition,
-                AbsoluteSize,
-                Color.Gray,
-                mSelected ? Color.Wheat : Color.Beige,
-                .8f,
-                1f,
-                LayerConstants.MilitaryUnitLayer);
+            spriteBatch.StrokedRectangle(location: AbsolutePosition,
+                size: AbsoluteSize,
+                colorBorder: Color.Gray,
+                colorCenter: mSelected ? Color.Wheat : Color.Beige,
+                opacityBorder: .8f,
+                opacityCenter: 1f,
+                layer: LayerConstants.MilitaryUnitLayer);
 
             #region Debug
 
@@ -97,7 +97,7 @@ namespace Singularity.Units
 
             for (var i = 0; i < mDebugPath.Length - 1; i++)
             {
-                spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
+                spriteBatch.DrawLine(point1: mDebugPath[i], point2: mDebugPath[i + 1], color: Color.Orange);
             }
             #endregion
         }
@@ -106,10 +106,10 @@ namespace Singularity.Units
         public override void Update(GameTime gameTime)
         {
             //make sure to update the relative bounds rectangle enclosing this unit.
-            Bounds = new Rectangle((int) RelativePosition.X,
-                (int) RelativePosition.Y,
-                (int) RelativeSize.X,
-                (int) RelativeSize.Y);
+            Bounds = new Rectangle(x: (int) RelativePosition.X,
+                y: (int) RelativePosition.Y,
+                width: (int) RelativeSize.X,
+                height: (int) RelativeSize.Y);
 
             if (HasReachedTarget())
             {
@@ -121,22 +121,22 @@ namespace Singularity.Units
             {
                 if (!HasReachedWaypoint())
                 {
-                    MoveToTarget(mPath.Peek(), mSpeed);
+                    MoveToTarget(target: mPath.Peek(), speed: mSpeed);
                 }
 
                 else
                 {
                     mPath.Pop();
-                    MoveToTarget(mPath.Peek(), mSpeed);
+                    MoveToTarget(target: mPath.Peek(), speed: mSpeed);
                 }
             }
 
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+            Center = new Vector2(x: AbsolutePosition.X + AbsoluteSize.X / 2, y: AbsolutePosition.Y + AbsoluteSize.Y / 2);
 
-            AbsBounds = new Rectangle((int) AbsolutePosition.X + 16,
-                (int) AbsolutePosition.Y + 11,
-                (int) AbsoluteSize.X,
-                (int) AbsoluteSize.Y);
+            AbsBounds = new Rectangle(x: (int) AbsolutePosition.X + 16,
+                y: (int) AbsolutePosition.Y + 11,
+                width: (int) AbsoluteSize.X,
+                height: (int) AbsoluteSize.Y);
             Moved = mIsMoving;
 
             if (Moved)
@@ -145,7 +145,7 @@ namespace Singularity.Units
             }
 
         }
-        
+
         public void KeyTyped(KeyEvent keyEvent)
         {
             // b key is used to convert the settler unit into a command center

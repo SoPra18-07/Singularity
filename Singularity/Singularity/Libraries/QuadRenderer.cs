@@ -24,10 +24,10 @@ namespace Singularity.Libraries
         public QuadRenderer(GraphicsDevice graphicsDevice)
         {
             mVertexBuffer = new VertexPositionTexture[4];
-            mVertexBuffer[0] = new VertexPositionTexture(new Vector3(-1, 1, 1), new Vector2(0, 0));
-            mVertexBuffer[1] = new VertexPositionTexture(new Vector3(1, 1, 1), new Vector2(1, 0));
-            mVertexBuffer[2] = new VertexPositionTexture(new Vector3(-1, -1, 1), new Vector2(0, 1));
-            mVertexBuffer[3] = new VertexPositionTexture(new Vector3(1, -1, 1), new Vector2(1, 1));
+            mVertexBuffer[0] = new VertexPositionTexture(position: new Vector3(x: -1, y: 1, z: 1), textureCoordinate: new Vector2(x: 0, y: 0));
+            mVertexBuffer[1] = new VertexPositionTexture(position: new Vector3(x: 1, y: 1, z: 1), textureCoordinate: new Vector2(x: 1, y: 0));
+            mVertexBuffer[2] = new VertexPositionTexture(position: new Vector3(x: -1, y: -1, z: 1), textureCoordinate: new Vector2(x: 0, y: 1));
+            mVertexBuffer[3] = new VertexPositionTexture(position: new Vector3(x: 1, y: -1, z: 1), textureCoordinate: new Vector2(x: 1, y: 1));
 
             mIndexBuffer = new short[] { 0, 3, 2, 0, 1, 3 };
 
@@ -54,7 +54,7 @@ namespace Singularity.Libraries
             mVertexBuffer[3].Position.Y = v1.Y;
 
             graphicsDevice.DrawUserIndexedPrimitives
-                (PrimitiveType.TriangleList, mVertexBuffer, 0, 4, mIndexBuffer, 0, 2);
+                (primitiveType: PrimitiveType.TriangleList, vertexData: mVertexBuffer, vertexOffset: 0, numVertices: 4, indexData: mIndexBuffer, indexOffset: 0, primitiveCount: 2);
 
             //graphicsDevice.SetVertexBuffer(_vBuffer);
             //graphicsDevice.Indices = (_iBuffer);

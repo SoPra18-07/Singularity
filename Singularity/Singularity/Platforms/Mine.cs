@@ -19,14 +19,14 @@ namespace Singularity.Platforms
         private const int PlatformHeight = 187;
 
 
-        public Mine(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ResourceMap resource, ref Director director, bool autoRegister = true) : base(position, spritesheet, basesprite, ref director, EPlatformType.Mine, -50)
+        public Mine(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ResourceMap resource, SpriteFont libSans12, ref Director director, bool autoRegister = true) : base(position: position, platformSpriteSheet: spritesheet, baseSprite: basesprite, libSans12Font: libSans12, director: ref director, type: EPlatformType.Mine, centerOffsetY: -50)
         {
             if (autoRegister)
             {
-                director.GetDistributionManager.Register(this, false);
+                director.GetDistributionManager.Register(platform: this, isDef: false);
             }
 
-            mIPlatformActions.Add(new ProduceMineResource(platform: this, resourceMap: resource, director: ref mDirector));
+            mIPlatformActions.Add(item: new ProduceMineResource(platform: this, resourceMap: resource, director: ref mDirector));
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
@@ -38,20 +38,20 @@ namespace Singularity.Platforms
 
         public override void Produce()
         {
-            foreach (var pair in mAssignedUnits[JobType.Production])
+            foreach (var pair in mAssignedUnits[key: JobType.Production])
             {
                 //That means the unit is not at work yet.
                 if (!pair.GetSecond())
                 {
                     continue;
                 }
-                mIPlatformActions[1].Execute();
+                mIPlatformActions[index: 1].Execute();
             }
         }
 
         public new void Update(GameTime time)
         {
-            base.Update(time);
+            base.Update(t: time);
             if (time.TotalGameTime.TotalSeconds % 5 <= 0.5)
             {
                 Produce();

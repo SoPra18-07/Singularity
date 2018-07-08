@@ -77,35 +77,35 @@ namespace Singularity.Platforms
             Screen = screen;
             mDirector = director;
 
-            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
-            mDirector.GetInputManager.AddMousePositionListener(this);
+            mDirector.GetInputManager.AddMouseClickListener(iMouseClickListener: this, leftClickType: EClickType.Both, rightClickType: EClickType.Both);
+            mDirector.GetInputManager.AddMousePositionListener(iMouseListener: this);
 
             // for further information as to why which states refer to the documentation for mCurrentState
             switch (placementType)
             {
                 case EPlacementType.Instant:
-                    mCurrentState = new State3(3);
+                    mCurrentState = new State3(initialState: 3);
                     break;
 
                 case EPlacementType.MouseFollowAndRoad:
-                    mCurrentState = new State3(1);
+                    mCurrentState = new State3(initialState: 1);
                     break;
 
                 case EPlacementType.OnlyMouseFollow:
-                    mCurrentState = new State3(1);
+                    mCurrentState = new State3(initialState: 1);
                     mMouseFollowOnly = true;
                     break;
 
                 case EPlacementType.OnlyRoad:
-                    mCurrentState = new State3(2);
+                    mCurrentState = new State3(initialState: 2);
                     break;
 
                 default:
                     break;
             }
 
-            mPlatform = PlatformFactory.Get(platformType, ref director, x, y, resourceMap, false);
-            mPlatform.SetLayer(LayerConstants.PlatformAboveFowLayer);
+            mPlatform = PlatformFactory.Get(type: platformType, director: ref director, x: x, y: y, resourceMap: resourceMap, autoRegister: false);
+            mPlatform.SetLayer(layer: LayerConstants.PlatformAboveFowLayer);
 
             UpdateBounds();
 
@@ -117,16 +117,16 @@ namespace Singularity.Platforms
         /// </summary>
         private void UpdateBounds()
         {
-            mPlatform.RelativePosition = Vector2.Transform(mPlatform.AbsolutePosition, mCamera.GetTransform());
+            mPlatform.RelativePosition = Vector2.Transform(position: mPlatform.AbsolutePosition, matrix: mCamera.GetTransform());
             mPlatform.RelativeSize = mPlatform.AbsoluteSize * mCamera.GetZoom();
-            Bounds = new Rectangle((int) mPlatform.RelativePosition.X, (int) mPlatform.RelativePosition.Y, (int) mPlatform.RelativeSize.X, (int) mPlatform.RelativeSize.Y);
+            Bounds = new Rectangle(x: (int) mPlatform.RelativePosition.X, y: (int) mPlatform.RelativePosition.Y, width: (int) mPlatform.RelativeSize.X, height: (int) mPlatform.RelativeSize.Y);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             //make sure to draw the platform and the road if available.
-            mPlatform.Draw(spriteBatch);
-            mConnectionRoad?.Draw(spriteBatch);
+            mPlatform.Draw(spritebatch: spriteBatch);
+            mConnectionRoad?.Draw(spriteBatch: spriteBatch);
         }
 
         public void Update(GameTime gametime)
@@ -136,20 +136,20 @@ namespace Singularity.Platforms
                 case 1:
                     mPlatform.ResetColor();
                     // for this, we want the platform to follow the mouse, and also be centered on the sprite.
-                    mPlatform.AbsolutePosition = new Vector2(mMouseX - mPlatform.AbsoluteSize.X / 2f,
-                        mMouseY - mPlatform.AbsoluteSize.Y / 2f);
+                    mPlatform.AbsolutePosition = new Vector2(x: mMouseX - mPlatform.AbsoluteSize.X / 2f,
+                        y: mMouseY - mPlatform.AbsoluteSize.Y / 2f);
 
                     if (mHoveringPlatform == null)
                     {
                         break;
                     }
-                    mPlatform.SetColor(Color.Red);
+                    mPlatform.SetColor(color: Color.Red);
 
                     break;
 
                 case 2:
                     // now we want a road to follow our mouse
-                    mConnectionRoad.Destination = new Vector2(mMouseX, mMouseY);
+                    mConnectionRoad.Destination = new Vector2(x: mMouseX, y: mMouseY);
 
                     // we prematurely reset the color of the platform, so we don't have to worry about it being red
                     mPlatform.ResetColor();
@@ -165,14 +165,14 @@ namespace Singularity.Platforms
                     if (Vector2.Distance(mHoveringPlatform.Center, mPlatform.Center) >
                         mPlatform.RevelationRadius + mHoveringPlatform.RevelationRadius)
                     {
-                        mPlatform.SetColor(Color.Red);
+                        mPlatform.SetColor(color: Color.Red);
                     }
 
                     break;
 
                 case 3:
                     // this case is the 'finish' state, we set everything up, so the platform can get added to the game
-                    mPlatform.SetLayer(LayerConstants.PlatformLayer);
+                    mPlatform.SetLayer(layer: LayerConstants.PlatformLayer);
                     mConnectionRoad.Blueprint = false;
                     mIsFinished = true;
                     mUnregister = true;
@@ -204,14 +204,14 @@ namespace Singularity.Platforms
                         mPlatform.UpdateValues();
 
                         //first check if the platform is even on the map, if not we don't want to progress, since it isn't a valid position
-                        if (!Map.Map.IsOnTop(mPlatform.AbsBounds) || mHoveringPlatform != null)
+                        if (!Map.Map.IsOnTop(rect: mPlatform.AbsBounds) || mHoveringPlatform != null)
                         {
                             break;
                         }
 
                         // the platform was on the map -> advance to next state and create the road to connect to another platform
                         mCurrentState.NextState();
-                        mConnectionRoad = new Road(mPlatform, null, true);
+                        mConnectionRoad = new Road(source: mPlatform, destination: null, blueprint: true);
 
                         if (mMouseFollowOnly)
                         {
@@ -336,8 +336,8 @@ namespace Singularity.Platforms
 
         private void UnregisterFromInputManager()
         {
-            mDirector.GetInputManager.RemoveMouseClickListener(this);
-            mDirector.GetInputManager.RemoveMousePositionListener(this);
+            mDirector.GetInputManager.RemoveMouseClickListener(iMouseClickListener: this);
+            mDirector.GetInputManager.RemoveMousePositionListener(iMouseListener: this);
         }
     }
 }

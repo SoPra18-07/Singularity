@@ -12,7 +12,7 @@ namespace Singularity.Screen
 {
     /// <summary>
     /// The InfoBar is the UI's top bar.
-    /// It includes the time, mission time, the pause button and buttons to close the given 6 windows 
+    /// It includes the time, mission time, the pause button and buttons to close the given 6 windows
     /// </summary>
     sealed class InfoBarWindowObject : IDraw, IUpdate, IMouseClickListener
     {
@@ -86,9 +86,9 @@ namespace Singularity.Screen
         /// <param name="minimapWindow">the minimapWindow to close/open</param>
         /// <param name="director">director</param>
         public InfoBarWindowObject(
-            Color borderColor, 
-            Color fillColor, 
-            SpriteFont spriteFont, 
+            Color borderColor,
+            Color fillColor,
+            SpriteFont spriteFont,
             IScreenManager screenManager,
             WindowObject civilUnitsWindow,
             WindowObject resourceWindow,
@@ -124,13 +124,13 @@ namespace Singularity.Screen
             Active = true;
 
             // the entire infoBar
-            Bounds = new Rectangle(0, 0, Width, 25);
+            Bounds = new Rectangle(x: 0, y: 0, width: Width, height: 25);
 
 
             // NOTICE : all buttons can start with position (0,0) since they will be positioned at the first update-call
             // pause button
-            mPauseButton = new Button(" ll ", mSpriteFont, new Vector2(0, 0)) {Opacity = 1f};
-            mInfoBarItemList.Add(mPauseButton);
+            mPauseButton = new Button(buttonText: " ll ", font: mSpriteFont, position: new Vector2(x: 0, y: 0)) {Opacity = 1f};
+            mInfoBarItemList.Add(item: mPauseButton);
             mPauseButton.ButtonReleased += PauseButtonReleased;
 
             // toggle windows buttons + adding to the itemList
@@ -158,7 +158,6 @@ namespace Singularity.Screen
             mInfoBarItemList.Add(mMinimapButton);
             mMinimapButton.ButtonReleased += TogglerMinimap;
 
-
             // add input manager to prevent other objects from behind the infoBar to get input through the infoBar
             director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
 
@@ -183,7 +182,7 @@ namespace Singularity.Screen
                 // draw all buttons + times
                 foreach (var item in mInfoBarItemList)
                 {
-                    item.Draw(spriteBatch);
+                    item.Draw(spriteBatch: spriteBatch);
                 }
 
                 // draw the current time
@@ -202,7 +201,7 @@ namespace Singularity.Screen
         {
             if (Active)
             {
-                // changes in resolution result in changes in width of the info bar and the button locations 
+                // changes in resolution result in changes in width of the info bar and the button locations
                 if (mWidthBackup != Width)
                 {
                     // update backup
@@ -229,7 +228,7 @@ namespace Singularity.Screen
                 // update all buttons
                 foreach (var item in mInfoBarItemList)
                 {
-                    item.Update(gametime);
+                    item.Update(gametime: gametime);
                 }
             }
         }
@@ -251,7 +250,7 @@ namespace Singularity.Screen
         // the pause button opens the pause menu screen
         private void PauseButtonReleased(object sender, EventArgs eventArgs)
         {
-            mScreenManager.AddScreen(mGamePauseScreen);
+            mScreenManager.AddScreen(screen: mGamePauseScreen);
         }
 
         // toggles the civilUnits window opened/closed
@@ -310,6 +309,10 @@ namespace Singularity.Screen
             return !withinBounds;
         }
 
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
+        {
+            mMouse = new Vector2(x: screenX, y: screenY);
+        }
         #endregion
     }
 }

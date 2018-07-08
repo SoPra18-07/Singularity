@@ -34,7 +34,7 @@ namespace Singularity.Screen
             Position = position;
             ActiveInWindow = true;
             ActiveHorizontalCollection = true;
-            mPadding = CalcPadding(itemList, size);
+            mPadding = CalcPadding(itemList: itemList, size: size);
 
             if (mPadding < 0)
                 // catch items too big for size ! shouldn't happen, because right now it's NOT automatically fixed !
@@ -52,7 +52,7 @@ namespace Singularity.Screen
             // if the horizontalCollection is deactivated shrink size to -10, else use backup Size,
             // so that the windowObject treats this horizontalCollection as if it's not existent
             // (-10 due to the objectPadding used in the UI)
-            Size = !ActiveHorizontalCollection ? new Vector2(0, -10) : mSizeBackup;
+            Size = !ActiveHorizontalCollection ? new Vector2(x: 0, y: -10) : mSizeBackup;
 
             // activate items in itemList if window + list are active
             if (ActiveInWindow && ActiveHorizontalCollection && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
@@ -89,7 +89,7 @@ namespace Singularity.Screen
             {
                 foreach (var item in mItemList)
                 {
-                    item.Draw(spriteBatch);
+                    item.Draw(spriteBatch: spriteBatch);
                 }
             }
         }
