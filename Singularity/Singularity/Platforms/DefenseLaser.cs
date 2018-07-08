@@ -13,6 +13,8 @@ namespace Singularity.Platforms
     /// <inheritdoc cref="DefenseBase"/>
     internal sealed class DefenseLaser : DefenseBase
     {
+        private const int DrainingEnergy = 40;
+        
         /// <summary>
         /// Constructs a Laser (i.e. uses energy) defense platform that automatically attacks
         /// enemy units. This platform uses no ammunition but requires energy.
@@ -23,6 +25,8 @@ namespace Singularity.Platforms
             ref Director director)
             : base(position, platformSpriteSheet, baseSprite, ref director, EPlatformType.Laser)
         {
+            mDrainingEnergy = DrainingEnergy;
+
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
         }

@@ -86,6 +86,7 @@
     <Compile Include="Screen\ResourceIWindowItem.cs" />
     <Compile Include="Screen\InfoBarWindowObject.cs" />
     <Compile Include="Screen\ScreenClasses\DebugScreen.cs" />
+    <Compile Include="Screen\ActivationIWindowItem.cs" />
     <Compile Include="Screen\SliderHandler.cs" />
     <Compile Include="Units\ControllableUnit.cs" />
     <Compile Include="Screen\TextAndAmountIWindowItem.cs" />
