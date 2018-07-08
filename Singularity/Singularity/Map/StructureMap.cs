@@ -564,6 +564,11 @@ namespace Singularity.Map
                 return;
             }
 
+            if (mGraphIdToEnergyLevel[graphId] > 0)
+            {
+                return;
+            }
+
             // energy level was something and is now negative
             foreach (var node in mGraphIdToGraph[graphId].GetNodes())
             {
