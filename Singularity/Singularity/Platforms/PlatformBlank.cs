@@ -107,6 +107,9 @@ namespace Singularity.Platforms
         [DataMember]
         private bool mIsActive;
 
+        [DataMember]
+        private bool mWasManuallyDeactivated;
+
 
 
         public Vector2 Center { get; set; }
@@ -891,16 +894,36 @@ namespace Singularity.Platforms
             return mGraphIndex;
         }
 
-        public void Activate()
+        public void Activate(bool manually)
         {
+            if (manually)
+            {
+                mWasManuallyDeactivated = false;
+            }
             mIsActive = true;
+            ResetColor();
+
             //TODO: actually active the platform again -> distributionmanager and stuff
         }
 
-        public void Deactivate()
+        public void Deactivate(bool manually)
         {
+            if (manually)
+            {
+                mWasManuallyDeactivated = true;
+            }
+
             mIsActive = false;
+            // TODO: remove this or change it to something more appropriately, this is used by @Ativelox for 
+            // TODO: debugging purposes to easily see which platforms are currently deactivated
+            mColor = Color.Green;
+
             //TODO: actually deactivate the platform -> distributinmanager and stuff
+        }
+
+        public bool IsManuallyDeactivated()
+        {
+            return mWasManuallyDeactivated;
         }
 
         public int GetProvidingEnergy()

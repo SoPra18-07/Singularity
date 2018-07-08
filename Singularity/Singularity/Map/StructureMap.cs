@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -486,14 +487,18 @@ namespace Singularity.Map
 
             var wasNegative = mGraphIdToEnergyLevel[graphId] < 0;
 
+            // the temp energy level is the energy level which is considered WITHOUT the platforms
+            // that got manually deactivated;
+            var tempEnergyLevel = 0;
+
             mGraphIdToEnergyLevel[graphId] = 0;
 
             foreach (var node in mGraphIdToGraph[graphId].GetNodes())
             {
-                // we only want the energy level of active platforms
-                if (!((PlatformBlank) node).IsActive())
+                if (!((PlatformBlank) node).IsManuallyDeactivated())
                 {
-                    continue;
+                    tempEnergyLevel += ((PlatformBlank) node).GetProvidingEnergy();
+                    tempEnergyLevel -= ((PlatformBlank) node).GetDrainingEnergy();
                 }
 
                 mGraphIdToEnergyLevel[graphId] = mGraphIdToEnergyLevel[graphId] + ((PlatformBlank) node).GetProvidingEnergy();
@@ -502,7 +507,7 @@ namespace Singularity.Map
 
             Debug.WriteLine(mGraphIdToEnergyLevel[graphId]);
 
-            CheckEnergyLevel(graphId, wasNegative);
+            CheckEnergyLevel(graphId, wasNegative, tempEnergyLevel);
         }
 
         /// <summary>
@@ -536,7 +541,7 @@ namespace Singularity.Map
             mMouseY = worldY;
         }
 
-        private void CheckEnergyLevel(int graphId, bool wasNegative)
+        private void CheckEnergyLevel(int graphId, bool wasNegative, int tempEnergyLevel)
         {
             // energy level was positive and still is
             if (!wasNegative && mGraphIdToEnergyLevel[graphId] >= 0)
@@ -544,16 +549,25 @@ namespace Singularity.Map
                 return;
             }
 
-            // energy level was negative and is positive now
-            if (wasNegative && mGraphIdToEnergyLevel[graphId] >= 0)
+            // energy level was negative and is positive considering all the platforms that weren't manually deactivated
+            // -> reactivate all the platforms which weren't manually deactivated
+            if (wasNegative && tempEnergyLevel >= 0)
             {
+                foreach (var node in mGraphIdToGraph[graphId].GetNodes())
+                {
+                    if (((PlatformBlank) node).IsManuallyDeactivated())
+                    {
+                        continue;
+                    }
+                    ((PlatformBlank)node).Activate(false);
+                }
                 return;
             }
 
             // energy level was something and is now negative
             foreach (var node in mGraphIdToGraph[graphId].GetNodes())
             {
-                ((PlatformBlank)node).Deactivate();
+                ((PlatformBlank)node).Deactivate(false);
             }
         }
     }
