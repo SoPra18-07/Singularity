@@ -113,7 +113,7 @@ namespace Singularity.Platforms
         private bool mIsActive;
 
         [DataMember]
-        private bool mIsManuallyDeactivated
+        private bool mIsManuallyDeactivated;
 
         // also in ARevealing. But still needs to be set in the constructor.
         // public int RevelationRadius { get; } = 200;
