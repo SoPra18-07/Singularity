@@ -41,17 +41,14 @@ namespace Singularity.Units
         /// <summary>
         /// Indicates the position the closest enemy is at.
         /// </summary>
-        private Vector2 mEnemyPosition;
+        private Vector2 mShootingTarget;
 
         /// <summary>
         /// Indicates if the unit is currently shooting.
         /// </summary>
         private bool mShoot;
 
-        /// <summary>
-        /// Indicates the shooting range of the unit.
-        /// </summary>
-        private int mRange;
+        public int Range { get; protected set; }
 
         /// <summary>
         /// Color of the unit while selected.
@@ -79,7 +76,9 @@ namespace Singularity.Units
 
             RevelationRadius = 400;
 
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * Scale / 2, AbsolutePosition.Y + AbsoluteSize.Y * Scale / 2);
+            Center = new Vector2((AbsolutePosition.X + AbsoluteSize.X) * 0.5f, (AbsolutePosition.Y + AbsoluteSize.Y) * 0.5f );
+
+            Range = MilitaryUnitStats.StandardRange;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -136,8 +135,8 @@ namespace Singularity.Units
             }
 
             // draws a laser line a a slight glow around the line, then sets the shoot future off
-            spriteBatch.DrawLine(Center, MapCoordinates(mEnemyPosition), Color.White, 2);
-            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), MapCoordinates(mEnemyPosition), Color.White * .2f, 6);
+            spriteBatch.DrawLine(Center, mShootingTarget, Color.White, 2);
+            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget, Color.White * .2f, 6);
             mShoot = false;
         }
 
@@ -148,18 +147,15 @@ namespace Singularity.Units
             Bounds = new Rectangle(
                 (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
 
+            
             // this makes the unit rotate according to the mouse position when its selected and not moving.
             if (mSelected && !mIsMoving && !mShoot)
             {
-                Rotate(new Vector2(mMouseX, mMouseY));
+                 Rotate(new Vector2(mMouseX, mMouseY));
             }
+            
 
-            else if (mShoot)
-            {
-                Rotate(mEnemyPosition);
-            }
-
-            if (HasReachedTarget())
+            else if (HasReachedTarget())
             {
                 mIsMoving = false;
             }
@@ -167,6 +163,7 @@ namespace Singularity.Units
             // calculate path to target position
             else if (mIsMoving)
             {
+                //Rotate(mTargetPosition);
                 if (!HasReachedWaypoint())
                 {
                     MoveToTarget(mPath.Peek(), mSpeed);
@@ -187,10 +184,10 @@ namespace Singularity.Units
             Moved = mIsMoving;
 
             //TODO this needs to be taken out once the military manager takes control of shooting
-            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            if (!mIsMoving && mShoot)
             {
                 // shoots at mouse and plays laser sound at full volume
-                Shoot(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
+                Shoot(mShootingTarget);
                 mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
 
             }
@@ -198,9 +195,21 @@ namespace Singularity.Units
 
         public void Shoot(Vector2 target)
         {
-            mShoot = true;
-            mEnemyPosition = target;
-            Rotate(target);
+
+        }
+
+        public void SetShootingTarget(Vector2 target)
+        {
+            if (target == Vector2.Zero)
+            {
+                mShoot = false;
+            }
+            else
+            {
+                mShoot = true;
+            }
+
+            mShootingTarget = target;
         }
         
     }

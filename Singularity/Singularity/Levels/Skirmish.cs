@@ -32,6 +32,7 @@ namespace Singularity.Levels
 
         public override void LoadContent(ContentManager content)
         {
+            var map = Map;
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
             var platform1 = PlatformFactory.Get(EPlatformType.Blank, ref mDirector, 3000, 3000, Map.GetResourceMap());
@@ -63,8 +64,12 @@ namespace Singularity.Levels
             var road5 = new Road(platform4, platform3, false);
             GameScreen.AddObject(road5);
 
+            // Enemy Unit
+            var enemyUnit = new Target(new Vector2(3000, 2950), Camera, ref mDirector, ref map);
+            var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
 
-            //GenUnits
+
+            // GenUnits
             var genUnit = new List<GeneralUnit>(5);
             for (var i = 0; i < 5; i++)
             {
@@ -85,6 +90,8 @@ namespace Singularity.Levels
             platform2.StoreResource(res5);
 
             GameScreen.AddObjects(genUnit);
+            GameScreen.AddObject(enemyUnit);
+            GameScreen.AddObject(milUnit);
 
             //TESTMETHODS HERE ====================================
             mDirector.GetDistributionManager.RequestResource(platform2, EResourceType.Oil, null);

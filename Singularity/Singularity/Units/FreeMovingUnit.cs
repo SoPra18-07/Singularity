@@ -116,9 +116,6 @@ namespace Singularity.Units
         /// </summary>
         public bool Moved { get; protected set; }
 
-        /// <summary>
-        /// Stores the center of a unit's position.
-        /// </summary>
         public Vector2 Center { get; protected set; }
 
         public Vector2 AbsolutePosition { get; set; }
@@ -170,8 +167,6 @@ namespace Singularity.Units
             mDirector = director;
             mCamera = camera;
             mPathfinder = new MilitaryPathfinder();
-
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
         }
 
         #region Pathfinding Methods
@@ -252,7 +247,7 @@ namespace Singularity.Units
         }
 
         /// <summary>
-        /// Rotates unit in order when selected in order to face
+        /// Rotates unit when selected in order to face
         /// user mouse and eventually target destination.
         /// </summary>
         /// <param name="target"></param>
@@ -262,7 +257,7 @@ namespace Singularity.Units
             // adjust to be at center of sprite
             var x = target.X - (RelativePosition.X + RelativeSize.X / 2);
             var y = target.Y - (RelativePosition.Y + RelativeSize.Y / 2);
-            var hypot = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+            var hypot = Math.Sqrt(x * x + y * y);
 
             // calculate degree between formed triangle
             double degree;

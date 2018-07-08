@@ -42,6 +42,7 @@ namespace Singularity.Platforms
         /// <param name="x">The initial x coordinate of the platform</param>
         /// <param name="y">The initial y coordinate of the platform</param>
         /// <param name="resourceMap">The resource map needed to initialize some platforms</param>
+        /// <param name="friendly">The allegiance of the platform.</param>
         /// <returns></returns>
         public static PlatformBlank Get(EPlatformType type,
             ref Director director,

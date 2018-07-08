@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Map.Properties;
@@ -9,7 +10,7 @@ using Singularity.Property;
 namespace Singularity.Units
 {
     /// <inheritdoc cref="MilitaryUnit"/>
-    internal sealed class EnemyUnit : FreeMovingUnit
+    internal class EnemyUnit : FreeMovingUnit, IShooting
     {
         /// <summary>
         /// Default width of a unit before scaling.
@@ -24,7 +25,7 @@ namespace Singularity.Units
         /// <summary>
         /// Color overlay used on the unit to show it is an enemy unit not a friendly unit.
         /// </summary>
-        private readonly Color mColor = Color.Red;
+        protected readonly Color mColor = Color.Red;
         
         /// <summary>
         /// Stores the time since the last random movement.
@@ -34,7 +35,7 @@ namespace Singularity.Units
         /// <summary>
         /// Scalar for the unit size.
         /// </summary>
-        private const float Scale = 0.4f;
+        protected const float Scale = 0.4f;
 
         /// <summary>
         /// Random seed to calculate paths.
@@ -44,7 +45,34 @@ namespace Singularity.Units
         /// <summary>
         /// The spriteSheet used to draw enemy units.
         /// </summary>
-        private readonly Texture2D mMilSheet = MilitaryUnit.mMilSheet;
+        protected readonly Texture2D mMilSheet = MilitaryUnit.mMilSheet;
+
+        public new bool Friendly { get; } = false;
+
+        protected bool mShoot;
+
+        protected Vector2 mShootingTarget;
+
+        public int Range { get; protected set; }
+
+        public void Shoot(Vector2 target)
+        {
+            mShoot = true;
+            mShootingTarget = target;
+        }
+
+        public void SetShootingTarget(Vector2 target)
+        {
+            if (target == Vector2.Zero)
+            {
+                mShoot = false;
+            }
+            else
+            {
+                mShoot = true;
+                mShootingTarget = target;
+            }
+        }
 
         /// <summary>
         /// Enemy units controlled by AI and opposed to the player.
@@ -58,30 +86,63 @@ namespace Singularity.Units
         {
             AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
 
-            RevelationRadius = 0;
+            RevelationRadius = 400;
 
             mSpeed = MilitaryUnitStats.StandardSpeed;
             Health = MilitaryUnitStats.StandardHealth;
+            Range = MilitaryUnitStats.StandardRange;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            // makes sure that the textures are loaded
+            if (mMilSheet == null)
+            {
+                throw new Exception("load the MilSheet and GlowTexture first!");
+            }
+
+            // Draw military unit
             spriteBatch.Draw(
-                mMilSheet,
-                AbsolutePosition,
-                new Rectangle(150 * mColumn, 75 * mRow, (int)AbsoluteSize.X, (int)AbsoluteSize.Y),
-                mColor,
-                0f,
-                Vector2.Zero,
-                Vector2.One,
-                SpriteEffects.None,
-                LayerConstants.MilitaryUnitLayer
-                );
+                            mMilSheet,
+                            AbsolutePosition,
+                            new Rectangle(150 * mColumn, 75 * mRow, (int)(AbsoluteSize.X / Scale), (int)(AbsoluteSize.Y / Scale)),
+                            mColor,
+                            0f,
+                            Vector2.Zero,
+                            new Vector2(Scale),
+                            SpriteEffects.None,
+                            LayerConstants.MilitaryUnitLayer
+                            );
+
+            
+
+            if (GlobalVariables.DebugState)
+            {
+                // TODO DEBUG REGION
+                if (mDebugPath != null)
+                {
+                    for (var i = 0; i < mDebugPath.Length - 1; i++)
+                    {
+                        spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
+                    }
+                }
+            }
+
+            if (!mShoot)
+            {
+                return;
+            }
+
+            // draws a laser line a a slight glow around the line, then sets the shoot future off
+            spriteBatch.DrawLine(Center, mShootingTarget, Color.White, 2);
+            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget, Color.White * .2f, 6);
+            mShoot = false;
         }
 
 
         public override void Update(GameTime gameTime)
         {
+            /*
             // Generate random positions for the enemy unit to move to.
             mElapsedTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (mElapsedTime > 4)
@@ -100,7 +161,8 @@ namespace Singularity.Units
                     mZoomSnapshot = mCamera.GetZoom();
                 }
             }
-            
+            */
+
             //make sure to update the relative bounds rectangle enclosing this unit.
             Bounds = new Rectangle(
                 (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
@@ -123,7 +185,7 @@ namespace Singularity.Units
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
             AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
             Moved = mIsMoving;
-
+            
         }
     }
 }

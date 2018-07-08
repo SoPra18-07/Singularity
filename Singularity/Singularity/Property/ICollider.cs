@@ -16,6 +16,11 @@ namespace Singularity.Property
         /// </summary>
         Rectangle AbsBounds { get; }
 
+        /// <summary>
+        /// Indicates the center of the object
+        /// </summary>
+        Vector2 Center { get; }
+
 
         bool Moved { get; }
 

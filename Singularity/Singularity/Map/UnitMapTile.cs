@@ -5,6 +5,6 @@ namespace Singularity.Map
 {
     internal sealed class UnitMapTile
     {
-        public List<ICollider> UnitList { get; set; }
+        public List<ICollider> UnitList { get; } = new List<ICollider>();
     }
 }

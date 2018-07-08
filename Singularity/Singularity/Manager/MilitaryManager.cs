@@ -6,6 +6,7 @@ using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
+using Singularity.Utils;
 
 namespace Singularity.Manager
 {
@@ -143,7 +144,7 @@ namespace Singularity.Manager
                 mHostileMilitary.Add(hostileMilitary);
             }
 
-            mUnitMap.RemoveUnit(unit);
+            mUnitMap.AddUnit(unit);
         }
 
         /// <summary>
@@ -220,36 +221,190 @@ namespace Singularity.Manager
         {
             foreach (var unit in mFriendlyMilitary)
             {
-                // iterate through each friendly unit, if there's a target nearby, shoot it.
+                
+                // iterate through each friendly unit, if there's a target nearby, shoot the closest one.
                 if (unit.Moved)
                 {
                     mUnitMap.MoveUnit(unit);
                 }
 
+                // get all the adjacent units
                 var adjacentUnits = mUnitMap.GetAdjacentUnits(unit.AbsolutePosition);
+
+                // remember the closest adjacent unit.
+                ICollider closestAdjacent = null;
+                var closestAdjacentDistance = 1500f; // a separate variable is used so that it can be initalized with a very big value.
+
+                // iterate through all adjacent units to find the closest adjacent unit.
                 foreach (var adjacentUnit in adjacentUnits)
                 {
-                    if (adjacentUnit.Friendly != true)
+                    // only calculate the distance to the adjacent unit if the unit is not friendly.
+                    if (!adjacentUnit.Friendly)
                     {
-                        if (M)
+                        // calculate the distance
+                        var dist = Geometry.GetQuickDistance(unit.AbsolutePosition, adjacentUnit.AbsolutePosition);
+                        // check if it's within range
+                        if (dist < unit.Range)
+                        {
+                            // if yes, check if it's closer than the previous closest
+                            if (dist < closestAdjacentDistance)
+                            {
+                                closestAdjacentDistance = dist;
+                                closestAdjacent = adjacentUnit;
+                            }
+                        }
                     }
+                    
+                }
+
+                // if there is something close enough, shoot it. Else, set the target to null.
+                if (closestAdjacent != null)
+                {
+                    unit.SetShootingTarget(closestAdjacent.Center);
+                }
+                else
+                {
+                    unit.SetShootingTarget(Vector2.Zero);
                 }
             }
 
             foreach (var turret in mFriendlyDefensePlatforms)
             {
                 // iterate through each friendly turret, if there's a target nearby, shoot it.
+                // get all the adjacent units
+                var adjacentUnits = mUnitMap.GetAdjacentUnits(turret.AbsolutePosition);
+
+                // remember the closest adjacent unit.
+                ICollider closestAdjacent = null;
+                var closestAdjacentDistance = 1500f; // a separate variable is used so that it can be initalized with a very big value.
+
+                // iterate through all adjacent units to find the closest adjacent unit.
+                foreach (var adjacentUnit in adjacentUnits)
+                {
+                    // only calculate the distance to the adjacent unit if the unit is not friendly.
+                    if (!adjacentUnit.Friendly)
+                    {
+                        // calculate the distance
+                        var dist = Geometry.GetQuickDistance(turret.AbsolutePosition, adjacentUnit.AbsolutePosition);
+                        // check if it's within range
+                        if (dist < turret.Range)
+                        {
+                            // if yes, check if it's closer than the previous closest
+                            if (dist < closestAdjacentDistance)
+                            {
+                                closestAdjacentDistance = dist;
+                                closestAdjacent = adjacentUnit;
+                            }
+                        }
+                    }
+
+                }
+
+                // if there is something close enough, shoot it. Else, set the target to null.
+                if (closestAdjacent != null)
+                {
+                    turret.SetShootingTarget(closestAdjacent.Center);
+                }
+                else
+                {
+                    turret.SetShootingTarget(Vector2.Zero);
+                }
+
             }
 
-            foreach (var unit in HostileMilitary)
+            foreach (var unit in mHostileMilitary)
             {
                 // iterate through each hostile unit, if there's a target nearby, shoot it.
+                // iterate through each friendly unit, if there's a target nearby, shoot the closest one.
+                if (unit.Moved)
+                {
+                    mUnitMap.MoveUnit(unit);
+                }
+
+                // get all the adjacent units
+                var adjacentUnits = mUnitMap.GetAdjacentUnits(unit.AbsolutePosition);
+
+                // remember the closest adjacent unit.
+                ICollider closestAdjacent = null;
+                var closestAdjacentDistance = 1500f; // a separate variable is used so that it can be initalized with a very big value.
+
+                // iterate through all adjacent units to find the closest adjacent unit.
+                foreach (var adjacentUnit in adjacentUnits)
+                {
+                    // only calculate the distance to the adjacent unit if the unit is not friendly.
+                    if (!adjacentUnit.Friendly)
+                    {
+                        // calculate the distance
+                        var dist = Geometry.GetQuickDistance(unit.AbsolutePosition, adjacentUnit.AbsolutePosition);
+                        // check if it's within range
+                        if (dist < unit.Range)
+                        {
+                            // if yes, check if it's closer than the previous closest
+                            if (dist < closestAdjacentDistance)
+                            {
+                                closestAdjacentDistance = dist;
+                                closestAdjacent = adjacentUnit;
+                            }
+                        }
+                    }
+
+                }
+
+                // if there is something close enough, shoot it. Else, set the target to null.
+                if (closestAdjacent != null)
+                {
+                    unit.SetShootingTarget(closestAdjacent.Center);
+                }
+                else
+                {
+                    unit.SetShootingTarget(Vector2.Zero);
+                }
             }
 
-            foreach (var turret in HostileDefensePlatforms)
+            foreach (var turret in mHostileDefensePlatforms)
             {
-                // iterate through each hostile turret, if there's a target nearby, shoot it.
+                // iterate through each friendly turret, if there's a target nearby, shoot it.
+                // get all the adjacent units
+                var adjacentUnits = mUnitMap.GetAdjacentUnits(turret.AbsolutePosition);
+
+                // remember the closest adjacent unit.
+                ICollider closestAdjacent = null;
+                var closestAdjacentDistance = 1500f; // a separate variable is used so that it can be initalized with a very big value.
+
+                // iterate through all adjacent units to find the closest adjacent unit.
+                foreach (var adjacentUnit in adjacentUnits)
+                {
+                    // only calculate the distance to the adjacent unit if the unit is not friendly.
+                    if (!adjacentUnit.Friendly)
+                    {
+                        // calculate the distance
+                        var dist = Geometry.GetQuickDistance(turret.AbsolutePosition, adjacentUnit.AbsolutePosition);
+                        // check if it's within range
+                        if (dist < turret.Range)
+                        {
+                            // if yes, check if it's closer than the previous closest
+                            if (dist < closestAdjacentDistance)
+                            {
+                                closestAdjacentDistance = dist;
+                                closestAdjacent = adjacentUnit;
+                            }
+                        }
+                    }
+
+                }
+
+                // if there is something close enough, shoot it. Else, set the target to null.
+                if (closestAdjacent != null)
+                {
+                    turret.SetShootingTarget(closestAdjacent.Center);
+                }
+                else
+                {
+                    turret.SetShootingTarget(Vector2.Zero);
+                }
             }
         }
+
+
     }
 }

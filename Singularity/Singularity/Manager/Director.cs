@@ -47,6 +47,7 @@ namespace Singularity.Manager
                 GetInputManager.Update(gametime);
             }
             GetStoryManager.Update(gametime);
+            GetMilitaryManager.Update(gametime);
         }
     }
 }

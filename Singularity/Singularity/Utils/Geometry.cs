@@ -26,7 +26,7 @@ namespace Singularity.Utils
 
         public static double Length(Vector2 vec)
         {
-            return Math.Sqrt(vec.X * vec.X + vec.Y * vec.Y);
+            return FastSqrt(vec.X * vec.X + vec.Y * vec.Y);
         }
 
 
@@ -47,6 +47,12 @@ namespace Singularity.Utils
             return new Vector2(x + width/2f, y + height/2f);
         }
 
+        /// <summary>
+        /// Gets the approximate distance between 2 points quickly.
+        /// </summary>
+        /// <param name="pointA">The first point.</param>
+        /// <param name="pointB">The second point.</param>
+        /// <returns></returns>
         public static float GetQuickDistance(Vector2 pointA, Vector2 pointB)
         {
             var dx = pointB.X - pointA.X;

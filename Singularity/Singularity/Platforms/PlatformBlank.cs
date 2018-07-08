@@ -119,7 +119,7 @@ namespace Singularity.Platforms
 
         public Vector2 Center { get; set; }
 
-        public int RevelationRadius { get; } = 200;
+        public int RevelationRadius { get; protected set; } = 200;
 
         public Rectangle AbsBounds { get; internal set; }
 
@@ -226,6 +226,8 @@ namespace Singularity.Platforms
             // user interface controller
             mUserInterfaceController = director.GetUserInterfaceController;
             Debug.WriteLine("PlatformBlank created");
+
+            Friendly = friendly;
 
         }
 

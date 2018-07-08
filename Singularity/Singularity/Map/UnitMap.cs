@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Singularity.Property;
 
@@ -10,7 +11,7 @@ namespace Singularity.Map
         /// <summary>
         /// Stores which units are in which grid position on the map.
         /// </summary>
-        private readonly UnitMapTile[,] mUnitGrid;
+        private UnitMapTile[,] mUnitGrid;
 
         private readonly Dictionary<int, Vector2> mLookupTable = new Dictionary<int, Vector2>();
 
@@ -184,7 +185,7 @@ namespace Singularity.Map
         /// <returns>Corresponding tile position</returns>
         internal Vector2 VectorToTilePos(Vector2 vector)
         {
-            int[] squareTilePos = {(int) vector.X / 200, (int) vector.Y / 200};
+            int[] squareTilePos = {(int) vector.X / 200, (int) vector.Y / 100};
 
             var halfWidth = mMapSizeX / 2 - 1;
 

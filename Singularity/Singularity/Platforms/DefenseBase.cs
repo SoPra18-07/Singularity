@@ -28,6 +28,10 @@ namespace Singularity.Platforms
         /// </summary>
         internal Vector2 EnemyPosition { get; set; }
 
+        public int Range { get; } = 400;
+
+        protected Vector2 mShootingTarget { get; set; }
+
         /// <summary>
         /// Represents an abstract class for all defense platforms. Implements their draw methods.
         /// </summary>
@@ -48,6 +52,8 @@ namespace Singularity.Platforms
             mSpritename = "Cone";
             Property = JobType.Defense;
             SetPlatfromParameters();
+
+            RevelationRadius = 500;
         }
 
         public abstract void Shoot(Vector2 target);
@@ -84,9 +90,15 @@ namespace Singularity.Platforms
             }
 
             // draws a laser line a a slight glow around the line, then sets the shoot future off
-            spriteBatch.DrawLine(Center, MapCoordinates(EnemyPosition), Color.White, 2);
-            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), MapCoordinates(EnemyPosition), Color.White * .2f, 6);
+            spriteBatch.DrawLine(Center, EnemyPosition, Color.White, 2);
+            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), EnemyPosition, Color.White * .2f, 6);
             mShoot = false;
+        }
+
+        public void SetShootingTarget(Vector2 target)
+        {
+            mShootingTarget = target;
+            Shoot(target);
         }
 
         /// <summary>
