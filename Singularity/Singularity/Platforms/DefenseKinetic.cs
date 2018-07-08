@@ -42,8 +42,9 @@ namespace Singularity.Platforms
         internal DefenseKinetic(Vector2 position,
             Texture2D platformSpriteSheet,
             Texture2D baseSprite,
-            ref Director director)
-            : base(position, platformSpriteSheet, baseSprite, ref director, EPlatformType.Kinetic)
+            ref Director director,
+            bool friendly = true)
+            : base(position, platformSpriteSheet, baseSprite, ref director, EPlatformType.Kinetic, friendly: friendly)
         {
             //Add possible Actions in this array
             mIPlatformActions.Add(new Shoot(platform: this, director: ref mDirector));

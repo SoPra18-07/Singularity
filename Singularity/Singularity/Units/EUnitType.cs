@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Singularity.Units
 {
-    internal enum EUnitType
+    public enum EUnitType
     {
         Settler,
         StandardFriendly,

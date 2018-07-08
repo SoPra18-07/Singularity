@@ -36,8 +36,9 @@ namespace Singularity.Platforms
             Texture2D baseSprite,
             ref Director director,
             EPlatformType type,
-            bool autoRegister = true)
-            : base(position, platformSpriteSheet, baseSprite, ref director, type)
+            bool autoRegister = true,
+            bool friendly = true)
+            : base(position, platformSpriteSheet, baseSprite, ref director, type, friendly: friendly)
         {
             if (autoRegister)
             {
@@ -60,7 +61,7 @@ namespace Singularity.Platforms
             spriteBatch.Draw(mPlatformBaseTexture,
                 Vector2.Add(AbsolutePosition, new Vector2(0, 78)),
                 null,
-                Color.White * transparency,
+                mColor * transparency,
                 0f,
                 Vector2.Zero,
                 1f,
@@ -70,7 +71,7 @@ namespace Singularity.Platforms
             spriteBatch.Draw(mPlatformSpriteSheet,
                 AbsolutePosition,
                 new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 148),
-                mColor * transparency,
+                Color.White * transparency,
                 0f,
                 Vector2.Zero,
                 1f,

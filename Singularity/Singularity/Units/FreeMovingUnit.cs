@@ -20,6 +20,7 @@ namespace Singularity.Units
         /// </summary>
         public int Id { get; }
 
+        public bool Friendly { get; protected set; }
         #region Movement Variables
 
         /// <summary>

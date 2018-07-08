@@ -14,12 +14,25 @@ namespace Singularity.Platforms
     class Mine : PlatformBlank
     {
         [DataMember]
-        private const int PlatformWidth = 144;
+        private new const int PlatformWidth = 144;
         [DataMember]
-        private const int PlatformHeight = 187;
+        private new const int PlatformHeight = 187;
 
 
-        public Mine(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ResourceMap resource, ref Director director, bool autoRegister = true) : base(position, spritesheet, basesprite, ref director, EPlatformType.Mine, -50)
+        public Mine(Vector2 position,
+            Texture2D spritesheet,
+            Texture2D basesprite,
+            ResourceMap resource,
+            ref Director director,
+            bool autoRegister = true,
+            bool friendly = true)
+            : base(position,
+                spritesheet,
+                basesprite,
+                ref director,
+                EPlatformType.Mine,
+                -50,
+                friendly)
         {
             if (autoRegister)
             {

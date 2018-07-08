@@ -22,6 +22,7 @@ namespace Singularity.Platforms
     /// <inheritdoc cref="IRevealing"/>
     /// <inheritdoc cref="INode"/>
     /// <inheritdoc cref="ICollider"/>
+    /// <inheritdoc cref="IDamageable"/>
     [DataContract]
     public class PlatformBlank : IRevealing, INode, ICollider, IMouseClickListener
     {
@@ -52,6 +53,8 @@ namespace Singularity.Platforms
         /// List of outwards facing edges/roads.
         /// </summary>
         private List<IEdge> mOutwardsEdges;
+
+        public bool Friendly { get; set; }
 
         /// <summary>
         /// Indicates the type of platform this is, defaults to blank.
@@ -152,7 +155,7 @@ namespace Singularity.Platforms
         [DataMember]
         private readonly float mCenterOffsetY;
 
-        protected Color mColor = Color.White;
+        protected Color mColor;
 
         public bool[,] ColliderGrid { get; internal set; }
 
@@ -160,7 +163,7 @@ namespace Singularity.Platforms
         [DataMember]
         public JobType Property { get; set; }
 
-        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36)
+        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36, bool friendly = true)
         {
 
             Id = IdGenerator.NextiD();
@@ -172,6 +175,8 @@ namespace Singularity.Platforms
             mLayer = LayerConstants.PlatformLayer;
 
             mType = type;
+
+            mColor = friendly ? Color.White : Color.Red;
 
             mInwardsEdges = new List<IEdge>();
             mOutwardsEdges = new List<IEdge>();
@@ -448,7 +453,7 @@ namespace Singularity.Platforms
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
                         new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 153),
-                        mColor * transparency,
+                        Color.White * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
@@ -470,7 +475,7 @@ namespace Singularity.Platforms
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
                         new Rectangle(148 * (mSheetPosition % 4), 109 * (mSheetPosition / 4), 148, 109),
-                        mColor * transparency,
+                        Color.White * transparency,
                         0f,
                         Vector2.Zero,
                         1f,

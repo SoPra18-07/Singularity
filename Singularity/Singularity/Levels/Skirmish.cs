@@ -53,7 +53,7 @@ namespace Singularity.Levels
             var road3 = new Road(platform3, platform1, false);
             GameScreen.AddObject(road3);
 
-            var platform4 = PlatformFactory.Get(EPlatformType.Energy, ref mDirector, 1000, 800, Map.GetResourceMap());
+            var platform4 = PlatformFactory.Get(EPlatformType.Energy, ref mDirector, 1000, 800, Map.GetResourceMap(), friendly: false);
 
             GameScreen.AddObject(platform4);
             var road4 = new Road(platform1, platform4, false);

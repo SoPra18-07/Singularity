@@ -2,6 +2,8 @@
 
 namespace Singularity.Property
 {
+    /// <inheritdoc cref="ISpatial"/>
+    /// <inheritdoc cref="IDamageable"/>
     internal interface ICollider : ISpatial, IDamageable
     {
         /// <summary>

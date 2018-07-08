@@ -10,31 +10,62 @@ namespace Singularity.Manager
 {
     public sealed class MilitaryManager : IUpdate
     {
+        /// <summary>
+        /// The game map.
+        /// </summary>
         private Map.Map mMap;
 
-        private List<FreeMovingUnit> Units;
-        private List<IDamageable> Damageables;
-        private List<EnemyUnit> EnemyUnits;
-        private List<DefenseBase> DefensePlatforms;
+        #region Friendly unit lists
+
+        /// <summary>
+        /// A list of friendly military (i.e. capable of shooting) units.
+        /// </summary>
+        private List<IShooting> FriendlyShooters;
+
+        /// <summary>
+        /// A list of friendly targets (i.e. platforms and settlers that can be damaged).
+        /// </summary>
+        private List<IDamageable> FriendlyDamageables;
+
+        #endregion
+
+        #region Hostile unit lists
+
+        /// <summary>
+        /// A list of hostile military (i.e. capable of shooting) units.
+        /// </summary>
+        private List<IShooting> HostileShooters;
+        
+        /// <summary>
+        /// A list of hostile targets (i.e. platforms and settlers that can be damaged).
+        /// </summary>
+        private List<IDamageable> HostileDamageables;
+
+        #endregion
 
         internal void SetMap(ref Map.Map map)
         {
             mMap = map;
         }
 
-        internal void AddDefensePlatform(DefenseBase platform)
+        internal void AddDefensePlatform(DefenseBase platform, bool friendly = true)
         {
-            DefensePlatforms.Add(platform);
+            if (friendly)
+            {
+
+            }
         }
 
         internal void AddPlatform(PlatformBlank platform)
         {
-            Damageables.Add(platform);
+            if (platform.Friendly)
+            {
+                FriendlyDamageables.Add(platform);
+            }
         }
 
-        internal void AddUnit(Vector2 position, EUnitType type, bool friendly = true)
+        internal void AddUnit(FreeMovingUnit unit, EUnitType type)
         {
-            FreeMovingUnit unit;
             switch (type)
             {
                 case EUnitType.Settler:

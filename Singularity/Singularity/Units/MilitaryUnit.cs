@@ -63,6 +63,7 @@ namespace Singularity.Units
         /// </summary>
         protected Color mColor = Color.Gray;
         
+        
         public MilitaryUnit(Vector2 position,
             Camera camera,
             ref Director director,
@@ -71,6 +72,8 @@ namespace Singularity.Units
         {
             mSpeed = MilitaryUnitStats.StandardSpeed;
             Health = MilitaryUnitStats.StandardHealth;
+
+            Friendly = true;
 
             AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
 
