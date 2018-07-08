@@ -115,7 +115,7 @@ namespace Singularity.Map
                         x = 0;
                     }
 
-                    var xpos = Math.Abs(value: row - column - (mWidth - 1));
+                    var xpos = Math.Abs(row - column - (mWidth - 1));
                     var ypos = column + row;
 
                     if (xpos < mYPosMin || xpos > mYPosMax || ypos < mXPosMin || ypos > mXPosMax)
@@ -123,15 +123,15 @@ namespace Singularity.Map
                         continue;
                     }
 
-                    spriteBatch.Draw(texture: mBackgroundTexture,
-                        position: new Vector2(x: xpos * 100, y: ypos * 50),
-                        sourceRectangle: new Rectangle(x: x * MapConstants.TileWidth, y: y * MapConstants.TileHeight, width: MapConstants.TileWidth, height: MapConstants.TileHeight),
-                        color: Color.White,
-                        rotation: 0f,
-                        origin: Vector2.Zero,
-                        scale: Vector2.One,
-                        effects: SpriteEffects.None,
-                        layerDepth: LayerConstants.MapLayer);
+                    spriteBatch.Draw(mBackgroundTexture,
+                        new Vector2(xpos * 100, ypos * 50),
+                        new Rectangle(x * MapConstants.TileWidth, y * MapConstants.TileHeight, MapConstants.TileWidth, MapConstants.TileHeight),
+                        Color.White,
+                        0f,
+                        Vector2.Zero,
+                        Vector2.One,
+                        SpriteEffects.None,
+                        LayerConstants.MapLayer);
                 }
             }
 
@@ -161,14 +161,14 @@ namespace Singularity.Map
 
 
 
-            for(var i = 0; i < colMap.GetLength(dimension: 0); i++)
+            for(var i = 0; i < colMap.GetLength(0); i++)
             {
-                for (var j = 0; j < colMap.GetLength(dimension: 1); j ++)
+                for (var j = 0; j < colMap.GetLength(1); j ++)
                 {
                     if (!walkabilityGrid.IsWalkableAt(i, j))
                     {
-                        spriteBatch.FillRectangle(rect: new Rectangle(x: i * MapConstants.GridWidth, y: j * MapConstants.GridHeight, width: MapConstants.GridWidth, height: MapConstants.GridHeight),
-                            color: new Color(color: new Vector4(x: 1, y: 0, z: 0, w: 0.2f)), angle: 0f, layer: LayerConstants.CollisionDebugLayer);
+                        spriteBatch.FillRectangle(new Rectangle(i * MapConstants.GridWidth, j * MapConstants.GridHeight, MapConstants.GridWidth, MapConstants.GridHeight),
+                            new Color(new Vector4(1, 0, 0, 0.2f)), 0f, LayerConstants.CollisionDebugLayer);
                     }
                 }
             }

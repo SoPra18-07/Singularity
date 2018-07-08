@@ -170,7 +170,7 @@ namespace Singularity.Units
                     {
                         mDone = false;
 
-                        mTask = mDirector.GetDistributionManager.RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
+                        mTask = mDirector.GetDistributionManager.RequestNewTask(this, Job, Optional<IPlatformAction>.Of(null));
                         //Check if the given destination is null (it shouldnt)
                         if (mTask.End.IsPresent())
                         {
@@ -214,7 +214,7 @@ namespace Singularity.Units
                     break;
 
                 case JobType.Logistics:
-                    
+
                     HandleTransport();
                     RegulateMovement();
 
@@ -245,7 +245,7 @@ namespace Singularity.Units
             {
                 mDone = false;
 
-                mTask = mDirector.GetDistributionManager.RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
+                mTask = mDirector.GetDistributionManager.RequestNewTask(this, Job, Optional<IPlatformAction>.Of(null));
                 //First go to the location where you want to get your Resource from
                 //Check if the given destination is null (it shouldnt).
                 if (mTask.Begin.IsPresent())
@@ -328,6 +328,7 @@ namespace Singularity.Units
                     var res = Carrying.Get();
                     res.UnFollow();
                     ((PlatformBlank)CurrentNode).StoreResource(res);
+                    Carrying = Optional<Resource>.Of(null);
                 }
 
                 mDone = true;

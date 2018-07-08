@@ -58,6 +58,7 @@ namespace Singularity.Screen.ScreenClasses
         private SelectionBox mSelBox;
         private Texture2D mBlankPlat;
         private Texture2D mCylPlat;
+        private SpriteFont mLibSans12;
 
 
 
@@ -77,7 +78,6 @@ namespace Singularity.Screen.ScreenClasses
 
             mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
             AddObject(mSelBox);
-
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -154,7 +154,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             AddObject(mMap);
 
-            AddObjects(ResourceHelper.GetRandomlyDistributedResources(50));
+            AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
 
             mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
             mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
@@ -162,6 +162,7 @@ namespace Singularity.Screen.ScreenClasses
             // This is for the creation of the Command Centers from the settlers
             mBlankPlat = content.Load<Texture2D>("PlatformBasic");
             mCylPlat = content.Load<Texture2D>("Cylinders");
+            mLibSans12 = content.Load<SpriteFont>("LibSans12");
         }
 
         public bool UpdateLower()
@@ -341,7 +342,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO eventually the EPlacementType should be instance but currently that
             // TODO requires a road to be place and therefore throws an exception !!!!!
 
-            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, ref mDirector, false);
+            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, mLibSans12, ref mDirector, false);
             var genUnit = new GeneralUnit(cCenter, ref mDirector);
             var genUnit2 = new GeneralUnit(cCenter, ref mDirector);
 

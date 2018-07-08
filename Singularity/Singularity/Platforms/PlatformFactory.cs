@@ -19,6 +19,8 @@ namespace Singularity.Platforms
 
         private static Texture2D sBlankSheet;
 
+        private static SpriteFont sLibSans12;
+
         /// <summary>
         /// Initializes the platform factory with the sprite sheets needed.
         /// </summary>
@@ -26,12 +28,13 @@ namespace Singularity.Platforms
         /// <param name="cylinderSheet">The cylinder sprite sheet for the facilities</param>
         /// <param name="domeSheet">The dome sprite sheet for the facilities</param>
         /// <param name="blankSheet">The blank sprite sheet for the facilities</param>
-        public static void Init(Texture2D coneSheet, Texture2D cylinderSheet, Texture2D domeSheet, Texture2D blankSheet)
+        public static void Init(Texture2D coneSheet, Texture2D cylinderSheet, Texture2D domeSheet, Texture2D blankSheet, SpriteFont libSans12)
         {
             sConeSheet = coneSheet;
             sCylinderSheet = cylinderSheet;
             sDomeSheet = domeSheet;
             sBlankSheet = blankSheet;
+            sLibSans12 = libSans12;
         }
 
         /// <summary>
@@ -56,40 +59,40 @@ namespace Singularity.Platforms
             switch (type)
             {
                 case EPlatformType.Quarry:
-                    return new Quarry(position, sDomeSheet, sBlankSheet, resourceMap, ref director, autoRegister);
+                    return new Quarry(position, sDomeSheet, sBlankSheet, libSans12: sLibSans12, resource: resourceMap, director: ref director, autoRegister: autoRegister);
 
                 case EPlatformType.Barracks:
-                    return new Barracks(position, sCylinderSheet, sBlankSheet, ref director);
+                    return new Barracks(position, sCylinderSheet, sBlankSheet, sLibSans12, ref director);
 
                 case EPlatformType.Blank:
-                    return new PlatformBlank(position, sBlankSheet, sBlankSheet, ref director);
+                    return new PlatformBlank(position, sBlankSheet, sBlankSheet, sLibSans12, ref director);
 
                 case EPlatformType.Command:
-                    return new CommandCenter(position, sCylinderSheet, sBlankSheet, ref director);
+                    return new CommandCenter(position, sCylinderSheet, sBlankSheet, sLibSans12, ref director);
 
                 case EPlatformType.Energy:
-                    return new EnergyFacility(position, sDomeSheet, sBlankSheet, ref director);
+                    return new EnergyFacility(position, sDomeSheet, sBlankSheet, sLibSans12, ref director);
 
                 case EPlatformType.Factory:
-                    return new Factory(position, sDomeSheet, sBlankSheet, ref director);
+                    return new Factory(position, sDomeSheet, sBlankSheet, sLibSans12, ref director);
 
                 case EPlatformType.Junkyard:
-                    return new Junkyard(position, sDomeSheet, sBlankSheet, ref director);
+                    return new Junkyard(position, sDomeSheet, sBlankSheet, sLibSans12, ref director);
 
                 case EPlatformType.Kinetic:
                     return new DefenseKinetic(position, sConeSheet, sBlankSheet, ref director);
 
                 case EPlatformType.Mine:
-                    return new Mine(position, sDomeSheet, sBlankSheet, resourceMap, ref director, autoRegister);
+                    return new Mine(position, sDomeSheet, sBlankSheet, libSans12: sLibSans12, resource: resourceMap, director: ref director, autoRegister: autoRegister);
 
                 case EPlatformType.Packaging:
                     throw new NotImplementedException("Packaging facilities have not yet been implemented");
 
                 case EPlatformType.Storage:
-                    return new Storage(position, sDomeSheet, sBlankSheet, ref director);
+                    return new Storage(position, sDomeSheet, sBlankSheet, sLibSans12, ref director);
 
                 case EPlatformType.Well:
-                    return new Well(position, sDomeSheet, sBlankSheet, resourceMap, ref director, autoRegister);
+                    return new Well(position, sDomeSheet, sBlankSheet, libSans12: sLibSans12, resource: resourceMap, director: ref director, autoRegister: autoRegister);
 
                 case EPlatformType.Laser:
                     return new DefenseLaser(position, sConeSheet, sBlankSheet, ref director);

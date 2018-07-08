@@ -17,7 +17,7 @@ namespace Singularity.Platforms
         [DataMember]
         private const int PlatformHeight = 127;
 
-        public EnergyFacility(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director) : base(position, platformSpriteSheet, baseSprite , ref director, EPlatformType.Energy, -50)
+        public EnergyFacility(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libSans12, ref Director director) : base(position, platformSpriteSheet, baseSprite, libSans12, ref director, EPlatformType.Energy, -50)
         {
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Something like "Hello InstanceThatManagesEnergyLevels I exist now(Myself)"

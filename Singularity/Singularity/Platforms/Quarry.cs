@@ -18,7 +18,7 @@ namespace Singularity.Platforms
         [DataMember]
         private const int PlatformHeight = 127;
 
-        public Quarry(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, ref Director director, bool autoRegister = true): base(position, platformSpriteSheet, baseSprite, ref director, EPlatformType.Quarry, -50)
+        public Quarry(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, SpriteFont libSans12, ref Director director, bool autoRegister = true): base(position, platformSpriteSheet, baseSprite, libSans12, ref director, EPlatformType.Quarry, -50)
         {
             if (autoRegister)
             {
@@ -26,7 +26,7 @@ namespace Singularity.Platforms
             }
 
             //Add possible Actions in this array
-            mIPlatformActions.Add(new ProduceQuarryResource(platform: this, resourceMap: resource, director: ref mDirector));
+            mIPlatformActions.Add(new ProduceQuarryResource(this, resource, ref mDirector));
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();

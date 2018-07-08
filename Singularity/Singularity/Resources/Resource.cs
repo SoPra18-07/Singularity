@@ -81,8 +81,8 @@ namespace Singularity.Resources
 
         public void Draw(SpriteBatch spriteBatch)
 		{
-			spriteBatch.DrawCircle(AbsolutePosition, 8, 20, ResourceHelper.GetColor(Type), 10, LayerConstants.ResourceLayer);
-            spriteBatch.DrawCircle(AbsolutePosition, 10, 20, Color.Black, 2, LayerConstants.ResourceLayer);
+			spriteBatch.DrawCircle(AbsolutePosition, 6, 20, ResourceHelper.GetColor(Type), 6, LayerConstants.ResourceLayer);
+            spriteBatch.DrawCircle(AbsolutePosition, 7, 20, Color.Black, 1, LayerConstants.ResourceLayer);
         }
 
         public void Update(GameTime gametime)

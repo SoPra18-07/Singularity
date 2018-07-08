@@ -18,15 +18,14 @@ namespace Singularity.Levels
     [DataContract]
     internal sealed class Skirmish : BasicLevel
     {
-        
 
         public Skirmish(GraphicsDeviceManager graphics,
             ref Director director,
             ContentManager content,
-            IScreenManager screenmanager) 
+            IScreenManager screenmanager)
             : base(graphics, ref director, content, screenmanager)
         {
-            
+
             LoadContent(content);
         }
 
@@ -35,7 +34,7 @@ namespace Singularity.Levels
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
             var platform1 = PlatformFactory.Get(EPlatformType.Blank, ref mDirector, 1000, 1000, Map.GetResourceMap());
-            
+
             GameScreen.AddObject(platform1);
 
             // this is done via the factory to test, so I can instantly see if something is some time off.
@@ -47,7 +46,6 @@ namespace Singularity.Levels
 
             //var platform2 = new Well(new Vector2(800, 1000), platformDomeTexture, platformBlankTexture, mMap.GetResourceMap(), ref mDirector);
             var platform3 = PlatformFactory.Get(EPlatformType.Quarry, ref mDirector, 1200, 1200, Map.GetResourceMap());
-            
             GameScreen.AddObject(platform3);
             var road2 = new Road(platform2, platform3, false);
             GameScreen.AddObject(road2);
@@ -77,12 +75,12 @@ namespace Singularity.Levels
 
             //SetUnit
             var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, mUi);
-            
+
 
             // Resources
-            var res = new Resource(EResourceType.Trash, platform2.Center);
-            var res4 = new Resource(EResourceType.Trash, platform2.Center);
-            var res5 = new Resource(EResourceType.Trash, platform2.Center);
+            var res = new Resource(EResourceType.Metal, platform2.Center);
+            var res4 = new Resource(EResourceType.Metal, platform2.Center);
+            var res5 = new Resource(EResourceType.Metal, platform2.Center);
             var res2 = new Resource(EResourceType.Chip, platform3.Center);
             var res3 = new Resource(EResourceType.Oil, platform4.Center);
 

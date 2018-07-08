@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platforms;
@@ -13,7 +14,7 @@ namespace Singularity.PlatformActions
         // The ResourceMap is needed for actually 'producing' the resources.
         private readonly ResourceMap mResourceMap;
 
-        public ProduceWellResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform: platform, director: ref director)
+        public ProduceWellResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, ref director)
         {
             mResourceMap = resourceMap;
         }
@@ -35,7 +36,7 @@ namespace Singularity.PlatformActions
         // The ResourceMap is needed for actually 'producing' the resources.
         private ResourceMap mResourceMap;
 
-        public ProduceQuarryResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform: platform, director: ref director)
+        public ProduceQuarryResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, ref director)
         {
             mResourceMap = resourceMap;
         }
@@ -57,7 +58,7 @@ namespace Singularity.PlatformActions
         // The ResourceMap is needed for actually 'producing' the resources.
         private ResourceMap mResourceMap;
 
-        public ProduceMineResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform: platform, director: ref director)
+        public ProduceMineResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, ref director)
         {
             mResourceMap = resourceMap;
         }
@@ -71,37 +72,6 @@ namespace Singularity.PlatformActions
             {
                 mPlatform.StoreResource(res.Get());
             }
-        }
-    }
-
-
-    public sealed class BuildBluePrint : AMakeUnit
-    {
-        private Dictionary<EResourceType, int> mMRequiredResources;
-
-        public BuildBluePrint(PlatformBlank platform, PlatformBlank toBeBuilt, ref Director director) : base(
-            platform: platform,
-            director: ref director)
-        {
-            mMRequiredResources = toBeBuilt.GetResourcesRequired();
-        }
-
-        public override List<JobType> UnitsRequired { get; } = new List<JobType> {JobType.Construction};
-
-        public override void CreateUnit()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Execute()
-        {
-            throw new NotImplementedException();
-            // TODO: Build Blueprints!! (fkarg)
-        }
-
-        public override Dictionary<EResourceType, int> GetRequiredResources()
-        {
-            return new Dictionary<EResourceType, int>();
         }
     }
 

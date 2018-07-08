@@ -19,14 +19,14 @@ namespace Singularity.Platforms
         private const int PlatformHeight = 187;
 
 
-        public Mine(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ResourceMap resource, ref Director director, bool autoRegister = true) : base(position, spritesheet, basesprite, ref director, EPlatformType.Mine, -50)
+        public Mine(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ResourceMap resource, SpriteFont libSans12, ref Director director, bool autoRegister = true) : base(position, spritesheet, basesprite, libSans12, ref director, EPlatformType.Mine, -50)
         {
             if (autoRegister)
             {
                 director.GetDistributionManager.Register(this, false);
             }
 
-            mIPlatformActions.Add(new ProduceMineResource(platform: this, resourceMap: resource, director: ref mDirector));
+            mIPlatformActions.Add(new ProduceMineResource(this, resource, ref mDirector));
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();

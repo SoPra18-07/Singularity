@@ -61,7 +61,7 @@ namespace Singularity.Screen
         #endregion
 
         ///  <summary>
-        /// 
+        ///
         ///  </summary>
         ///  <param name="position"> position of the slider bar left hand corner</param>
         ///  <param name="length"> length of the slider bar</param>
@@ -94,8 +94,8 @@ namespace Singularity.Screen
             Pages = pages;
             mLastPagesCount = Pages;
             mDirector = director;
-            mDirector.GetInputManager.AddMouseClickListener(iMouseClickListener: this, leftClickType: EClickType.Both, rightClickType: EClickType.Both);
-            mDirector.GetInputManager.AddMousePositionListener(iMouseListener: this);
+            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            mDirector.GetInputManager.AddMousePositionListener(this);
 
             // if value box requested, initiate string value to 0
             if (mWithValue)

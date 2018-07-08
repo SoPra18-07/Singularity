@@ -15,7 +15,7 @@ namespace Singularity.Platforms
         [DataMember]
         private const int PlatformHeight = 127;
 
-        public Junkyard(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director) : base(position, platformSpriteSheet, baseSprite, ref director, EPlatformType.Junkyard, -50)
+        public Junkyard(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libSans12, ref Director director) : base(position, platformSpriteSheet, baseSprite, libSans12, ref director, EPlatformType.Junkyard, -50)
         {
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.

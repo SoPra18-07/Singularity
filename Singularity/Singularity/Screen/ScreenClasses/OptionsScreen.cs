@@ -252,7 +252,7 @@ namespace Singularity.Screen.ScreenClasses
                 0.21f);
 
             // line in the middle
-            spriteBatch.DrawLine(point: mLinePosition,
+            spriteBatch.DrawLine(mLinePosition,
                 angle: (float) Math.PI / 2,
                 length: 301,
                 color: new Color(new Vector4(1, 1, 1, 0.5f)) * mMenuOpacity,
@@ -260,9 +260,9 @@ namespace Singularity.Screen.ScreenClasses
 
             // window title
             spriteBatch.DrawString(mLibSans36,
-                text: mWindowTitleString,
-                position: mWindowTitlePosition,
-                color: mTextColor * mMenuOpacity);
+                mWindowTitleString,
+                mWindowTitlePosition,
+                mTextColor * mMenuOpacity);
 
             // tab buttons
             foreach (Button button in mTabButtons)

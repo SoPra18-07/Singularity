@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -23,7 +24,7 @@ namespace Singularity.Platforms
     /// <inheritdoc cref="INode"/>
     /// <inheritdoc cref="ICollider"/>
     [DataContract]
-    public class PlatformBlank : IRevealing, INode, ICollider, IMouseClickListener
+    public class PlatformBlank : ARevealing, INode, ICollider, IMouseClickListener
     {
 
         private int mGraphIndex;
@@ -106,24 +107,24 @@ namespace Singularity.Platforms
         [DataMember]
         protected Dictionary<EResourceType, int> mRequested;
 
+        // this is actually already in ARevealing
+        // public Vector2 Center { get; private set; }
+
         [DataMember]
         private bool mIsActive;
 
         [DataMember]
         private bool mIsManuallyDeactivated;
 
-
-
-        public Vector2 Center { get; set; }
-
         public int RevelationRadius { get; } = 200;
 
-        public Rectangle AbsBounds { get; internal set; }
+        public Rectangle AbsBounds { get; private set; }
 
         public bool Moved { get; private set; }
 
         public int Id { get; }
 
+        [DataMember]
         protected Director mDirector;
 
         ///<summary>
@@ -154,13 +155,17 @@ namespace Singularity.Platforms
 
         protected Color mColor = Color.White;
 
-        public bool[,] ColliderGrid { get; internal set; }
+        private PlatformInfoBox mInfoBox;
+
+        public SpriteFont mLibSans12;
+
+        public bool[,] ColliderGrid { get; private set; }
 
         //This is for registering the platform at the DistrManager.
         [DataMember]
         public JobType Property { get; set; }
 
-        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36)
+        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libSans12Font, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36)
         {
 
             Id = IdGenerator.NextiD();
@@ -177,6 +182,8 @@ namespace Singularity.Platforms
             mOutwardsEdges = new List<IEdge>();
 
             AbsolutePosition = position;
+
+            mLibSans12 = libSans12Font;
 
             SetPlatfromParameters(); // this changes the draw parameters based on the platform type but
             // also sets the AbsoluteSize and collider grids
@@ -198,7 +205,7 @@ namespace Singularity.Platforms
             };
 
             //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<EResourceType, int>();
+            mCost = new Dictionary<EResourceType, int> { {EResourceType.Metal, 2} };
 
             mProvidingEnergy = 0;
             mDrainingEnergy = 0;
@@ -220,6 +227,40 @@ namespace Singularity.Platforms
             mUserInterfaceController = director.GetUserInterfaceController;
             Debug.WriteLine("PlatformBlank created");
 
+            var str = GetResourceString();
+            mInfoBox = new PlatformInfoBox(
+                new List<IWindowItem>
+                {
+                    new TextField(str, AbsolutePosition + new Vector2(0, AbsoluteSize.Y + 10), mLibSans12.MeasureString(str), mLibSans12)
+                },
+                mLibSans12.MeasureString(str),
+                this, mDirector);
+
+            /*
+            var infoBuildBlank = new TextField("Blank Platform",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Blank Platform"),
+                mLibSans12);
+
+            mInfoBuildBlank = new InfoBoxWindow(
+                itemList: new List<IWindowItem> { infoBuildBlank },
+                size: mLibSans12.MeasureString("Blank Platform"),
+                borderColor: new Color(0.86f, 0.85f, 0.86f),
+                centerColor: new Color(1f, 1f, 1f),//(0.75f, 0.75f, 0.75f),
+                boundsRectangle: new Rectangle(
+                    (int)mBlankPlatformButton.Position.X,
+                    (int)mBlankPlatformButton.Position.Y,
+                    (int)mBlankPlatformButton.Size.X,
+                    (int)mBlankPlatformButton.Size.Y),
+                boxed: true,
+                director: mDirector);
+            // */
+
+        }
+
+        internal void AddBlueprint(BuildBluePrint buildBluePrint)
+        {
+            mIPlatformActions.Add(buildBluePrint);
         }
 
         public void SetColor(Color color)
@@ -273,6 +314,7 @@ namespace Singularity.Platforms
         /// The units will call this methods when they reached the platform they have to work on.
         /// </summary>
         /// <param name="unit"></param>
+        /// <param name="job"></param>
         public void ShowedUp(GeneralUnit unit, JobType job)
         {
             var pair = mAssignedUnits[job].Find(x => x.GetFirst().Equals(unit));
@@ -368,6 +410,7 @@ namespace Singularity.Platforms
         public void StoreResource(Resource resource)
         {
             mResources.Add(resource);
+            mResources = mResources.OrderBy(r => r.Type).ToList();
             Uncollide();
         }
 
@@ -479,17 +522,29 @@ namespace Singularity.Platforms
                     break;
             }
 
-            // also draw the resources on top
+            mInfoBox.UpdateString(GetResourceString());
+            mInfoBox.Draw(spritebatch);
 
+            // also draw the resources on top
+            /*
             foreach (var res in mResources)
             {
-                res.Draw(spritebatch);
+                res.Draw(spriteBatch: spritebatch);
             }
+            // */
         }
 
         /// <inheritdoc cref="Singularity.Property.IUpdate"/>
         public virtual void Update(GameTime t)
         {
+            foreach (var iPlatformAction in mIPlatformActions)
+            {
+                if (iPlatformAction is BuildBluePrint)
+                {
+                    var b = iPlatformAction as BuildBluePrint;
+                    b.Update();
+                }
+            }
             Uncollide();
 
             Bounds = new Rectangle((int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
@@ -537,7 +592,7 @@ namespace Singularity.Platforms
             // take care of the Resources on top not colliding. todo: fixme. @fkarg
         }
 
-        public EPlatformType GetMyType()
+        private new EPlatformType GetType()
         {
             return mType;
         }
@@ -600,12 +655,7 @@ namespace Singularity.Platforms
             {
                 return false;
             }
-            if(mType != b.GetMyType())
-            {
-                return false;
-            }
-            return true;
-
+            return mType == b.GetType();
         }
 
         [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
@@ -874,6 +924,11 @@ namespace Singularity.Platforms
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(road);
         }
 
+        public void Kill(IPlatformAction action)
+        {
+            mIPlatformActions.Remove(action);
+        }
+
         public IEnumerable<INode> GetChilds()
         {
             var childs = new List<INode>();
@@ -900,6 +955,34 @@ namespace Singularity.Platforms
             return mGraphIndex;
         }
 
+        public string GetResourceString()
+        {
+            if (mResources.Count == 0)
+            {
+                return "";
+            }
+            var resString = "";
+            var cType = (EResourceType) 0;
+            var counter = 0;
+            foreach (var res in mResources)
+            {
+                if (counter > 0 && res.Type != cType)
+                {
+                    resString += cType + ": " + counter + ", ";
+                    counter = 0;
+                }
+                cType = res.Type;
+                counter++;
+            }
+            return resString + cType + ": " + counter;
+        }
+
+        public void Built()
+        {
+            mIsBlueprint = false;
+            // Todo: move registering at the distributionmanager etc here.
+        }
+
         public void Activate(bool manually)
         {
             if (manually)
@@ -920,7 +1003,7 @@ namespace Singularity.Platforms
             }
 
             mIsActive = false;
-            // TODO: remove this or change it to something more appropriately, this is used by @Ativelox for 
+            // TODO: remove this or change it to something more appropriately, this is used by @Ativelox for
             // TODO: debugging purposes to easily see which platforms are currently deactivated
             mColor = Color.Green;
 
