@@ -58,7 +58,7 @@ namespace Singularity.Map
         /// </summary>
         /// <param name="unit"></param>
         /// <param name="unitPos">Precalculated tile position for optimization.</param>
-        private void AddUnit(ICollider unit, Vector2 unitPos)
+        internal void AddUnit(ICollider unit, Vector2 unitPos)
         {
             // then put the unit on the grid
             mUnitGrid[(int) unitPos.X, (int) unitPos.Y].UnitList.Add(unit);
@@ -103,7 +103,7 @@ namespace Singularity.Map
         /// </summary>
         /// <param name="unit"></param>
         /// <param name="unitPos">Precalculated tile position for optimization.</param>
-        private void RemoveUnit(ICollider unit, Vector2 unitPos)
+        internal void RemoveUnit(ICollider unit, Vector2 unitPos)
         {
             mUnitGrid[(int) unitPos.X, (int) unitPos.Y].UnitList.Remove(unit);
             mLookupTable.Remove(unit.Id);
@@ -182,7 +182,7 @@ namespace Singularity.Map
         /// </summary>
         /// <param name="vector">Vector2 to be converted</param>
         /// <returns>Corresponding tile position</returns>
-        private Vector2 VectorToTilePos(Vector2 vector)
+        internal Vector2 VectorToTilePos(Vector2 vector)
         {
             int[] squareTilePos = {(int) vector.X / 200, (int) vector.Y / 200};
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Singularity.Map;
 using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Screen.ScreenClasses;
@@ -15,22 +16,24 @@ namespace Singularity.Manager
         /// </summary>
         private Map.Map mMap;
 
+        private UnitMap mUnitMap;
+
         #region Friendly unit lists
 
         /// <summary>
         /// A list of friendly military (i.e. capable of shooting) units.
         /// </summary>
-        private Dictionary<MilitaryUnit, int[]> FriendlyMilitary;
+        private Dictionary<MilitaryUnit, Vector2> FriendlyMilitary = new Dictionary<MilitaryUnit, Vector2>();
 
         /// <summary>
         /// A list of friendly defense platforms.
         /// </summary>
-        private Dictionary<DefenseBase, int[]> FriendlyDefensePlatforms;
+        private Dictionary<DefenseBase, Vector2> FriendlyDefensePlatforms = new Dictionary<DefenseBase, Vector2>();
 
         /// <summary>
         /// A list of friendly targets (i.e. platforms and settlers that can be damaged).
         /// </summary>
-        private List<IDamageable> FriendlyDamageables;
+        private Dictionary<IDamageable, Vector2> FriendlyDamageables;
 
         #endregion
 
@@ -39,17 +42,17 @@ namespace Singularity.Manager
         /// <summary>
         /// A list of hostile military (i.e. capable of shooting) units.
         /// </summary>
-        private List<EnemyUnit> HostileMilitary;
+        private Dictionary<EnemyUnit, Vector2> HostileMilitary = new Dictionary<EnemyUnit, Vector2>();
 
         /// <summary>
         /// A list of hostile defense platforms.
         /// </summary>
-        private List<DefenseBase> HostileDefensePlatforms;
+        private Dictionary<DefenseBase, Vector2> HostileDefensePlatforms = new Dictionary<DefenseBase, Vector2>();
         
         /// <summary>
         /// A list of hostile targets (i.e. platforms and settlers that can be damaged).
         /// </summary>
-        private List<IDamageable> HostileDamageables;
+        private Dictionary<IDamageable, Vector2> HostileDamageables;
 
         #endregion
         /// <remarks>
@@ -61,34 +64,38 @@ namespace Singularity.Manager
         internal void SetMap(ref Map.Map map)
         {
             mMap = map;
+            mUnitMap = map.GetUnitMap();
         }
 
         internal void AddPlatform(PlatformBlank platform)
         {
             var defensePlatform = platform as DefenseBase;
+            var position = mUnitMap.VectorToTilePos(platform.AbsolutePosition);
 
             // Figure out if it is a defense platform. If yes, then figure out if it is friendly
             if (defensePlatform != null)
             {
                 if (platform.Friendly)
                 {
-                    FriendlyDefensePlatforms.Add(defensePlatform);
+                    FriendlyDefensePlatforms.Add(defensePlatform, position);
                 }
                 else
                 {
-                    HostileDefensePlatforms.Add(defensePlatform);
+                    HostileDefensePlatforms.Add(defensePlatform, position);
                 }
             }
             // otherwise, if it is friendly, add to friendly list.
             else if (platform.Friendly)
             {
-                FriendlyDamageables.Add(platform);
+                FriendlyDamageables.Add(platform, position);
             }
             // finally, if not, then add to hostile list.
             else
             {
-                HostileDamageables.Add(platform);
+                HostileDamageables.Add(platform, position);
             }
+
+            mUnitMap.AddUnit(platform, position);
         }
 
         internal void AddUnit(FreeMovingUnit unit)
@@ -97,9 +104,11 @@ namespace Singularity.Manager
             var hostileMilitary = unit as EnemyUnit;
             var settler = unit as Settler;
 
+            var position = mUnitMap.VectorToTilePos()
+
             if (settler != null)
             {
-                FriendlyDamageables.Add(settler);
+                FriendlyDamageables.Add(settler, );
             }
 
             else if (friendlyMilitary != null)
