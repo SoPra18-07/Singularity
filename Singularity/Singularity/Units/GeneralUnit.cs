@@ -22,6 +22,9 @@ namespace Singularity.Units
         private int mPositionId;
         [DataMember]
         public Optional<Resource> Carrying { get; set; }
+
+        [DataMember]
+        private bool mFinishTask;
         [DataMember]
         private int? mTargetId;
         [DataMember]
@@ -111,6 +114,7 @@ namespace Singularity.Units
             mDirector = director;
             mDirector.GetDistributionManager.Register(this);
             mDone = true;
+            mFinishTask = false;
         }
 
         /// <summary>
@@ -126,8 +130,23 @@ namespace Singularity.Units
                 mTask.End.Get().UnAssignUnits(this, Job);
                 mAssigned = false;
             }
+
+            //Finish what you started.
+            if ((Job == JobType.Logistics || Job == JobType.Construction) && Carrying.IsPresent())
+            {
+                mFinishTask = true;
+            }
             Job = job;
         }
+
+        /// <summary>
+        /// Used to Abort the current Task, when the unit notices it cannot reach its destination.
+        /// </summary>
+        private void AbortTask()
+        {
+            //TODO: This. Also dont forget to put the task back in the task queue.
+        }
+
 
         /// <summary>
         /// Is called if this Units Job is changed to Production or Defense. BUT NOT BY THE UNIT ITSELF. Should only be called by the DistrManager.
@@ -168,78 +187,106 @@ namespace Singularity.Units
         /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
-
-            switch (Job)
+            //If true, this unit has still a task to finish and shall not act like the job it has now until the task is finished.
+            //This should only occur when Logistic or Constructing units have only just picked up a Resource and their job changed after that.
+            if (mFinishTask)
             {
-                case JobType.Idle:
-                    if (!mIsMoving && mDone)
-                    {
-                        mDone = false;
-
-                        mTask = mDirector.GetDistributionManager.RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
-                        //Check if the given destination is null (it shouldnt)
-                        if (mTask.End.IsPresent())
-                        {
-                            mDestination = Optional<INode>.Of(mTask.End.Get());
-                            TargetGraphid = mTask.End.Get().Graphid;
-                        }
-                    }
-
-                    RegulateMovement();
-
-                    //We arrived at the target, so its now time to get another job
-                    if (mNodeQueue.Count == 0 && Job == JobType.Idle)
-                    {
-                        mDone = true;
-                    }
-                    break;
-
-                case JobType.Production:
-                    //You arrived at your destination and you now want to work.
-                    if(!mIsMoving && !mDone && CurrentNode.Equals(mTask.End.Get()))
-                    {
-                        if (!mAssigned)
-                        {
-                            mTask.End.Get().ShowedUp(this, Job);
-                            mAssigned = true;
-                        }
-                    }
-                    RegulateMovement();
-                    break;
-
-                case JobType.Defense:
-                    //You arrived at your destination and you now want to work.
-                    if (!mIsMoving && !mDone && CurrentNode.Equals(mTask.End.Get()))
-                    {
-                        if (!mAssigned)
-                        {
-                            mTask.End.Get().ShowedUp(this, Job);
-                            mAssigned = true;
-                        }
-                    }
-                    RegulateMovement();
-                    break;
-
-                case JobType.Logistics:
-                    
-                    HandleTransport();
-                    RegulateMovement();
-
+                RegulateMovement();
+                if (Carrying.IsPresent())
+                {
+                    Carrying.Get().Follow(this);
+                }
+                //This means we arrived at the point we want to leave the Resource and consider our work done
+                if (mTask.End.IsPresent() && CurrentNode.Equals(mTask.End.Get()) &&
+                    ReachedTarget(mTask.End.Get().Center))
+                {
                     if (Carrying.IsPresent())
                     {
-                        Carrying.Get().Follow(this);
+                        var res = Carrying.Get();
+                        res.UnFollow();
+                        ((PlatformBlank)CurrentNode).StoreResource(res);
+                        Carrying = Optional<Resource>.Of(null);
                     }
-                    break;
 
-                case JobType.Construction:
-                    HandleTransport();
-                    RegulateMovement();
+                    mDone = true;
+                    //We can now do the job we were assigned to.
+                    mFinishTask = false;
+                }
+            }
+            else
+            {
+                switch (Job)
+                {
+                    case JobType.Idle:
+                        if (!mIsMoving && mDone)
+                        {
+                            mDone = false;
 
-                    if (Carrying.IsPresent())
-                    {
-                        Carrying.Get().Follow(this);
-                    }
-                    break;
+                            mTask = mDirector.GetDistributionManager.RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
+                            //Check if the given destination is null (it shouldnt)
+                            if (mTask.End.IsPresent())
+                            {
+                                mDestination = Optional<INode>.Of(mTask.End.Get());
+                                TargetGraphid = mTask.End.Get().Graphid;
+                            }
+                        }
+
+                        RegulateMovement();
+
+                        //We arrived at the target, so its now time to get another job
+                        if (mNodeQueue.Count == 0 && Job == JobType.Idle)
+                        {
+                            mDone = true;
+                        }
+                        break;
+
+                    case JobType.Production:
+                        //You arrived at your destination and you now want to work.
+                        if (!mIsMoving && !mDone && CurrentNode.Equals(mTask.End.Get()))
+                        {
+                            if (!mAssigned)
+                            {
+                                mTask.End.Get().ShowedUp(this, Job);
+                                mAssigned = true;
+                            }
+                        }
+                        RegulateMovement();
+                        break;
+
+                    case JobType.Defense:
+                        //You arrived at your destination and you now want to work.
+                        if (!mIsMoving && !mDone && CurrentNode.Equals(mTask.End.Get()))
+                        {
+                            if (!mAssigned)
+                            {
+                                mTask.End.Get().ShowedUp(this, Job);
+                                mAssigned = true;
+                            }
+                        }
+                        RegulateMovement();
+                        break;
+
+                    case JobType.Logistics:
+
+                        HandleTransport();
+                        RegulateMovement();
+
+                        if (Carrying.IsPresent())
+                        {
+                            Carrying.Get().Follow(this);
+                        }
+                        break;
+
+                    case JobType.Construction:
+                        HandleTransport();
+                        RegulateMovement();
+
+                        if (Carrying.IsPresent())
+                        {
+                            Carrying.Get().Follow(this);
+                        }
+                        break;
+                }
             }
         }
 
@@ -331,12 +378,12 @@ namespace Singularity.Units
             if (mTask.End.IsPresent() && CurrentNode.Equals(mTask.End.Get()) &&
                 ReachedTarget(mTask.End.Get().Center))
             {
-                //Dont have to ask for carrying.ispresent here because in that case we wouldnt even reach this code
                 if (Carrying.IsPresent())
                 {
                     var res = Carrying.Get();
                     res.UnFollow();
                     ((PlatformBlank)CurrentNode).StoreResource(res);
+                    Carrying = Optional<Resource>.Of(null);
                 }
 
                 mDone = true;

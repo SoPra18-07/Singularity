@@ -702,7 +702,7 @@ namespace Singularity.Manager
                     foreach (var unit in list)
                     {
                         //We have to re-add the units to the job list because GetUnitsFairly did unassign them
-                        mDefense.Add(unit);
+                        joblist.Add(unit);
                         //Also unassigns the unit.
                         unit.AssignTask(new Task(JobType.Defense, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
                     }
@@ -950,13 +950,12 @@ namespace Singularity.Manager
                 //In this case just collect every unit on the platform and redistribute it (redistribution later in code).
                 if (inactivate)
                 {
-                    foreach (var unitbool in units)
+                    foreach (var unitbool in new List<Pair<GeneralUnit, bool>>(units))
                     {
                         unitstodistribute.Add(unitbool.GetFirst());
                         //Unassigns itself from its platform
                         unitbool.GetFirst().ChangeJob(JobType.Idle);
                     }
-
                 }
                 //In this case look if every assigned unit is on the same graph as the platform and handle it
                 else

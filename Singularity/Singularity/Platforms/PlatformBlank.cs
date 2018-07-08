@@ -157,10 +157,6 @@ namespace Singularity.Platforms
 
         public bool[,] ColliderGrid { get; internal set; }
 
-        //This is for registering the platform at the DistrManager.
-        [DataMember]
-        public JobType Property { get; set; }
-
         public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36)
         {
 
@@ -241,11 +237,10 @@ namespace Singularity.Platforms
 
         public void Register()
         {
-            //TODO: make this so we can also register defense platforms
-            if (Property == JobType.Production)
+            if (IsProduction())
             {
                 mDirector.GetDistributionManager.Register(this, false);
-            } else if (Property == JobType.Defense)
+            } else if (IsDefense())
             {
                 mDirector.GetDistributionManager.Register(this, true);
             }

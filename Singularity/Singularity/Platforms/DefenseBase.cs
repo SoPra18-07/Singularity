@@ -41,11 +41,10 @@ namespace Singularity.Platforms
         {
             if (autoRegister)
             {
-                director.GetDistributionManager.Register(this, false);
+                director.GetDistributionManager.Register(this, true);
             }
             mType = type;
             mSpritename = "Cone";
-            Property = JobType.Defense;
             SetPlatfromParameters();
         }
 
