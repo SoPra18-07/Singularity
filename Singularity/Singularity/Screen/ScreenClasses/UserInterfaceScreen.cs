@@ -1164,7 +1164,7 @@ namespace Singularity.Screen.ScreenClasses
             #region active/deactive
 
             // manage activate/deactivate
-            if (!isManuallyDeactivated)
+            if (isManuallyDeactivated)
             {
                 mSelectedPlatformDeactivatePlatformButton.ActiveInWindow = false;
                 mSelectedPlatformActivatePlatformButton.ActiveInWindow = true;
