@@ -65,7 +65,7 @@ namespace Singularity.Map
         /// in the collision map the coordinates get updated, otherwise it gets added.
         /// </summary>
         /// <param name="collider">The collider to be updated.</param>
-        public void UpdateCollider(ICollider collider)
+        internal void UpdateCollider(ICollider collider)
         {
             //Check if the location of an already existing collider needs to be updated.
             if (mLookUpTable.ContainsKey(collider.Id) && collider.Moved)

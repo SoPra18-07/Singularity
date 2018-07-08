@@ -181,7 +181,7 @@ namespace Singularity.Units
             movementVector.Normalize();
             mToAdd += mMovementVector * (float)(mZoomSnapshot * speed);
 
-            AbsolutePosition = new Vector2((float)(AbsolutePosition.X + movementVector.X * speed), (float)(AbsolutePosition.Y + movementVector.Y * speed));
+            AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X * speed, AbsolutePosition.Y + movementVector.Y * speed);
         }
 
         protected void FindPath(Vector2 currentPosition, Vector2 targetPosition)

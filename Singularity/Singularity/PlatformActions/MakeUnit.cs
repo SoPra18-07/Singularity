@@ -90,12 +90,18 @@ namespace Singularity.PlatformActions
 
         protected void GetResource(EResourceType type)
         {
-            if (!mMissingResources.ContainsKey(type)) return;
+            if (!mMissingResources.ContainsKey(type))
+            {
+                return;
+            }
+
             var res = mPlatform.GetResource(type);
                 
             mMissingResources[type] -= 1;
             if (mMissingResources[type] <= 0)
+            {
                 mMissingResources.Remove(type);
+            }
         }
 
         public override Dictionary<EResourceType, int> GetRequiredResources()

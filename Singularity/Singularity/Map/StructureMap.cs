@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Graph;
+using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Property;
-using System.Linq;
-using Singularity.Graph;
-using Singularity.Input;
 
 namespace Singularity.Map
 {
@@ -466,6 +466,21 @@ namespace Singularity.Map
         public void AddPlatformToPlace(PlatformPlacement platformPlacement)
         {
             mPlatformsToPlace.AddLast(platformPlacement);
+        }
+
+        public int GetGraphCount()
+        {
+            var graphs = 0;
+
+            for (var i = 0; i < mGraphIdToGraph.Count; i++)
+            {
+                if (mGraphIdToGraph[i] != null)
+                {
+                    graphs++;
+                }
+            }
+
+            return graphs;
         }
 
         public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)

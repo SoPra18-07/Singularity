@@ -1,8 +1,8 @@
 ﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Property;
 using Singularity.Libraries;
+using Singularity.Property;
 using Singularity.Units;
 using Singularity.Utils;
 

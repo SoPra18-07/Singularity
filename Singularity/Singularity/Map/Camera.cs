@@ -65,7 +65,7 @@ namespace Singularity.Map
         /// Creates a new Camera object which provides a transform matrix to adjust
         /// objects to the camera view.
         /// </summary>
-        /// <param name="viewport">The viewport of the window</param>
+        /// <param name="graphics">The viewport of the window</param>
         /// <param name="director">The director</param>
         /// <param name="x">The initial x position of the camera</param>
         /// <param name="y">the initial y position of the camera</param>

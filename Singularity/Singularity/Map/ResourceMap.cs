@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Singularity.Resources;
 using Singularity.Utils;
-using System.Linq;
 
 namespace Singularity.Map
 {
@@ -61,6 +61,18 @@ namespace Singularity.Map
             return resourcesMine[0].Get(location);
         }
 
+        // TODO
+        public Optional<Resource> GetAmmoResource(Vector2 location)
+        {
+            var resourceAmmo = GetResources(location).Where(r => r.Type == EResourceType.Metal).ToList();
+            if (!resourceAmmo.Any())
+            {
+                return Optional<Resource>.Of(null);
+            }
+            return resourceAmmo[0].Get(location);
+        }
+
+
         /// <summary>
         /// Returns an optional value of resources on the given location.
         /// </summary>
@@ -92,6 +104,15 @@ namespace Singularity.Map
             mLocationCache[location] = foundResources;
 
             return foundResources;
+        }
+
+        /// <summary>
+        /// Gets the list of all the resources currently in the game
+        /// </summary>
+        /// <returns>The list mentioned</returns>
+        public List<MapResource> GetAllResources()
+        {
+            return mResourceMap;
         }
 
         /// <summary>
