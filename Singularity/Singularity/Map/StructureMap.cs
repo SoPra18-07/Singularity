@@ -544,7 +544,7 @@ namespace Singularity.Map
         private void CheckEnergyLevel(int graphId, bool wasNegative, int tempEnergyLevel)
         {
             // energy level was positive and still is
-            if (!wasNegative && mGraphIdToEnergyLevel[graphId] >= 0)
+            if (!wasNegative && tempEnergyLevel >= 0)
             {
                 return;
             }
