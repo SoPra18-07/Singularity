@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -86,6 +87,12 @@ namespace Singularity.Screen.ScreenClasses
 
         // selected platform window
         private WindowObject mSelectedPlatformWindow;
+
+        // button + rightAlignedIWindowItem for activation/deactivation of selectedPlatform
+        private Button mSelectedPlatformDeactivatePlatformButton;
+        private Button mSelectedPlatformActivatePlatformButton;
+        private ActivationIWindowItem mSelectedPlatformActiveItem;
+        private ActivationIWindowItem mSelectedPlatformDeactiveItem;
 
         // textFields of selectedPlatformWindow titles
         private Button mSelectedPlatformResourcesButton;
@@ -425,6 +432,14 @@ namespace Singularity.Screen.ScreenClasses
             mSelectedPlatformResourcesList = new List<ResourceIWindowItem>();
             mSelectedPlatformUnitAssignmentList = new List<IWindowItem>();
             mSelectedPlatformActionList = new List<PlatformActionIWindowItem>();
+
+            // activate / deactivate platform item
+            mSelectedPlatformDeactivatePlatformButton = new Button("Deactivate", mLibSans12, Vector2.Zero, Color.White) {Opacity = 1f};
+            mSelectedPlatformDeactivatePlatformButton.ButtonReleased += SelectedPlatformDeactivate;
+            mSelectedPlatformActivatePlatformButton = new Button("Activate", mLibSans12, Vector2.Zero, Color.White) { Opacity = 1f };
+            mSelectedPlatformActivatePlatformButton.ButtonReleased += SelectedPlatformActivate;
+            mSelectedPlatformActiveItem = new ActivationIWindowItem(mSelectedPlatformDeactivatePlatformButton, mSelectedPlatformActivatePlatformButton,selectedPlatformWidth, ref mDirector);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformActiveItem);
 
             // resource-section-title
             //mSelectedPlatformResourcesButton = new TextField("Resources", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, 0), mLibSans12, Color.White);
@@ -1111,6 +1126,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="actionsList"></param>
         public void SetSelectedPlatformValues(
             int id,
+            bool isActive,
             EPlatformType type,
             IEnumerable<Resource> resourceAmountList,
             Dictionary<JobType, List<Pair<GeneralUnit, bool>>> unitAssignmentList,
@@ -1118,6 +1134,22 @@ namespace Singularity.Screen.ScreenClasses
         {
             // set window type
             mSelectedPlatformWindow.WindowName = type.ToString();
+
+            #region active/deactive
+
+            // manage activate/deactivate button
+            if (isActive)
+            {
+                mSelectedPlatformDeactivatePlatformButton.InactiveInSelectedPlatformWindow = false;
+                mSelectedPlatformActivatePlatformButton.InactiveInSelectedPlatformWindow = true;
+            }
+            else
+            {
+                mSelectedPlatformDeactivatePlatformButton.InactiveInSelectedPlatformWindow = true;
+                mSelectedPlatformActivatePlatformButton.InactiveInSelectedPlatformWindow = false;
+            }
+
+            #endregion
 
             #region resources
 
@@ -1915,6 +1947,20 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         #endregion
+
+        public void SelectedPlatformDeactivate(object sender, EventArgs eventArgs)
+        {
+/*            mSelectedPlatformDeactivatePlatformButton.InactiveInSelectedPlatformWindow = true;
+            mSelectedPlatformActivatePlatformButton.InactiveInSelectedPlatformWindow = false;*/
+            mUserInterfaceController.DeactivateSelectedPlatform();
+        }
+
+        public void SelectedPlatformActivate(object sender, EventArgs eventArgs)
+        {
+/*            mSelectedPlatformDeactivatePlatformButton.InactiveInSelectedPlatformWindow = false;
+            mSelectedPlatformActivatePlatformButton.InactiveInSelectedPlatformWindow = true;*/
+            mUserInterfaceController.ActivateSelectedPlatform();
+        }
 
         #endregion
 

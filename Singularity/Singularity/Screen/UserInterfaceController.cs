@@ -41,13 +41,14 @@ namespace Singularity.Screen
         /// <param name="actionsArray">possible actions of platform</param>
         public void SetDataOfSelectedPlatform(
             int id,
+            bool isActive,
             EPlatformType type,
             List<Resource> resourceAmountList,
             Dictionary<JobType, List<Pair<GeneralUnit, bool>>> unitAssignmentDict,
             List<IPlatformAction> actionsArray)
         {
             // set/update data in UI
-            ControlledUserInterface.SetSelectedPlatformValues(id, type, resourceAmountList, unitAssignmentDict, actionsArray);
+            ControlledUserInterface.SetSelectedPlatformValues(id, isActive, type, resourceAmountList, unitAssignmentDict, actionsArray);
         }
 
         /// <summary>
@@ -83,6 +84,16 @@ namespace Singularity.Screen
         public void DeactivateSelection()
         {
             mActivePlatform.IsSelected = false;
+        }
+
+        public void ActivateSelectedPlatform()
+        {
+            mActivePlatform.Activate(true);
+        }
+
+        public void DeactivateSelectedPlatform()
+        {
+            mActivePlatform.Deactivate(true);
         }
 
         // TODO : ADD EVENT LOG CONTROLLING

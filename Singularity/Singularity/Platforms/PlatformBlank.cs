@@ -40,6 +40,7 @@ namespace Singularity.Platforms
         private List<Resource> mPrevResources;
         private Dictionary<JobType, List<Pair<GeneralUnit, bool>>> mPrevUnitAssignments;
         private List<IPlatformAction> mPrevPlatformActions;
+        private bool mPreviousIsActiveState;
 
         /// <summary>
         /// List of inwards facing edges/roads towards the platform.
@@ -504,6 +505,7 @@ namespace Singularity.Platforms
             if (mPrevResources != GetPlatformResources() ||
                 mPrevUnitAssignments != GetAssignedUnits() ||
                 mPrevPlatformActions != GetIPlatformActions() ||
+                mPreviousIsActiveState != IsActive() ||
                 !IsSelected)
             {
                 mDataSent = false;
@@ -517,9 +519,10 @@ namespace Singularity.Platforms
                 mPrevResources = GetPlatformResources();
                 mPrevUnitAssignments = GetAssignedUnits();
                 mPrevPlatformActions = GetIPlatformActions();
+                mPreviousIsActiveState = IsActive();
 
                 // send data to UIController
-                mUserInterfaceController.SetDataOfSelectedPlatform(Id, mType, GetPlatformResources(), GetAssignedUnits(), GetIPlatformActions());
+                mUserInterfaceController.SetDataOfSelectedPlatform(Id, mIsActive, mType, GetPlatformResources(), GetAssignedUnits(), GetIPlatformActions());
 
                 // set the bool for sent-data to true, since the data has just been sent
                 mDataSent = true;
