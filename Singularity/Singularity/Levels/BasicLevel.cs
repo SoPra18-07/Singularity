@@ -72,9 +72,10 @@ namespace Singularity.Levels
             PlatformFactory.Init(platformConeTexture, platformCylTexture, platformDomeTexture, platformBlankTexture);
 
             //Map related stuff
-            Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 800, 800);
+            Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 2800, 2800);
             mFow = new FogOfWar(Camera, mGraphics.GraphicsDevice);
-            var map = new Map.Map(mapBackground, 20, 20, mFow, Camera, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
+
+            var map = new Map.Map(mapBackground, 60, 60, mFow, Camera, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
             Map = map;
             var milUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
             var milGlowSheet = content.Load<Texture2D>("UnitGlowSprite");

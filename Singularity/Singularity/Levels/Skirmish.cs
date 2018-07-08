@@ -34,7 +34,7 @@ namespace Singularity.Levels
         {
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
-            var platform1 = PlatformFactory.Get(EPlatformType.Blank, ref mDirector, 1000, 1000, Map.GetResourceMap());
+            var platform1 = PlatformFactory.Get(EPlatformType.Blank, ref mDirector, 3000, 3000, Map.GetResourceMap());
             
             GameScreen.AddObject(platform1);
 
@@ -45,7 +45,8 @@ namespace Singularity.Levels
             var road1 = new Road(platform1, platform2, false);
             GameScreen.AddObject(road1);
 
-            var platform3 = PlatformFactory.Get(EPlatformType.Quarry, ref mDirector, 1200, 1200, Map.GetResourceMap());
+            //var platform2 = new Well(new Vector2(800, 1000), platformDomeTexture, platformBlankTexture, mMap.GetResourceMap(), ref mDirector);
+            var platform3 = PlatformFactory.Get(EPlatformType.Quarry, ref mDirector, 3200, 3200, Map.GetResourceMap());
             
             GameScreen.AddObject(platform3);
             var road2 = new Road(platform2, platform3, false);
@@ -53,7 +54,7 @@ namespace Singularity.Levels
             var road3 = new Road(platform3, platform1, false);
             GameScreen.AddObject(road3);
 
-            var platform4 = PlatformFactory.Get(EPlatformType.Energy, ref mDirector, 1000, 800, Map.GetResourceMap(), friendly: false);
+            var platform4 = PlatformFactory.Get(EPlatformType.Energy, ref mDirector, 3000, 2800, Map.GetResourceMap());
 
             GameScreen.AddObject(platform4);
             var road4 = new Road(platform1, platform4, false);
@@ -68,8 +69,7 @@ namespace Singularity.Levels
             for (var i = 0; i < 5; i++)
             {
                 genUnit.Add(new GeneralUnit(platform1, ref mDirector));
-            }
-            
+            }            
 
             // Resources
             var res = new Resource(EResourceType.Trash, platform2.Center);
