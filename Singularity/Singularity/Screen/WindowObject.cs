@@ -619,7 +619,7 @@ namespace Singularity.Screen
                 mMouseY > Position.Y &&
                 mMouseY < Position.Y + mTitleSizeY + mMinimizationSize &&
                 !mClickOnTitleBar ||
-                (WindowName == "" && 
+                (WindowName == "" &&
                  mMouseX > Position.X &&
                  mMouseX < Position.X + Position.X + Size.X &&
                  mMouseY > Position.Y &&

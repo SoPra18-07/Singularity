@@ -12,7 +12,7 @@ namespace Singularity.Screen
 {
     /// <summary>
     /// The InfoBar is the UI's top bar.
-    /// It includes the time, mission time, the pause button and buttons to close the given 6 windows 
+    /// It includes the time, mission time, the pause button and buttons to close the given 6 windows
     /// </summary>
     sealed class InfoBarWindowObject : IDraw, IUpdate, IMouseClickListener
     {
@@ -86,9 +86,9 @@ namespace Singularity.Screen
         /// <param name="minimapWindow">the minimapWindow to close/open</param>
         /// <param name="director">director</param>
         public InfoBarWindowObject(
-            Color borderColor, 
-            Color fillColor, 
-            SpriteFont spriteFont, 
+            Color borderColor,
+            Color fillColor,
+            SpriteFont spriteFont,
             IScreenManager screenManager,
             WindowObject civilUnitsWindow,
             WindowObject resourceWindow,
@@ -202,7 +202,7 @@ namespace Singularity.Screen
         {
             if (Active)
             {
-                // changes in resolution result in changes in width of the info bar and the button locations 
+                // changes in resolution result in changes in width of the info bar and the button locations
                 if (mWidthBackup != Width)
                 {
                     // update backup
