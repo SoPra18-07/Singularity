@@ -40,6 +40,8 @@ namespace Singularity.Platforms
         private List<Resource> mPrevResources;
         private Dictionary<JobType, List<Pair<GeneralUnit, bool>>> mPrevUnitAssignments;
         private List<IPlatformAction> mPrevPlatformActions;
+        private bool mPreviousIsActiveState;
+        private bool mPreviousIsManuallyDeactivatedState;
 
         /// <summary>
         /// List of inwards facing edges/roads towards the platform.
@@ -81,6 +83,12 @@ namespace Singularity.Platforms
         [DataMember]
         protected bool mIsBlueprint;
 
+        [DataMember]
+        protected int mProvidingEnergy;
+
+        [DataMember]
+        protected int mDrainingEnergy;
+
 
         [DataMember]
         protected Dictionary<EResourceType, int> mCost;
@@ -97,6 +105,12 @@ namespace Singularity.Platforms
         protected List<Resource> mResources;
         [DataMember]
         protected Dictionary<EResourceType, int> mRequested;
+
+        [DataMember]
+        private bool mIsActive;
+
+        [DataMember]
+        private bool mIsManuallyDeactivated;
 
 
 
@@ -185,6 +199,10 @@ namespace Singularity.Platforms
 
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
+
+            mProvidingEnergy = 0;
+            mDrainingEnergy = 0;
+            mIsActive = true;
 
             mResources = new List<Resource>();
 
@@ -488,6 +506,8 @@ namespace Singularity.Platforms
             if (mPrevResources != GetPlatformResources() ||
                 mPrevUnitAssignments != GetAssignedUnits() ||
                 mPrevPlatformActions != GetIPlatformActions() ||
+                mPreviousIsActiveState != IsActive() ||
+                mPreviousIsManuallyDeactivatedState != IsManuallyDeactivated() ||
                 !IsSelected)
             {
                 mDataSent = false;
@@ -501,9 +521,11 @@ namespace Singularity.Platforms
                 mPrevResources = GetPlatformResources();
                 mPrevUnitAssignments = GetAssignedUnits();
                 mPrevPlatformActions = GetIPlatformActions();
+                mPreviousIsManuallyDeactivatedState = IsManuallyDeactivated();
+                mPreviousIsActiveState = IsActive();
 
                 // send data to UIController
-                mUserInterfaceController.SetDataOfSelectedPlatform(Id, mType, GetPlatformResources(), GetAssignedUnits(), GetIPlatformActions());
+                mUserInterfaceController.SetDataOfSelectedPlatform(Id, mIsActive, mIsManuallyDeactivated, mType, GetPlatformResources(), GetAssignedUnits(), GetIPlatformActions());
 
                 // set the bool for sent-data to true, since the data has just been sent
                 mDataSent = true;
@@ -876,6 +898,53 @@ namespace Singularity.Platforms
         public int GetGraphIndex()
         {
             return mGraphIndex;
+        }
+
+        public void Activate(bool manually)
+        {
+            if (manually)
+            {
+                mIsManuallyDeactivated = false;
+            }
+            mIsActive = true;
+            ResetColor();
+
+            //TODO: actually active the platform again -> distributionmanager and stuff
+        }
+
+        public void Deactivate(bool manually)
+        {
+            if (manually)
+            {
+                mIsManuallyDeactivated = true;
+            }
+
+            mIsActive = false;
+            // TODO: remove this or change it to something more appropriately, this is used by @Ativelox for 
+            // TODO: debugging purposes to easily see which platforms are currently deactivated
+            mColor = Color.Green;
+
+            //TODO: actually deactivate the platform -> distributinmanager and stuff
+        }
+
+        public bool IsManuallyDeactivated()
+        {
+            return mIsManuallyDeactivated;
+        }
+
+        public int GetProvidingEnergy()
+        {
+            return mProvidingEnergy;
+        }
+
+        public int GetDrainingEnergy()
+        {
+            return mDrainingEnergy;
+        }
+
+        public bool IsActive()
+        {
+            return mIsActive;
         }
 
         /// <summary>
