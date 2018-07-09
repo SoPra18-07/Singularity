@@ -540,20 +540,6 @@ namespace Singularity.Screen
             return new Rectangle((int)(Position.X + Size.X - mMinimizationSize + 2), (int)positionY, mMinimizationSize - 4, (int)sizeY);
         }
 
-        /// <summary>
-        /// Automatically scroll to end if possible
-        /// </summary>
-        public void AutoScrolledToEnd()
-        {
-            // only scroll if the window is scrollable
-            if (mScrollable)
-            {
-                // set scroll value to maximum-scrolled-value
-                // divide by 10 and at the end multiply by ten to catch bad scroll values (since scrolling jumps +/- 10)
-                mItemScrolledValue = - 10 * ((int)mCombinedItemsSize / 10 - mScissorRectangle.Height / 10);
-            }
-        }
-
         // true if window is active (window + items in window will be drawn/updated) or inactive (not drawn/updated)
         internal bool Active { get; set; }
 
@@ -569,6 +555,15 @@ namespace Singularity.Screen
         public void ResetScrollValue()
         {
             mItemScrolledValue = 0;
+        }
+
+        public void AutoScrollToEnd(float newEventHeight, float oldEventHeight)
+        {
+            // this will be the new combinedItemSize
+            var newCombinedItemsSize = mCombinedItemsSize + mObjectPadding + newEventHeight - oldEventHeight;
+
+            // calculate the maximum scroll value
+            mItemScrolledValue = - (int)(Position.Y + mTitleSizeY + 2 * mMinimizationSize + newCombinedItemsSize - (Position.Y + Size.Y));
         }
 
         #region InputManagement
@@ -595,6 +590,12 @@ namespace Singularity.Screen
                         // stop from overflowing
                         {
                             mItemScrolledValue += +10;
+
+                            // catch scroll-value being too big for the window
+                            if (mItemPosTop.Y + 10 > Position.Y + mTitleSizeY + 1.5 * mMinimizationSize)
+                            {
+                                mItemScrolledValue += (int)(Position.Y + mTitleSizeY + 1.5 * mMinimizationSize - mItemPosTop.Y);
+                            }
                         }
                         break;
                     case EMouseAction.ScrollDown:
@@ -602,6 +603,12 @@ namespace Singularity.Screen
                         // stop from overflowing
                         {
                             mItemScrolledValue += -10;
+
+                            // catch scroll-value being too small for the window
+                            if (mItemPosBottom.Y - 10 < Position.Y + Size.Y - 5)
+                            {
+                                mItemScrolledValue = -(int)(Position.Y + mTitleSizeY + 2 * mMinimizationSize + mCombinedItemsSize - (Position.Y + Size.Y));
+                            }
                         }
                         break;
                 }
@@ -622,7 +629,6 @@ namespace Singularity.Screen
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
-            
             if (mouseAction == EMouseAction.LeftClick && withinBounds && Active)
             {
                 #region minimization

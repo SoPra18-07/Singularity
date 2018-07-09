@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph.Paths;
 using Singularity.Input;
 using Singularity.Screen;
@@ -50,6 +51,7 @@ namespace Singularity.Manager
             if (isActive)
             {
                 GetInputManager.Update(gametime);
+                GetEventLog.Update(gametime);
             }
             GetStoryManager.Update(gametime);
         }

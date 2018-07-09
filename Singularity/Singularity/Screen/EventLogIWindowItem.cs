@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,20 +17,24 @@ namespace Singularity.Screen
         private readonly Button mPositionButton;
         private readonly TextField mText;
 
+        private readonly float mShiftValue;
+
         private readonly InfoBoxWindow mInfoBox;
 
-        public EventLogIWindowItem(string text, Vector2 positionOfEvent, float width, SpriteFont spriteFont, Director director)
+        public EventLogIWindowItem(ELogEventType eventType, string message, Vector2 positionOfEvent, float width, SpriteFont spriteFont, Director director)
         {
             mPositionOfEvent = positionOfEvent;
 
-            mPositionButton = new Button("//", spriteFont, Vector2.Zero);
+            mPositionButton = new Button("// " + eventType, spriteFont, Vector2.Zero) {Opacity = 1f};
             mPositionButton.ButtonHovering += ShowInfoBox;
             mPositionButton.ButtonHoveringEnd += HideInfoBox;
             mPositionButton.ButtonClicked += JumpToPosition;
 
-            mText = new TextField(text, Vector2.Zero, new Vector2(width - mPositionButton.Size.X - 20, 0), spriteFont, Color.White);
+            mShiftValue = spriteFont.MeasureString("// ").X;
 
-            Size = new Vector2(width, mText.Size.Y);
+            mText = new TextField(message, Vector2.Zero, new Vector2(width - mShiftValue, 0), spriteFont, Color.White);
+
+            Size = new Vector2(width, mPositionButton.Size.Y + mText.Size.Y);
 
             Position = Vector2.Zero;
 
@@ -46,7 +51,9 @@ namespace Singularity.Screen
                 mText.Update(gametime);
 
                 mPositionButton.Position = Position;
-                mText.Position = new Vector2(mPositionButton.Size.X + 10, Position.Y);
+                mText.Position = new Vector2(mPositionButton.Position.X + mShiftValue, Position.Y + mPositionButton.Size.Y);
+
+                mInfoBox.Update(gametime);
             }
         }
 
@@ -56,6 +63,8 @@ namespace Singularity.Screen
             {
                 mPositionButton.Draw(spriteBatch);
                 mText.Draw(spriteBatch);
+
+                mInfoBox.Draw(spriteBatch);
             }
         }
 

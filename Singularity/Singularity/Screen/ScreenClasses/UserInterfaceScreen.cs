@@ -190,7 +190,6 @@ namespace Singularity.Screen.ScreenClasses
 
         #endregion
 
-        // TODO : IMPLEMENT EVENT LOG
         #region eventLog members
 
         // event log window
@@ -383,7 +382,7 @@ namespace Singularity.Screen.ScreenClasses
             mBlankPlatformTexture = content.Load<Texture2D>("PlatformBasic");
             mOtherPlatformTexture = content.Load<Texture2D>("PlatformSpriteSheet");
 
-            // set resolution values TODO : GET GRAPHICS FROM DIRECTOR
+            // set resolution values
             mCurrentScreenWidth = mDirector.GetGraphicsDeviceManager.PreferredBackBufferWidth;
             mCurrentScreenHeight = mDirector.GetGraphicsDeviceManager.PreferredBackBufferHeight;
             mPrevScreenWidth = mCurrentScreenWidth;
@@ -512,13 +511,9 @@ namespace Singularity.Screen.ScreenClasses
 
             #endregion
 
-            // TODO : IMPLEMENT THE EVENT LOG
             #region eventLogWindow
 
             mEventLogWindow = new WindowObject("// EVENT LOG", new Vector2(0, 0), new Vector2(eventLogWidth, eventLogHeight), true, mLibSans14, mInputManager, mGraphics);
-            // create items
-
-            // add all items
 
             mWindowList.Add(mEventLogWindow);
 
@@ -1310,10 +1305,16 @@ namespace Singularity.Screen.ScreenClasses
 
         public void UpdateEventLog(EventLogIWindowItem newEvent, EventLogIWindowItem oldEvent)
         {
-            mEventLogWindow.DeleteItem(oldEvent);
+            float oldEventSizeY = 0;
+
+            if (oldEvent != null)
+            {
+                mEventLogWindow.DeleteItem(oldEvent);
+                oldEventSizeY = oldEvent.Size.Y;
+            }
 
             mEventLogWindow.AddItem(newEvent);
-            mEventLogWindow.AutoScrolledToEnd();
+            mEventLogWindow.AutoScrollToEnd(newEvent.Size.Y, oldEventSizeY);
         }
 
         /// <summary>
@@ -1935,7 +1936,7 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
-            mDirector.GetEventLog.AddEvent("testing", new Vector2(500,500));
+            mDirector.GetEventLog.AddEvent(ELogEventType.Debugging, "Unit X has been attack", new Vector2(500,500));
             return true;
         }
 
