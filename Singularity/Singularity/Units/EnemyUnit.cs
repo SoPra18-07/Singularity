@@ -82,7 +82,7 @@ namespace Singularity.Units
         /// <param name="director">Reference to the game director.</param>
         /// <param name="map">Reference to the game map.</param>
         public EnemyUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map) 
-            : base(position, camera, ref director, ref map)
+            : base(position, camera, ref director, ref map, false)
         {
             AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
 

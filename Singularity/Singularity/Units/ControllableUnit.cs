@@ -43,8 +43,8 @@ namespace Singularity.Units
         /// ability to be selected and moved by the player. As such, most of this class is simply
         /// mouse event handlers. Any object that is a subclass of this class is immediately
         /// subscribed to mouse events by the gamescreen.
-        protected ControllableUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
-            : base(position, camera, ref director, ref map)
+        protected ControllableUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true)
+            : base(position, camera, ref director, ref map, friendly)
         {
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);

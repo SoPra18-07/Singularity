@@ -207,7 +207,6 @@ namespace Singularity.Screen.ScreenClasses
             if (settler != null)
             {
                 settler.BuildCommandCenter += SettlerBuild;
-                mDirector.GetMilitaryManager.AddUnit(settler);
             }
 
             // subscribe every military unit to the selection box

@@ -68,6 +68,8 @@ namespace Singularity.Levels
             var enemyUnit = new Target(new Vector2(3000, 2950), Camera, ref mDirector, ref map);
             var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
 
+            var settler = new Settler(new Vector2(3050, 3050), Camera, ref mDirector, ref map, GameScreen, mUi);
+
 
             // GenUnits
             var genUnit = new List<GeneralUnit>(5);
@@ -92,6 +94,7 @@ namespace Singularity.Levels
             GameScreen.AddObjects(genUnit);
             GameScreen.AddObject(enemyUnit);
             GameScreen.AddObject(milUnit);
+            GameScreen.AddObject(settler);
 
             //TESTMETHODS HERE ====================================
             mDirector.GetDistributionManager.RequestResource(platform2, EResourceType.Oil, null);

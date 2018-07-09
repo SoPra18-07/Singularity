@@ -23,7 +23,8 @@ namespace Singularity.Platforms
         {
 
             mIPlatformActions.Add(new MakeFastMilitaryUnit(this, ref director));
-            mIPlatformActions.Add(new MakeStrongMilitrayUnit(this, ref director));
+            mIPlatformActions.Add(new MakeHeavyMilitaryUnit(this, ref director));
+            mIPlatformActions.Add(new MakeStandardMilitaryUnit(this, ref director));
 
             Debug.WriteLine("Barracks created.");
         }

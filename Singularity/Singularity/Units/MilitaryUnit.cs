@@ -7,6 +7,7 @@ using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
 using Singularity.Sound;
+using Singularity.Utils;
 
 namespace Singularity.Units
 {
@@ -59,7 +60,9 @@ namespace Singularity.Units
         /// Color of the unit while not selected
         /// </summary>
         protected Color mColor = Color.Gray;
-        
+
+        private float mShootingTimer = -1f;
+        private double mCurrentTime;
         
         public MilitaryUnit(Vector2 position,
             Camera camera,
@@ -69,8 +72,6 @@ namespace Singularity.Units
         {
             mSpeed = MilitaryUnitStats.StandardSpeed;
             Health = MilitaryUnitStats.StandardHealth;
-
-            Friendly = true;
 
             AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
 
@@ -134,10 +135,13 @@ namespace Singularity.Units
                 return;
             }
 
-            // draws a laser line a a slight glow around the line, then sets the shoot future off
-            spriteBatch.DrawLine(Center, mShootingTarget, Color.White, 2);
-            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget, Color.White * .2f, 6);
-            mShoot = false;
+            if (mCurrentTime <= mShootingTimer + 200)
+            {
+                // draws a laser line a a slight glow around the line, then sets the shoot future off
+                spriteBatch.DrawLine(Center, mShootingTarget, Color.White, 2);
+                spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget, Color.White * .2f, 6);
+                mShoot = false;
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -163,7 +167,7 @@ namespace Singularity.Units
             // calculate path to target position
             else if (mIsMoving)
             {
-                //Rotate(mTargetPosition);
+                Rotate(mPath.Peek());
                 if (!HasReachedWaypoint())
                 {
                     MoveToTarget(mPath.Peek(), mSpeed);
@@ -179,23 +183,31 @@ namespace Singularity.Units
             mRow = mRotation / 18;
             mColumn = (mRotation - mRow * 18) / 3;
 
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * Scale / 2, AbsolutePosition.Y + AbsoluteSize.Y * Scale / 2);
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
             AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * Scale), (int) (AbsoluteSize.Y * Scale));
             Moved = mIsMoving;
 
             //TODO this needs to be taken out once the military manager takes control of shooting
             if (!mIsMoving && mShoot)
             {
-                // shoots at mouse and plays laser sound at full volume
-                Shoot(mShootingTarget);
-                mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+                if (mShootingTimer < 0.5f)
+                {
+                    mShootingTimer = (float) gameTime.TotalGameTime.TotalMilliseconds;
+                    Shoot(mShootingTarget);
+                }
 
+                mCurrentTime = gameTime.TotalGameTime.TotalMilliseconds;
+                if (mShootingTimer + 750 <= gameTime.TotalGameTime.TotalMilliseconds)
+                {
+                    mShootingTimer = (float)gameTime.TotalGameTime.TotalMilliseconds;
+                    Shoot(mShootingTarget);
+                }
             }
         }
 
         public void Shoot(Vector2 target)
         {
-
+            mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
         }
 
         public void SetShootingTarget(Vector2 target)
@@ -203,6 +215,7 @@ namespace Singularity.Units
             if (target == Vector2.Zero)
             {
                 mShoot = false;
+                mShootingTimer = -1;
             }
             else
             {

@@ -154,7 +154,7 @@ namespace Singularity.Units
         /// map, and implements pathfinding for objects on the map. It also allows subclasses to have
         /// health and to be damaged.
         /// </remarks>
-        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
+        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true)
         {
             Id = IdGenerator.NextiD(); // id for the specific unit.
 
@@ -167,6 +167,8 @@ namespace Singularity.Units
             mDirector = director;
             mCamera = camera;
             mPathfinder = new MilitaryPathfinder();
+
+            Friendly = friendly;
         }
 
         #region Pathfinding Methods

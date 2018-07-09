@@ -190,7 +190,7 @@ namespace Singularity.Map
             var halfWidth = mMapSizeX / 2 - 1;
 
             var column = (squareTilePos[0] + squareTilePos[1] - halfWidth) / 2;
-            var row = Math.Abs(squareTilePos[0] - halfWidth) - column;
+            var row = Math.Abs(Math.Abs(squareTilePos[0] - halfWidth) - column);
 
             return new Vector2(column, row);
 

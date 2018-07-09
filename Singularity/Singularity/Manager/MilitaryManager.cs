@@ -10,13 +10,16 @@ using Singularity.Utils;
 
 namespace Singularity.Manager
 {
+    /// <remarks>
+    /// The way the MilitaryManager works is that it stores which 2x2 map tile a unit is currently located on. This way,
+    /// the MilitaryManager only has to check for all units which are in the same or adjacent 2x2 map tiles for detection.
+    /// As such, it won't need to check if 2 units on opposite ends of the map are near enough to each other that it can attack them.
+    /// </remarks>
     public sealed class MilitaryManager : IUpdate
     {
         /// <summary>
-        /// The game map.
+        /// The game unitMap that is used to keep track of all damageable objects.
         /// </summary>
-        private Map.Map mMap;
-
         private UnitMap mUnitMap;
 
         #region Friendly unit lists
@@ -66,18 +69,33 @@ namespace Singularity.Manager
         private List<Settler> mHostileSettler = new List<Settler>();
 
         #endregion
-        /// <remarks>
-        /// The way the MilitaryManager works is that it stores which 2x2 map tile a unit is currently located on. This way,
-        /// the MilitaryManager only has to check for all units which are in the same or adjacent 2x2 map tiles for detection.
-        /// As such, it won't need to check if 2 units on opposite ends of the map are near enough to each other that it can attack them.
-        /// </remarks>
 
+        #region Unit strength
+
+        /// <summary>
+        /// The strength of military units (i.e. how much damage it does to objects).
+        /// </summary>
+        private const int UnitStrength = 1;
+
+        /// <summary>
+        /// The strength of turrets (i.e. how much damage it does to objects).
+        /// </summary>
+        private const int TurretStrength = 2;
+
+        #endregion
+
+        
+        
+        /// <summary>
+        /// Sets the unit map for referencing later on. This is required because the map is created
+        /// after the director so it cannot be included in the constructor.
+        /// </summary>
         internal void SetMap(ref Map.Map map)
         {
-            mMap = map;
             mUnitMap = map.GetUnitMap();
         }
 
+        #region Methods to add objects to the manager
         /// <summary>
         /// Adds a new platform to the military manager. This also adds it to the UnitMap.
         /// </summary>
@@ -146,7 +164,9 @@ namespace Singularity.Manager
 
             mUnitMap.AddUnit(unit);
         }
+        #endregion
 
+        #region Methods to remove from the manager
         /// <summary>
         /// Removes a platform from the Military Manager (i.e. it died).
         /// </summary>
@@ -185,11 +205,12 @@ namespace Singularity.Manager
         /// Removes a unit from the Military Manager (i.e. it died).
         /// </summary>
         /// <param name="unit">The unit to be removed.</param>
-        internal void RemoveUnit(FreeMovingUnit unit)
+        internal void RemoveUnit(ICollider unit)
         {
             var friendlyMilitary = unit as MilitaryUnit;
             var hostileMilitary = unit as EnemyUnit;
             var settler = unit as Settler;
+            // TODO: make platforms killable.
 
             if (settler != null)
             {
@@ -214,14 +235,18 @@ namespace Singularity.Manager
 
             mUnitMap.RemoveUnit(unit);
         }
-    
+        #endregion
 
 
         public void Update(GameTime gametime)
         {
+            // get a list of things to kill so the actual lists don't get modified during the run
+            var unitsToKill = new List<FreeMovingUnit>();
+            var platformsToKill = new List<PlatformBlank>();
+
+            #region Check targets for friendly units
             foreach (var unit in mFriendlyMilitary)
             {
-                
                 // iterate through each friendly unit, if there's a target nearby, shoot the closest one.
                 if (unit.Moved)
                 {
@@ -261,6 +286,22 @@ namespace Singularity.Manager
                 if (closestAdjacent != null)
                 {
                     unit.SetShootingTarget(closestAdjacent.Center);
+                    closestAdjacent.MakeDamage(UnitStrength);
+                    if (closestAdjacent.Health <= 0)
+                    {
+                        // try to turn the closest into a freemoving unit
+                        var killUnit = closestAdjacent as FreeMovingUnit;
+                        if (killUnit != null)
+                        {
+                            // if it works, add it to the unit kill list.
+                            unitsToKill.Add(killUnit);
+                        }
+                        else
+                        {
+                            // otherwise it's a platform and add it to the platform kill list.
+                            platformsToKill.Add(closestAdjacent as PlatformBlank);
+                        }
+                    }
                 }
                 else
                 {
@@ -268,6 +309,9 @@ namespace Singularity.Manager
                 }
             }
 
+            #endregion
+
+            #region Check targets for friendly turrets
             foreach (var turret in mFriendlyDefensePlatforms)
             {
                 // iterate through each friendly turret, if there's a target nearby, shoot it.
@@ -304,6 +348,22 @@ namespace Singularity.Manager
                 if (closestAdjacent != null)
                 {
                     turret.SetShootingTarget(closestAdjacent.Center);
+                    closestAdjacent.MakeDamage(TurretStrength);
+                    if (closestAdjacent.Health <= 0)
+                    {
+                        // try to turn the closest into a freemoving unit
+                        var killUnit = closestAdjacent as FreeMovingUnit;
+                        if (killUnit != null)
+                        {
+                            // if it works, add it to the unit kill list.
+                            unitsToKill.Add(killUnit);
+                        }
+                        else
+                        {
+                            // otherwise it's a platform and add it to the platform kill list.
+                            platformsToKill.Add(closestAdjacent as PlatformBlank);
+                        }
+                    }
                 }
                 else
                 {
@@ -311,7 +371,9 @@ namespace Singularity.Manager
                 }
 
             }
+            #endregion
 
+            #region Check targets for hostile units
             foreach (var unit in mHostileMilitary)
             {
                 // iterate through each hostile unit, if there's a target nearby, shoot it.
@@ -347,20 +409,37 @@ namespace Singularity.Manager
                             }
                         }
                     }
-
                 }
 
                 // if there is something close enough, shoot it. Else, set the target to null.
                 if (closestAdjacent != null)
                 {
                     unit.SetShootingTarget(closestAdjacent.Center);
+                    closestAdjacent.MakeDamage(UnitStrength);
+                    if(closestAdjacent.Health <= 0)
+                    {
+                        // try to turn the closest into a freemoving unit
+                        var killUnit = closestAdjacent as FreeMovingUnit;
+                        if (killUnit != null)
+                        {
+                            // if it works, add it to the unit kill list.
+                            unitsToKill.Add(killUnit);
+                        }
+                        else
+                        {
+                            // otherwise it's a platform and add it to the platform kill list.
+                            platformsToKill.Add(closestAdjacent as PlatformBlank);
+                        }
+                    }
                 }
                 else
                 {
                     unit.SetShootingTarget(Vector2.Zero);
                 }
             }
+            #endregion
 
+            #region Check targets for hostile turrets
             foreach (var turret in mHostileDefensePlatforms)
             {
                 // iterate through each friendly turret, if there's a target nearby, shoot it.
@@ -397,11 +476,38 @@ namespace Singularity.Manager
                 if (closestAdjacent != null)
                 {
                     turret.SetShootingTarget(closestAdjacent.Center);
+                    closestAdjacent.MakeDamage(TurretStrength);
+                    if (closestAdjacent.Health <= 0)
+                    {
+                        // try to turn the closest into a freemoving unit
+                        var killUnit = closestAdjacent as FreeMovingUnit;
+                        if (killUnit != null)
+                        {
+                            // if it works, add it to the unit kill list.
+                            unitsToKill.Add(killUnit);
+                        }
+                        else
+                        {
+                            // otherwise it's a platform and add it to the platform kill list.
+                            platformsToKill.Add(closestAdjacent as PlatformBlank);
+                        }
+                    }
                 }
                 else
                 {
                     turret.SetShootingTarget(Vector2.Zero);
                 }
+            }
+            #endregion
+
+            foreach (var unit in unitsToKill)
+            {
+                if (unit.Friendly)
+                {
+                    
+                } 
+                unit.Die();
+
             }
         }
 
