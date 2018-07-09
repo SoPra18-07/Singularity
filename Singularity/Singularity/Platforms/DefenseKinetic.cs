@@ -9,6 +9,7 @@ using Singularity.Manager;
 using Singularity.PlatformActions;
 using Singularity.Property;
 using Singularity.Resources;
+using Singularity.Sound;
 
 namespace Singularity.Platforms
 {
@@ -61,6 +62,7 @@ namespace Singularity.Platforms
             EnemyPosition = target.Center;
 
             mIPlatformActions[0].Execute();
+            mDirector.GetSoundManager.PlaySound("KineticTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
         }
         // TODO: Some way to calculate how many things are sent here
 

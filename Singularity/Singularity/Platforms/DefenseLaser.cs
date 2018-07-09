@@ -40,6 +40,7 @@ namespace Singularity.Platforms
                 // Consume Energy
                 mShoot = true;
                 mEnemyPosition = target;
+                mDirector.GetSoundManager.PlaySound("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
             }
             */
         }

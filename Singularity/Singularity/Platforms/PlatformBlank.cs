@@ -14,6 +14,7 @@ using Singularity.PlatformActions;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Screen;
+using Singularity.Sound;
 using Singularity.Units;
 using Singularity.Utils;
 
@@ -365,6 +366,8 @@ namespace Singularity.Platforms
                 }
                 else
                 {
+                    // makes destruction sound
+                    mDirector.GetSoundManager.PlaySound("DestroyPlat", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
                     DieBlank();
                 }
             }
@@ -914,6 +917,15 @@ namespace Singularity.Platforms
             //TODO: Tell the PlatformAction to request everything it needs again.
             if (manually)
             {
+                // TODO find a power on sound
+                mDirector.GetSoundManager.PlaySound("PowerOff",
+                    Center.X,
+                    Center.Y,
+                    .1f,
+                    .01f,
+                    true,
+                    false,
+                    SoundClass.Effect);
                 mIsManuallyDeactivated = false;
             }
             mIsActive = true;
@@ -964,6 +976,16 @@ namespace Singularity.Platforms
         {
             if (manually)
             {
+                // TODO maybe need to regulate sound a little when put to action 
+                mDirector.GetSoundManager.PlaySound("PowerDown",
+                    Center.X,
+                    Center.Y,
+                    .1f,
+                    .01f,
+                    true,
+                    false,
+                    SoundClass.Effect);
+
                 mIsManuallyDeactivated = true;
             }
 
