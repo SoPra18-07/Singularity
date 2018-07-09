@@ -166,7 +166,7 @@ namespace Singularity.PlatformActions
 
         public bool Die()
         {
-            mDirector.GetDistributionManager.Kill(this);
+            mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Kill(this);
             mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
             mPlatform = null;
 
