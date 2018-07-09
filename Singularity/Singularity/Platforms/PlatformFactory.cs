@@ -80,7 +80,7 @@ namespace Singularity.Platforms
                     return new Junkyard(position, sDomeSheet, sBlankSheet, sLibSans12, ref director);
 
                 case EPlatformType.Kinetic:
-                    return new DefenseKinetic(position, sConeSheet, sBlankSheet, ref director);
+                    return new DefenseKinetic(position, sConeSheet, sBlankSheet, sLibSans12, ref director);
 
                 case EPlatformType.Mine:
                     return new Mine(position, sDomeSheet, sBlankSheet, libSans12: sLibSans12, resource: resourceMap, director: ref director, autoRegister: autoRegister);
@@ -95,7 +95,7 @@ namespace Singularity.Platforms
                     return new Well(position, sDomeSheet, sBlankSheet, libSans12: sLibSans12, resource: resourceMap, director: ref director, autoRegister: autoRegister);
 
                 case EPlatformType.Laser:
-                    return new DefenseLaser(position, sConeSheet, sBlankSheet, ref director);
+                    return new DefenseLaser(position, sConeSheet, sBlankSheet, sLibSans12, ref director);
 
                 default:
                     break;

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
@@ -22,8 +18,9 @@ namespace Singularity.Platforms
         internal DefenseLaser(Vector2 position,
             Texture2D platformSpriteSheet,
             Texture2D baseSprite,
+            SpriteFont libSans12,
             ref Director director)
-            : base(position, platformSpriteSheet, baseSprite, ref director, EPlatformType.Laser)
+            : base(position, platformSpriteSheet, baseSprite, libSans12, ref director, EPlatformType.Laser)
         {
             mDrainingEnergy = DrainingEnergy;
 

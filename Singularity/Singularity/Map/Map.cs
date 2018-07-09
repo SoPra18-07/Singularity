@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Singularity.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map.Properties;

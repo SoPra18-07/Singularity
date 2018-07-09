@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Singularity.Manager;
-using Singularity.Map;
 using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Units;

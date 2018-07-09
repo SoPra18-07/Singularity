@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Manager;
-using Singularity.PlatformActions;
 using Singularity.Property;
-using Singularity.Resources;
 using Singularity.Units;
 
 namespace Singularity.Platforms
@@ -34,10 +26,11 @@ namespace Singularity.Platforms
         internal DefenseBase(Vector2 position,
             Texture2D platformSpriteSheet,
             Texture2D baseSprite,
+            SpriteFont libSans12,
             ref Director director,
             EPlatformType type,
             bool autoRegister = true)
-            : base(position, platformSpriteSheet, baseSprite, ref director, type)
+            : base(position, platformSpriteSheet, baseSprite, libSans12, ref director, type)
         {
             if (autoRegister)
             {

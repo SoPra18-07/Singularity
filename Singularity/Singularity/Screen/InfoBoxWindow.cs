@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
@@ -44,7 +43,16 @@ namespace Singularity.Screen
         /// <param name="boundsRectangle">rectangle in which the windowBox is active</param>
         /// <param name="boxed">true, if window should have a border</param>
         /// <param name="director">the director</param>
-        public InfoBoxWindow(List<IWindowItem> itemList, Vector2 size, Color borderColor, Color centerColor, bool boxed, Director director)
+        /// <param name="mousePosition"></param>
+        /// <param name="location"></param>
+        public InfoBoxWindow(List<IWindowItem> itemList,
+            Vector2 size,
+            Color borderColor,
+            Color centerColor,
+            bool boxed,
+            Director director,
+            bool mousePosition = true,
+            Vector2 location = default(Vector2))
         {
             // set members
             mItemList = itemList;

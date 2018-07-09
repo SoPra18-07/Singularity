@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Exceptions;
 using Singularity.Graph;
-using Singularity.Libraries;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.PlatformActions;
@@ -24,7 +23,7 @@ namespace Singularity.Platforms
     /// <inheritdoc cref="INode"/>
     /// <inheritdoc cref="ICollider"/>
     [DataContract]
-    public class PlatformBlank : ARevealing, INode, ICollider, IMouseClickListener
+    public class PlatformBlank : IRevealing, INode, ICollider, IMouseClickListener
     {
 
         private int mGraphIndex;
@@ -117,6 +116,7 @@ namespace Singularity.Platforms
         private bool mIsManuallyDeactivated;
 
         public int RevelationRadius { get; } = 200;
+        public Vector2 Center { get; protected set; }
 
         public Rectangle AbsBounds { get; private set; }
 
@@ -231,7 +231,7 @@ namespace Singularity.Platforms
             mInfoBox = new PlatformInfoBox(
                 new List<IWindowItem>
                 {
-                    new TextField(str, AbsolutePosition + new Vector2(0, AbsoluteSize.Y + 10), mLibSans12.MeasureString(str), mLibSans12)
+                    new TextField(str, AbsolutePosition + new Vector2(0, AbsoluteSize.Y + 10), mLibSans12.MeasureString(str), mLibSans12, Color.Black)
                 },
                 mLibSans12.MeasureString(str),
                 this, mDirector);

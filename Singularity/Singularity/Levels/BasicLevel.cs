@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -69,9 +64,10 @@ namespace Singularity.Levels
             MilitaryUnit.mMilSheet = content.Load<Texture2D>("UnitSpriteSheet");
             MilitaryUnit.mGlowTexture = content.Load<Texture2D>("UnitGlowSprite");
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
+            var libSans12 = content.Load<SpriteFont>("LibSans12");
 
             //TODO: have a cone texture
-            PlatformFactory.Init(platformConeTexture, platformCylTexture, platformDomeTexture, platformBlankTexture);
+            PlatformFactory.Init(platformConeTexture, platformCylTexture, platformDomeTexture, platformBlankTexture, libSans12);
 
             //Map related stuff
             Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 800, 800);
