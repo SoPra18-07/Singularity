@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Resources;
@@ -10,7 +11,11 @@ namespace Singularity.PlatformActions
 
     public sealed class BuildBluePrint : AMakeUnit
     {
-        private PlatformBlank mBuilding;
+        public override List<JobType> UnitsRequired { get; } = new List<JobType> { JobType.Construction };
+
+        private readonly PlatformBlank mBuilding;
+
+        private bool mBuildable; // defaults to false
 
         public BuildBluePrint(PlatformBlank platform, PlatformBlank toBeBuilt, ref Director director) : base(
             platform,
@@ -19,26 +24,22 @@ namespace Singularity.PlatformActions
             mBuildingCost = new Dictionary<EResourceType, int>(toBeBuilt.GetResourcesRequired());
             mBuilding = toBeBuilt;
 
-            Debug.WriteLine(mBuildingCost.Count);
-            Debug.WriteLine(toBeBuilt.GetResourcesRequired().Count);
-            UiToggleState();
-            Debug.WriteLine(mBuildingCost.Count);
-            Debug.WriteLine(mMissingResources.Count);
-            Debug.WriteLine(mToRequest.Count);
+            Debug.WriteLine(mBuildingCost.Values.Sum() + ", " + toBeBuilt.GetResourcesRequired().Values.Sum());
+            UpdateResources();
+            Debug.WriteLine(mBuildingCost.Values.Sum() + ", " + mMissingResources.Values.Sum() + ", " + mToRequest.Values.Sum());
         }
-
-        public override List<JobType> UnitsRequired { get; } = new List<JobType> {JobType.Construction};
 
         protected override void CreateUnit()
         {
-            Debug.WriteLine("Building Platform!");
-            mBuilding.Built();
-            Die();
+            mBuildable = true;
+            Debug.WriteLine("Platform buildable!");
         }
 
         public override void Execute()
         {
-
+            if (!mBuildable) return;
+            mBuilding.Built();
+            Die();
         }
     }
 }

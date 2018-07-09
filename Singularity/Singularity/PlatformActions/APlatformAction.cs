@@ -58,21 +58,9 @@ namespace Singularity.PlatformActions
         /// <returns>The required resources.</returns>
         public abstract Dictionary<EResourceType, int> GetRequiredResources();
 
+        // The button in the UI got clicked. Now change the state accordingly.
         public abstract void UiToggleState();
-        /* {
-            switch (State)
-            {
-                case PlatformActionState.Available:
-                    State = PlatformActionState.Deactivated;
-                    break;
-                case PlatformActionState.Deactivated:
-                    State = PlatformActionState.Available;
-                    break;
-                default:
-                    throw new AccessViolationException("Someone/Something acccessed the state!!");
-            }
-        }
-        */
+
 
         public List<GeneralUnit> UnAssignUnits(int amount, JobType job)
         {
@@ -88,6 +76,7 @@ namespace Singularity.PlatformActions
             return list;
         }
 
+        // this is supposed to remove all references to this PlatformAction
         public bool Die()
         {
             mDirector.GetDistributionManager.Kill(this);
@@ -98,6 +87,7 @@ namespace Singularity.PlatformActions
             return true;
         }
 
+        // here a Unit want's to die (wants it's references to be removed)
         public void Kill(GeneralUnit unit)
         {
             mAssignedUnits.Remove(unit);

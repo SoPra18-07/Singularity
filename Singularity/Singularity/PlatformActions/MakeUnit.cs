@@ -85,9 +85,7 @@ namespace Singularity.PlatformActions
 
         public void Update()
         {
-            Debug.WriteLine(mBuildingCost.Count);
-            Debug.WriteLine(mMissingResources.Count);
-            Debug.WriteLine(mToRequest.Count);
+            Debug.WriteLine(mBuildingCost.Values.Sum() + ", " + mMissingResources.Values.Sum() + ", " + mToRequest.Values.Sum());
             if (State != PlatformActionState.Active)
                 return;
             if (mToRequest.Count > 0)
@@ -123,6 +121,15 @@ namespace Singularity.PlatformActions
             }
         }
 
+        protected void UpdateResources()
+        {
+            if (mMissingResources.Count == 0)
+            {
+                mMissingResources = new Dictionary<EResourceType, int>(mBuildingCost);
+            }
+            mToRequest = new Dictionary<EResourceType, int>(mMissingResources);
+        }
+
         public override Dictionary<EResourceType, int> GetRequiredResources()
         {
             return mMissingResources;
@@ -133,12 +140,12 @@ namespace Singularity.PlatformActions
             switch (State)
             {
                 case PlatformActionState.Available:
-                    mMissingResources = mMissingResources.Count == 0 ? new Dictionary<EResourceType, int>(mBuildingCost) : mMissingResources;
-                    mToRequest = new Dictionary<EResourceType, int>(mMissingResources);
+                    UpdateResources();
                     State = PlatformActionState.Active;
                     break;
                 case PlatformActionState.Active:
                     mDirector.GetDistributionManager.PausePlatformAction(this);
+                    mToRequest = new Dictionary<EResourceType, int>();
                     State = PlatformActionState.Available;
                     break;
                 default:

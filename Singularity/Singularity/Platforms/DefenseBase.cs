@@ -36,7 +36,6 @@ namespace Singularity.Platforms
             {
                 director.GetDistributionManager.Register(this, false);
             }
-            mType = type;
             mSpritename = "Cone";
             Property = JobType.Defense;
             SetPlatfromParameters();
@@ -62,7 +61,7 @@ namespace Singularity.Platforms
             // then draw what's on top of that
             spriteBatch.Draw(mPlatformSpriteSheet,
                 AbsolutePosition,
-                new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 148),
+                new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 148),
                 mColor * transparency,
                 0f,
                 Vector2.Zero,

@@ -18,9 +18,8 @@ namespace Singularity.Platforms
 
         public Storage(Vector2 position, Texture2D spritesheet, Texture2D basesprite, SpriteFont libSans12, ref Director director): base(position, spritesheet, basesprite, libSans12, ref director, EPlatformType.Storage, -50)
         {
-            //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
-            //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<EResourceType, int>();
+            // Todo: Add Costs of the platform here if you got them.
+            // mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Storage;
             mSpritename = "Dome";
             SetPlatfromParameters();

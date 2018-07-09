@@ -10,15 +10,10 @@ using Singularity.Units;
 namespace Singularity.Platforms
 {
     [DataContract]
-    class CommandCenter: PlatformBlank
+    internal sealed class CommandCenter: PlatformBlank
     {
         private const int ProvidingEnergy = 20;
-
-        [DataMember]
-        private const int PlatformWidth = 200;
-
-        [DataMember]
-        private const int PlatformHeight = 233;
+        
 
         [DataMember]
         private List<GeneralUnit> mControlledUnits;
@@ -35,8 +30,10 @@ namespace Singularity.Platforms
             mSpritename = "Cylinders";
             SetPlatfromParameters();
             mControlledUnits = new List<GeneralUnit>();
-            director.GetStoryManager.AddEnergy(5);
+            director.GetStoryManager.AddEnergy(ProvidingEnergy);
             mIsBlueprint = blueprintState;
+            mPlatformWidth = 200;
+            mPlatformHeight = 233;
         }
 
         public override void Produce()

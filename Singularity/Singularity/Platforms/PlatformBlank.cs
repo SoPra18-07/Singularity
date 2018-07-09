@@ -25,6 +25,7 @@ namespace Singularity.Platforms
     [DataContract]
     public class PlatformBlank : IRevealing, INode, ICollider, IMouseClickListener
     {
+        #region private
 
         private int mGraphIndex;
 
@@ -53,6 +54,10 @@ namespace Singularity.Platforms
         /// </summary>
         private List<IEdge> mOutwardsEdges;
 
+        #endregion
+
+        #region protected
+
         /// <summary>
         /// Indicates the type of platform this is, defaults to blank.
         /// </summary>
@@ -63,13 +68,13 @@ namespace Singularity.Platforms
         /// Indicates the platform width
         /// </summary>
         [DataMember]
-        protected const int PlatformWidth = 148;
+        protected int mPlatformWidth = 148;
 
         /// <summary>
         /// Indicates the platform height.
         /// </summary>
         [DataMember]
-        protected const int PlatformHeight = 172;
+        protected int mPlatformHeight = 172;
 
         /// <summary>
         /// How much health the platform has
@@ -154,6 +159,8 @@ namespace Singularity.Platforms
         private readonly float mCenterOffsetY;
 
         protected Color mColor = Color.White;
+
+        #endregion
 
         private PlatformInfoBox mInfoBox;
 
@@ -490,7 +497,7 @@ namespace Singularity.Platforms
                     // then draw what's on top of that
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
-                        new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 153),
+                        new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 153),
                         mColor * transparency,
                         0f,
                         Vector2.Zero,
@@ -678,14 +685,14 @@ namespace Singularity.Platforms
                     mSheet = 0;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         88);
                     break;
                 case EPlatformType.Energy:
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EPlatformType.Factory:
@@ -693,7 +700,7 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EPlatformType.Junkyard:
@@ -701,7 +708,7 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EPlatformType.Mine:
@@ -709,7 +716,7 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EPlatformType.Packaging:
@@ -717,7 +724,7 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EPlatformType.Quarry:
@@ -725,7 +732,7 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EPlatformType.Storage:
@@ -733,7 +740,7 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EPlatformType.Well:
@@ -741,14 +748,14 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EPlatformType.Kinetic:
                     mSheet = 1;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         165);
                     break;
                 case EPlatformType.Laser:
@@ -756,7 +763,7 @@ namespace Singularity.Platforms
                     mSheetPosition = 1;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         165);
                     break;
                 case EPlatformType.Barracks:
@@ -764,14 +771,14 @@ namespace Singularity.Platforms
                     mSheetPosition = 1;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         170);
                     break;
                 case EPlatformType.Command:
                     mSheet = 2;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         170);
                     break;
                 default:
@@ -853,6 +860,8 @@ namespace Singularity.Platforms
             mLayer = layer;
         }
 
+        #region dying/killing
+
         /// <summary>
         /// This will kill only the specialised part of the platform.
         /// </summary>
@@ -929,6 +938,8 @@ namespace Singularity.Platforms
             mIPlatformActions.Remove(action);
         }
 
+        #endregion
+
         public IEnumerable<INode> GetChilds()
         {
             var childs = new List<INode>();
@@ -980,7 +991,7 @@ namespace Singularity.Platforms
         public void Built()
         {
             mIsBlueprint = false;
-            // Todo: move registering at the distributionmanager etc here.
+            // Todo: move registering at the distributionmanager etc here. But not yet (debug)
         }
 
         public void Activate(bool manually)
