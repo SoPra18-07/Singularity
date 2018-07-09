@@ -110,7 +110,7 @@ namespace Singularity.Units
                     Vector2.Zero,
                     new Vector2(Scale),
                     SpriteEffects.None,
-                    LayerConstants.MilitaryUnitLayer - 0.1f);
+                    LayerConstants.MilitaryUnitLayer - 0.01f);
             }
 
             if (GlobalVariables.DebugState)

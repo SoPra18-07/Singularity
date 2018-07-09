@@ -77,7 +77,7 @@ namespace Singularity.PlatformActions
                 } else {
                     mToRequest[resource] = mToRequest[resource] - 1;
                 }
-                mDirector.GetDistributionManager.RequestResource(mPlatform, resource, this);
+                mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).RequestResource(mPlatform, resource, this);
             }
 
             mPlatform.GetPlatformResources().ForEach(action: r => GetResource(r.Type));
@@ -119,7 +119,7 @@ namespace Singularity.PlatformActions
                     State = PlatformActionState.Active;
                     break;
                 case PlatformActionState.Active:
-                    mDirector.GetDistributionManager.PausePlatformAction(this);
+                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this);
                     State = PlatformActionState.Available;
                     break;
                 default:

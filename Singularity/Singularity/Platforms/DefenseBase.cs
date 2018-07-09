@@ -35,17 +35,11 @@ namespace Singularity.Platforms
             Texture2D platformSpriteSheet,
             Texture2D baseSprite,
             ref Director director,
-            EPlatformType type,
-            bool autoRegister = true)
+            EPlatformType type)
             : base(position, platformSpriteSheet, baseSprite, ref director, type)
         {
-            if (autoRegister)
-            {
-                director.GetDistributionManager.Register(this, false);
-            }
             mType = type;
             mSpritename = "Cone";
-            Property = JobType.Defense;
             SetPlatfromParameters();
         }
 
