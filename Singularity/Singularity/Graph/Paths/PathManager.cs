@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using Singularity.Exceptions;
 using Singularity.Units;
 
@@ -46,8 +44,9 @@ namespace Singularity.Graph.Paths
         /// <typeparam name="T">The type of the object wanting to request a path</typeparam>
         /// <param name="unit">The unit which requests a path</param>
         /// <param name="destination">The destination to which the path should lead</param>
+        /// <param name="graphIndex">The index of the Graph to get a Path on</param>
         /// <returns></returns>
-        public IPath GetPath<T>(T unit, INode destination, int GraphIndex)
+        public IPath GetPath<T>(T unit, INode destination, int graphIndex)
         {
             // the basic idea for military and general units to use the same method and the distinuishing
             // between the two is handled here.
@@ -56,14 +55,14 @@ namespace Singularity.Graph.Paths
 
             if (asGeneralUnit != null)
             {
-                return GetPathForGeneralUnits(asGeneralUnit, destination, GraphIndex);
+                return GetPathForGeneralUnits(asGeneralUnit, destination, graphIndex);
             }
 
             var asMilitaryUnit = unit as MilitaryUnit;
 
             if (asMilitaryUnit != null)
             {
-                return GetPathForMilitaryUnits(asMilitaryUnit, destination, GraphIndex);
+                return GetPathForMilitaryUnits(asMilitaryUnit, destination, graphIndex);
             }
 
             throw new InvalidGenericArgumentException(

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
 using Singularity.Libraries;
@@ -12,9 +13,9 @@ namespace Singularity.Platforms
 
         public Vector2 Destination { get; set; }
 
-        private INode SourceAsNode { get; set; }
+        public INode SourceAsNode { get; set; }
 
-        private INode DestinationAsNode { get; set; }
+        public INode DestinationAsNode { get; set; }
 
         private bool mBlueprint;
 
@@ -53,7 +54,7 @@ namespace Singularity.Platforms
             // the hardcoded values need some changes for different platforms, ill wait until those are implemented to find a good solution.
             if(source == null && destination == null)
             {
-                throw new System.Exception("Source and Destination can't both be null");
+                throw new Exception("Source and Destination can't both be null");
             }
             if(source == null && destination != null)
             {

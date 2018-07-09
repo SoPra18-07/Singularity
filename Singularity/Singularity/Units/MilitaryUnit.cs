@@ -1,203 +1,102 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Singularity.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
-using Singularity.Map.Properties;
 using Singularity.Property;
-using Singularity.Screen;
 using Singularity.Sound;
-using Singularity.Utils;
 
 namespace Singularity.Units
 {
-    internal sealed class MilitaryUnit : ICollider, IRevealing, IMouseClickListener, IMousePositionListener
+    /// <inheritdoc cref="ControllableUnit"/>
+    internal class MilitaryUnit : ControllableUnit, IShooting
     {
-        public EScreen Screen { get; private set; } = EScreen.GameScreen;
-
+        /// <summary>
+        /// Default width of a unit before scaling.
+        /// </summary>
         private const int DefaultWidth = 150;
+
+        /// <summary>
+        /// Default height of a unit before scaling.
+        /// </summary>
         private const int DefaultHeight = 75;
 
-        private const double Speed = 4;
+        /// <summary>
+        /// Sprite sheet for military units.
+        /// </summary>
+        internal static Texture2D mMilSheet;
 
-        private int mColumn;
-        private int mRow;
+        /// <summary>
+        /// Sprite sheet for the glow effect when a unit is selected.
+        /// </summary>
+        internal static Texture2D mGlowTexture;
 
-        private bool mIsMoving;
-        private Rectangle mBoundsSnapshot;
-        private Vector2 mToAdd;
-        private double mZoomSnapshot;
+        /// <summary>
+        /// Scalar for the unit size.
+        /// </summary>
+        protected const float Scale = 0.4f;
 
-        private Vector2 mMovementVector;
-
-        private readonly Camera mCamera;
-
-        private Vector2 mTargetPosition;
-        private int mRotation;
-        private readonly Texture2D mMilSheet;
-        private readonly Texture2D mGlowTexture;
-
-        private bool mSelected;
-
-        private float mMouseX;
-
-        private float mMouseY;
-
-        private readonly float mScale;
-
-        private Map.Map mMap;
-
-        private Stack<Vector2> mPath;
-
-        private readonly Director mDirector;
-
-        private readonly MilitaryPathfinder mPathfinder;
-
-        private Vector2[] mDebugPath; //TODO this is for debugging
-
+        /// <summary>
+        /// Indicates the position the closest enemy is at.
+        /// </summary>
         private Vector2 mEnemyPosition;
 
+        /// <summary>
+        /// Indicates if the unit is currently shooting.
+        /// </summary>
         private bool mShoot;
 
-        public Vector2 AbsolutePosition { get; set; }
-
-        public Vector2 AbsoluteSize { get; set; }
-
-        public Vector2 RelativePosition { get; set; }
-
-        public Vector2 RelativeSize { get; set; }
-
-        public Vector2 Center { get; private set; }
-
-        public bool Moved { get; private set; }
-
-        public int RevelationRadius { get; private set; }
-
-        public Rectangle Bounds { get; private set; }
-
-        public Rectangle AbsBounds { get; private set; }
-
-        public bool[,] ColliderGrid { get; }
-
-
-        public MilitaryUnit(Vector2 position, Texture2D spriteSheet, Texture2D glowSpriteSheet, Camera camera, ref Director director, ref Map.Map map)
+        
+        public MilitaryUnit(Vector2 position,
+            Camera camera,
+            ref Director director,
+            ref Map.Map map)
+            : base(position, camera, ref director, ref map)
         {
-            Id = IdGenerator.NextiD(); // id for the specific unit.
+            mSpeed = 4;
             Health = 10;
 
-            mScale = 0.4f;
+            AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
 
-            AbsolutePosition = position;
-            AbsoluteSize = new Vector2(DefaultWidth * mScale, DefaultHeight * mScale);
+            RevelationRadius = 400;
 
-            RevelationRadius = 500;
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * mScale / 2, AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
-
-            Moved = false;
-            mIsMoving = false;
-            mCamera = camera;
-
-            mDirector = director;
-
-            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
-            mDirector.GetInputManager.AddMousePositionListener(this);
-
-            mMilSheet = spriteSheet;
-            mGlowTexture = glowSpriteSheet;
-
-            mMap = map;
-
-            mPathfinder = new MilitaryPathfinder();
-        }
-
-
-        /// <summary>
-        /// Rotates unit in order when selected in order to face
-        /// user mouse and eventually target destination.
-        /// </summary>
-        /// <param name="target"></param>
-        private void Rotate(Vector2 target)
-        {
-            // form a triangle from unit location to mouse location
-            // adjust to be at center of sprite
-            var x = target.X - (RelativePosition.X + RelativeSize.X / 2);
-            var y = target.Y - (RelativePosition.Y + RelativeSize.Y / 2);
-            var hypot = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
-
-            // calculate degree between formed triangle
-            double degree;
-            if (Math.Abs(hypot) < 0.01)
-            {
-                degree = 0;
-            }
-            else
-            {
-                degree = Math.Asin(y / hypot) * (180.0 / Math.PI);
-            }
-
-            // calculate rotation with increased degrees going counterclockwise
-            if (x >= 0)
-            {
-                mRotation = (int) Math.Round(270 - degree, MidpointRounding.AwayFromZero);
-            }
-            else
-            {
-                mRotation = (int) Math.Round(90 + degree, MidpointRounding.AwayFromZero);
-            }
-
-            // add 42 degrees since sprite sheet starts at sprite -42deg not 0
-            mRotation = (mRotation + 42) % 360;
-
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * Scale / 2, AbsolutePosition.Y + AbsoluteSize.Y * Scale / 2);
         }
 
         /// <summary>
-        /// Defines the health of the unit, defaults to 10.
+        /// Static method that can be called to create a new military unit
         /// </summary>
-        private int Health { get; set; }
-
-        /// <summary>
-        /// The unique ID of the unit.
-        /// </summary>
-        public int Id { get; }
-
-        /// <summary>
-        /// Used to set and get assignment. Assignment will potentially be implemented as a new type which
-        /// can be used to determine what assignment a unit has.
-        /// </summary>
-        public string Assignment
+        /// <param name="position"></param>
+        /// <param name="director"></param>
+        /// <returns></returns>
+        public static MilitaryUnit CreateMilitaryUnit(Vector2 position, ref Director director)
         {
-            get; set; //TODO
+            var map = director.GetStoryManager.Level.Map;
+            return new MilitaryUnit(position, director.GetStoryManager.Level.Camera, ref director, ref map);
         }
 
-
-        /// <summary>
-        /// Damages the unit by a certain amount.
-        /// </summary>
-        /// <param name="damage"></param>
-        public void MakeDamage(int damage)
+        public override void Draw(SpriteBatch spriteBatch)
         {
-             Health -= damage; // TODO
-        }
+            // makes sure that the textures are loaded
+            if (mMilSheet == null || mGlowTexture == null)
+            {
+                throw new Exception("load the MilSheet and GlowTexture first!");
+            }
 
-        public void Draw(SpriteBatch spriteBatch)
-        {
             // Draw military unit
             spriteBatch.Draw(
-                mMilSheet,
-                AbsolutePosition,
-                new Rectangle(150 * mColumn, 75 * mRow, (int) (AbsoluteSize.X / mScale), (int) (AbsoluteSize.Y / mScale)),
-                mSelected ? Color.DarkGray : Color.Gray,
-                0f,
-                Vector2.Zero,
-                new Vector2(mScale),
-                SpriteEffects.None,
-                LayerConstants.MilitaryUnitLayer
-                );
+                            mMilSheet,
+                            AbsolutePosition,
+                            new Rectangle(150 * mColumn, 75 * mRow, (int)(AbsoluteSize.X / Scale), (int)(AbsoluteSize.Y / Scale)),
+                            mSelected ? Color.DarkGray : Color.Gray,
+                            0f,
+                            Vector2.Zero,
+                            new Vector2(Scale),
+                            SpriteEffects.None,
+                            LayerConstants.MilitaryUnitLayer
+                            );
 
             // Draw the glow under it
             if (mSelected)
@@ -209,9 +108,9 @@ namespace Singularity.Units
                     Color.White,
                     0f,
                     Vector2.Zero,
-                    new Vector2(mScale),
+                    new Vector2(Scale),
                     SpriteEffects.None,
-                    LayerConstants.MilitaryUnitLayer - 0.1f);
+                    LayerConstants.MilitaryUnitLayer - 0.01f);
             }
 
             if (GlobalVariables.DebugState)
@@ -226,17 +125,18 @@ namespace Singularity.Units
                 }
             }
 
-            if (mShoot)
+            if (!mShoot)
             {
-                // draws a laser line a a slight glow around the line, then sets the shoot future off
-                spriteBatch.DrawLine(Center, MapCoordinates(mEnemyPosition), Color.White, 2);
-                spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), MapCoordinates(mEnemyPosition), Color.White * .2f, 6);
-                mShoot = false;
+                return;
             }
+
+            // draws a laser line a a slight glow around the line, then sets the shoot future off
+            spriteBatch.DrawLine(Center, MapCoordinates(mEnemyPosition), Color.White, 2);
+            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), MapCoordinates(mEnemyPosition), Color.White * .2f, 6);
+            mShoot = false;
         }
 
-
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
 
             //make sure to update the relative bounds rectangle enclosing this unit.
@@ -264,12 +164,12 @@ namespace Singularity.Units
             {
                 if (!HasReachedWaypoint())
                 {
-                    MoveToTarget(mPath.Peek());
+                    MoveToTarget(mPath.Peek(), mSpeed);
                 }
                 else
                 {
                     mPath.Pop();
-                    MoveToTarget(mPath.Peek());
+                    MoveToTarget(mPath.Peek(), mSpeed);
                 }
             }
 
@@ -277,8 +177,8 @@ namespace Singularity.Units
             mRow = mRotation / 18;
             mColumn = (mRotation - mRow * 18) / 3;
 
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * mScale / 2, AbsolutePosition.Y + AbsoluteSize.Y * mScale / 2);
-            AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * mScale), (int) (AbsoluteSize.Y * mScale));
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * Scale / 2, AbsolutePosition.Y + AbsoluteSize.Y * Scale / 2);
+            AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * Scale), (int) (AbsoluteSize.Y * Scale));
             Moved = mIsMoving;
 
             //TODO this needs to be taken out once the military manager takes control of shooting
@@ -296,176 +196,7 @@ namespace Singularity.Units
             mShoot = true;
             mEnemyPosition = target;
             Rotate(target);
-
         }
-
-        /// <summary>
-        /// Calculates the direction the unit should be moving and moves it into that direction.
-        /// </summary>
-        /// <param name="target">The target to which to move</param>
-        private void MoveToTarget(Vector2 target)
-        {
-
-            var movementVector = new Vector2(target.X - Center.X, target.Y - Center.Y);
-            movementVector.Normalize();
-            mToAdd += mMovementVector * (float) (mZoomSnapshot *  Speed);
-
-            AbsolutePosition = new Vector2((float) (AbsolutePosition.X + movementVector.X * Speed), (float) (AbsolutePosition.Y + movementVector.Y * Speed));
-        }
-
-        /// <summary>
-        /// Checks whether the target position is reached or not.
-        /// </summary>
-        private bool HasReachedTarget()
-        {
-
-            if (!(Math.Abs(Center.X + mToAdd.X -
-                           mTargetPosition.X) < 8 &&
-                  Math.Abs(Center.Y + mToAdd.Y -
-                           mTargetPosition.Y) < 8))
-            {
-                return false;
-            }
-            mToAdd = Vector2.Zero;
-            return true;
-        }
-
-        private bool HasReachedWaypoint()
-        {
-            if (Math.Abs(Center.X + mToAdd.X - mPath.Peek().X) < 8
-                && Math.Abs(Center.Y + mToAdd.Y - mPath.Peek().Y) < 8)
-            {
-                Debug.WriteLine("Waypoint reached.");
-                Debug.WriteLine("Next waypoint: " +  mPath.Peek());
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
-        {
-            // todo: someone look at the ReSharper warning following here:
-            var giveThrough = true;
-
-            switch (mouseAction)
-            {
-                case EMouseAction.LeftClick:
-                    // check for if the unit is selected, not moving, the click is not within the bounds of the unit, and the click was on the map.
-                    if (mSelected
-                        && !mIsMoving
-                        && !withinBounds
-                        && Map.Map.IsOnTop(new Rectangle((int) (mMouseX - RelativeSize.X / 2f),
-                                (int) (mMouseY - RelativeSize.Y / 2f),
-                                (int) RelativeSize.X,
-                                (int) RelativeSize.Y),
-                            mCamera))
-                    {
-
-                        mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                            Matrix.Invert(mCamera.GetTransform()));
-
-                        if (mMap.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
-                            (int) mTargetPosition.X / MapConstants.GridWidth,
-                            (int) mTargetPosition.Y / MapConstants.GridWidth))
-                        {
-                            mIsMoving = true;
-
-                            var currentPosition = Center;
-                            Debug.WriteLine("Starting path finding at: " + currentPosition.X + ", " + currentPosition.Y);
-                            Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
-
-                            mPath = new Stack<Vector2>();
-                            mPath = mPathfinder.FindPath(currentPosition,
-                                mTargetPosition,
-                                ref mMap);
-
-                            if (GlobalVariables.DebugState)
-                            {
-                                // TODO: DEBUG REGION
-                                mDebugPath = mPath.ToArray();
-                                // TODO: END DEBUG REGION
-                            }
-
-                            mBoundsSnapshot = Bounds;
-                            mZoomSnapshot = mCamera.GetZoom();
-                            giveThrough = true;
-                        }
-
-                    }
-
-                    if (withinBounds) {
-                        mSelected = true;
-                        giveThrough = false;
-                    }
-
-                    break;
-
-                case EMouseAction.RightClick:
-                    mSelected = false;
-                    giveThrough = true;
-                    break;
-            }
-
-            return giveThrough;
-        }
-
-        public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
-        {
-            return true;
-        }
-
-        public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
-        {
-            return true;
-        }
-
-        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
-        {
-            mMouseX = screenX;
-            mMouseY = screenY;
-        }
-
-        /// <summary>
-        /// Used to find the coordinates of the given Vector2 based on the overall map
-        /// instead of just the camera shot, returns Vector2 of absolute position
-        /// </summary>
-        /// <returns></returns>
-        private Vector2 MapCoordinates(Vector2 v)
-        {
-            return new Vector2(Vector2.Transform(new Vector2(v.X, v.Y),
-                Matrix.Invert(mCamera.GetTransform())).X, Vector2.Transform(new Vector2(v.X, v.Y),
-                Matrix.Invert(mCamera.GetTransform())).Y);
-        }
-
-        /// <summary>
-        /// This is called up every time a selection box is created
-        /// if MUnit bounds intersects with the selection box then it become selected
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /// <param name="position"> top left corner of the selection box</param>
-        /// <param name="size"> size of selection box</param>
-        public void BoxSelected(object sender, EventArgs e, Vector2 position, Vector2 size)
-        {
-            // create a rectangle from given parameters
-            Rectangle selBox = new Rectangle((int) position.X, (int) position.Y, (int) size.X, (int) size.Y);
-
-            // check if selection box intersects with MUnit bounds
-            if (selBox.Intersects(AbsBounds))
-            {
-                mSelected = true;
-            }
-        }
-
-        public bool Die()
-        {
-            // mDirector.GetMilitaryManager.Kill(this);
-            // todo: MilitaryManager implement
-
-            return true;
-        }
+        
     }
 }

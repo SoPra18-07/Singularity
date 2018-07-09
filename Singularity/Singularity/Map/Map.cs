@@ -13,21 +13,25 @@ using Singularity.Resources;
 
 namespace Singularity.Map
 {
-    public sealed class Map : IDraw, IKeyListener
+    public sealed class Map : IDraw, IUpdate
     {
         private readonly CollisionMap mCollisionMap;
-        public readonly StructureMap mStructureMap;
+        private readonly StructureMap mStructureMap;
         private readonly ResourceMap mResourceMap;
 
         private readonly int mWidth;
         private readonly int mHeight;
 
-        private readonly Texture2D mBackgroundTexture;
-        private readonly SpriteFont mLibSans12;
+        private readonly Camera mCamera;
 
-        private bool mDebug;
+        private readonly Texture2D mBackgroundTexture;
 
         private readonly FogOfWar mFow;
+
+        private int mXPosMin;
+        private int mXPosMax;
+        private int mYPosMin;
+        private int mYPosMax;
 
 
         /// <summary>
@@ -39,22 +43,23 @@ namespace Singularity.Map
         /// <param name="width">The width of the map in number of tiles</param>
         /// <param name="height">The height of the map in number of tiles</param>
         /// <param name="fow">The FoW of the Map</param>
-        /// <param name="viewport">The viewport of the window</param>
+        /// <param name="camera">The camera of the window</param>
         /// <param name="director">A reference to the Director</param>
         /// <param name="initialResources">The initial resources of this map, if not specified there will not be any on the map</param>
         public Map(Texture2D backgroundTexture,
             int width,
             int height,
             FogOfWar fow,
-            Viewport viewport,
+            Camera camera,
             ref Director director,
             IEnumerable<MapResource> initialResources = null)
         {
             mWidth = width;
             mHeight = height;
 
+            mCamera = camera;
+
             mBackgroundTexture = backgroundTexture;
-            mDebug = GlobalVariables.DebugState;
 
             mFow = fow;
 
@@ -62,18 +67,18 @@ namespace Singularity.Map
             mStructureMap = new StructureMap(fow, ref director);
             mResourceMap = new ResourceMap(initialResources);
 
-            director.GetInputManager.AddKeyListener(this);
             director.GetStoryManager.StructureMap = mStructureMap;
         }
 
         /// <see cref="CollisionMap.UpdateCollider(ICollider)"/>
-        public void UpdateCollider(ICollider collider)
+        internal void UpdateCollider(ICollider collider)
         {
             mCollisionMap.UpdateCollider(collider);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
+
             var x = 0;
             var y = 0;
             //draw the background texture
@@ -112,9 +117,15 @@ namespace Singularity.Map
 
                     var xpos = Math.Abs(value: row - column - (mWidth - 1));
                     var ypos = column + row;
+
+                    if (xpos < mYPosMin || xpos > mYPosMax || ypos < mXPosMin || ypos > mXPosMax)
+                    {
+                        continue;
+                    }
+
                     spriteBatch.Draw(texture: mBackgroundTexture,
                         position: new Vector2(x: xpos * 100, y: ypos * 50),
-                        sourceRectangle: new Rectangle(x: x * 200, y: y * 100, width: 200, height: 100),
+                        sourceRectangle: new Rectangle(x: x * MapConstants.TileWidth, y: y * MapConstants.TileHeight, width: MapConstants.TileWidth, height: MapConstants.TileHeight),
                         color: Color.White,
                         rotation: 0f,
                         origin: Vector2.Zero,
@@ -126,39 +137,12 @@ namespace Singularity.Map
 
 
             //make sure to only draw the grid if a texture is given.
-            if (!mDebug)
+            if (!GlobalVariables.DebugState)
             {
                 return;
 
             }
-            //draw the collision map grid.
-            /*
-            for (int column = 0; column < mWidth; column++)
-            {
-                for (var i = 0; i < 5; i++)
-                {
-                    int xseparator = 20 * i;
-                    int yseparator = 10 * i;
-                    int xpos = column + mWidth;
-                    int ypos = column;
-                    int xpos2 = mWidth - column;
-                    spriteBatch.DrawLine(
-                        point: new Vector2(x: xpos * 100 + xseparator, y: ypos * 50 + yseparator),
-                        length: 2236.0679775f,
-                        angle: -0.463647609f + (float) Math.PI,
-                        color: Color.Blue,
-                        thickness: 1,
-                        layerDepth: LayerConstants.GridDebugLayer);
-                    spriteBatch.DrawLine(
-                        point: new Vector2(x: xpos2 * 100 - xseparator, y: ypos * 50 + yseparator),
-                        length: 2236.0679775f,
-                        angle: 0.463647609f,
-                        color: Color.Yellow,
-                        thickness: 1,
-                        layerDepth: LayerConstants.GridDebugLayer);
-                }
-            }
-            */
+
             var colMap = mCollisionMap.GetCollisionMap();
             var walkabilityGrid = mCollisionMap.GetWalkabilityGrid();
 
@@ -191,6 +175,19 @@ namespace Singularity.Map
 
 
         }
+
+        public void Update(GameTime gametime)
+        {
+
+            // -1 for the left/top limits since we want fluid transitions and not the effect of tiles "lagging behind".
+            mXPosMin = (int)(mCamera.GetRelativePosition().Y / 50) - 1;
+            mXPosMax = (int)(mCamera.GetRelativePosition().Y / 50 + mCamera.GetSize().Y / 50);
+
+            mYPosMin = (int)(mCamera.GetRelativePosition().X / 100) - 1;
+            mYPosMax = (int)(mCamera.GetRelativePosition().X / 100 +
+                                mCamera.GetSize().X / 100);
+        }
+
 
         public FogOfWar GetFogOfWar()
         {
@@ -304,26 +301,5 @@ namespace Singularity.Map
 
         }
 
-        public void KeyTyped(KeyEvent keyEvent)
-        {
-            foreach (var key in keyEvent.CurrentKeys)
-            {
-                if (key == Keys.F4)
-                {
-                    GlobalVariables.DebugState = !GlobalVariables.DebugState;
-                    mDebug = !mDebug;
-                }
-            }
-        }
-
-        public void KeyPressed(KeyEvent keyEvent)
-        {
-
-        }
-
-        public void KeyReleased(KeyEvent keyEvent)
-        {
-
-        }
     }
 }

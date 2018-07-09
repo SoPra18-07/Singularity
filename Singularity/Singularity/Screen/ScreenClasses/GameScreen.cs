@@ -12,6 +12,7 @@ using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Sound;
 using Singularity.Units;
+using Singularity.Utils;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -57,7 +58,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <summary>
         /// The camera object which holds transformation values.
         /// </summary>
-        private Camera mCamera;
+        private readonly Camera mCamera;
 
         private SelectionBox mSelBox;
         private Texture2D mBlankPlat;
@@ -127,6 +128,12 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Update(GameTime gametime)
         {
+
+            foreach (var updateable in mUpdateables)
+            {
+                updateable.Update(gametime);
+            }
+
             foreach (var spatial in mSpatialObjects.Concat(mMap.GetStructureMap().GetPlatformList()))
             {
                 var collidingObject = spatial as ICollider;
@@ -146,24 +153,20 @@ namespace Singularity.Screen.ScreenClasses
             mFow.Update(gametime);
 
             mTransformMatrix = mCamera.GetTransform();
-
-            // TODO: for some reason just adding to GameScreen in constructor does NOT call up Update method
-            //mSelBox.Update(gametime);
         }
 
         public void LoadContent(ContentManager content)
         {
-
             AddObject(mMap);
 
-            AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
+            AddObjects(ResourceHelper.GetRandomlyDistributedResources(50));
 
             mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
             mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
 
             // This is for the creation of the Command Centers from the settlers
             mBlankPlat = content.Load<Texture2D>("PlatformBasic");
-            mCylPlat = content.Load<Texture2D>("Cylinders"); ;
+            mCylPlat = content.Load<Texture2D>("Cylinders");
         }
 
         public bool UpdateLower()
@@ -183,7 +186,7 @@ namespace Singularity.Screen.ScreenClasses
             var road = toAdd as Road;
             var platform = toAdd as PlatformBlank;
             var settler = toAdd as Settler;
-            var milUnit = toAdd as MilitaryUnit;
+            var conUnit = toAdd as ControllableUnit;
 
             if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
@@ -198,6 +201,8 @@ namespace Singularity.Screen.ScreenClasses
 
             if (platform != null)
             {
+                //TODO: Remove this Register if Building is implemented
+                platform.Register();
                 mMap.AddPlatform(platform);
                 return true;
             }
@@ -210,9 +215,9 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             // subscribe every military unit to the selection box
-            if (milUnit != null)
+            if (conUnit != null)
             {
-                //mSelBox.SelectingBox += milUnit.BoxSelected;
+                mSelBox.SelectingBox += conUnit.BoxSelected;
             }
 
             if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
@@ -268,7 +273,7 @@ namespace Singularity.Screen.ScreenClasses
             var road = toRemove as Road;
             var platform = toRemove as PlatformBlank;
             var settler = toRemove as Settler;
-            var milUnit = toRemove as MilitaryUnit;
+            var controllableUnit = toRemove as ControllableUnit;
 
             if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
@@ -292,7 +297,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             // unsubscribe from this military unit when deleted
-            if (milUnit != null)
+            if (controllableUnit != null)
             {
                 //mSelBox.SelectingBox -= milUnit.BoxSelected;
             }
@@ -343,9 +348,11 @@ namespace Singularity.Screen.ScreenClasses
             // TODO eventually the EPlacementType should be instance but currently that
             // TODO requires a road to be place and therefore throws an exception !!!!!
 
-            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, (float)(v.Y-100)), mCylPlat, mBlankPlat, ref mDirector, false);
-            var genUnit = new GeneralUnit(cCenter, ref mDirector);
-            var genUnit2 = new GeneralUnit(cCenter, ref mDirector);
+            var graphid = IdGenerator.NextiD();
+            mDirector.GetDistributionDirector.AddManager(graphid);
+            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, ref mDirector, false);
+            var genUnit = new GeneralUnit(cCenter, ref mDirector, graphid);
+            var genUnit2 = new GeneralUnit(cCenter, ref mDirector, graphid);
 
             // adds the command center to the GameScreen, as well as two general units
             AddObject(cCenter);

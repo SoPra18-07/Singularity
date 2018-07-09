@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Runtime.Remoting.Channels;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Exceptions;
 using Singularity.Graph;
+using Singularity.Libraries;
+using Singularity.Input;
 using Singularity.Manager;
-using Singularity.Map;
 using Singularity.PlatformActions;
 using Singularity.Property;
 using Singularity.Resources;
+using Singularity.Screen;
 using Singularity.Units;
 using Singularity.Utils;
 
@@ -22,12 +23,25 @@ namespace Singularity.Platforms
     /// <inheritdoc cref="INode"/>
     /// <inheritdoc cref="ICollider"/>
     [DataContract]
-    public class PlatformBlank : IRevealing, INode, ICollider
+    public class PlatformBlank : IRevealing, INode, ICollider, IMouseClickListener
     {
 
         private int mGraphIndex;
 
         private float mLayer;
+
+        // true, if this platform has already sent data since activation
+        private bool mDataSent;
+
+        // determines whether the platform has already been added to the inputManager
+        private bool mAddedToInputManager;
+
+        // previous values sent to the UIController - used to only send data if the values have been updated
+        private List<Resource> mPrevResources;
+        private Dictionary<JobType, List<Pair<GeneralUnit, bool>>> mPrevUnitAssignments;
+        private List<IPlatformAction> mPrevPlatformActions;
+        private bool mPreviousIsActiveState;
+        private bool mPreviousIsManuallyDeactivatedState;
 
         /// <summary>
         /// List of inwards facing edges/roads towards the platform.
@@ -49,19 +63,19 @@ namespace Singularity.Platforms
         /// Indicates the platform width
         /// </summary>
         [DataMember]
-        private const int PlatformWidth = 148;
+        protected const int PlatformWidth = 148;
 
         /// <summary>
         /// Indicates the platform height.
         /// </summary>
         [DataMember]
-        private const int PlatformHeight = 172;
+        protected const int PlatformHeight = 172;
 
         /// <summary>
         /// How much health the platform has
         /// </summary>
         [DataMember]
-        private int mHealth;
+        public int Health { get; private set; }
 
         /// <summary>
         /// Indicates if the platform is a "real" platform or a blueprint.
@@ -69,13 +83,19 @@ namespace Singularity.Platforms
         [DataMember]
         protected bool mIsBlueprint;
 
+        [DataMember]
+        protected int mProvidingEnergy;
+
+        [DataMember]
+        protected int mDrainingEnergy;
+
 
         [DataMember]
         protected Dictionary<EResourceType, int> mCost;
         [DataMember]
         protected List<IPlatformAction> mIPlatformActions;
-        private readonly Texture2D mPlatformSpriteSheet;
-        private readonly Texture2D mPlatformBaseTexture;
+        protected readonly Texture2D mPlatformSpriteSheet;
+        protected readonly Texture2D mPlatformBaseTexture;
         [DataMember]
         protected string mSpritename;
         [DataMember]
@@ -85,6 +105,12 @@ namespace Singularity.Platforms
         protected List<Resource> mResources;
         [DataMember]
         protected Dictionary<EResourceType, int> mRequested;
+
+        [DataMember]
+        private bool mIsActive;
+
+        [DataMember]
+        private bool mIsManuallyDeactivated;
 
         public Vector2 Center { get; set; }
 
@@ -98,9 +124,17 @@ namespace Singularity.Platforms
 
         protected Director mDirector;
 
-        // the sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome
-        private int mSheet;
-        private int mSheetPosition;
+        ///<summary>
+        /// The sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome.
+        /// </summary>
+        protected int mSheet;
+
+        /// <summary>
+        /// Where on the spritesheet the platform is located
+        /// </summary>
+        protected int mSheetPosition;
+        // the userinterface controller to send all informations to
+        private readonly UserInterfaceController mUserInterfaceController;
 
 
         [DataMember]
@@ -116,20 +150,14 @@ namespace Singularity.Platforms
         [DataMember]
         private readonly float mCenterOffsetY;
 
-        private Color mColor;
+        protected Color mColor = Color.White;
 
         public bool[,] ColliderGrid { get; internal set; }
-
-        //This is for registering the platform at the DistrManager.
-        [DataMember]
-        public JobType Property { get; set; }
 
         public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36)
         {
 
             Id = IdGenerator.NextiD();
-
-            mColor = Color.White;
 
             mDirector = director;
 
@@ -148,7 +176,7 @@ namespace Singularity.Platforms
             // also sets the AbsoluteSize and collider grids
 
             //default?
-            mHealth = 100;
+            Health = 100;
 
             //I dont think this class has to register in the DistributionManager
             //Add possible Actions in this array
@@ -166,6 +194,10 @@ namespace Singularity.Platforms
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
 
+            mProvidingEnergy = 0;
+            mDrainingEnergy = 0;
+            mIsActive = true;
+
             mResources = new List<Resource>();
 
             mPlatformSpriteSheet = platformSpriteSheet;
@@ -177,6 +209,10 @@ namespace Singularity.Platforms
 
             Moved = false;
             UpdateValues();
+
+            // user interface controller
+            mUserInterfaceController = director.GetUserInterfaceController;
+            Debug.WriteLine("PlatformBlank created");
 
         }
 
@@ -198,13 +234,12 @@ namespace Singularity.Platforms
 
         public void Register()
         {
-            //TODO: make this so we can also register defense platforms
-            if (Property == JobType.Production)
+            if (IsProduction())
             {
-                mDirector.GetDistributionManager.Register(this, false);
-            } else if (Property == JobType.Defense)
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, false);
+            } else if (IsDefense())
             {
-                mDirector.GetDistributionManager.Register(this, true);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, true);
             }
         }
 
@@ -298,29 +333,15 @@ namespace Singularity.Platforms
         /// Get the Resources on the platform.
         /// </summary>
         /// <returns> a List containing the references to the resource-objects</returns>
-        public List<Resource> GetPlatformResources()
+        internal List<Resource> GetPlatformResources()
         {
             return mResources;
         }
 
-
-        /// <summary>
-        /// Get the health points of the platform
-        /// </summary>
-        /// <returns> the health points as integer</returns>
-        public int GetHealth()
+        public void MakeDamage(int damage)
         {
-            return mHealth;
-        }
-
-        /// <summary>
-        /// Heal the platform or inflict damage on it.
-        /// </summary>
-        /// <param name="damage">Positive values for healing, negative for damage</param>
-        public void TakeHealDamage(int damage)
-        {
-            mHealth += damage;
-            if (mHealth <= 0)
+            Health -= damage;
+            if (Health <= 0)
             {
                 if (mType == EPlatformType.Blank)
                 {
@@ -351,7 +372,7 @@ namespace Singularity.Platforms
         public Optional<Resource> GetResource(EResourceType resourcetype)
         {
             // TODO: reservation of Resources (and stuff)? Nah lets not do this
-            var index = mResources.FindIndex(x => x.Type == resourcetype);
+            var index = mResources.FindIndex(x => x.Type == resourcetype); // (FindIndex returns -1 if not found)
             if (index < 0)
             {
                 return Optional<Resource>.Of(null);
@@ -361,6 +382,8 @@ namespace Singularity.Platforms
             mResources.RemoveAt(index);
             return Optional<Resource>.Of(foundresource);
         }
+
+
 
         /// <summary>
         /// Get the resources that are requested and the amount of it.
@@ -382,7 +405,7 @@ namespace Singularity.Platforms
         }
 
         /// <inheritdoc cref="Singularity.Property.IDraw"/>
-        public void Draw(SpriteBatch spritebatch)
+        public virtual void Draw(SpriteBatch spritebatch)
         {
             var transparency = mIsBlueprint ? 0.35f : 1f;
 
@@ -401,30 +424,9 @@ namespace Singularity.Platforms
                         LayerConstants.BasePlatformLayer);
                     break;
                 case 1:
-                    // Cone
-                    // Draw the basic platform first
-                    spritebatch.Draw(mPlatformBaseTexture,
-                        Vector2.Add(AbsolutePosition, new Vector2(-3, 73)),
-                        null,
-                        mColor * transparency,
-                        0f,
-                        Vector2.Zero,
-                        1f,
-                        SpriteEffects.None,
-                        LayerConstants.BasePlatformLayer);
-                    // then draw what's on top of that
-                    spritebatch.Draw(mPlatformSpriteSheet,
-                        AbsolutePosition,
-                        new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 148),
-                        Color.White * transparency,
-                        0f,
-                        Vector2.Zero,
-                        1f,
-                        SpriteEffects.None,
-                        mLayer);
                     break;
                 case 2:
-                    // Cylinder
+                    // Cylinder (Unit Platforms
                     // Draw the basic platform first
                     spritebatch.Draw(mPlatformBaseTexture,
                         Vector2.Add(AbsolutePosition, new Vector2(0, 81)),
@@ -460,7 +462,7 @@ namespace Singularity.Platforms
                     // Dome
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
-                        new Rectangle(148 * (mSheetPosition % 4), 109 * (int) Math.Floor(mSheetPosition / 4d), 148, 109),
+                        new Rectangle(148 * (mSheetPosition % 4), 109 * (mSheetPosition / 4), 148, 109),
                         mColor * transparency,
                         0f,
                         Vector2.Zero,
@@ -479,9 +481,48 @@ namespace Singularity.Platforms
         }
 
         /// <inheritdoc cref="Singularity.Property.IUpdate"/>
-        public void Update(GameTime t)
+        public virtual void Update(GameTime t)
         {
             Uncollide();
+
+            Bounds = new Rectangle((int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
+
+            if (!mAddedToInputManager)
+            {
+                // add this platform to inputManager once
+                mDirector.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+                mAddedToInputManager = true;
+            }
+
+            // set the mDataSent bool to false if there was a change in platform infos since the data was sent last time
+            // or if the platform is not selected, so that if it gets selected it will send the current data to the UIController
+            if (mPrevResources != GetPlatformResources() ||
+                mPrevUnitAssignments != GetAssignedUnits() ||
+                mPrevPlatformActions != GetIPlatformActions() ||
+                mPreviousIsActiveState != IsActive() ||
+                mPreviousIsManuallyDeactivatedState != IsManuallyDeactivated() ||
+                !IsSelected)
+            {
+                mDataSent = false;
+            }
+
+            // manage updating of values in the UI
+            if (IsSelected && !mDataSent)
+                // the platform is selected + the current data has yet to be sent then
+            {
+                // update previous values
+                mPrevResources = GetPlatformResources();
+                mPrevUnitAssignments = GetAssignedUnits();
+                mPrevPlatformActions = GetIPlatformActions();
+                mPreviousIsManuallyDeactivatedState = IsManuallyDeactivated();
+                mPreviousIsActiveState = IsActive();
+
+                // send data to UIController
+                mUserInterfaceController.SetDataOfSelectedPlatform(Id, mIsActive, mIsManuallyDeactivated, mType, GetPlatformResources(), GetAssignedUnits(), GetIPlatformActions());
+
+                // set the bool for sent-data to true, since the data has just been sent
+                mDataSent = true;
+            }
         }
 
         private void Uncollide()
@@ -510,14 +551,17 @@ namespace Singularity.Platforms
 
         }
 
-        public void RemoveEdge(IEdge edge, EEdgeFacing facing)
+        public void RemoveEdge(IEdge edge)
         {
-            if (facing == EEdgeFacing.Inwards)
+            if (mInwardsEdges.Contains(edge))
             {
                 mInwardsEdges.Remove(edge);
-                return;
             }
-            mOutwardsEdges.Remove(edge);
+
+            if (mOutwardsEdges.Contains(edge))
+            {
+                mOutwardsEdges.Remove(edge);
+            }
 
         }
 
@@ -565,7 +609,7 @@ namespace Singularity.Platforms
 
 
         /// <summary>
-        /// Sets all the parameters to draw a platfrom properly and calculates the absolute size of a platform.
+        /// Sets all the parameters to draw a platform properly and calculates the absolute size of a platform.
         /// </summary>
         /// <returns>Absolute Size of a platform</returns>
         protected void SetPlatfromParameters()
@@ -692,7 +736,7 @@ namespace Singularity.Platforms
                         { false, false, false, false, false, false, false, false }
                     };
                     break;
-                case (1):
+                case 1:
                     // cones
                     AbsoluteSize = new Vector2(148, 165);
                     ColliderGrid = new [,]
@@ -709,7 +753,7 @@ namespace Singularity.Platforms
                         { false, false, false, false, false, false, false, false }
                     };
                     break;
-                case (2):
+                case 2:
                     // cylinders
                     AbsoluteSize = new Vector2(148, 170);
                     ColliderGrid = new [,]
@@ -726,7 +770,7 @@ namespace Singularity.Platforms
                         { false, false, false, false, false, false, false, false }
                     };
                     break;
-                case (3):
+                case 3:
                     // domes
                     AbsoluteSize = new Vector2(148, 126);
                     ColliderGrid = new [,]
@@ -758,7 +802,7 @@ namespace Singularity.Platforms
         public void DieBlank()
         {
 
-            mDirector.GetDistributionManager.Kill(this);
+            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
 
 
             mColor = Color.White;
@@ -767,7 +811,7 @@ namespace Singularity.Platforms
             SetPlatfromParameters();
 
             //default?
-            mHealth = 100;
+            Health = 100;
 
             mIPlatformActions.RemoveAll(a => a.Die());
 
@@ -809,7 +853,7 @@ namespace Singularity.Platforms
 
             mIPlatformActions.ForEach(a => a.Platform = null);
             mIPlatformActions.RemoveAll(a => a.Die());
-            mDirector.GetDistributionManager.Kill(this);
+            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
             mDirector.GetStoryManager.StructureMap.RemovePlatform(this);
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             return true;
@@ -847,6 +891,134 @@ namespace Singularity.Platforms
         public int GetGraphIndex()
         {
             return mGraphIndex;
+        }
+
+        public void Activate(bool manually)
+        {
+            //TODO: Tell the PlatformAction to request everything it needs again.
+            if (manually)
+            {
+                mIsManuallyDeactivated = false;
+            }
+            mIsActive = true;
+            ResetColor();
+            //Only reregister the platforms if they are defense or production platforms
+            if (IsDefense())
+            {
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, true);
+            }else if (IsProduction())
+            {
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, false);
+            }
+        }
+
+        /// <summary>
+        /// A function made to determine whether this platform is a defending platform.
+        /// </summary>
+        /// <returns>True if thats the case, false otherwise</returns>
+        public bool IsDefense()
+        {
+            if (mType == EPlatformType.Kinetic
+                || mType == EPlatformType.Laser)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// A function made to determine whether this paltform is a producing platform.
+        /// </summary>
+        /// <returns>True if thats the casem, false otherwise</returns>
+        public bool IsProduction()
+        {
+            if (mType == EPlatformType.Well
+                || mType == EPlatformType.Quarry
+                || mType == EPlatformType.Mine
+                || mType == EPlatformType.Factory)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public void Deactivate(bool manually)
+        {
+            if (manually)
+            {
+                mIsManuallyDeactivated = true;
+            }
+
+            mIsActive = false;
+            // TODO: remove this or change it to something more appropriately, this is used by @Ativelox for 
+            // TODO: debugging purposes to easily see which platforms are currently deactivated
+            mColor = Color.Green;
+            //Only unregister if this platform is a defense or production platform
+            if (IsDefense())
+            {
+                var selflist = new List<PlatformBlank>();
+                selflist.Add(this);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, true, true);
+            }
+            else if (IsProduction())
+            {
+                var selflist = new List<PlatformBlank>();
+                selflist.Add(this);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, false, true);
+            }
+        }
+
+        public bool IsManuallyDeactivated()
+        {
+            return mIsManuallyDeactivated;
+        }
+
+        public int GetProvidingEnergy()
+        {
+            return mProvidingEnergy;
+        }
+
+        public int GetDrainingEnergy()
+        {
+            return mDrainingEnergy;
+        }
+
+        public bool IsActive()
+        {
+            return mIsActive;
+        }
+
+        /// <summary>
+        /// true, if the platform is sleected in the UI
+        /// </summary>
+        public bool IsSelected { get; set; }
+
+        public EScreen Screen { get; } = EScreen.GameScreen;
+        public Rectangle Bounds { get; private set; }
+        public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
+        {
+            if (!withinBounds)
+            {
+                return true;
+            }
+
+            if (mouseAction == EMouseAction.LeftClick)
+            {
+                mUserInterfaceController.ActivateMe(this);
+            }
+            return false;
+        }
+
+        public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
+        {
+            return !withinBounds;
+        }
+
+        public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
+        {
+            return !withinBounds;
         }
     }
 }

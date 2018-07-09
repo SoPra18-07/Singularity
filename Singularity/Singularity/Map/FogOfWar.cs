@@ -33,11 +33,6 @@ namespace Singularity.Map
     {
 
         /// <summary>
-        /// This array holds bit values of whether the position (tile) was visited or not. Where 1 = visited and 0 = unvisited.
-        /// </summary>
-        private bool[,] mToDraw;
-
-        /// <summary>
         /// A list of all the objects which are able to reveal the fog of war.
         /// </summary>
         private readonly LinkedList<IRevealing> mRevealingObjects;
@@ -177,6 +172,15 @@ namespace Singularity.Map
         public DepthStencilState GetApplyMaskStencilState()
         {
             return mApplyMaskStencilState;
+        }
+
+        /// <summary>
+        /// Gets all the revealing objects currently in the game.
+        /// </summary>
+        /// <returns>A list of all the revealing objects in the game</returns>
+        public LinkedList<IRevealing> GetRevealingObjects()
+        {
+            return mRevealingObjects;
         }
     }
 }

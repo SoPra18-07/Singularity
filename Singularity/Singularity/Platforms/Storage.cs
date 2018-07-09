@@ -3,21 +3,20 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.PlatformActions;
 using Singularity.Manager;
 using Singularity.Resources;
 
 namespace Singularity.Platforms
 {
-    [DataContract()]
+    [DataContract]
     class Storage: PlatformBlank
     {
-        [DataMember()]
+        [DataMember]
         private const int PlatformWidth = 144;
-        [DataMember()]
+        [DataMember]
         private const int PlatformHeight = 127;
 
-        public Storage(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ref Director dir): base(position, spritesheet, basesprite, ref dir, EPlatformType.Storage, -50)
+        public Storage(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ref Director director): base(position, spritesheet, basesprite, ref director, EPlatformType.Storage, -50)
         {
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.

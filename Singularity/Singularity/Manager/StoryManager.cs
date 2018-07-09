@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -195,7 +194,7 @@ namespace Singularity.Manager
         /// <returns>The ingame time as TimeSpan</returns>
         public TimeSpan GetIngameTime()
         {
-            return Time;
+            return new TimeSpan(Time.Hours, Time.Minutes, Time.Seconds);
         }
 
         /// <summary>

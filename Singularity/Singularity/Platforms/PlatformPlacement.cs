@@ -61,25 +61,24 @@ namespace Singularity.Platforms
         /// </summary>
         private float mMouseY;
 
+        private bool mCanceled;
+
         private readonly Camera mCamera;
-
-        private readonly bool mSettler;
-
-        private readonly Vector2 mSetPosition;
 
         private readonly Director mDirector;
 
-        public PlatformPlacement(EPlatformType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null, bool settler = false, Vector2 position = default(Vector2))
+        private bool mUnregister;
+
+        public PlatformPlacement(EPlatformType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null, Vector2 position = default(Vector2))
         {
+            mUnregister = false;
+
             mCamera = camera;
             Screen = screen;
             mDirector = director;
 
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
-
-            mSettler = settler;
-            mSetPosition = position;
 
             // for further information as to why which states refer to the documentation for mCurrentState
             switch (placementType)
@@ -105,9 +104,8 @@ namespace Singularity.Platforms
                     break;
             }
 
-            mPlatform = PlatformFactory.Get(platformType, ref director, x, y, resourceMap, false);
+            mPlatform = PlatformFactory.Get(platformType, ref director, x, y, resourceMap);
             mPlatform.SetLayer(LayerConstants.PlatformAboveFowLayer);
-
             UpdateBounds();
 
         }
@@ -135,17 +133,16 @@ namespace Singularity.Platforms
             switch (mCurrentState.GetState())
             {
                 case 1:
+                    mPlatform.ResetColor();
                     // for this, we want the platform to follow the mouse, and also be centered on the sprite.
-                    if (!mSettler)
+                    mPlatform.AbsolutePosition = new Vector2(mMouseX - mPlatform.AbsoluteSize.X / 2f,
+                        mMouseY - mPlatform.AbsoluteSize.Y / 2f);
+
+                    if (mHoveringPlatform == null)
                     {
-                        mPlatform.AbsolutePosition = new Vector2(mMouseX - mPlatform.AbsoluteSize.X / 2f,
-                            mMouseY - mPlatform.AbsoluteSize.Y / 2f);
+                        break;
                     }
-                    else
-                    {
-                        mPlatform.AbsolutePosition = new Vector2(mSetPosition.X - mPlatform.AbsoluteSize.X / 2f,
-                            mSetPosition.Y - mPlatform.AbsoluteSize.Y / 2f);
-                    }
+                    mPlatform.SetColor(Color.Red);
 
                     break;
 
@@ -165,7 +162,7 @@ namespace Singularity.Platforms
 
                     // we only color the platform red if the distance to the platform hovered is too great
                     if (Vector2.Distance(mHoveringPlatform.Center, mPlatform.Center) >
-                        (mPlatform.RevelationRadius + mHoveringPlatform.RevelationRadius))
+                        mPlatform.RevelationRadius + mHoveringPlatform.RevelationRadius)
                     {
                         mPlatform.SetColor(Color.Red);
                     }
@@ -177,11 +174,18 @@ namespace Singularity.Platforms
                     mPlatform.SetLayer(LayerConstants.PlatformLayer);
                     mConnectionRoad.Blueprint = false;
                     mIsFinished = true;
+                    mUnregister = true;
                     break;
 
                 default:
                     break;
             }
+
+            if (mUnregister)
+            {
+                UnregisterFromInputManager();
+            }
+
             // don't forget to always update the relative position since the camera might have moved.
             UpdateBounds();
         }
@@ -199,7 +203,7 @@ namespace Singularity.Platforms
                         mPlatform.UpdateValues();
 
                         //first check if the platform is even on the map, if not we don't want to progress, since it isn't a valid position
-                        if (!Map.Map.IsOnTop(mPlatform.AbsBounds))
+                        if (!Map.Map.IsOnTop(mPlatform.AbsBounds) || mHoveringPlatform != null)
                         {
                             break;
                         }
@@ -226,7 +230,7 @@ namespace Singularity.Platforms
 
                         // this limits two platforms to only be connectable by a road if the road isn't in the fog of war this was requested by felix
                         if (Vector2.Distance(mHoveringPlatform.Center, mPlatform.Center) <=
-                                (mPlatform.RevelationRadius + mHoveringPlatform.RevelationRadius))
+                                mPlatform.RevelationRadius + mHoveringPlatform.RevelationRadius)
                         {
                             mCurrentState.NextState();
                         }
@@ -244,12 +248,15 @@ namespace Singularity.Platforms
 
             if (mouseAction == EMouseAction.RightClick)
             {
-                /* The guess was that this is sufficient to stop placing Platforms. Turns out it isn't, additionally there'll be a nullPointer happening for a Road somewhere.
                 if (mCurrentState.GetState() == 1)
                 {
+                    mCanceled = true;
                     mIsFinished = true;
+                    giveThrough = false;
+                    mUnregister = true;
+
+                    return giveThrough;
                 }
-                */
 
                 // we only need to do something with rightclick if were in the 2nd state, since then we revert.
                 if (mCurrentState.GetState() != 2)
@@ -319,6 +326,17 @@ namespace Singularity.Platforms
         public Road GetRoad()
         {
             return mConnectionRoad;
+        }
+
+        public bool IsCanceled()
+        {
+            return mCanceled;
+        }
+
+        private void UnregisterFromInputManager()
+        {
+            mDirector.GetInputManager.RemoveMouseClickListener(this);
+            mDirector.GetInputManager.RemoveMousePositionListener(this);
         }
     }
 }

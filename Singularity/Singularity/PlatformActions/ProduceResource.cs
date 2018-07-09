@@ -8,7 +8,7 @@ using Singularity.Units;
 
 namespace Singularity.PlatformActions
 {
-    public class ProduceWellResource : APlatformResourceAction
+    public sealed class ProduceWellResource : APlatformResourceAction
     {
         // The ResourceMap is needed for actually 'producing' the resources.
         private readonly ResourceMap mResourceMap;
@@ -30,7 +30,7 @@ namespace Singularity.PlatformActions
         }
     }
 
-    public class ProduceQuarryResource : APlatformResourceAction
+    public sealed class ProduceQuarryResource : APlatformResourceAction
     {
         // The ResourceMap is needed for actually 'producing' the resources.
         private ResourceMap mResourceMap;
@@ -52,7 +52,7 @@ namespace Singularity.PlatformActions
         }
     }
 
-    public class ProduceMineResource : APlatformResourceAction
+    public sealed class ProduceMineResource : APlatformResourceAction
     {
         // The ResourceMap is needed for actually 'producing' the resources.
         private ResourceMap mResourceMap;
@@ -75,7 +75,7 @@ namespace Singularity.PlatformActions
     }
 
 
-    public class BuildBluePrint : AMakeUnit
+    public sealed class BuildBluePrint : AMakeUnit
     {
         private Dictionary<EResourceType, int> mMRequiredResources;
 
@@ -87,6 +87,11 @@ namespace Singularity.PlatformActions
         }
 
         public override List<JobType> UnitsRequired { get; } = new List<JobType> {JobType.Construction};
+
+        public override void CreateUnit()
+        {
+            throw new NotImplementedException();
+        }
 
         public override void Execute()
         {
@@ -100,6 +105,7 @@ namespace Singularity.PlatformActions
         }
     }
 
+
     public abstract class APlatformResourceAction : APlatformAction
     {
         protected APlatformResourceAction(PlatformBlank platform, ref Director director) : base(platform, ref director)
@@ -111,12 +117,12 @@ namespace Singularity.PlatformActions
             switch (State)
             {
                 case PlatformActionState.Active:
-                    mDirector.GetDistributionManager.PausePlatformAction(this);
+                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this);
                     State = PlatformActionState.Available;
                     break;
                 case PlatformActionState.Available:
-                    //TODO: You dont request Units anymore. Are there other things to be changed too then?
-                    //mDirector.GetDistributionManager.RequestUnits(mPlatform, JobType.Production, this);
+                    // TODO: You dont request Units anymore. Are there other things to be changed too then?
+                    // mDirector.GetDistributionManager.RequestUnits(mPlatform, JobType.Production, this);
                     State = PlatformActionState.Active;
                     break;
                 default:

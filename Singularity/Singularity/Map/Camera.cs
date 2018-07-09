@@ -65,7 +65,7 @@ namespace Singularity.Map
         /// Creates a new Camera object which provides a transform matrix to adjust
         /// objects to the camera view.
         /// </summary>
-        /// <param name="viewport">The viewport of the window</param>
+        /// <param name="graphics">The viewport of the window</param>
         /// <param name="director">The director</param>
         /// <param name="x">The initial x position of the camera</param>
         /// <param name="y">the initial y position of the camera</param>
@@ -113,7 +113,6 @@ namespace Singularity.Map
 
         public void Update(GameTime gametime)
         {
-
             //finally update the matrix to all the fitting values.
             UpdateTransformMatrix();
         }
@@ -338,6 +337,24 @@ namespace Singularity.Map
         {
             mMouseX = screenX;
             mMouseY = screenY;
+        }
+
+        public Vector2 GetRelativePosition()
+        {
+            return Vector2.Transform(Vector2.Zero, Matrix.Invert(mTransform));
+        }
+
+        public void SetPosition(Vector2 position)
+        {
+            mX = position.X;
+            mY = position.Y;
+
+            ValidatePosition();
+        }
+
+        public Vector2 GetSize()
+        {
+            return new Vector2(mGraphics.Viewport.Width, mGraphics.Viewport.Height) / mZoom;
         }
     }
 }
