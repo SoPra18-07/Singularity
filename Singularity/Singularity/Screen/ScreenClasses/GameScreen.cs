@@ -80,8 +80,8 @@ namespace Singularity.Screen.ScreenClasses
 
             mDirector = director;
 
-            //mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
-            //AddObject(mSelBox);
+            mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
+            AddObject(mSelBox);
 
         }
 

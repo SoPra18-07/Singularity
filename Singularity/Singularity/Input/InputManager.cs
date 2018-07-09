@@ -99,8 +99,8 @@ namespace Singularity.Input
 
             mMouseClickListener[iMouseClickListener.Screen].Add(iMouseClickListener);
 
-            mLeftClickType.Add(iMouseClickListener, leftClickType);
-            mRightClickType.Add(iMouseClickListener, rightClickType);
+            //mLeftClickType.Add(iMouseClickListener, leftClickType);
+            //mRightClickType.Add(iMouseClickListener, rightClickType);
         }
 
         public bool RemoveMouseClickListener(IMouseClickListener iMouseClickListener)
