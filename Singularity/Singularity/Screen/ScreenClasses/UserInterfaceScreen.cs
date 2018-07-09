@@ -438,7 +438,7 @@ namespace Singularity.Screen.ScreenClasses
             // auto-deactivaed textfield
             mSelectedPlatformIsAutoDeactivatedText = new TextField("FORCE DEACTIVATED", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12, Color.Red);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformIsAutoDeactivatedText);
-            mSelectedPlatformIsAutoDeactivatedText.ActiveInWindow = false;
+            mSelectedPlatformIsAutoDeactivatedText.InactiveInSelectedPlatformWindow = true;
 
             // resource-section-title
             //mSelectedPlatformResourcesButton = new TextField("Resources", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, 0), mLibSans12, Color.White);
@@ -1154,11 +1154,11 @@ namespace Singularity.Screen.ScreenClasses
 
             if (!isActive && !isManuallyDeactivated)
             {
-                mSelectedPlatformIsAutoDeactivatedText.ActiveInWindow = true;
+                mSelectedPlatformIsAutoDeactivatedText.InactiveInSelectedPlatformWindow = false;
             }
             else
             {
-                mSelectedPlatformIsAutoDeactivatedText.ActiveInWindow = false;
+                mSelectedPlatformIsAutoDeactivatedText.InactiveInSelectedPlatformWindow = true;
             }
 
             #endregion
