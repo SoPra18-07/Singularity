@@ -1,4 +1,5 @@
 ﻿using System;
+using System;
 using System.Globalization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -442,7 +443,13 @@ namespace Singularity.Screen
         // CAREFUL this does NOT update with changes to PAGES
         public int MaxIncrement { get; set; }
 
-        public int CurrentPage() {return mCurrentPage;}
+        public int GetCurrentPage() {return mCurrentPage;}
+
+        public void SetCurrentPage(int value)
+        {
+            mCurrentPage = value;
+            mCurrentX = mCurrentPage * mPageSize + mMin;
+        }
 
         public EScreen Screen { get;}
 
