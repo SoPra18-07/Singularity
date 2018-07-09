@@ -40,14 +40,12 @@ namespace Singularity.Levels
             
             GameScreen.AddObject(platform1);
 
-            // this is done via the factory to test, so I can instantly see if something is some time off.
             var platform2 = PlatformFactory.Get(EPlatformType.Well, ref mDirector, 2800, 3000, Map.GetResourceMap());
             GameScreen.AddObject(platform2);
 
             var road1 = new Road(platform1, platform2, false);
             GameScreen.AddObject(road1);
 
-            //var platform2 = new Well(new Vector2(800, 1000), platformDomeTexture, platformBlankTexture, mMap.GetResourceMap(), ref mDirector);
             var platform3 = PlatformFactory.Get(EPlatformType.Quarry, ref mDirector, 3200, 3200, Map.GetResourceMap());
 
             
@@ -82,7 +80,7 @@ namespace Singularity.Levels
             GameScreen.AddObject(rock1);
             GameScreen.AddObject(rock2);
 
-           // GenUnits
+            // GenUnits
             var genUnit = new List<GeneralUnit>(5);
             for (var i = 0; i < 5; i++)
             {

@@ -221,7 +221,7 @@ namespace Singularity.Map
 
         public void KeyTyped(KeyEvent keyEvent)
         {
-
+            // KeyTyped is unused by the camera.
         }
 
         public void KeyPressed(KeyEvent keyEvent)
@@ -293,7 +293,7 @@ namespace Singularity.Map
 
         public void KeyReleased(KeyEvent keyEvent)
         {
-
+            // KeyReleased is unused by the camera.
         }
 
         public bool MouseWheelValueChanged(EMouseAction mouseAction)

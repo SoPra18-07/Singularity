@@ -68,7 +68,6 @@ namespace Singularity.Levels
             var platformDomeTexture = content.Load<Texture2D>("Dome");
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
 
-            //TODO: have a cone texture
             PlatformFactory.Init(platformConeTexture, platformCylTexture, platformDomeTexture, platformBlankTexture);
 
             //Map related stuff
