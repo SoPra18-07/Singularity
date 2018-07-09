@@ -55,8 +55,8 @@ namespace Singularity
         {
             IsMouseVisible = true;
             mGraphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
-            mGraphics.PreferredBackBufferWidth = 1080;
-            mGraphics.PreferredBackBufferHeight = 720;
+            mGraphics.PreferredBackBufferWidth = 1920; // 1080
+            mGraphics.PreferredBackBufferHeight = 1080; // 720
             mGraphics.IsFullScreen = false;
             mGraphics.ApplyChanges();
 

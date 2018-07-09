@@ -84,8 +84,8 @@ namespace Singularity.Platforms
                     return new Mine(position, sDomeSheet, sBlankSheet, resourceMap, ref director);
 
                 case EPlatformType.Packaging:
-                    director.GetEventLog.AddEvent(ELogEventType.Debugging, "Packacking facilities have not yet been implemented. HERE, TAKE A MINE", new Vector2(400, 400));
-                    return new Mine(position, sDomeSheet, sBlankSheet, resourceMap, ref director, autoRegister);
+                    director.GetEventLog.AddEvent(ELogEventType.Debugging, "Packacking facilities have not yet been implemented. \n HERE, HAVE A MINE INSTEAD", new Vector2(400, 400));
+                    return new Mine(position, sDomeSheet, sBlankSheet, resourceMap, ref director);
 
                 case EPlatformType.Storage:
                     return new Storage(position, sDomeSheet, sBlankSheet, ref director);
