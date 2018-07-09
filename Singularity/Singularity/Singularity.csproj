@@ -65,6 +65,7 @@
     <Compile Include="Manager\DistributionDirector.cs" />
     <Compile Include="Manager\DistributionManager.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />
+    <Compile Include="Nature\Puddle.cs" />
     <Compile Include="Screen\BarIWindowItem.cs" />
     <Compile Include="Screen\PlatformActionIWindowItem.cs" />
     <Compile Include="PlatformActions\ConsumeResource.cs" />
