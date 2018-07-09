@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Environement;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platforms;
@@ -63,6 +64,8 @@ namespace Singularity.Levels
             var road5 = new Road(platform4, platform3, false);
             GameScreen.AddObject(road5);
 
+            GameScreen.AddObject(new Rock(new Vector2(1500, 1000)));
+            GameScreen.AddObject(new Rock(new Vector2(1600, 1000)));
 
             //GenUnits
             var genUnit = new List<GeneralUnit>(5);
@@ -77,6 +80,7 @@ namespace Singularity.Levels
 
             //SetUnit
             var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, mUi);
+            
             
 
             // Resources

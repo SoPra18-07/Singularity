@@ -60,6 +60,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Environement\Rock.cs" />
     <Compile Include="Levels\BasicLevel.cs" />
     <Compile Include="Levels\ILevel.cs" />
     <Compile Include="Manager\DistributionManager.cs" />
