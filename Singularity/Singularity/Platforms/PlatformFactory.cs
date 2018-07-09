@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Screen;
 
 namespace Singularity.Platforms
 {
@@ -83,7 +84,8 @@ namespace Singularity.Platforms
                     return new Mine(position, sDomeSheet, sBlankSheet, resourceMap, ref director, autoRegister);
 
                 case EPlatformType.Packaging:
-                    throw new NotImplementedException("Packaging facilities have not yet been implemented");
+                    director.GetEventLog.AddEvent(ELogEventType.Debugging, "Packacking facilities have not yet been implemented. HERE, TAKE A MINE", new Vector2(400, 400));
+                    return new Mine(position, sDomeSheet, sBlankSheet, resourceMap, ref director, autoRegister);
 
                 case EPlatformType.Storage:
                     return new Storage(position, sDomeSheet, sBlankSheet, ref director);

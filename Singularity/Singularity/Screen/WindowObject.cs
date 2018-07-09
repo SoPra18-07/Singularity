@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
 using Singularity.Libraries;
+using Singularity.Manager;
 using Singularity.Property;
 
 namespace Singularity.Screen
@@ -97,7 +98,7 @@ namespace Singularity.Screen
         /// <param name="minimizable">window minimizable</param>
         /// <param name="spriteFont">title font</param>
         /// <param name="inputManager">standard inputManager</param>
-        /// <param name="graphics">standard graphicManager</param>
+        /// <param name="director">basic director</param>
         public WindowObject(
             string windowName,
             Vector2 position,
@@ -105,7 +106,7 @@ namespace Singularity.Screen
             bool minimizable,
             SpriteFont spriteFont,
             InputManager inputManager,
-            GraphicsDeviceManager graphics)
+            Director director)
         {
             // use parameter-variables
             WindowName = windowName;
@@ -119,8 +120,8 @@ namespace Singularity.Screen
             mSpriteFont = spriteFont;
 
             // screen size - needed for input management
-            mCurrentScreenWidth = graphics.PreferredBackBufferWidth;
-            mCurrentScreenHeight = graphics.PreferredBackBufferHeight;
+            mCurrentScreenWidth = director.GetGraphicsDeviceManager.PreferredBackBufferWidth;
+            mCurrentScreenHeight = director.GetGraphicsDeviceManager.PreferredBackBufferHeight;
 
             Initialization();
 
@@ -145,7 +146,7 @@ namespace Singularity.Screen
         /// <param name="minimizable">window minimizable</param>
         /// <param name="spriteFont">title font</param>
         /// <param name="inputManager">standard inputManager</param>
-        /// <param name="graphics">standard graphicManager</param>
+        /// <param name="director">basic director</param>
         public WindowObject(
             string windowName,
             Vector2 position,
@@ -157,7 +158,7 @@ namespace Singularity.Screen
             bool minimizable,
             SpriteFont spriteFont,
             InputManager inputManager,
-            GraphicsDeviceManager graphics)
+            Director director)
         {
             // set parameter-variables
             WindowName = windowName;
@@ -171,8 +172,8 @@ namespace Singularity.Screen
             mSpriteFont = spriteFont;
 
             // screen size - needed for input management
-            mCurrentScreenWidth = graphics.PreferredBackBufferWidth;
-            mCurrentScreenHeight = graphics.PreferredBackBufferHeight;
+            mCurrentScreenWidth = director.GetGraphicsDeviceManager.PreferredBackBufferWidth;
+            mCurrentScreenHeight = director.GetGraphicsDeviceManager.PreferredBackBufferHeight;
 
             Initialization();
 
@@ -197,7 +198,7 @@ namespace Singularity.Screen
         /// <param name="minimizable">window minimizable</param>
         /// <param name="spriteFont">title font</param>
         /// <param name="inputManager">standard inputManager</param>
-        /// <param name="graphics">standard graphicManager</param>
+        /// <param name="director">basic director</param>
         public WindowObject(
             string windowName,
             Vector2 position,
@@ -208,7 +209,7 @@ namespace Singularity.Screen
             bool minimizable,
             SpriteFont spriteFont,
             InputManager inputManager,
-            GraphicsDeviceManager graphics)
+            Director director)
         {
             // set parameter-variables
             WindowName = windowName;
@@ -222,8 +223,8 @@ namespace Singularity.Screen
             mSpriteFont = spriteFont;
 
             // screen size - needed for input management
-            mCurrentScreenWidth = graphics.PreferredBackBufferWidth;
-            mCurrentScreenHeight = graphics.PreferredBackBufferHeight;
+            mCurrentScreenWidth = director.GetGraphicsDeviceManager.PreferredBackBufferWidth;
+            mCurrentScreenHeight = director.GetGraphicsDeviceManager.PreferredBackBufferHeight;
 
             Initialization();
 
