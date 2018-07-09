@@ -14,6 +14,7 @@ using Singularity.PlatformActions;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Screen;
+using Singularity.Sound;
 using Singularity.Units;
 using Singularity.Utils;
 
@@ -349,6 +350,8 @@ namespace Singularity.Platforms
                 }
                 else
                 {
+                    // makes destruction sound
+                    mDirector.GetSoundManager.PlaySound("DestroyPlat", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
                     DieBlank();
                 }
             }

@@ -5,6 +5,7 @@ using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
 using Singularity.Screen;
+using Singularity.Sound;
 using Singularity.Utils;
 
 namespace Singularity.Platforms
@@ -149,7 +150,7 @@ namespace Singularity.Platforms
                 case 2:
                     // now we want a road to follow our mouse
                     mConnectionRoad.Destination = new Vector2(mMouseX, mMouseY);
-
+                    mDirector.GetSoundManager.PlaySound("PlatformCreate", mPlatform.Center.X, mPlatform.Center.Y, 1f, 1f, true, false, SoundClass.Effect);
                     // we prematurely reset the color of the platform, so we don't have to worry about it being red
                     mPlatform.ResetColor();
                     if (mHoveringPlatform == null)
