@@ -345,8 +345,8 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             // update the idle units amount
-            //TODO: Remove Hardcoded value when integrating Graphswitch.
-            mIdleUnitsTextAndAmount.Amount = mUserInterfaceController.GetIdleUnits(0);
+            //TODO: The hardcoded value won't work here, since it is not guaranteed that at index 0 there is always a graph.
+            // mIdleUnitsTextAndAmount.Amount = mUserInterfaceController.GetIdleUnits(0);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -1301,7 +1301,7 @@ namespace Singularity.Screen.ScreenClasses
                         mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
                     }
                 }
-                else if (action is MakeStrongMilitrayUnit)
+                else if (action is MakeHeavyMilitaryUnit)
                 {
                     mMakeStrongMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 

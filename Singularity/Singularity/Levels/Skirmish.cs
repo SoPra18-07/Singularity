@@ -33,20 +33,19 @@ namespace Singularity.Levels
 
         public override void LoadContent(ContentManager content)
         {
+            var map = Map;
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
             var platform1 = PlatformFactory.Get(EPlatformType.Blank, ref mDirector, 3000, 3000, Map.GetResourceMap());
             
             GameScreen.AddObject(platform1);
 
-            // this is done via the factory to test, so I can instantly see if something is some time off.
             var platform2 = PlatformFactory.Get(EPlatformType.Well, ref mDirector, 2800, 3000, Map.GetResourceMap());
             GameScreen.AddObject(platform2);
 
             var road1 = new Road(platform1, platform2, false);
             GameScreen.AddObject(road1);
 
-            //var platform2 = new Well(new Vector2(800, 1000), platformDomeTexture, platformBlankTexture, mMap.GetResourceMap(), ref mDirector);
             var platform3 = PlatformFactory.Get(EPlatformType.Quarry, ref mDirector, 3200, 3200, Map.GetResourceMap());
 
             
@@ -70,29 +69,25 @@ namespace Singularity.Levels
             var road5 = new Road(platform4, platform3, false);
             GameScreen.AddObject(road5);
 
+            // Enemy Unit
+            var enemyUnit = new Target(new Vector2(3000, 2950), Camera, ref mDirector, ref map);
+            var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
+
+            var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, mUi);
+
             var rock1 = new Rock(new Vector2(3500, 2800));
             var rock2 = new Rock(new Vector2(2800, 2000));
             GameScreen.AddObject(rock1);
             GameScreen.AddObject(rock2);
 
-
-
-            //GenUnits
+            // GenUnits
             var genUnit = new List<GeneralUnit>(5);
             for (var i = 0; i < 5; i++)
             {
                 genUnit.Add(new GeneralUnit(platform1, ref mDirector, 0));
             }
-
-            //MilUnits
-            var map = Map;
-            var milUnit = new MilitaryUnit(new Vector2(3000, 2700), Camera, ref mDirector, ref map);
-
-            //SetUnit
-            var setUnit = new Settler(new Vector2(3000, 3250), Camera, ref mDirector, ref map, GameScreen, mUi);
             
             
-
             // Resources
             var res = new Resource(EResourceType.Trash, platform2.Center);
             var res4 = new Resource(EResourceType.Trash, platform2.Center);
@@ -107,8 +102,9 @@ namespace Singularity.Levels
             platform2.StoreResource(res5);
 
             GameScreen.AddObjects(genUnit);
+            GameScreen.AddObject(enemyUnit);
             GameScreen.AddObject(milUnit);
-            GameScreen.AddObject(setUnit);
+            GameScreen.AddObject(settler);
 
             // add a puddle
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2500)));

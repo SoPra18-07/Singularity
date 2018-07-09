@@ -9,6 +9,7 @@ using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Property;
+using Singularity.Units;
 
 namespace Singularity.Map
 {
@@ -124,6 +125,7 @@ namespace Singularity.Map
                 mPlatformToGraphId[platform] = graphIndex;
                 mGraphIdToGraph[graphIndex].AddNode(platform);
                 platform.SetGraphIndex(graphIndex);
+                UpdateGenUnitsGraphIndex(mGraphIdToGraph[graphIndex], graphIndex);
                 return;
             }
 
@@ -135,6 +137,9 @@ namespace Singularity.Map
             mGraphIdToGraph[index] = graph;
             mPlatformToGraphId[platform] = index;
             platform.SetGraphIndex(index);
+            UpdateGenUnitsGraphIndex(mGraphIdToGraph[index], index);
+
+            mDirector.GetDistributionDirector.AddManager(index);
             mDirector.GetPathManager.AddGraph(index, graph);
         }
 
@@ -209,10 +214,13 @@ namespace Singularity.Map
                 mGraphIdToGraph[childIndex] = null;
                 mGraphIdToGraph[parentIndex] = graph;
 
+                UpdateGenUnitsGraphIndex(mGraphIdToGraph[parentIndex], parentIndex);
+
                 mGraphIdToEnergyLevel[parentIndex] =
                     mGraphIdToEnergyLevel[parentIndex] + mGraphIdToEnergyLevel[childIndex];
                 mGraphIdToEnergyLevel[childIndex] = 0;
 
+                mDirector.GetDistributionDirector.MergeManagers(childIndex, parentIndex, parentIndex);
                 mDirector.GetPathManager.RemoveGraph(childIndex);
                 mDirector.GetPathManager.AddGraph(parentIndex, graph);
                 return;
@@ -236,7 +244,6 @@ namespace Singularity.Map
             ((PlatformBlank)child).RemoveEdge(road);
             ((PlatformBlank)parent).RemoveEdge(road);
 
-            //TODO: adjust underlying graph structures
             // more accurately: we have two cases:
             // 1. road gets destroyed -> two new seperate graphs get created
             // because they only were connected by the road to be removed.
@@ -306,6 +313,9 @@ namespace Singularity.Map
             mGraphIdToGraph[newChildIndex] = childReachableGraph;
             mGraphIdToGraph[mPlatformToGraphId[(PlatformBlank) parent]] = parentReachableGraph;
 
+            UpdateGenUnitsGraphIndex(mGraphIdToGraph[newChildIndex], newChildIndex);
+
+            //TODO: split the two dist managers here, wasn't sure how to implement it since i didnt understand the signature
             mDirector.GetPathManager.AddGraph(newChildIndex, childReachableGraph);
             mDirector.GetPathManager.AddGraph(mPlatformToGraphId[(PlatformBlank)parent], parentReachableGraph);
         }
@@ -561,6 +571,33 @@ namespace Singularity.Map
             foreach (var node in mGraphIdToGraph[graphId].GetNodes())
             {
                 ((PlatformBlank)node).Deactivate(false);
+            }
+        }
+
+        private List<GeneralUnit> GetGenUnitsOnGraph(Graph.Graph graph)
+        {
+            var genUnits = new List<GeneralUnit>();
+
+            foreach (var node in graph.GetNodes())
+            {
+                var nodeAsPlat = (PlatformBlank) node;
+
+                foreach (var unit in nodeAsPlat.GetGeneralUnitsOnPlatform())
+                {
+                    genUnits.Add(unit);
+                }
+            }
+
+            return genUnits;
+        }
+
+        private void UpdateGenUnitsGraphIndex(Graph.Graph graph, int newId)
+        {
+            var list = GetGenUnitsOnGraph(graph);
+
+            foreach (var genUnit in list)
+            {
+                genUnit.Graphid = newId;
             }
         }
     }

@@ -68,7 +68,7 @@ namespace Singularity.Units
             if (BuildCommandCenter != null)
             {
                 //I commented it out, so we get no Errors due to no Multiple Graph Compatibility.
-                // BuildCommandCenter(this, EventArgs.Empty, AbsolutePosition, this);
+                BuildCommandCenter(this, EventArgs.Empty, AbsolutePosition, this);
                 //Note: It doesnt matter if this is called multiple times from settlers other than the first settler. It will only set variables
                 //to true, that has been true already.
                 mUi.Activate();

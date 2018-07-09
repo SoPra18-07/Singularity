@@ -6,7 +6,6 @@ using Singularity.Libraries;
 
 namespace Singularity.Screen.ScreenClasses
 {
-    // TODO animate the menu screen
     /// <inheritdoc cref="ITransitionableMenu"/>
     /// <summary>
     /// All the main menu screens are overlayed on top of this screen.
@@ -24,7 +23,7 @@ namespace Singularity.Screen.ScreenClasses
         private Vector2 mScreenCenter;
         private Vector2 mScreenResolutionScaling;
         private float mHoloProjectionWidthScaling;
-        private float mHoloProjectionHeightScaling;
+        private readonly float mHoloProjectionHeightScaling;
 
         public EScreen CurrentScreen { get; private set; }
         private double mTransitionStartTime;
@@ -61,28 +60,6 @@ namespace Singularity.Screen.ScreenClasses
             mFlickerDirectionUp = true;
             mFrameCounter = 0;
         }
-
-        /*
-        // TODO make holo projection width based on height. If this function proves unnecssary, then remove it.
-        /// <summary>
-        /// Determines the scaling of the holoprojection polygon by first making it fit within the screen then
-        /// making it stretch to the appropriate width.
-        /// </summary>
-        /// <param name="widthScaling">Scalar factor of how stretched out the projection should be.</param>
-        private void SetHoloProjectionScaling(float widthScaling)
-        {
-            if (mScreenResolutionScaling.X < mScreenResolutionScaling.Y)
-            {
-                mHoloProjectionScaling = new Vector2(mScreenResolutionScaling.X);
-            }
-            else
-            {
-                mHoloProjectionScaling = new Vector2(mScreenResolutionScaling.Y);
-            }
-
-            mHoloProjectionScaling = Vector2.Multiply(mHoloProjectionScaling, new Vector2(widthScaling, 1f));
-        }
-        */
 
         /// <summary>
         /// Changes the dimensions of the screen to fit the viewport resolution.
