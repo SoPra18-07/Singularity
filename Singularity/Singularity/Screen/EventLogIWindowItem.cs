@@ -28,6 +28,8 @@ namespace Singularity.Screen
         // the infoBox showing when hovering above the button
         private readonly InfoBoxWindow mInfoBox;
 
+        private readonly Director mDirector;
+
         #endregion
 
         /// <summary>
@@ -55,6 +57,8 @@ namespace Singularity.Screen
 
             Size = new Vector2(width, mPositionButton.Size.Y + mText.Size.Y);
             Position = Vector2.Zero;
+
+            mDirector = director;
 
             ActiveInWindow = true;
         }
@@ -120,7 +124,10 @@ namespace Singularity.Screen
         /// <param name="eventArgs"></param>
         private void JumpToPosition(object sender, EventArgs eventArgs)
         {
-            // TODO
+            //TODO: pass accurate coordinates, right now it goes to the top left texture point of the platform blank on the map
+            // also note, since the validate position code is atm buggy, the map might disappear when the zoom level is too far out
+            // im going to fix this definitely
+            mDirector.GetStoryManager.Level.Camera.CenterOn(new Vector2(3000, 3000));
         }
 
         /// <inheritdoc />
