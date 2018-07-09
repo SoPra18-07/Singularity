@@ -53,8 +53,11 @@ namespace Singularity.Manager
         [DataMember]
         private List<Pair<PlatformBlank, int>> mDefPlatforms;
 
+        [DataMember]
+        private int mGraphId;
 
-        public DistributionManager()
+
+        public DistributionManager(int graphid)
         {
             //Lists of Units of different Jobtypes
             mIdle = new List<GeneralUnit>();
@@ -68,24 +71,120 @@ namespace Singularity.Manager
             mBuildingResources = new Queue<Task>();
             mRefiningOrStoringResources = new Queue<Task>();
 
-            //Other stuff -- ???
+            //Actionlists
             mBlueprintBuilds = new List<BuildBluePrint>();
             mPlatformActions = new List<IPlatformAction>();
+
+            //Lists for observing unit counts on platforms
             mProdPlatforms = new List<Pair<PlatformBlank, int>>();
             mDefPlatforms = new List<Pair<PlatformBlank, int>>();
+
             mRandom = new Random();
             mKilled = new List<Pair<int, int>>();
+            mGraphId = graphid;
+        }
+
+        public void TestAttributes()
+        {
+            Console.Out.WriteLine(mProduction.Count);
+            Console.Out.WriteLine(mIdle.Count);
+            Console.Out.WriteLine(mProdPlatforms[1].GetFirst().mType + " " + mProdPlatforms[1].GetSecond());
+            Console.Out.WriteLine(mProdPlatforms[0].GetFirst().mType + " " + mProdPlatforms[0].GetSecond());
         }
 
         /// <summary>
-        /// Is called by the unit when it is created.
+        /// Deactivates tasks requested by a certain action.
         /// </summary>
-        /// <param name="unit">the unit that has been created</param>
-        public void Register(GeneralUnit unit)
+        /// <param name="removeaction">The Action I was talking about</param>
+        private void DeactivateAction(IPlatformAction removeaction)
         {
-            mIdle.Add(unit);
+            mPlatformActions.Remove(removeaction);
         }
 
+        #region Looking for Resources
+
+        /// <summary>
+        /// Uses BFS to find the nearest Platform holding a resource you want to get. Might be expensive...
+        /// </summary>
+        /// <param name="destination">The platform you start the bfs from.</param>
+        /// <param name="res">The resourcetype to look for.</param>
+        /// <returns>The platform with the desired resource, if it exists, null if not</returns>
+        private PlatformBlank FindBegin(PlatformBlank destination, EResourceType res)
+        {
+            //We need these lists, because we are operating on a undirected graph. That means we have to ensure we dont go back in our BFS
+            //this list contains platforms that cannot be visited next run.
+            var previouslevel = new List<PlatformBlank>();
+            //This list contains platforms that have been visited this run.
+            var nextpreviouslevel = new List<PlatformBlank>();
+
+            var currentlevel = new List<PlatformBlank>();
+            currentlevel.Add(destination);
+
+            var nextlevel = new List<PlatformBlank>();
+
+
+            while (currentlevel.Count > 0)
+            {
+                //Create the next level of BFS. While doing this, check if any platform has the resource you want. If yes return it.
+                foreach (PlatformBlank platform in currentlevel)
+                {
+
+                    foreach (var edge in platform.GetInwardsEdges())
+                    {
+                        var candidatePlatform = (PlatformBlank)edge.GetParent();
+                        //If true, we have already visited this platform
+                        if (previouslevel.Contains(platform) || nextpreviouslevel.Contains(platform))
+                        {
+                            continue;
+                        }
+                        //Check for the resource
+                        foreach (var resource in candidatePlatform.GetPlatformResources())
+                        {
+                            if (resource.Type != res)
+                            {
+                                continue;
+                            }
+                            return candidatePlatform;
+                        }
+
+                        nextlevel.Add(candidatePlatform);
+                    }
+
+                    foreach (var edge in platform.GetOutwardsEdges())
+                    {
+                        var candidatePlatform = (PlatformBlank)edge.GetChild();
+                        //If true, we have already visited this platform
+                        if (previouslevel.Contains(platform) || nextpreviouslevel.Contains(platform))
+                        {
+                            continue;
+                        }
+                        //Check for the resource
+                        foreach (var resource in candidatePlatform.GetPlatformResources())
+                        {
+                            if (resource.Type != res)
+                            {
+                                continue;
+                            }
+                            return candidatePlatform;
+                        }
+                        nextlevel.Add(candidatePlatform);
+                    }
+                    //mark that you have visited this platform now
+                    nextpreviouslevel.Add(platform);
+                }
+
+                //Update levels
+                previouslevel = nextpreviouslevel;
+                nextpreviouslevel = new List<PlatformBlank>();
+                currentlevel = nextlevel;
+                nextlevel = new List<PlatformBlank>();
+            }
+            return null;
+        }
+
+        #endregion
+
+        #region Getters and Setters
         /// <summary>
         /// Gets the total amount of Units INDIRECTLY assigned. So this will not include directly assigned units.
         /// </summary>
@@ -101,9 +200,144 @@ namespace Singularity.Manager
         }
 
         /// <summary>
+        /// Gets the Lists of unit in that Job.
+        /// </summary>
+        /// <param name="job">The job I was talking about</param>
+        /// <returns>The list I was talking about</returns>
+        internal List<GeneralUnit> GetJobUnits(JobType job)
+        {
+            switch (job)
+            {
+                case JobType.Idle:
+                    return mIdle;
+                case JobType.Production:
+                    return mProduction;
+                case JobType.Construction:
+                    return mConstruction;
+                case JobType.Defense:
+                    return mDefense;
+                case JobType.Logistics:
+                    return mLogistics;
+                case JobType.Manual:
+                    return mManual;
+                default:
+                    throw new InvalidGenericArgumentException("There is no such Job!");
+            }
+        }
+
+        /// <summary>
+        /// Sets the Joblists of this DistributionManager
+        /// </summary>
+        /// <param name="joblist">The list to set</param>
+        /// <param name="job">The job</param>
+        internal void SetJobUnits(List<GeneralUnit> joblist, JobType job)
+        {
+            switch (job)
+            {
+                case JobType.Idle:
+                    mIdle = joblist;
+                    break;
+                case JobType.Production:
+                    mProduction = joblist;
+                    break;
+                case JobType.Construction:
+                    mConstruction = joblist;
+                    break;
+                case JobType.Defense:
+                    mDefense = joblist;
+                    break;
+                case JobType.Logistics:
+                    mLogistics = joblist;
+                    break;
+                case JobType.Manual:
+                    mManual = joblist;
+                    break;
+                default:
+                    throw new InvalidGenericArgumentException("There is no such Job!");
+            }
+        }
+
+        /// <summary>
+        /// Sets the Tasks of this DM
+        /// </summary>
+        /// <param name="taskqueue">The tasks to set</param>
+        /// <param name="isBuilding">True if you want to set the Buildingtasks, false if you want to set the Transporttasks</param>
+        internal void SetTasks(Queue<Task> taskqueue, bool isBuilding)
+        {
+            if (isBuilding)
+            {
+                mBuildingResources = taskqueue;
+            }
+
+            mRefiningOrStoringResources = taskqueue;
+
+        }
+
+        /// <summary>
+        /// Return the Tasks this DistributionManager received and saved.
+        /// </summary>
+        /// <param name="isBuilding">True if you want the Build-Tasks, false otherwise</param>
+        /// <returns>The Build-Tasks or the Transport-Tasks</returns>
+        internal Queue<Task> GetTasks(bool isBuilding)
+        {
+            if (isBuilding)
+            {
+                return mBuildingResources;
+            }
+
+            return mRefiningOrStoringResources;
+        }
+
+        /// <summary>
+        /// Get the Platforms this DistributionManager is observing.
+        /// </summary>
+        /// <param name="isDef">True if you want to get the Defending platforms, false if you want to get the Producing platforms</param>
+        /// <returns>A list containing the platforms you requested paired with how many units work there</returns>
+        internal List<Pair<PlatformBlank, int>> GetPlatforms(bool isDef)
+        {
+            if (isDef)
+            {
+                return mDefPlatforms;
+            }
+
+            return mProdPlatforms;
+        }
+
+        /// <summary>
+        /// Set the Platforms this DistributionManager is observing
+        /// </summary>
+        /// <param name="platformlist">The list you want to set it to. Has to contain pairs with how many units work on the corresponding platform</param>
+        /// <param name="isDef">True if you want to set the Defending platforms, false if you want to set the Producing platforms</param>
+        internal void SetPlatforms(List<Pair<PlatformBlank, int>> platformlist, bool isDef)
+        {
+            if (isDef)
+            {
+                mDefPlatforms = platformlist;
+            }
+
+            mProdPlatforms = platformlist;
+        }
+
+        /// <summary>
+        /// Used to determine whether there are no defending or producing platforms.
+        /// </summary>
+        /// <param name="isDefense">A bool to determine whether you are asking for defending or producing platforms.</param>
+        /// <returns>False if there are such platforms, true otherwise</returns>
+        public bool GetRestrictions(bool isDefense)
+        {
+            if (isDefense)
+            {
+                return mDefPlatforms.Count == 0;
+            }
+
+            return mProdPlatforms.Count == 0;
+        }
+
+        /// <summary>
         /// Get the total amount of Units INDIRECTLY assigned in a Job.
         /// </summary>
-        /// <returns></returns>
+        /// <param name="job">The job I was talking about.</param>
+        /// <returns>The total amount of Units Inridectly assigned in the given job, as an int.</returns>
         public int GetJobCount(JobType job)
         {
             switch (job)
@@ -123,43 +357,170 @@ namespace Singularity.Manager
                         "There are no other Jobs! Or at least there weren't any when this was coded...");
             }
         }
+        #endregion
+
+        #region Requesting Tasks and Resources
 
         /// <summary>
-        /// This will be called from the SliderHandler when its created.
-        /// It just registers its reference, so the DistributionManager can communicate with it.
+        /// A method for Platforms/their actions to request resources.
         /// </summary>
-        /// <param name="handler"></param>
-        internal void Register(SliderHandler handler)
+        /// <param name="platform">The platform making the request</param>
+        /// <param name="resource">The wanted resource</param>
+        /// <param name="action">The corresponding platformaction</param>
+        /// <param name="isbuilding">True if the resources are for building, false otherwise</param>
+        public void RequestResource(PlatformBlank platform, EResourceType resource, IPlatformAction action, bool isbuilding = false)
         {
-            mHandler = handler;
-        }
-
-        /// <summary>
-        /// Is called by producing and defending Platforms when they are created.
-        /// </summary>
-        /// <param name="platform">The platform itself</param>
-        /// <param name="isDef">Is true, when the platform is a defending platform, false otherwise (only producing platforms should register themselves besides defending ones)</param>
-        public void Register(PlatformBlank platform, bool isDef)
-        {
-            if (isDef)
+            //TODO: Create Action references, when interfaces were created.
+            if (isbuilding)
             {
-                //Make sure the new platform gets some units
-                NewlyDistribute(platform, true);
+                mBuildingResources.Enqueue(new Task(JobType.Construction, Optional<PlatformBlank>.Of(platform), resource, Optional<IPlatformAction>.Of(action)));
             }
             else
             {
-                //Make sure the new platform gets some units
-                NewlyDistribute(platform, false);
+                mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, Optional<PlatformBlank>.Of(platform), resource, Optional<IPlatformAction>.Of(action)));
             }
         }
 
-        public void TestAttributes()
+        /// <summary>
+        /// A method for the GeneralUnits to ask for a task to do.
+        /// </summary>
+        /// <param name="unit">The GeneralUnit asking</param>
+        /// <param name="job">Its Job</param>
+        /// <param name="assignedAction">The PlatformAction the unit is eventually assigned to</param>
+        /// <returns></returns>
+        public Task RequestNewTask(GeneralUnit unit, JobType job, Optional<IPlatformAction> assignedAction)
         {
-            Console.Out.WriteLine(mProduction.Count);
-            Console.Out.WriteLine(mIdle.Count);
-            Console.Out.WriteLine(mProdPlatforms[1].GetFirst().mType + " " + mProdPlatforms[1].GetSecond());
-            Console.Out.WriteLine(mProdPlatforms[0].GetFirst().mType + " " + mProdPlatforms[0].GetSecond());
+            var nodes = new List<INode>();
+            Task task;
+            switch (job)
+            {
+                case JobType.Idle:
+                    //It looks inefficient but I think its okay, the
+                    //Platforms got not that much connections (or at least they are supposed to have not that much connections).
+                    //That way the unit will only travel one node per task, but that makes it more reactive.
+                    foreach (var edge in unit.CurrentNode.GetInwardsEdges())
+                    {
+                        nodes.Add(edge.GetParent());
+                    }
+                    foreach (var edge in unit.CurrentNode.GetOutwardsEdges())
+                    {
+                        nodes.Add(edge.GetChild());
+                    }
+
+                    if (nodes.Count == 0)
+                    {
+                        //Could be very inefficient, since the Units will bombard the DistributionManager with asks for tasks when there is only one platform
+                        //connected to theirs
+                        nodes.Add(unit.CurrentNode);
+                    }
+                    var rndnmbr = mRandom.Next(0, nodes.Count);
+                    //Just give them the inside of the Optional action witchout checking because
+                    //it doesnt matter anyway if its null if the unit is idle.
+                    return new Task(job, Optional<PlatformBlank>.Of((PlatformBlank)nodes.ElementAt(rndnmbr)), null, assignedAction);
+
+                case JobType.Production:
+                    throw new InvalidGenericArgumentException("You shouldnt ask for Production tasks, you just assign units to production.");
+
+                case JobType.Defense:
+                    throw new InvalidGenericArgumentException("You shouldnt ask for Defense tasks, you just assign units to defense.");
+
+                case JobType.Construction:
+                    if (mBuildingResources.Count == 0)
+                    {
+                        var nulltask = new Task(JobType.Logistics,
+                            Optional<PlatformBlank>.Of(null),
+                            null,
+                            Optional<IPlatformAction>.Of(null));
+                        nulltask.Begin = Optional<PlatformBlank>.Of(null);
+                        return nulltask;
+                    }
+                    task = mBuildingResources.Dequeue();
+                    //This means that the Action is paused.
+                    if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()))
+                    {
+                        mBuildingResources.Enqueue(task);
+                        task = RequestNewTask(unit, job, assignedAction);
+                    }
+                    if (task.End.IsPresent() && task.GetResource != null)
+                    {
+                        var begin = FindBegin(task.End.Get(), (EResourceType)task.GetResource);
+                        //Use BFS to find the place you want to get your resources from
+                        if (begin != null)
+                        {
+                            task.Begin = Optional<PlatformBlank>.Of(begin);
+                        }
+                        else
+                        {
+                            //TODO: Talk with felix about how this could affect the killing thing
+                            mBuildingResources.Enqueue(task);
+                            //This means the unit will identify this task as "do nothing" and ask again.
+                            task.Begin = null;
+                        }
+                    }
+                    else
+                    {
+                        throw new InvalidGenericArgumentException("There is a task in your queue that is faulty. Check the RequestResource method!!!");
+                    }
+                    break;
+
+                case JobType.Logistics:
+                    if (mRefiningOrStoringResources.Count == 0)
+                    {
+                        var nulltask = new Task(JobType.Logistics,
+                            Optional<PlatformBlank>.Of(null),
+                            null,
+                            Optional<IPlatformAction>.Of(null));
+                        nulltask.Begin = Optional<PlatformBlank>.Of(null);
+                        return nulltask;
+                    }
+                    task = mRefiningOrStoringResources.Dequeue();
+                    //This means that the Action is paused.
+                    if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()))
+                    {
+                        mRefiningOrStoringResources.Enqueue(task);
+                        task = RequestNewTask(unit, job, assignedAction);
+                    }
+                    if (task.End.IsPresent() && task.GetResource != null)
+                    {
+                        var begin = FindBegin(task.End.Get(), (EResourceType)task.GetResource);
+                        //Use BFS to find the place you want to get your resources from
+                        if (begin != null)
+                        {
+                            task.Begin = Optional<PlatformBlank>.Of(begin);
+                        }
+                        else
+                        {
+                            //TODO: Talk with felix about how this could affect the killing thing
+                            mRefiningOrStoringResources.Enqueue(task);
+                            //This means the unit will identify this task as "do nothing" and ask again.
+                            task.Begin = null;
+                        }
+                    }
+                    else
+                    {
+                        throw new InvalidGenericArgumentException("There is a task in your queue that is faulty. Check the RequestResource method!!!");
+                    }
+                    break;
+
+                default:
+                    throw new InvalidGenericArgumentException("Your requested JobType does not exist.");
+            }
+
+            mKilled = mKilled.Select(p => new Pair<int, int>(p.GetFirst(), p.GetSecond() - 1)).ToList();
+            if (mKilled != null)
+            {
+                mKilled.RemoveAll(p => p.GetSecond() < 0);
+                return mKilled.TrueForAll(p => !task.Contains(p.GetFirst())) ? task : RequestNewTask(unit, job, assignedAction);
+            }
+
+            return task;
         }
+
+
+
+        #endregion
+
+        #region Unit Distribution and Assigning Units to Jobs
 
         /// <summary>
         /// This is called by the player, when he wants to distribute the units to certain jobs.
@@ -231,7 +592,8 @@ namespace Singularity.Manager
                 if (newj == JobType.Production)
                 {
                     AssignUnitsFairly(list, false);
-                }else if (newj == JobType.Defense)
+                }
+                else if (newj == JobType.Defense)
                 {
                     AssignUnitsFairly(list, true);
                 }
@@ -279,8 +641,6 @@ namespace Singularity.Manager
                     }
                 }
             }
-
-            TestAttributes();
         }
 
         /// <summary>
@@ -381,6 +741,7 @@ namespace Singularity.Manager
         /// <summary>
         /// Is called internally by the Distributionmanager to Assign Units to the production or the defense, without destroying the balance of the numbers
         /// of units at the platforms. The units will have the corresponding job afterwards.
+        /// If there are no platforms for production or defense, the job will stay Idle afterwards
         /// </summary>
         /// <param name="toassign">The units to assign</param>
         /// <param name="isDefense"></param>
@@ -402,6 +763,17 @@ namespace Singularity.Manager
             var startindex = 0;
             var highassign = int.MinValue;
             var search = true;
+
+            if (list.Count == 0)
+            {
+                //Dont let them change the job to production or defense when there are no platforms to work on.
+                foreach (var unit in toassign)
+                {
+                    mIdle.Add(unit);
+                }
+                return;
+            }
+
             //SEARCH INDEX
             //iterate through the list, from the left side this time (see GetUnitsFairly) and search the index of the platforms with less units
             for (var i = 0; search; i++)
@@ -451,43 +823,95 @@ namespace Singularity.Manager
         }
 
         /// <summary>
-        /// A method called by the DistributionManager in case a new platform is registered, then it will distribute units to it.
+        /// A method called by the DistributionManager in case a new platform is registered, then it will redistribute all the units.
+        /// BE SURE ALL THE UNITS THAT ARE ON THE PLATFORM ARE REGISTERED IN THE DISTRIBUTIONMANAGER OTHERWISE THIS WILL FAIL!
         /// </summary>
         /// <param name="platform">The newly registered platform</param>
         /// <param name="isDefense">Is true if its a DefensePlatform, false otherwise</param>
-        private void NewlyDistribute(PlatformBlank platform, bool isDefense)
+        /// <param name="alreadyonplatform">The amount of units already working on the platform</param>
+        private void NewlyDistribute(PlatformBlank platform, bool isDefense, int alreadyonplatform)
         {
+            var job = isDefense ? JobType.Defense : JobType.Production;
+            var joblist = isDefense ? mDefense : mProduction;
             if (isDefense)
             {
                 // + 1 because we didnt add the new platform yet
                 var times = mDefense.Count / (mDefPlatforms.Count + 1);
-                var list = GetUnitsFairly(times, mDefPlatforms, false);
-
-                foreach (var unit in list)
+                if (times > alreadyonplatform)
                 {
-                    //We have to re-add the units to the job list because GetUnitsFairly did unassign them
-                    mDefense.Add(unit);
-                    //Also unassigns the unit.
-                    unit.AssignTask(new Task(JobType.Defense, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
-                }
+                    times = times - alreadyonplatform;
 
-                mDefPlatforms.Add(new Pair<PlatformBlank, int>(platform, list.Count));
+                    var list = GetUnitsFairly(times, mDefPlatforms, true);
+
+                    foreach (var unit in list)
+                    {
+                        //We have to re-add the units to the job list because GetUnitsFairly did unassign them
+                        joblist.Add(unit);
+                        //Also unassigns the unit.
+                        unit.AssignTask(new Task(JobType.Defense, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
+                    }
+
+                    mDefPlatforms.Add(new Pair<PlatformBlank, int>(platform, list.Count));
+                }
+                else if (times < alreadyonplatform)
+                {
+                    times = alreadyonplatform - times;
+                    var units = new List<GeneralUnit>();
+                    GeneralUnit transferunit;
+                    for (var i = times; i > 0; i--)
+                    {
+                        transferunit = platform.GetAssignedUnits()[job].First().GetFirst();
+                        units.Add(transferunit);
+                        mIdle.Add(transferunit);
+                        joblist.Remove(transferunit);
+                        transferunit.ChangeJob(JobType.Idle);
+                    }
+                    AssignUnitsFairly(units, true);
+                }
+                else
+                {
+                    mDefPlatforms.Add(new Pair<PlatformBlank, int>(platform, alreadyonplatform));
+                }
             }
             else
             {
                 // + 1 because we didnt add the new platform yet
                 var times = mProduction.Count / (mProdPlatforms.Count + 1);
-                var list = GetUnitsFairly(times, mProdPlatforms, false);
-
-                foreach (var unit in list)
+                if (times > alreadyonplatform)
                 {
-                    //We have to re-add the units to the job list because GetUnitsFairly did unassign them
-                    mProduction.Add(unit);
-                    //Also unassigns the unit.
-                    unit.AssignTask(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
-                }
+                    times = times - alreadyonplatform;
 
-                mProdPlatforms.Add(new Pair<PlatformBlank, int>(platform, list.Count));
+                    var list = GetUnitsFairly(times, mProdPlatforms, false);
+
+                    foreach (var unit in list)
+                    {
+                        //We have to re-add the units to the job list because GetUnitsFairly did unassign them
+                        mProduction.Add(unit);
+                        //Also unassigns the unit.
+                        unit.AssignTask(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
+                    }
+
+                    mProdPlatforms.Add(new Pair<PlatformBlank, int>(platform, list.Count));
+                }
+                else if (times < alreadyonplatform)
+                {
+                    times = alreadyonplatform - times;
+                    var units = new List<GeneralUnit>();
+                    GeneralUnit transferunit;
+                    for (var i = times; i > 0; i--)
+                    {
+                        transferunit = platform.GetAssignedUnits()[job].First().GetFirst();
+                        units.Add(transferunit);
+                        mIdle.Add(transferunit);
+                        joblist.Remove(transferunit);
+                        transferunit.ChangeJob(JobType.Idle);
+                    }
+                    AssignUnitsFairly(units, false);
+                }
+                else
+                {
+                    mProdPlatforms.Add(new Pair<PlatformBlank, int>(platform, alreadyonplatform));
+                }
             }
         }
 
@@ -526,7 +950,8 @@ namespace Singularity.Manager
             if (job == JobType.Defense)
             {
                 list = GetUnitsFairly(amount, mDefPlatforms, true);
-            }else if (job == JobType.Production)
+            }
+            else if (job == JobType.Production)
             {
                 list = GetUnitsFairly(amount, mProdPlatforms, false);
             }
@@ -549,7 +974,8 @@ namespace Singularity.Manager
                 if (job == JobType.Production)
                 {
 
-                } else if (job == JobType.Defense)
+                }
+                else if (job == JobType.Defense)
                 {
 
                 }
@@ -583,227 +1009,147 @@ namespace Singularity.Manager
             }
         }
 
+        #endregion
+
+        #region Register or Unregister
+
         /// <summary>
-        /// A method for Platforms/their actions to request resources.
+        /// Is called by the unit when it is created.
         /// </summary>
-        /// <param name="platform">The platform making the request</param>
-        /// <param name="resource">The wanted resource</param>
-        /// <param name="action">The corresponding platformaction</param>
-        /// <param name="isbuilding">True if the resources are for building, false otherwise</param>
-        public void RequestResource(PlatformBlank platform, EResourceType resource, IPlatformAction action, bool isbuilding = false)
+        /// <param name="unit">the unit that has been created</param>
+        public void Register(GeneralUnit unit)
         {
-            //TODO: Create Action references, when interfaces were created.
-            if (isbuilding)
+            mIdle.Add(unit);
+        }
+
+        /// <summary>
+        /// Is called to add the unit with a certain job.
+        /// </summary>
+        /// <param name="unit">the unit that has been mentioned</param>
+        /// <param name="job">the job of the unit.</param>
+        public void Register(GeneralUnit unit, JobType job)
+        {
+            GetJobUnits(job).Add(unit);
+        }
+
+        /// <summary>
+        /// This will be called from the SliderHandler when its created.
+        /// It just registers its reference, so the DistributionManager can communicate with it.
+        /// </summary>
+        /// <param name="handler"></param>
+        internal void Register(SliderHandler handler)
+        {
+            mHandler = handler;
+        }
+
+        /// <summary>
+        /// Is called by producing and defending Platforms when they are created or added to the distributionmanager.
+        /// </summary>
+        /// <param name="platform">The platform itself</param>
+        /// <param name="isDef">Is true, when the platform is a defending platform, false otherwise (only producing platforms should register themselves besides defending ones)</param>
+        public void Register(PlatformBlank platform, bool isDef)
+        {
+            var job = isDef ? JobType.Defense : JobType.Production;
+            var joblist = isDef ? mDefense : mProduction;
+            var alreadyonplatform = 0;
+            if (platform.GetAssignedUnits()[job].Count > 0)
             {
-                mBuildingResources.Enqueue(new Task(JobType.Construction, Optional<PlatformBlank>.Of(platform), resource, Optional<IPlatformAction>.Of(action)));
+                alreadyonplatform = platform.GetAssignedUnits()[job].Count;
+            }
+
+            //Make sure the units are added to their joblist if they arent already.
+            foreach (var unitbool in platform.GetAssignedUnits()[job])
+            {
+                if (!joblist.Contains(unitbool.GetFirst()))
+                {
+                    joblist.Add(unitbool.GetFirst());
+                }
+            }
+            if (isDef)
+            {
+                //Make sure the new platform gets some units
+                NewlyDistribute(platform, true, alreadyonplatform);
             }
             else
             {
-                mRefiningOrStoringResources.Enqueue(new Task(JobType.Logistics, Optional<PlatformBlank>.Of(platform), resource, Optional<IPlatformAction>.Of(action)));
+                //Make sure the new platform gets some units
+                NewlyDistribute(platform, false, alreadyonplatform);
             }
         }
 
         /// <summary>
-        /// A method for the GeneralUnits to ask for a task to do.
+        /// Unregister platforms from the DistributionManager.
+        /// This changes the graph the distributionmanager knows and is only needed for Producing or Defending platforms.
         /// </summary>
-        /// <param name="unit">The GeneralUnit asking</param>
-        /// <param name="job">Its Job</param>
-        /// <param name="assignedAction">The PlatformAction the unit is eventually assigned to</param>
-        /// <returns></returns>
-        public Task RequestNewTask(GeneralUnit unit, JobType job, Optional<IPlatformAction> assignedAction)
+        /// <param name="platforms">The platforms you want to unregister.</param>
+        /// <param name="isDef">True if they are defending platforms, false if they are producing platforms</param>
+        /// /// <param name="inactivate">True if the platform is not truly removed from the graph but inactivated, false if it is removed from the graph</param>
+        public void Unregister(List<PlatformBlank> platforms, bool isDef, bool inactivate)
         {
-            var nodes = new List<INode>();
-            Task task;
-            switch (job)
+            var list = isDef ? mDefPlatforms : mProdPlatforms;
+            var job = isDef ? JobType.Defense : JobType.Production;
+            var joblist = isDef ? mDefense : mProduction;
+            var unitstodistribute = new List<GeneralUnit>();
+            Pair<PlatformBlank, int> pair;
+
+            //REMOVE PLATFORMS, COLLECT THEIR UNITS
+            foreach (var platform in platforms)
             {
-                case JobType.Idle:
-                    //It looks inefficient but I think its okay, the
-                    //Platforms got not that much connections (or at least they are supposed to have not that much connections).
-                    //That way the unit will only travel one node per task, but that makes it more reactive.
-                    foreach (var edge in unit.CurrentNode.GetInwardsEdges())
-                    {
-                        nodes.Add(edge.GetParent());
-                    }
-                    foreach (var edge in unit.CurrentNode.GetOutwardsEdges())
-                    {
-                        nodes.Add(edge.GetChild());
-                    }
+                //No longer observe platform
+                pair = list.Find(x => x.GetFirst().Equals(platform));
+                list.Remove(pair);
 
-                    if (nodes.Count == 0)
-                    {
-                        //Could be very inefficient, since the Units will bombard the DistributionManager with asks for tasks when there is only one platform
-                        //connected to theirs
-                        nodes.Add(unit.CurrentNode);
-                    }
-                    var rndnmbr = mRandom.Next(0, nodes.Count);
-                    //Just give them the inside of the Optional action witchout checking because
-                    //it doesnt matter anyway if its null if the unit is idle.
-                    return new Task(job, Optional<PlatformBlank>.Of((PlatformBlank) nodes.ElementAt(rndnmbr)), null, assignedAction);
-
-                case JobType.Production:
-                    throw new InvalidGenericArgumentException("You shouldnt ask for Production tasks, you just assign units to production.");
-
-                case JobType.Defense:
-                    throw new InvalidGenericArgumentException("You shouldnt ask for Defense tasks, you just assign units to defense.");
-
-                case JobType.Construction:
-                    if (mBuildingResources.Count == 0)
-                    {
-                        var nulltask = new Task(JobType.Logistics,
-                            Optional<PlatformBlank>.Of(null),
-                            null,
-                            Optional<IPlatformAction>.Of(null));
-                        nulltask.Begin = Optional<PlatformBlank>.Of(null);
-                        return nulltask;
-                    }
-                    task = mBuildingResources.Dequeue();
-                    if (task.End.IsPresent() && task.GetResource != null)
-                    {
-                        var begin = FindBegin(task.End.Get(), (EResourceType)task.GetResource);
-                        //Use BFS to find the place you want to get your resources from
-                        if (begin != null)
-                        {
-                            task.Begin = Optional<PlatformBlank>.Of(begin);
-                        }
-                        else
-                        {
-                            //TODO: Talk with felix about how this could affect the killing thing
-                            mBuildingResources.Enqueue(task);
-                            //This means the unit will identify this task as "do nothing" and ask again.
-                            task.Begin = null;
-                        }
-                    }
-                    else
-                    {
-                        throw new InvalidGenericArgumentException("There is a task in your queue that is faulty. Check the RequestResource method!!!");
-                    }
-                    break;
-
-                case JobType.Logistics:
-                    if (mRefiningOrStoringResources.Count == 0)
-                    {
-                        var nulltask = new Task(JobType.Logistics,
-                            Optional<PlatformBlank>.Of(null),
-                            null,
-                            Optional<IPlatformAction>.Of(null));
-                        nulltask.Begin = Optional<PlatformBlank>.Of(null);
-                        return nulltask;
-                    }
-                    task = mRefiningOrStoringResources.Dequeue();
-                    if (task.End.IsPresent() && task.GetResource != null)
-                    {
-                        var begin = FindBegin(task.End.Get(), (EResourceType)task.GetResource);
-                        //Use BFS to find the place you want to get your resources from
-                        if (begin != null)
-                        {
-                            task.Begin = Optional<PlatformBlank>.Of(begin);
-                        }
-                        else
-                        {
-                            //TODO: Talk with felix about how this could affect the killing thing
-                            mRefiningOrStoringResources.Enqueue(task);
-                            //This means the unit will identify this task as "do nothing" and ask again.
-                            task.Begin = null;
-                        }
-                    }
-                    else
-                    {
-                        throw new InvalidGenericArgumentException("There is a task in your queue that is faulty. Check the RequestResource method!!!");
-                    }
-                    break;
-
-                default:
-                    throw new InvalidGenericArgumentException("Your requested JobType does not exist.");
-            }
-
-            mKilled = mKilled.Select(p => new Pair<int, int>(p.GetFirst(), p.GetSecond() - 1)).ToList();
-            if (mKilled != null)
-            {
-                mKilled.RemoveAll(p => p.GetSecond() < 0);
-                return mKilled.TrueForAll(p => !task.Contains(p.GetFirst())) ? task : RequestNewTask(unit, job, assignedAction);
-            }
-
-            return task;
-        }
-
-        /// <summary>
-        /// Uses BFS to find the nearest Platform holding a resource you want to get. Might be expensive...
-        /// </summary>
-        /// <param name="destination">The platform you start the bfs from.</param>
-        /// <param name="res">The resourcetype to look for.</param>
-        /// <returns>The platform with the desired resource, if it exists, null if not</returns>
-        private PlatformBlank FindBegin(PlatformBlank destination, EResourceType res)
-        {
-            //We need these lists, because we are operating on a undirected graph. That means we have to ensure we dont go back in our BFS
-            //this list contains platforms that cannot be visited next run.
-            var previouslevel = new List<PlatformBlank>();
-            //This list contains platforms that have been visited this run.
-            var nextpreviouslevel = new List<PlatformBlank>();
-
-            var currentlevel = new List<PlatformBlank>();
-            currentlevel.Add(destination);
-
-            var nextlevel = new List<PlatformBlank>();
-
-
-            while (currentlevel.Count > 0)
-            {
-                //Create the next level of BFS. While doing this, check if any platform has the resource you want. If yes return it.
-                foreach (PlatformBlank platform in currentlevel)
+                var units = platform.GetAssignedUnits()[job];
+                //In this case just collect every unit on the platform and redistribute it (redistribution later in code).
+                if (inactivate)
                 {
-
-                    foreach (var edge in platform.GetInwardsEdges())
+                    foreach (var unitbool in new List<Pair<GeneralUnit, bool>>(units))
                     {
-                        var candidatePlatform = (PlatformBlank)edge.GetParent();
-                        //If true, we have already visited this platform
-                        if (previouslevel.Contains(platform) || nextpreviouslevel.Contains(platform))
-                        {
-                            continue;
-                        }
-                        //Check for the resource
-                        foreach (var resource in candidatePlatform.GetPlatformResources())
-                        {
-                            if (resource.Type != res)
-                            {
-                                continue;
-                            }
-                            return candidatePlatform;
-                        }
-
-                        nextlevel.Add(candidatePlatform);
+                        unitstodistribute.Add(unitbool.GetFirst());
+                        joblist.Remove(unitbool.GetFirst());
+                        //Unassigns itself from its platform
+                        unitbool.GetFirst().ChangeJob(JobType.Idle);
                     }
-
-                    foreach (var edge in platform.GetOutwardsEdges())
-                    {
-                        var candidatePlatform = (PlatformBlank)edge.GetChild();
-                        //If true, we have already visited this platform
-                        if (previouslevel.Contains(platform) || nextpreviouslevel.Contains(platform))
-                        {
-                            continue;
-                        }
-                        //Check for the resource
-                        foreach (var resource in candidatePlatform.GetPlatformResources())
-                        {
-                            if (resource.Type != res)
-                            {
-                                continue;
-                            }
-                            return candidatePlatform;
-                        }
-                        nextlevel.Add(candidatePlatform);
-                    }
-                    //mark that you have visited this platform now
-                    nextpreviouslevel.Add(platform);
                 }
+                //In this case look if every assigned unit is on the same graph as the platform and handle it
+                else
+                {
+                    foreach (var unitbool in units)
+                    {
+                        //In this case they are on the platform
+                        if (unitbool.GetSecond())
+                        {
+                            //Remove unit from this joblist to no longer influence this unit.
+                            joblist.Remove(unitbool.GetFirst());
+                        }
+                        else
+                        {
+                            //It will arrive, so just handle it as if it had already arrived at the platform
+                            if (unitbool.GetFirst().Graphid == platform.GetGraphIndex())
+                            {
+                                joblist.Remove(unitbool.GetFirst());
+                            }
+                            //It will not arrive, so it has to be redistributed!
+                            else
+                            {
+                                unitstodistribute.Add(unitbool.GetFirst());
+                                //Unassigns itself from its platform
+                                unitbool.GetFirst().ChangeJob(JobType.Idle);
+                            }
+                        }
+                    }
 
-                //Update levels
-                previouslevel = nextpreviouslevel;
-                nextpreviouslevel = new List<PlatformBlank>();
-                currentlevel = nextlevel;
-                nextlevel = new List<PlatformBlank>();
+                    // the first in the pair is the id, the second is the TTL
+                    // we tell the manager we killed the platform, but we didnt really kill it.
+                    mKilled.Add(new Pair<int, int>(platform.Id, Math.Max(mBuildingResources.Count, mRefiningOrStoringResources.Count)));
+                }
             }
-            return null;
+            //If there are any units to redistribute do it now
+            AssignUnitsFairly(unitstodistribute, isDef);
+            mHandler.ForceSliderPages();
+
         }
+        #endregion
 
         public void PausePlatformAction(IPlatformAction action)
         {
@@ -846,7 +1192,6 @@ namespace Singularity.Manager
 
         public void Kill(GeneralUnit unit)
         {
-            unit.Die();
             var lists = new List<List<GeneralUnit>> {mIdle, mLogistics, mConstruction, mProduction, mDefense, mManual};
             lists.ForEach(l => l.Remove(unit));
         }

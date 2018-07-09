@@ -68,7 +68,7 @@ namespace Singularity.Levels
             var genUnit = new List<GeneralUnit>(5);
             for (var i = 0; i < 5; i++)
             {
-                genUnit.Add(new GeneralUnit(platform1, ref mDirector));
+                genUnit.Add(new GeneralUnit(platform1, ref mDirector, 0));
             }
 
             //MilUnits
@@ -97,7 +97,7 @@ namespace Singularity.Levels
             GameScreen.AddObject(setUnit);
 
             //TESTMETHODS HERE ====================================
-            mDirector.GetDistributionManager.RequestResource(platform2, EResourceType.Oil, null);
+            mDirector.GetDistributionDirector.GetManager(0).RequestResource(platform2, EResourceType.Oil, null);
         }
 
         public GameScreen GetGameScreen()

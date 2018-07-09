@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Levels\BasicLevel.cs" />
     <Compile Include="Levels\ILevel.cs" />
+    <Compile Include="Manager\DistributionDirector.cs" />
     <Compile Include="Manager\DistributionManager.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />
     <Compile Include="Screen\BarIWindowItem.cs" />
