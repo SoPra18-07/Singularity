@@ -10,7 +10,7 @@ namespace Singularity.Units
     /// <summary>
     /// A Jump Point Search pathfinder implementation for military units
     /// </summary>
-    internal sealed class MilitaryPathfinder
+    internal sealed class FreeMovingPathfinder
     {
         private JumpPointParam mJpParam;
 
@@ -90,14 +90,16 @@ namespace Singularity.Units
         }
 
         /// <summary>
-        /// Checks if a direct plath is clear of obstacles
+        /// Checks if a direct plath is clear of obstacles. Based on Bresenham's
+        /// line algorithm.
         /// </summary>
+        /// <see cref="http://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm"/>
         /// <param name="x">Starting x position.</param>
         /// <param name="y">Starting y position.</param>
         /// <param name="x2">Target x position.</param>
         /// <param name="y2">Target y position.</param>
         /// <param name="map">Reference to the game map.</param>
-        /// <returns></returns>
+        /// <returns>True if there is a clear direct path to the target.</returns>
         public static bool ClearDirectPath(int x, int y, int x2, int y2, ref Map.Map map)
         {
             var w = x2 - x;
