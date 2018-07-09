@@ -68,7 +68,7 @@ namespace Singularity.Units
             if (BuildCommandCenter != null)
             {
                 //I commented it out, so we get no Errors due to no Multiple Graph Compatibility.
-                // BuildCommandCenter(this, EventArgs.Empty, AbsolutePosition, this);
+                BuildCommandCenter(this, EventArgs.Empty, AbsolutePosition, this);
                 //Note: It doesnt matter if this is called multiple times from settlers other than the first settler. It will only set variables
                 //to true, that has been true already.
                 mUi.Activate();
@@ -154,7 +154,7 @@ namespace Singularity.Units
             {
                 // if key b has been pressed and the settler unit is selected and its not moving
                 // --> send out event that deletes settler and adds a command center
-                if (key == Keys.B && mSelected && HasReachedTarget() || mNeverMoved)
+                if (key == Keys.B && mSelected && (HasReachedTarget() || mNeverMoved))
                 {
                     OnBuildCommandCenter();
                 }

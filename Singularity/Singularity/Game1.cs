@@ -15,10 +15,6 @@ namespace Singularity
         internal readonly GraphicsDeviceManager mGraphics;
         internal readonly GraphicsAdapter mGraphicsAdapter;
 
-        // Screens
-        private ILevel mLevel;
-        private MainMenuManagerScreen mMainMenuManager;
-
         // Sprites!
         private SpriteBatch mSpriteBatch;
 
@@ -38,7 +34,7 @@ namespace Singularity
 
             mGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
 
-            mDirector = new Director(Content);
+            mDirector = new Director(Content, mGraphics);
 
 
             mScreenManager = new StackScreenManager(Content, mDirector.GetInputManager);
@@ -75,9 +71,9 @@ namespace Singularity
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
             //This needs to be done because in the Constructor of Tutorial all Ingame-things (including screens) etc. are initialized and added
-            mLevel = new Skirmish(mGraphics, ref mDirector, Content, mScreenManager);
+            var level = new Skirmish(mGraphics, ref mDirector, Content, mScreenManager);
 
-            mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
+            var mainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
             //ATTENTION: THE INGAME SCREENS ARE HANDLED IN THE LEVELS NOW!
             //mScreenManager.AddScreen(mMainMenuManager); // TODO: This makes it so that the main menu is bypassed
 

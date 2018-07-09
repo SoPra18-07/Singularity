@@ -116,6 +116,10 @@ namespace Singularity.Screen.ScreenClasses
             switch (mScreenState)
             {
                 case EScreen.AchievementsScreen:
+                    if (sPressed == "Back")
+                    {
+                        SwitchScreen(EScreen.MainMenuScreen, mAchievementsScreen, mMainMenuScreen, gametime);
+                    }
                     break;
                 case EScreen.GameModeSelectScreen:
                     if (sPressed == "Free Play")
@@ -155,7 +159,7 @@ namespace Singularity.Screen.ScreenClasses
                         SwitchScreen(EScreen.OptionsScreen, mMainMenuScreen, mOptionsScreen, gametime);
                     }
 
-                    if (sPressed == "Achievments")
+                    if (sPressed == "Achievements")
                     {
                         SwitchScreen(EScreen.AchievementsScreen, mMainMenuScreen, mAchievementsScreen, gametime);
                     }
@@ -325,7 +329,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             mGameModeSelectScreen = new GameModeSelectScreen(screenResolution);
             mLoadSelectScreen = new LoadSelectScreen();
-            mAchievementsScreen = new AchievementsScreen();
+            mAchievementsScreen = new AchievementsScreen(screenResolution);
             mOptionsScreen = new OptionsScreen(screenResolution, screenResolutionChanged, game);
             mMenuBackgroundScreen = new MenuBackgroundScreen(screenResolution);
             mSplashScreen = new SplashScreen(screenResolution);

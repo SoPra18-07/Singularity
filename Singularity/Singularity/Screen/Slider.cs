@@ -9,7 +9,7 @@ using Singularity.Manager;
 
 namespace Singularity.Screen
 {
-    class Slider : IWindowItem, IMouseClickListener, IMousePositionListener
+    public class Slider : IWindowItem, IMouseClickListener, IMousePositionListener
     {
         #region Declaration
 
@@ -90,7 +90,7 @@ namespace Singularity.Screen
             mWithValue = withValueBox;
             mWithPages = withPages;
             mFont = font;
-            ActiveWindow = true;
+            ActiveInWindow = true;
             Pages = pages;
             mLastPagesCount = Pages;
             mDirector = director;
@@ -115,7 +115,7 @@ namespace Singularity.Screen
 
         protected virtual void OnSliderMoving()
         {
-            if (SliderMoving != null && ActiveWindow)
+            if (SliderMoving != null && ActiveInWindow)
             {
                 SliderMoving(this, EventArgs.Empty, mCurrentX / (mMax - mMin));
             }
@@ -123,7 +123,7 @@ namespace Singularity.Screen
 
         protected virtual void OnPageMoving()
         {
-            if (PageMoving != null && ActiveWindow)
+            if (PageMoving != null && ActiveInWindow)
             {
                 PageMoving(this, EventArgs.Empty, mCurrentPage);
             }
@@ -137,7 +137,7 @@ namespace Singularity.Screen
         public void Update(GameTime gametime)
         {
             // if slider should be shown
-            if (ActiveWindow)
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
             {
                 mMin = Position.X;
                 mMax = Position.X + Size.X;
@@ -302,7 +302,7 @@ namespace Singularity.Screen
         public void Draw(SpriteBatch spriteBatch)
         {
             // if slider should be shown
-            if (ActiveWindow)
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
             {
 
                 // add value display
@@ -431,7 +431,9 @@ namespace Singularity.Screen
         public Vector2 Size { get; }
 
         // can make slider not active (not drawn and nothing happens)
-        public bool ActiveWindow { get; set; }
+        public bool ActiveInWindow { get; set; }
+        public bool InactiveInSelectedPlatformWindow { get; set; }
+        public bool OutOfScissorRectangle { get; set; }
 
         // can change the amount of pages available on slider bar
         public int Pages { get; set; }
@@ -440,7 +442,13 @@ namespace Singularity.Screen
         // CAREFUL this does NOT update with changes to PAGES
         public int MaxIncrement { get; set; }
 
-        public int CurrentPage() {return mCurrentPage;}
+        public int GetCurrentPage() {return mCurrentPage;}
+
+        public void SetCurrentPage(int value)
+        {
+            mCurrentPage = value;
+            mCurrentX = mCurrentPage * mPageSize + mMin;
+        }
 
         public EScreen Screen { get;}
 

@@ -32,13 +32,19 @@ namespace Singularity.Screen.ScreenClasses
 
         private int mCurrentFps;
 
-        private Map.Map mMap;
+        private readonly Map.Map mMap;
+
+        private readonly Director mDirector;
+
+        private int mActivePlatforms;
+        private int mDeactivePlatforms;
 
         public DebugScreen(StackScreenManager screenManager, Camera camera, Map.Map map, ref Director director)
         {
             mScreenManager = screenManager;
             mCamera = camera;
             mMap = map;
+            mDirector = director;
 
             director.GetInputManager.AddKeyListener(this);
 
@@ -66,9 +72,9 @@ namespace Singularity.Screen.ScreenClasses
 
 
             spriteBatch.DrawString(mFont, "GameObjects", new Vector2(15, 200), Color.White);
-            spriteBatch.DrawString(mFont, "PlatformCount: " + mMap.GetStructureMap().GetPlatformList().Count, new Vector2(30, 235), Color.White);
+            spriteBatch.DrawString(mFont, "PlatformCount: " + mMap.GetStructureMap().GetPlatformList().Count + ", " + mActivePlatforms + ", " + mDeactivePlatforms, new Vector2(30, 235), Color.White);
             spriteBatch.DrawString(mFont, "GraphCount: " + mMap.GetStructureMap().GetGraphCount(), new Vector2(30, 255), Color.White);
-            spriteBatch.DrawString(mFont, "MilitaryUnitCount: " + "TODO", new Vector2(30, 275), Color.White);
+            spriteBatch.DrawString(mFont, "MilitaryUnitCount: " + mDirector.GetMilitaryManager.TotalUnitCount, new Vector2(30, 275), Color.White);
             spriteBatch.DrawString(mFont, "GeneralUnitCount: " + "TODO", new Vector2(30, 295), Color.White);
 
             spriteBatch.DrawLine(150, 209, 300, 209, Color.White);
@@ -98,6 +104,23 @@ namespace Singularity.Screen.ScreenClasses
         public void Update(GameTime gametime)
         {
             mCurrentFps = (int) Math.Round(1 / gametime.ElapsedGameTime.TotalSeconds, MidpointRounding.ToEven);
+
+            var activeCounter = 0;
+            var deactiveCounter = 0;
+            foreach (var platform in mMap.GetStructureMap().GetPlatformList())
+            {
+                if (platform.IsActive())
+                {
+                    activeCounter++;
+                }
+                else
+                {
+                    deactiveCounter++;
+                }
+            }
+
+            mActivePlatforms = activeCounter;
+            mDeactivePlatforms = deactiveCounter;
         }
 
         public bool UpdateLower()

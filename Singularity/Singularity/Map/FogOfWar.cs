@@ -50,12 +50,12 @@ namespace Singularity.Map
         /// </summary>
         private readonly DepthStencilState mApplyInvertedMaskStencilState;
 
-        private DepthStencilState mApplyMaskStencilState;
+        private readonly DepthStencilState mApplyMaskStencilState;
 
         /// <summary>
         /// The AlphaTestEffect compares alpha values of pixels and sets them given certain restraints.
         /// </summary>
-        private AlphaTestEffect mAlphaComparator;
+        private readonly AlphaTestEffect mAlphaComparator;
 
         /// <summary>
         /// The camera object of the game used for screen coordinae calculation.

@@ -2,7 +2,9 @@
 
 namespace Singularity.Property
 {
-    public interface ICollider : ISpatial
+    /// <inheritdoc cref="ISpatial"/>
+    /// <inheritdoc cref="IDamageable"/>
+    internal interface ICollider : ISpatial, IDamageable
     {
         /// <summary>
         /// Provides a lookup table for which spaces have a collider in them and which don't within the bounding box
@@ -13,6 +15,11 @@ namespace Singularity.Property
         /// Indicates the absolute bounds of a collider. The entire object must be within this bounds
         /// </summary>
         Rectangle AbsBounds { get; }
+
+        /// <summary>
+        /// Indicates the center of the object
+        /// </summary>
+        Vector2 Center { get; }
 
 
         bool Moved { get; }

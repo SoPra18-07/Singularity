@@ -5,6 +5,7 @@ using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
 using Singularity.Screen;
+using Singularity.Sound;
 using Singularity.Utils;
 
 namespace Singularity.Platforms
@@ -16,6 +17,8 @@ namespace Singularity.Platforms
     {
         public EScreen Screen { get; private set; }
         public Rectangle Bounds { get; private set; }
+
+        private bool mPlaySound;
 
         /// <summary>
         /// A 3 state machine if you will.
@@ -104,9 +107,8 @@ namespace Singularity.Platforms
                     break;
             }
 
-            mPlatform = PlatformFactory.Get(platformType, ref director, x, y, resourceMap, false);
+            mPlatform = PlatformFactory.Get(platformType, ref director, x, y, resourceMap);
             mPlatform.SetLayer(LayerConstants.PlatformAboveFowLayer);
-
             UpdateBounds();
 
         }
@@ -144,12 +146,27 @@ namespace Singularity.Platforms
                         break;
                     }
                     mPlatform.SetColor(Color.Red);
+                    mPlaySound = false;
 
                     break;
 
                 case 2:
                     // now we want a road to follow our mouse
                     mConnectionRoad.Destination = new Vector2(mMouseX, mMouseY);
+
+                    if (!mPlaySound)
+                    {
+                        // makes a sound once when platform is placed
+                        mDirector.GetSoundManager.PlaySound("PlatformCreate",
+                            mPlatform.Center.X,
+                            mPlatform.Center.Y,
+                            .24f,
+                            .01f,
+                            true,
+                            false,
+                            SoundClass.Effect);
+                        mPlaySound = true;
+                    }
 
                     // we prematurely reset the color of the platform, so we don't have to worry about it being red
                     mPlatform.ResetColor();

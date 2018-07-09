@@ -11,19 +11,27 @@ using Singularity.Units;
 namespace Singularity.Platforms
 {
     [DataContract]
-    class Quarry : PlatformBlank
+    sealed class Quarry : PlatformBlank
     {
         [DataMember]
-        private const int PlatformWidth = 144;
+        private new const int PlatformWidth = 144;
         [DataMember]
-        private const int PlatformHeight = 127;
+        private new const int PlatformHeight = 127;
 
-        public Quarry(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, ref Director director, bool autoRegister = true): base(position, platformSpriteSheet, baseSprite, ref director, EPlatformType.Quarry, -50)
+        public Quarry(Vector2 position,
+            Texture2D platformSpriteSheet,
+            Texture2D baseSprite,
+            ResourceMap resource,
+            ref Director director,
+            bool friendly = true)
+            : base(position,
+                platformSpriteSheet,
+                baseSprite,
+                ref director,
+                EPlatformType.Quarry,
+                -50,
+                friendly)
         {
-            if (autoRegister)
-            {
-                director.GetDistributionManager.Register(this, false);
-            }
 
             //Add possible Actions in this array
             mIPlatformActions.Add(new ProduceQuarryResource(platform: this, resourceMap: resource, director: ref mDirector));

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,6 +9,7 @@ using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Property;
+using Singularity.Units;
 
 namespace Singularity.Map
 {
@@ -47,6 +50,11 @@ namespace Singularity.Map
         private readonly Dictionary<int, Graph.Graph> mGraphIdToGraph;
 
         /// <summary>
+        /// A dictioanry mapping graph IDs to the energy level of the graph
+        /// </summary>
+        private readonly Dictionary<int, int> mGraphIdToEnergyLevel;
+
+        /// <summary>
         /// The Fog of war of the current game
         /// </summary>
         private readonly FogOfWar mFow;
@@ -72,6 +80,7 @@ namespace Singularity.Map
 
             mPlatformToGraphId = new Dictionary<PlatformBlank, int>();
             mGraphIdToGraph = new Dictionary<int, Graph.Graph>();
+            mGraphIdToEnergyLevel = new Dictionary<int, int>();
 
             mDirector = director;
 
@@ -116,6 +125,7 @@ namespace Singularity.Map
                 mPlatformToGraphId[platform] = graphIndex;
                 mGraphIdToGraph[graphIndex].AddNode(platform);
                 platform.SetGraphIndex(graphIndex);
+                UpdateGenUnitsGraphIndex(mGraphIdToGraph[graphIndex], graphIndex);
                 return;
             }
 
@@ -123,9 +133,13 @@ namespace Singularity.Map
             // intuitively: "the reachability graph from this node is only this node"
             var index = mGraphIdToGraph.Count;
 
+            mGraphIdToEnergyLevel[index] = 0;
             mGraphIdToGraph[index] = graph;
             mPlatformToGraphId[platform] = index;
             platform.SetGraphIndex(index);
+            UpdateGenUnitsGraphIndex(mGraphIdToGraph[index], index);
+
+            mDirector.GetDistributionDirector.AddManager(index);
             mDirector.GetPathManager.AddGraph(index, graph);
         }
 
@@ -199,6 +213,14 @@ namespace Singularity.Map
                 // and add the new graph
                 mGraphIdToGraph[childIndex] = null;
                 mGraphIdToGraph[parentIndex] = graph;
+
+                UpdateGenUnitsGraphIndex(mGraphIdToGraph[parentIndex], parentIndex);
+
+                mGraphIdToEnergyLevel[parentIndex] =
+                    mGraphIdToEnergyLevel[parentIndex] + mGraphIdToEnergyLevel[childIndex];
+                mGraphIdToEnergyLevel[childIndex] = 0;
+
+                mDirector.GetDistributionDirector.MergeManagers(childIndex, parentIndex, parentIndex);
                 mDirector.GetPathManager.RemoveGraph(childIndex);
                 mDirector.GetPathManager.AddGraph(parentIndex, graph);
                 return;
@@ -222,7 +244,6 @@ namespace Singularity.Map
             ((PlatformBlank)child).RemoveEdge(road);
             ((PlatformBlank)parent).RemoveEdge(road);
 
-            //TODO: adjust underlying graph structures
             // more accurately: we have two cases:
             // 1. road gets destroyed -> two new seperate graphs get created
             // because they only were connected by the road to be removed.
@@ -292,6 +313,9 @@ namespace Singularity.Map
             mGraphIdToGraph[newChildIndex] = childReachableGraph;
             mGraphIdToGraph[mPlatformToGraphId[(PlatformBlank) parent]] = parentReachableGraph;
 
+            UpdateGenUnitsGraphIndex(mGraphIdToGraph[newChildIndex], newChildIndex);
+
+            //TODO: split the two dist managers here, wasn't sure how to implement it since i didnt understand the signature
             mDirector.GetPathManager.AddGraph(newChildIndex, childReachableGraph);
             mDirector.GetPathManager.AddGraph(mPlatformToGraphId[(PlatformBlank)parent], parentReachableGraph);
         }
@@ -456,6 +480,37 @@ namespace Singularity.Map
             {
                 mPlatformsToPlace.Remove(platformToRemove);
             }
+
+            // now update the energy level of all graphs
+            foreach (var graphId in mGraphIdToGraph.Keys)
+            {
+                if (mGraphIdToGraph[graphId] == null)
+                {
+                    continue;
+                }
+
+                UpdateEnergyLevel(graphId);
+            }
+        }
+
+        private void UpdateEnergyLevel(int graphId)
+        {
+            var wasNegative = mGraphIdToEnergyLevel[graphId] < 0;
+
+            mGraphIdToEnergyLevel[graphId] = 0;
+
+            foreach (var node in mGraphIdToGraph[graphId].GetNodes())
+            {
+                if (((PlatformBlank) node).IsManuallyDeactivated())
+                {
+                    continue;
+                }
+
+                mGraphIdToEnergyLevel[graphId] = mGraphIdToEnergyLevel[graphId] + ((PlatformBlank) node).GetProvidingEnergy();
+                mGraphIdToEnergyLevel[graphId] = mGraphIdToEnergyLevel[graphId] - ((PlatformBlank) node).GetDrainingEnergy();
+            }
+
+            CheckEnergyLevel(graphId, wasNegative);
         }
 
         /// <summary>
@@ -487,6 +542,63 @@ namespace Singularity.Map
         {
             mMouseX = worldX;
             mMouseY = worldY;
+        }
+
+        private void CheckEnergyLevel(int graphId, bool wasNegative)
+        {
+            // energy level was positive and still is
+            if (!wasNegative && mGraphIdToEnergyLevel[graphId] >= 0)
+            {
+                return;
+            }
+
+            // energy level was negative and is positive considering all the platforms that weren't manually deactivated
+            // -> reactivate all the platforms which weren't manually deactivated
+            if (wasNegative && mGraphIdToEnergyLevel[graphId] >= 0)
+            {
+                foreach (var node in mGraphIdToGraph[graphId].GetNodes())
+                {
+                    if (((PlatformBlank) node).IsManuallyDeactivated())
+                    {
+                        continue;
+                    }
+                    ((PlatformBlank)node).Activate(false);
+                }
+                return;
+            }
+
+            // energy level was something and is now negative
+            foreach (var node in mGraphIdToGraph[graphId].GetNodes())
+            {
+                ((PlatformBlank)node).Deactivate(false);
+            }
+        }
+
+        private List<GeneralUnit> GetGenUnitsOnGraph(Graph.Graph graph)
+        {
+            var genUnits = new List<GeneralUnit>();
+
+            foreach (var node in graph.GetNodes())
+            {
+                var nodeAsPlat = (PlatformBlank) node;
+
+                foreach (var unit in nodeAsPlat.GetGeneralUnitsOnPlatform())
+                {
+                    genUnits.Add(unit);
+                }
+            }
+
+            return genUnits;
+        }
+
+        private void UpdateGenUnitsGraphIndex(Graph.Graph graph, int newId)
+        {
+            var list = GetGenUnitsOnGraph(graph);
+
+            foreach (var genUnit in list)
+            {
+                genUnit.Graphid = newId;
+            }
         }
     }
 }

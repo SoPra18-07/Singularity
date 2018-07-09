@@ -9,7 +9,7 @@ namespace Singularity.Screen
     /// A class to handle the communication between sliders and DistributionManager.
     /// </summary>
     [DataContract]
-    internal class SliderHandler
+    public class SliderHandler
     {
         [DataMember]
         private Slider mDefSlider;
@@ -26,6 +26,9 @@ namespace Singularity.Screen
         [DataMember]
         private int[] mCurrentPages;
 
+        [DataMember]
+        private int mCurrentGraphid;
+
         public SliderHandler(ref Director director, Slider def, Slider prod, Slider constr, Slider logi)
         {
             mDirector = director;
@@ -33,13 +36,18 @@ namespace Singularity.Screen
             mProductionSlider = prod;
             mConstructionSlider = constr;
             mLogisticsSlider = logi;
-            mDirector.GetDistributionManager.Register(this);
+            //TODO: CURRENTLY HARDCODED Change when implementing graphswitch
+            mDirector.GetDistributionDirector.GetManager(0).Register(this);
             mCurrentPages = new int[4];
 
             mDefSlider.PageMoving += DefListen;
             mConstructionSlider.PageMoving += ConstrListen;
             mLogisticsSlider.PageMoving += LogiListen;
             mProductionSlider.PageMoving += ProdListen;
+            Refresh();
+
+            //TODO: this won't work, since it is not guaranteed that theres always a graph at 0
+            mCurrentGraphid = 0;
         }
 
         /// <summary>
@@ -47,7 +55,7 @@ namespace Singularity.Screen
         /// </summary>
         public void Refresh()
         {
-            var distr = mDirector.GetDistributionManager;
+            var distr = mDirector.GetDistributionDirector.GetManager(mCurrentGraphid);
             var free = distr.GetJobCount(JobType.Idle);
             var total = distr.GetUnitTotal();
 
@@ -56,17 +64,53 @@ namespace Singularity.Screen
             mConstructionSlider.Pages = total;
             mLogisticsSlider.Pages = total;
 
-            mCurrentPages[0] = mDefSlider.CurrentPage();
-            mCurrentPages[1] = mConstructionSlider.CurrentPage();
-            mCurrentPages[2] = mLogisticsSlider.CurrentPage();
-            mCurrentPages[3] = mProductionSlider.CurrentPage();
 
-            mDefSlider.MaxIncrement = mDefSlider.CurrentPage() + free;
-            mProductionSlider.MaxIncrement = mProductionSlider.CurrentPage() + free;
-            mConstructionSlider.MaxIncrement = mConstructionSlider.CurrentPage() + free;
-            mLogisticsSlider.MaxIncrement = mLogisticsSlider.CurrentPage() + free;
+            mCurrentPages[0] = distr.GetJobCount(JobType.Defense);
+            mCurrentPages[1] = distr.GetJobCount(JobType.Construction);
+            mCurrentPages[2] = distr.GetJobCount(JobType.Logistics);
+            mCurrentPages[3] = distr.GetJobCount(JobType.Production);
+
+            //If true, there are no defending platforms
+            if (distr.GetRestrictions(true))
+            {
+                mDefSlider.MaxIncrement = 0;
+            }
+            else
+            {
+                mDefSlider.MaxIncrement = mDefSlider.GetCurrentPage() + free;
+            }
+
+            if (distr.GetRestrictions(false))
+            {
+                mProductionSlider.MaxIncrement = 0;
+            }
+            else
+            {
+                mProductionSlider.MaxIncrement = mProductionSlider.GetCurrentPage() + free;
+            }
+            mConstructionSlider.MaxIncrement = mConstructionSlider.GetCurrentPage() + free;
+            mLogisticsSlider.MaxIncrement = mLogisticsSlider.GetCurrentPage() + free;
 
 
+        }
+
+        /// <summary>
+        /// This changes the Graph this SliderHandler displays.
+        /// </summary>
+        public void ChangeGraph(object sender, EventArgs eventArgs)
+        {
+            //What to listen to??
+        }
+
+        /// <summary>
+        /// Used to force the sliders to take the values matching the DistributionManager. Somehow like refresh but it sets new pagevalues.
+        /// </summary>
+        public void ForceSliderPages()
+        {
+            mDefSlider.SetCurrentPage(mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).GetJobCount(JobType.Defense));
+            mProductionSlider.SetCurrentPage(mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).GetJobCount(JobType.Production));
+            mConstructionSlider.SetCurrentPage(mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).GetJobCount(JobType.Construction));
+            mLogisticsSlider.SetCurrentPage(mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).GetJobCount(JobType.Logistics));
         }
 
         public void DefListen(object sender, EventArgs eventArgs, int page)
@@ -75,11 +119,11 @@ namespace Singularity.Screen
             //A negative value means there will be more units assigned to this job and vice versa.
             if (amount < 0)
             {
-                mDirector.GetDistributionManager.DistributeJobs(JobType.Idle, JobType.Defense, -1 * amount);
+                mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Idle, JobType.Defense, -1 * amount);
             }
             else
             {
-                mDirector.GetDistributionManager.DistributeJobs(JobType.Defense, JobType.Idle, amount);
+                mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Defense, JobType.Idle, amount);
             }
             Refresh();
         }
@@ -90,11 +134,11 @@ namespace Singularity.Screen
             //A negative value means there will be more units assigned to this job and vice versa.
             if (amount < 0)
             {
-                mDirector.GetDistributionManager.DistributeJobs(JobType.Idle, JobType.Production, -1 * amount);
+                mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Idle, JobType.Production, -1 * amount);
             }
             else
             {
-                mDirector.GetDistributionManager.DistributeJobs(JobType.Production, JobType.Idle, amount);
+                mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Production, JobType.Idle, amount);
             }
             Refresh();
         }
@@ -105,11 +149,11 @@ namespace Singularity.Screen
             //A negative value means there will be more units assigned to this job and vice versa.
             if (amount < 0)
             {
-                mDirector.GetDistributionManager.DistributeJobs(JobType.Idle, JobType.Construction, -1 * amount);
+                mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Idle, JobType.Construction, -1 * amount);
             }
             else
             {
-                mDirector.GetDistributionManager.DistributeJobs(JobType.Construction, JobType.Idle, amount);
+                mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Construction, JobType.Idle, amount);
             }
             Refresh();
         }
@@ -120,13 +164,19 @@ namespace Singularity.Screen
             //A negative value means there will be more units assigned to this job and vice versa.
             if (amount < 0)
             {
-                mDirector.GetDistributionManager.DistributeJobs(JobType.Idle, JobType.Logistics, -1 * amount);
+                mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Idle, JobType.Logistics, -1 * amount);
             }
             else
             {
-                mDirector.GetDistributionManager.DistributeJobs(JobType.Logistics, JobType.Idle, amount);
+                mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Logistics, JobType.Idle, amount);
             }
             Refresh();
+        }
+
+        //TODO: this is only used for temporarily not crashing the game and keeping the graphID up to date
+        public void SetGraphID(int id)
+        {
+            mCurrentGraphid = id;
         }
     }
 }

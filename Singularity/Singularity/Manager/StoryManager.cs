@@ -23,11 +23,11 @@ namespace Singularity.Manager
 
         //The statistics
         [DataMember]
-        public Dictionary<string, int> mUnits;
+        public Dictionary<string, int> Units { get; private set; }
         [DataMember]
-        public Dictionary<EResourceType, int> mResources;
+        public Dictionary<EResourceType, int> Resources { get; private set; }
         [DataMember]
-        public Dictionary<string, int> mPlatforms;
+        public Dictionary<string, int> Platforms { get; private set; }
 
         [DataMember]
         public StructureMap StructureMap { get; set; }
@@ -48,14 +48,14 @@ namespace Singularity.Manager
             Time = new TimeSpan(0, 0, 0, 0, 0);
             LoadAchievements();
 
-            mUnits = new Dictionary<string, int>
+            Units = new Dictionary<string, int>
             {
                 {"created", 0},
                 {"lost", 0},
                 {"killed", 0}
             };
 
-            mResources = new Dictionary<EResourceType, int>
+            Resources = new Dictionary<EResourceType, int>
             {
                 {EResourceType.Chip, 0},
                 {EResourceType.Concrete, 0},
@@ -72,7 +72,7 @@ namespace Singularity.Manager
                 {EResourceType.Water, 0}
             };
 
-            mPlatforms = new Dictionary<string, int>
+            Platforms = new Dictionary<string, int>
             {
                 {"created", 0},
                 {"lost", 0},
@@ -117,8 +117,8 @@ namespace Singularity.Manager
         public void UpdateUnits(string action)
         {
             int a;
-            mUnits.TryGetValue(action, out a);
-            mUnits.Add(action, a + 1);
+            Units.TryGetValue(action, out a);
+            Units.Add(action, a + 1);
             if (mAchievements.Replicant())
             {
                 //trigger Achievement-popup;
@@ -132,8 +132,8 @@ namespace Singularity.Manager
         public void UpdatePlatforms(string action)
         {
             int a;
-            mPlatforms.TryGetValue(action, out a);
-            mPlatforms.Add(action, a + 1);
+            Platforms.TryGetValue(action, out a);
+            Platforms.Add(action, a + 1);
             if (mAchievements.Skynet())
             {
                 //trigger Achievement-popup;
@@ -147,8 +147,8 @@ namespace Singularity.Manager
         public void UpdateResources(EResourceType resource)
         {
             int a;
-            mResources.TryGetValue(resource, out a);
-            mResources.Add(resource, a + 1);
+            Resources.TryGetValue(resource, out a);
+            Resources.Add(resource, a + 1);
         }
 
         /// <summary>

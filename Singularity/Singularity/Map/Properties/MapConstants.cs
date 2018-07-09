@@ -30,12 +30,12 @@ namespace Singularity.Map.Properties
         /// <summary>
         /// The width of the background picture for the map.
         /// </summary>
-        public const int MapWidth = 4000;
+        public const int MapWidth = 12000;
 
         /// <summary>
         /// The height of the background picture for the map.
         /// </summary>
-        public const int MapHeight = 2000;
+        public const int MapHeight = 6000;
 
         /// <summary>
         /// The width of each map tile.

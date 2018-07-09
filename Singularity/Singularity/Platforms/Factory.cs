@@ -13,11 +13,22 @@ namespace Singularity.Platforms
     class Factory: PlatformBlank
     {
         [DataMember]
-        private const int PlatformWidth = 144;
+        private new const int PlatformWidth = 144;
         [DataMember]
-        private const int PlatformHeight = 127;
+        private new const int PlatformHeight = 127;
 
-        public Factory(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ref Director director): base(position, spritesheet, basesprite, ref director, EPlatformType.Factory, -12)
+        public Factory(Vector2 position,
+            Texture2D spritesheet,
+            Texture2D basesprite,
+            ref Director director,
+            bool friendly = true)
+            : base(position,
+                spritesheet,
+                basesprite,
+                ref director,
+                EPlatformType.Factory,
+                -12,
+                friendly: friendly)
         {
             //mIPlatformActions[0] = new ProduceFactoryResource(this);
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
@@ -25,7 +36,6 @@ namespace Singularity.Platforms
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Factory;
             mSpritename = "Dome";
-            Property = JobType.Production;
             SetPlatfromParameters();
         }
 

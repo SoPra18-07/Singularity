@@ -18,7 +18,6 @@ namespace Singularity.Screen
         #region member variables declaration
 
         // parameters
-        private readonly string mWindowName; // the window name is the windows title
         private readonly Color mColorBorder; // color of the windowborder
         private readonly Color mColorFill; // color of the window background
         private readonly float mBorderPadding; // gap between items and the left window border
@@ -113,7 +112,7 @@ namespace Singularity.Screen
             GraphicsDeviceManager graphics)
         {
             // use parameter-variables
-            mWindowName = windowName;
+            WindowName = windowName;
             Position = position;
             Size = size;
             mColorBorder = new Color(0.68f, 0.933f, 0.933f, .8f);
@@ -168,7 +167,7 @@ namespace Singularity.Screen
             GraphicsDeviceManager graphics)
         {
             // set parameter-variables
-            mWindowName = windowName;
+            WindowName = windowName;
             Position = position;
             Size = size;
             mColorBorder = colorBorder;
@@ -222,7 +221,7 @@ namespace Singularity.Screen
             GraphicsDeviceManager graphics)
         {
             // set parameter-variables
-            mWindowName = windowName;
+            WindowName = windowName;
             Position = position;
             Size = size;
             mColorBorder = colorBorder;
@@ -259,7 +258,7 @@ namespace Singularity.Screen
             // calculate resizing by screensize
             mMinimizationSize = 20;
             mTitleSizeY = 720 / 26;
-            if (mWindowName == "")
+            if (WindowName == "")
             {
                 mTitleSizeY = 0;
                 mMinimizationSize = 0;
@@ -337,7 +336,7 @@ namespace Singularity.Screen
                 // draw IWindowItems
                 foreach (var item in mItemList)
                 {
-                    if (item.ActiveWindow)
+                    if (item.ActiveInWindow && !item.InactiveInSelectedPlatformWindow)
                     {
                         item.Draw(spriteBatch);
                     }
@@ -366,11 +365,11 @@ namespace Singularity.Screen
             }
 
             // draw window title + bar
-            if (mWindowName == "")
+            if (WindowName == "")
             {
                 return;
             }
-            spriteBatch.DrawString(mSpriteFont, mWindowName, new Vector2(Position.X + mMinimizationSize / 2f, Position.Y + mMinimizationSize / 2f), new Color(255, 255, 255));
+            spriteBatch.DrawString(mSpriteFont, WindowName, new Vector2(Position.X + mMinimizationSize / 2f, Position.Y + mMinimizationSize / 2f), new Color(255, 255, 255));
             spriteBatch.DrawRectangle(mTitleBarRectangle, mColorBorder, 1);
         }
 
@@ -409,11 +408,23 @@ namespace Singularity.Screen
             mCombinedItemsSize = 0;
             foreach (var item in mItemList)
             {
-                if (item.ActiveWindow)
+                if (item.ActiveInWindow && !item.InactiveInSelectedPlatformWindow)
                 {
                     item.Update(gametime);
 
                     item.Position = localItemPos;
+
+                    if (item.Position.Y < mScissorRectangle.Y - item.Size.Y ||
+                        item.Position.Y > mScissorRectangle.Y + mScissorRectangle.Height)
+                        // if the item goes completely out of the scissor rectangle's range -> deactivate it
+                        // (to prevent buttons/... from being active out of window)
+                    {
+                        item.OutOfScissorRectangle = true;
+                    }
+                    else
+                    {
+                        item.OutOfScissorRectangle = false;
+                    }
 
                     mCombinedItemsSize += mObjectPadding + item.Size.Y;
 
@@ -421,11 +432,17 @@ namespace Singularity.Screen
                 }
             }
 
-            // bottom of all items combined
-            mItemPosBottom = new Vector2(localItemPos.X, localItemPos.Y);
-
             // check if the window is overflowed with items
             mScrollable = mCombinedItemsSize > mScissorRectangle.Height;
+
+            // prevent the window from being scrolled while unscrollable
+            if (!mScrollable)
+            {
+                mItemScrolledValue = 0;
+            }
+
+            // bottom of all items combined
+            mItemPosBottom = new Vector2(localItemPos.X, localItemPos.Y);
 
             // set the window rectangle
             mWindowRectangle = new Rectangle(
@@ -487,7 +504,7 @@ namespace Singularity.Screen
             mScrollBarRectangle = CalcScrollbarRectangle(mScissorRectangle, mCombinedItemsSize
             );
 
-            if (mWindowName == "")
+            if (WindowName == "")
             {
                 return;
             }
@@ -569,7 +586,7 @@ namespace Singularity.Screen
                         // disable all items due to minimization
                         foreach (var item in mItemList)
                         {
-                            item.ActiveWindow = false;
+                            item.ActiveInWindow = false;
                         }
                     }
                 else if (mMinimized)
@@ -581,7 +598,7 @@ namespace Singularity.Screen
                         // enable all items due to maximization
                         foreach (var item in mItemList)
                         {
-                            item.ActiveWindow = true;
+                            item.ActiveInWindow = true;
                         }
 
                         // catch window being out of screen at the bottom after maximization
@@ -602,7 +619,7 @@ namespace Singularity.Screen
                 mMouseY > Position.Y &&
                 mMouseY < Position.Y + mTitleSizeY + mMinimizationSize &&
                 !mClickOnTitleBar ||
-                (mWindowName == "" &&
+                (WindowName == "" &&
                  mMouseX > Position.X &&
                  mMouseX < Position.X + Position.X + Size.X &&
                  mMouseY > Position.Y &&
@@ -691,9 +708,6 @@ namespace Singularity.Screen
                     }
                 }
                 #endregion
-
-                // calculate the movement
-                var movementVector = new Vector2(Position.X - positionOld.X, Position.Y - positionOld.Y);
             }
 
             #endregion
@@ -759,5 +773,13 @@ namespace Singularity.Screen
 
         // size of the window
         public Vector2 Size { get; }
+
+        // the window name is the windows title
+        public string WindowName { private get; set; }
+
+        public void ResetScrollValue()
+        {
+            mItemScrolledValue = 0;
+        }
     }
 }

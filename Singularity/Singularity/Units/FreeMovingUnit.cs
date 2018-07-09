@@ -20,6 +20,7 @@ namespace Singularity.Units
         /// </summary>
         public int Id { get; }
 
+        public bool Friendly { get; protected set; }
         #region Movement Variables
 
         /// <summary>
@@ -72,7 +73,7 @@ namespace Singularity.Units
         /// <summary>
         /// MilitaryPathfinders enables pathfinding using jump point search or line of sight.
         /// </summary>
-        protected readonly MilitaryPathfinder mPathfinder;
+        protected readonly FreeMovingPathfinder mPathfinder;
 
         /// <summary>
         /// Stores a reference to the game map.
@@ -115,9 +116,6 @@ namespace Singularity.Units
         /// </summary>
         public bool Moved { get; protected set; }
 
-        /// <summary>
-        /// Stores the center of a unit's position.
-        /// </summary>
         public Vector2 Center { get; protected set; }
 
         public Vector2 AbsolutePosition { get; set; }
@@ -149,12 +147,14 @@ namespace Singularity.Units
         /// <param name="camera">Game camera being used.</param>
         /// <param name="director">Reference to the game director.</param>
         /// <param name="map">Reference to the game map.</param>
+        /// <remarks>
         /// FreeMovingUnit is an abstract class that can be implemented to allow free movement outside
         /// of the graphs that represent bases in the game. It provides implementations to allow for
         /// the camera to understand movement and zoom on the object, holds references of the director and
         /// map, and implements pathfinding for objects on the map. It also allows subclasses to have
         /// health and to be damaged.
-        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
+        /// </remarks>
+        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true)
         {
             Id = IdGenerator.NextiD(); // id for the specific unit.
 
@@ -166,9 +166,9 @@ namespace Singularity.Units
 
             mDirector = director;
             mCamera = camera;
-            mPathfinder = new MilitaryPathfinder();
+            mPathfinder = new FreeMovingPathfinder();
 
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+            Friendly = friendly;
         }
 
         #region Pathfinding Methods
@@ -202,9 +202,7 @@ namespace Singularity.Units
 
             if (GlobalVariables.DebugState)
             {
-                // TODO: DEBUG REGION
                 mDebugPath = mPath.ToArray();
-                // TODO: END DEBUG REGION
             }
 
             mBoundsSnapshot = Bounds;
@@ -249,7 +247,7 @@ namespace Singularity.Units
         }
 
         /// <summary>
-        /// Rotates unit in order when selected in order to face
+        /// Rotates unit when selected in order to face
         /// user mouse and eventually target destination.
         /// </summary>
         /// <param name="target"></param>
@@ -259,7 +257,7 @@ namespace Singularity.Units
             // adjust to be at center of sprite
             var x = target.X - (RelativePosition.X + RelativeSize.X / 2);
             var y = target.Y - (RelativePosition.Y + RelativeSize.Y / 2);
-            var hypot = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+            var hypot = Math.Sqrt(x * x + y * y);
 
             // calculate degree between formed triangle
             double degree;
@@ -314,8 +312,7 @@ namespace Singularity.Units
 
         public bool Die()
         {
-            // mDirector.GetMilitaryManager.Kill(this);
-            // todo: MilitaryManager implement
+            // TODO: Allow implementation
 
             return true;
         }

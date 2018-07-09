@@ -133,7 +133,9 @@ namespace Singularity.Sound
         public void PlaySoundTrack()
         {
             if (sSSoundtrack == null)
+            {
                 return;
+            }
 
             MediaPlayer.Play(sSSoundtrack);
         }

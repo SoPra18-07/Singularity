@@ -10,12 +10,25 @@ namespace Singularity.Platforms
     [DataContract]
     internal sealed class EnergyFacility : PlatformBlank
     {
-        [DataMember]
-        private const int PlatformWidth = 144;
-        [DataMember]
-        private const int PlatformHeight = 127;
+        private const int ProvidingEnergy = 20;
 
-        public EnergyFacility(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director) : base(position, platformSpriteSheet, baseSprite , ref director, EPlatformType.Energy, -50)
+        [DataMember]
+        private new const int PlatformWidth = 144;
+        [DataMember]
+        private new const int PlatformHeight = 127;
+
+        public EnergyFacility(Vector2 position,
+            Texture2D platformSpriteSheet,
+            Texture2D baseSprite,
+            ref Director director,
+            bool friendly = true)
+            : base(position,
+                platformSpriteSheet,
+                baseSprite,
+                ref director,
+                EPlatformType.Energy,
+                -50,
+                friendly)
         {
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Something like "Hello InstanceThatManagesEnergyLevels I exist now(Myself)"
@@ -23,6 +36,8 @@ namespace Singularity.Platforms
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Energy;
             mSpritename = "Dome";
+            mProvidingEnergy = ProvidingEnergy;
+
             SetPlatfromParameters();
         }
 

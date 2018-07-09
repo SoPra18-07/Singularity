@@ -13,70 +13,19 @@ namespace Singularity.Levels
 {
     //Not sure whether this should be serialized, but I guess...
     [DataContract]
-    class Tutorial: ILevel
+    internal sealed class Tutorial: BasicLevel
     {
-        [DataMember]
-        public GameScreen GameScreen { get; set; }
-
-        [DataMember]
-        public Camera Camera { get; set; }
-
-        [DataMember]
-        public Map.Map Map { get; private set; }
-
-
-        [DataMember]
-        private GraphicsDeviceManager mGraphics;
-        [DataMember]
-        private FogOfWar mFow;
-        [DataMember]
-        private Director mDirector;
-
-        [DataMember]
-        private UserInterfaceScreen mUi;
-        [DataMember]
-        private IScreenManager mScreenManager;
-
-        //GameObjects to initialize:
-        [DataMember]
-        private CommandCenter mPlatform;
-
-        public Tutorial(GraphicsDeviceManager graphics, ref Director director, ContentManager content, IScreenManager screenmanager)
+        public Tutorial(GraphicsDeviceManager graphics,
+            ref Director director,
+            ContentManager content,
+            IScreenManager screenmanager)
+            : base(graphics, ref director, content, screenmanager)
         {
-            mDirector = director;
-            mDirector.GetStoryManager.SetLevelType(LevelType.Tutorial, this);
-            mDirector.GetStoryManager.LoadAchievements();
-            mGraphics = graphics;
-            mScreenManager = screenmanager;
             LoadContent(content);
         }
 
-        public void LoadContent(ContentManager content)
+        public override void LoadContent(ContentManager content)
         {
-            //Load stuff
-            var platformCylTexture = content.Load<Texture2D>("Cylinders");
-            var platformBlankTexture = content.Load<Texture2D>("PlatformBasic");
-            var platformDomeTexture = content.Load<Texture2D>("Dome");
-            MilitaryUnit.mMilSheet = content.Load<Texture2D>("UnitSpriteSheet");
-            MilitaryUnit.mGlowTexture = content.Load<Texture2D>("UnitGlowSprite");
-            var mapBackground = content.Load<Texture2D>("backgroundGrid");
-
-            //TODO: have a cone texture
-            PlatformFactory.Init(null, platformCylTexture, platformDomeTexture, platformBlankTexture);
-
-            //Map related stuff
-            Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 800, 800);
-            mFow = new FogOfWar(Camera, mGraphics.GraphicsDevice);
-            Map = new Map.Map(mapBackground, 20, 20, mFow, Camera, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
-
-            //INITIALIZE SCREENS AND ADD THEM
-            GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
-            mUi = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
-
-            mScreenManager.AddScreen(GameScreen);
-            mScreenManager.AddScreen(mUi);
-
-
             //INGAME OBJECTS INITIALIZATION ===================================================
 
             //SetUnit
