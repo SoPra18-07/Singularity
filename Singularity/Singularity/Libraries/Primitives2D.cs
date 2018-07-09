@@ -20,7 +20,6 @@ namespace Singularity.Libraries
 
         private static readonly Dictionary<String, List<Vector2>> sCircleCache = new Dictionary<string, List<Vector2>>();
         private static readonly Dictionary<Rectangle, List<Vector2>> sEllipseCache = new Dictionary<Rectangle, List<Vector2>>();
-        //private static readonly Dictionary<String, List<Vector2>> arcCache = new Dictionary<string, List<Vector2>>();
         private static Texture2D sPixel;
 
         #endregion
@@ -126,7 +125,6 @@ namespace Singularity.Libraries
                         continue;
 
                     }
-                    //System.Diagnostics.Debug.Write(x + ", "  + y);
                     vectors.Add(new Vector2(x, y));
 
                 }
@@ -148,7 +146,6 @@ namespace Singularity.Libraries
 
                     }
 
-                    //System.Diagnostics.Debug.Write(x + ", "  + y);
                     vectors.Add(new Vector2(x, y));
 
                 }
@@ -581,7 +578,7 @@ namespace Singularity.Libraries
         /// <param name="rect">The rectangle which desribes the ellipse</param>
         /// <param name="color">The color of the ellipse</param>
         /// <param name="thickness">The thickness of the lines used</param>
-        /// <param name="layer">todo: @Ativolex </param>
+        /// <param name="layer">Chooses the layer which the llipse will be drawn on</param>
         public static void DrawEllipse(this SpriteBatch spriteBatch, Rectangle rect, Color color, float thickness, float layer)
         {
             DrawPoints(spriteBatch, Vector2.Zero, CreateEllipse(rect), color, thickness, layer);
@@ -615,7 +612,7 @@ namespace Singularity.Libraries
         /// <param name="sides">The number of sides to generate</param>
         /// <param name="color">The color of the circle</param>
         /// <param name="thickness">The thickness of the lines used</param>
-        /// <param name="layerDepth">todo: @Ativolex</param>
+        /// <param name="layerDepth">Chooses the layer on which the circle will be drawn on.</param>
         public static void DrawCircle(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, Color color, float thickness, float layerDepth = 0)
         {
             DrawPoints(spriteBatch, center, CreateCircle(radius, sides), color, thickness, layerDepth);
