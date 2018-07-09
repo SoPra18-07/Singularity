@@ -15,10 +15,10 @@ namespace Singularity.Platforms
         private const int ProvidingEnergy = 20;
 
         [DataMember]
-        private const int PlatformWidth = 200;
+        private new const int PlatformWidth = 200;
 
         [DataMember]
-        private const int PlatformHeight = 233;
+        private new const int PlatformHeight = 233;
 
         [DataMember]
         private List<GeneralUnit> mControlledUnits;

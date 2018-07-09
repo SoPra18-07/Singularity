@@ -25,8 +25,6 @@ namespace Singularity.Manager
 
             GetSoundManager.LoadContent(content);
             GetSoundManager.PlaySoundTrack();
-
-
             // Dd}{_:
         }
 
@@ -50,6 +48,7 @@ namespace Singularity.Manager
                 GetInputManager.Update(gametime);
             }
             GetStoryManager.Update(gametime);
+            GetMilitaryManager.Update(gametime);
         }
     }
 }

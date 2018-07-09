@@ -183,6 +183,7 @@ namespace Singularity.Screen.ScreenClasses
             var platform = toAdd as PlatformBlank;
             var settler = toAdd as Settler;
             var conUnit = toAdd as ControllableUnit;
+            var enemyUnit = toAdd as EnemyUnit; // currently unnecessary
 
             if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
@@ -200,9 +201,10 @@ namespace Singularity.Screen.ScreenClasses
                 //TODO: Remove this Register if Building is implemented
                 platform.Register();
                 mMap.AddPlatform(platform);
+                mDirector.GetMilitaryManager.AddPlatform(platform);
                 return true;
             }
-
+            
             // subscribes the game screen the the settler event (to build a command center)
             // TODO unsubscribe / delete settler when event is fired
             if (settler != null)
@@ -214,6 +216,12 @@ namespace Singularity.Screen.ScreenClasses
             if (conUnit != null)
             {
                 mSelBox.SelectingBox += conUnit.BoxSelected;
+                mDirector.GetMilitaryManager.AddUnit(conUnit);
+            }
+
+            if (enemyUnit != null)
+            {
+                mDirector.GetMilitaryManager.AddUnit(enemyUnit);
             }
 
             if (typeof(IRevealing).IsAssignableFrom(typeof(T)))

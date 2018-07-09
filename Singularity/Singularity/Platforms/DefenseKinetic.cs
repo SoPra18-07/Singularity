@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.PlatformActions;
+using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Sound;
 
@@ -43,8 +44,9 @@ namespace Singularity.Platforms
         internal DefenseKinetic(Vector2 position,
             Texture2D platformSpriteSheet,
             Texture2D baseSprite,
-            ref Director director)
-            : base(position, platformSpriteSheet, baseSprite, ref director, EPlatformType.Kinetic)
+            ref Director director,
+            bool friendly = true)
+            : base(position, platformSpriteSheet, baseSprite, ref director, EPlatformType.Kinetic, friendly: friendly)
         {
             //Add possible Actions in this array
             mIPlatformActions.Add(new Shoot(platform: this, director: ref mDirector));
@@ -52,12 +54,12 @@ namespace Singularity.Platforms
             mCost = new Dictionary<EResourceType, int>();
         }
 
-        public override void Shoot(Vector2 target)
+        public override void Shoot(ICollider target)
         {
             // TODO: See if any unit is here first to be able to shoot
             AmmoCount--;
             mShoot = true;
-            EnemyPosition = target;
+            EnemyPosition = target.Center;
 
             mIPlatformActions[0].Execute();
             mDirector.GetSoundManager.PlaySound("KineticTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);

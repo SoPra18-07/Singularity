@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -22,8 +23,6 @@ namespace Singularity.Manager
         public DistributionDirector()
         {
             mDMs = new Dictionary<int, DistributionManager>();
-            //Hardcoded. Soon it should happen in the Structure map I guess.
-            mDMs[0] = new DistributionManager(0);
         }
 
         /// <summary>
@@ -32,12 +31,6 @@ namespace Singularity.Manager
         /// <param name="graphid">The graphid of the new graph.</param>
         public void AddManager(int graphid)
         {
-            if (mDMs.ContainsKey(graphid))
-            {
-                //IF YOU SEE THIS IT MAY BE BECAUSE YOU TRY TO OVERRIDE THE HARDCODED VALUE!!!
-                //ITS IN THE CONSTRUCTOR
-                throw new InvalidGenericArgumentException("Id taken! You cannot override Graphs!");
-            }
             mDMs[graphid] = new DistributionManager(graphid);
         }
 
