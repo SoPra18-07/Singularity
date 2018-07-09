@@ -111,9 +111,9 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             //Reload the content for all ingame objects like Platforms etc.
-            foreach (IDraw drawable in mDrawables)
+            foreach (var drawable in mDrawables)
             {
-
+                
             }
         }
         public void Draw(SpriteBatch spriteBatch)

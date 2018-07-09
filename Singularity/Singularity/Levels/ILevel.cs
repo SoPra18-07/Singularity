@@ -14,7 +14,7 @@ namespace Singularity.Levels
         /// </summary>
         void LoadContent(ContentManager content);
 
-        void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, Director mDirector);
+        void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, ref Director director);
 
         [DataMember]
         GameScreen GameScreen { get; set; }

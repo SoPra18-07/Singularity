@@ -15,11 +15,7 @@ namespace Singularity.Manager
     public class StoryManager : IUpdate
     {
         [DataMember]
-        private int mEnergyLevel;
-
-        [DataMember]
         public TimeSpan Time { get; set; }
-
 
         //The statistics
         [DataMember]
@@ -44,7 +40,6 @@ namespace Singularity.Manager
         public StoryManager(LevelType level = LevelType.None)
         {
             mLevelType = level;
-            mEnergyLevel = 0;
             Time = new TimeSpan(0, 0, 0, 0);
             LoadAchievements();
 
@@ -195,24 +190,6 @@ namespace Singularity.Manager
         public TimeSpan GetIngameTime()
         {
             return new TimeSpan(Time.Hours, Time.Minutes, Time.Seconds);
-        }
-
-        /// <summary>
-        /// Return the energylevel.
-        /// </summary>
-        /// <returns>An integer representing the energy level. Can be negative if more energy is consumed than created.</returns>
-        public int GetEnergyLevel()
-        {
-            return mEnergyLevel;
-        }
-
-        /// <summary>
-        /// Is called when energy is consumed / created. For the consuming part just give a negative energy argument.
-        /// </summary>
-        /// <param name="energy">The amount of energy consumed / created. To consume/create energy this has to be negative/positive.</param>
-        public void AddEnergy(int energy)
-        {
-            mEnergyLevel += energy;
         }
     }
 }

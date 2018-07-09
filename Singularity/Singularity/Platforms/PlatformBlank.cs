@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Exceptions;
 using Singularity.Graph;
@@ -104,8 +105,8 @@ namespace Singularity.Platforms
         [DataMember]
         protected List<IPlatformAction> mIPlatformActions;
 
-        protected readonly Texture2D mPlatformSpriteSheet;
-        protected readonly Texture2D mPlatformBaseTexture;
+        protected Texture2D mPlatformSpriteSheet;
+        protected Texture2D mPlatformBaseTexture;
 
         //This means the platformspritesheetname not the name of the base texture
         [DataMember]
@@ -231,6 +232,13 @@ namespace Singularity.Platforms
             mUserInterfaceController = director.GetUserInterfaceController;
             Debug.WriteLine("PlatformBlank created");
 
+        }
+
+        public void ReloadContent(ContentManager content, ref Director dir)
+        {
+            mPlatformSpriteSheet = content.Load<Texture2D>(mSpritename);
+            mPlatformBaseTexture = content.Load<Texture2D>("PlatformBasic");
+            mDirector = dir;
         }
 
         public void SetColor(Color color)

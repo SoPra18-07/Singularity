@@ -29,15 +29,5 @@ namespace Singularity.Platforms
 
             SetPlatfromParameters();
         }
-
-        public void TurnOn(StoryManager story)
-        {
-            story.AddEnergy(20);
-        }
-
-        public void TurnOff(StoryManager story)
-        {
-            story.AddEnergy(-20);
-        }
     }
 }

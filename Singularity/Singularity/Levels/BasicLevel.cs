@@ -82,7 +82,7 @@ namespace Singularity.Levels
             new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
         }
 
-        public virtual void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, Director director)
+        public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, ref Director director)
         {
             mGraphics = graphics;
             //Load stuff
@@ -105,7 +105,7 @@ namespace Singularity.Levels
             mFow.ReloadContent(mGraphics);
             Map.ReloadContent(mapBackground, Camera, mFow, ref mDirector);
 
-            GameScreen.ReloadContent(content, graphics, Map, mFow, Camera, ref mDirector, platformBlankTexture, platformCylTexture);
+            GameScreen.ReloadContent(content, graphics, Map, mFow, Camera, ref mDirector);
             Ui.ReloadContent(content);
             mDirector.GetUserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
 
