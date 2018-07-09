@@ -15,8 +15,16 @@ namespace Singularity.Environement
     public class Rock : ICollider
     {
         public bool[,] ColliderGrid { get; internal set; }
+
+        // specifies the angle of the given rock
         private float[,] mDrawAngle;
+
+        // specifies whethere a rock should be drawn at that location
         private bool[,] mDrawRock;
+
+        private readonly Vector2 mDrawSize;
+
+        // used to first generate the rock drawing matrix
         private bool mNotGenerated;
         public Rectangle AbsBounds { get; }
         public bool Moved { get; }
@@ -28,7 +36,8 @@ namespace Singularity.Environement
 
         public Rock(Vector2 position)
         {
-            AbsoluteSize = new Vector2(80, 40);
+            AbsoluteSize = new Vector2(160, 130);
+            mDrawSize = new Vector2(80,40);
             AbsolutePosition = position;
             ColliderGrid = new [,]
             {
@@ -116,7 +125,6 @@ namespace Singularity.Environement
                     mNotGenerated = true;
                 }
 
-
                 // draw the rock formation 
 
                 for (int i = 0; i < 18; i++)
@@ -132,11 +140,11 @@ namespace Singularity.Environement
 
                                 spriteBatch.FillCircle(
                                     new Vector2(
-                                        ((AbsolutePosition.X + 20 + (AbsoluteSize.X / 9 * (j)) - 5) +
-                                         AbsoluteSize.X / 16),
-                                        ((AbsolutePosition.Y + 20 + (AbsoluteSize.Y / 7 * (i)) - 5) +
-                                         AbsoluteSize.X / 16)),
-                                    AbsoluteSize.X / 18,
+                                        ((AbsolutePosition.X + 20 + (mDrawSize.X / 9 * (j)) - 5) +
+                                         mDrawSize.X / 16),
+                                        ((AbsolutePosition.Y + 20 + (mDrawSize.Y / 7 * (i)) - 5) +
+                                         mDrawSize.X / 16)),
+                                    mDrawSize.X / 18,
                                     20,
                                     (mDrawAngle[j, i] % 2 == 0) ? Color.DimGray * .9f : Color.Gray * .9f,
                                     1f);                           
@@ -146,10 +154,10 @@ namespace Singularity.Environement
                             else
                             {
                                 spriteBatch.FillRectangle(
-                                    new Rectangle((int)(AbsolutePosition.X + 20 + (AbsoluteSize.X / 9 * (j)) - 5),
-                                        (int)(AbsolutePosition.Y + 20 + (AbsoluteSize.Y / 7 * (i)) - 5),
-                                        (int)(AbsoluteSize.X / 8),
-                                        (int)(AbsoluteSize.X / 8)),
+                                    new Rectangle((int)(AbsolutePosition.X + 20 + (mDrawSize.X / 9 * (j)) - 5),
+                                        (int)(AbsolutePosition.Y + 20 + (mDrawSize.Y / 7 * (i)) - 5),
+                                        (int)(mDrawSize.X / 8),
+                                        (int)(mDrawSize.X / 8)),
                                     (mDrawAngle[j, i] % 2 == 0) ? Color.DimGray * .8f : Color.Gray * .8f,
                                     mDrawAngle[j, i] * .01f,
                                     1f);
