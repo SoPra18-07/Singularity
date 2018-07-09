@@ -146,6 +146,7 @@ namespace Singularity.Platforms
                         break;
                     }
                     mPlatform.SetColor(Color.Red);
+                    mPlaySound = false;
 
                     break;
 
@@ -159,7 +160,7 @@ namespace Singularity.Platforms
                         mDirector.GetSoundManager.PlaySound("PlatformCreate",
                             mPlatform.Center.X,
                             mPlatform.Center.Y,
-                            .1f,
+                            .24f,
                             .01f,
                             true,
                             false,

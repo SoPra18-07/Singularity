@@ -288,3 +288,9 @@
 /processorParam:Quality=Best
 /build:Sound/SFX/PlatformCreate.wav
 
+#begin Sound/SFX/PowerDown.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/SFX/PowerDown.wav
+
