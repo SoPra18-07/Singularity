@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Property;
 
-namespace Singularity.Environement
+namespace Singularity.Nature
 {
     public class Rock : ICollider
     {
