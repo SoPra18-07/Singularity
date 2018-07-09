@@ -15,11 +15,23 @@ namespace Singularity.Platforms
     internal sealed class Well: PlatformBlank
     {
         [DataMember]
-        private const int PlatformWidth = 144;
+        private new const int PlatformWidth = 144;
         [DataMember]
-        private const int PlatformHeight = 127;
+        private new const int PlatformHeight = 127;
 
-        public Well(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, ref Director director) : base(position, platformSpriteSheet, baseSprite, ref director, EPlatformType.Well, -50)
+        public Well(Vector2 position,
+            Texture2D platformSpriteSheet,
+            Texture2D baseSprite,
+            ResourceMap resource,
+            ref Director director,
+            bool friendly = true)
+            : base(position,
+                platformSpriteSheet,
+                baseSprite,
+                ref director,
+                EPlatformType.Well,
+                -50,
+                friendly: friendly)
         {
 
             //Add possible Actions in this array
@@ -29,6 +41,7 @@ namespace Singularity.Platforms
             mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Well;
             mSpritename = "Dome";
+            Property = JobType.Production;
             SetPlatfromParameters();
         }
 

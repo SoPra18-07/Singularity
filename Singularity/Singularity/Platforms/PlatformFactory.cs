@@ -42,8 +42,15 @@ namespace Singularity.Platforms
         /// <param name="x">The initial x coordinate of the platform</param>
         /// <param name="y">The initial y coordinate of the platform</param>
         /// <param name="resourceMap">The resource map needed to initialize some platforms</param>
+        /// <param name="friendly">The allegiance of the platform.</param>
         /// <returns></returns>
-        public static PlatformBlank Get(EPlatformType type, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null)
+        public static PlatformBlank Get(EPlatformType type,
+            ref Director director,
+            float x = 0,
+            float y = 0,
+            ResourceMap resourceMap = null,
+            bool autoRegister = true,
+            bool friendly = true)
         {
             //TODO: add conesheet to this query. Its not included right now since it doesn't exists at this point in time
             if (sCylinderSheet == null || sDomeSheet == null || sBlankSheet == null)
@@ -56,43 +63,43 @@ namespace Singularity.Platforms
             switch (type)
             {
                 case EPlatformType.Quarry:
-                    return new Quarry(position, sDomeSheet, sBlankSheet, resourceMap, ref director);
+                    return new Quarry(position, sDomeSheet, sBlankSheet, resourceMap, ref director, friendly);
 
                 case EPlatformType.Barracks:
-                    return new Barracks(position, sCylinderSheet, sBlankSheet, ref director);
+                    return new Barracks(position, sCylinderSheet, sBlankSheet, ref director, friendly);
 
                 case EPlatformType.Blank:
-                    return new PlatformBlank(position, sBlankSheet, sBlankSheet, ref director);
+                    return new PlatformBlank(position, sBlankSheet, sBlankSheet, ref director, friendly: friendly);
 
                 case EPlatformType.Command:
-                    return new CommandCenter(position, sCylinderSheet, sBlankSheet, ref director);
+                    return new CommandCenter(position, sCylinderSheet, sBlankSheet, ref director, friendly);
 
                 case EPlatformType.Energy:
-                    return new EnergyFacility(position, sDomeSheet, sBlankSheet, ref director);
+                    return new EnergyFacility(position, sDomeSheet, sBlankSheet, ref director, friendly);
 
                 case EPlatformType.Factory:
-                    return new Factory(position, sDomeSheet, sBlankSheet, ref director);
+                    return new Factory(position, sDomeSheet, sBlankSheet, ref director, friendly);
 
                 case EPlatformType.Junkyard:
-                    return new Junkyard(position, sDomeSheet, sBlankSheet, ref director);
+                    return new Junkyard(position, sDomeSheet, sBlankSheet, ref director, friendly);
 
                 case EPlatformType.Kinetic:
-                    return new DefenseKinetic(position, sConeSheet, sBlankSheet, ref director);
+                    return new DefenseKinetic(position, sConeSheet, sBlankSheet, ref director, friendly);
 
                 case EPlatformType.Mine:
-                    return new Mine(position, sDomeSheet, sBlankSheet, resourceMap, ref director);
+                    return new Mine(position, sDomeSheet, sBlankSheet, resourceMap, ref director, friendly);
 
                 case EPlatformType.Packaging:
                     throw new NotImplementedException("Packaging facilities have not yet been implemented");
 
                 case EPlatformType.Storage:
-                    return new Storage(position, sDomeSheet, sBlankSheet, ref director);
+                    return new Storage(position, sDomeSheet, sBlankSheet, ref director, friendly);
 
                 case EPlatformType.Well:
-                    return new Well(position, sDomeSheet, sBlankSheet, resourceMap, ref director);
+                    return new Well(position, sDomeSheet, sBlankSheet, resourceMap, ref director, friendly);
 
                 case EPlatformType.Laser:
-                    return new DefenseLaser(position, sConeSheet, sBlankSheet, ref director);
+                    return new DefenseLaser(position, sConeSheet, sBlankSheet, ref director, friendly);
 
                 default:
                     break;

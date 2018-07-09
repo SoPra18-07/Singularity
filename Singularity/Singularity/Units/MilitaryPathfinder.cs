@@ -98,7 +98,7 @@ namespace Singularity.Units
         /// <param name="y2">Target y position.</param>
         /// <param name="map">Reference to the game map.</param>
         /// <returns></returns>
-        public bool ClearDirectPath(int x, int y, int x2, int y2, ref Map.Map map)
+        public static bool ClearDirectPath(int x, int y, int x2, int y2, ref Map.Map map)
         {
             var w = x2 - x;
             var h = y2 - y;
