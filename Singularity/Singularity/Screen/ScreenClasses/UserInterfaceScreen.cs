@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -1320,7 +1319,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <summary>
         /// Used to Deactivate the UI to activate it later (used by settler)
         /// </summary>
-        public void Deactivate()
+        private void Deactivate()
         {
             foreach (var window in mWindowList)
             {

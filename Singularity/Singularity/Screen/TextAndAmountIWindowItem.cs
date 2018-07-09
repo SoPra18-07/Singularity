@@ -1,6 +1,4 @@
-﻿using System;
-using System.Security.Cryptography;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Singularity.Screen
@@ -10,17 +8,21 @@ namespace Singularity.Screen
     /// </summary>
     internal sealed class TextAndAmountIWindowItem : IWindowItem
     {
+        #region member variables
+
         // the text - will be placed on the left side of the item
         private readonly string mText;
 
-        // the amount - will be placed on the right side on the item
-        public int Amount { get; set; }
+        // the amount - will be placed on the right side in the item
+        public int Amount { private get; set; }
 
         // the spritefont used for the text
         private readonly SpriteFont mSpriteFont;
 
         // the color used to draw the text
         private readonly Color mColor;
+
+        #endregion
 
         /// <summary>
         /// IWindowItem which will place a text on the left side and an amount on the right side
@@ -43,16 +45,25 @@ namespace Singularity.Screen
             Amount = amount;
             Position = position;
             mSpriteFont = spriteFont;
-            Size = new Vector2(size.X, mSpriteFont.MeasureString("A").Y);
+            Size = new Vector2(size.X, mSpriteFont.MeasureString("A").Y); // Size of 'A', because only the height is needed
             mColor = color;
 
             ActiveInWindow = true;
         }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
             // update not needed
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
             if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
@@ -65,10 +76,25 @@ namespace Singularity.Screen
             }
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
         public Vector2 Position { get; set; }
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
         public Vector2 Size { get; }
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
         public bool ActiveInWindow { get; set; }
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
         public bool InactiveInSelectedPlatformWindow { get; set; }
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
         public bool OutOfScissorRectangle { get; set; }
     }
 }

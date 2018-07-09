@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
@@ -75,9 +74,6 @@ namespace Singularity.Screen
         private float mMouseX;
         private float mMouseY;
 
-        // used by scissorrectangle to create a scrollable window by cutting everything outside specific bounds
-        private readonly RasterizerState mRasterizerState;
-
         // title font
         private readonly SpriteFont mSpriteFont;
 
@@ -125,9 +121,6 @@ namespace Singularity.Screen
             // screen size - needed for input management
             mCurrentScreenWidth = graphics.PreferredBackBufferWidth;
             mCurrentScreenHeight = graphics.PreferredBackBufferHeight;
-
-            // Initialize scissor window
-            mRasterizerState = new RasterizerState { ScissorTestEnable = true };
 
             Initialization();
 
@@ -181,9 +174,6 @@ namespace Singularity.Screen
             mCurrentScreenWidth = graphics.PreferredBackBufferWidth;
             mCurrentScreenHeight = graphics.PreferredBackBufferHeight;
 
-            // Initialize scissor window
-            mRasterizerState = new RasterizerState { ScissorTestEnable = true };
-
             Initialization();
 
             // set start values
@@ -234,9 +224,6 @@ namespace Singularity.Screen
             // screen size - needed for input management
             mCurrentScreenWidth = graphics.PreferredBackBufferWidth;
             mCurrentScreenHeight = graphics.PreferredBackBufferHeight;
-
-            // Initialize scissor window
-            mRasterizerState = new RasterizerState { ScissorTestEnable = true };
 
             Initialization();
 
@@ -298,6 +285,10 @@ namespace Singularity.Screen
             return true;
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
             if (!Active)
@@ -373,6 +364,10 @@ namespace Singularity.Screen
             spriteBatch.DrawRectangle(mTitleBarRectangle, mColorBorder, 1);
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
             if (!Active)
@@ -540,23 +535,39 @@ namespace Singularity.Screen
             return new Rectangle((int)(Position.X + Size.X - mMinimizationSize + 2), (int)positionY, mMinimizationSize - 4, (int)sizeY);
         }
 
-        // true if window is active (window + items in window will be drawn/updated) or inactive (not drawn/updated)
+        /// <summary>
+        /// true if window is active (window + items in window will be drawn/updated) or inactive (not drawn/updated)
+        /// </summary>
         internal bool Active { get; set; }
 
-        // position of the window
+        /// <summary>
+        /// position of the window
+        /// </summary>
         public Vector2 Position { get; set; }
 
-        // size of the window
+        /// <summary>
+        /// size of the window
+        /// </summary>
         public Vector2 Size { get; }
 
-        // the window name is the windows title
+        /// <summary>
+        /// the window name is the windows title
+        /// </summary>
         public string WindowName { private get; set; }
 
+        /// <summary>
+        /// reset scrolling
+        /// </summary>
         public void ResetScrollValue()
         {
             mItemScrolledValue = 0;
         }
 
+        /// <summary>
+        /// Scroll the window to the end, probably while adding a new item and removing an old item
+        /// </summary>
+        /// <param name="newEventHeight"></param>
+        /// <param name="oldEventHeight"></param>
         public void AutoScrollToEnd(float newEventHeight, float oldEventHeight)
         {
             // this will be the new combinedItemSize
@@ -567,11 +578,19 @@ namespace Singularity.Screen
         }
 
         #region InputManagement
-
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
         public Rectangle Bounds { get; private set; }
-
+        /// <summary>
+        /// the screen on which this object is placed
+        /// </summary>
         public EScreen Screen { get; } = EScreen.UserInterfaceScreen;
-
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="mouseAction"></param>
+        /// <returns></returns>
         public bool MouseWheelValueChanged(EMouseAction mouseAction)
         {
             // enabled only if
@@ -626,7 +645,12 @@ namespace Singularity.Screen
             // minimized + mouse on minimized window -> return false ... else true
             return !mMinimized || (!(mMouseX > Position.X) || !(mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width)) || !(mMouseY > Position.Y) || !(mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height);
         }
-
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="mouseAction"></param>
+        /// <param name="withinBounds"></param>
+        /// <returns></returns>
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
             if (mouseAction == EMouseAction.LeftClick && withinBounds && Active)
@@ -705,8 +729,7 @@ namespace Singularity.Screen
                 #endregion
             }
 
-
-            // everything following handles if the input is given through or not
+            #region handle input givethrough
 
             if (!mMinimized && (mMouseX > Position.X && mMouseX < Position.X + Size.X) && mMouseY > Position.Y && mMouseY < Position.Y + Size.Y)
             // not minimized + mouse on window
@@ -718,8 +741,15 @@ namespace Singularity.Screen
             // minimized + mouse on minimized window -> return false ... else true
             return !(mMinimized && mMouseX > Position.X && mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width &&
                                    mMouseY > Position.Y && mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height);
-        }
 
+            #endregion
+        }
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="mouseAction"></param>
+        /// <param name="withinBounds"></param>
+        /// <returns></returns>
         public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {
             #region window movement
@@ -776,7 +806,12 @@ namespace Singularity.Screen
 
             return false;
         }
-
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="mouseAction"></param>
+        /// <param name="withinBounds"></param>
+        /// <returns></returns>
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
             if (!Active)
@@ -789,7 +824,13 @@ namespace Singularity.Screen
 
             return false;
         }
-
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="screenX"></param>
+        /// <param name="screenY"></param>
+        /// <param name="worldX"></param>
+        /// <param name="worldY"></param>
         public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
             if (!Active)

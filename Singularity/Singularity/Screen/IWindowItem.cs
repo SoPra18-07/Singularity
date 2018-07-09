@@ -3,15 +3,15 @@ using Singularity.Property;
 
 namespace Singularity.Screen
 {
-    interface IWindowItem : IUpdate, IDraw
+    internal interface IWindowItem : IUpdate, IDraw
     {
         /// <summary>
-        /// The item's position
+        /// The IWindowItem's position
         /// </summary>
         Vector2 Position { get; set; }
 
         /// <summary>
-        /// The item's size
+        /// The IWindowItem's size
         /// </summary>
         Vector2 Size { get; }
 
