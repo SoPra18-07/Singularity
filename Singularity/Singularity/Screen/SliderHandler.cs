@@ -9,7 +9,7 @@ namespace Singularity.Screen
     /// A class to handle the communication between sliders and DistributionManager.
     /// </summary>
     [DataContract]
-    internal class SliderHandler
+    public class SliderHandler
     {
         [DataMember]
         private Slider mDefSlider;
@@ -46,7 +46,7 @@ namespace Singularity.Screen
             mProductionSlider.PageMoving += ProdListen;
             Refresh();
 
-            //TODO: Remove Hardcoded value when integrating graph switch.
+            //TODO: this won't work, since it is not guaranteed that theres always a graph at 0
             mCurrentGraphid = 0;
         }
 
@@ -171,6 +171,12 @@ namespace Singularity.Screen
                 mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Logistics, JobType.Idle, amount);
             }
             Refresh();
+        }
+
+        //TODO: this is only used for temporarily not crashing the game and keeping the graphID up to date
+        public void SetGraphID(int id)
+        {
+            mCurrentGraphid = id;
         }
     }
 }

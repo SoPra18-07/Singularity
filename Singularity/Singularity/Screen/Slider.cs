@@ -1,5 +1,4 @@
 ﻿using System;
-using System;
 using System.Globalization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,7 +9,7 @@ using Singularity.Manager;
 
 namespace Singularity.Screen
 {
-    class Slider : IWindowItem, IMouseClickListener, IMousePositionListener
+    public class Slider : IWindowItem, IMouseClickListener, IMousePositionListener
     {
         #region Declaration
 

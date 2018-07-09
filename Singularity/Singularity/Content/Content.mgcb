@@ -264,3 +264,33 @@
 /processorParam:TextureFormat=Compressed
 /build:LibSans10.spritefont
 
+#begin Sound/SFX/LaserTowerShot.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/SFX/LaserTowerShot.wav
+
+#begin Sound/SFX/KineticTowerShot.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/SFX/KineticTowerShot.wav
+
+#begin Sound/SFX/DestroyPlat.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/SFX/DestroyPlat.wav
+
+#begin Sound/SFX/PlatformCreate.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/SFX/PlatformCreate.wav
+
+#begin Sound/SFX/PowerDown.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/SFX/PowerDown.wav
+

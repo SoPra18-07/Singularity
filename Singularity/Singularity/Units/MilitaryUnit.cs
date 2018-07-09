@@ -7,6 +7,7 @@ using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
 using Singularity.Sound;
+using Singularity.Utils;
 
 namespace Singularity.Units
 {
@@ -36,18 +37,32 @@ namespace Singularity.Units
         /// <summary>
         /// Scalar for the unit size.
         /// </summary>
-        protected const float Scale = 0.4f;
+        private const float Scale = 0.4f;
 
         /// <summary>
         /// Indicates the position the closest enemy is at.
         /// </summary>
-        private Vector2 mEnemyPosition;
+        private ICollider mShootingTarget;
 
         /// <summary>
         /// Indicates if the unit is currently shooting.
         /// </summary>
         private bool mShoot;
 
+        public int Range { get; protected set; }
+
+        /// <summary>
+        /// Color of the unit while selected.
+        /// </summary>
+        protected Color mSelectedColor = Color.DarkGray;
+
+        /// <summary>
+        /// Color of the unit while not selected
+        /// </summary>
+        protected Color mColor = Color.Gray;
+
+        private float mShootingTimer = -1f;
+        private double mCurrentTime;
         
         public MilitaryUnit(Vector2 position,
             Camera camera,
@@ -55,26 +70,16 @@ namespace Singularity.Units
             ref Map.Map map)
             : base(position, camera, ref director, ref map)
         {
-            mSpeed = 4;
-            Health = 10;
+            mSpeed = MilitaryUnitStats.StandardSpeed;
+            Health = MilitaryUnitStats.StandardHealth;
 
             AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
 
             RevelationRadius = 400;
 
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * Scale / 2, AbsolutePosition.Y + AbsoluteSize.Y * Scale / 2);
-        }
+            Center = new Vector2((AbsolutePosition.X + AbsoluteSize.X) * 0.5f, (AbsolutePosition.Y + AbsoluteSize.Y) * 0.5f );
 
-        /// <summary>
-        /// Static method that can be called to create a new military unit
-        /// </summary>
-        /// <param name="position"></param>
-        /// <param name="director"></param>
-        /// <returns></returns>
-        public static MilitaryUnit CreateMilitaryUnit(Vector2 position, ref Director director)
-        {
-            var map = director.GetStoryManager.Level.Map;
-            return new MilitaryUnit(position, director.GetStoryManager.Level.Camera, ref director, ref map);
+            Range = MilitaryUnitStats.StandardRange;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -90,7 +95,7 @@ namespace Singularity.Units
                             mMilSheet,
                             AbsolutePosition,
                             new Rectangle(150 * mColumn, 75 * mRow, (int)(AbsoluteSize.X / Scale), (int)(AbsoluteSize.Y / Scale)),
-                            mSelected ? Color.DarkGray : Color.Gray,
+                            mSelected ? mSelectedColor : mColor,
                             0f,
                             Vector2.Zero,
                             new Vector2(Scale),
@@ -115,7 +120,6 @@ namespace Singularity.Units
 
             if (GlobalVariables.DebugState)
             {
-                // TODO DEBUG REGION
                 if (mDebugPath != null)
                 {
                     for (var i = 0; i < mDebugPath.Length - 1; i++)
@@ -130,10 +134,13 @@ namespace Singularity.Units
                 return;
             }
 
-            // draws a laser line a a slight glow around the line, then sets the shoot future off
-            spriteBatch.DrawLine(Center, MapCoordinates(mEnemyPosition), Color.White, 2);
-            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), MapCoordinates(mEnemyPosition), Color.White * .2f, 6);
-            mShoot = false;
+            if (mCurrentTime <= mShootingTimer + 200)
+            {
+                // draws a laser line a a slight glow around the line, then sets the shoot future off
+                spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2);
+                spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6);
+                mShoot = false;
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -143,18 +150,15 @@ namespace Singularity.Units
             Bounds = new Rectangle(
                 (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
 
+            
             // this makes the unit rotate according to the mouse position when its selected and not moving.
             if (mSelected && !mIsMoving && !mShoot)
             {
-                Rotate(new Vector2(mMouseX, mMouseY));
+                 Rotate(new Vector2(mMouseX, mMouseY));
             }
+            
 
-            else if (mShoot)
-            {
-                Rotate(mEnemyPosition);
-            }
-
-            if (HasReachedTarget())
+            else if (HasReachedTarget())
             {
                 mIsMoving = false;
             }
@@ -162,6 +166,7 @@ namespace Singularity.Units
             // calculate path to target position
             else if (mIsMoving)
             {
+                Rotate(mPath.Peek());
                 if (!HasReachedWaypoint())
                 {
                     MoveToTarget(mPath.Peek(), mSpeed);
@@ -177,25 +182,47 @@ namespace Singularity.Units
             mRow = mRotation / 18;
             mColumn = (mRotation - mRow * 18) / 3;
 
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X * Scale / 2, AbsolutePosition.Y + AbsoluteSize.Y * Scale / 2);
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
             AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * Scale), (int) (AbsoluteSize.Y * Scale));
             Moved = mIsMoving;
 
             //TODO this needs to be taken out once the military manager takes control of shooting
-            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            if (!mIsMoving && mShoot)
             {
-                // shoots at mouse and plays laser sound at full volume
-                Shoot(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
-                mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+                if (mShootingTimer < 0.5f)
+                {
+                    mShootingTimer = (float) gameTime.TotalGameTime.TotalMilliseconds;
+                    Shoot(mShootingTarget);
+                }
 
+                mCurrentTime = gameTime.TotalGameTime.TotalMilliseconds;
+                if (mShootingTimer + 750 <= gameTime.TotalGameTime.TotalMilliseconds)
+                {
+                    mShootingTimer = (float)gameTime.TotalGameTime.TotalMilliseconds;
+                    Shoot(mShootingTarget);
+                }
             }
         }
 
-        public void Shoot(Vector2 target)
+        public void Shoot(ICollider target)
         {
-            mShoot = true;
-            mEnemyPosition = target;
-            Rotate(target);
+            mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+            target.MakeDamage(MilitaryUnitStats.UnitStrength);
+        }
+
+        public void SetShootingTarget(ICollider target)
+        {
+            if (target == null)
+            {
+                mShoot = false;
+                mShootingTimer = -1;
+            }
+            else
+            {
+                mShoot = true;
+            }
+
+            mShootingTarget = target;
         }
         
     }

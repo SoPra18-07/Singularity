@@ -22,7 +22,7 @@ namespace Singularity.Input
         private readonly Dictionary<IMouseClickListener, EClickType> mLeftClickType;
         private readonly Dictionary<IMouseClickListener, EClickType> mRightClickType;
 
-        private List<EScreen> mScreensToCheck;
+        private readonly List<EScreen> mScreensToCheck;
 
         private MouseState mCurrentMouseState;
         private MouseState mPreviousMouseState;

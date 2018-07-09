@@ -101,6 +101,7 @@ namespace Singularity.Units
 
         public GeneralUnit(PlatformBlank platform, ref Director director, int graphid)
         {
+            platform.AddGeneralUnit(this);
             Graphid = graphid;
             Id = IdGenerator.NextiD();
             mDestination = Optional<INode>.Of(null);
@@ -451,9 +452,13 @@ namespace Singularity.Units
             // current nodequeue is empty (the path)
             if (mDestination.IsPresent() && mNodeQueue.Count <= 0 && !mIsMoving)
             {
+                ((PlatformBlank)CurrentNode).RemoveGeneralUnit(this);
+
                 mNodeQueue = mDirector.GetPathManager.GetPath(this, mDestination.Get(), ((PlatformBlank)mDestination.Get()).GetGraphIndex()).GetNodePath();
 
                 CurrentNode = mNodeQueue.Dequeue();
+
+                ((PlatformBlank) CurrentNode)?.AddGeneralUnit(this);
             }
 
             if (CurrentNode == null)
@@ -464,7 +469,11 @@ namespace Singularity.Units
             // update the current node to move to after the last one got reached.
             if (ReachedTarget(((PlatformBlank)CurrentNode).Center) && mNodeQueue.Count > 0)
             {
+                ((PlatformBlank)CurrentNode).RemoveGeneralUnit(this);
+
                 CurrentNode = mNodeQueue.Dequeue();
+
+                ((PlatformBlank)CurrentNode).AddGeneralUnit(this);
             }
 
             // finally move to the current node.
