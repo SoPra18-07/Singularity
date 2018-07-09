@@ -582,9 +582,6 @@ namespace Singularity.Map
             {
                 var nodeAsPlat = (PlatformBlank) node;
 
-                Debug.WriteLine(nodeAsPlat.GetGeneralUnitsOnPlatform().Count);
-
-
                 foreach (var unit in nodeAsPlat.GetGeneralUnitsOnPlatform())
                 {
                     genUnits.Add(unit);
@@ -597,11 +594,9 @@ namespace Singularity.Map
         private void UpdateGenUnitsGraphIndex(Graph.Graph graph, int newId)
         {
             var list = GetGenUnitsOnGraph(graph);
-            Debug.WriteLine(list.Count);
 
             foreach (var genUnit in list)
             {
-                Debug.WriteLine(genUnit + ", " + genUnit.Graphid + ", " + newId);
                 genUnit.Graphid = newId;
             }
         }
