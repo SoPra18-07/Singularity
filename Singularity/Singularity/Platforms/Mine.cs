@@ -24,7 +24,6 @@ namespace Singularity.Platforms
             Texture2D basesprite,
             ResourceMap resource,
             ref Director director,
-            bool autoRegister = true,
             bool friendly = true)
             : base(position,
                 spritesheet,
@@ -34,11 +33,7 @@ namespace Singularity.Platforms
                 -50,
                 friendly)
         {
-            if (autoRegister)
-            {
-                director.GetDistributionManager.Register(this, false);
-            }
-
+            
             mIPlatformActions.Add(new ProduceMineResource(platform: this, resourceMap: resource, director: ref mDirector));
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.

@@ -23,7 +23,6 @@ namespace Singularity.Platforms
             Texture2D baseSprite,
             ResourceMap resource,
             ref Director director,
-            bool autoRegister = true,
             bool friendly = true)
             : base(position,
                 platformSpriteSheet,
@@ -33,10 +32,6 @@ namespace Singularity.Platforms
                 -50,
                 friendly)
         {
-            if (autoRegister)
-            {
-                director.GetDistributionManager.Register(this, false);
-            }
 
             //Add possible Actions in this array
             mIPlatformActions.Add(new ProduceQuarryResource(platform: this, resourceMap: resource, director: ref mDirector));

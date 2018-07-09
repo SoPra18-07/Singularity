@@ -65,7 +65,21 @@ namespace Singularity.Units
         /// Heavy military unit range.
         /// </summary>
         internal static int HeavyRange { get; } = 300;
-        
+
+        #endregion
+
+        #region Damage Stats
+
+        /// <summary>
+        /// The strength of military units (i.e. how much damage it does to objects).
+        /// </summary>
+        internal static int UnitStrength = 1;
+
+        /// <summary>
+        /// The strength of turrets (i.e. how much damage it does to objects).
+        /// </summary>
+        internal static int TurretStrength = 2;
+
         #endregion
     }
 }

@@ -17,6 +17,6 @@ namespace Singularity.Property
         /// Sets the target to be shot at.
         /// </summary>
         /// <param name="target">The target to be shot.</param>
-        void SetShootingTarget(Vector2 target);
+        void SetShootingTarget(ICollider target);
     }
 }

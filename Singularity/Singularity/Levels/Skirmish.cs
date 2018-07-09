@@ -75,7 +75,7 @@ namespace Singularity.Levels
             var enemyUnit = new Target(new Vector2(3000, 2950), Camera, ref mDirector, ref map);
             var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
 
-            var settler = new Settler(new Vector2(3050, 3050), Camera, ref mDirector, ref map, GameScreen, mUi);
+            var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, mUi);
 
             var rock1 = new Rock(new Vector2(3500, 2800));
             var rock2 = new Rock(new Vector2(2800, 2000));
@@ -88,13 +88,6 @@ namespace Singularity.Levels
             {
                 genUnit.Add(new GeneralUnit(platform1, ref mDirector, 0));
             }
-
-            //MilUnits
-            var map = Map;
-            var milUnit = new MilitaryUnit(new Vector2(3000, 2700), Camera, ref mDirector, ref map);
-
-            //SetUnit
-            var setUnit = new Settler(new Vector2(3000, 3250), Camera, ref mDirector, ref map, GameScreen, mUi);
             
             
             // Resources

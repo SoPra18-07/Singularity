@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
+using Singularity.Property;
 using Singularity.Resources;
 
 namespace Singularity.Platforms
@@ -32,7 +33,7 @@ namespace Singularity.Platforms
             mCost = new Dictionary<EResourceType, int>();
         }
 
-        public override void Shoot(Vector2 target)
+        public override void Shoot(ICollider target)
         {
             /* cannot be implemented until energy is implemented
             if (EnoughEnergy()) {

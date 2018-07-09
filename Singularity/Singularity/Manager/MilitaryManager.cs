@@ -50,22 +50,6 @@ namespace Singularity.Manager
 
         #endregion
 
-        #region Unit strength
-
-        /// <summary>
-        /// The strength of military units (i.e. how much damage it does to objects).
-        /// </summary>
-        private const int UnitStrength = 1;
-
-        /// <summary>
-        /// The strength of turrets (i.e. how much damage it does to objects).
-        /// </summary>
-        private const int TurretStrength = 2;
-
-        #endregion
-
-
-
         /// <summary>
         /// Sets the unit map for referencing later on. This is required because the map is created
         /// after the director so it cannot be included in the constructor.
@@ -226,8 +210,7 @@ namespace Singularity.Manager
                 // if there is something close enough, shoot it. Else, set the target to null.
                 if (closestAdjacent != null)
                 {
-                    unit.SetShootingTarget(closestAdjacent.Center);
-                    closestAdjacent.MakeDamage(UnitStrength);
+                    unit.SetShootingTarget(closestAdjacent);
                     if (closestAdjacent.Health <= 0)
                     {
                         // try to turn the closest into a freemoving unit
@@ -246,7 +229,7 @@ namespace Singularity.Manager
                 }
                 else
                 {
-                    unit.SetShootingTarget(Vector2.Zero);
+                    unit.SetShootingTarget(null);
                 }
             }
 
@@ -290,8 +273,7 @@ namespace Singularity.Manager
                 // if there is something close enough, shoot it. Else, set the target to null.
                 if (closestAdjacent != null)
                 {
-                    turret.SetShootingTarget(closestAdjacent.Center);
-                    closestAdjacent.MakeDamage(TurretStrength);
+                    turret.SetShootingTarget(closestAdjacent);
                     if (closestAdjacent.Health <= 0)
                     {
                         // try to turn the closest into a freemoving unit
@@ -310,7 +292,7 @@ namespace Singularity.Manager
                 }
                 else
                 {
-                    turret.SetShootingTarget(Vector2.Zero);
+                    turret.SetShootingTarget(null);
                 }
 
             }
@@ -360,8 +342,7 @@ namespace Singularity.Manager
                 // if there is something close enough, shoot it. Else, set the target to null.
                 if (closestAdjacent != null)
                 {
-                    unit.SetShootingTarget(closestAdjacent.Center);
-                    closestAdjacent.MakeDamage(UnitStrength);
+                    unit.SetShootingTarget(closestAdjacent);
                     if (closestAdjacent.Health <= 0)
                     {
                         // try to turn the closest into a freemoving unit
@@ -380,7 +361,7 @@ namespace Singularity.Manager
                 }
                 else
                 {
-                    unit.SetShootingTarget(Vector2.Zero);
+                    unit.SetShootingTarget(null);
                 }
             }
 
@@ -424,8 +405,7 @@ namespace Singularity.Manager
                 // if there is something close enough, shoot it. Else, set the target to null.
                 if (closestAdjacent != null)
                 {
-                    turret.SetShootingTarget(closestAdjacent.Center);
-                    closestAdjacent.MakeDamage(TurretStrength);
+                    turret.SetShootingTarget(closestAdjacent);
                     if (closestAdjacent.Health <= 0)
                     {
                         // try to turn the closest into a freemoving unit
@@ -444,7 +424,7 @@ namespace Singularity.Manager
                 }
                 else
                 {
-                    turret.SetShootingTarget(Vector2.Zero);
+                    turret.SetShootingTarget(null);
                 }
             }
 

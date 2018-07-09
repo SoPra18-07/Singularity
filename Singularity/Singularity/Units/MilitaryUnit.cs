@@ -42,7 +42,7 @@ namespace Singularity.Units
         /// <summary>
         /// Indicates the position the closest enemy is at.
         /// </summary>
-        private Vector2 mShootingTarget;
+        private ICollider mShootingTarget;
 
         /// <summary>
         /// Indicates if the unit is currently shooting.
@@ -138,8 +138,8 @@ namespace Singularity.Units
             if (mCurrentTime <= mShootingTimer + 200)
             {
                 // draws a laser line a a slight glow around the line, then sets the shoot future off
-                spriteBatch.DrawLine(Center, mShootingTarget, Color.White, 2);
-                spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget, Color.White * .2f, 6);
+                spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2);
+                spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6);
                 mShoot = false;
             }
         }
@@ -205,14 +205,15 @@ namespace Singularity.Units
             }
         }
 
-        public void Shoot(Vector2 target)
+        public void Shoot(ICollider target)
         {
             mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+            target.MakeDamage(MilitaryUnitStats.UnitStrength);
         }
 
-        public void SetShootingTarget(Vector2 target)
+        public void SetShootingTarget(ICollider target)
         {
-            if (target == Vector2.Zero)
+            if (target == null)
             {
                 mShoot = false;
                 mShootingTimer = -1;

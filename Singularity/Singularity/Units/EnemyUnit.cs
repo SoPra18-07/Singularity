@@ -51,19 +51,18 @@ namespace Singularity.Units
 
         protected bool mShoot;
 
-        protected Vector2 mShootingTarget;
+        protected ICollider mShootingTarget;
 
         public int Range { get; protected set; }
 
-        public void Shoot(Vector2 target)
+        public void Shoot(ICollider target)
         {
-            mShoot = true;
-            mShootingTarget = target;
+            // Todo
         }
 
-        public void SetShootingTarget(Vector2 target)
+        public void SetShootingTarget(ICollider target)
         {
-            if (target == Vector2.Zero)
+            if (target == null)
             {
                 mShoot = false;
             }
@@ -134,8 +133,8 @@ namespace Singularity.Units
             }
 
             // draws a laser line a a slight glow around the line, then sets the shoot future off
-            spriteBatch.DrawLine(Center, mShootingTarget, Color.White, 2);
-            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget, Color.White * .2f, 6);
+            spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2);
+            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6);
             mShoot = false;
         }
 

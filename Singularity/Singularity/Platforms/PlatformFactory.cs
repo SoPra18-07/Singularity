@@ -63,7 +63,7 @@ namespace Singularity.Platforms
             switch (type)
             {
                 case EPlatformType.Quarry:
-                    return new Quarry(position, sDomeSheet, sBlankSheet, resourceMap, ref director, autoRegister, friendly);
+                    return new Quarry(position, sDomeSheet, sBlankSheet, resourceMap, ref director, friendly);
 
                 case EPlatformType.Barracks:
                     return new Barracks(position, sCylinderSheet, sBlankSheet, ref director, friendly);
@@ -87,7 +87,7 @@ namespace Singularity.Platforms
                     return new DefenseKinetic(position, sConeSheet, sBlankSheet, ref director, friendly);
 
                 case EPlatformType.Mine:
-                    return new Mine(position, sDomeSheet, sBlankSheet, resourceMap, ref director, autoRegister, friendly);
+                    return new Mine(position, sDomeSheet, sBlankSheet, resourceMap, ref director, friendly);
 
                 case EPlatformType.Packaging:
                     throw new NotImplementedException("Packaging facilities have not yet been implemented");
@@ -96,7 +96,7 @@ namespace Singularity.Platforms
                     return new Storage(position, sDomeSheet, sBlankSheet, ref director, friendly);
 
                 case EPlatformType.Well:
-                    return new Well(position, sDomeSheet, sBlankSheet, resourceMap, ref director, autoRegister, friendly);
+                    return new Well(position, sDomeSheet, sBlankSheet, resourceMap, ref director, friendly);
 
                 case EPlatformType.Laser:
                     return new DefenseLaser(position, sConeSheet, sBlankSheet, ref director, friendly);

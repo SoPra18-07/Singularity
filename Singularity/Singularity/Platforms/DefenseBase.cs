@@ -30,7 +30,7 @@ namespace Singularity.Platforms
 
         public int Range { get; } = 400;
 
-        protected Vector2 mShootingTarget { get; set; }
+        protected ICollider mShootingTarget;
 
         /// <summary>
         /// Represents an abstract class for all defense platforms. Implements their draw methods.
@@ -40,14 +40,10 @@ namespace Singularity.Platforms
             Texture2D baseSprite,
             ref Director director,
             EPlatformType type,
-            bool autoRegister = true,
             bool friendly = true)
             : base(position, platformSpriteSheet, baseSprite, ref director, type, friendly: friendly)
         {
-            if (autoRegister)
-            {
-                director.GetDistributionManager.Register(this, false);
-            }
+            
             mType = type;
             mSpritename = "Cone";
             Property = JobType.Defense;
@@ -56,7 +52,7 @@ namespace Singularity.Platforms
             RevelationRadius = 500;
         }
 
-        public abstract void Shoot(Vector2 target);
+        public abstract void Shoot(ICollider target);
 
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -95,7 +91,7 @@ namespace Singularity.Platforms
             mShoot = false;
         }
 
-        public void SetShootingTarget(Vector2 target)
+        public void SetShootingTarget(ICollider target)
         {
             mShootingTarget = target;
             Shoot(target);
