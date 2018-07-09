@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using Singularity.Manager;
 using Singularity.PlatformActions;
 using Singularity.Platforms;
@@ -37,10 +36,12 @@ namespace Singularity.Screen
         /// Set the selectedPlatform's values in the UI when called
         /// </summary>
         /// <param name="id">the platform's id</param>
+        /// <param name="isManuallyDeactivated">true, if the platform was manually deactivated</param>
         /// <param name="type">the platform's type</param>
         /// <param name="resourceAmountList">resources on platform</param>
         /// <param name="unitAssignmentDict">units assigned to platform</param>
         /// <param name="actionsArray">possible actions of platform</param>
+        /// <param name="isActive">true, if the platform is active</param>
         internal void SetDataOfSelectedPlatform(
             int id,
             bool isActive,
@@ -89,17 +90,22 @@ namespace Singularity.Screen
             mActivePlatform.IsSelected = false;
         }
 
+        /// <summary>
+        /// Activates a platform manually. Is called from the UI.
+        /// </summary>
         public void ActivateSelectedPlatform()
         {
             mActivePlatform.Activate(true);
         }
 
+        /// <summary>
+        /// Deactivates a platform manually. Is called from the UI.
+        /// </summary>
         public void DeactivateSelectedPlatform()
         {
             mActivePlatform.Deactivate(true);
         }
 
-        // TODO : ADD EVENT LOG CONTROLLING
         /// <summary>
         /// Updates the eventLog by passing the newest event and the oldest event from the EventLog
         /// </summary>
