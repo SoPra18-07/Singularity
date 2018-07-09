@@ -353,8 +353,8 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             // update the idle units amount
-            //TODO: Remove Hardcoded value when integrating Graphswitch.
-            mIdleUnitsTextAndAmount.Amount = mUserInterfaceController.GetIdleUnits(0);
+            //TODO: The hardcoded value won't work here, since it is not guaranteed that at index 0 there is always a graph.
+            // mIdleUnitsTextAndAmount.Amount = mUserInterfaceController.GetIdleUnits(0);
         }
 
         public void Draw(SpriteBatch spriteBatch)
