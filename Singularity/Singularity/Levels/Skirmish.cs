@@ -110,6 +110,9 @@ namespace Singularity.Levels
             GameScreen.AddObject(milUnit);
             GameScreen.AddObject(setUnit);
 
+            // add a puddle
+            GameScreen.AddObject(new Puddle(new Vector2(3300, 2500)));
+
             //TESTMETHODS HERE ====================================
             mDirector.GetDistributionDirector.GetManager(0).RequestResource(platform2, EResourceType.Oil, null);
         }
