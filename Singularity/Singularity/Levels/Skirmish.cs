@@ -48,12 +48,16 @@ namespace Singularity.Levels
 
             //var platform2 = new Well(new Vector2(800, 1000), platformDomeTexture, platformBlankTexture, mMap.GetResourceMap(), ref mDirector);
             var platform3 = PlatformFactory.Get(EPlatformType.Quarry, ref mDirector, 3200, 3200, Map.GetResourceMap());
+
             
+
             GameScreen.AddObject(platform3);
             var road2 = new Road(platform2, platform3, false);
             GameScreen.AddObject(road2);
             var road3 = new Road(platform3, platform1, false);
             GameScreen.AddObject(road3);
+
+            
 
             var platform4 = PlatformFactory.Get(EPlatformType.Energy, ref mDirector, 3000, 2800, Map.GetResourceMap());
 
@@ -61,8 +65,16 @@ namespace Singularity.Levels
             var road4 = new Road(platform1, platform4, false);
             GameScreen.AddObject(road4);
 
+            
+
             var road5 = new Road(platform4, platform3, false);
             GameScreen.AddObject(road5);
+
+            var rock1 = new Rock(new Vector2(3500, 2800));
+            var rock2 = new Rock(new Vector2(2800, 2000));
+            GameScreen.AddObject(rock1);
+            GameScreen.AddObject(rock2);
+
 
 
             //GenUnits
@@ -78,6 +90,7 @@ namespace Singularity.Levels
 
             //SetUnit
             var setUnit = new Settler(new Vector2(3000, 3250), Camera, ref mDirector, ref map, GameScreen, mUi);
+            
             
 
             // Resources

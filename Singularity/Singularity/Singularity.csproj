@@ -60,6 +60,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Nature\Rock.cs" />
     <Compile Include="Levels\BasicLevel.cs" />
     <Compile Include="Levels\ILevel.cs" />
     <Compile Include="Manager\DistributionDirector.cs" />
