@@ -18,6 +18,8 @@ namespace Singularity.Platforms
         public EScreen Screen { get; private set; }
         public Rectangle Bounds { get; private set; }
 
+        private bool mPlaySound;
+
         /// <summary>
         /// A 3 state machine if you will.
         /// State 1 (inital): Platform follows the mouse and left click triggers next state
@@ -150,7 +152,21 @@ namespace Singularity.Platforms
                 case 2:
                     // now we want a road to follow our mouse
                     mConnectionRoad.Destination = new Vector2(mMouseX, mMouseY);
-                    mDirector.GetSoundManager.PlaySound("PlatformCreate", mPlatform.Center.X, mPlatform.Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+
+                    if (!mPlaySound)
+                    {
+                        // there is an issue here, it is constantly on loop 
+                        mDirector.GetSoundManager.PlaySound("PlatformCreate",
+                            mPlatform.Center.X,
+                            mPlatform.Center.Y,
+                            .1f,
+                            .01f,
+                            true,
+                            false,
+                            SoundClass.Effect);
+                        mPlaySound = true;
+                    }
+
                     // we prematurely reset the color of the platform, so we don't have to worry about it being red
                     mPlatform.ResetColor();
                     if (mHoveringPlatform == null)
