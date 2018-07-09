@@ -194,7 +194,7 @@
     <Compile Include="Screen\TextField.cs" />
     <Compile Include="Units\GeneralUnit.cs" />
     <Compile Include="Units\JobType.cs" />
-    <Compile Include="Units\MilitaryPathfinder.cs" />
+    <Compile Include="Units\FreeMovingPathfinder.cs" />
     <Compile Include="Units\MilitaryUnit.cs" />
     <Compile Include="Property\IDraw.cs" />
     <Compile Include="Property\IUpdate.cs" />

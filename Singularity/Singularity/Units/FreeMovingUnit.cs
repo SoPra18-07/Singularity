@@ -202,9 +202,7 @@ namespace Singularity.Units
 
             if (GlobalVariables.DebugState)
             {
-                // TODO: DEBUG REGION
                 mDebugPath = mPath.ToArray();
-                // TODO: END DEBUG REGION
             }
 
             mBoundsSnapshot = Bounds;
@@ -314,8 +312,7 @@ namespace Singularity.Units
 
         public bool Die()
         {
-            // mDirector.GetMilitaryManager.Kill(this);
-            // todo: MilitaryManager implement
+            // TODO: Allow implementation
 
             return true;
         }

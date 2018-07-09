@@ -294,7 +294,6 @@ namespace Singularity.Screen.ScreenClasses
                 mMap.RemovePlatform(platform);
             }
 
-            // TODO don't know if this is necessary, but unsubscribe GameScreen from this instance event
             if (settler != null)
             {
                 settler.BuildCommandCenter -= SettlerBuild;
