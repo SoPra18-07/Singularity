@@ -22,6 +22,7 @@ namespace Singularity.Platforms
     /// <inheritdoc cref="IRevealing"/>
     /// <inheritdoc cref="INode"/>
     /// <inheritdoc cref="ICollider"/>
+    /// <inheritdoc cref="IDamageable"/>
     [DataContract]
     public class PlatformBlank : IRevealing, INode, ICollider, IMouseClickListener
     {
@@ -53,10 +54,12 @@ namespace Singularity.Platforms
         /// List of outwards facing edges/roads.
         /// </summary>
         private List<IEdge> mOutwardsEdges;
-
+        
         #endregion
 
         #region protected
+
+        public bool Friendly { get; set; }
 
         /// <summary>
         /// Indicates the type of platform this is, defaults to blank.
@@ -119,9 +122,10 @@ namespace Singularity.Platforms
 
         [DataMember]
         private bool mIsManuallyDeactivated;
-
-        public int RevelationRadius { get; } = 200;
+        
         public Vector2 Center { get; protected set; }
+
+        public int RevelationRadius { get; protected set; } = 200;
 
         public Rectangle AbsBounds { get; private set; }
 
@@ -159,20 +163,22 @@ namespace Singularity.Platforms
         private readonly float mCenterOffsetY;
 
         protected Color mColor = Color.White;
+        
+        protected PlatformInfoBox mInfoBox;
 
         #endregion
 
-        private PlatformInfoBox mInfoBox;
-
         public SpriteFont mLibSans12;
+        
+        protected Color mColorBase;
 
-        public bool[,] ColliderGrid { get; private set; }
+        public bool[,] ColliderGrid { get; internal set; }
 
         //This is for registering the platform at the DistrManager.
         [DataMember]
         public JobType Property { get; set; }
-
-        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libSans12Font, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36)
+        
+        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libSans12Font, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36, bool friendly = true)
         {
 
             Id = IdGenerator.NextiD();
@@ -184,6 +190,8 @@ namespace Singularity.Platforms
             mLayer = LayerConstants.PlatformLayer;
 
             mType = type;
+
+            mColorBase = friendly ? Color.White : Color.Red;
 
             mInwardsEdges = new List<IEdge>();
             mOutwardsEdges = new List<IEdge>();
@@ -232,7 +240,8 @@ namespace Singularity.Platforms
 
             // user interface controller
             mUserInterfaceController = director.GetUserInterfaceController;
-            Debug.WriteLine("PlatformBlank created");
+            Friendly = friendly;
+
 
             var str = GetResourceString();
             mInfoBox = new PlatformInfoBox(
@@ -288,13 +297,12 @@ namespace Singularity.Platforms
 
         public void Register()
         {
-            //TODO: make this so we can also register defense platforms
-            if (Property == JobType.Production)
+            if (IsProduction())
             {
-                mDirector.GetDistributionManager.Register(this, false);
-            } else if (Property == JobType.Defense)
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, false);
+            } else if (IsDefense())
             {
-                mDirector.GetDistributionManager.Register(this, true);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, true);
             }
         }
 
@@ -488,7 +496,7 @@ namespace Singularity.Platforms
                     spritebatch.Draw(mPlatformBaseTexture,
                         Vector2.Add(AbsolutePosition, new Vector2(0, 81)),
                         null,
-                        mColor * transparency,
+                        mColorBase * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
@@ -510,7 +518,7 @@ namespace Singularity.Platforms
                     spritebatch.Draw(mPlatformBaseTexture,
                         Vector2.Add(AbsolutePosition, new Vector2(-3, 38)),
                         null,
-                        mColor * transparency,
+                        mColorBase * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
@@ -868,7 +876,7 @@ namespace Singularity.Platforms
         public void DieBlank()
         {
 
-            mDirector.GetDistributionManager.Kill(this);
+            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
 
 
             mColor = Color.White;
@@ -919,7 +927,7 @@ namespace Singularity.Platforms
 
             mIPlatformActions.ForEach(a => a.Platform = null);
             mIPlatformActions.RemoveAll(a => a.Die());
-            mDirector.GetDistributionManager.Kill(this);
+            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
             mDirector.GetStoryManager.StructureMap.RemovePlatform(this);
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             return true;
@@ -996,14 +1004,53 @@ namespace Singularity.Platforms
 
         public void Activate(bool manually)
         {
+            //TODO: Tell the PlatformAction to request everything it needs again.
             if (manually)
             {
                 mIsManuallyDeactivated = false;
             }
             mIsActive = true;
             ResetColor();
+            //Only reregister the platforms if they are defense or production platforms
+            if (IsDefense())
+            {
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, true);
+            }else if (IsProduction())
+            {
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, false);
+            }
+        }
 
-            //TODO: actually active the platform again -> distributionmanager and stuff
+        /// <summary>
+        /// A function made to determine whether this platform is a defending platform.
+        /// </summary>
+        /// <returns>True if thats the case, false otherwise</returns>
+        public bool IsDefense()
+        {
+            if (mType == EPlatformType.Kinetic
+                || mType == EPlatformType.Laser)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// A function made to determine whether this paltform is a producing platform.
+        /// </summary>
+        /// <returns>True if thats the casem, false otherwise</returns>
+        public bool IsProduction()
+        {
+            if (mType == EPlatformType.Well
+                || mType == EPlatformType.Quarry
+                || mType == EPlatformType.Mine
+                || mType == EPlatformType.Factory)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public void Deactivate(bool manually)
@@ -1017,8 +1064,19 @@ namespace Singularity.Platforms
             // TODO: remove this or change it to something more appropriately, this is used by @Ativelox for
             // TODO: debugging purposes to easily see which platforms are currently deactivated
             mColor = Color.Green;
-
-            //TODO: actually deactivate the platform -> distributinmanager and stuff
+            //Only unregister if this platform is a defense or production platform
+            if (IsDefense())
+            {
+                var selflist = new List<PlatformBlank>();
+                selflist.Add(this);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, true, true);
+            }
+            else if (IsProduction())
+            {
+                var selflist = new List<PlatformBlank>();
+                selflist.Add(this);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, false, true);
+            }
         }
 
         public bool IsManuallyDeactivated()

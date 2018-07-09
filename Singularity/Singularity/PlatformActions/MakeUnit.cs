@@ -25,23 +25,25 @@ namespace Singularity.PlatformActions
 
             var camera = mDirector.GetStoryManager.Level.Camera;
             var map = mDirector.GetStoryManager.Level.Map;
-            var unit = new MilitaryUnit(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
+            var unit = new MilitaryFast(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
         }
     }
 
-    internal sealed class MakeStrongMilitrayUnit : AMakeUnit
+    internal sealed class MakeHeavyMilitaryUnit : AMakeUnit
     {
-        public MakeStrongMilitrayUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
+        public MakeHeavyMilitaryUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
             mBuildingCost = new Dictionary<EResourceType, int> {{EResourceType.Steel, 3}, {EResourceType.Chip, 2}, {EResourceType.Fuel, 2}};
         }
 
         protected override void CreateUnit()
         {
-            throw new NotImplementedException();
+            var camera = mDirector.GetStoryManager.Level.Camera;
+            var map = mDirector.GetStoryManager.Level.Map;
+            var unit = new MilitaryHeavy(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
         }
     }
-
+    
     internal sealed class MakeGeneralUnit : AMakeUnit
     {
         public MakeGeneralUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
@@ -52,10 +54,25 @@ namespace Singularity.PlatformActions
 
         protected override void CreateUnit()
         {
+            
             mDirector.GetStoryManager.Level.GameScreen.AddObject(new GeneralUnit(mPlatform, ref mDirector));
         }
     }
+    
+    internal sealed class MakeStandardMilitaryUnit : AMakeUnit
+    {
+        public MakeStandardMilitaryUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
+        {
+            mBuildingCost = new Dictionary<EResourceType, int> { { EResourceType.Steel, 3 }, { EResourceType.Chip, 2 }, { EResourceType.Fuel, 2 } };
+        }
 
+        protected override void CreateUnit()
+        {
+            var camera = mDirector.GetStoryManager.Level.Camera;
+            var map = mDirector.GetStoryManager.Level.Map;
+            var unit = new MilitaryUnit(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
+        }
+    }
 
     public abstract class AMakeUnit : APlatformAction
     {
@@ -97,7 +114,7 @@ namespace Singularity.PlatformActions
                 } else {
                     mToRequest[resource] = mToRequest[resource] - 1;
                 }
-                mDirector.GetDistributionManager.RequestResource(mPlatform, resource, this);
+                mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).RequestResource(mPlatform, resource, this);
                 Debug.WriteLine("Requested " + resource + " just now. Waiting. (" + mPlatform.Id + ")");
             }
 
@@ -144,7 +161,7 @@ namespace Singularity.PlatformActions
                     State = PlatformActionState.Active;
                     break;
                 case PlatformActionState.Active:
-                    mDirector.GetDistributionManager.PausePlatformAction(this);
+                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this);
                     mToRequest = new Dictionary<EResourceType, int>();
                     State = PlatformActionState.Available;
                     break;

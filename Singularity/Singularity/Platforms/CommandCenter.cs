@@ -13,7 +13,12 @@ namespace Singularity.Platforms
     internal sealed class CommandCenter: PlatformBlank
     {
         private const int ProvidingEnergy = 20;
-        
+
+        [DataMember]
+        private new const int PlatformWidth = 200;
+
+        [DataMember]
+        private new const int PlatformHeight = 233;
 
         [DataMember]
         private List<GeneralUnit> mControlledUnits;

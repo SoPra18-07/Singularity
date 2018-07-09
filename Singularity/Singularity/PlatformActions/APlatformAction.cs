@@ -79,7 +79,7 @@ namespace Singularity.PlatformActions
         // this is supposed to remove all references to this PlatformAction
         public bool Die()
         {
-            mDirector.GetDistributionManager.Kill(this);
+            mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Kill(this);
             mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
             mPlatform.Kill(this);
             mPlatform = null;

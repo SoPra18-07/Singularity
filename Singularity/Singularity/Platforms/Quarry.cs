@@ -14,16 +14,26 @@ namespace Singularity.Platforms
     sealed class Quarry : PlatformBlank
     {
         [DataMember]
-        private const int PlatformWidth = 144;
+        private new const int PlatformWidth = 144;
         [DataMember]
-        private const int PlatformHeight = 127;
+        private new const int PlatformHeight = 127;
 
-        public Quarry(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ResourceMap resource, SpriteFont libSans12, ref Director director, bool autoRegister = true): base(position, platformSpriteSheet, baseSprite, libSans12, ref director, EPlatformType.Quarry, -50)
+        public Quarry(Vector2 position,
+            Texture2D platformSpriteSheet,
+            Texture2D baseSprite,
+            ResourceMap resource,
+            SpriteFont libSans12,
+            ref Director director,
+            bool friendly,
+            bool autoRegister = true) : base(position,
+            platformSpriteSheet,
+            baseSprite,
+            libSans12,
+            ref director,
+            EPlatformType.Quarry,
+            -50,
+            friendly)
         {
-            if (autoRegister)
-            {
-                director.GetDistributionManager.Register(this, false);
-            }
 
             //Add possible Actions in this array
             mIPlatformActions.Add(new ProduceQuarryResource(this, resource, ref mDirector));
@@ -33,6 +43,7 @@ namespace Singularity.Platforms
             mSpritename = "Dome";
             Property = JobType.Production;
             SetPlatfromParameters();
+
         }
 
         public override void Produce()

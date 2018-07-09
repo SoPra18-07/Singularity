@@ -60,15 +60,20 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Nature\Rock.cs" />
     <Compile Include="Levels\BasicLevel.cs" />
     <Compile Include="Levels\ILevel.cs" />
+    <Compile Include="Manager\DistributionDirector.cs" />
     <Compile Include="Manager\DistributionManager.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />
+    <Compile Include="Nature\Puddle.cs" />
     <Compile Include="Screen\BarIWindowItem.cs" />
     <Compile Include="Screen\PlatformActionIWindowItem.cs" />
     <Compile Include="PlatformActions\ConsumeResource.cs" />
     <Compile Include="Exceptions\MiniMapProportionsOffException.cs" />
     <Compile Include="Map\MiniMap.cs" />
+    <Compile Include="Map\UnitMap.cs" />
+    <Compile Include="Map\UnitMapTile.cs" />
     <Compile Include="PlatformActions\MakeUnit.cs" />
     <Compile Include="PlatformActions\APlatformAction.cs" />
     <Compile Include="PlatformActions\BuildBluePrint.cs" />
@@ -94,9 +99,14 @@
     <Compile Include="Units\ControllableUnit.cs" />
     <Compile Include="Screen\TextAndAmountIWindowItem.cs" />
     <Compile Include="Units\EnemyUnit.cs" />
+    <Compile Include="Units\EUnitType.cs" />
     <Compile Include="Units\FreeMovingUnit.cs" />
+    <Compile Include="Units\MilitaryFast.cs" />
+    <Compile Include="Units\MilitaryHeavy.cs" />
+    <Compile Include="Units\MilitaryUnitStats.cs" />
     <Compile Include="Units\SelectionBox.cs" />
     <Compile Include="Units\Settler.cs" />
+    <Compile Include="Units\Target.cs" />
     <Compile Include="Units\Task.cs" />
     <Compile Include="Exceptions\InvalidGenericArgumentException.cs" />
     <Compile Include="Exceptions\NoSuchElementException.cs" />

@@ -3,6 +3,8 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Singularity.Manager;
+using Singularity.Map;
+using Singularity.Nature;
 using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Screen;
@@ -29,51 +31,60 @@ namespace Singularity.Levels
 
         public override void LoadContent(ContentManager content)
         {
+            var map = Map;
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
-            var platform1 = PlatformFactory.Get(EPlatformType.Blank, ref mDirector, 1000, 1000, Map.GetResourceMap());
-
+            var platform1 = PlatformFactory.Get(EPlatformType.Blank, ref mDirector, 3000, 3000, Map.GetResourceMap());
+            
             GameScreen.AddObject(platform1);
 
             // this is done via the factory to test, so I can instantly see if something is some time off.
-            var platform2 = PlatformFactory.Get(EPlatformType.Well, ref mDirector, 800, 1000, Map.GetResourceMap());
+            var platform2 = PlatformFactory.Get(EPlatformType.Well, ref mDirector, 2800, 3000, Map.GetResourceMap());
             GameScreen.AddObject(platform2);
 
             var road1 = new Road(platform1, platform2, false);
             GameScreen.AddObject(road1);
 
             //var platform2 = new Well(new Vector2(800, 1000), platformDomeTexture, platformBlankTexture, mMap.GetResourceMap(), ref mDirector);
-            var platform3 = PlatformFactory.Get(EPlatformType.Quarry, ref mDirector, 1200, 1200, Map.GetResourceMap());
+            var platform3 = PlatformFactory.Get(EPlatformType.Quarry, ref mDirector, 3200, 3200, Map.GetResourceMap());
+
+            
             GameScreen.AddObject(platform3);
             var road2 = new Road(platform2, platform3, false);
             GameScreen.AddObject(road2);
             var road3 = new Road(platform3, platform1, false);
             GameScreen.AddObject(road3);
 
-            var platform4 = PlatformFactory.Get(EPlatformType.Energy, ref mDirector, 1000, 800, Map.GetResourceMap());
+            
+
+            var platform4 = PlatformFactory.Get(EPlatformType.Energy, ref mDirector, 3000, 2800, Map.GetResourceMap());
 
             GameScreen.AddObject(platform4);
             var road4 = new Road(platform1, platform4, false);
             GameScreen.AddObject(road4);
 
+            
+
             var road5 = new Road(platform4, platform3, false);
             GameScreen.AddObject(road5);
 
+            // Enemy Unit
+            var enemyUnit = new Target(new Vector2(3000, 2950), Camera, ref mDirector, ref map);
+            var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
 
-            //GenUnits
+            var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, mUi);
+
+            var rock1 = new Rock(new Vector2(3500, 2800));
+            var rock2 = new Rock(new Vector2(2800, 2000));
+            GameScreen.AddObject(rock1);
+            GameScreen.AddObject(rock2);
+
+           // GenUnits
             var genUnit = new List<GeneralUnit>(5);
             for (var i = 0; i < 5; i++)
             {
                 genUnit.Add(new GeneralUnit(platform1, ref mDirector));
             }
-
-            //MilUnits
-            var map = Map;
-            var milUnit = new MilitaryUnit(new Vector2(2000, 700), Camera, ref mDirector, ref map);
-
-            //SetUnit
-            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, mUi);
-
 
             // Resources
             var res = new Resource(EResourceType.Metal, platform2.Center);
@@ -89,11 +100,15 @@ namespace Singularity.Levels
             platform2.StoreResource(res5);
 
             GameScreen.AddObjects(genUnit);
+            GameScreen.AddObject(enemyUnit);
             GameScreen.AddObject(milUnit);
-            GameScreen.AddObject(setUnit);
+            GameScreen.AddObject(settler);
+
+            // add a puddle
+            GameScreen.AddObject(new Puddle(new Vector2(3300, 2500)));
 
             //TESTMETHODS HERE ====================================
-            mDirector.GetDistributionManager.RequestResource(platform2, EResourceType.Oil, null);
+            mDirector.GetDistributionDirector.GetManager(0).RequestResource(platform2, EResourceType.Oil, null);
         }
 
         public GameScreen GetGameScreen()

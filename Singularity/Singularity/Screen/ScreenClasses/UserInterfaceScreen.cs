@@ -149,7 +149,7 @@ namespace Singularity.Screen.ScreenClasses
         private bool mProduceMineResourceAdded;
 
         // save id to reset the scroll-value if the id changes
-        private int selectedPlatformId;
+        private int mSelectedPlatformId;
 
         #endregion
 
@@ -352,7 +352,8 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             // update the idle units amount
-            mIdleUnitsTextAndAmount.Amount = mUserInterfaceController.GetIdleUnits();
+            //TODO: Remove Hardcoded value when integrating Graphswitch.
+            mIdleUnitsTextAndAmount.Amount = mUserInterfaceController.GetIdleUnits(0);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -568,13 +569,13 @@ namespace Singularity.Screen.ScreenClasses
 
             // create items
             mDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
-            mDefSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true, 5);
+            mDefSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true);
             mBuildTextField = new TextField("Build", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
-            mBuildSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
+            mBuildSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true);
             mLogisticsTextField = new TextField("Logistics", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
-            mLogisticsSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
+            mLogisticsSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true);
             mProductionTextField = new TextField("Production", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
-            mProductionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector);
+            mProductionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true);
 
             mIdleUnitsTextAndAmount = new TextAndAmountIWindowItem("Idle", 0, Vector2.Zero, new Vector2(civilUnitsWidth, 0), mLibSans12, Color.White );
 
@@ -1322,7 +1323,7 @@ namespace Singularity.Screen.ScreenClasses
                         mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
                     }
                 }
-                else if (action is MakeStrongMilitrayUnit)
+                else if (action is MakeHeavyMilitaryUnit)
                 {
                     mMakeStrongMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
@@ -1367,7 +1368,7 @@ namespace Singularity.Screen.ScreenClasses
             #endregion
 
             // reset the window's scroll value + open all lists in selectedPlatformWindow if the id changes
-            if (selectedPlatformId != id)
+            if (mSelectedPlatformId != id)
             {
                 mSelectedPlatformWindow.ResetScrollValue();
             }

@@ -56,9 +56,9 @@ namespace Singularity.Screen
         /// Returns the idle-units amount
         /// </summary>
         /// <returns>amount of idle units</returns>
-        public int GetIdleUnits()
+        public int GetIdleUnits(int graphid)
         {
-            return mDirector.GetDistributionManager.GetJobCount(JobType.Idle);
+            return mDirector.GetDistributionDirector.GetManager(graphid).GetJobCount(JobType.Idle);
         }
 
         /// <summary>

@@ -11,11 +11,24 @@ namespace Singularity.Platforms
     class Junkyard : PlatformBlank
     {
         [DataMember]
-        private const int PlatformWidth = 144;
+        private new const int PlatformWidth = 144;
         [DataMember]
-        private const int PlatformHeight = 127;
+        private new const int PlatformHeight = 127;
 
-        public Junkyard(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libSans12, ref Director director) : base(position, platformSpriteSheet, baseSprite, libSans12, ref director, EPlatformType.Junkyard, -50)
+        public Junkyard(Vector2 position,
+            Texture2D platformSpriteSheet,
+            Texture2D baseSprite,
+            SpriteFont libSans12,
+            ref Director director,
+            bool friendly) : base(position,
+            platformSpriteSheet,
+            baseSprite,
+            libSans12,
+            ref director,
+            EPlatformType.Junkyard,
+            -50,
+            friendly)
+
         {
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.

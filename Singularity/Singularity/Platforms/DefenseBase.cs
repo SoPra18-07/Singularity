@@ -20,6 +20,10 @@ namespace Singularity.Platforms
         /// </summary>
         internal Vector2 EnemyPosition { get; set; }
 
+        public int Range { get; } = 400;
+
+        protected ICollider mShootingTarget;
+
         /// <summary>
         /// Represents an abstract class for all defense platforms. Implements their draw methods.
         /// </summary>
@@ -29,19 +33,17 @@ namespace Singularity.Platforms
             SpriteFont libSans12,
             ref Director director,
             EPlatformType type,
-            bool autoRegister = true)
-            : base(position, platformSpriteSheet, baseSprite, libSans12, ref director, type)
+            bool friendly = true)
+            : base(position, platformSpriteSheet, baseSprite, libSans12, ref director, type, friendly: friendly)
         {
-            if (autoRegister)
-            {
-                director.GetDistributionManager.Register(this, false);
-            }
             mSpritename = "Cone";
             Property = JobType.Defense;
             SetPlatfromParameters();
+
+            RevelationRadius = 500;
         }
 
-        public abstract void Shoot(Vector2 target);
+        public abstract void Shoot(ICollider target);
 
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -52,7 +54,7 @@ namespace Singularity.Platforms
             spriteBatch.Draw(mPlatformBaseTexture,
                 Vector2.Add(AbsolutePosition, new Vector2(0, 78)),
                 null,
-                Color.White * transparency,
+                mColorBase * transparency,
                 0f,
                 Vector2.Zero,
                 1f,
@@ -75,9 +77,15 @@ namespace Singularity.Platforms
             }
 
             // draws a laser line a a slight glow around the line, then sets the shoot future off
-            spriteBatch.DrawLine(Center, MapCoordinates(EnemyPosition), Color.White, 2);
-            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), MapCoordinates(EnemyPosition), Color.White * .2f, 6);
+            spriteBatch.DrawLine(Center, EnemyPosition, Color.White, 2);
+            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), EnemyPosition, Color.White * .2f, 6);
             mShoot = false;
+        }
+
+        public void SetShootingTarget(ICollider target)
+        {
+            mShootingTarget = target;
+            Shoot(target);
         }
 
         /// <summary>

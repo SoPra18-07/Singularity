@@ -11,25 +11,33 @@ using Singularity.Units;
 namespace Singularity.Platforms
 {
     [DataContract]
-    class Mine : PlatformBlank
+    internal sealed class Mine : PlatformBlank
     {
         [DataMember]
-        private const int PlatformWidth = 144;
+        private new const int PlatformWidth = 144;
         [DataMember]
-        private const int PlatformHeight = 187;
+        private new const int PlatformHeight = 187;
 
 
-        public Mine(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ResourceMap resource, SpriteFont libSans12, ref Director director, bool autoRegister = true) : base(position, spritesheet, basesprite, libSans12, ref director, EPlatformType.Mine, -50)
+        public Mine(Vector2 position,
+            Texture2D spritesheet,
+            Texture2D basesprite,
+            ResourceMap resource,
+            SpriteFont libSans12,
+            ref Director director,
+            bool autoRegister = true,
+            bool friendly = true) : base(position,
+            spritesheet,
+            basesprite,
+            libSans12,
+            ref director,
+            EPlatformType.Mine,
+            -50,
+            friendly)
         {
-            if (autoRegister)
-            {
-                director.GetDistributionManager.Register(this, false);
-            }
-
-            mIPlatformActions.Add(new ProduceMineResource(this, resource, ref mDirector));
-            //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
-            //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<EResourceType, int>();
+            mIPlatformActions.Add(new ProduceMineResource(platform: this, resourceMap: resource, director: ref mDirector));
+            // Todo: Add Costs of the platform here if you got them.
+            // mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Mine;
             mSpritename = "Dome";
             Property = JobType.Production;

@@ -106,9 +106,8 @@ namespace Singularity.Platforms
                     break;
             }
 
-            mPlatform = PlatformFactory.Get(platformType, ref director, x, y, resourceMap, false);
+            mPlatform = PlatformFactory.Get(platformType, ref director, x, y, resourceMap);
             mPlatform.SetLayer(LayerConstants.PlatformAboveFowLayer);
-
             UpdateBounds();
 
         }

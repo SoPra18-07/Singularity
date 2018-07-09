@@ -12,11 +12,24 @@ namespace Singularity.Platforms
     class Storage: PlatformBlank
     {
         [DataMember]
-        private const int PlatformWidth = 144;
+        private new const int PlatformWidth = 144;
         [DataMember]
-        private const int PlatformHeight = 127;
+        private new const int PlatformHeight = 127;
 
-        public Storage(Vector2 position, Texture2D spritesheet, Texture2D basesprite, SpriteFont libSans12, ref Director director): base(position, spritesheet, basesprite, libSans12, ref director, EPlatformType.Storage, -50)
+        public Storage(Vector2 position,
+            Texture2D spritesheet,
+            Texture2D basesprite,
+            SpriteFont libSans12,
+            ref Director director,
+            bool friendly) : base(position,
+            spritesheet,
+            basesprite,
+            libSans12,
+            ref director,
+            EPlatformType.Storage,
+            -50,
+            friendly)
+
         {
             // Todo: Add Costs of the platform here if you got them.
             // mCost = new Dictionary<EResourceType, int>();

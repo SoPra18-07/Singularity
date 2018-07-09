@@ -11,6 +11,7 @@ using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Sound;
 using Singularity.Units;
+using Singularity.Utils;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -183,6 +184,7 @@ namespace Singularity.Screen.ScreenClasses
             var platform = toAdd as PlatformBlank;
             var settler = toAdd as Settler;
             var conUnit = toAdd as ControllableUnit;
+            var enemyUnit = toAdd as EnemyUnit; // currently unnecessary
 
             if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
@@ -197,10 +199,13 @@ namespace Singularity.Screen.ScreenClasses
 
             if (platform != null)
             {
+                //TODO: Remove this Register if Building is implemented
+                platform.Register();
                 mMap.AddPlatform(platform);
+                mDirector.GetMilitaryManager.AddPlatform(platform);
                 return true;
             }
-
+            
             // subscribes the game screen the the settler event (to build a command center)
             // TODO unsubscribe / delete settler when event is fired
             if (settler != null)
@@ -212,6 +217,12 @@ namespace Singularity.Screen.ScreenClasses
             if (conUnit != null)
             {
                 mSelBox.SelectingBox += conUnit.BoxSelected;
+                mDirector.GetMilitaryManager.AddUnit(conUnit);
+            }
+
+            if (enemyUnit != null)
+            {
+                mDirector.GetMilitaryManager.AddUnit(enemyUnit);
             }
 
             if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
@@ -341,7 +352,9 @@ namespace Singularity.Screen.ScreenClasses
         {
             // TODO eventually the EPlacementType should be instance but currently that
             // TODO requires a road to be place and therefore throws an exception !!!!!
-
+            
+            var graphid = IdGenerator.NextiD();
+            mDirector.GetDistributionDirector.AddManager(graphid);
             CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, mLibSans12, ref mDirector, false);
             var genUnit = new GeneralUnit(cCenter, ref mDirector);
             var genUnit2 = new GeneralUnit(cCenter, ref mDirector);
