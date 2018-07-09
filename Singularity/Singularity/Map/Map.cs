@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Singularity.Input;
+
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map.Properties;
@@ -18,6 +17,7 @@ namespace Singularity.Map
         private readonly CollisionMap mCollisionMap;
         private readonly StructureMap mStructureMap;
         private readonly ResourceMap mResourceMap;
+        private readonly UnitMap mUnitMap;
 
         private readonly int mWidth;
         private readonly int mHeight;
@@ -66,6 +66,7 @@ namespace Singularity.Map
             mCollisionMap = new CollisionMap();
             mStructureMap = new StructureMap(fow, ref director);
             mResourceMap = new ResourceMap(initialResources);
+            mUnitMap = new UnitMap(width, height);
 
             director.GetStoryManager.StructureMap = mStructureMap;
         }
@@ -82,7 +83,7 @@ namespace Singularity.Map
             var x = 0;
             var y = 0;
             //draw the background texture
-            for (int column = 0; column < mWidth; column++)
+            for (var column = 0; column < mWidth; column++)
             {
                 // variables are used to choose which tile to draw
 
@@ -189,46 +190,51 @@ namespace Singularity.Map
         }
 
 
-        public FogOfWar GetFogOfWar()
+        internal FogOfWar GetFogOfWar()
         {
             return mFow;
         }
 
         /// <see cref="StructureMap.AddPlatform(PlatformBlank)"/>
-        public void AddPlatform(PlatformBlank platform)
+        internal void AddPlatform(PlatformBlank platform)
         {
             mStructureMap.AddPlatform(platform);
         }
 
         /// <see cref="StructureMap.RemovePlatform(PlatformBlank)"/>
-        public void RemovePlatform(PlatformBlank platform)
+        internal void RemovePlatform(PlatformBlank platform)
         {
             mStructureMap.RemovePlatform(platform);
         }
 
-        public void AddRoad(Road road)
+        internal void AddRoad(Road road)
         {
             mStructureMap.AddRoad(road);
         }
 
-        public void RemoveRoad(Road road)
+        internal void RemoveRoad(Road road)
         {
             mStructureMap.RemoveRoad(road);
         }
 
-        public StructureMap GetStructureMap()
+        internal StructureMap GetStructureMap()
         {
             return mStructureMap;
         }
 
-        public CollisionMap GetCollisionMap()
+        internal CollisionMap GetCollisionMap()
         {
             return mCollisionMap;
         }
 
-        public ResourceMap GetResourceMap()
+        internal ResourceMap GetResourceMap()
         {
             return mResourceMap;
+        }
+
+        internal UnitMap GetUnitMap()
+        {
+            return mUnitMap;
         }
 
         /// <summary>
@@ -237,7 +243,7 @@ namespace Singularity.Map
         /// <param name="position">The position of which to check whether it is on the map</param>
         /// <param name="camera">The camera is needed to translate relative coordinates into absolute ones, if null then the given coordinates are treated as absolute ones</param>
         /// <returns>True if the position is on the map, false otherwise</returns>
-        public static bool IsOnTop(Vector2 position, Camera camera = null)
+        internal static bool IsOnTop(Vector2 position, Camera camera = null)
         {
             //TODO: extend to rectangle, so we move away from whether the origin point is on the map.
 
@@ -288,7 +294,7 @@ namespace Singularity.Map
         /// <param name="rect">The rectangle which should be checked whether its on the map</param>
         /// <param name="camera">The camera is needed to translate relative coordinates into absolute ones, if null then the given coordinates are treated as absolute ones</param>
         /// <returns>True if the rectangle is on the map, false otherwise</returns>
-        public static bool IsOnTop(Rectangle rect, Camera camera = null)
+        internal static bool IsOnTop(Rectangle rect, Camera camera = null)
         {
 
             // simple logic, this yields true if all of them are true and false if one is false. One can easily convince himself,
