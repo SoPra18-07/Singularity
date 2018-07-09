@@ -20,9 +20,14 @@ namespace Singularity.Nature
         public Vector2 AbsoluteSize { get; set; }
         private Vector2 mPosition;
 
+        public Vector2 Center { get; }
+        public bool Friendly { get; } = false;
+
         public Puddle(Vector2 position)
         {
             AbsoluteSize = new Vector2(160, 130);
+
+            Center = new Vector2((AbsolutePosition.X + AbsoluteSize.X) * 0.5f, (AbsolutePosition.Y + AbsoluteSize.Y) * 0.5f);
 
             // this is used to draw the puddle correctly within the collision grid
             mPosition = position;

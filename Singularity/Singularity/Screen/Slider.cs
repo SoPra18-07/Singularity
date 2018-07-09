@@ -1,5 +1,4 @@
 ﻿using System;
-using System;
 using System.Globalization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

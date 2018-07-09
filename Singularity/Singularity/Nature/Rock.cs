@@ -28,11 +28,16 @@ namespace Singularity.Nature
         public Vector2 AbsolutePosition { get; set; }
         public Vector2 AbsoluteSize { get; set; }
 
+        public bool Friendly { get; } = false;
+
+        public Vector2 Center { get; }
+
         public Rock(Vector2 position)
         {
             AbsoluteSize = new Vector2(160, 130);
             mDrawSize = new Vector2(80,40);
             AbsolutePosition = position;
+            Center = new Vector2((AbsolutePosition.X + AbsoluteSize.X) * 0.5f, (AbsolutePosition.Y + AbsoluteSize.Y) * 0.5f);
             ColliderGrid = new [,]
             {
                 {false, false, true, true, true, true, false, false},
