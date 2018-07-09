@@ -34,16 +34,6 @@ namespace Singularity.Manager
         /// </summary>
         private readonly List<DefenseBase> mFriendlyDefensePlatforms = new List<DefenseBase>();
 
-        /// <summary>
-        /// A list of friendly targets (i.e. platforms and settlers that can be damaged).
-        /// </summary>
-        private readonly List<PlatformBlank> mFriendlyPlatforms = new List<PlatformBlank>();
-
-        /// <summary>
-        /// A list of friendly settlers
-        /// </summary>
-        private List<Settler> mFriendlySettler = new List<Settler>();
-
         #endregion
 
         #region Hostile unit lists
@@ -57,16 +47,6 @@ namespace Singularity.Manager
         /// A list of hsotile defense platforms.
         /// </summary>
         private readonly List<DefenseBase> mHostileDefensePlatforms = new List<DefenseBase>();
-
-        /// <summary>
-        /// A list of hostile targets (i.e. platforms and settlers that can be damaged).
-        /// </summary>
-        private readonly List<PlatformBlank> mHostilePlatforms = new List<PlatformBlank>();
-
-        /// <summary>
-        /// A list of hostile settlers
-        /// </summary>
-        private List<Settler> mHostileSettler = new List<Settler>();
 
         #endregion
 
@@ -84,8 +64,8 @@ namespace Singularity.Manager
 
         #endregion
 
-        
-        
+
+
         /// <summary>
         /// Sets the unit map for referencing later on. This is required because the map is created
         /// after the director so it cannot be included in the constructor.
@@ -96,6 +76,7 @@ namespace Singularity.Manager
         }
 
         #region Methods to add objects to the manager
+
         /// <summary>
         /// Adds a new platform to the military manager. This also adds it to the UnitMap.
         /// </summary>
@@ -105,7 +86,8 @@ namespace Singularity.Manager
             var defensePlatform = platform as DefenseBase;
             var position = mUnitMap.VectorToTilePos(platform.AbsolutePosition);
 
-            // Figure out if it is a defense platform. If yes, then figure out if it is friendly
+            // Figure out if it is a defense platform. If yes, then figure out its allegiance then
+            // add it to the appropriate list.
             if (defensePlatform != null)
             {
                 if (platform.Friendly)
@@ -117,17 +99,8 @@ namespace Singularity.Manager
                     mHostileDefensePlatforms.Add(defensePlatform);
                 }
             }
-            // otherwise, if it is friendly, add to friendly list.
-            else if (platform.Friendly)
-            {
-                mFriendlyPlatforms.Add(platform);
-            }
-            // finally, if not, then add to hostile list.
-            else
-            {
-                mHostilePlatforms.Add(platform);
-            }
 
+            // Then add it to the unitMap.
             mUnitMap.AddUnit(platform, position);
         }
 
@@ -139,21 +112,8 @@ namespace Singularity.Manager
         {
             var friendlyMilitary = unit as MilitaryUnit;
             var hostileMilitary = unit as EnemyUnit;
-            var settler = unit as Settler;
 
-            if (settler != null)
-            {
-                if (settler.Friendly)
-                {
-                    mFriendlySettler.Add(settler);
-                }
-                else
-                {
-                    mHostileSettler.Add(settler);
-                }
-            }
-
-            else if (friendlyMilitary != null)
+            if (friendlyMilitary != null)
             {
                 mFriendlyMilitary.Add(friendlyMilitary);
             }
@@ -164,9 +124,11 @@ namespace Singularity.Manager
 
             mUnitMap.AddUnit(unit);
         }
+
         #endregion
 
         #region Methods to remove from the manager
+
         /// <summary>
         /// Removes a platform from the Military Manager (i.e. it died).
         /// </summary>
@@ -187,17 +149,7 @@ namespace Singularity.Manager
                     mHostileDefensePlatforms.Remove(defensePlatform);
                 }
             }
-            // otherwise, if it is friendly, add to friendly list.
-            else if (platform.Friendly)
-            {
-                mFriendlyPlatforms.Remove(platform);
-            }
-            // finally, if not, then add to hostile list.
-            else
-            {
-                mHostilePlatforms.Remove(platform);
-            }
-
+            
             mUnitMap.RemoveUnit(platform);
         }
 
@@ -209,22 +161,8 @@ namespace Singularity.Manager
         {
             var friendlyMilitary = unit as MilitaryUnit;
             var hostileMilitary = unit as EnemyUnit;
-            var settler = unit as Settler;
-            // TODO: make platforms killable.
-
-            if (settler != null)
-            {
-                if (settler.Friendly)
-                {
-                    mFriendlySettler.Remove(settler);
-                }
-                else
-                {
-                    mHostileSettler.Remove(settler);
-                }
-            }
-
-            else if (friendlyMilitary != null)
+            
+            if (friendlyMilitary != null)
             {
                 mFriendlyMilitary.Remove(friendlyMilitary);
             }
@@ -235,6 +173,7 @@ namespace Singularity.Manager
 
             mUnitMap.RemoveUnit(unit);
         }
+
         #endregion
 
 
@@ -245,6 +184,7 @@ namespace Singularity.Manager
             var platformsToKill = new List<PlatformBlank>();
 
             #region Check targets for friendly units
+
             foreach (var unit in mFriendlyMilitary)
             {
                 // iterate through each friendly unit, if there's a target nearby, shoot the closest one.
@@ -258,7 +198,8 @@ namespace Singularity.Manager
 
                 // remember the closest adjacent unit.
                 ICollider closestAdjacent = null;
-                var closestAdjacentDistance = 1500f; // a separate variable is used so that it can be initalized with a very big value.
+                var closestAdjacentDistance =
+                    1500f; // a separate variable is used so that it can be initalized with a very big value.
 
                 // iterate through all adjacent units to find the closest adjacent unit.
                 foreach (var adjacentUnit in adjacentUnits)
@@ -279,7 +220,7 @@ namespace Singularity.Manager
                             }
                         }
                     }
-                    
+
                 }
 
                 // if there is something close enough, shoot it. Else, set the target to null.
@@ -312,6 +253,7 @@ namespace Singularity.Manager
             #endregion
 
             #region Check targets for friendly turrets
+
             foreach (var turret in mFriendlyDefensePlatforms)
             {
                 // iterate through each friendly turret, if there's a target nearby, shoot it.
@@ -320,7 +262,8 @@ namespace Singularity.Manager
 
                 // remember the closest adjacent unit.
                 ICollider closestAdjacent = null;
-                var closestAdjacentDistance = 1500f; // a separate variable is used so that it can be initalized with a very big value.
+                var closestAdjacentDistance =
+                    1500f; // a separate variable is used so that it can be initalized with a very big value.
 
                 // iterate through all adjacent units to find the closest adjacent unit.
                 foreach (var adjacentUnit in adjacentUnits)
@@ -371,9 +314,11 @@ namespace Singularity.Manager
                 }
 
             }
+
             #endregion
 
             #region Check targets for hostile units
+
             foreach (var unit in mHostileMilitary)
             {
                 // iterate through each hostile unit, if there's a target nearby, shoot it.
@@ -388,7 +333,8 @@ namespace Singularity.Manager
 
                 // remember the closest adjacent unit.
                 ICollider closestAdjacent = null;
-                var closestAdjacentDistance = 1500f; // a separate variable is used so that it can be initalized with a very big value.
+                var closestAdjacentDistance =
+                    1500f; // a separate variable is used so that it can be initalized with a very big value.
 
                 // iterate through all adjacent units to find the closest adjacent unit.
                 foreach (var adjacentUnit in adjacentUnits)
@@ -416,7 +362,7 @@ namespace Singularity.Manager
                 {
                     unit.SetShootingTarget(closestAdjacent.Center);
                     closestAdjacent.MakeDamage(UnitStrength);
-                    if(closestAdjacent.Health <= 0)
+                    if (closestAdjacent.Health <= 0)
                     {
                         // try to turn the closest into a freemoving unit
                         var killUnit = closestAdjacent as FreeMovingUnit;
@@ -437,9 +383,11 @@ namespace Singularity.Manager
                     unit.SetShootingTarget(Vector2.Zero);
                 }
             }
+
             #endregion
 
             #region Check targets for hostile turrets
+
             foreach (var turret in mHostileDefensePlatforms)
             {
                 // iterate through each friendly turret, if there's a target nearby, shoot it.
@@ -448,7 +396,8 @@ namespace Singularity.Manager
 
                 // remember the closest adjacent unit.
                 ICollider closestAdjacent = null;
-                var closestAdjacentDistance = 1500f; // a separate variable is used so that it can be initalized with a very big value.
+                var closestAdjacentDistance =
+                    1500f; // a separate variable is used so that it can be initalized with a very big value.
 
                 // iterate through all adjacent units to find the closest adjacent unit.
                 foreach (var adjacentUnit in adjacentUnits)
@@ -498,19 +447,27 @@ namespace Singularity.Manager
                     turret.SetShootingTarget(Vector2.Zero);
                 }
             }
+
             #endregion
+
+            #region Kill them
 
             foreach (var unit in unitsToKill)
             {
-                if (unit.Friendly)
-                {
-                    
-                } 
+                RemoveUnit(unit);
+
+                // in any case, kill the unit.
                 unit.Die();
-
             }
+
+            foreach (var platform in platformsToKill)
+            {
+                RemovePlatform(platform);
+
+                // in any case, kill it.
+                platform.Die();
+            }
+            #endregion
         }
-
-
     }
 }
