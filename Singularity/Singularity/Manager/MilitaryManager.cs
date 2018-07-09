@@ -50,6 +50,8 @@ namespace Singularity.Manager
 
         #endregion
 
+        internal int TotalUnitCount { get; private set; } = 0;
+
         /// <summary>
         /// Sets the unit map for referencing later on. This is required because the map is created
         /// after the director so it cannot be included in the constructor.
@@ -107,6 +109,7 @@ namespace Singularity.Manager
             }
 
             mUnitMap.AddUnit(unit);
+            TotalUnitCount++;
         }
 
         #endregion
@@ -156,6 +159,7 @@ namespace Singularity.Manager
             }
 
             mUnitMap.RemoveUnit(unit);
+            TotalUnitCount--;
         }
 
         #endregion
