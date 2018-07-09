@@ -22,19 +22,31 @@ namespace Singularity.Property
 
         public Vector2 Center { get; protected set; }
 
-        public Texture2D RevealingTexture { get; protected set; }
+        public Texture2D RevealingTexture { get; private set; }
 
         public virtual void LoadContent(GraphicsDevice device)
         {
             RevealingTexture = new Texture2D(device, this.RevelationRadius, this.RevelationRadius / 2);
             Color[] data = new Color[RevelationRadius * RevelationRadius / 2];
+            var count = 0;
             for (int i = 0; i < RevelationRadius; i++) {
                 for (int j = 0; j < RevelationRadius / 2; j++) {
+                    /*
                     if (Geometry.Length(new Vector2(RevelationRadius - i, RevelationRadius / 2 - j)) < RevelationRadius) {
-                        data[i * RevelationRadius + j] = Color.Transparent;
+                        data[i * RevelationRadius / 2 + j] = Color.Transparent;
                     } else {
-                        data[i * RevelationRadius + j] = Color.Black;
+                        data[i * RevelationRadius / 2 + j] = new Color(new Vector3(255, 255, 255));
                     }
+                    */
+                    if (i > j)
+                    {
+                        data[count] = Color.Transparent;
+                    }
+                    else
+                    {
+                        // data[count] = Color.Black;
+                    }
+                    count++;
                 }
             }
             RevealingTexture.SetData(data);

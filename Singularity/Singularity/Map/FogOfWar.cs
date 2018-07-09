@@ -135,11 +135,11 @@ namespace Singularity.Map
                 // var rect = new Rectangle(revealing.Center.X - revealing.RevelationRadius.X, revealing.Center.Y - revealing.RevelationRadius.Y, revealing.RevelationRadius.X, revealing.RelevationRadius.Y / 2f);
                 // spriteBatch.DrawEllipse(rect, Color.Transparent, revealing.RevelationRadius.Y / 4f);
                 // performant version:
-                spriteBatch.Draw(revealing.RevealingTexture, new Vector2(revealing.Center.X - revealing.RevelationRadius, revealing.Center.Y - revealing.RevelationRadius / 2), Color.Transparent);
+                spriteBatch.Draw(revealing.RevealingTexture, new Rectangle((int) (revealing.Center.X - revealing.RevelationRadius), (int) revealing.Center.Y - revealing.RevelationRadius / 2, revealing.RevelationRadius * 2, revealing.RevelationRadius), Color.Transparent);
+                // spriteBatch.Draw(revealing.RevealingTexture, revealing.Center, Color.White);
             }
 
             spriteBatch.End();
-
         }
 
         /// <summary>

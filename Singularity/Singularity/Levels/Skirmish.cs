@@ -18,16 +18,6 @@ namespace Singularity.Levels
     [DataContract]
     internal sealed class Skirmish : BasicLevel
     {
-        [DataMember]
-        public GameScreen GameScreen { get; set; }
-
-        public Camera Camera { get; set; }
-
-        [DataMember]
-        public Map.Map Map { get; set; }
-        // TODO: change in BasicLevel.cs or sth
-
-
         public Skirmish(GraphicsDeviceManager graphics,
             ref Director director,
             ContentManager content,
