@@ -80,13 +80,11 @@ namespace Singularity.Levels
             //INITIALIZE SCREENS AND ADD THEM TO THE SCREENMANAGER
             GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
             Ui = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
+            Ui.LoadContent(content);
             mDirector.GetUserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
 
             // the input manager keeps this from not getting collected by the GC
             new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
-
-            mScreenManager.AddScreen(GameScreen);
-            mScreenManager.AddScreen(Ui);
         }
 
         public abstract void LoadContent(ContentManager content);

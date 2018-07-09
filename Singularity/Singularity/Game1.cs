@@ -79,6 +79,7 @@ namespace Singularity
 
             mLoadGameManager = new LoadGameManagerScreen(mGraphics, ref mDirector, Content, viewportResolution, mScreenManager, this);
             mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
+
             //ATTENTION: THE INGAME SCREENS ARE HANDLED IN THE LEVELS NOW!
             mScreenManager.AddScreen(mLoadGameManager);
             mScreenManager.AddScreen(mMainMenuManager);

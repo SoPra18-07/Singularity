@@ -123,7 +123,7 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool DrawLower()
         {
-            return true;
+            return false;
         }
 
         public void Update(GameTime gametime)
@@ -299,7 +299,7 @@ namespace Singularity.Screen.ScreenClasses
             // unsubscribe from this military unit when deleted
             if (controllableUnit != null)
             {
-                //mSelBox.SelectingBox -= milUnit.BoxSelected;
+                mSelBox.SelectingBox -= controllableUnit.BoxSelected;
             }
 
             if (typeof(IRevealing).IsAssignableFrom(typeof(T)))

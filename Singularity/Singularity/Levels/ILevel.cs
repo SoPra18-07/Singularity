@@ -19,7 +19,6 @@ namespace Singularity.Levels
 
         [DataMember]
         Camera Camera { get; set; }
-
         Map.Map Map { get; }
     }
 }

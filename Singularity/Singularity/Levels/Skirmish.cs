@@ -30,6 +30,7 @@ namespace Singularity.Levels
 
         public override void LoadContent(ContentManager content)
         {
+
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
             var platform1 = PlatformFactory.Get(EPlatformType.Blank, ref mDirector, 3000, 3000, Map.GetResourceMap());
