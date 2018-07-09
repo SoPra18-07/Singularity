@@ -344,12 +344,21 @@ namespace Singularity.Map
             return Vector2.Transform(Vector2.Zero, Matrix.Invert(mTransform));
         }
 
-        public void SetPosition(Vector2 position)
+        private void SetPosition(Vector2 position)
         {
             mX = position.X;
             mY = position.Y;
 
             ValidatePosition();
+        }
+
+        public void CenterOn(Vector2 position)
+        {
+            var size = GetSize();
+            var rel = GetRelativePosition();
+            var offset = new Vector2(mX, mY) - rel;
+
+            SetPosition(new Vector2(position.X - (size.X / 2) + offset.X, position.Y - (size.Y / 2) + offset.Y));
         }
 
         public Vector2 GetSize()
