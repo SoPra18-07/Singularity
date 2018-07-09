@@ -155,7 +155,7 @@ namespace Singularity.Platforms
 
                     if (!mPlaySound)
                     {
-                        // there is an issue here, it is constantly on loop 
+                        // makes a sound once when platform is placed
                         mDirector.GetSoundManager.PlaySound("PlatformCreate",
                             mPlatform.Center.X,
                             mPlatform.Center.Y,
