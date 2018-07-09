@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -30,8 +31,6 @@ namespace Singularity.Screen.ScreenClasses
 
         private readonly Camera mCamera;
 
-        private int mCurrentFps;
-
         private readonly Map.Map mMap;
 
         private readonly Director mDirector;
@@ -39,8 +38,17 @@ namespace Singularity.Screen.ScreenClasses
         private int mActivePlatforms;
         private int mDeactivePlatforms;
 
+        private int mFrameCount;
+        private double mDt;
+        private int mFps;
+        private readonly float mUpdateRate;
+
+        private int mUps;
+
         public DebugScreen(StackScreenManager screenManager, Camera camera, Map.Map map, ref Director director)
         {
+            mUpdateRate = 2.0f;
+
             mScreenManager = screenManager;
             mCamera = camera;
             mMap = map;
@@ -84,8 +92,8 @@ namespace Singularity.Screen.ScreenClasses
 
 
 
-            spriteBatch.DrawString(mFont, "FPS: " + mCurrentFps, new Vector2(15, 365), Color.White);
-
+            spriteBatch.DrawString(mFont, "FPS: " + mFps, new Vector2(15, 365), Color.White);
+            spriteBatch.DrawString(mFont, "UPS: " + mUps, new Vector2(15, 385), Color.White);
 
             //spriteBatch.DrawString(mFont, "FPS: " + mCurrentFps, new Vector2(15, 200), Color.White);
             spriteBatch.End();
@@ -103,7 +111,17 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Update(GameTime gametime)
         {
-            mCurrentFps = (int) Math.Round(1 / gametime.ElapsedGameTime.TotalSeconds, MidpointRounding.ToEven);
+
+            mFrameCount++;
+            mDt += Game1.mDeltaTime;
+            if (mDt > 1f / mUpdateRate)
+            {
+                mFps = (int) Math.Round(mFrameCount / mDt);
+                mFrameCount = 0;
+                mDt -= 1 / mUpdateRate;
+            }
+
+            mUps = (int) Math.Round(1 / gametime.ElapsedGameTime.TotalSeconds);
 
             var activeCounter = 0;
             var deactiveCounter = 0;

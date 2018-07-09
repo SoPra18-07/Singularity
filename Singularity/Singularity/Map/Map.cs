@@ -147,14 +147,13 @@ namespace Singularity.Map
             var colMap = mCollisionMap.GetCollisionMap();
             var walkabilityGrid = mCollisionMap.GetWalkabilityGrid();
 
-            for (var columnCount = 0; columnCount <= colMap.GetLength(0); columnCount++)
+            for (var columnCount = mCamera.GetRelativePosition().X / MapConstants.GridWidth; columnCount <= (mCamera.GetRelativePosition().X + mCamera.GetSize().X) / MapConstants.GridWidth; columnCount++)
             {
-
                 spriteBatch.DrawLine(
                     new Vector2(columnCount * MapConstants.GridWidth, 0), MapConstants.MapHeight, MathHelper.Pi / 2f, Color.Blue, 1, LayerConstants.GridDebugLayer);
             }
 
-            for (var rowCount = 0; rowCount <= colMap.GetLength(0); rowCount++)
+            for (var rowCount = mCamera.GetRelativePosition().Y / MapConstants.GridHeight; rowCount <= (mCamera.GetRelativePosition().Y + mCamera.GetSize().Y) / MapConstants.GridHeight; rowCount++)
             {
                 spriteBatch.DrawLine(
                     new Vector2(0, rowCount * MapConstants.GridHeight), MapConstants.MapWidth, 0, Color.Yellow, 1, LayerConstants.GridDebugLayer);
@@ -162,13 +161,13 @@ namespace Singularity.Map
 
 
 
-            for(var i = 0; i < colMap.GetLength(dimension: 0); i++)
+            for(var i = (int) (mCamera.GetRelativePosition().X / MapConstants.GridWidth); i < (mCamera.GetRelativePosition().X + mCamera.GetSize().X) / MapConstants.GridWidth; i++)
             {
-                for (var j = 0; j < colMap.GetLength(dimension: 1); j ++)
+                for (var j = (int) (mCamera.GetRelativePosition().Y / MapConstants.GridHeight); j < (mCamera.GetRelativePosition().Y + mCamera.GetSize().Y) / MapConstants.GridHeight; j ++)
                 {
                     if (!walkabilityGrid.IsWalkableAt(i, j))
                     {
-                        spriteBatch.FillRectangle(rect: new Rectangle(x: i * MapConstants.GridWidth, y: j * MapConstants.GridHeight, width: MapConstants.GridWidth, height: MapConstants.GridHeight),
+                        spriteBatch.FillRectangle(rect: new Rectangle(x: (i * MapConstants.GridWidth), y: j * MapConstants.GridHeight, width: MapConstants.GridWidth, height: MapConstants.GridHeight),
                             color: new Color(color: new Vector4(x: 1, y: 0, z: 0, w: 0.2f)), angle: 0f, layer: LayerConstants.CollisionDebugLayer);
                     }
                 }

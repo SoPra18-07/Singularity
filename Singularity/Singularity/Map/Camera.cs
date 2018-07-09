@@ -15,6 +15,8 @@ namespace Singularity.Map
     /// </remarks>
     public sealed class Camera : IUpdate, IKeyListener, IMouseWheelListener, IMousePositionListener
     {
+        private const float MinZoom = 1.5f;
+
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
 
         /// <summary>
@@ -312,7 +314,7 @@ namespace Singularity.Map
             }
 
             if (!((mZoom + scrollChange) * MapConstants.MapWidth < mGraphics.Viewport.Width ||
-                  (mZoom + scrollChange) * MapConstants.MapHeight < mGraphics.Viewport.Height))
+                  (mZoom + scrollChange) * MapConstants.MapHeight < mGraphics.Viewport.Height || mZoom + scrollChange > MinZoom))
             {
                 ZoomToTarget(new Vector2(mMouseX, mMouseY), scrollChange);
             }
@@ -344,12 +346,17 @@ namespace Singularity.Map
             return Vector2.Transform(Vector2.Zero, Matrix.Invert(mTransform));
         }
 
-        public void SetPosition(Vector2 position)
+        private void SetPosition(Vector2 position)
         {
             mX = position.X;
             mY = position.Y;
 
             ValidatePosition();
+        }
+
+        public void CenterOn(Vector2 position)
+        {
+
         }
 
         public Vector2 GetSize()
