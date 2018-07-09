@@ -115,8 +115,6 @@ namespace Singularity.Platforms
         [DataMember]
         private bool mIsManuallyDeactivated;
 
-
-
         public Vector2 Center { get; set; }
 
         public int RevelationRadius { get; protected set; } = 200;
@@ -249,13 +247,12 @@ namespace Singularity.Platforms
 
         public void Register()
         {
-            //TODO: make this so we can also register defense platforms
-            if (Property == JobType.Production)
+            if (IsProduction())
             {
-                mDirector.GetDistributionManager.Register(this, false);
-            } else if (Property == JobType.Defense)
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, false);
+            } else if (IsDefense())
             {
-                mDirector.GetDistributionManager.Register(this, true);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, true);
             }
         }
 
@@ -818,7 +815,7 @@ namespace Singularity.Platforms
         public void DieBlank()
         {
 
-            mDirector.GetDistributionManager.Kill(this);
+            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
 
 
             mColor = Color.White;
@@ -869,7 +866,7 @@ namespace Singularity.Platforms
 
             mIPlatformActions.ForEach(a => a.Platform = null);
             mIPlatformActions.RemoveAll(a => a.Die());
-            mDirector.GetDistributionManager.Kill(this);
+            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
             mDirector.GetStoryManager.StructureMap.RemovePlatform(this);
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             return true;
@@ -911,14 +908,53 @@ namespace Singularity.Platforms
 
         public void Activate(bool manually)
         {
+            //TODO: Tell the PlatformAction to request everything it needs again.
             if (manually)
             {
                 mIsManuallyDeactivated = false;
             }
             mIsActive = true;
             ResetColor();
+            //Only reregister the platforms if they are defense or production platforms
+            if (IsDefense())
+            {
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, true);
+            }else if (IsProduction())
+            {
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, false);
+            }
+        }
 
-            //TODO: actually active the platform again -> distributionmanager and stuff
+        /// <summary>
+        /// A function made to determine whether this platform is a defending platform.
+        /// </summary>
+        /// <returns>True if thats the case, false otherwise</returns>
+        public bool IsDefense()
+        {
+            if (mType == EPlatformType.Kinetic
+                || mType == EPlatformType.Laser)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// A function made to determine whether this paltform is a producing platform.
+        /// </summary>
+        /// <returns>True if thats the casem, false otherwise</returns>
+        public bool IsProduction()
+        {
+            if (mType == EPlatformType.Well
+                || mType == EPlatformType.Quarry
+                || mType == EPlatformType.Mine
+                || mType == EPlatformType.Factory)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public void Deactivate(bool manually)
@@ -932,8 +968,19 @@ namespace Singularity.Platforms
             // TODO: remove this or change it to something more appropriately, this is used by @Ativelox for 
             // TODO: debugging purposes to easily see which platforms are currently deactivated
             mColor = Color.Green;
-
-            //TODO: actually deactivate the platform -> distributinmanager and stuff
+            //Only unregister if this platform is a defense or production platform
+            if (IsDefense())
+            {
+                var selflist = new List<PlatformBlank>();
+                selflist.Add(this);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, true, true);
+            }
+            else if (IsProduction())
+            {
+                var selflist = new List<PlatformBlank>();
+                selflist.Add(this);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, false, true);
+            }
         }
 
         public bool IsManuallyDeactivated()

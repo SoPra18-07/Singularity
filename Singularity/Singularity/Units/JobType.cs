@@ -6,6 +6,7 @@
         Production,
         Construction,
         Logistics,
-        Defense
+        Defense,
+        Manual
     }
 }
