@@ -102,7 +102,7 @@ namespace Singularity.PlatformActions
 
         public void Update()
         {
-            Debug.WriteLine(mBuildingCost.Values.Sum() + ", " + mMissingResources.Values.Sum() + ", " + mToRequest.Values.Sum());
+            // Debug.WriteLine(mBuildingCost.Values.Sum() + ", " + mMissingResources.Values.Sum() + ", " + mToRequest.Values.Sum());
             if (State != PlatformActionState.Active)
                 return;
             if (mToRequest.Count > 0)

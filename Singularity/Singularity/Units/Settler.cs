@@ -73,6 +73,8 @@ namespace Singularity.Units
                 //to true, that has been true already.
                 mUi.Activate();
             }
+            // debug.
+            mUi.Activate();
         }
         #endregion
 
