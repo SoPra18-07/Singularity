@@ -10,7 +10,7 @@ using Singularity.Manager;
 
 namespace Singularity.Screen
 {
-    class Slider : IWindowItem, IMouseClickListener, IMousePositionListener
+    public class Slider : IWindowItem, IMouseClickListener, IMousePositionListener
     {
         #region Declaration
 

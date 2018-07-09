@@ -26,6 +26,8 @@ namespace Singularity.Platforms
     public class PlatformBlank : IRevealing, INode, ICollider, IMouseClickListener
     {
 
+        private List<GeneralUnit> mAllGenUnits;
+
         private int mGraphIndex;
 
         private float mLayer;
@@ -198,6 +200,7 @@ namespace Singularity.Platforms
             mDrainingEnergy = 0;
             mIsActive = true;
 
+            mAllGenUnits = new List<GeneralUnit>();
             mResources = new List<Resource>();
 
             mPlatformSpriteSheet = platformSpriteSheet;
@@ -968,6 +971,21 @@ namespace Singularity.Platforms
                 selflist.Add(this);
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, false, true);
             }
+        }
+
+        public List<GeneralUnit> GetGeneralUnitsOnPlatform()
+        {
+            return mAllGenUnits;
+        }
+
+        public void AddGeneralUnit(GeneralUnit unit)
+        {
+            mAllGenUnits.Add(unit);
+        }
+
+        public void RemoveGeneralUnit(GeneralUnit unit)
+        {
+            mAllGenUnits.Remove(unit);
         }
 
         public bool IsManuallyDeactivated()
