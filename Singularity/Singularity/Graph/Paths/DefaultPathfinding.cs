@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using C5;
 using Microsoft.Xna.Framework;
 using Singularity.Property;
 
@@ -16,23 +18,28 @@ namespace Singularity.Graph.Paths
         public IPath AStar(Graph graph, INode start, INode destination)
         {
 
-            // this is actual copy pasted from wikipedia, this is definitely not optimized
-            // since i was too bored to browse all the data structures available in c#
-            // and their implementations. From what ive read there are no heap structures
-            // though, so no priority queues from .NET :(, if anybody knows more stuff
-            // about c# data structure implementations feel free to change them.
+            // this is more or less copy pasted from wikipedia, this is definitely not optimized
             //
+            // now there's actually a PriorityQueue used, however I doubt it to be actually performant.
+            //
+            // reference:
             // https://en.wikipedia.org/wiki/A*_search_algorithm#Pseudocode
 
             var closedList = new List<INode>();
 
-            var openList = new List<INode> {start};
+            // var openList = new List<INode> {start};
+
+            // openList.Comparer = null;
 
             var cameFrom = new Dictionary<INode, INode>();
 
             var gScore = new Dictionary<INode, float>();
 
             var fScore = new Dictionary<INode, float>();
+                
+            Func<INode, INode, int> compareFunc = (a, b) => (int) fScore[a] > (int) fScore[b] ? 1 : (int) fScore[a] < (int) fScore[b] ? -1 : 0;
+
+            var openList = new IntervalHeap<INode>(ComparerFactory<INode>.CreateComparer(compareFunc)) { start };
 
             foreach (var node in graph.GetNodes())
             {
@@ -46,20 +53,9 @@ namespace Singularity.Graph.Paths
 
             while (openList.Count > 0)
             {
-                float minValue = int.MaxValue;
 
-                INode current = null;
-
-                foreach (var node in openList)
-                {
-                    if (fScore[node] < minValue)
-                    {
-                        minValue = fScore[node];
-                        current = node;
-                    }
-
-                }
-
+                var current = openList.DeleteMin();
+                
                 // current can never be null from my short amount of thinking about it (if actual arguments are given)
 
                 Debug.Assert(current != null, "pathFinding failed.");
@@ -67,12 +63,8 @@ namespace Singularity.Graph.Paths
                 {
                     return ReconstructPath(cameFrom, current);
                 }
-
-                openList.Remove(current);
+                
                 closedList.Add(current);
-                //var edges = new List<IEdge>();
-                //edges.AddRange(current.GetOutwardsEdges());
-                //edges.AddRange(current.GetInwardsEdges());
                 foreach (var outgoing in current.GetOutwardsEdges())
                 {
                     var neighbor = outgoing.GetChild();

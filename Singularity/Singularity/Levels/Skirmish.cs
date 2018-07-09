@@ -19,8 +19,6 @@ namespace Singularity.Levels
     [DataContract]
     internal sealed class Skirmish : BasicLevel
     {
-        
-
         public Skirmish(GraphicsDeviceManager graphics,
             ref Director director,
             ContentManager content,
@@ -86,7 +84,8 @@ namespace Singularity.Levels
 
             //MilUnits
             var map = Map;
-            var milUnit = new MilitaryUnit(new Vector2(3000, 2700), Camera, ref mDirector, ref map);
+            var milUnit = new MilitaryUnit(new Vector2(2000, 700), Camera, ref mDirector, ref map);
+            var mil2 = new MilitaryUnit(new Vector2(2200, 700), Camera, ref mDirector, ref map);
 
             //SetUnit
             var setUnit = new Settler(new Vector2(3000, 3250), Camera, ref mDirector, ref map, GameScreen, mUi);
@@ -108,6 +107,7 @@ namespace Singularity.Levels
 
             GameScreen.AddObjects(genUnit);
             GameScreen.AddObject(milUnit);
+            GameScreen.AddObject(mil2);
             GameScreen.AddObject(setUnit);
 
             // add a puddle

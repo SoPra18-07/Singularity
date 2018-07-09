@@ -197,6 +197,5 @@ namespace Singularity.Units
             mEnemyPosition = target;
             Rotate(target);
         }
-        
     }
 }

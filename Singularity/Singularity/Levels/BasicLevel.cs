@@ -21,9 +21,10 @@ namespace Singularity.Levels
         [DataMember]
         public GameScreen GameScreen { get; set; }
 
+        [DataMember]
         public Camera Camera { get; set; }
 
-
+        [DataMember]
         public Map.Map Map { get; set; }
 
 
