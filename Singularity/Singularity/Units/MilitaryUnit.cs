@@ -120,7 +120,6 @@ namespace Singularity.Units
 
             if (GlobalVariables.DebugState)
             {
-                // TODO DEBUG REGION
                 if (mDebugPath != null)
                 {
                     for (var i = 0; i < mDebugPath.Length - 1; i++)

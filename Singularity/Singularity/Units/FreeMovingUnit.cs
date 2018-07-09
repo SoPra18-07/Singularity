@@ -73,7 +73,7 @@ namespace Singularity.Units
         /// <summary>
         /// MilitaryPathfinders enables pathfinding using jump point search or line of sight.
         /// </summary>
-        protected readonly MilitaryPathfinder mPathfinder;
+        protected readonly FreeMovingPathfinder mPathfinder;
 
         /// <summary>
         /// Stores a reference to the game map.
@@ -166,7 +166,7 @@ namespace Singularity.Units
 
             mDirector = director;
             mCamera = camera;
-            mPathfinder = new MilitaryPathfinder();
+            mPathfinder = new FreeMovingPathfinder();
 
             Friendly = friendly;
         }
@@ -202,9 +202,7 @@ namespace Singularity.Units
 
             if (GlobalVariables.DebugState)
             {
-                // TODO: DEBUG REGION
                 mDebugPath = mPath.ToArray();
-                // TODO: END DEBUG REGION
             }
 
             mBoundsSnapshot = Bounds;
@@ -314,8 +312,7 @@ namespace Singularity.Units
 
         public bool Die()
         {
-            // mDirector.GetMilitaryManager.Kill(this);
-            // todo: MilitaryManager implement
+            // TODO: Allow implementation
 
             return true;
         }

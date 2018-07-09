@@ -2,7 +2,7 @@
 
 namespace Singularity.Exceptions
 {
-    internal sealed class UnsupportedTextureSizeException : Exception
+    public sealed class UnsupportedTextureSizeException : Exception
     {
         public UnsupportedTextureSizeException(int actualWidth, int actualHeight, int wantedWidth, int wantedHeight) :
             base("The dimensions of the given Texture2D were: (" + actualWidth + ", " + actualHeight +

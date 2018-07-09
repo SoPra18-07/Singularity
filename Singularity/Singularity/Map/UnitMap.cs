@@ -11,7 +11,7 @@ namespace Singularity.Map
         /// <summary>
         /// Stores which units are in which grid position on the map.
         /// </summary>
-        private UnitMapTile[,] mUnitGrid;
+        private readonly UnitMapTile[,] mUnitGrid;
 
         private readonly Dictionary<int, Vector2> mLookupTable = new Dictionary<int, Vector2>();
 

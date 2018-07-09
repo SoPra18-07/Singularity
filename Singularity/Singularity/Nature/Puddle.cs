@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Property;
+using Singularity.Utils;
 
 namespace Singularity.Nature
 {
@@ -12,27 +13,28 @@ namespace Singularity.Nature
 
 
         public Rectangle AbsBounds { get; }
-        public bool Moved { get; }
+        public bool Moved { get; } = false;
         public int Id { get; }
         public Vector2 RelativePosition { get; set; }
         public Vector2 RelativeSize { get; set; }
         public Vector2 AbsolutePosition { get; set; }
         public Vector2 AbsoluteSize { get; set; }
-        private Vector2 mPosition;
+        private readonly Vector2 mPosition;
 
         public Vector2 Center { get; }
         public bool Friendly { get; } = false;
 
         public Puddle(Vector2 position)
         {
+            Id = IdGenerator.NextiD();
             AbsoluteSize = new Vector2(160, 130);
 
             Center = new Vector2((AbsolutePosition.X + AbsoluteSize.X) * 0.5f, (AbsolutePosition.Y + AbsoluteSize.Y) * 0.5f);
 
             // this is used to draw the puddle correctly within the collision grid
             mPosition = position;
-
             AbsolutePosition = new Vector2(position.X, position.Y - 50);
+            AbsBounds = new Rectangle((int)position.X, (int)position.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
             ColliderGrid = new[,]
             {
                 {false, true, true, true, true, true, true, true, false},
