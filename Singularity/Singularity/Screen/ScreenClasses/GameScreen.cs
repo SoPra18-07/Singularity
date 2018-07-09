@@ -16,12 +16,12 @@ using Singularity.Utils;
 
 namespace Singularity.Screen.ScreenClasses
 {
-    [DataContract]
     /// <inheritdoc cref="IScreen"/>
     /// <summary>
     /// Handles everything thats going on explicitly in the game.
     /// E.g. game objects, the map, camera. etc.
     /// </summary>
+    [DataContract]
     public sealed class GameScreen : IScreen
     {
         [DataMember]
@@ -30,37 +30,41 @@ namespace Singularity.Screen.ScreenClasses
         public bool Loaded { get; set; }
 
         // map and fog of war
-        private readonly Map.Map mMap;
-        private readonly FogOfWar mFow;
+        private Map.Map mMap;
+        private FogOfWar mFow;
 
         // director for Managing all the Managers
         private Director mDirector;
-        private readonly GraphicsDevice mGraphicsDevice;
+        private GraphicsDevice mGraphicsDevice;
 
         /// <summary>
         /// This list contains all the drawable objects currently in the game.
         /// </summary>
+        [DataMember]
         private readonly LinkedList<IDraw> mDrawables;
 
         /// <summary>
         /// This list contains all the updateable objects currently in the game.
         /// </summary>
+        [DataMember]
         private readonly LinkedList<IUpdate> mUpdateables;
 
         /// <summary>
         /// The idea is that all spatial objects are affected by the fog of war, so we save them seperately to have a seperation
         /// in our game screen. This way we can apply masks and all that stuff more easily.
         /// </summary>
+        [DataMember]
         private readonly LinkedList<ISpatial> mSpatialObjects;
-
+        [DataMember]
         private Matrix mTransformMatrix;
 
         /// <summary>
         /// The camera object which holds transformation values.
         /// </summary>
-        private readonly Camera mCamera;
+        private Camera mCamera;
 
         private SelectionBox mSelBox;
+
         private Texture2D mBlankPlat;
         private Texture2D mCylPlat;
 
@@ -85,6 +89,33 @@ namespace Singularity.Screen.ScreenClasses
 
         }
 
+        public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, Map.Map map, FogOfWar fow , Camera camera, ref Director director)
+        {
+            mGraphicsDevice = graphics.GraphicsDevice;
+            mMap = map;
+            mFow = fow;
+            mCamera = camera;
+            mDirector = director;
+            mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
+
+            //All collider items have to be readded to the ColliderMap
+            var colliderlist = new List<ICollider>();
+            foreach (var spatial in mSpatialObjects)
+            {
+                var collider = spatial as ICollider;
+                if (collider != null && !colliderlist.Contains(collider))
+                {
+                    mMap.UpdateCollider(collider);
+                    colliderlist.Add(collider);
+                }
+            }
+
+            //Reload the content for all ingame objects like Platforms etc.
+            foreach (IDraw drawable in mDrawables)
+            {
+
+            }
+        }
         public void Draw(SpriteBatch spriteBatch)
         {
 

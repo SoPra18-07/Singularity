@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,6 +12,7 @@ using Singularity.Screen;
 
 namespace Singularity.Units
 {
+    [DataContract]
     public sealed class SelectionBox : IDraw, IUpdate, IMouseClickListener, IMousePositionListener
     {
         private Color mColor;
@@ -20,6 +22,7 @@ namespace Singularity.Units
 
         private float mXStart;
         private float mYStart;
+
 
         public delegate void SelectionBoxEventHandler(object source, EventArgs args, Vector2 leftCorner, Vector2 size);
         public event SelectionBoxEventHandler SelectingBox;

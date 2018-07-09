@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Runtime.Serialization;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
@@ -13,6 +14,7 @@ namespace Singularity.Map
     /// <remarks>
     /// The camera object is used to move and zoom the map and all its components.
     /// </remarks>
+    [DataContract]
     public sealed class Camera : IUpdate, IKeyListener, IMouseWheelListener, IMousePositionListener
     {
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
@@ -20,44 +22,50 @@ namespace Singularity.Map
         /// <summary>
         /// The speed at which the camera moves in pixels per update.
         /// </summary>
+        [DataMember]
         private const int CameraMovementSpeed = 10;
 
         /// <summary>
         /// The viewport of the window, e.g. the current size of it.
         /// </summary>
-        private readonly GraphicsDevice mGraphics;
+        private GraphicsDevice mGraphics;
 
         /// <summary>
         /// The x location of the camera unzoomed. Could also be called the "true" or "absolute" x location.
         /// </summary>
+        [DataMember]
         private float mX;
 
         /// <summary>
         /// The y location of the camera unzoomed. Could also be called the "true" or "absolute" y location.
         /// </summary>
+        [DataMember]
         private float mY;
-
+        [DataMember]
         private float mMouseX;
-
+        [DataMember]
         private float mMouseY;
 
         /// <summary>
         /// The current zoom value of the camera.
         /// </summary>
+        [DataMember]
         private float mZoom;
 
         /// <summary>
         /// The matrix used to transform every position to the actual camera view.
         /// </summary>
+        [DataMember]
         private Matrix mTransform;
 
         /// <summary>
         /// The bounding box of the map used, so the camera cannot move out of bounds.
         /// </summary>
+        [DataMember]
         private readonly Rectangle mBounds;
-
+        [DataMember]
         private readonly bool mNeo;
-
+        [DataMember]
         private readonly InputManager mInputManager;
 
 
@@ -99,6 +107,11 @@ namespace Singularity.Map
 
             mInputManager.CameraMoved(mTransform);
 
+        }
+
+        public void ReloadContent(GraphicsDeviceManager graphics)
+        {
+            mGraphics = graphics.GraphicsDevice;
         }
 
         /// <summary>

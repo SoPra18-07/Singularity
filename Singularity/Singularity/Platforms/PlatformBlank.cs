@@ -25,32 +25,41 @@ namespace Singularity.Platforms
     [DataContract]
     public class PlatformBlank : IRevealing, INode, ICollider, IMouseClickListener
     {
-
+        [DataMember]
         private int mGraphIndex;
-
+        [DataMember]
         private float mLayer;
 
         // true, if this platform has already sent data since activation
+        [DataMember]
         private bool mDataSent;
 
         // determines whether the platform has already been added to the inputManager
+        [DataMember]
         private bool mAddedToInputManager;
 
         // previous values sent to the UIController - used to only send data if the values have been updated
+        [DataMember]
         private List<Resource> mPrevResources;
+        [DataMember]
         private Dictionary<JobType, List<Pair<GeneralUnit, bool>>> mPrevUnitAssignments;
+        [DataMember]
         private List<IPlatformAction> mPrevPlatformActions;
+        [DataMember]
         private bool mPreviousIsActiveState;
+        [DataMember]
         private bool mPreviousIsManuallyDeactivatedState;
 
         /// <summary>
         /// List of inwards facing edges/roads towards the platform.
         /// </summary>
+        [DataMember]
         private List<IEdge> mInwardsEdges;
 
         /// <summary>
         /// List of outwards facing edges/roads.
         /// </summary>
+        [DataMember]
         private List<IEdge> mOutwardsEdges;
 
         /// <summary>
@@ -94,10 +103,14 @@ namespace Singularity.Platforms
         protected Dictionary<EResourceType, int> mCost;
         [DataMember]
         protected List<IPlatformAction> mIPlatformActions;
+
         protected readonly Texture2D mPlatformSpriteSheet;
         protected readonly Texture2D mPlatformBaseTexture;
+
+        //This means the platformspritesheetname not the name of the base texture
         [DataMember]
         protected string mSpritename;
+
         [DataMember]
         protected Dictionary<JobType, List<Pair<GeneralUnit, bool>>> mAssignedUnits;
 
@@ -112,14 +125,15 @@ namespace Singularity.Platforms
         [DataMember]
         private bool mIsManuallyDeactivated;
 
+        [DataMember]
         public Vector2 Center { get; set; }
-
+        [DataMember]
         public int RevelationRadius { get; } = 200;
-
+        [DataMember]
         public Rectangle AbsBounds { get; internal set; }
-
+        [DataMember]
         public bool Moved { get; private set; }
-
+        [DataMember]
         public int Id { get; }
 
         protected Director mDirector;
@@ -127,12 +141,15 @@ namespace Singularity.Platforms
         ///<summary>
         /// The sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome.
         /// </summary>
+        [DataMember]
         protected int mSheet;
 
         /// <summary>
         /// Where on the spritesheet the platform is located
         /// </summary>
+        [DataMember]
         protected int mSheetPosition;
+
         // the userinterface controller to send all informations to
         private readonly UserInterfaceController mUserInterfaceController;
 
@@ -149,9 +166,9 @@ namespace Singularity.Platforms
 
         [DataMember]
         private readonly float mCenterOffsetY;
-
+        [DataMember]
         protected Color mColor = Color.White;
-
+        [DataMember]
         public bool[,] ColliderGrid { get; internal set; }
 
         public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36)

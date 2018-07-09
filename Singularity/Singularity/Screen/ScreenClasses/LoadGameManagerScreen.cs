@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Singularity.Exceptions;
 using Singularity.Levels;
 using Singularity.Manager;
@@ -150,9 +144,9 @@ namespace Singularity.Screen.ScreenClasses
                 if (levelToBe.IsPresent())
                 {
                     mLevel = (ILevel)levelToBe.Get();
+                    mLevel.ReloadContent(mContent, mGraphics, mDirector);
                     mGameScreen = mLevel.GameScreen;
                     mUi = mLevel.Ui;
-
                     //Remove all screens above this screen, of course this only works if this screen is really on the bottom of the stack
                     for (var i = mScreenManager.GetScreenCount() - 1; i > 0; i--)
                     {

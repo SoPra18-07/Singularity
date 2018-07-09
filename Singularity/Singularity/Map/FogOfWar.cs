@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
@@ -29,12 +30,14 @@ namespace Singularity.Map
     /// all the different buffer in the background (ColorBuffer, DepthBuffer, VertexBuffer, ...) so it shouldn't really
     /// add that much extra performance on the gpu.
     /// </remarks>
+    [DataContract]
     public sealed class FogOfWar : IUpdate
     {
 
         /// <summary>
         /// A list of all the objects which are able to reveal the fog of war.
         /// </summary>
+        [DataMember]
         private readonly LinkedList<IRevealing> mRevealingObjects;
 
         /// <summary>
@@ -42,13 +45,13 @@ namespace Singularity.Map
         /// with ones for every non transparent pixel, and 0 for every
         /// transparent pixel.
         /// </summary>
-        private readonly DepthStencilState mInitializeMaskStencilState;
+        private DepthStencilState mInitializeMaskStencilState;
 
         /// <summary>
         /// A stencil state which is used to draw outside of every mask
         /// currently applied in the stencil buffer.
         /// </summary>
-        private readonly DepthStencilState mApplyInvertedMaskStencilState;
+        private DepthStencilState mApplyInvertedMaskStencilState;
 
         private DepthStencilState mApplyMaskStencilState;
 
@@ -60,6 +63,7 @@ namespace Singularity.Map
         /// <summary>
         /// The camera object of the game used for screen coordinae calculation.
         /// </summary>
+        [DataMember]
         private readonly Camera mCamera;
 
         /// <summary>
@@ -114,6 +118,48 @@ namespace Singularity.Map
                 ReferenceAlpha = 0
             };
 
+        }
+
+        public void ReloadContent(GraphicsDeviceManager graphics)
+        {
+            mInitializeMaskStencilState = new DepthStencilState
+            {
+                StencilEnable = true,
+                StencilFunction = CompareFunction.Always,
+                StencilPass = StencilOperation.Replace,
+                ReferenceStencil = 1,
+                DepthBufferEnable = false
+            };
+
+
+            mApplyMaskStencilState = new DepthStencilState
+            {
+                StencilEnable = true,
+                StencilFunction = CompareFunction.LessEqual,
+                StencilPass = StencilOperation.Replace,
+                ReferenceStencil = 1,
+                DepthBufferEnable = false
+            };
+
+            mApplyInvertedMaskStencilState = new DepthStencilState
+            {
+                StencilEnable = true,
+                StencilFunction = CompareFunction.Greater,
+                StencilPass = StencilOperation.Replace,
+                ReferenceStencil = 1,
+                DepthBufferEnable = false
+            };
+
+
+
+            mAlphaComparator = new AlphaTestEffect(graphics.GraphicsDevice)
+            {
+                Projection = mCamera.GetStencilProjection(),
+                VertexColorEnabled = true,
+                DiffuseColor = Color.White.ToVector3(),
+                AlphaFunction = CompareFunction.Always,
+                ReferenceAlpha = 0
+            };
         }
 
         /// <summary>

@@ -89,7 +89,7 @@ namespace Singularity
             //_mSoundManager.PlaySoundTrack();
 
             //For testing load
-            //XSerializer.Save(mLevel, "SwagSireDrizzle's_Game", false);
+            //XSerializer.Save(new Skirmish(mGraphics, ref mDirector, Content, mScreenManager), "SwagSireDrizzle's_Game", false);
         }
 
         /// <summary>

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -21,6 +16,7 @@ namespace Singularity.Levels
         [DataMember]
         public GameScreen GameScreen { get; set; }
 
+        [DataMember]
         public Camera Camera { get; set; }
 
         [DataMember]
@@ -29,10 +25,9 @@ namespace Singularity.Levels
         [DataMember]
         public Map.Map Map { get; set; }
 
-
-        [DataMember]
         protected GraphicsDeviceManager mGraphics;
 
+        [DataMember]
         protected FogOfWar mFow;
 
         [DataMember]
@@ -77,10 +72,41 @@ namespace Singularity.Levels
             mFow = new FogOfWar(Camera, mGraphics.GraphicsDevice);
             Map = new Map.Map(mapBackground, 60, 60, mFow, Camera, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
 
-            //INITIALIZE SCREENS AND ADD THEM TO THE SCREENMANAGER
+            //INITIALIZE SCREENS
             GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
             Ui = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
             Ui.LoadContent(content);
+            mDirector.GetUserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
+
+            // the input manager keeps this from not getting collected by the GC
+            new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
+        }
+
+        public virtual void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, Director director)
+        {
+            mGraphics = graphics;
+            //Load stuff
+            var platformConeTexture = content.Load<Texture2D>("Cones");
+            var platformCylTexture = content.Load<Texture2D>("Cylinders");
+            var platformBlankTexture = content.Load<Texture2D>("PlatformBasic");
+            var platformDomeTexture = content.Load<Texture2D>("Dome");
+            MilitaryUnit.mMilSheet = content.Load<Texture2D>("UnitSpriteSheet");
+            MilitaryUnit.mGlowTexture = content.Load<Texture2D>("UnitGlowSprite");
+            var mapBackground = content.Load<Texture2D>("backgroundGrid");
+
+            //TODO: have a cone texture
+            PlatformFactory.Init(platformConeTexture, platformCylTexture, platformDomeTexture, platformBlankTexture);
+
+            director.ReloadContent(mDirector);
+            mDirector = director;
+
+            //Map related stuff
+            Camera.ReloadContent(mGraphics);
+            mFow.ReloadContent(mGraphics);
+            Map.ReloadContent(mapBackground, Camera, mFow, ref mDirector);
+
+            GameScreen.ReloadContent(content, graphics, Map, mFow, Camera, ref mDirector, platformBlankTexture, platformCylTexture);
+            Ui.ReloadContent(content);
             mDirector.GetUserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
 
             // the input manager keeps this from not getting collected by the GC
