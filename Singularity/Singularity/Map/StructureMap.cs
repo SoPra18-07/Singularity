@@ -105,6 +105,7 @@ namespace Singularity.Map
         /// <param name="platform">The platform to be added</param>
         public void AddPlatform(PlatformBlank platform)
         {
+
             mPlatforms.AddLast(platform);
             mFow.AddRevealingObject(platform);
 
