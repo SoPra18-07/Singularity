@@ -238,6 +238,7 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.config" />
     <None Include="app.manifest" />
+    <None Include="ClassDiagram.cd" />
     <None Include="Content\Shaders\Bloom.fx" />
     <None Include="packages.config" />
   </ItemGroup>
