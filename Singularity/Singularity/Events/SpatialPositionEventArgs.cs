@@ -30,12 +30,12 @@ namespace Singularity.Events
 
         public Vector2 GetAbsoluteCenter()
         {
-            return mSpatial.AbsolutePosition - mSpatial.AbsoluteSize / 2;
+            return mSpatial.AbsolutePosition + mSpatial.AbsoluteSize / 2;
         }
 
         public Vector2 GetRelativeCenter()
         {
-            return mSpatial.RelativePosition - mSpatial.RelativeSize / 2;
+            return mSpatial.RelativePosition + mSpatial.RelativeSize / 2;
         }
     }
 }
