@@ -60,6 +60,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Events\SpatialPositionEventArgs.cs" />
     <Compile Include="Nature\Rock.cs" />
     <Compile Include="Levels\BasicLevel.cs" />
     <Compile Include="Levels\ILevel.cs" />
@@ -85,7 +86,7 @@
     <Compile Include="Platforms\DefenseBase.cs" />
     <Compile Include="Platforms\EPlacementType.cs" />
     <Compile Include="Platforms\PlatformFactory.cs" />
-    <Compile Include="Platforms\PlatformPlacement.cs" />
+    <Compile Include="Platforms\StructurePlacer.cs" />
     <Compile Include="Property\IDamageable.cs" />
     <Compile Include="Property\IDie.cs" />
     <Compile Include="Property\IShooting.cs" />
