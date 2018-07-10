@@ -934,7 +934,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.Units.Target">
-    <Position X="44" Y="30.75" Width="1.5" />
+    <Position X="44" Y="30.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Units\Target.cs</FileName>
