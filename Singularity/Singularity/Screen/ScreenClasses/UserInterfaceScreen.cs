@@ -154,6 +154,15 @@ namespace Singularity.Screen.ScreenClasses
         // civil units window
         private WindowObject mCivilUnitsWindow;
 
+        // slider handler
+        private SliderHandler mCivilUnitsSliderHandler;
+
+        // graph ID
+        private int mCivilUnitsGraphId;
+
+        // an indexSwitcher to go through all graphs (graphList is set through UIController)
+        private IndexSwitcherIWindowItem mGraphSwitcher;
+
         // sliders for distribution
         private Slider mDefSlider;
         private Slider mBuildSlider;
@@ -310,6 +319,13 @@ namespace Singularity.Screen.ScreenClasses
             // update screen size
             mCurrentScreenWidth = mDirector.GetGraphicsDeviceManager.PreferredBackBufferWidth;
             mCurrentScreenHeight = mDirector.GetGraphicsDeviceManager.PreferredBackBufferHeight;
+
+            // update graph sliders if the there was a change
+            if (mGraphSwitcher != null && mCivilUnitsGraphId != mGraphSwitcher.GetCurrentId())
+            {
+                mCivilUnitsGraphId = mGraphSwitcher.GetCurrentId();
+                mCivilUnitsSliderHandler.SetGraphId(mCivilUnitsGraphId);
+            }
 
             // if the resolution has changed -> reset windows to standard positions
             if (mCurrentScreenWidth != mPrevScreenWidth || mCurrentScreenHeight != mPrevScreenHeight)
@@ -554,9 +570,12 @@ namespace Singularity.Screen.ScreenClasses
 
             #region civilUnitsWindow
 
-            mCivilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(0, 0), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 10, 20, true, mLibSans14, mInputManager, mDirector);
+            mCivilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(0, 0), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 10, 15, true, mLibSans14, mInputManager, mDirector);
 
             // create items
+
+            mGraphSwitcher = new IndexSwitcherIWindowItem(new List<int> {0}, "Graph: ", civilUnitsWidth - 40, mLibSans12, mDirector);
+
             mDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
             mDefSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true);
             mBuildTextField = new TextField("Build", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
@@ -569,9 +588,10 @@ namespace Singularity.Screen.ScreenClasses
             mIdleUnitsTextAndAmount = new TextAndAmountIWindowItem("Idle", 0, Vector2.Zero, new Vector2(civilUnitsWidth, 0), mLibSans12, Color.White );
 
             //This instance will handle the comunication between Sliders and DistributionManager.
-            var handler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mBuildSlider, mLogisticsSlider);
+            mCivilUnitsSliderHandler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mBuildSlider, mLogisticsSlider);
 
             // adding all items
+            mCivilUnitsWindow.AddItem(mGraphSwitcher);
             mCivilUnitsWindow.AddItem(mIdleUnitsTextAndAmount);
             mCivilUnitsWindow.AddItem(mDefTextField);
             mCivilUnitsWindow.AddItem(mDefSlider);
@@ -1364,6 +1384,31 @@ namespace Singularity.Screen.ScreenClasses
 
             mEventLogWindow.AddItem(newEvent);
             mEventLogWindow.AutoScrollToEnd(newEvent.Size.Y, oldEventSizeY);
+        }
+
+        /// <summary>
+        /// Add a new graph to the graphSwitcher list
+        /// </summary>
+        /// <param name="graphId"></param>
+        public void AddGraph(int graphId)
+        {
+            mGraphSwitcher?.ListOfElements.Add(graphId);
+        }
+
+        /// <summary>
+        /// Merge two graphs of the graphSwitcher list by removing the two old ones and adding the new one
+        /// There is no replacement, so we keep the list sorted (way more intuitive)
+        /// </summary>
+        /// <param name="newGraphId">merged graph ID</param>
+        /// <param name="oldGraphId1">old graph ID 1</param>
+        /// <param name="oldGraphId2">old graph ID 2</param>
+        public void MergeGraph(int newGraphId, int oldGraphId1, int oldGraphId2)
+        {
+            // remove old graphs from list
+            mGraphSwitcher?.ListOfElements.Remove(oldGraphId1);
+            mGraphSwitcher?.ListOfElements.Remove(oldGraphId2);
+
+            mGraphSwitcher?.ListOfElements.Add(newGraphId);
         }
 
         /// <summary>

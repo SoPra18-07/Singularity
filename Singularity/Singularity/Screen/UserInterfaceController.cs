@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using Singularity.Manager;
 using Singularity.PlatformActions;
 using Singularity.Platforms;
@@ -115,6 +117,25 @@ namespace Singularity.Screen
         {
             // if the eventLog exists -> update with new event + possible deletion of oldest event
             ControlledUserInterface?.UpdateEventLog(newEvent, oldEvent);
+        }
+
+        internal void AddGraph(int graphId)
+        {
+            ControlledUserInterface?.AddGraph(graphId);
+        }
+
+        internal void MergeGraph(int newGraphId, int oldGraphId1, int oldGraphId2)
+        {
+            ControlledUserInterface?.MergeGraph(newGraphId, oldGraphId1, oldGraphId2);
+        }
+
+        /// <summary>
+        /// This will send an info to the Distribution manager, which, in return, will send all graph ids to the UI.
+        /// This method will only be called by the UI to reset graph ids or to reload them, since the UI won't be serialized
+        /// </summary>
+        public List<int> CallingAllGraphs()
+        {
+            return mDirector.GetDistributionDirector?.CallingAllGraphs();
         }
     }
 }

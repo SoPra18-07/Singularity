@@ -9,7 +9,7 @@ namespace Singularity.Screen
     /// A class to handle the communication between sliders and DistributionManager.
     /// </summary>
     [DataContract]
-    public class SliderHandler
+    public sealed class SliderHandler
     {
         [DataMember]
         private Slider mDefSlider;
@@ -174,9 +174,10 @@ namespace Singularity.Screen
         }
 
         //TODO: this is only used for temporarily not crashing the game and keeping the graphID up to date
-        public void SetGraphID(int id)
+        public void SetGraphId(int id)
         {
             mCurrentGraphid = id;
+            mDirector.GetDistributionDirector.GetManager(id).Register(this);
         }
     }
 }
