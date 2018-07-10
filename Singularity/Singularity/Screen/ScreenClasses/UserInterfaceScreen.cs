@@ -20,7 +20,6 @@ namespace Singularity.Screen.ScreenClasses
     /// <summary>
     /// The UserInterfaceScreen contains everything that is needed for the player's UI
     /// </summary>
-    [DataContract]
     public sealed class UserInterfaceScreen : IScreen, IMouseClickListener
     {
         #region memberVariables
@@ -38,9 +37,6 @@ namespace Singularity.Screen.ScreenClasses
         // textures
         private Texture2D mBlankPlatformTexture;
         private Texture2D mOtherPlatformTexture;
-
-        // manage input
-        private readonly InputManager mInputManager;
 
         // used to calculate the positions of the windows at the beginning
         private int mCurrentScreenWidth;
@@ -429,7 +425,7 @@ namespace Singularity.Screen.ScreenClasses
             #region selectedPlatformWindow
 
             // create the window object
-            mSelectedPlatformWindow = new WindowObject("No Selection", new Vector2(250, 200), new Vector2(selectedPlatformWidth, selectedPlatformHeight), true, mLibSans14, mInputManager, mGraphics);
+            mSelectedPlatformWindow = new WindowObject("No Selection", new Vector2(250, 200), new Vector2(selectedPlatformWidth, selectedPlatformHeight), true, mLibSans14, mDirector.GetInputManager, mGraphics);
 
             // list to add all item to be able to iterate through them
             mSelectedPlatformResourcesList = new List<ResourceIWindowItem>();
@@ -555,7 +551,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO : IMPLEMENT THE EVENT LOG
             #region eventLogWindow
 
-            mEventLogWindow = new WindowObject("// EVENT LOG", new Vector2(0, 0), new Vector2(eventLogWidth, eventLogHeight), true, mLibSans14, mInputManager, mGraphics);
+            mEventLogWindow = new WindowObject("// EVENT LOG", new Vector2(0, 0), new Vector2(eventLogWidth, eventLogHeight), true, mLibSans14, mDirector.GetInputManager, mGraphics);
             // create items
 
             // add all items
@@ -566,7 +562,7 @@ namespace Singularity.Screen.ScreenClasses
 
             #region civilUnitsWindow
 
-            mCivilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(0, 0), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 10, 20, true, mLibSans14, mInputManager, mGraphics);
+            mCivilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(0, 0), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 10, 20, true, mLibSans14, mDirector.GetInputManager, mGraphics);
 
             // create items
             mDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
@@ -601,7 +597,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO : WHAT IS THE RESOURCE WINDOW SUPPOSED TO SHOW ? - IMPLEMENT IT
             #region resourceWindow
 
-            mResourceWindow = new WindowObject("// RESOURCES", new Vector2(0, 0), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mInputManager, mGraphics);
+            mResourceWindow = new WindowObject("// RESOURCES", new Vector2(0, 0), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mDirector.GetInputManager, mGraphics);
 
             // create all items (these are simple starting values which will be updated automatically by the UI controller)
             mResourceItemChip = new ResourceIWindowItem(EResourceType.Chip, 10, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
@@ -638,7 +634,7 @@ namespace Singularity.Screen.ScreenClasses
 
             #region buildMenuWindow
 
-            mBuildMenuWindow = new WindowObject("// BUILDMENU", new Vector2(0, 0), new Vector2(buildMenuWidth, buildMenuHeight), true, mLibSans14, mInputManager, mGraphics);
+            mBuildMenuWindow = new WindowObject("// BUILDMENU", new Vector2(0, 0), new Vector2(buildMenuWidth, buildMenuHeight), true, mLibSans14, mDirector.GetInputManager, mGraphics);
 
             #region button definitions
 

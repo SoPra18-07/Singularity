@@ -47,12 +47,11 @@ namespace Singularity.Screen.ScreenClasses
             mCamera = camera;
             mMap = map;
 
-            director.GetInputManager.AddKeyListener(this);
-
         }
 
-        public void ReloadContent(ContentManager content, Camera camera, Map.Map map, StackScreenManager screenManager)
+        public void ReloadContent(ContentManager content, Camera camera, Map.Map map, StackScreenManager screenManager, ref Director director)
         {
+            director.GetInputManager.AddKeyListener(this);
             mFont = content.Load<SpriteFont>("LibSans14");
             mCamera = camera;
             mMap = map;

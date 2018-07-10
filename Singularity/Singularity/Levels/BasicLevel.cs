@@ -11,9 +11,9 @@ using Singularity.Units;
 
 namespace Singularity.Levels
 {
+    [DataContract]
     internal abstract class BasicLevel : ILevel
     {
-        [DataMember]
         private DebugScreen mDebugscreen;
 
         [DataMember]
@@ -22,7 +22,6 @@ namespace Singularity.Levels
         [DataMember]
         public Camera Camera { get; set; }
 
-        [DataMember]
         public UserInterfaceScreen Ui { get; set; }
 
         [DataMember]
@@ -104,18 +103,18 @@ namespace Singularity.Levels
             mDirector = director;
 
             //Map related stuff
-            Camera.ReloadContent(mGraphics);
+            Camera.ReloadContent(mGraphics, ref mDirector);
             mFow.ReloadContent(mGraphics);
             Map.ReloadContent(mapBackground, Camera, mFow, ref mDirector);
 
-            mDebugscreen.ReloadContent(content, Camera, Map, (StackScreenManager) mScreenManager);
+            Ui = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
+            Ui.LoadContent(content);
 
-            Ui.ReloadContent(content);
             GameScreen.ReloadContent(content, graphics, Map, mFow, Camera, ref mDirector, Ui);
             mDirector.GetUserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
 
             // the input manager keeps this from not getting collected by the GC
-            new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
+            mDebugscreen = new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
         }
 
         public abstract void LoadContent(ContentManager content);

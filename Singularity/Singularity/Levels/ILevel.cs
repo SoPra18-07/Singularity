@@ -19,11 +19,13 @@ namespace Singularity.Levels
 
         [DataMember]
         GameScreen GameScreen { get; set; }
-        [DataMember]
+
+        [IgnoreDataMember]
         UserInterfaceScreen Ui { get; set; }
 
         [DataMember]
         Camera Camera { get; set; }
+        [DataMember]
         Map.Map Map { get; }
     }
 }

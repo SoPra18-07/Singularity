@@ -96,6 +96,8 @@ namespace Singularity.Screen.ScreenClasses
             mFow = fow;
             mCamera = camera;
             mDirector = director;
+            mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
+            mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
             mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
 
             //All collider items have to be readded to the ColliderMap

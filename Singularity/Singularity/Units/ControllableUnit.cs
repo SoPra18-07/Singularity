@@ -55,9 +55,11 @@ namespace Singularity.Units
             mDirector.GetInputManager.AddMousePositionListener(this);
         }
 
-        public new void ReloadContent(ref Director director, Camera camera, ref Map.Map map)
+        protected new void ReloadContent(ref Director director, Camera camera, ref Map.Map map)
         {
             base.ReloadContent(ref director, camera, ref map);
+            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            mDirector.GetInputManager.AddMousePositionListener(this);
         }
 
         #region Mouse Handlers

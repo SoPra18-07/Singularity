@@ -9,7 +9,7 @@ using Singularity.Serialization;
 
 namespace Singularity.Screen.ScreenClasses
 {
-    class LoadGameManagerScreen : IScreen
+    internal sealed class LoadGameManagerScreen : IScreen
     {
         public EScreen Screen { get; private set; } = EScreen.LoadGameManagerScreen;
 

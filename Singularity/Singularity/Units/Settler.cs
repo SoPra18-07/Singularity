@@ -80,6 +80,7 @@ namespace Singularity.Units
             ReloadContent(ref director, camera, ref map);
             mGameScreen = gamescreen;
             mUi = ui;
+            mDirector.GetInputManager.AddKeyListener(this);
         }
 
         public override void Draw(SpriteBatch spriteBatch)

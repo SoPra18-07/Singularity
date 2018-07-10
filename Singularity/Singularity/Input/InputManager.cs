@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Property;
 using Singularity.Screen;
+using Singularity.Screen.ScreenClasses;
 
 namespace Singularity.Input
 {
@@ -12,39 +13,37 @@ namespace Singularity.Input
     /// <summary>
     /// Manages the UserInput
     /// </summary>
-    [DataContract]
     public sealed class InputManager : IUpdate
     {
-        [DataMember]
+
         private readonly List<IKeyListener> mKeyListener;
-        [DataMember]
+
         private readonly List<IMousePositionListener> mMousePositionListener;
-        [DataMember]
+
         private readonly Dictionary<EScreen, List<IMouseClickListener>> mMouseClickListener;
-        [DataMember]
+
         private readonly Dictionary<EScreen, List<IMouseWheelListener>> mMouseWheelListener;
 
-        [DataMember]
         private readonly Dictionary<IMouseClickListener, EClickType> mLeftClickType;
-        [DataMember]
+
         private readonly Dictionary<IMouseClickListener, EClickType> mRightClickType;
 
-        [DataMember]
+
         private List<EScreen> mScreensToCheck;
 
-        [DataMember]
+
         private MouseState mCurrentMouseState;
-        [DataMember]
+
         private MouseState mPreviousMouseState;
 
-        [DataMember]
+
         private KeyboardState mCurrentKeyboardState;
-        [DataMember]
+
         private KeyboardState mPreviousKeyboardState;
 
-        [DataMember]
+
         private bool mCameraMoved;
-        [DataMember]
+
         private Matrix mCurrentTransform;
 
         public InputManager()

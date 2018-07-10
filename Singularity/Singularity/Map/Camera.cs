@@ -65,8 +65,8 @@ namespace Singularity.Map
         private readonly Rectangle mBounds;
         [DataMember]
         private readonly bool mNeo;
-        [DataMember]
-        private readonly InputManager mInputManager;
+
+        private InputManager mInputManager;
 
 
         /// <summary>
@@ -109,9 +109,18 @@ namespace Singularity.Map
 
         }
 
-        public void ReloadContent(GraphicsDeviceManager graphics)
+        public void ReloadContent(GraphicsDeviceManager graphics, ref Director director)
         {
             mGraphics = graphics.GraphicsDevice;
+            mInputManager = director.GetInputManager;
+
+            director.GetInputManager.AddKeyListener(this);
+            director.GetInputManager.AddMouseWheelListener(this);
+            director.GetInputManager.AddMousePositionListener(this);
+
+            mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
+
+            mInputManager.CameraMoved(mTransform);
         }
 
         /// <summary>

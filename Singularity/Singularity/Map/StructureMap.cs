@@ -103,6 +103,7 @@ namespace Singularity.Map
         {
             mFow = fow;
             mDirector = dir;
+            dir.GetInputManager.AddMousePositionListener(this);
         }
 
         /// <summary>

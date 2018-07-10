@@ -21,7 +21,7 @@ namespace Singularity.Units
         /// The unique ID of the unit.
         /// </summary>
         [DataMember]
-        public int Id { get; }
+        public int Id { get; private set; }
 
         #region Movement Variables
 
@@ -116,7 +116,7 @@ namespace Singularity.Units
         [DataMember]
         public Vector2 RelativeSize { get; set; }
         [DataMember]
-        public EScreen Screen { get; } = EScreen.GameScreen;
+        public EScreen Screen { get; private set; } = EScreen.GameScreen;
 
         #endregion
 
@@ -275,7 +275,7 @@ namespace Singularity.Units
 
         /// <summary>
         /// Rotates unit in order when selected in order to face
-        /// user mouse and eventually target destination.
+        /// UserInterfaceScreen mouse and eventually target destination.
         /// </summary>
         /// <param name="target"></param>
         protected void Rotate(Vector2 target)

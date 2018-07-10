@@ -32,19 +32,17 @@ namespace Singularity.Manager
             // Dd}{_:
         }
 
-        public void ReloadContent(Director dir)
+        internal void ReloadContent(Director dir)
         {
-            GetInputManager = dir.GetInputManager;
             GetStoryManager = dir.GetStoryManager;
             GetMilitaryManager = dir.GetMilitaryManager;
             GetPathManager = dir.GetPathManager;
             GetUserInterfaceController = dir.GetUserInterfaceController;
             GetDistributionDirector = dir.GetDistributionDirector;
 
-            story.ReloadContent();
+            //GetStoryManager.ReloadContent();
         }
 
-        [DataMember]
         public InputManager GetInputManager { get; private set; }
 
         [DataMember]
@@ -54,8 +52,10 @@ namespace Singularity.Manager
         public PathManager GetPathManager { get; private set; }
 
         public SoundManager GetSoundManager { get; }
+
         [DataMember]
         public MilitaryManager GetMilitaryManager { get; private set; }
+
         [DataMember]
         public DistributionDirector GetDistributionDirector { get; private set; }
 
