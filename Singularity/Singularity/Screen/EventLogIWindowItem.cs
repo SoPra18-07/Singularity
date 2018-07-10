@@ -36,10 +36,10 @@ namespace Singularity.Screen
         /// </summary>
         /// <param name="eventType">the event's type</param>
         /// <param name="message">message for the user</param>
-        /// <param name="positionOfEvent">positon of object that created the event</param>
         /// <param name="width">width to fit the text to</param>
         /// <param name="spriteFont">textfont</param>
         /// <param name="director">basic director</param>
+        /// <param name="onThis">the object where the event is happening</param>
         public EventLogIWindowItem(ELogEventType eventType, string message, float width, SpriteFont spriteFont, Director director, ISpatial onThis)
         {
             mShiftValue = spriteFont.MeasureString("// ").X;
