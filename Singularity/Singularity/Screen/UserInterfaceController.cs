@@ -119,11 +119,21 @@ namespace Singularity.Screen
             ControlledUserInterface?.UpdateEventLog(newEvent, oldEvent);
         }
 
+        /// <summary>
+        /// Add a graph id to the graphswitcher in the UI
+        /// </summary>
+        /// <param name="graphId"></param>
         internal void AddGraph(int graphId)
         {
             ControlledUserInterface?.AddGraph(graphId);
         }
 
+        /// <summary>
+        /// Merge two graphs of the graphswitcher in the UI
+        /// </summary>
+        /// <param name="newGraphId"></param>
+        /// <param name="oldGraphId1"></param>
+        /// <param name="oldGraphId2"></param>
         internal void MergeGraph(int newGraphId, int oldGraphId1, int oldGraphId2)
         {
             ControlledUserInterface?.MergeGraph(newGraphId, oldGraphId1, oldGraphId2);
@@ -136,6 +146,11 @@ namespace Singularity.Screen
         public List<int> CallingAllGraphs()
         {
             return mDirector.GetDistributionDirector?.CallingAllGraphs();
+        }
+
+        public void SelectedPlatformSetsGraphId(int graphId)
+        {
+            ControlledUserInterface?.SelectedPlatformSetsGraphId(graphId);
         }
     }
 }

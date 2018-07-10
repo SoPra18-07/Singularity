@@ -1393,6 +1393,10 @@ namespace Singularity.Screen.ScreenClasses
         public void AddGraph(int graphId)
         {
             mGraphSwitcher?.ListOfElements.Add(graphId);
+            if (mGraphSwitcher != null)
+            {
+                mGraphSwitcher.JumpToEnd = true;
+            }
         }
 
         /// <summary>
@@ -1409,6 +1413,29 @@ namespace Singularity.Screen.ScreenClasses
             mGraphSwitcher?.ListOfElements.Remove(oldGraphId2);
 
             mGraphSwitcher?.ListOfElements.Add(newGraphId);
+
+            if (mGraphSwitcher != null && (mGraphSwitcher.GetCurrentId() == oldGraphId1 ||
+                                           mGraphSwitcher.GetCurrentId() == oldGraphId2))
+            {
+                mGraphSwitcher.JumpToEnd = true;
+            }
+        }
+
+        /// <summary>
+        /// Automatically open the civilUnits window for the selectedPlatform
+        /// </summary>
+        /// <param name="graphId"></param>
+        public void SelectedPlatformSetsGraphId(int graphId)
+        {
+            // update graph sliders
+            if (mGraphSwitcher != null)
+            {
+                mCivilUnitsGraphId = graphId;
+                mGraphSwitcher.JumpToId(graphId);
+                mCivilUnitsSliderHandler.SetGraphId(mCivilUnitsGraphId);
+
+                mCivilUnitsSliderHandler.Refresh();
+            }
         }
 
         /// <summary>

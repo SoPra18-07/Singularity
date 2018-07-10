@@ -39,7 +39,6 @@ namespace Singularity.Manager
             mDMs[graphid] = new DistributionManager(graphid);
 
             // update UI
-            Console.Out.WriteLine("added graph: " + graphid);
             mUserInterfaceController.AddGraph(graphid);
         }
 

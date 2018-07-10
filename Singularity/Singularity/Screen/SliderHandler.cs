@@ -176,14 +176,8 @@ namespace Singularity.Screen
         //TODO: this is only used for temporarily not crashing the game and keeping the graphID up to date
         public void SetGraphId(int id)
         {
-            Console.Out.WriteLine("handler id: " + mCurrentGraphid);
-
-            mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).Unregister(this);
-
             mCurrentGraphid = id;
             mDirector.GetDistributionDirector.GetManager(id).Register(this);
-
-            Console.Out.WriteLine("handler id: " + mCurrentGraphid);
 
             Refresh();
         }

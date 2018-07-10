@@ -17,6 +17,12 @@ namespace Singularity.Screen
         private int mCurrentIndex;
 
         /// <summary>
+        /// Set JumpToEnd true, if the next update should make the index automatically jump to the end of the list.
+        /// This is used to prevent showing the wrong ID.
+        /// </summary>
+        public bool JumpToEnd { private get; set; }
+
+        /// <summary>
         /// buttons to switch index in ListOfElements
         /// </summary>
         private readonly Button mPreviousIndexButton;
@@ -45,7 +51,7 @@ namespace Singularity.Screen
         /// <summary>
         /// the list to go through using the indexSwitcher
         /// </summary>
-        public List<int> ListOfElements { get; set; }
+        public List<int> ListOfElements { get; }
 
         /// <summary>
         /// Creates an IndexSwitcher consisting of two buttons and text between them.
@@ -102,7 +108,14 @@ namespace Singularity.Screen
 
             if (ActiveInWindow && !OutOfScissorRectangle && !InactiveInSelectedPlatformWindow)
             {
-                // catch list getting smaller while index unchanged
+                if (JumpToEnd)
+                {
+                    mCurrentIndex = ListOfElements.Count - 1;
+                    UpdateText();
+                    JumpToEnd = false;
+                }
+
+                // catch list getting smaller while index unchanged (if a single platform is destroyed)
                 while (mCurrentIndex > ListOfElements.Count - 1)
                 {
                     mCurrentIndex -= 1;
@@ -151,9 +164,7 @@ namespace Singularity.Screen
                 mCurrentIndex = ListOfElements.Count - 1;
             }
 
-            // update text + position
-            mTextComplete = mDescriptionText + ListOfElements[mCurrentIndex];
-            mStringSize = mSpriteFont.MeasureString(mTextComplete).X;
+            UpdateText();
         }
 
         /// <summary>
@@ -170,9 +181,7 @@ namespace Singularity.Screen
                 mCurrentIndex = 0;
             }
 
-            // update text + position
-            mTextComplete = mDescriptionText + ListOfElements[mCurrentIndex];
-            mStringSize = mSpriteFont.MeasureString(mTextComplete).X;
+            UpdateText();
         }
 
         /// <summary>
@@ -184,9 +193,21 @@ namespace Singularity.Screen
             return ListOfElements[mCurrentIndex];
         }
 
-        public void JumpToSpecificId()
+        /// <summary>
+        /// Jump to a specific index where the given graphID is placed.
+        /// Used to jump to the graphID's index when clicking on a platform
+        /// </summary>
+        /// <param name="graphId"></param>
+        public void JumpToId(int graphId)
         {
+            mCurrentIndex = ListOfElements.IndexOf(graphId);
+            UpdateText();
+        }
 
+        private void UpdateText()
+        {
+            mTextComplete = mDescriptionText + ListOfElements[mCurrentIndex];
+            mStringSize = mSpriteFont.MeasureString(mTextComplete).X;
         }
 
         /// <inheritdoc />
