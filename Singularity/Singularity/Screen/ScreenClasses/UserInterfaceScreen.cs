@@ -1629,9 +1629,9 @@ namespace Singularity.Screen.ScreenClasses
                 return;
             }
 
-            mPlatformToPlace = new PlatformPlacement(
+            mPlatformToPlace = new StructurePlacer(
                 EPlatformType.Packaging,
-                EPlacementType.MouseFollowAndRoad,
+                EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
