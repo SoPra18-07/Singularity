@@ -19,6 +19,8 @@ namespace Singularity.Map
     {
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
 
+        private const float MaxZoom = 1.5f;
+
         /// <summary>
         /// The speed at which the camera moves in pixels per update.
         /// </summary>
@@ -59,6 +61,7 @@ namespace Singularity.Map
                 mZoom = value;
                 ValidateZoom();
                 ValidatePosition();
+                
             }
         }
 
@@ -180,7 +183,15 @@ namespace Singularity.Map
         /// <param name="amount">The amount to zoom</param>
         private void ZoomToTarget(Vector2 zoomTarget, float amount)
         {
+            var oldZoom = Zoom;
+
             Zoom += amount;
+
+            //we don't want to move to move to the target if the zoom hasn't changed
+            if (Math.Abs(Zoom - oldZoom) < float.Epsilon)
+            {
+                return;
+            }
 
             var diff = Math.Sign(amount) * (mOrigin - zoomTarget) / Zoom;
 
@@ -190,6 +201,12 @@ namespace Singularity.Map
 
         private void ValidateZoom()
         {
+
+            if (mZoom > MaxZoom)
+            {
+                mZoom = MaxZoom;
+            }
+
             var minZoomX = (float) mGraphics.Viewport.Width / mBounds.Width;
             var minZoomY = (float) mGraphics.Viewport.Height / mBounds.Height;
 

@@ -6,6 +6,8 @@
         private static float sMusicVolume = 1f;
         private static float sUiVolume = 1f;
 
+        public static bool FowEnabled = true;
+
         /// <summary>
         /// Indicates whether the game is in debug mode or not
         /// </summary>
