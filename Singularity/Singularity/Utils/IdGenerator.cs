@@ -2,7 +2,7 @@
 {
     public interface IId
     {
-        int MId { get; }
+        int Id { get; }
     }
 
     public static class IdGenerator
