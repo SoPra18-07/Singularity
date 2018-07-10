@@ -477,6 +477,15 @@
             isComposite="false"
             isService="false"
             isBehavior="false">
+            <suppliersInternal>
+              <dependency
+                Id="59025582-2875-4b3c-af40-3ec10b3b0b61">
+                <providedInterfaceMoniker
+                  Id="f32f977d-5744-4057-a65a-8d5dcb0053f4"
+                  LastKnownName="Port3"
+                  LastKnownLocation="ModelingProject.uml" />
+              </dependency>
+            </suppliersInternal>
             <type_NamedElement>
               <interfaceMoniker
                 Id="bcfc5b1a-dfe2-42fb-a25c-3fded8c3d57e"
@@ -1086,6 +1095,15 @@
             isComposite="false"
             isService="false"
             isBehavior="false">
+            <suppliersInternal>
+              <dependency
+                Id="799bd07f-4ee3-462a-93c5-59823c825cb9">
+                <providedInterfaceMoniker
+                  Id="f1830840-27e9-48f5-a89c-52e8a50b50cf"
+                  LastKnownName="Port1"
+                  LastKnownLocation="ModelingProject.uml" />
+              </dependency>
+            </suppliersInternal>
             <type_NamedElement>
               <interfaceMoniker
                 Id="4b224123-85d4-4c9c-aaec-f05cbcfdd030"
@@ -1105,6 +1123,15 @@
             isComposite="false"
             isService="false"
             isBehavior="false">
+            <suppliersInternal>
+              <dependency
+                Id="23dabb0b-55b0-4072-807d-5a698216a5d7">
+                <providedInterfaceMoniker
+                  Id="9370f59e-5c8c-43ad-acf2-953820e303fa"
+                  LastKnownName="Port5"
+                  LastKnownLocation="ModelingProject.uml" />
+              </dependency>
+            </suppliersInternal>
             <type_NamedElement>
               <interfaceMoniker
                 Id="7412a390-a1f5-4684-b1c5-7aa2d41bd67e"
@@ -1463,6 +1490,15 @@
             isComposite="false"
             isService="false"
             isBehavior="false">
+            <suppliersInternal>
+              <dependency
+                Id="9d917d91-c85a-4a5d-a25b-31b5cf6601d5">
+                <providedInterfaceMoniker
+                  Id="e6b335f3-cbfd-454a-9ad5-9436152ecab4"
+                  LastKnownName="Port1"
+                  LastKnownLocation="ModelingProject.uml" />
+              </dependency>
+            </suppliersInternal>
             <type_NamedElement>
               <interfaceMoniker
                 Id="754a5e62-cc9b-4d9c-9d24-5d81f12ea19d"
@@ -1482,6 +1518,15 @@
             isComposite="false"
             isService="false"
             isBehavior="false">
+            <suppliersInternal>
+              <dependency
+                Id="b8754d77-8f9c-4317-94e0-3ef038e71afe">
+                <providedInterfaceMoniker
+                  Id="f32f977d-5744-4057-a65a-8d5dcb0053f4"
+                  LastKnownName="Port3"
+                  LastKnownLocation="ModelingProject.uml" />
+              </dependency>
+            </suppliersInternal>
             <type_NamedElement>
               <interfaceMoniker
                 Id="cb5f15fc-4257-42f7-a17f-8668d78ef90c"
@@ -2679,6 +2724,53 @@
                 LastKnownLocation="ModelingProject.uml" />
             </type_NamedElement>
           </requiredInterface>
+          <providedInterface
+            Id="df69514b-5003-4470-886f-e2c995d4f9cf"
+            name="Port2"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false"
+            isService="false"
+            isBehavior="false">
+            <targetNamedElementsInternal>
+              <connector
+                Id="624f0353-0158-4433-ad9c-7c00ddf162c4"
+                isLeaf="false"
+                isStatic="false">
+                <partMoniker
+                  Id="afe696e9-7e69-4afb-ab40-c7e2ba7600e7"
+                  LastKnownName="StructureMap"
+                  LastKnownLocation="ModelingProject.uml" />
+                <relationshipOwnedElementsInternal>
+                  <connectorHasConnectorEnds>
+                    <connectorEnd
+                      Id="c02f2895-49ac-49fd-80c1-8c466b16308b" />
+                  </connectorHasConnectorEnds>
+                  <connectorHasConnectorEnds>
+                    <connectorEnd
+                      Id="f2d461df-d4fb-4f7e-969b-0f0e6bbe0f07">
+                      <portWithPart>
+                        <providedInterfaceMoniker
+                          Id="bc5afe47-b92e-4c5c-85fc-76cf85d01c65"
+                          LastKnownName="Port2"
+                          LastKnownLocation="ModelingProject.uml" />
+                      </portWithPart>
+                    </connectorEnd>
+                  </connectorHasConnectorEnds>
+                </relationshipOwnedElementsInternal>
+              </connector>
+            </targetNamedElementsInternal>
+            <type_NamedElement>
+              <interfaceMoniker
+                Id="d43d5cec-81d1-46db-8967-68ec989e5831"
+                LastKnownName="StructureMap"
+                LastKnownLocation="ModelingProject.uml" />
+            </type_NamedElement>
+          </providedInterface>
         </ownedAttributesInternal>
       </component>
     </packageHasNamedElement>
@@ -2777,6 +2869,25 @@
                 LastKnownLocation="ModelingProject.uml" />
             </type_NamedElement>
           </requiredInterface>
+          <providedInterface
+            Id="bc5afe47-b92e-4c5c-85fc-76cf85d01c65"
+            name="Port2"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false"
+            isService="false"
+            isBehavior="false">
+            <type_NamedElement>
+              <interfaceMoniker
+                Id="a857c0ba-811a-4649-bafc-a0a7cd8a3f67"
+                LastKnownName="StructureMap"
+                LastKnownLocation="ModelingProject.uml" />
+            </type_NamedElement>
+          </providedInterface>
         </ownedAttributesInternal>
       </component>
     </packageHasNamedElement>
@@ -3158,6 +3269,15 @@
             isComposite="false"
             isService="false"
             isBehavior="false">
+            <suppliersInternal>
+              <dependency
+                Id="12305c0d-744c-4a82-91c1-f98eafde96fa">
+                <providedInterfaceMoniker
+                  Id="f32f977d-5744-4057-a65a-8d5dcb0053f4"
+                  LastKnownName="Port3"
+                  LastKnownLocation="ModelingProject.uml" />
+              </dependency>
+            </suppliersInternal>
             <type_NamedElement>
               <interfaceMoniker
                 Id="cfaa711e-ec60-40ef-9cfb-4840f0b5569a"
@@ -3177,6 +3297,15 @@
             isComposite="false"
             isService="false"
             isBehavior="false">
+            <suppliersInternal>
+              <dependency
+                Id="82b4290f-9cc8-42c9-8411-2cb6fe941fb2">
+                <providedInterfaceMoniker
+                  Id="a60e785c-cc70-49c2-ad5f-5aa26fa84417"
+                  LastKnownName="Port1"
+                  LastKnownLocation="ModelingProject.uml" />
+              </dependency>
+            </suppliersInternal>
             <type_NamedElement>
               <interfaceMoniker
                 Id="3cf7b4be-5a5d-420b-bd4b-7b3369e993ed"
@@ -3992,7 +4121,7 @@
             <type_NamedElement>
               <interfaceMoniker
                 Id="8ff008d8-c9ba-4d39-a064-b8b98d9370a2"
-                LastKnownName="UserInput"
+                LastKnownName="MouseInput"
                 LastKnownLocation="ModelingProject.uml" />
             </type_NamedElement>
           </providedInterface>
@@ -4008,6 +4137,15 @@
             isComposite="false"
             isService="false"
             isBehavior="false">
+            <suppliersInternal>
+              <dependency
+                Id="72138f57-09e9-470a-99d0-cd95940b9e1d">
+                <providedInterfaceMoniker
+                  Id="b5a1d0ab-923d-4382-b204-6489727464b1"
+                  LastKnownName="Port1"
+                  LastKnownLocation="ModelingProject.uml" />
+              </dependency>
+            </suppliersInternal>
             <type_NamedElement>
               <interfaceMoniker
                 Id="bc0a891b-d20f-4420-9e2b-23c917f2ac6f"
@@ -4046,6 +4184,15 @@
             isComposite="false"
             isService="false"
             isBehavior="false">
+            <suppliersInternal>
+              <dependency
+                Id="1a7403d2-2ee5-47c4-bf5d-653629d3d2fc">
+                <providedInterfaceMoniker
+                  Id="bce21a39-0574-44e4-87d0-6842adc28c77"
+                  LastKnownName="Port2"
+                  LastKnownLocation="ModelingProject.uml" />
+              </dependency>
+            </suppliersInternal>
             <type_NamedElement>
               <interfaceMoniker
                 Id="a8ca087b-c04a-42f0-888e-db5655c9a9dd"
@@ -4053,13 +4200,32 @@
                 LastKnownLocation="ModelingProject.uml" />
             </type_NamedElement>
           </requiredInterface>
+          <providedInterface
+            Id="9370f59e-5c8c-43ad-acf2-953820e303fa"
+            name="Port5"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false"
+            isService="false"
+            isBehavior="false">
+            <type_NamedElement>
+              <interfaceMoniker
+                Id="c63acef7-77e7-4c1a-a996-71648f294d15"
+                LastKnownName="KeyboardInput"
+                LastKnownLocation="ModelingProject.uml" />
+            </type_NamedElement>
+          </providedInterface>
         </ownedAttributesInternal>
       </component>
     </packageHasNamedElement>
     <packageHasNamedElement>
       <Interface
         Id="8ff008d8-c9ba-4d39-a064-b8b98d9370a2"
-        name="UserInput"
+        name="MouseInput"
         isAbstract="false"
         isLeaf="false" />
     </packageHasNamedElement>
@@ -4592,6 +4758,27 @@
       <Interface
         Id="04821cc2-1d5e-4642-a22a-7db00e4d252a"
         name="MilitaryCommands"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="c63acef7-77e7-4c1a-a996-71648f294d15"
+        name="KeyboardInput"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="d43d5cec-81d1-46db-8967-68ec989e5831"
+        name="StructureMap"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="a857c0ba-811a-4649-bafc-a0a7cd8a3f67"
+        name="StructureMap"
         isAbstract="false"
         isLeaf="false" />
     </packageHasNamedElement>
