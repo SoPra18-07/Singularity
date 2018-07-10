@@ -16,7 +16,7 @@ namespace Singularity.Units
     [DataContract]
     public sealed class GeneralUnit : ISpatial
     {
-
+        [DataMember]
         public int Id { get; }
         [DataMember]
         private int mPositionId;
@@ -63,8 +63,8 @@ namespace Singularity.Units
         public Vector2 RelativePosition { get; set; }
         [DataMember]
         public Vector2 RelativeSize { get; set; }
-        [DataMember]
-        private readonly Director mDirector;
+
+        private Director mDirector;
 
         /// <summary>
         /// whether the unit is moving or currently standing still,
@@ -117,6 +117,11 @@ namespace Singularity.Units
             mDirector.GetDistributionDirector.GetManager(Graphid).Register(this);
             mDone = true;
             mFinishTask = false;
+        }
+
+        public void ReloadContent(ref Director director)
+        {
+            mDirector = director;
         }
 
         /// <summary>

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
 
 namespace Singularity.Levels
@@ -14,7 +15,7 @@ namespace Singularity.Levels
         /// </summary>
         void LoadContent(ContentManager content);
 
-        void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, ref Director director);
+        void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, ref Director director, IScreenManager screenmanager);
 
         [DataMember]
         GameScreen GameScreen { get; set; }

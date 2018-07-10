@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Libraries;
@@ -11,16 +13,19 @@ using Singularity.Sound;
 namespace Singularity.Units
 {
     /// <inheritdoc cref="ControllableUnit"/>
+    [DataContract]
     internal class MilitaryUnit : ControllableUnit, IShooting
     {
         /// <summary>
         /// Default width of a unit before scaling.
         /// </summary>
+        [DataMember]
         private const int DefaultWidth = 150;
 
         /// <summary>
         /// Default height of a unit before scaling.
         /// </summary>
+        [DataMember]
         private const int DefaultHeight = 75;
 
         /// <summary>
@@ -36,16 +41,19 @@ namespace Singularity.Units
         /// <summary>
         /// Scalar for the unit size.
         /// </summary>
+        [DataMember]
         protected const float Scale = 0.4f;
 
         /// <summary>
         /// Indicates the position the closest enemy is at.
         /// </summary>
+        [DataMember]
         private Vector2 mEnemyPosition;
 
         /// <summary>
         /// Indicates if the unit is currently shooting.
         /// </summary>
+        [DataMember]
         private bool mShoot;
 
         
@@ -75,6 +83,13 @@ namespace Singularity.Units
         {
             var map = director.GetStoryManager.Level.Map;
             return new MilitaryUnit(position, director.GetStoryManager.Level.Camera, ref director, ref map);
+        }
+
+        public void ReloadContent(ContentManager content, ref Director director, Camera camera, ref Map.Map map)
+        {
+            mGlowTexture = content.Load<Texture2D>("UnitSpriteSheet");
+            mMilSheet = content.Load<Texture2D>("UnitGlowSprite");
+            ReloadContent(ref director, camera, ref map);
         }
 
         public override void Draw(SpriteBatch spriteBatch)

@@ -144,7 +144,7 @@ namespace Singularity.Screen.ScreenClasses
                 if (levelToBe.IsPresent())
                 {
                     mLevel = (ILevel)levelToBe.Get();
-                    mLevel.ReloadContent(mContent, mGraphics, ref mDirector);
+                    mLevel.ReloadContent(mContent, mGraphics, ref mDirector, mScreenManager);
                     mGameScreen = mLevel.GameScreen;
                     mUi = mLevel.Ui;
                     //Remove all screens above this screen, of course this only works if this screen is really on the bottom of the stack

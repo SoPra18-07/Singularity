@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,8 +12,6 @@ using Singularity.Map.Properties;
 using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Resources;
-using Singularity.Screen;
-using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 using Singularity.Utils;
 
@@ -22,6 +20,7 @@ namespace Singularity.Screen.ScreenClasses
     /// <summary>
     /// The UserInterfaceScreen contains everything that is needed for the player's UI
     /// </summary>
+    [DataContract]
     public sealed class UserInterfaceScreen : IScreen, IMouseClickListener
     {
         #region memberVariables
@@ -298,11 +297,10 @@ namespace Singularity.Screen.ScreenClasses
 
             mDirector = director;
             mScreenManager = stackScreenManager;
-            mInputManager = director.GetInputManager;
             mGraphics = mgraphics;
 
             // initialize input manager
-            mInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
             Bounds = new Rectangle(0,0, mgraphics.PreferredBackBufferWidth, mgraphics.PreferredBackBufferHeight);
 
             // create the windowList

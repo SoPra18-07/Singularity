@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -18,23 +19,26 @@ namespace Singularity.Screen.ScreenClasses
     /// <summary>
     /// Used to show debug information. This might not be the prettiest, but it definitely does its work... 
     /// </summary>
+    [DataContract]
     public sealed class DebugScreen : IScreen, IKeyListener
     {
+        [DataMember]
         public bool Loaded { get; set; }
-
+        [DataMember]
         public EScreen Screen { get; private set; } = EScreen.DebugScreen;
 
         private SpriteFont mFont;
 
-        private readonly StackScreenManager mScreenManager;
+        private StackScreenManager mScreenManager;
 
-        private readonly Camera mCamera;
-
+        private Camera mCamera;
+        [DataMember]
         private int mCurrentFps;
 
         private Map.Map mMap;
-
+        [DataMember]
         private int mActivePlatforms;
+        [DataMember]
         private int mDeactivePlatforms;
 
         public DebugScreen(StackScreenManager screenManager, Camera camera, Map.Map map, ref Director director)
@@ -45,6 +49,14 @@ namespace Singularity.Screen.ScreenClasses
 
             director.GetInputManager.AddKeyListener(this);
 
+        }
+
+        public void ReloadContent(ContentManager content, Camera camera, Map.Map map, StackScreenManager screenManager)
+        {
+            mFont = content.Load<SpriteFont>("LibSans14");
+            mCamera = camera;
+            mMap = map;
+            mScreenManager = screenManager;
         }
 
         public void Draw(SpriteBatch spriteBatch)

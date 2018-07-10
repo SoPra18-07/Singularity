@@ -89,7 +89,7 @@ namespace Singularity.Screen.ScreenClasses
 
         }
 
-        public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, Map.Map map, FogOfWar fow , Camera camera, ref Director director)
+        public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, Map.Map map, FogOfWar fow , Camera camera, ref Director director, UserInterfaceScreen ui)
         {
             mGraphicsDevice = graphics.GraphicsDevice;
             mMap = map;
@@ -113,7 +113,16 @@ namespace Singularity.Screen.ScreenClasses
             //Reload the content for all ingame objects like Platforms etc.
             foreach (var drawable in mDrawables)
             {
-                
+                //TODO: Add terrain when its in master
+                var possibleplatform = drawable as PlatformBlank;
+                var possibleMilitaryUnit = drawable as MilitaryUnit;
+                var possibleSettler = drawable as Settler;
+                var possiblegenunit = drawable as GeneralUnit;
+                possibleplatform?.ReloadContent(content, ref mDirector);
+                //This should also affect enemy units, since they are military units
+                possibleMilitaryUnit?.ReloadContent(content, ref mDirector, camera, ref map);
+                possibleSettler?.ReloadContent(ref mDirector, mCamera, ref map, this, ui);
+                possiblegenunit?.ReloadContent(ref mDirector);
             }
         }
         public void Draw(SpriteBatch spriteBatch)

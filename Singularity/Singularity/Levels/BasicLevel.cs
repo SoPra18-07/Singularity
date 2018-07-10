@@ -14,6 +14,9 @@ namespace Singularity.Levels
     internal abstract class BasicLevel : ILevel
     {
         [DataMember]
+        private DebugScreen mDebugscreen;
+
+        [DataMember]
         public GameScreen GameScreen { get; set; }
 
         [DataMember]
@@ -33,7 +36,6 @@ namespace Singularity.Levels
         [DataMember]
         protected Director mDirector;
 
-        [DataMember]
         protected IScreenManager mScreenManager;
 
         protected Texture2D mPlatformBlankTexture;
@@ -79,11 +81,12 @@ namespace Singularity.Levels
             mDirector.GetUserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
 
             // the input manager keeps this from not getting collected by the GC
-            new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
+            mDebugscreen = new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
         }
 
-        public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, ref Director director)
+        public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, ref Director director, IScreenManager screenmanager)
         {
+            mScreenManager = screenmanager;
             mGraphics = graphics;
             //Load stuff
             var platformConeTexture = content.Load<Texture2D>("Cones");
@@ -105,8 +108,10 @@ namespace Singularity.Levels
             mFow.ReloadContent(mGraphics);
             Map.ReloadContent(mapBackground, Camera, mFow, ref mDirector);
 
-            GameScreen.ReloadContent(content, graphics, Map, mFow, Camera, ref mDirector);
+            mDebugscreen.ReloadContent(content, Camera, Map, (StackScreenManager) mScreenManager);
+
             Ui.ReloadContent(content);
+            GameScreen.ReloadContent(content, graphics, Map, mFow, Camera, ref mDirector, Ui);
             mDirector.GetUserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
 
             // the input manager keeps this from not getting collected by the GC

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
@@ -9,31 +10,37 @@ using Singularity.Property;
 namespace Singularity.Units
 {
     /// <inheritdoc cref="MilitaryUnit"/>
+    [DataContract]
     internal sealed class EnemyUnit : MilitaryUnit
     {
         /// <summary>
         /// Default width of a unit before scaling.
         /// </summary>
+        [DataMember]
         private const int DefaultWidth = 150;
 
         /// <summary>
         /// Default height of a unit before scaling.
         /// </summary>
+        [DataMember]
         private const int DefaultHeight = 75;
 
         /// <summary>
         /// Color overlay used on the unit to show it is an enemy unit not a friendly unit.
         /// </summary>
+        [DataMember]
         private readonly Color mColor = Color.Red;
-        
+
         /// <summary>
         /// Stores the time since the last random movement.
         /// </summary>
+        [DataMember]
         private float mElapsedTime;
 
         /// <summary>
         /// Random seed to calculate paths.
         /// </summary>
+        [DataMember]
         private readonly Random mRand = new Random();
 
         /// <summary>
