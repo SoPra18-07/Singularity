@@ -462,5 +462,17 @@ namespace Singularity.Screen
             return true;
         }
         #endregion
+
+        public SliderHandler SliderHandler
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
     }
 }

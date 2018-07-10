@@ -52,6 +52,30 @@ namespace Singularity.Manager
 
         internal int TotalUnitCount { get; private set; } = 0;
 
+        public PlatformBlank PlatformLists
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        internal FreeMovingUnit FreeMovingUnitLists
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         /// <summary>
         /// Sets the unit map for referencing later on. This is required because the map is created
         /// after the director so it cannot be included in the constructor.

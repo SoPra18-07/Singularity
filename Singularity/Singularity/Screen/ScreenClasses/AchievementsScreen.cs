@@ -230,5 +230,17 @@ namespace Singularity.Screen.ScreenClasses
             TransitionRunning = true;
 
         }
+
+        internal Levels.Achievements Achievements
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
     }
 }

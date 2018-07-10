@@ -21,6 +21,18 @@ namespace Singularity.Graph.Paths
             mGraphs = new Dictionary<int, Graph>();
         }
 
+        public Graph Graph
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         public void AddGraph(int id, Graph graph)
         {
 

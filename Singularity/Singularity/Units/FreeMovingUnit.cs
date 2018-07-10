@@ -330,5 +330,17 @@ namespace Singularity.Units
                 Matrix.Invert(mCamera.GetTransform())).X, Vector2.Transform(new Vector2(v.X, v.Y),
                 Matrix.Invert(mCamera.GetTransform())).Y);
         }
+
+        internal FreeMovingPathfinder FreeMovingPathfinder
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
     }
 }

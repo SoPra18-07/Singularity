@@ -12,6 +12,102 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool Loaded { get; set; }
 
+        internal AchievementsScreen AchievementsScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        internal GameModeSelectScreen GameModeSelectScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        internal LoadingScreen LoadingScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        internal LoadSelectScreen LoadSelectScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        internal MainMenuScreen MainMenuScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        internal MenuBackgroundScreen MenuBackgroundScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        internal OptionsScreen OptionsScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        internal SplashScreen SplashScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         /// <inheritdoc cref="IScreen"/>
         /// <summary>
         /// Manages the main menu. This is the screen that is first loaded into the stack screen manager

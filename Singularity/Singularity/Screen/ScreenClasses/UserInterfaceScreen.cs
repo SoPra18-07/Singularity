@@ -2024,5 +2024,17 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         #endregion
+
+        public UserInterfaceController UserInterfaceController
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
     }
 }

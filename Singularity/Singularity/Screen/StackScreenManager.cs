@@ -40,6 +40,90 @@ namespace Singularity.Screen
 
         }
 
+        internal ScreenClasses.MainMenuManagerScreen MainMenuManagerScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public ScreenClasses.GameScreen GameScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        internal ScreenClasses.GamePauseScreen GamePauseScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        internal ScreenClasses.SaveGameScreen SaveGameScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        internal ScreenClasses.StatisticsScreen StatisticsScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public ScreenClasses.DebugScreen DebugScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public ScreenClasses.UserInterfaceScreen UserInterfaceScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         public void AddScreen(IScreen screen)
         {
             mScreensToAdd.AddLast(screen);

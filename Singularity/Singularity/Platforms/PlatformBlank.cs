@@ -1073,5 +1073,17 @@ namespace Singularity.Platforms
         {
             return !withinBounds;
         }
+
+        public APlatformAction APlatformAction
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
     }
 }

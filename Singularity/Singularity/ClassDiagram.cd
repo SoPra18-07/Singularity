@@ -1,151 +1,171 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Comment CommentText="Sound&#xD;&#xA;">
-    <Position X="50.219" Y="6.288" Height="0.75" Width="1.7" />
+  <Comment CommentText="Sound">
+    <Position X="12.751" Y="38.347" Height="0.291" Width="0.7" />
   </Comment>
-  <Comment CommentText="Input&#xD;&#xA;&#xD;&#xA;">
-    <Position X="53.5" Y="6.702" Height="0.32" Width="1.7" />
+  <Comment CommentText="Input">
+    <Position X="17.75" Y="38" Height="0.32" Width="0.7" />
   </Comment>
   <Comment CommentText="Platforms">
-    <Position X="56.063" Y="6.638" Height="0.432" Width="1.7" />
+    <Position X="3.5" Y="46.75" Height="0.291" Width="0.919" />
   </Comment>
   <Comment CommentText="Graph">
-    <Position X="58.971" Y="6.543" Height="0.75" Width="1.7" />
+    <Position X="13.515" Y="47.12" Height="0.291" Width="0.7" />
   </Comment>
   <Comment CommentText="Story">
-    <Position X="61.705" Y="6.488" Height="0.75" Width="1.7" />
+    <Position X="19.971" Y="46.853" Height="0.291" Width="0.7" />
   </Comment>
-  <Comment CommentText="Screen">
-    <Position X="63.839" Y="6.59" Height="0.75" Width="1.7" />
+  <Comment CommentText="Screens">
+    <Position X="75.171" Y="42.781" Height="0.291" Width="0.7" />
   </Comment>
   <Comment CommentText="Resources">
-    <Position X="67.542" Y="6.718" Height="0.75" Width="1.354" />
+    <Position X="29.258" Y="38.072" Height="0.291" Width="0.921" />
   </Comment>
   <Comment CommentText="Unit">
-    <Position X="69.582" Y="6.681" Height="0.75" Width="1.7" />
+    <Position X="26.459" Y="46.704" Height="0.291" Width="0.7" />
   </Comment>
   <Comment CommentText="Pathfinding">
-    <Position X="71.787" Y="6.736" Height="0.75" Width="1.7" />
+    <Position X="13.504" Y="53.225" Height="0.291" Width="0.899" />
   </Comment>
   <Comment CommentText="Map">
-    <Position X="73.937" Y="6.7" Height="0.75" Width="1.7" />
+    <Position X="115.348" Y="14.61" Height="0.75" Width="1.7" />
   </Comment>
   <Comment CommentText="Exceptions">
-    <Position X="77.038" Y="6.463" Height="0.75" Width="1.7" />
+    <Position X="118.449" Y="14.373" Height="0.75" Width="1.7" />
   </Comment>
   <Comment CommentText="Serializer">
-    <Position X="80.008" Y="6.353" Height="0.75" Width="1.7" />
+    <Position X="121.419" Y="14.263" Height="0.75" Width="1.7" />
   </Comment>
-  <Comment CommentText="Util">
-    <Position X="47.988" Y="6.335" Height="0.75" Width="1.7" />
+  <Comment CommentText="Utilities">
+    <Position X="3.534" Y="38.294" Height="0.332" Width="0.7" />
   </Comment>
   <Comment CommentText="Nature">
-    <Position X="82.25" Y="6.5" Height="0.75" Width="1.7" />
+    <Position X="123.661" Y="14.41" Height="0.75" Width="1.7" />
+  </Comment>
+  <Comment CommentText="Window Objects">
+    <Position X="53.988" Y="77.684" Height="0.315" Width="1.175" />
+  </Comment>
+  <Comment CommentText="Free Moving Units">
+    <Position X="62.713" Y="2.196" Height="0.75" Width="1.7" />
   </Comment>
   <Class Name="Singularity.Exceptions.InvalidGenericArgumentException" Collapsed="true">
-    <Position X="77" Y="9.5" Width="3.5" />
+    <Position X="118.5" Y="17.5" Width="3.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Exceptions\InvalidGenericArgumentException.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Exceptions.MiniMapProportionsOffException" Collapsed="true">
-    <Position X="77" Y="8.75" Width="3.25" />
+    <Position X="118.5" Y="16.75" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Exceptions\MiniMapProportionsOffException.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Exceptions.NoSuchElementException" Collapsed="true">
-    <Position X="77" Y="8" Width="3" />
+    <Position X="118.5" Y="16" Width="3" />
     <TypeIdentifier>
       <HashCode>AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Exceptions\NoSuchElementException.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Exceptions.UnsupportedTextureSizeException" Collapsed="true">
-    <Position X="77" Y="7.25" Width="2.5" />
+    <Position X="118.5" Y="15.25" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Exceptions\UnsupportedTextureSizeException.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Game1" Collapsed="true">
-    <Position X="76.75" Y="3.75" Width="1.75" />
+  <Class Name="Singularity.Game1">
+    <Position X="76" Y="36" Width="1.75" />
+    <AssociationLine Name="StackScreenManager" Type="Singularity.Screen.StackScreenManager">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.166" Y="2.531" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AgQAEAABAAAACwAAIAAAAAAAAAAAAACAAQAAAAQAAAQ=</HashCode>
+      <HashCode>AgQAEAABAAAACwAAIAAAAAAEAAAAAACAAQAAAAQAAAQ=</HashCode>
       <FileName>Game1.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="StackScreenManager" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="Singularity.Program" Collapsed="true">
-    <Position X="76.75" Y="4.5" Width="1.5" />
+  <Class Name="Singularity.Program">
+    <Position X="78.75" Y="37.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
       <FileName>Program.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Game1" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="Singularity.Graph.Graph" Collapsed="true">
-    <Position X="59" Y="9.75" Width="1.5" />
+  <Class Name="Singularity.Graph.Graph">
+    <Position X="13.5" Y="47.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>IAgEAAABAAAAAAEAiAAgAAAAAAAAAIAAAAAEAAFIACA=</HashCode>
       <FileName>Graph\Graph.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Graph.Paths.DefaultPathfinding" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="71.75" Y="12.25" Width="1.75" />
+  <Class Name="Singularity.Graph.Paths.DefaultPathfinding" BaseTypeListCollapsed="true">
+    <Position X="13.5" Y="57.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>QAAAAAAAAAAAAAACAAAEABAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Graph\Paths\DefaultPathfinding.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Graph.Paths.DummyPathfinding" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="71.75" Y="10.75" Width="1.75" />
+  <Class Name="Singularity.Graph.Paths.DummyPathfinding" BaseTypeListCollapsed="true">
+    <Position X="13.5" Y="55.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAACAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Graph\Paths\DummyPathfinding.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Graph.Paths.PathfindingFactory" Collapsed="true">
-    <Position X="71.75" Y="10" Width="1.75" />
+  <Class Name="Singularity.Graph.Paths.PathfindingFactory">
+    <Position X="13.5" Y="53.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAgBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Graph\Paths\PathfindingFactory.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Graph.Paths.PathManager" Collapsed="true">
-    <Position X="71.75" Y="9.5" Width="2" />
+  <Class Name="Singularity.Graph.Paths.PathManager">
+    <Position X="15.5" Y="53.75" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAABAAAAAQAAAAAAAAAAAAAAAADAAAAAAgAAAAQAAA=</HashCode>
+      <HashCode>AAAABAAAAAQAAAAAAAAAAAAAAAADAAgAAAgAAAAQAAA=</HashCode>
       <FileName>Graph\Paths\PathManager.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Graph" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="Singularity.Graph.Paths.SortedPath" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="71.75" Y="9" Width="1.5" />
+  <Class Name="Singularity.Graph.Paths.SortedPath" BaseTypeListCollapsed="true">
+    <Position X="15.5" Y="56.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAIAAAAAAAAAAEAAAAAAAAIAgA=</HashCode>
       <FileName>Graph\Paths\SortedPath.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Input.InputManager" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="53.5" Y="11.75" Width="2.5" />
+  <Class Name="Singularity.Input.InputManager" BaseTypeListCollapsed="true">
+    <Position X="17.75" Y="38.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>gEUgCAYAAAIgIAAAgAAGEABUgAAECABAAAgAAAAQAFg=</HashCode>
       <FileName>Input\InputManager.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Input.KeyEvent" Collapsed="true">
-    <Position X="53.5" Y="12.5" Width="1.5" />
+  <Class Name="Singularity.Input.KeyEvent">
+    <Position X="19.5" Y="38.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Input\KeyEvent.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Levels.Achievements" Collapsed="true">
-    <Position X="64" Y="7.25" Width="1.75" />
+  <Class Name="Singularity.Levels.Achievements">
+    <Position X="53.25" Y="66.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAACiUAAAAAAAACAAAAAAAKAAAABAIAAAAQAAA=</HashCode>
       <FileName>Levels\Achievements.cs</FileName>
@@ -173,59 +193,63 @@
       <FileName>Levels\Tutorial.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Libraries.Animations" Collapsed="true">
-    <Position X="48" Y="12.25" Width="1.5" />
+  <Class Name="Singularity.Libraries.Animations">
+    <Position X="3.5" Y="44.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAA=</HashCode>
       <FileName>Libraries\Animations.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Libraries.Primitives2D" Collapsed="true">
-    <Position X="48" Y="9.5" Width="2.5" />
+  <Class Name="Singularity.Libraries.Primitives2D">
+    <Position X="5.25" Y="41.25" Width="2.5" />
     <TypeIdentifier>
       <HashCode>gAAAACAQAAAQAAAAABIAgAAAAGAAAJABIEAAAAAAAAE=</HashCode>
       <FileName>Libraries\Primitives2D.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Manager.Director" Collapsed="true">
-    <Position X="69.75" Y="3.25" Width="2.25" />
+  <Class Name="Singularity.Manager.Director">
+    <Position X="74" Y="31.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAQAAAACACAAABAAAAAgAAAAEAAAAAAAgAAAAAgACAA=</HashCode>
       <FileName>Manager\Director.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Manager.DistributionDirector" Collapsed="true">
-    <Position X="69.75" Y="2.5" Width="1.75" />
+  <Class Name="Singularity.Manager.DistributionDirector">
+    <Position X="65.5" Y="34" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAABAAAAAAAAAAAEQAAAAkAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Manager\DistributionDirector.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Manager.DistributionManager" Collapsed="true">
-    <Position X="69.75" Y="1.75" Width="2.25" />
+  <Class Name="Singularity.Manager.DistributionManager">
+    <Position X="67.75" Y="34" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AICAQBAAQFAMDEClQAAEAAgEiEARAMBAQIYAAAAAUEo=</HashCode>
       <FileName>Manager\DistributionManager.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Manager.MilitaryManager" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="83.5" Y="1.25" Width="2.25" />
+  <Class Name="Singularity.Manager.MilitaryManager" BaseTypeListCollapsed="true">
+    <Position X="52.25" Y="3.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAQAIgACAQAAAAIAEAAAAAGAAQAAAAAAAAEBAAAAAAA=</HashCode>
+      <HashCode>AAQAIgACAQAAAAIAEAAAAAGAAQAAAAAAAAMBQAAAAAA=</HashCode>
       <FileName>Manager\MilitaryManager.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <ShowAsAssociation>
+      <Property Name="PlatformLists" />
+      <Property Name="FreeMovingUnitLists" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Manager.StoryManager" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="61.75" Y="9" Width="1.75" />
+  <Class Name="Singularity.Manager.StoryManager" BaseTypeListCollapsed="true">
+    <Position X="20" Y="47.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ACYAQAAgIAAAAAAAAAAAAAEAAEA4AAAJGEAAAQAAARA=</HashCode>
       <FileName>Manager\StoryManager.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.Map.Camera" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="74" Y="7.75" Width="2.25" />
+    <Position X="115.5" Y="15.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAJoCFYAAAICBDgFAFAAAAAQAAABgAACAAAABJFQwA=</HashCode>
       <FileName>Map\Camera.cs</FileName>
@@ -233,21 +257,21 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="Singularity.Map.CollisionMap" Collapsed="true">
-    <Position X="74" Y="12.25" Width="1.75" />
+    <Position X="115.5" Y="20.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>CIAAAACAAAAAAAAAEAAAAQAAAAAAAIAAAAAAAAAAAAA=</HashCode>
       <FileName>Map\CollisionMap.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Map.CollisionNode" Collapsed="true">
-    <Position X="74" Y="13.25" Width="1.5" />
+    <Position X="115.5" Y="21.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAIAYAA=</HashCode>
       <FileName>Map\CollisionNode.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Map.FogOfWar" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="74" Y="9.5" Width="2.5" />
+    <Position X="115.5" Y="17.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>QQQIAAAAAAQAAAAABAAACAIAAAAAACAAAAABoAAAABA=</HashCode>
       <FileName>Map\FogOfWar.cs</FileName>
@@ -255,7 +279,7 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="Singularity.Map.Map" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="74" Y="12.5" Width="2" />
+    <Position X="115.5" Y="20.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AIQIIACAAQAQRhAAEAEAAgAAAQEAQAAEBAAoAAQAQgI=</HashCode>
       <FileName>Map\Map.cs</FileName>
@@ -263,7 +287,7 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="Singularity.Map.MiniMap" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="74" Y="11.5" Width="2.5" />
+    <Position X="115.5" Y="19.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAQIAAAAAAgBkhBgAAAAAAAQBAAQAAAAAAAAAACAAAE=</HashCode>
       <FileName>Map\MiniMap.cs</FileName>
@@ -271,14 +295,14 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="Singularity.Map.ResourceMap" Collapsed="true">
-    <Position X="74" Y="10.5" Width="1.75" />
+    <Position X="115.5" Y="18.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAQAAAAAAAAAAAAAAAAAACCAAAERAEgCAAAAAA=</HashCode>
       <FileName>Map\ResourceMap.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Map.StructureMap" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="74" Y="9.75" Width="2.25" />
+    <Position X="115.5" Y="17.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>ACQAIIAcCQAARgAAIBEAAAAQCAAABEABABAggAIACAg=</HashCode>
       <FileName>Map\StructureMap.cs</FileName>
@@ -286,28 +310,28 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="Singularity.Map.UnitMap" Collapsed="true">
-    <Position X="74" Y="8.25" Width="2.25" />
+    <Position X="115.5" Y="16.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAACAgAAAAAAACAAAAAACBAQAAAJAAAAAAAAAAAAA=</HashCode>
       <FileName>Map\UnitMap.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Map.UnitMapTile" Collapsed="true">
-    <Position X="74" Y="9" Width="1.5" />
+    <Position X="115.5" Y="17" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Map\UnitMapTile.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Map.Properties.MapConstants" Collapsed="true">
-    <Position X="74" Y="11.75" Width="1.5" />
+    <Position X="115.5" Y="19.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>IAAAAAAAAAAAEAAAAAAAACAAAIAAAACAQAAMAQBAEBA=</HashCode>
       <FileName>Map\Properties\MapConstants.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Nature.Puddle" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="82.25" Y="8" Width="1.5" />
+    <Position X="123.75" Y="16" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ACQSCAAIAAABAgAkEAAAAAAAQAAAIAAAAEAAAAAIQgA=</HashCode>
       <FileName>Nature\Puddle.cs</FileName>
@@ -315,7 +339,7 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="Singularity.Nature.Rock" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="82.25" Y="7.25" Width="1.5" />
+    <Position X="123.75" Y="15.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ACQSCAAKAAABAkAkEAAAAQAAQBAAAAAAAEACAAAIQAQ=</HashCode>
       <FileName>Nature\Rock.cs</FileName>
@@ -323,21 +347,21 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="Singularity.PlatformActions.ConsumeDefenseResource">
-    <Position X="45" Y="9.25" Width="2.25" />
+    <Position X="39.75" Y="11.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAgAAAAAAQAAAAAAAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
       <FileName>PlatformActions\ConsumeResource.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.PlatformActions.ConsumeEnergy">
-    <Position X="34.5" Y="9.25" Width="1.75" />
+    <Position X="29.25" Y="11.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAgAAAAAAQAAAAAAAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
       <FileName>PlatformActions\ConsumeResource.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.PlatformActions.APlatformAction">
-    <Position X="33" Y="1.75" Width="2.25" />
+    <Position X="27.75" Y="3.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>IAICAAAgAGAAAAQgIAAAAAwCEAAAAAAAAAAIBAAAAAA=</HashCode>
       <FileName>PlatformActions\IPlatformAction.cs</FileName>
@@ -345,28 +369,28 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.PlatformActions.MakeFastMilitaryUnit">
-    <Position X="23.75" Y="11.5" Width="1.75" />
+    <Position X="18.5" Y="13.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>PlatformActions\MakeUnit.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.PlatformActions.MakeHeavyMilitaryUnit">
-    <Position X="26.25" Y="11.5" Width="2" />
+    <Position X="21" Y="13.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>PlatformActions\MakeUnit.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.PlatformActions.MakeStandardMilitaryUnit">
-    <Position X="29" Y="11.5" Width="2" />
+    <Position X="23.75" Y="13.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>PlatformActions\MakeUnit.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.PlatformActions.AMakeUnit">
-    <Position X="27.75" Y="7" Width="2" />
+    <Position X="22.5" Y="9" Width="2" />
     <TypeIdentifier>
       <HashCode>AAYAAAAgAQAAAAQCQAAAAAAAAAAAAAAAAAIICACAAAA=</HashCode>
       <FileName>PlatformActions\MakeUnit.cs</FileName>
@@ -374,63 +398,63 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.PlatformActions.ProduceWellResource">
-    <Position X="37" Y="9.25" Width="1.75" />
+    <Position X="31.75" Y="11.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAgAAAAAAQAAAAAAAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
       <FileName>PlatformActions\ProduceResource.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.PlatformActions.ProduceQuarryResource">
-    <Position X="39.5" Y="9.25" Width="2" />
+    <Position X="34.25" Y="11.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAgAAAAAAQAAAAAAAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
       <FileName>PlatformActions\ProduceResource.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.PlatformActions.ProduceMineResource">
-    <Position X="42.25" Y="9.25" Width="2" />
+    <Position X="37" Y="11.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAgAAAAAAQAAAAAAAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
       <FileName>PlatformActions\ProduceResource.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.PlatformActions.BuildBluePrint">
-    <Position X="31.75" Y="11.5" Width="2" />
+    <Position X="26.5" Y="13.5" Width="2" />
     <TypeIdentifier>
       <HashCode>IAIAAAAgAAAAAAQCAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>PlatformActions\ProduceResource.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.PlatformActions.APlatformResourceAction">
-    <Position X="40" Y="7" Width="2" />
+    <Position X="34.75" Y="9" Width="2" />
     <TypeIdentifier>
       <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAA=</HashCode>
       <FileName>PlatformActions\ProduceResource.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.PlatformActions.Shoot">
-    <Position X="21" Y="7" Width="2" />
+    <Position X="15.75" Y="9" Width="2" />
     <TypeIdentifier>
       <HashCode>IAIAAAAgAAAAAAQAAAAAAAAAAAAAAAAAAAAIAAAAAAA=</HashCode>
       <FileName>PlatformActions\Shoot.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Platforms.Barracks">
-    <Position X="5" Y="23.75" Width="1.5" />
+    <Position X="31.75" Y="25.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Platforms\Barracks.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Platforms.CommandCenter">
-    <Position X="9.5" Y="23.75" Width="1.75" />
+    <Position X="36.25" Y="25.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>RAAAAAAAAAAAAAAAAAAAAAAAAQAAAAACAAAAAAAAAAA=</HashCode>
       <FileName>Platforms\CommandCenter.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Platforms.DefenseBase">
-    <Position X="13.5" Y="23.75" Width="1.75" />
+    <Position X="40.25" Y="25.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>EAAAAAEAAAAADgAAAAAAAACAAAAAAAAQAAAAIAAAAAA=</HashCode>
       <FileName>Platforms\DefenseBase.cs</FileName>
@@ -438,412 +462,537 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.Platforms.DefenseKinetic">
-    <Position X="12" Y="27.75" Width="2.25" />
+    <Position X="38.75" Y="29.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAQAAQAAAAAABAAAAAAAAAAAgAAAAQAAAAAAAgAAAAA=</HashCode>
       <FileName>Platforms\DefenseKinetic.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Platforms.DefenseLaser">
-    <Position X="15" Y="27.75" Width="1.5" />
+    <Position X="41.75" Y="29.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
       <FileName>Platforms\DefenseLaser.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Platforms.EnergyFacility">
-    <Position X="21.75" Y="23.75" Width="1.5" />
+    <Position X="48.5" Y="25.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>QBAAAAAAAAAAAAAAAAAAAAAAAQAAAAACQAAAAAAAAAA=</HashCode>
       <FileName>Platforms\EnergyFacility.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Platforms.Factory">
-    <Position X="24" Y="23.75" Width="1.5" />
+    <Position X="50.75" Y="25.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BAAAAAAAAAAAAAAAAAAAAAAAAQAAAAACAAAAAAAAAAA=</HashCode>
       <FileName>Platforms\Factory.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Platforms.Junkyard">
-    <Position X="26.25" Y="23.75" Width="1.5" />
+    <Position X="53" Y="25.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAQgAAAACAAAAAAAAAAA=</HashCode>
       <FileName>Platforms\Junkyard.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Platforms.Mine">
-    <Position X="28.5" Y="23.75" Width="1.5" />
+    <Position X="55.25" Y="25.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BAQAAAAAAAAAAAAAAAAAAAAAAQAAAAACAAAAAAAAAAA=</HashCode>
       <FileName>Platforms\Mine.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Platforms.PlatformBlank">
-    <Position X="16.25" Y="2" Width="2.75" />
+    <Position X="43" Y="3.5" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>BDyWKAYIQEBTGhhmvEJAaZiAcZKVIqgXQEgICQALygo=</HashCode>
+      <HashCode>BDyWKAYIQEBTGhhmvEJAaZiAcZKVIqg3QEgICQALygo=</HashCode>
       <FileName>Platforms\PlatformBlank.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="APlatformAction" />
+    </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Platforms.PlatformFactory" Collapsed="true">
-    <Position X="56" Y="11.5" Width="1.5" />
+  <Class Name="Singularity.Platforms.PlatformFactory">
+    <Position X="5.25" Y="55.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAAAAAQAAAAABAAAAAAAQAAAAAAAAAABACAAAAAAA=</HashCode>
       <FileName>Platforms\PlatformFactory.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Platforms.Quarry">
-    <Position X="7.25" Y="23.75" Width="1.5" />
+    <Position X="34" Y="25.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BAQAAAAAAAAAAAAAAAAAAAAAAQAAAAACAAAAAAAAAAA=</HashCode>
       <FileName>Platforms\Quarry.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Platforms.Road" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="56" Y="11" Width="1.75" />
+  <Class Name="Singularity.Platforms.Road" BaseTypeListCollapsed="true">
+    <Position X="3.5" Y="52.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AQQQAAEAAgABAgAkAAIAAAAAABAEQAAEAEAAAAQAAAA=</HashCode>
       <FileName>Platforms\Road.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.Platforms.Storage">
-    <Position X="17.25" Y="23.75" Width="1.5" />
+    <Position X="44" Y="25.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAQAAAAACAAAAAAAAAAA=</HashCode>
       <FileName>Platforms\Storage.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Platforms.StructurePlacer" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="56" Y="10.25" Width="2.25" />
+  <Class Name="Singularity.Platforms.StructurePlacer" BaseTypeListCollapsed="true">
+    <Position X="5.25" Y="47.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>IASIhAAYAAAQAkAEJIAAIAEAACAABgAIBQAIkAAAgwA=</HashCode>
       <FileName>Platforms\StructurePlacer.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.Platforms.Well">
-    <Position X="19.5" Y="23.75" Width="1.5" />
+    <Position X="46.25" Y="25.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BAQAAAAAAAAAAAAAAAAAAAAAAQAAAAACAAAAAAAAAAA=</HashCode>
       <FileName>Platforms\Well.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Property.GlobalVariables" Collapsed="true">
-    <Position X="48" Y="13" Width="1.5" />
+  <Class Name="Singularity.Property.GlobalVariables">
+    <Position X="9.75" Y="42.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAIAAAAAAQgAAAAAAAAAAACACAAIIAEAAABAAA=</HashCode>
       <FileName>Property\GlobalVariables.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Property.LayerConstants" Collapsed="true">
-    <Position X="48" Y="13.75" Width="2" />
+  <Class Name="Singularity.Property.LayerConstants">
+    <Position X="9.75" Y="38.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAQAAAACAAACAAAAAQAAgJQAAAAAAAogAAIAAAEABA=</HashCode>
       <FileName>Property\LayerConstants.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Resources.MapResource" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="74" Y="11" Width="1.5" />
+    <Position X="115.5" Y="19" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQQAAAAAAABAgBkAAAAAACAAAAAAAAAAUAAAAAAAgA=</HashCode>
       <FileName>Resources\MapResource.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="Singularity.Resources.Resource" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="67.5" Y="8.5" Width="1.5" />
+  <Class Name="Singularity.Resources.Resource" BaseTypeListCollapsed="true">
+    <Position X="29.25" Y="38.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQUAAAAAIABAgAkAQAAAAABAAAAAEAAAUgAAAAAAAE=</HashCode>
       <FileName>Resources\Resource.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Resources.ResourceHelper" Collapsed="true">
-    <Position X="67.5" Y="8" Width="2.5" />
+  <Class Name="Singularity.Resources.ResourceHelper">
+    <Position X="31" Y="38.75" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAACAAAACAAAAAAAAAAAA=</HashCode>
       <FileName>Resources\ResourceHelper.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Screen.ActivationIWindowItem" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="63.75" Y="16.5" Width="2.5" />
+  <Class Name="Singularity.Screen.ActivationIWindowItem" BaseTypeListCollapsed="true">
+    <Position X="59.5" Y="79" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAQAAAAAAAgAgpAgAAAAAAAABAAAAAAAAAAAAAAAABA=</HashCode>
       <FileName>Screen\ActivationIWindowItem.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.BarIWindowItem" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="63.5" Y="11" Width="2.5" />
+  <Class Name="Singularity.Screen.BarIWindowItem" BaseTypeListCollapsed="true">
+    <Position X="62.5" Y="79" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAQAAAAAAAgAghAgAAAAAAAABAAAAAAAAAAAAAAAAgA=</HashCode>
       <FileName>Screen\BarIWindowItem.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.Button" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="64" Y="11" Width="2.5" />
+  <Class Name="Singularity.Screen.Button" BaseTypeListCollapsed="true">
+    <Position X="68.25" Y="79" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AA4AEDABAAgAghAgAAQAAAACRQGACgAAQAABAAAICgA=</HashCode>
       <FileName>Screen\Button.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.HorizontalCollection" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="63.75" Y="8.25" Width="2.5" />
+  <Class Name="Singularity.Screen.HorizontalCollection" BaseTypeListCollapsed="true">
+    <Position X="59.5" Y="87" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAQAQAAAAAgEghAgAAAAAAQABAAAAAAAAAABBAAAAAA=</HashCode>
       <FileName>Screen\HorizontalCollection.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.InfoBarWindowObject" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="65.25" Y="10.5" Width="2.25" />
+  <Class Name="Singularity.Screen.InfoBarWindowObject" BaseTypeListCollapsed="true">
+    <Position X="65.5" Y="79" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AgYBQCgAIAEAgjEQJAAYIECAAAEQIoAgAQCICABBEgA=</HashCode>
       <FileName>Screen\InfoBarWindowObject.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.InfoBoxWindow" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="64.75" Y="11" Width="2" />
+  <Class Name="Singularity.Screen.InfoBoxWindow" BaseTypeListCollapsed="true">
+    <Position X="74.25" Y="79" Width="2" />
     <TypeIdentifier>
       <HashCode>AIQAAAAABAAAAgAgQAAAAAQAAgAABAAgAAAAABAAAAA=</HashCode>
       <FileName>Screen\InfoBoxWindow.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.PlatformActionIWindowItem" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="56" Y="12.25" Width="2.5" />
+  <Class Name="Singularity.Screen.PlatformActionIWindowItem" BaseTypeListCollapsed="true">
+    <Position X="54" Y="87.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAYAAAABAAgAkhggAAAAAgAABABAAAAgAAACAAAAAAA=</HashCode>
       <FileName>Screen\PlatformActionIWindowItem.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.PopupWindow" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="65.25" Y="10.25" Width="2.25" />
+  <Class Name="Singularity.Screen.PopupWindow" BaseTypeListCollapsed="true">
+    <Position X="54" Y="79" Width="2.25" />
     <TypeIdentifier>
       <HashCode>CIwCAIIYABAEQgAgBSEAAURIgAAABAABAEJAAAAQAgQ=</HashCode>
       <FileName>Screen\PopupWindow.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.ResourceIWindowItem" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="63.75" Y="15.25" Width="2.5" />
+  <Class Name="Singularity.Screen.ResourceIWindowItem" BaseTypeListCollapsed="true">
+    <Position X="62.5" Y="82.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAQAAAAAAAgIghAgAAAAAACQBAAEAAAAAQAAAAJAAAA=</HashCode>
       <FileName>Screen\ResourceIWindowItem.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.Slider" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="64" Y="9" Width="2.5" />
+  <Class Name="Singularity.Screen.Slider" BaseTypeListCollapsed="true">
+    <Position X="71.25" Y="79" Width="2.5" />
+    <NestedTypes>
+      <Delegate Name="Singularity.Screen.Slider.SliderMovingEventHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Screen\Slider.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="Singularity.Screen.Slider.PageMovingEventHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Screen\Slider.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AIQAIABAEQmAghAiNCACIAABhIDiBwAACAAIAAAAAgA=</HashCode>
+      <HashCode>AIQAIABAEQmAghAiNCACIAABhIDiBwAACAAIAACAAgA=</HashCode>
       <FileName>Screen\Slider.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <ShowAsAssociation>
+      <Property Name="SliderHandler" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.SliderHandler" Collapsed="true">
-    <Position X="65" Y="8.5" Width="1.75" />
+  <Class Name="Singularity.Screen.SliderHandler">
+    <Position X="68.25" Y="87" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AACAAAAIAARAAIAAIAIgAgAEAAAIwgAAAAAAAAAAAAA=</HashCode>
       <FileName>Screen\SliderHandler.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Screen.StackScreenManager" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="63.75" Y="13" Width="2" />
+  <Class Name="Singularity.Screen.StackScreenManager" BaseTypeListCollapsed="true">
+    <Position X="76" Y="42.75" Width="2" />
+    <AssociationLine Name="MainMenuManagerScreen" Type="Singularity.Screen.ScreenClasses.MainMenuManagerScreen" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="76" Y="45.438" />
+        <Point X="62.188" Y="45.438" />
+        <Point X="62.188" Y="49.5" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="GameScreen" Type="Singularity.Screen.ScreenClasses.GameScreen" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="76" Y="45.812" />
+        <Point X="74.562" Y="45.812" />
+        <Point X="74.562" Y="49.5" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-1.167" Y="0.383" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAQAABAAAAAMAgAQAAAAAAAAAAAAiAAABAAAAAIAAAA=</HashCode>
+      <HashCode>AAQAABAAIBAMAkAQAAAAAAAACAAAiAAABACAAIIAAAQ=</HashCode>
       <FileName>Screen\StackScreenManager.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <ShowAsAssociation>
+      <Property Name="MainMenuManagerScreen" />
+      <Property Name="GameScreen" />
+      <Property Name="GamePauseScreen" />
+      <Property Name="SaveGameScreen" />
+      <Property Name="StatisticsScreen" />
+      <Property Name="DebugScreen" />
+      <Property Name="UserInterfaceScreen" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.TextAndAmountIWindowItem" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="63.75" Y="14.5" Width="2.5" />
+  <Class Name="Singularity.Screen.TextAndAmountIWindowItem" BaseTypeListCollapsed="true">
+    <Position X="62.5" Y="87.25" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAQAAAAAAAgAghAgAAAAAACCBAAAAAAAAAAAAABAAgA=</HashCode>
       <FileName>Screen\TextAndAmountIWindowItem.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.TextField" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="63.75" Y="11.5" Width="2.5" />
+  <Class Name="Singularity.Screen.TextField" BaseTypeListCollapsed="true">
+    <Position X="59.5" Y="82.75" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAQAAAAAAAgAghAgAAAAAAAABAAAAgAAAAAAAABAIgA=</HashCode>
       <FileName>Screen\TextField.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.UserInterfaceController" Collapsed="true">
-    <Position X="63.75" Y="10" Width="2.25" />
+  <Class Name="Singularity.Screen.UserInterfaceController">
+    <Position X="90.75" Y="49.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>BAAAABAAEAAAAAAAoAAAAAAAABgBAAAAAAAAAACAAAA=</HashCode>
       <FileName>Screen\UserInterfaceController.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Screen.WindowObject" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="63.75" Y="10.75" Width="2.25" />
+  <Class Name="Singularity.Screen.WindowObject" BaseTypeListCollapsed="true">
+    <Position X="56.75" Y="79" Width="2.25" />
     <TypeIdentifier>
       <HashCode>iAyCAJIYAhAAwgAghQkAKURJgOAABgAhAEJIAAHQBiA=</HashCode>
       <FileName>Screen\WindowObject.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
-  </Class>
-  <Class Name="Singularity.Screen.ScreenClasses.AchievementsScreen" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="64" Y="8.5" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAQIkAIQIAFAQwAAJgAAAAAAIABAAIBAQAQAEAIAAA4=</HashCode>
-      <FileName>Screen\ScreenClasses\AchievementsScreen.cs</FileName>
-    </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.ScreenClasses.DebugScreen" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="64" Y="10" Width="1.75" />
+  <Class Name="Singularity.Screen.ScreenClasses.AchievementsScreen" BaseTypeListCollapsed="true">
+    <Position X="53" Y="59" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAQIkAIQIAFAQwAAJgEAAAAAIABAAIBAQAQAEAIAAA4=</HashCode>
+      <FileName>Screen\ScreenClasses\AchievementsScreen.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Achievements" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Singularity.Screen.ScreenClasses.DebugScreen" BaseTypeListCollapsed="true">
+    <Position X="83" Y="49.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAYIOAAIAAEBBgQAJAiIAAAAAACAKIAAAQAQABBAARQ=</HashCode>
       <FileName>Screen\ScreenClasses\DebugScreen.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.ScreenClasses.GameModeSelectScreen" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="65" Y="8" Width="2" />
+  <Class Name="Singularity.Screen.ScreenClasses.GameModeSelectScreen" BaseTypeListCollapsed="true">
+    <Position X="55.5" Y="59" Width="2" />
     <TypeIdentifier>
       <HashCode>IjQMEAAAABEC0gEABCEEEBAEAGBAIMBAAQAAAAAAAAQ=</HashCode>
       <FileName>Screen\ScreenClasses\GameModeSelectScreen.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.ScreenClasses.GamePauseScreen" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="64.75" Y="11.75" Width="2" />
+  <Class Name="Singularity.Screen.ScreenClasses.GamePauseScreen" BaseTypeListCollapsed="true">
+    <Position X="76" Y="49.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAYAUBIIAAEAAgAwBAAAAAAAAAAAAIAAAQAAABAAAAQ=</HashCode>
       <FileName>Screen\ScreenClasses\GamePauseScreen.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.ScreenClasses.GameScreen" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="65" Y="12.25" Width="1.75" />
+  <Class Name="Singularity.Screen.ScreenClasses.GameScreen" BaseTypeListCollapsed="true">
+    <Position X="73.75" Y="49.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>QBQIEKAAAgEBQgAgJUAAIAAABAABAIAAgAAAIEAAAAQ=</HashCode>
       <FileName>Screen\ScreenClasses\GameScreen.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.ScreenClasses.LoadingScreen" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="63.75" Y="7.75" Width="1.75" />
+  <Class Name="Singularity.Screen.ScreenClasses.LoadingScreen" BaseTypeListCollapsed="true">
+    <Position X="58" Y="59" Width="1.75" />
     <TypeIdentifier>
       <HashCode>QAQIEAAAAAEAAgAABAAAAAAAAAAAAIBAAAAAAAAgAAQ=</HashCode>
       <FileName>Screen\ScreenClasses\LoadingScreen.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.ScreenClasses.LoadSelectScreen" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="63.75" Y="8.75" Width="1.75" />
+  <Class Name="Singularity.Screen.ScreenClasses.LoadSelectScreen" BaseTypeListCollapsed="true">
+    <Position X="60.25" Y="59" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAQIEAAAAAEAAgAABAAAAAAAAAAAAIBAAAAAAAAAAAQ=</HashCode>
       <FileName>Screen\ScreenClasses\LoadSelectScreen.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.ScreenClasses.MainMenuManagerScreen" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="64.25" Y="9.25" Width="2.5" />
+  <Class Name="Singularity.Screen.ScreenClasses.MainMenuManagerScreen" BaseTypeListCollapsed="true">
+    <Position X="61" Y="49.5" Width="2.5" />
+    <AssociationLine Name="GameModeSelectScreen" Type="Singularity.Screen.ScreenClasses.GameModeSelectScreen" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="61" Y="57" />
+        <Point X="56.656" Y="57" />
+        <Point X="56.656" Y="59" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="2.075" Y="-4.269" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="LoadingScreen" Type="Singularity.Screen.ScreenClasses.LoadingScreen" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="61" Y="57.375" />
+        <Point X="58.875" Y="57.375" />
+        <Point X="58.875" Y="59" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-1.959" Y="1.713" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="LoadSelectScreen" Type="Singularity.Screen.ScreenClasses.LoadSelectScreen">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.11" Y="1.056" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="MainMenuScreen" Type="Singularity.Screen.ScreenClasses.MainMenuScreen">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="1.067" Y="-1.379" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="MenuBackgroundScreen" Type="Singularity.Screen.ScreenClasses.MenuBackgroundScreen" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="63.5" Y="57.312" />
+        <Point X="66.25" Y="57.312" />
+        <Point X="66.25" Y="59" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.734" Y="1.757" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="OptionsScreen" Type="Singularity.Screen.ScreenClasses.OptionsScreen" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="63.5" Y="56.938" />
+        <Point X="68.688" Y="56.938" />
+        <Point X="68.688" Y="59" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="3.873" Y="2.152" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="SplashScreen" Type="Singularity.Screen.ScreenClasses.SplashScreen" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="63.5" Y="56.625" />
+        <Point X="71.375" Y="56.625" />
+        <Point X="71.375" Y="59" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="6.69" Y="2.542" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="AchievementsScreen" Type="Singularity.Screen.ScreenClasses.AchievementsScreen">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-7.014" Y="6" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AESAUAAAAgEAAw0DhBAAAQAIgAMAhIAEAYCAAABABAQ=</HashCode>
+      <HashCode>AESAUBAAAgFAAw2LhBAAAQAIoAMAhIAEAcCAAABABAQ=</HashCode>
       <FileName>Screen\ScreenClasses\MainMenuManagerScreen.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <ShowAsAssociation>
+      <Property Name="AchievementsScreen" />
+      <Property Name="GameModeSelectScreen" />
+      <Property Name="LoadingScreen" />
+      <Property Name="LoadSelectScreen" />
+      <Property Name="MainMenuScreen" />
+      <Property Name="MenuBackgroundScreen" />
+      <Property Name="OptionsScreen" />
+      <Property Name="SplashScreen" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.ScreenClasses.MainMenuScreen" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="65" Y="9.5" Width="2" />
+  <Class Name="Singularity.Screen.ScreenClasses.MainMenuScreen" BaseTypeListCollapsed="true">
+    <Position X="62.5" Y="59" Width="2" />
     <TypeIdentifier>
       <HashCode>AiQosEIAIRUQQhAIBAAAAQAAAARAANDABAQAgAIAKA4=</HashCode>
       <FileName>Screen\ScreenClasses\MainMenuScreen.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.ScreenClasses.MenuBackgroundScreen" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="64.75" Y="12.75" Width="2.5" />
+  <Class Name="Singularity.Screen.ScreenClasses.MenuBackgroundScreen" BaseTypeListCollapsed="true">
+    <Position X="65" Y="59" Width="2.5" />
     <TypeIdentifier>
       <HashCode>ACQIEQAAIAEAQgIAFAAQAAAAAUBSIKBACIQkRQAAAAQ=</HashCode>
       <FileName>Screen\ScreenClasses\MenuBackgroundScreen.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.ScreenClasses.OptionsScreen" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="64.75" Y="8" Width="2" />
+  <Class Name="Singularity.Screen.ScreenClasses.OptionsScreen" BaseTypeListCollapsed="true">
+    <Position X="67.75" Y="59" Width="2" />
     <TypeIdentifier>
       <HashCode>EAQMkQYwpBFBQlADBggIAAGBABBjDKLAQAQCAIoAAI4=</HashCode>
       <FileName>Screen\ScreenClasses\OptionsScreen.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.ScreenClasses.SaveGameScreen" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="66" Y="10" Width="1.5" />
+  <Class Name="Singularity.Screen.ScreenClasses.SaveGameScreen" BaseTypeListCollapsed="true">
+    <Position X="78.5" Y="49.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAEAAAAAEAAgAABAAAAAAAAAAAAIAAAAAAAAAAAAQ=</HashCode>
       <FileName>Screen\ScreenClasses\SaveGameScreen.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.ScreenClasses.SplashScreen" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="63.75" Y="12.25" Width="2.25" />
+  <Class Name="Singularity.Screen.ScreenClasses.SplashScreen" BaseTypeListCollapsed="true">
+    <Position X="70.25" Y="59" Width="2.25" />
     <TypeIdentifier>
       <HashCode>CAQYEAAAAAEAIgABBACGAAAEACAIAMBIAAQAAAAAAAQ=</HashCode>
       <FileName>Screen\ScreenClasses\SplashScreen.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.ScreenClasses.StatisticsScreen" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="63.75" Y="13.75" Width="2" />
+  <Class Name="Singularity.Screen.ScreenClasses.StatisticsScreen" BaseTypeListCollapsed="true">
+    <Position X="80.5" Y="49.5" Width="2" />
     <TypeIdentifier>
       <HashCode>QAQAMBIICBEAAgAgLAAAAAAAAgACAIgAAwAAABAAAAQ=</HashCode>
       <FileName>Screen\ScreenClasses\StatisticsScreen.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Screen.ScreenClasses.UserInterfaceScreen" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="63.75" Y="9.25" Width="3.5" />
+  <Class Name="Singularity.Screen.ScreenClasses.UserInterfaceScreen" BaseTypeListCollapsed="true">
+    <Position X="85.25" Y="49.5" Width="3.5" />
     <TypeIdentifier>
       <HashCode>CEcsPBsWqb1V33nmLCcZrW+pOUNff6Pc9a5uGe4uVv4=</HashCode>
       <FileName>Screen\ScreenClasses\UserInterfaceScreen.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <ShowAsAssociation>
+      <Property Name="UserInterfaceController" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.Serialization.CyclicDummy" Collapsed="true">
-    <Position X="80" Y="8.5" Width="1.75" />
+    <Position X="121.5" Y="16.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAAAAQAAAAAAAAAAAAAA=</HashCode>
       <FileName>Serialization\CyclicDummy.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Serialization.SerializationDummy" Collapsed="true">
-    <Position X="80" Y="8" Width="1.75" />
+    <Position X="121.5" Y="16" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAEBAEIAAAAAAEIAAAAAAAAACAAAAAIgAAAAAAAAI=</HashCode>
       <FileName>Serialization\SerializationDummy.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Serialization.XSerializer" Collapsed="true">
-    <Position X="80" Y="7.25" Width="1.5" />
+    <Position X="121.5" Y="15.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAgIAAAAAAAAAAAAAAAAQAACBAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Serialization\XSerializer.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Sound.SoundManager" Collapsed="true">
-    <Position X="50.25" Y="7.25" Width="2" />
+  <Class Name="Singularity.Sound.SoundManager">
+    <Position X="12.75" Y="38.75" Width="2" />
     <TypeIdentifier>
       <HashCode>ASGACAiyAAEAAAAAABAIAWgAAABBAAwEEKAAAAQAACQ=</HashCode>
       <FileName>Sound\SoundManager.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Units.ControllableUnit">
-    <Position X="39" Y="25.25" Width="2" />
+    <Position X="61.5" Y="13.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAABAYAAAAAAAAAAAAIAAAAAAABgAABAAIAAAAAAA=</HashCode>
       <FileName>Units\ControllableUnit.cs</FileName>
@@ -851,67 +1000,77 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.Units.EnemyUnit">
-    <Position X="44" Y="25.25" Width="1.75" />
+    <Position X="66.5" Y="13.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>EAYAAAAAAEAADgAAAAIAAACAAAAAAAAYAAAAQAAIQgA=</HashCode>
       <FileName>Units\EnemyUnit.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Units.FreeMovingPathfinder" Collapsed="true">
-    <Position X="71.75" Y="11.5" Width="1.75" />
+  <Class Name="Singularity.Units.FreeMovingPathfinder">
+    <Position X="65.25" Y="8" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAAIAAAIAAAQAAAEA=</HashCode>
       <FileName>Units\FreeMovingPathfinder.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Units.FreeMovingUnit">
-    <Position X="40.25" Y="15.25" Width="2" />
+    <Position X="62.75" Y="3.5" Width="2" />
+    <AssociationLine Name="FreeMovingPathfinder" Type="Singularity.Units.FreeMovingPathfinder" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="64.75" Y="7.812" />
+        <Point X="66.25" Y="7.812" />
+        <Point X="66.25" Y="8" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>ASwaCAEIBAABAgAsNACIAAEAeAAAAIQAAEAAIAAIUgE=</HashCode>
+      <HashCode>ASwaCAEIBAABAgAsNACIAAEAeAAAAIRAAEAAIAAIUgE=</HashCode>
       <FileName>Units\FreeMovingUnit.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="FreeMovingPathfinder" />
+    </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Units.GeneralUnit" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="89.25" Y="4.5" Width="2.25" />
+  <Class Name="Singularity.Units.GeneralUnit" BaseTypeListCollapsed="true">
+    <Position X="26.5" Y="47.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AKQSDCAAAMABAgBkIBAARAABCBAKAAAgAMAAIFAghAA=</HashCode>
       <FileName>Units\GeneralUnit.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.Units.MilitaryFast">
-    <Position X="36.75" Y="34.75" Width="1.5" />
+    <Position X="59.25" Y="23" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Units\MilitaryFast.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Units.MilitaryHeavy">
-    <Position X="39" Y="34.75" Width="1.5" />
+    <Position X="61.5" Y="23" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Units\MilitaryHeavy.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Units.MilitaryUnit">
-    <Position X="37.75" Y="29" Width="1.75" />
+    <Position X="60.25" Y="17.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>EAYAAAQgAEAADgAAAAIAAACAAAAAAAAQIAAEAAAIAgA=</HashCode>
       <FileName>Units\MilitaryUnit.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Units.MilitaryUnitStats" Collapsed="true">
-    <Position X="83.5" Y="0.5" Width="1.5" />
+  <Class Name="Singularity.Units.MilitaryUnitStats">
+    <Position X="65.25" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAACAAAAAAAQAAABAAAEAAgAAQEQABAAAIAABAAEAA=</HashCode>
       <FileName>Units\MilitaryUnitStats.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Units.SelectionBox" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="84.75" Y="6.75" Width="2" />
+    <Position X="126.25" Y="14.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AASIAAAAAACAMgAAJAAAYAQAAAACBgAAABAIAAAAAgA=</HashCode>
       <FileName>Units\SelectionBox.cs</FileName>
@@ -919,7 +1078,7 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="Singularity.Units.Settler">
-    <Position X="41.25" Y="29" Width="2" />
+    <Position X="63.75" Y="17.25" Width="2" />
     <NestedTypes>
       <Delegate Name="Singularity.Units.Settler.SettlerEventHandler" Collapsed="true">
         <TypeIdentifier>
@@ -934,126 +1093,133 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.Units.Target">
-    <Position X="44" Y="30.75" Width="1.75" />
+    <Position X="66.5" Y="19" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Units\Target.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Units.Task" Collapsed="true">
-    <Position X="89.25" Y="3.75" Width="1.5" />
+  <Class Name="Singularity.Units.Task">
+    <Position X="29" Y="47.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAACEAAAAAAACAAQAAQ=</HashCode>
       <FileName>Units\Task.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Utils.Geometry" Collapsed="true">
-    <Position X="48" Y="11.5" Width="2.5" />
+  <Class Name="Singularity.Utils.Geometry">
+    <Position X="5.25" Y="38.75" Width="2.5" />
+    <NestedTypes>
+      <Struct Name="Singularity.Utils.Geometry.FloatIntUnion" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Utils\Geometry.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AAAQAAAAIAAAAAAAABAAAABAIAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Utils\Geometry.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Utils.IdGenerator" Collapsed="true">
-    <Position X="48" Y="7.25" Width="1.5" />
+  <Class Name="Singularity.Utils.IdGenerator">
+    <Position X="8" Y="44.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AEAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Utils\IdGenerator.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Utils.Optional&lt;T&gt;" Collapsed="true">
-    <Position X="48" Y="10" Width="1.5" />
+  <Class Name="Singularity.Utils.Optional&lt;T&gt;">
+    <Position X="8" Y="41.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAIAAEAAAAABAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Utils\Optional.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Utils.Pair&lt;T1, T2&gt;" Collapsed="true">
-    <Position X="48" Y="10.75" Width="1.5" />
+  <Class Name="Singularity.Utils.Pair&lt;T1, T2&gt;">
+    <Position X="3.5" Y="38.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAgAAAAAAAAAAAAIAAIAAAAQAAIAA=</HashCode>
       <FileName>Utils\Pair.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Utils.State3" Collapsed="true">
-    <Position X="48" Y="8.75" Width="1.5" />
+  <Class Name="Singularity.Utils.State3">
+    <Position X="8" Y="38.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAEAAAIAAAAAAAAAAABAAAAAIAAAACgAAABAAAAA=</HashCode>
       <FileName>Utils\State3.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Utils.Triple&lt;T1, T2, T3&gt;" Collapsed="true">
-    <Position X="48" Y="8" Width="1.5" />
+  <Class Name="Singularity.Utils.Triple&lt;T1, T2, T3&gt;">
+    <Position X="3.5" Y="41.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAgAAAAAAAAAAAAIAIIQAAAQAAIAA=</HashCode>
       <FileName>Utils\Triple.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Interface Name="Singularity.Graph.IEdge" Collapsed="true">
-    <Position X="59" Y="9" Width="1.5" />
+  <Interface Name="Singularity.Graph.IEdge">
+    <Position X="15.5" Y="47.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AQAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAQAAAA=</HashCode>
       <FileName>Graph\IEdge.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Singularity.Graph.INode" Collapsed="true">
-    <Position X="59" Y="8.25" Width="1.75" />
+  <Interface Name="Singularity.Graph.INode">
+    <Position X="15.5" Y="49.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAQAAAAAAAAAAAAAAAgAA=</HashCode>
       <FileName>Graph\INode.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Singularity.Graph.Paths.IPath" Collapsed="true">
-    <Position X="71.75" Y="8.25" Width="1.5" />
+  <Interface Name="Singularity.Graph.Paths.IPath">
+    <Position X="18" Y="55.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAgA=</HashCode>
       <FileName>Graph\Paths\IPath.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Singularity.Graph.Paths.IPathfinding" Collapsed="true">
-    <Position X="71.75" Y="7.5" Width="1.5" />
+  <Interface Name="Singularity.Graph.Paths.IPathfinding">
+    <Position X="18" Y="53.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAACAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Graph\Paths\IPathfinding.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Singularity.Input.IKeyListener" Collapsed="true">
-    <Position X="53.5" Y="10.25" Width="1.5" />
+  <Interface Name="Singularity.Input.IKeyListener">
+    <Position X="23.75" Y="40.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBAAQA=</HashCode>
       <FileName>Input\IKeyListener.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Singularity.Input.IMouseClickListener" Collapsed="true">
-    <Position X="53.5" Y="9.5" Width="2" />
+  <Interface Name="Singularity.Input.IMouseClickListener">
+    <Position X="21.5" Y="38.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAABAAAIAAAAAAAAgAAAAAIAAAAAgA=</HashCode>
       <FileName>Input\IMouseClickListener.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Singularity.Input.IMousePositionListener" Collapsed="true">
-    <Position X="53.5" Y="8.75" Width="2" />
+  <Interface Name="Singularity.Input.IMousePositionListener">
+    <Position X="21.5" Y="41" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
       <FileName>Input\IMousePositionListener.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Singularity.Input.IMouseWheelListener" Collapsed="true">
-    <Position X="53.5" Y="8" Width="2.25" />
+  <Interface Name="Singularity.Input.IMouseWheelListener">
+    <Position X="23.75" Y="38.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAABAEAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Input\IMouseWheelListener.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Singularity.Levels.ILevel" Collapsed="true">
-    <Position X="61.75" Y="8.25" Width="1.5" />
+  <Interface Name="Singularity.Levels.ILevel">
+    <Position X="22" Y="47.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAIBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
       <FileName>Levels\ILevel.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Singularity.PlatformActions.IPlatformAction" Collapsed="true">
-    <Position X="56" Y="8" Width="2" />
+  <Interface Name="Singularity.PlatformActions.IPlatformAction">
+    <Position X="7.25" Y="47.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAICAAAgAEAAAAQgAAAAAAAAEACAAAAACAAIBAAAAIA=</HashCode>
       <FileName>PlatformActions\IPlatformAction.cs</FileName>
@@ -1088,7 +1254,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Singularity.Property.IRevealing" Collapsed="true">
-    <Position X="74" Y="7.5" Width="1.5" />
+    <Position X="115.5" Y="15.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
       <FileName>Property\IRevealing.cs</FileName>
@@ -1170,99 +1336,99 @@
       <FileName>Utils\IdGenerator.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Enum Name="Singularity.Graph.EEdgeFacing" Collapsed="true">
-    <Position X="59" Y="7.5" Width="1.5" />
+  <Enum Name="Singularity.Graph.EEdgeFacing">
+    <Position X="17.5" Y="47.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAg=</HashCode>
       <FileName>Graph\EEdgeFacing.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="Singularity.Input.EClickType" Collapsed="true">
-    <Position X="53.5" Y="11" Width="1.5" />
+  <Enum Name="Singularity.Input.EClickType">
+    <Position X="26.5" Y="40.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAFAAAAAAAAA=</HashCode>
       <FileName>Input\EClickType.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="Singularity.Input.EMouseAction" Collapsed="true">
-    <Position X="53.5" Y="7.25" Width="1.5" />
+  <Enum Name="Singularity.Input.EMouseAction">
+    <Position X="26.5" Y="38.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAMAAAAAAA=</HashCode>
       <FileName>Input\MouseAction.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="Singularity.Levels.LevelType" Collapsed="true">
-    <Position X="61.75" Y="7.5" Width="1.5" />
+  <Enum Name="Singularity.Levels.LevelType">
+    <Position X="24" Y="47.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAEAAEAAAA=</HashCode>
       <FileName>Levels\LevelType.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="Singularity.PlatformActions.PlatformActionState" Collapsed="true">
-    <Position X="56" Y="7.25" Width="1.75" />
+  <Enum Name="Singularity.PlatformActions.PlatformActionState">
+    <Position X="9.25" Y="48.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAACAAABAAAQAAAAgAAAAAAAAAAA=</HashCode>
       <FileName>PlatformActions\PlatformActionState.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="Singularity.Platforms.EPlacementType" Collapsed="true">
-    <Position X="56" Y="8.75" Width="2.25" />
+  <Enum Name="Singularity.Platforms.EPlacementType">
+    <Position X="9.25" Y="47.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAABAAAAA=</HashCode>
       <FileName>Platforms\EPlacementType.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="Singularity.Platforms.EPlatformType" Collapsed="true">
-    <Position X="56" Y="9.5" Width="1.5" />
+  <Enum Name="Singularity.Platforms.EPlatformType">
+    <Position X="11" Y="47.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ACIBAAAAAAAAAAAAIQIEBAAAAAAAAAQEAAAAAAQAEgA=</HashCode>
       <FileName>Platforms\EPlatformType.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="Singularity.Resources.EResourceType" Collapsed="true">
-    <Position X="67.5" Y="7.5" Width="1.5" />
+  <Enum Name="Singularity.Resources.EResourceType">
+    <Position X="34" Y="38.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAEAAAAAABAAQQAAAQAAAAAgqAIAAEgAAAAAAAAA=</HashCode>
       <FileName>Resources\EResourceType.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="Singularity.Screen.EOptionScreenState" Collapsed="true">
-    <Position X="63.75" Y="7.5" Width="1.75" />
+  <Enum Name="Singularity.Screen.EOptionScreenState">
+    <Position X="77.25" Y="82.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAEAAAAACAAAAAAAAAAAAgAAAAA=</HashCode>
       <FileName>Screen\EOptionScreenState.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="Singularity.Screen.EScreen" Collapsed="true">
-    <Position X="63.75" Y="8.25" Width="2" />
+  <Enum Name="Singularity.Screen.EScreen">
+    <Position X="77.25" Y="79" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAABAAIBBAAECIAAAAAQAAKAAAAAAAAECAAIAAAAQ=</HashCode>
       <FileName>Screen\EScreen.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="Singularity.Sound.SoundClass" Collapsed="true">
-    <Position X="50.25" Y="8.75" Width="1.5" />
+  <Enum Name="Singularity.Sound.SoundClass">
+    <Position X="15.25" Y="40.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAEAAAgAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Sound\SoundClass.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="Singularity.Sound.SoundPhase" Collapsed="true">
-    <Position X="50.25" Y="8" Width="1.5" />
+  <Enum Name="Singularity.Sound.SoundPhase">
+    <Position X="15.25" Y="38.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAACAAAAAAIgAAAAAAAAAAAAAA=</HashCode>
       <FileName>Sound\SoundPhase.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="Singularity.Units.EUnitType" Collapsed="true">
-    <Position X="89.25" Y="2.25" Width="1.5" />
+  <Enum Name="Singularity.Units.EUnitType">
+    <Position X="31" Y="49.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAgAAAAAABgAAABAIAAAAQQAAAAA=</HashCode>
       <FileName>Units\EUnitType.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="Singularity.Units.JobType" Collapsed="true">
-    <Position X="89.25" Y="3" Width="1.5" />
+  <Enum Name="Singularity.Units.JobType">
+    <Position X="31" Y="47.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAABAQAAAACBAAAAAAAAAAAAAAAAAAAAAAgAAACA=</HashCode>
       <FileName>Units\JobType.cs</FileName>

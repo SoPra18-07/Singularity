@@ -8,6 +8,18 @@ namespace Singularity
     /// </summary>
     public static class Program
     {
+        internal static Game1 Game1
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
