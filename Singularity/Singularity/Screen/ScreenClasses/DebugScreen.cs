@@ -21,6 +21,9 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     public sealed class DebugScreen : IScreen, IKeyListener
     {
+        private const string DisableText = "Disable FoW";
+        private const string EnableText = "Enable Fow";
+
         public bool Loaded { get; set; }
 
         public EScreen Screen { get; private set; } = EScreen.DebugScreen;
@@ -43,7 +46,11 @@ namespace Singularity.Screen.ScreenClasses
         private int mFps;
         private readonly float mUpdateRate;
 
+        private Button mFowButton;
+
         private int mUps;
+
+        private bool mClicked;
 
         public DebugScreen(StackScreenManager screenManager, Camera camera, Map.Map map, ref Director director)
         {
@@ -95,6 +102,8 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.DrawString(mFont, "FPS: " + mFps, new Vector2(15, 365), Color.White);
             spriteBatch.DrawString(mFont, "UPS: " + mUps, new Vector2(15, 385), Color.White);
 
+            mFowButton.Draw(spriteBatch);
+
             //spriteBatch.DrawString(mFont, "FPS: " + mCurrentFps, new Vector2(15, 200), Color.White);
             spriteBatch.End();
         }
@@ -107,6 +116,12 @@ namespace Singularity.Screen.ScreenClasses
         public void LoadContent(ContentManager content)
         {
             mFont = content.Load<SpriteFont>("LibSans14");
+
+
+            mFowButton = new Button(DisableText, mFont, new Vector2(130, 450), Color.Red, true) {Opacity = 1f};
+
+            mFowButton.ButtonClicked += FowButtonClicked;
+            mFowButton.ButtonReleased += FowButtonReleased;
         }
 
         public void Update(GameTime gametime)
@@ -139,6 +154,8 @@ namespace Singularity.Screen.ScreenClasses
 
             mActivePlatforms = activeCounter;
             mDeactivePlatforms = deactiveCounter;
+
+            mFowButton.Update(gametime);
         }
 
         public bool UpdateLower()
@@ -172,6 +189,33 @@ namespace Singularity.Screen.ScreenClasses
         public void KeyReleased(KeyEvent keyEvent)
         {
             
+        }
+
+        private void FowButtonClicked(object sender, EventArgs args)
+        {
+            if (mClicked)
+            {
+                return;
+            }
+
+            GlobalVariables.FowEnabled = !GlobalVariables.FowEnabled;
+
+            if (GlobalVariables.FowEnabled)
+            {
+                mFowButton.ChangeText(DisableText);
+            }
+            else
+            {
+                mFowButton.ChangeText(EnableText);
+            }
+
+
+            mClicked = true;
+        }
+
+        private void FowButtonReleased(object sender, EventArgs args)
+        {
+            mClicked = false;
         }
     }
 }

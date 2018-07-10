@@ -147,13 +147,13 @@ namespace Singularity.Map
             var colMap = mCollisionMap.GetCollisionMap();
             var walkabilityGrid = mCollisionMap.GetWalkabilityGrid();
 
-            for (var columnCount = mCamera.GetRelativePosition().X / MapConstants.GridWidth; columnCount <= (mCamera.GetRelativePosition().X + mCamera.GetSize().X) / MapConstants.GridWidth; columnCount++)
+            for (var columnCount = 0; columnCount <= colMap.GetLength(0); columnCount++)
             {
                 spriteBatch.DrawLine(
                     new Vector2(columnCount * MapConstants.GridWidth, 0), MapConstants.MapHeight, MathHelper.Pi / 2f, Color.Blue, 1, LayerConstants.GridDebugLayer);
             }
 
-            for (var rowCount = mCamera.GetRelativePosition().Y / MapConstants.GridHeight; rowCount <= (mCamera.GetRelativePosition().Y + mCamera.GetSize().Y) / MapConstants.GridHeight; rowCount++)
+            for (var rowCount = 0; rowCount <= colMap.GetLength(1); rowCount++)
             {
                 spriteBatch.DrawLine(
                     new Vector2(0, rowCount * MapConstants.GridHeight), MapConstants.MapWidth, 0, Color.Yellow, 1, LayerConstants.GridDebugLayer);
