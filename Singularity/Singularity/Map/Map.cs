@@ -71,6 +71,78 @@ namespace Singularity.Map
             director.GetStoryManager.StructureMap = mStructureMap;
         }
 
+        public Camera Camera
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public CollisionMap CollisionMap
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public FogOfWar FogOfWar
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public ResourceMap ResourceMap
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public StructureMap StructureMap
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        internal UnitMap UnitMap
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         /// <see cref="CollisionMap.UpdateCollider(ICollider)"/>
         internal void UpdateCollider(ICollider collider)
         {

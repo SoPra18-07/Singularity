@@ -28,7 +28,7 @@
     <Position X="13.504" Y="53.225" Height="0.291" Width="0.899" />
   </Comment>
   <Comment CommentText="Map">
-    <Position X="115.348" Y="14.61" Height="0.75" Width="1.7" />
+    <Position X="88.098" Y="13.86" Height="0.75" Width="1.7" />
   </Comment>
   <Comment CommentText="Exceptions">
     <Position X="118.449" Y="14.373" Height="0.75" Width="1.7" />
@@ -248,83 +248,135 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Map.Camera" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="115.5" Y="15.75" Width="2.25" />
+  <Class Name="Singularity.Map.Camera" BaseTypeListCollapsed="true">
+    <Position X="85" Y="17.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAJoCFYAAAICBDgFAFAAAAAQAAABgAACAAAABJFQwA=</HashCode>
       <FileName>Map\Camera.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Map.CollisionMap" Collapsed="true">
-    <Position X="115.5" Y="20.25" Width="1.75" />
+  <Class Name="Singularity.Map.CollisionMap">
+    <Position X="87.75" Y="17.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>CIAAAACAAAAAAAAAEAAAAQAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <HashCode>CIAAAACAAAAAAgAAEAAAAQAAAAAAAIAAAAAAAAAAAAA=</HashCode>
       <FileName>Map\CollisionMap.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="CollisionNode" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="Singularity.Map.CollisionNode" Collapsed="true">
-    <Position X="115.5" Y="21.25" Width="1.5" />
+  <Class Name="Singularity.Map.CollisionNode">
+    <Position X="87.75" Y="20.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAIAYAA=</HashCode>
       <FileName>Map\CollisionNode.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Map.FogOfWar" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="115.5" Y="17.5" Width="2.5" />
+  <Class Name="Singularity.Map.FogOfWar" BaseTypeListCollapsed="true">
+    <Position X="90" Y="17.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>QQQIAAAAAAQAAAAABAAACAIAAAAAACAAAAABoAAAABA=</HashCode>
       <FileName>Map\FogOfWar.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Map.Map" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="115.5" Y="20.5" Width="2" />
+  <Class Name="Singularity.Map.Map" BaseTypeListCollapsed="true">
+    <Position X="82.25" Y="15.5" Width="2" />
+    <AssociationLine Name="CollisionMap" Type="Singularity.Map.CollisionMap" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="84.25" Y="16.75" />
+        <Point X="88.625" Y="16.75" />
+        <Point X="88.625" Y="17.5" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="FogOfWar" Type="Singularity.Map.FogOfWar" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="84.25" Y="16.625" />
+        <Point X="91.25" Y="16.625" />
+        <Point X="91.25" Y="17.5" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="ResourceMap" Type="Singularity.Map.ResourceMap" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="84.25" Y="16.5" />
+        <Point X="93.875" Y="16.5" />
+        <Point X="93.875" Y="17.5" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="StructureMap" Type="Singularity.Map.StructureMap" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="84.25" Y="16.375" />
+        <Point X="96.375" Y="16.375" />
+        <Point X="96.375" Y="17.5" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="UnitMap" Type="Singularity.Map.UnitMap" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="84.25" Y="16.25" />
+        <Point X="99.125" Y="16.25" />
+        <Point X="99.125" Y="17.5" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AIQIIACAAQAQRhAAEAEAAgAAAQEAQAAEBAAoAAQAQgI=</HashCode>
+      <HashCode>AIQKIACAAQAYRhAAUAEAAgEAAQEAQAQEBAAoAAQAQgI=</HashCode>
       <FileName>Map\Map.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <ShowAsAssociation>
+      <Property Name="Camera" />
+      <Property Name="CollisionMap" />
+      <Property Name="FogOfWar" />
+      <Property Name="ResourceMap" />
+      <Property Name="StructureMap" />
+      <Property Name="UnitMap" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Map.MiniMap" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="115.5" Y="19.5" Width="2.5" />
+  <Class Name="Singularity.Map.MiniMap" BaseTypeListCollapsed="true">
+    <Position X="74.25" Y="79" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAQIAAAAAAgBkhBgAAAAAAAQBAAQAAAAAAAAAACAAAE=</HashCode>
       <FileName>Map\MiniMap.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Map.ResourceMap" Collapsed="true">
-    <Position X="115.5" Y="18.5" Width="1.75" />
+  <Class Name="Singularity.Map.ResourceMap">
+    <Position X="93" Y="17.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAQAAAAAAAAAAAAAAAAAACCAAAERAEgCAAAAAA=</HashCode>
+      <HashCode>AAAAAAAQAAAAAAAAAAAAAAAAAACCAAAERAkgCAAAAAA=</HashCode>
       <FileName>Map\ResourceMap.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="MapResource" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="Singularity.Map.StructureMap" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="115.5" Y="17.75" Width="2.25" />
+  <Class Name="Singularity.Map.StructureMap" BaseTypeListCollapsed="true">
+    <Position X="95.25" Y="17.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>ACQAIIAcCQAARgAAIBEAAAAQCAAABEABABAggAIACAg=</HashCode>
       <FileName>Map\StructureMap.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Singularity.Map.UnitMap" Collapsed="true">
-    <Position X="115.5" Y="16.25" Width="2.25" />
+  <Class Name="Singularity.Map.UnitMap">
+    <Position X="98" Y="17.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAACAgAAAAAAACAAAAAACBAQAAAJAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAACAgAAAAAAACAAAAAACBIQAAAJAAAAAAAAAAAAA=</HashCode>
       <FileName>Map\UnitMap.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="UnitMapTile" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="Singularity.Map.UnitMapTile" Collapsed="true">
-    <Position X="115.5" Y="17" Width="1.5" />
+  <Class Name="Singularity.Map.UnitMapTile">
+    <Position X="98" Y="20.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Map\UnitMapTile.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Map.Properties.MapConstants" Collapsed="true">
-    <Position X="115.5" Y="19.75" Width="1.5" />
+  <Class Name="Singularity.Map.Properties.MapConstants">
+    <Position X="100.75" Y="17.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>IAAAAAAAAAAAEAAAAAAAACAAAIAAAACAQAAMAQBAEBA=</HashCode>
       <FileName>Map\Properties\MapConstants.cs</FileName>
@@ -572,13 +624,13 @@
       <FileName>Property\LayerConstants.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Singularity.Resources.MapResource" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="115.5" Y="19" Width="1.5" />
+  <Class Name="Singularity.Resources.MapResource" BaseTypeListCollapsed="true">
+    <Position X="93" Y="21.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQQAAAAAAABAgBkAAAAAACAAAAAAAAAAUAAAAAAAgA=</HashCode>
       <FileName>Resources\MapResource.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.Resources.Resource" BaseTypeListCollapsed="true">
     <Position X="29.25" Y="38.75" Width="1.5" />
@@ -636,7 +688,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.Screen.InfoBoxWindow" BaseTypeListCollapsed="true">
-    <Position X="74.25" Y="79" Width="2" />
+    <Position X="74.25" Y="84.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AIQAAAAABAAAAgAgQAAAAAQAAgAABAAgAAAAABAAAAA=</HashCode>
       <FileName>Screen\InfoBoxWindow.cs</FileName>
@@ -1253,8 +1305,8 @@
       <FileName>Property\IDraw.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Singularity.Property.IRevealing" Collapsed="true">
-    <Position X="115.5" Y="15.5" Width="1.5" />
+  <Interface Name="Singularity.Property.IRevealing">
+    <Position X="77" Y="20.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
       <FileName>Property\IRevealing.cs</FileName>
@@ -1393,14 +1445,14 @@
     </TypeIdentifier>
   </Enum>
   <Enum Name="Singularity.Screen.EOptionScreenState">
-    <Position X="77.25" Y="82.75" Width="1.5" />
+    <Position X="77.5" Y="82.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAEAAAAACAAAAAAAAAAAAgAAAAA=</HashCode>
       <FileName>Screen\EOptionScreenState.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="Singularity.Screen.EScreen">
-    <Position X="77.25" Y="79" Width="2" />
+    <Position X="77.5" Y="79" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAABAAIBBAAECIAAAAAQAAKAAAAAAAAECAAIAAAAQ=</HashCode>
       <FileName>Screen\EScreen.cs</FileName>

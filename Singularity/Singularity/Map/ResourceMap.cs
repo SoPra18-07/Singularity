@@ -36,6 +36,17 @@ namespace Singularity.Map
             mResourceMap = new List<MapResource>(initialResources);
         }
 
+        public MapResource MapResource
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
 
         public Optional<Resource> GetWellResource(Vector2 location)
         {

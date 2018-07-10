@@ -42,6 +42,18 @@ namespace Singularity.Map
             mMapSizeX = mapSizeX;
         }
 
+        internal UnitMapTile UnitMapTile
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         /// <summary>
         /// Adds a unit to the UnitMap.
         /// </summary>
