@@ -381,11 +381,11 @@ namespace Singularity.Screen.ScreenClasses
             // TODO requires a road to be place and therefore throws an exception !!!!!
             
             CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, ref mDirector, false);
+            AddObject(cCenter);
             var genUnit = new GeneralUnit(cCenter, ref mDirector, cCenter.GetGraphIndex());
             var genUnit2 = new GeneralUnit(cCenter, ref mDirector, cCenter.GetGraphIndex());
 
             // adds the command center to the GameScreen, as well as two general units
-            AddObject(cCenter);
             AddObject(genUnit);
             AddObject(genUnit2);
 
