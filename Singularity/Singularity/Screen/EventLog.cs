@@ -62,11 +62,11 @@ namespace Singularity.Screen
         /// </summary>
         /// <param name="eventType">the event's type</param>
         /// <param name="text">the text to show</param>
-        /// <param name="position">the position of the object that created this event</param>
-        public void AddEvent(ELogEventType eventType, string text, Vector2 position)
+        /// <param name="onThis">the spatial that created this event</param>
+        public void AddEvent(ELogEventType eventType, string text, ISpatial onThis)
         {
             // create a new EventLogItem of the event to add
-            mAddedEvent = new EventLogIWindowItem(eventType, text, position, 180, mLibSans10, mDirector);
+            mAddedEvent = new EventLogIWindowItem(eventType, text, 180, mLibSans10, mDirector, onThis);
 
             // enqueue to the event's queue
             mEventList.Enqueue(mAddedEvent);

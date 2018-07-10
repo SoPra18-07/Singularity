@@ -1628,7 +1628,6 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-
             mPlatformToPlace = new StructurePlacer(
                 EPlatformType.Packaging,
                 EPlacementType.PlatformMouseFollowAndRoad,

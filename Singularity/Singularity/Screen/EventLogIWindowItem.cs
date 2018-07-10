@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Events;
 using Singularity.Manager;
+using Singularity.Property;
 
 namespace Singularity.Screen
 {
@@ -12,9 +14,6 @@ namespace Singularity.Screen
     public sealed class EventLogIWindowItem : IWindowItem
     {
         #region member variables
-
-        // the position of the object that created this event
-        private Vector2 mPositionOfEvent;
 
         // the button used to jump to the position of the object that created this event
         private readonly Button mPositionButton;
@@ -41,16 +40,14 @@ namespace Singularity.Screen
         /// <param name="width">width to fit the text to</param>
         /// <param name="spriteFont">textfont</param>
         /// <param name="director">basic director</param>
-        public EventLogIWindowItem(ELogEventType eventType, string message, Vector2 positionOfEvent, float width, SpriteFont spriteFont, Director director)
+        public EventLogIWindowItem(ELogEventType eventType, string message, float width, SpriteFont spriteFont, Director director, ISpatial onThis)
         {
-            // set members
-            mPositionOfEvent = positionOfEvent;
             mShiftValue = spriteFont.MeasureString("// ").X;
             mText = new TextField(message, Vector2.Zero, new Vector2(width - mShiftValue, 0), spriteFont, Color.White);
             mInfoBox = new InfoBoxWindow(new List<IWindowItem> { new TextField("To event", Vector2.Zero, spriteFont.MeasureString("To event"), spriteFont, Color.White) }, spriteFont.MeasureString("To event"), Color.White, Color.Black, true, director);
 
             // button to jump to object that created the event
-            mPositionButton = new Button("// " + eventType, spriteFont, Vector2.Zero) {Opacity = 1f};
+            mPositionButton = new Button("// " + eventType, spriteFont, Vector2.Zero, false, new SpatialPositionEventArgs(onThis)) {Opacity = 1f};
             mPositionButton.ButtonHovering += ShowInfoBox;
             mPositionButton.ButtonHoveringEnd += HideInfoBox;
             mPositionButton.ButtonClicked += JumpToPosition;
@@ -124,10 +121,12 @@ namespace Singularity.Screen
         /// <param name="eventArgs"></param>
         private void JumpToPosition(object sender, EventArgs eventArgs)
         {
+            var asSpatial = (SpatialPositionEventArgs) eventArgs;
+
             //TODO: pass accurate coordinates, right now it goes to the top left texture point of the platform blank on the map
             // also note, since the validate position code is atm buggy, the map might disappear when the zoom level is too far out
             // im going to fix this definitely
-            mDirector.GetStoryManager.Level.Camera.CenterOn(new Vector2(3000, 3000));
+            mDirector.GetStoryManager.Level.Camera.CenterOn(asSpatial.GetAbsoluteCenter());
         }
 
         /// <inheritdoc />
