@@ -92,8 +92,10 @@ namespace Singularity.Platforms
 
                 case EPlatformType.Packaging:
 
-                    director.GetEventLog.AddEvent(ELogEventType.Debugging, "Packacking facilities have not yet been implemented. \n HERE, HAVE A MINE INSTEAD", new Vector2(400, 400));
-                    return new Mine(position, sDomeSheet, sBlankSheet, resourceMap, ref director);
+                    var mine = new Mine(position, sDomeSheet, sBlankSheet, resourceMap, ref director);
+
+                    director.GetEventLog.AddEvent(ELogEventType.Debugging, "Packacking facilities have not yet been implemented. \n HERE, HAVE A MINE INSTEAD", mine);
+                    return mine;
 
                 case EPlatformType.Storage:
                     return new Storage(position, sDomeSheet, sBlankSheet, ref director, friendly);
