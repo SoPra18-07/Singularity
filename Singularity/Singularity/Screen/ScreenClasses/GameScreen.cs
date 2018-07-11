@@ -78,7 +78,6 @@ namespace Singularity.Screen.ScreenClasses
 
             mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
             AddObject(mSelBox);
-
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -95,7 +94,7 @@ namespace Singularity.Screen.ScreenClasses
 
             spriteBatch.End();
 
-            if (GlobalVariables.FowEnabled)
+            if (GlobalVariables.mFowEnabled)
             {
 
                 mFow.DrawMasks(spriteBatch);
@@ -382,7 +381,9 @@ namespace Singularity.Screen.ScreenClasses
 
             var graphid = IdGenerator.NextiD();
             mDirector.GetDistributionDirector.AddManager(graphid);
-            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, ref mDirector, false);
+            var cCenter = PlatformFactory.Get(EPlatformType.Command, ref mDirector, v.X - 55, v.Y - 100);
+            // CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, ref mDirector, false);
+
             var genUnit = new GeneralUnit(cCenter, ref mDirector, graphid);
             var genUnit2 = new GeneralUnit(cCenter, ref mDirector, graphid);
 

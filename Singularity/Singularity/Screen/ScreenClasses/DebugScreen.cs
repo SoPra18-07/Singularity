@@ -198,9 +198,9 @@ namespace Singularity.Screen.ScreenClasses
                 return;
             }
 
-            GlobalVariables.FowEnabled = !GlobalVariables.FowEnabled;
+            GlobalVariables.mFowEnabled = !GlobalVariables.mFowEnabled;
 
-            if (GlobalVariables.FowEnabled)
+            if (GlobalVariables.mFowEnabled)
             {
                 mFowButton.ChangeText(DisableText);
             }
