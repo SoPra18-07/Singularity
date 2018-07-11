@@ -1159,7 +1159,10 @@ namespace Singularity.Manager
         /// <param name="handler"></param>
         internal void Unregister(SliderHandler handler)
         {
-            mHandler = null;
+            if (mHandler == handler)
+            {
+                mHandler = null;
+            }
         }
 
         #endregion

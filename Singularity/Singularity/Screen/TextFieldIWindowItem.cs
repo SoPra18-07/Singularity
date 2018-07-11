@@ -9,7 +9,7 @@ namespace Singularity.Screen
     /// <summary>
     /// A TextField constists of a string which is cut to fit a specified width
     /// </summary>
-    internal sealed class TextField : IWindowItem
+    internal sealed class TextFieldIWindowItem : IWindowItem
     {
         #region member variables
 
@@ -32,7 +32,7 @@ namespace Singularity.Screen
         /// <param name="size">size of the text field</param>
         /// <param name="spriteFont">spritefont for the text</param>
         /// <param name="color">text color</param>
-        public TextField(string text, Vector2 position, Vector2 size, SpriteFont spriteFont, Color color)
+        public TextFieldIWindowItem(string text, Vector2 position, Vector2 size, SpriteFont spriteFont, Color color)
         {
             // use parameter-variables
             Position = position;
@@ -49,18 +49,12 @@ namespace Singularity.Screen
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
-        /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
             // no update needed
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
-        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
             if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
@@ -140,24 +134,14 @@ namespace Singularity.Screen
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public Vector2 Position { get; set; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public Vector2 Size { get; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public bool ActiveInWindow { get; set; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public bool InactiveInSelectedPlatformWindow { get; set; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public bool OutOfScissorRectangle { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace Singularity.Screen
         private readonly Button mPositionButton;
 
         // the text/message to show the user in the eventLog
-        private readonly TextField mText;
+        private readonly TextFieldIWindowItem mText;
 
         // the shift value to shift the text to correctly fit the button
         private readonly float mShiftValue;
@@ -43,8 +43,8 @@ namespace Singularity.Screen
         public EventLogIWindowItem(ELogEventType eventType, string message, float width, SpriteFont spriteFont, Director director, ISpatial onThis)
         {
             mShiftValue = spriteFont.MeasureString("// ").X;
-            mText = new TextField(message, Vector2.Zero, new Vector2(width - mShiftValue, 0), spriteFont, Color.White);
-            mInfoBox = new InfoBoxWindow(new List<IWindowItem> { new TextField("To event", Vector2.Zero, spriteFont.MeasureString("To event"), spriteFont, Color.White) }, spriteFont.MeasureString("To event"), Color.White, Color.Black, true, director);
+            mText = new TextFieldIWindowItem(message, Vector2.Zero, new Vector2(width - mShiftValue, 0), spriteFont, Color.White);
+            mInfoBox = new InfoBoxWindow(new List<IWindowItem> { new TextFieldIWindowItem("To event", Vector2.Zero, spriteFont.MeasureString("To event"), spriteFont, Color.White) }, spriteFont.MeasureString("To event"), Color.White, Color.Black, true, director);
 
             // button to jump to object that created the event
             mPositionButton = new Button("// " + eventType, spriteFont, Vector2.Zero, false, new SpatialPositionEventArgs(onThis)) {Opacity = 1f};
@@ -61,9 +61,6 @@ namespace Singularity.Screen
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
-        /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
             if (ActiveInWindow && !OutOfScissorRectangle)
@@ -80,9 +77,6 @@ namespace Singularity.Screen
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
-        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
             if (ActiveInWindow && !OutOfScissorRectangle)
@@ -130,24 +124,14 @@ namespace Singularity.Screen
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public Vector2 Position { get; set; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public Vector2 Size { get; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public bool ActiveInWindow { get; set; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public bool InactiveInSelectedPlatformWindow { get; set; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public bool OutOfScissorRectangle { get; set; }
     }
 }

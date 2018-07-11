@@ -86,10 +86,10 @@ namespace Singularity.Screen.ScreenClasses
         // button + rightAlignedIWindowItem for activation/deactivation of selectedPlatform
         private Button mSelectedPlatformDeactivatePlatformButton;
         private Button mSelectedPlatformActivatePlatformButton;
-        private ActivationIWindowItem mSelectedPlatformActiveItem;
+        private SwitchAndRightAlignedIWindowItem mSelectedPlatformActiveItem;
 
         // auto deactivated platform textfield
-        private TextField mSelectedPlatformIsAutoDeactivatedText;
+        private TextFieldIWindowItem mSelectedPlatformIsAutoDeactivatedText;
 
         // textFields of selectedPlatformWindow titles
         private Button mSelectedPlatformResourcesButton;
@@ -97,10 +97,10 @@ namespace Singularity.Screen.ScreenClasses
         private Button mSelectedPlatformActionsButton;
 
         // textFields of selectedPlatformWindow unit assignment
-        private TextField mSelectedPlatformDefTextField;
-        private TextField mSelectedPlatformBuildTextField;
-        private TextField mSelectedPlatformLogisticsTextField;
-        private TextField mSelectedPlatformProductionTextField;
+        private TextFieldIWindowItem mSelectedPlatformDefTextField;
+        private TextFieldIWindowItem mSelectedPlatformBuildTextField;
+        private TextFieldIWindowItem mSelectedPlatformLogisticsTextField;
+        private TextFieldIWindowItem mSelectedPlatformProductionTextField;
 
         // TODO : ? CREATE ENERGY ITEM ?
 
@@ -170,10 +170,10 @@ namespace Singularity.Screen.ScreenClasses
         private Slider mProductionSlider;
 
         // text for sliders
-        private TextField mDefTextField;
-        private TextField mBuildTextField;
-        private TextField mLogisticsTextField;
-        private TextField mProductionTextField;
+        private TextFieldIWindowItem mDefTextField;
+        private TextFieldIWindowItem mBuildTextField;
+        private TextFieldIWindowItem mLogisticsTextField;
+        private TextFieldIWindowItem mProductionTextField;
 
         // text and amount item for idle units
         private TextAndAmountIWindowItem mIdleUnitsTextAndAmount;
@@ -314,6 +314,7 @@ namespace Singularity.Screen.ScreenClasses
             mUserInterfaceController = director.GetUserInterfaceController;
         }
 
+        /// <inheritdoc />
         public void Update(GameTime gametime)
         {
             // update screen size
@@ -324,7 +325,6 @@ namespace Singularity.Screen.ScreenClasses
             if (mGraphSwitcher != null && mCivilUnitsGraphId != mGraphSwitcher.GetCurrentId())
             {
                 mCivilUnitsGraphId = mGraphSwitcher.GetCurrentId();
-                mCivilUnitsSliderHandler.SetGraphId(mCivilUnitsGraphId);
             }
 
             // if the resolution has changed -> reset windows to standard positions
@@ -365,6 +365,7 @@ namespace Singularity.Screen.ScreenClasses
             // mIdleUnitsTextAndAmount.Amount = mUserInterfaceController.GetIdleUnits(0);
         }
 
+        /// <inheritdoc />
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, mRasterizerState);
@@ -449,11 +450,11 @@ namespace Singularity.Screen.ScreenClasses
             mSelectedPlatformDeactivatePlatformButton.ButtonReleased += SelectedPlatformDeactivate;
             mSelectedPlatformActivatePlatformButton = new Button("Activate", mLibSans12, Vector2.Zero, Color.White) { Opacity = 1f };
             mSelectedPlatformActivatePlatformButton.ButtonReleased += SelectedPlatformActivate;
-            mSelectedPlatformActiveItem = new ActivationIWindowItem(mSelectedPlatformDeactivatePlatformButton, mSelectedPlatformActivatePlatformButton,selectedPlatformWidth, ref mDirector);
+            mSelectedPlatformActiveItem = new SwitchAndRightAlignedIWindowItem(mSelectedPlatformDeactivatePlatformButton, mSelectedPlatformActivatePlatformButton,selectedPlatformWidth, ref mDirector);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformActiveItem);
 
             // auto-deactivaed textfield
-            mSelectedPlatformIsAutoDeactivatedText = new TextField("FORCE DEACTIVATED", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12, Color.Red);
+            mSelectedPlatformIsAutoDeactivatedText = new TextFieldIWindowItem("FORCE DEACTIVATED", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12, Color.Red);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformIsAutoDeactivatedText);
             mSelectedPlatformIsAutoDeactivatedText.InactiveInSelectedPlatformWindow = true;
 
@@ -507,25 +508,25 @@ namespace Singularity.Screen.ScreenClasses
             mSelectedPlatformUnitAssignmentButton.ButtonReleased += CloseUnitAssignmentsInSelectedWindow;
             mSelectedPlatformWindow.AddItem(mSelectedPlatformUnitAssignmentButton);
             // unit assignment text + slider
-            mSelectedPlatformDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10, Color.White);
+            mSelectedPlatformDefTextField = new TextFieldIWindowItem("Defense", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10, Color.White);
             mSelectedPlatformUnitAssignmentList.Add(mSelectedPlatformDefTextField);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformDefTextField);
             mSelectedPlatformDefSlider = new Slider(Vector2.Zero, 150, 10, mLibSans10, ref mDirector, true, true, 5);
             mSelectedPlatformUnitAssignmentList.Add(mSelectedPlatformDefSlider);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformDefSlider);
-            mSelectedPlatformBuildTextField = new TextField("Build", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10, Color.White);
+            mSelectedPlatformBuildTextField = new TextFieldIWindowItem("Build", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10, Color.White);
             mSelectedPlatformUnitAssignmentList.Add(mSelectedPlatformBuildTextField);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformBuildTextField);
             mSelectedPlatformBuildSlider = new Slider(Vector2.Zero, 150, 10, mLibSans10, ref mDirector);
             mSelectedPlatformUnitAssignmentList.Add(mSelectedPlatformBuildSlider);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformBuildSlider);
-            mSelectedPlatformLogisticsTextField = new TextField("Logistics", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10, Color.White);
+            mSelectedPlatformLogisticsTextField = new TextFieldIWindowItem("Logistics", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10, Color.White);
             mSelectedPlatformUnitAssignmentList.Add(mSelectedPlatformLogisticsTextField);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformLogisticsTextField);
             mSelectedPlatformLogisticsSlider = new Slider(Vector2.Zero, 150, 10, mLibSans10, ref mDirector);
             mSelectedPlatformUnitAssignmentList.Add(mSelectedPlatformLogisticsSlider);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformLogisticsSlider);
-            mSelectedPlatformProductionTextField = new TextField("Production", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10, Color.White);
+            mSelectedPlatformProductionTextField = new TextFieldIWindowItem("Production", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10, Color.White);
             mSelectedPlatformUnitAssignmentList.Add(mSelectedPlatformProductionTextField);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformProductionTextField);
             mSelectedPlatformProductionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans10, ref mDirector);
@@ -574,15 +575,15 @@ namespace Singularity.Screen.ScreenClasses
 
             // create items
 
-            mGraphSwitcher = new IndexSwitcherIWindowItem(new List<int> {0}, "Graph: ", civilUnitsWidth - 40, mLibSans12, mDirector);
+            mGraphSwitcher = new IndexSwitcherIWindowItem("Graph: ", civilUnitsWidth - 40, mLibSans12);
 
-            mDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
+            mDefTextField = new TextFieldIWindowItem("Defense", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
             mDefSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true);
-            mBuildTextField = new TextField("Build", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
+            mBuildTextField = new TextFieldIWindowItem("Build", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
             mBuildSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true);
-            mLogisticsTextField = new TextField("Logistics", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
+            mLogisticsTextField = new TextFieldIWindowItem("Logistics", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
             mLogisticsSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true);
-            mProductionTextField = new TextField("Production", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
+            mProductionTextField = new TextFieldIWindowItem("Production", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
             mProductionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true);
 
             mIdleUnitsTextAndAmount = new TextAndAmountIWindowItem("Idle", 0, Vector2.Zero, new Vector2(civilUnitsWidth, 0), mLibSans12, Color.White );
@@ -760,7 +761,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoBoxCenterColor = Color.Black;
 
             // Build Blank Platform info
-            var infoBuildBlank = new TextField("Build Blank Platform",
+            var infoBuildBlank = new TextFieldIWindowItem("Build Blank Platform",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Blank Platform"),
                 mLibSans10, 
@@ -779,7 +780,7 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoBuildBlank);
 
             // Open Basic List info
-            var infoBasicList = new TextField("Basic Building Menu",
+            var infoBasicList = new TextFieldIWindowItem("Basic Building Menu",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Basic Building Menu"),
                 mLibSans10,
@@ -796,7 +797,7 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoBasicList);
 
             // Open Special List info
-            var infoSpecialList = new TextField("Special Building Menu",
+            var infoSpecialList = new TextFieldIWindowItem("Special Building Menu",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Special Building Menu"),
                 mLibSans10, 
@@ -813,7 +814,7 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoSpecialList);
 
             // Open Military List info
-            var infoMilitaryList = new TextField("Military Building Menu",
+            var infoMilitaryList = new TextFieldIWindowItem("Military Building Menu",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Military Building Menu"),
                 mLibSans10, 
@@ -830,7 +831,7 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoMilitaryList);
 
             // Build Junkyard info
-            var infoJunkyard = new TextField("Build Junkyard",
+            var infoJunkyard = new TextFieldIWindowItem("Build Junkyard",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Junkyard"),
                 mLibSans10, 
@@ -847,7 +848,7 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoBuildJunkyard);
 
             // Build Quarry info
-            var infoQuarry = new TextField("Build Quarry",
+            var infoQuarry = new TextFieldIWindowItem("Build Quarry",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Quarry"),
                 mLibSans10, 
@@ -864,7 +865,7 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoBuildQuarry);
 
             // Build Mine info
-            var infoMine = new TextField("Build Mine",
+            var infoMine = new TextFieldIWindowItem("Build Mine",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Mine"),
                 mLibSans10, 
@@ -881,7 +882,7 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoBuildMine);
 
             // Build Well info
-            var infoWell = new TextField("Build Well",
+            var infoWell = new TextFieldIWindowItem("Build Well",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Well"),
                 mLibSans10, 
@@ -898,7 +899,7 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoBuildWell);
 
             // Build Factory info
-            var infoFactory = new TextField("Build Factory",
+            var infoFactory = new TextFieldIWindowItem("Build Factory",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Factory"),
                 mLibSans10,
@@ -915,7 +916,7 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoBuildFactory);
 
             // Build Storage info
-            var infoStorage = new TextField("Build Storage",
+            var infoStorage = new TextFieldIWindowItem("Build Storage",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Storage"),
                 mLibSans10, 
@@ -932,7 +933,7 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoBuildStorage);
 
             // Build Powerhouse info
-            var infoPowerhouse = new TextField("Build Powerhouse",
+            var infoPowerhouse = new TextFieldIWindowItem("Build Powerhouse",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Powerhouse"),
                 mLibSans10, 
@@ -949,7 +950,7 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoBuildPowerhouse);
 
             // Build Commandcenter info
-            var infoCommandcenter = new TextField("Build Commandcenter",
+            var infoCommandcenter = new TextFieldIWindowItem("Build Commandcenter",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Commandcenter"),
                 mLibSans10, 
@@ -966,7 +967,7 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoBuildCommandcenter);
 
             // Build Packaging info
-            var infoPackaging = new TextField("Build Packaging",
+            var infoPackaging = new TextFieldIWindowItem("Build Packaging",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Packaging"),
                 mLibSans10, 
@@ -983,7 +984,7 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoBuildPackaging);
 
             // Build Kinetic Tower info
-            var infoKineticTower = new TextField("Build Kinetic Tower",
+            var infoKineticTower = new TextFieldIWindowItem("Build Kinetic Tower",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Kinetic Tower"),
                 mLibSans10, 
@@ -1000,7 +1001,7 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoBuildKineticTower);
 
             // Build Laser Tower info
-            var infoLaserTower = new TextField("Build Laser Tower",
+            var infoLaserTower = new TextFieldIWindowItem("Build Laser Tower",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Laser Tower"),
                 mLibSans10, 
@@ -1017,7 +1018,7 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoBuildLaserTower);
 
             // Build Barracks info
-            var infoBarracks = new TextField("Build Barracks",
+            var infoBarracks = new TextFieldIWindowItem("Build Barracks",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Barracks"),
                 mLibSans10, 
@@ -1098,16 +1099,19 @@ namespace Singularity.Screen.ScreenClasses
             }
         }
 
+        /// <inheritdoc />
         public bool UpdateLower()
         {
             return true;
         }
 
+        /// <inheritdoc />
         public bool DrawLower()
         {
             return true;
         }
 
+        /// <inheritdoc />
         public bool Loaded { get; set; }
 
         /// <summary>
@@ -1372,16 +1376,24 @@ namespace Singularity.Screen.ScreenClasses
             }
         }
 
+        /// <summary>
+        /// Update the eventLogWindow
+        /// </summary>
+        /// <param name="newEvent">new event to add to eventLog</param>
+        /// <param name="oldEvent">possibly old event to remove from eventlog</param>
         public void UpdateEventLog(EventLogIWindowItem newEvent, EventLogIWindowItem oldEvent)
         {
+            // used to calculate the height the old event had to reduce the windowheight by this height
             float oldEventSizeY = 0;
 
+            // if an old event is given, delete it + shrink eventLogWindow size by oldEvent height
             if (oldEvent != null)
             {
                 mEventLogWindow.DeleteItem(oldEvent);
                 oldEventSizeY = oldEvent.Size.Y;
             }
 
+            // add the new event to the eventLogWindow
             mEventLogWindow.AddItem(newEvent);
             mEventLogWindow.AutoScrollToEnd(newEvent.Size.Y, oldEventSizeY);
         }
@@ -1392,11 +1404,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="graphId"></param>
         public void AddGraph(int graphId)
         {
-            mGraphSwitcher?.ListOfElements.Add(graphId);
-            if (mGraphSwitcher != null)
-            {
-                mGraphSwitcher.JumpToEnd = true;
-            }
+            mGraphSwitcher?.AddElement(graphId);
         }
 
         /// <summary>
@@ -1408,17 +1416,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="oldGraphId2">old graph ID 2</param>
         public void MergeGraph(int newGraphId, int oldGraphId1, int oldGraphId2)
         {
-            // remove old graphs from list
-            mGraphSwitcher?.ListOfElements.Remove(oldGraphId1);
-            mGraphSwitcher?.ListOfElements.Remove(oldGraphId2);
-
-            mGraphSwitcher?.ListOfElements.Add(newGraphId);
-
-            if (mGraphSwitcher != null && (mGraphSwitcher.GetCurrentId() == oldGraphId1 ||
-                                           mGraphSwitcher.GetCurrentId() == oldGraphId2))
-            {
-                mGraphSwitcher.JumpToEnd = true;
-            }
+            mGraphSwitcher?.MergeElements(newGraphId, oldGraphId1, oldGraphId2);
         }
 
         /// <summary>
@@ -1430,11 +1428,12 @@ namespace Singularity.Screen.ScreenClasses
             // update graph sliders
             if (mGraphSwitcher != null)
             {
-                mCivilUnitsGraphId = graphId;
-                mGraphSwitcher.JumpToId(graphId);
-                mCivilUnitsSliderHandler.SetGraphId(mCivilUnitsGraphId);
+                mGraphSwitcher.UpdateCurrentIndex(graphId);
+
+                mCivilUnitsSliderHandler.SetGraphId(graphId, mCivilUnitsGraphId);
 
                 mCivilUnitsSliderHandler.Refresh();
+                mCivilUnitsSliderHandler.ForceSliderPages();
             }
         }
 

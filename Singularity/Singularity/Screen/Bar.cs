@@ -7,7 +7,7 @@ namespace Singularity.Screen
     /// <summary>
     /// A Bar. Can be used to divide sections in a WindowObject
     /// </summary>
-    internal sealed class BarIWindowItem : IWindowItem
+    internal sealed class Bar : IWindowItem
     {
         // color of bar
         private readonly Color mColor;
@@ -17,7 +17,7 @@ namespace Singularity.Screen
         /// </summary>
         /// <param name="width">the bar's width</param>
         /// <param name="color">the bar's color</param>
-        public BarIWindowItem(float width, Color color)
+        public Bar(float width, Color color)
         {
             Position = Vector2.Zero;
             Size = new Vector2(width, 1);

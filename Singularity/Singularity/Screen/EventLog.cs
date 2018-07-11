@@ -26,7 +26,7 @@ namespace Singularity.Screen
         private bool mNewEvent;
 
         // textfont
-        private SpriteFont mLibSans10;
+        private SpriteFont mLibSans12;
 
         // basic director
         private readonly Director mDirector;
@@ -66,7 +66,7 @@ namespace Singularity.Screen
         public void AddEvent(ELogEventType eventType, string text, ISpatial onThis)
         {
             // create a new EventLogItem of the event to add
-            mAddedEvent = new EventLogIWindowItem(eventType, text, 180, mLibSans10, mDirector, onThis);
+            mAddedEvent = new EventLogIWindowItem(eventType, text, 180, mLibSans12, mDirector, onThis);
 
             // enqueue to the event's queue
             mEventList.Enqueue(mAddedEvent);
@@ -83,7 +83,7 @@ namespace Singularity.Screen
             // load the spriteFont in first update
             if (!mLoaded)
             {
-                mLibSans10 = mContentManager.Load<SpriteFont>("LibSans12");
+                mLibSans12 = mContentManager.Load<SpriteFont>("LibSans12");
                 mLoaded = true;
             }
 

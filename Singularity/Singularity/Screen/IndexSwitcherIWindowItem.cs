@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
@@ -17,13 +18,12 @@ namespace Singularity.Screen
         private int mCurrentIndex;
 
         /// <summary>
-        /// Set JumpToEnd true, if the next update should make the index automatically jump to the end of the list.
-        /// This is used to prevent showing the wrong ID.
+        /// the minimum unused index
         /// </summary>
-        public bool JumpToEnd { private get; set; }
+        private int mNextFreeIndex;
 
         /// <summary>
-        /// buttons to switch index in ListOfElements
+        /// buttons to move index up and down
         /// </summary>
         private readonly Button mPreviousIndexButton;
         private readonly Button mNextIndexButton;
@@ -49,44 +49,38 @@ namespace Singularity.Screen
         private float mStringSize;
 
         /// <summary>
-        /// the list to go through using the indexSwitcher
+        /// list of all unused indexes which were used once
         /// </summary>
-        public List<int> ListOfElements { get; }
+        private readonly List<int> mFreeIndexList = new List<int>();
+
+        /// <summary>
+        /// Dictionaries connecting indexes and elementIds both ways
+        /// </summary>
+        private readonly Dictionary<int, int> mIndexToIdDict = new Dictionary<int, int> { {0,0} };
+        private readonly Dictionary<int, int> mIdToIndexDict = new Dictionary<int, int> { {0,0} };
 
         /// <summary>
         /// Creates an IndexSwitcher consisting of two buttons and text between them.
         /// The buttons can be used to switch the index and get the values at the index of the set List.
         /// </summary>
-        /// <param name="listOfElements">the list of integers to go through</param>
         /// <param name="descriptionText">text between buttons (i.e. "graph No: ")</param>
         /// <param name="width">width of the window, where this is placed in - eventual padding</param>
         /// <param name="spriteFont">textFont</param>
-        /// <param name="director">director</param>
         public IndexSwitcherIWindowItem(
-            List<int> listOfElements,
             string descriptionText,
             float width,
-            SpriteFont spriteFont,
-            Director director)
+            SpriteFont spriteFont)
         {
-            // catch bad input
-            if (listOfElements.Count <= 0)
-            {
-                throw new IndexOutOfRangeException("the given list is too short to be used by indexSwitcher");
-            }
-
             // set members
             mDescriptionText = descriptionText;
             mSpriteFont = spriteFont;
             mCurrentIndex = 0;
 
-            ListOfElements = listOfElements;
-
             // create the previousIndexButton
             mPreviousIndexButton = new Button(" < ", spriteFont, Vector2.Zero) {Opacity = 1f};
             mPreviousIndexButton.ButtonReleased += PreviousIndex;
 
-            mTextComplete = descriptionText + ListOfElements[mCurrentIndex];
+            mTextComplete = descriptionText + 0;
             mStringSize = mSpriteFont.MeasureString(mTextComplete).X;
 
             // create the nextIndexButton
@@ -100,27 +94,11 @@ namespace Singularity.Screen
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
-        /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
 
             if (ActiveInWindow && !OutOfScissorRectangle && !InactiveInSelectedPlatformWindow)
             {
-                if (JumpToEnd)
-                {
-                    mCurrentIndex = ListOfElements.Count - 1;
-                    UpdateText();
-                    JumpToEnd = false;
-                }
-
-                // catch list getting smaller while index unchanged (if a single platform is destroyed)
-                while (mCurrentIndex > ListOfElements.Count - 1)
-                {
-                    mCurrentIndex -= 1;
-                }
-
                 // nextIndexButton is almost aligned to the right of the window
                 mNextIndexButton.Position = new Vector2(Position.X + Size.X - mNextIndexButton.Size.X, Position.Y);
 
@@ -134,9 +112,6 @@ namespace Singularity.Screen
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
-        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
             if (ActiveInWindow && !OutOfScissorRectangle && !InactiveInSelectedPlatformWindow)
@@ -159,9 +134,14 @@ namespace Singularity.Screen
         {
             mCurrentIndex -= 1;
 
+            while (mFreeIndexList.Contains(mCurrentIndex))
+            {
+                mCurrentIndex -= 1;
+            }
+
             if (mCurrentIndex < 0)
             {
-                mCurrentIndex = ListOfElements.Count - 1;
+                mCurrentIndex = mIndexToIdDict.Keys.Max();
             }
 
             UpdateText();
@@ -176,9 +156,14 @@ namespace Singularity.Screen
         {
             mCurrentIndex += 1;
 
-            if (mCurrentIndex > ListOfElements.Count - 1)
+            while (mFreeIndexList.Contains(mCurrentIndex))
             {
-                mCurrentIndex = 0;
+                mCurrentIndex += 1;
+            }
+
+            if (mCurrentIndex > mIndexToIdDict.Keys.Max())
+            {
+                mCurrentIndex = mIndexToIdDict.Keys.Min();
             }
 
             UpdateText();
@@ -190,45 +175,122 @@ namespace Singularity.Screen
         /// <returns></returns>
         public int GetCurrentId()
         {
-            return ListOfElements[mCurrentIndex];
+            return mIndexToIdDict[mCurrentIndex];
         }
 
         /// <summary>
-        /// Jump to a specific index where the given graphID is placed.
-        /// Used to jump to the graphID's index when clicking on a platform
+        /// Add a new element into the indexSwitcher
         /// </summary>
-        /// <param name="graphId"></param>
-        public void JumpToId(int graphId)
+        /// <param name="elementId">element to add</param>
+        public void AddElement(int elementId)
         {
-            mCurrentIndex = ListOfElements.IndexOf(graphId);
+            UpdateMinFreeIndex();
+
+            // add the graph id in the dicts with the min free index
+            mIndexToIdDict.Add(mNextFreeIndex, elementId);
+            mIdToIndexDict.Add(elementId, mNextFreeIndex);
+        }
+
+        /// <summary>
+        /// Merges two elements using the possibly newly created newElementId while deleting the two old ids
+        /// </summary>
+        /// <param name="newElementId">merged elementID</param>
+        /// <param name="oldElementId1">element1 that got merged</param>
+        /// <param name="oldElementId2">element2 that got merged</param>
+        public void MergeElements(int newElementId, int oldElementId1, int oldElementId2)
+        {
+            // check which of the two merged elements had the smaller index in the indexSwitcher
+            if (mIdToIndexDict[oldElementId1] < mIdToIndexDict[oldElementId2])
+                // first element is smaller therefore update the index of this element with the mergedElement 
+            {
+                var indexToUpdate = mIdToIndexDict[oldElementId1];
+
+                // update smaller index with new GraphID
+                mIndexToIdDict[indexToUpdate] = newElementId;
+
+                // add the index which will become free since it will be removed
+                mFreeIndexList.Add(mIdToIndexDict[oldElementId2]);
+
+                // remove merged graphID's index
+                mIndexToIdDict.Remove(mIdToIndexDict[oldElementId2]);
+
+                // remove both graphID's from the graphDict
+                mIdToIndexDict.Remove(oldElementId1);
+                mIdToIndexDict.Remove(oldElementId2);
+
+                // add new graphID
+                mIdToIndexDict.Add(newElementId, indexToUpdate);
+            }
+            else
+                // second element is smaller therefore update the index of this element with the mergedElement 
+            {
+                var indexToUpdate = mIdToIndexDict[oldElementId2];
+
+                // update smaller index with new GraphID
+                mIndexToIdDict[indexToUpdate] = newElementId;
+                // add new graphID
+                mIdToIndexDict.Add(newElementId, indexToUpdate);
+
+                // add the index which will become free since it will be removed
+                mFreeIndexList.Add(mIdToIndexDict[oldElementId1]);
+
+                // remove merged graphID's index
+                mIndexToIdDict.Remove(mIdToIndexDict[oldElementId1]);
+
+                // remove both graphID's from the graphDict
+                mIdToIndexDict.Remove(oldElementId2);
+                mIdToIndexDict.Remove(oldElementId1);
+            }
+        }
+
+        /// <summary>
+        /// Update the current index to the index of the elementId
+        /// </summary>
+        /// <param name="elementId">Id to set the index to</param>
+        public void UpdateCurrentIndex(int elementId)
+        {
+            mCurrentIndex = mIdToIndexDict[elementId];
             UpdateText();
         }
 
+        /// <summary>
+        /// Update the currently minimum unused index
+        /// </summary>
+        private void UpdateMinFreeIndex()
+        {
+            // set new free index either by size
+            if (mFreeIndexList.Count == 0)
+            {
+                // index = dict-size, because all indexes are used
+                mNextFreeIndex = mIndexToIdDict.Count;
+            }
+            else
+            {
+                // index = min possible index
+                mFreeIndexList.Sort();
+                mNextFreeIndex = mFreeIndexList[0];
+                mFreeIndexList.RemoveAt(0);
+            }
+        }
+
+        /// <summary>
+        /// Update the text shown by the Switcher
+        /// </summary>
         private void UpdateText()
         {
-            mTextComplete = mDescriptionText + ListOfElements[mCurrentIndex];
+            mTextComplete = mDescriptionText + mCurrentIndex;
             mStringSize = mSpriteFont.MeasureString(mTextComplete).X;
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public Vector2 Position { get; set; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public Vector2 Size { get; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public bool ActiveInWindow { get; set; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public bool InactiveInSelectedPlatformWindow { get; set; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public bool OutOfScissorRectangle { get; set; }
     }
 }

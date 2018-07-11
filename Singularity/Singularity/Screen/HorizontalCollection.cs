@@ -47,10 +47,7 @@ namespace Singularity.Screen
             }
         }
 
-        /// <summary>
-        /// standard update method
-        /// </summary>
-        /// <param name="gametime"></param>
+        /// <inheritdoc />
         public void Update(GameTime gametime)
         {
             // if the horizontalCollection is deactivated shrink size to -10, else use backup Size,
@@ -83,10 +80,7 @@ namespace Singularity.Screen
             }
         }
 
-        /// <summary>
-        /// standard draw method
-        /// </summary>
-        /// <param name="spriteBatch"></param>
+        /// <inheritdoc />
         public void Draw(SpriteBatch spriteBatch)
         {
             if (ActiveInWindow && ActiveHorizontalCollection && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
@@ -118,24 +112,14 @@ namespace Singularity.Screen
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public Vector2 Position { get; set; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public Vector2 Size { get; private set; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public bool ActiveInWindow { get; set; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public bool InactiveInSelectedPlatformWindow { get; set; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public bool OutOfScissorRectangle { get; set; }
 
         /// <summary>

@@ -16,7 +16,7 @@ namespace Singularity.Screen
         #region member variables
 
         // action name
-        private readonly TextField mNameTextField;
+        private readonly TextFieldIWindowItem mNameTextField;
 
         // action state toggler button
         private readonly Button mStateToggleButton;
@@ -54,7 +54,7 @@ namespace Singularity.Screen
             var name = platformAction.ToString().Split('.')[2];
 
             // the platformAction's name
-            mNameTextField = new TextField(
+            mNameTextField = new TextFieldIWindowItem(
                 text: name, 
                 position: Vector2.Zero, 
                 size: new Vector2(spriteFont.MeasureString(name).X, 0), // the size of the textfield should be as big as the string it contains
@@ -62,7 +62,7 @@ namespace Singularity.Screen
                 color: Color.White);
 
             // the platformAction's current state ((de)active)
-            var stateTextField = new TextField(
+            var stateTextField = new TextFieldIWindowItem(
                 text: platformAction.State.ToString(), 
                 position: Vector2.Zero, 
                 size: new Vector2(spriteFont.MeasureString(platformAction.State.ToString()).X, 0), // the size of the textfield should be as big as the string it contains
@@ -73,7 +73,7 @@ namespace Singularity.Screen
             mStateToggleButton = new Button("change State", spriteFont, Vector2.Zero) {Opacity = 1f};
 
             // a textfiel that is just added to shift the button in the horizontal collection
-            var emptyToShift = new TextField(
+            var emptyToShift = new TextFieldIWindowItem(
                 text: "",
                 position: Vector2.Zero,
                 size: new Vector2(spriteFont.MeasureString(platformAction.State.ToString()).X, 0), // the size of the textfield should be as big as the string it contains
@@ -120,7 +120,7 @@ namespace Singularity.Screen
             // add a unit type + required count to infoBox if it's needed to enable the platformAction, disable it else
             if (productionUnits > 0)
             {
-                infoBoxItemsList.Add(new TextField(productionUnits + " production units",
+                infoBoxItemsList.Add(new TextFieldIWindowItem(productionUnits + " production units",
                     Vector2.Zero,
                     spriteFont.MeasureString(productionUnits + " prouduction units"),
                     spriteFont,
@@ -128,7 +128,7 @@ namespace Singularity.Screen
             }
             if (constructionUnits > 0)
             {
-                infoBoxItemsList.Add(new TextField(constructionUnits + " construction units",
+                infoBoxItemsList.Add(new TextFieldIWindowItem(constructionUnits + " construction units",
                     Vector2.Zero,
                     spriteFont.MeasureString(constructionUnits + " construction units"),
                     spriteFont,
@@ -136,7 +136,7 @@ namespace Singularity.Screen
             }
             if (logisticUnits > 0)
             {
-                infoBoxItemsList.Add(new TextField(logisticUnits + " logistics units",
+                infoBoxItemsList.Add(new TextFieldIWindowItem(logisticUnits + " logistics units",
                     Vector2.Zero,
                     spriteFont.MeasureString(logisticUnits + " logistics units"),
                     spriteFont,
@@ -144,7 +144,7 @@ namespace Singularity.Screen
             }
             if (defenseUnits > 0)
             {
-                infoBoxItemsList.Add(new TextField(defenseUnits + " defense units",
+                infoBoxItemsList.Add(new TextFieldIWindowItem(defenseUnits + " defense units",
                     Vector2.Zero,
                     spriteFont.MeasureString(defenseUnits + " defense units"),
                     spriteFont,
@@ -164,9 +164,6 @@ namespace Singularity.Screen
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
-        /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
             if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
@@ -183,9 +180,6 @@ namespace Singularity.Screen
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
-        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
             if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
@@ -241,24 +235,14 @@ namespace Singularity.Screen
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public Vector2 Position { get; set; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public Vector2 Size { get; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public bool ActiveInWindow { get; set; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public bool InactiveInSelectedPlatformWindow { get; set; }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public bool OutOfScissorRectangle { get; set; }
     }
 }
