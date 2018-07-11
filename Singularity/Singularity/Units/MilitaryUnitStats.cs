@@ -73,12 +73,12 @@ namespace Singularity.Units
         /// <summary>
         /// The strength of military units (i.e. how much damage it does to objects).
         /// </summary>
-        internal static int UnitStrength = 1;
+        internal static int mUnitStrength = 1;
 
         /// <summary>
         /// The strength of turrets (i.e. how much damage it does to objects).
         /// </summary>
-        internal static int TurretStrength = 2;
+        internal static int mTurretStrength = 2;
 
         #endregion
     }

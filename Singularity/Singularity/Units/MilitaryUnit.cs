@@ -207,7 +207,7 @@ namespace Singularity.Units
         public void Shoot(ICollider target)
         {
             mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
-            target.MakeDamage(MilitaryUnitStats.UnitStrength);
+            target.MakeDamage(MilitaryUnitStats.mUnitStrength);
         }
 
         public void SetShootingTarget(ICollider target)

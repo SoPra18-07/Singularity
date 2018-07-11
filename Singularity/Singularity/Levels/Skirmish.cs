@@ -19,8 +19,6 @@ namespace Singularity.Levels
     [DataContract]
     internal sealed class Skirmish : BasicLevel
     {
-
-
         public Skirmish(GraphicsDeviceManager graphics,
             ref Director director,
             ContentManager content,
@@ -86,7 +84,6 @@ namespace Singularity.Levels
             {
                 genUnit.Add(new GeneralUnit(platform1, ref mDirector, 0));
             }
-
 
             // Resources
             var res = new Resource(EResourceType.Trash, platform2.Center);

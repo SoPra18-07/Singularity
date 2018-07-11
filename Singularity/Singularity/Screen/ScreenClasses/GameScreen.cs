@@ -95,7 +95,7 @@ namespace Singularity.Screen.ScreenClasses
 
             spriteBatch.End();
 
-            if (GlobalVariables.FowEnabled)
+            if (GlobalVariables.mFowEnabled)
             {
 
                 mFow.DrawMasks(spriteBatch);
