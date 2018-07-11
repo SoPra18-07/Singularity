@@ -41,6 +41,90 @@ namespace Singularity.Manager
 
         public GraphicsDeviceManager GetGraphicsDeviceManager { get; }
 
+        public DistributionDirector DistributionDirector
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public MilitaryManager MilitaryManager
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public StoryManager StoryManager
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public InputManager InputManager
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public SoundManager SoundManager
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public PathManager PathManager
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public UserInterfaceController UserInterfaceController
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         public void Update(GameTime gametime, bool isActive)
         {
             if (isActive)

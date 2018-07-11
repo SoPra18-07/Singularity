@@ -113,10 +113,5 @@ namespace Singularity.Levels
             //TESTMETHODS HERE ====================================
             mDirector.GetDistributionDirector.GetManager(0).RequestResource(platform2, EResourceType.Oil, null);
         }
-
-        public GameScreen GetGameScreen()
-        {
-            return GameScreen;
-        }
     }
 }

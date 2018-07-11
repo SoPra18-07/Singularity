@@ -537,5 +537,17 @@ namespace Singularity.Units
                 // also the mAssignedTask-platformaction is included in this.
             }
         }
+
+        public Task Task
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
     }
 }

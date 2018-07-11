@@ -64,31 +64,7 @@ namespace Singularity.Screen
             }
         }
 
-        internal ScreenClasses.GamePauseScreen GamePauseScreen
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-
-            set
-            {
-            }
-        }
-
         internal ScreenClasses.SaveGameScreen SaveGameScreen
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-
-            set
-            {
-            }
-        }
-
-        internal ScreenClasses.StatisticsScreen StatisticsScreen
         {
             get
             {
@@ -113,6 +89,30 @@ namespace Singularity.Screen
         }
 
         public ScreenClasses.UserInterfaceScreen UserInterfaceScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        internal ScreenClasses.GamePauseScreen GamePauseScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        internal ScreenClasses.StatisticsScreen StatisticsScreen
         {
             get
             {

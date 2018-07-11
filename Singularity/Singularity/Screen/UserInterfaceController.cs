@@ -22,6 +22,18 @@ namespace Singularity.Screen
         // the UI that is controlled by this UIController
         public UserInterfaceScreen ControlledUserInterface { private get; set; }
 
+        public UserInterfaceScreen UserInterfaceScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         /// <summary>
         /// Creates an UserInterfaceController which manages the exchange between classes and the UI
         /// </summary>

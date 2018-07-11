@@ -19,6 +19,18 @@ namespace Singularity.Platforms
 
         private static Texture2D sBlankSheet;
 
+        public static PlatformBlank PlatformBlank
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         /// <summary>
         /// Initializes the platform factory with the sprite sheets needed.
         /// </summary>

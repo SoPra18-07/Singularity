@@ -72,6 +72,30 @@ namespace Singularity.Map
             }
         }
 
+        public Nature.Puddle Puddle
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public Nature.Rock Rock
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         /// <summary>
         /// Updates the collision map for the given coordinates and id. If the object identified by the id is already present
         /// in the collision map the coordinates get updated, otherwise it gets added.

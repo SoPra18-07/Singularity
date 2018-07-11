@@ -25,6 +25,18 @@ namespace Singularity.Manager
             mDMs = new Dictionary<int, DistributionManager>();
         }
 
+        public DistributionManager DistributionManager
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         /// <summary>
         /// Register a new Graph / Create a new DistributionManager for it.
         /// </summary>

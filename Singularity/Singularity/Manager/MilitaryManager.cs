@@ -52,7 +52,7 @@ namespace Singularity.Manager
 
         internal int TotalUnitCount { get; private set; } = 0;
 
-        public PlatformBlank PlatformLists
+        public PlatformBlank PlatformBlank
         {
             get
             {
@@ -64,7 +64,7 @@ namespace Singularity.Manager
             }
         }
 
-        internal FreeMovingUnit FreeMovingUnitLists
+        internal FreeMovingUnit FreeMovingUnit
         {
             get
             {

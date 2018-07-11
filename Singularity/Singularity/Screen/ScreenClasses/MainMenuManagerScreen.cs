@@ -24,18 +24,6 @@ namespace Singularity.Screen.ScreenClasses
             }
         }
 
-        internal GameModeSelectScreen GameModeSelectScreen
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-
-            set
-            {
-            }
-        }
-
         internal LoadingScreen LoadingScreen
         {
             get
@@ -97,6 +85,18 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         internal SplashScreen SplashScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        internal GameModeSelectScreen GameModeSelectScreen
         {
             get
             {

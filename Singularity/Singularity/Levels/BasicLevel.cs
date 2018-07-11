@@ -26,6 +26,29 @@ namespace Singularity.Levels
 
         public Map.Map Map { get; set; }
 
+        public StoryManager StoryManager
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public Map.Map Map1
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
 
         [DataMember]
         protected GraphicsDeviceManager mGraphics;

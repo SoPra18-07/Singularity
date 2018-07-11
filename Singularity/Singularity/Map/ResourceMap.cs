@@ -48,6 +48,18 @@ namespace Singularity.Map
             }
         }
 
+        public Resource Resource
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         public Optional<Resource> GetWellResource(Vector2 location)
         {
             var resourcesWell = GetResources(location).Where(r => r.Type == EResourceType.Water || r.Type == EResourceType.Oil).ToList();

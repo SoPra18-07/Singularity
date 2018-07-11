@@ -84,6 +84,42 @@ namespace Singularity.Manager
             mGraphId = graphid;
         }
 
+        public GeneralUnit GeneralUnit
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public PlatformBlank PlatformBlank
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public Graph.Graph Graph
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         public void TestAttributes()
         {
             Console.Out.WriteLine(mProduction.Count);
