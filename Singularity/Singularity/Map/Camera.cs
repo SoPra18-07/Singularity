@@ -113,7 +113,7 @@ namespace Singularity.Map
         {
             mGraphics = graphics.GraphicsDevice;
             mDirector = director;
-
+            Screen = EScreen.GameScreen;
             director.GetInputManager.AddKeyListener(this);
             director.GetInputManager.AddMouseWheelListener(this);
             director.GetInputManager.AddMousePositionListener(this);
