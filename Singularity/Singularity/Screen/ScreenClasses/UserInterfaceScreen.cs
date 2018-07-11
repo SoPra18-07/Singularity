@@ -36,6 +36,11 @@ namespace Singularity.Screen.ScreenClasses
         // textures
         private Texture2D mBlankPlatformTexture;
         private Texture2D mOtherPlatformTexture;
+        private Texture2D mRoadIcon;
+        private Texture2D mBaseIcon;
+        private Texture2D mProductionIcon;
+        private Texture2D mProcessingIcon;
+        private Texture2D mMilitaryIcon;
 
         // manage input
         private readonly InputManager mInputManager;
@@ -425,6 +430,11 @@ namespace Singularity.Screen.ScreenClasses
             // Texture Loading
             mBlankPlatformTexture = content.Load<Texture2D>("PlatformBasic");
             mOtherPlatformTexture = content.Load<Texture2D>("PlatformSpriteSheet");
+            mBaseIcon = content.Load<Texture2D>("BuildIcons/BaseIcon");
+            mProductionIcon = content.Load<Texture2D>("BuildIcons/ProductionIcon");
+            mProcessingIcon = content.Load<Texture2D>("BuildIcons/ProcessingIcon");
+            mMilitaryIcon = content.Load<Texture2D>("BuildIcons/MilitaryIcon");
+            mRoadIcon = content.Load<Texture2D>("BuildIcons/RoadIcon");
 
             // set resolution values
             mCurrentScreenWidth = mDirector.GetGraphicsDeviceManager.PreferredBackBufferWidth;
@@ -679,25 +689,25 @@ namespace Singularity.Screen.ScreenClasses
             #region open lists 
 
             // Open MainBuildingsList button
-            mMainBuildingsListButton = new Button(0.25f, mBlankPlatformTexture, Vector2.Zero, false);
+            mMainBuildingsListButton = new Button(1, mBaseIcon, Vector2.Zero, false);
             mMainBuildingsListButton.ButtonClicked += OnButtonmMainBuildingsListButtonClick;
             mMainBuildingsListButton.ButtonHovering += OnButtonmMainBuildingsListButtonHovering;
             mMainBuildingsListButton.ButtonHoveringEnd += OnButtonmMainBuildingsListButtonHoveringEnd;
 
             // Open ResourceProductionList button
-            mResourceProductionListButton = new Button(0.25f, mBlankPlatformTexture, Vector2.Zero, false);
+            mResourceProductionListButton = new Button(1, mProductionIcon, Vector2.Zero, false);
             mResourceProductionListButton.ButtonClicked += OnButtonmResourceProductionListClick;
             mResourceProductionListButton.ButtonHovering += OnButtonmResourceProductionListHovering;
             mResourceProductionListButton.ButtonHoveringEnd += OnButtonmResourceProductionListHoveringEnd;
 
             // Open ResourceProcessingList button
-            mResourceProcessingButton = new Button(0.25f, mBlankPlatformTexture, Vector2.Zero, false);
+            mResourceProcessingButton = new Button(1, mProcessingIcon, Vector2.Zero, false);
             mResourceProcessingButton.ButtonClicked += OnButtonmResourceProcessingClick;
             mResourceProcessingButton.ButtonHovering += OnButtonmResourceProcessingHovering;
             mResourceProcessingButton.ButtonHoveringEnd += OnButtonmResourceProcessingHoveringEnd;
 
             // Open MilitaryBuildingList button
-            mMilitaryBuildingsListButton = new Button(0.25f, mBlankPlatformTexture, Vector2.Zero, false);
+            mMilitaryBuildingsListButton = new Button(1, mMilitaryIcon, Vector2.Zero, false);
             mMilitaryBuildingsListButton.ButtonClicked += OnButtonmMilitaryBuildingsListClick;
             mMilitaryBuildingsListButton.ButtonHovering += OnButtonmMilitaryBuildingsListHovering;
             mMilitaryBuildingsListButton.ButtonHoveringEnd += OnButtonmMilitaryBuildingsListHoveringEnd;
@@ -713,7 +723,7 @@ namespace Singularity.Screen.ScreenClasses
             mBlankPlatformButton.ButtonHoveringEnd += OnButtonmBlankPlatformHoveringEnd;
 
             // road button
-            mRoadButton = new Button(0.25f, mBlankPlatformTexture, Vector2.Zero, false);
+            mRoadButton = new Button(1f, mRoadIcon, Vector2.Zero, false);
             mRoadButton.ButtonClicked += OnButtonmRoadButtonClick;
             mRoadButton.ButtonHovering += OnButtonmRoadButtonHovering;
             mRoadButton.ButtonHoveringEnd += OnButtonmRoadButtonHoveringEnd;
