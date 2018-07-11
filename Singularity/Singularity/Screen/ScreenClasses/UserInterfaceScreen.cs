@@ -428,8 +428,8 @@ namespace Singularity.Screen.ScreenClasses
             mLibSans10 = content.Load<SpriteFont>("LibSans10");
 
             // Texture Loading
-            mBlankPlatformTexture = content.Load<Texture2D>("PlatformBasic");
-            mOtherPlatformTexture = content.Load<Texture2D>("PlatformSpriteSheet");
+            mBlankPlatformTexture = content.Load<Texture2D>("PlatformBasicSmall");
+            mOtherPlatformTexture = content.Load<Texture2D>("PlatformSpriteSheetSmall");
             mBaseIcon = content.Load<Texture2D>("BuildIcons/BaseIcon");
             mProductionIcon = content.Load<Texture2D>("BuildIcons/ProductionIcon");
             mProcessingIcon = content.Load<Texture2D>("BuildIcons/ProcessingIcon");
@@ -717,7 +717,7 @@ namespace Singularity.Screen.ScreenClasses
             #region main buildings
 
             // blank platform button
-            mBlankPlatformButton = new Button(0.25f, mBlankPlatformTexture, Vector2.Zero, false);
+            mBlankPlatformButton = new Button(1, mBlankPlatformTexture, Vector2.Zero, false);
             mBlankPlatformButton.ButtonClicked += OnButtonmBlankPlatformClick;
             mBlankPlatformButton.ButtonHovering += OnButtonmBlankPlatformHovering;
             mBlankPlatformButton.ButtonHoveringEnd += OnButtonmBlankPlatformHoveringEnd;
@@ -729,7 +729,7 @@ namespace Singularity.Screen.ScreenClasses
             mRoadButton.ButtonHoveringEnd += OnButtonmRoadButtonHoveringEnd;
 
             // commandcenter platform button
-            mCommandcenterPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 1 * 175, 150, 175), Vector2.Zero, false);
+            mCommandcenterPlatformButton = new Button(1, mOtherPlatformTexture, new Rectangle(0, 44, 38, 44), Vector2.Zero, false);
             mCommandcenterPlatformButton.ButtonClicked += OnButtonmCommandcenterPlatformClick;
             mCommandcenterPlatformButton.ButtonHovering += OnButtonmCommandcenterPlatformHovering;
             mCommandcenterPlatformButton.ButtonHoveringEnd += OnButtonmCommandcenterPlatformHoveringEnd;
@@ -739,25 +739,25 @@ namespace Singularity.Screen.ScreenClasses
             #region resourceProduction buildings
 
             // quarry platform button
-            mQuarryPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 3 * 130 + 2 * 175 + 2 * 130, 150, 130), Vector2.Zero, false);
+            mQuarryPlatformButton = new Button(1, mOtherPlatformTexture, new Rectangle(0, 338, 38, 33), Vector2.Zero, false);
             mQuarryPlatformButton.ButtonClicked += OnButtonmQuarryPlatformClick;
             mQuarryPlatformButton.ButtonHovering += OnButtonmQuarryPlatformHovering;
             mQuarryPlatformButton.ButtonHoveringEnd += OnButtonmQuarryPlatformHoveringEnd;
 
             // mine platform button
-            mMinePlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 3 * 130 + 2 * 175, 150, 130), Vector2.Zero, false);
+            mMinePlatformButton = new Button(1, mOtherPlatformTexture, new Rectangle(0, 272, 38, 33), Vector2.Zero, false);
             mMinePlatformButton.ButtonClicked += OnButtonmMinePlatformClick;
             mMinePlatformButton.ButtonHovering += OnButtonmMinePlatformHovering;
             mMinePlatformButton.ButtonHoveringEnd += OnButtonmMinePlatformHoveringEnd;
 
             // well platform button
-            mWellPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 3 * 130 + 2 * 175 + 4 * 130, 150, 130), Vector2.Zero, false);
+            mWellPlatformButton = new Button(1, mOtherPlatformTexture, new Rectangle(0, 403, 38, 33), Vector2.Zero, false);
             mWellPlatformButton.ButtonClicked += OnButtonmWellPlatformClick;
             mWellPlatformButton.ButtonHovering += OnButtonmWellPlatformHovering;
             mWellPlatformButton.ButtonHoveringEnd += OnButtonmWellPlatformHoveringEnd;
 
             // powerhouse platform button
-            mPowerhousePlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175, 150, 130), Vector2.Zero, false);
+            mPowerhousePlatformButton = new Button(1, mOtherPlatformTexture, new Rectangle(0, 87, 38, 33), Vector2.Zero, false);
             mPowerhousePlatformButton.ButtonClicked += OnButtonmPowerhousePlatformClick;
             mPowerhousePlatformButton.ButtonHovering += OnButtonmPowerhousePlatformHovering;
             mPowerhousePlatformButton.ButtonHoveringEnd += OnButtonmPowerhousePlatformHoveringEnd;
@@ -767,25 +767,25 @@ namespace Singularity.Screen.ScreenClasses
             #region resourceProcessing buildings
 
             // junkyard platform button
-            mJunkyardPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 2 * 130, 150, 130), Vector2.Zero, false);
+            mJunkyardPlatformButton = new Button(1, mOtherPlatformTexture, new Rectangle(0, 153, 38, 33), Vector2.Zero, false);
             mJunkyardPlatformButton.ButtonClicked += OnButtonmJunkyardPlatformClick;
             mJunkyardPlatformButton.ButtonHovering += OnButtonmJunkyardPlatformHovering;
             mJunkyardPlatformButton.ButtonHoveringEnd += OnButtonmJunkyardPlatformHoveringEnd;
 
             // factory platform button
-            mFactoryPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 130, 150, 130), Vector2.Zero, false);
+            mFactoryPlatformButton = new Button(1, mOtherPlatformTexture, new Rectangle(0, 120, 38, 33), Vector2.Zero, false);
             mFactoryPlatformButton.ButtonClicked += OnButtonmFactoryPlatformClick;
             mFactoryPlatformButton.ButtonHovering += OnButtonmFactoryPlatformHovering;
             mFactoryPlatformButton.ButtonHoveringEnd += OnButtonmFactoryPlatformHoveringEnd;
 
             // storage platform button
-            mStoragePlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 3 * 130 + 2 * 175 + 3 * 130, 150, 130), Vector2.Zero, false);
+            mStoragePlatformButton = new Button(1, mOtherPlatformTexture, new Rectangle(0, 370, 38, 33), Vector2.Zero, false);
             mStoragePlatformButton.ButtonClicked += OnButtonmStoragePlatformClick;
             mStoragePlatformButton.ButtonHovering += OnButtonmStoragePlatformHovering;
             mStoragePlatformButton.ButtonHoveringEnd += OnButtonmStoragePlatformHoveringEnd;
 
             // packaging platform button
-            mPackagingPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 3 * 130 + 2 * 175 + 1 * 130, 150, 130), Vector2.Zero, false);
+            mPackagingPlatformButton = new Button(1, mOtherPlatformTexture, new Rectangle(0, 305, 38, 33), Vector2.Zero, false);
             mPackagingPlatformButton.ButtonClicked += OnButtonmPackagingPlatformClick;
             mPackagingPlatformButton.ButtonHovering += OnButtonmPackagingPlatformHovering;
             mPackagingPlatformButton.ButtonHoveringEnd += OnButtonmPackagingPlatformHoveringEnd;
@@ -795,19 +795,19 @@ namespace Singularity.Screen.ScreenClasses
             #region military buildings
 
             // kineticTower platform button
-            mKineticTowerPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 3 * 130, 150, 170), Vector2.Zero, false);
+            mKineticTowerPlatformButton = new Button(1, mOtherPlatformTexture, new Rectangle(0, 185, 38, 43), Vector2.Zero, false);
             mKineticTowerPlatformButton.ButtonClicked += OnButtonmKineticTowerPlatformClick;
             mKineticTowerPlatformButton.ButtonHovering += OnButtonmKineticTowerPlatformHovering;
             mKineticTowerPlatformButton.ButtonHoveringEnd += OnButtonmKineticTowerPlatformHoveringEnd;
 
             // laserTower platform button
-            mLaserTowerPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 3 * 130 + 1 * 175, 150, 170), Vector2.Zero, false);
+            mLaserTowerPlatformButton = new Button(1, mOtherPlatformTexture, new Rectangle(0, 229, 38, 43), Vector2.Zero, false);
             mLaserTowerPlatformButton.ButtonClicked += OnButtonmLaserTowerPlatformClick;
             mLaserTowerPlatformButton.ButtonHovering += OnButtonmLaserTowerPlatformHovering;
             mLaserTowerPlatformButton.ButtonHoveringEnd += OnButtonmLaserTowerPlatformHoveringEnd;
 
             // barracks platform button
-            mBarracksPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 0 * 175, 150, 175), Vector2.Zero, false);
+            mBarracksPlatformButton = new Button(1, mOtherPlatformTexture, new Rectangle(0, 44, 38, 44), Vector2.Zero, false);
             mBarracksPlatformButton.ButtonClicked += OnButtonmBarracksPlatformClick;
             mBarracksPlatformButton.ButtonHovering += OnButtonmBarracksPlatformHovering;
             mBarracksPlatformButton.ButtonHoveringEnd += OnButtonmBarracksPlatformHoveringEnd;
