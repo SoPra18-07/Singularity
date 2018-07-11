@@ -36,7 +36,7 @@ namespace Singularity.Units
         /// <param name="map">Reference to the game map.</param>
         /// <param name="gameScreen">Gamescreen of the game so that the settler can build platforms.</param>
         /// <param name="ui">UI of the game so the settler can edit the UI.</param>
-        public Settler(Vector2 position, Camera camera, ref Director director, ref Map.Map map, GameScreen gameScreen, UserInterfaceScreen ui) 
+        public Settler(Vector2 position, Camera camera, ref Director director, ref Map.Map map, GameScreen gameScreen, UserInterfaceScreen ui)
             : base(position, camera, ref director, ref map)
         {
             mSpeed = 4;
@@ -77,7 +77,7 @@ namespace Singularity.Units
         }
         #endregion
 
-        
+
         public override void Draw(SpriteBatch spriteBatch)
         {
             // Draws settler as stroked rectangle
@@ -146,7 +146,7 @@ namespace Singularity.Units
             }
 
         }
-        
+
         public void KeyTyped(KeyEvent keyEvent)
         {
             // b key is used to convert the settler unit into a command center

@@ -701,17 +701,17 @@ namespace Singularity.Screen
 
                 #region window movement initiation
 
-                if (mMouseX > Position.X &&
-                    mMouseX < Position.X + Position.X + Size.X &&
-                    mMouseY > Position.Y &&
-                    mMouseY < Position.Y + mTitleSizeY + mMinimizationSize &&
-                    !mClickOnTitleBar ||
-                    (WindowName == "" &&
-                     mMouseX > Position.X &&
-                     mMouseX < Position.X + Position.X + Size.X &&
-                     mMouseY > Position.Y &&
-                     mMouseY < Position.Y + Position.Y + Size.Y &&
-                     !mClickOnTitleBar))
+            if (mMouseX > Position.X &&
+                mMouseX < Position.X + Position.X + Size.X &&
+                mMouseY > Position.Y &&
+                mMouseY < Position.Y + mTitleSizeY + mMinimizationSize &&
+                !mClickOnTitleBar ||
+                (WindowName == "" &&
+                 mMouseX > Position.X &&
+                 mMouseX < Position.X + Position.X + Size.X &&
+                 mMouseY > Position.Y &&
+                 mMouseY < Position.Y + Position.Y + Size.Y &&
+                 !mClickOnTitleBar))
                 // mouse above the title rectangle
                 {
                     if (!(mMouseX >= mMinimizationRectangle.X &&
