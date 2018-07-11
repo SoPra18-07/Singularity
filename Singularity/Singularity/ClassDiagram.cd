@@ -31,13 +31,13 @@
     <Position X="63.218" Y="24.059" Height="0.676" Width="1.759" />
   </Comment>
   <Comment CommentText="Exceptions">
-    <Position X="73.526" Y="56.231" Height="0.291" Width="1.7" />
+    <Position X="78.276" Y="47.481" Height="0.291" Width="1.7" />
   </Comment>
   <Comment CommentText="Serializer">
-    <Position X="78.496" Y="56.224" Height="0.291" Width="1.7" />
+    <Position X="68.746" Y="56.224" Height="0.291" Width="1.7" />
   </Comment>
   <Comment CommentText="Utilities">
-    <Position X="64.034" Y="56.294" Height="0.332" Width="0.7" />
+    <Position X="68.784" Y="47.544" Height="0.332" Width="0.7" />
   </Comment>
   <Comment CommentText="Nature">
     <Position X="68.728" Y="35.485" Height="0.291" Width="0.7" />
@@ -67,28 +67,28 @@
     <Position X="45.248" Y="27.262" Height="1.037" Width="1.7" />
   </Comment>
   <Class Name="Singularity.Exceptions.InvalidGenericArgumentException">
-    <Position X="73.5" Y="61.75" Width="3.5" />
+    <Position X="78.25" Y="53" Width="3.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Exceptions\InvalidGenericArgumentException.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Exceptions.MiniMapProportionsOffException">
-    <Position X="73.5" Y="60.25" Width="3.25" />
+    <Position X="78.25" Y="51.5" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Exceptions\MiniMapProportionsOffException.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Exceptions.NoSuchElementException">
-    <Position X="73.5" Y="58.25" Width="3" />
+    <Position X="78.25" Y="49.5" Width="3" />
     <TypeIdentifier>
       <HashCode>AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Exceptions\NoSuchElementException.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Exceptions.UnsupportedTextureSizeException">
-    <Position X="73.5" Y="56.75" Width="2.5" />
+    <Position X="78.25" Y="48" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Exceptions\UnsupportedTextureSizeException.cs</FileName>
@@ -228,14 +228,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Libraries.Animations">
-    <Position X="64" Y="62.75" Width="1.5" />
+    <Position X="68.75" Y="54" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAA=</HashCode>
       <FileName>Libraries\Animations.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Libraries.Primitives2D">
-    <Position X="65.75" Y="59.25" Width="2.5" />
+    <Position X="70.5" Y="50.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>gAAAACAQAAAQAAAAABIAgAAAAGAAAJABIEAAAAAAAAE=</HashCode>
       <FileName>Libraries\Primitives2D.cs</FileName>
@@ -353,7 +353,7 @@
       <Path>
         <Point X="48.75" Y="17.287" />
         <Point X="43.776" Y="17.287" Type="JumpStart" />
-        <Point X="43.609" Y="17.287" Type="JumpEnd" />
+        <Point X="43.61" Y="17.287" Type="JumpEnd" />
         <Point X="19.875" Y="17.287" />
         <Point X="19.875" Y="20.75" />
       </Path>
@@ -946,14 +946,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Property.GlobalVariables">
-    <Position X="70.25" Y="60.5" Width="1.5" />
+    <Position X="75" Y="51.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAIAAAAAAQgAAAAAAAAAAACACAAIIAEAAABAAA=</HashCode>
       <FileName>Property\GlobalVariables.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Property.LayerConstants">
-    <Position X="70.25" Y="56.75" Width="2" />
+    <Position X="75" Y="48" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAQAAAACAAACAAAAAQAAgJQAAAAAAAogAAIAAAEABA=</HashCode>
       <FileName>Property\LayerConstants.cs</FileName>
@@ -1317,10 +1317,17 @@
         <Position X="-1.318" Y="1.733" />
       </MemberNameLabel>
     </AssociationLine>
+    <AssociationLine Name="MainMenuScreen" Type="Singularity.Screen.ScreenClasses.MainMenuScreen">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-1.291" Y="1.753" />
+      </MemberNameLabel>
+    </AssociationLine>
     <AssociationLine Name="MenuBackgroundScreen" Type="Singularity.Screen.ScreenClasses.MenuBackgroundScreen" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="35.312" Y="46.91" />
         <Point X="35.312" Y="47.285" />
+        <Point X="35.917" Y="47.285" Type="JumpStart" />
+        <Point X="36.083" Y="47.285" Type="JumpEnd" />
         <Point X="39.25" Y="47.285" />
         <Point X="39.25" Y="49.25" />
       </Path>
@@ -1332,6 +1339,8 @@
       <Path>
         <Point X="35.312" Y="46.91" />
         <Point X="35.312" Y="47.285" />
+        <Point X="35.917" Y="47.285" Type="JumpStart" />
+        <Point X="36.083" Y="47.285" Type="JumpEnd" />
         <Point X="41.688" Y="47.285" />
         <Point X="41.688" Y="49.25" />
       </Path>
@@ -1343,6 +1352,8 @@
       <Path>
         <Point X="35.312" Y="46.91" />
         <Point X="35.312" Y="47.285" />
+        <Point X="35.917" Y="47.285" Type="JumpStart" />
+        <Point X="36.083" Y="47.285" Type="JumpEnd" />
         <Point X="44.375" Y="47.285" />
         <Point X="44.375" Y="49.25" />
       </Path>
@@ -1359,11 +1370,6 @@
       </Path>
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="-1.69" Y="1.744" />
-      </MemberNameLabel>
-    </AssociationLine>
-    <AssociationLine Name="MainMenuScreen" Type="Singularity.Screen.ScreenClasses.MainMenuScreen">
-      <MemberNameLabel ManuallyPlaced="true">
-        <Position X="-1.291" Y="1.753" />
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
@@ -1439,7 +1445,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.Serialization.XSerializer">
-    <Position X="78.5" Y="56.75" Width="1.5" />
+    <Position X="68.75" Y="56.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAgIAAAAAAAAAAAAAAAAQAACBAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Serialization\XSerializer.cs</FileName>
@@ -1588,7 +1594,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Utils.Geometry">
-    <Position X="65.75" Y="56.75" Width="2.5" />
+    <Position X="70.5" Y="48" Width="2.5" />
     <NestedTypes>
       <Struct Name="Singularity.Utils.Geometry.FloatIntUnion" Collapsed="true">
         <TypeIdentifier>
@@ -1602,35 +1608,35 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Utils.IdGenerator">
-    <Position X="68.5" Y="62.25" Width="1.5" />
+    <Position X="73.25" Y="53.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AEAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Utils\IdGenerator.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Utils.Optional&lt;T&gt;">
-    <Position X="68.5" Y="59.75" Width="1.5" />
+    <Position X="73.25" Y="51" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAIAAEAAAAABAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Utils\Optional.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Utils.Pair&lt;T1, T2&gt;">
-    <Position X="64" Y="56.75" Width="1.5" />
+    <Position X="68.75" Y="48" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAgAAAAAAAAAAAAIAAIAAAAQAAIAA=</HashCode>
       <FileName>Utils\Pair.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Utils.State3">
-    <Position X="68.5" Y="56.75" Width="1.5" />
+    <Position X="73.25" Y="48" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAEAAAIAAAAAAAAAAABAAAAAIAAAACgAAABAAAAA=</HashCode>
       <FileName>Utils\State3.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Utils.Triple&lt;T1, T2, T3&gt;">
-    <Position X="64" Y="59.5" Width="1.5" />
+    <Position X="68.75" Y="50.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAgAAAAAAAAAAAAIAIIQAAAQAAIAA=</HashCode>
       <FileName>Utils\Triple.cs</FileName>
@@ -1693,7 +1699,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Singularity.Levels.ILevel">
-    <Position X="72.75" Y="51.25" Width="1.5" />
+    <Position X="10" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAIBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
       <FileName>Levels\ILevel.cs</FileName>
@@ -1707,71 +1713,71 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Singularity.Property.ICollider">
-    <Position X="68.25" Y="51.25" Width="1.5" />
+    <Position X="5.5" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ACACAAAIAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
       <FileName>Property\ICollider.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Singularity.Property.IDamageable">
-    <Position X="64.25" Y="48.25" Width="1.5" />
+    <Position X="1.5" Y="3.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAACAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAA=</HashCode>
       <FileName>Property\IDamageable.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Singularity.Property.IDie">
-    <Position X="68.25" Y="46.25" Width="1.5" />
+    <Position X="5.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Property\IDie.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Singularity.Property.IDraw">
-    <Position X="70.75" Y="46.25" Width="1.5" />
+    <Position X="8" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Property\IDraw.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Singularity.Property.IRevealing">
-    <Position X="70.75" Y="51.25" Width="1.5" />
+    <Position X="8" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
       <FileName>Property\IRevealing.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Singularity.Property.IShooting">
-    <Position X="64" Y="51.25" Width="2" />
+    <Position X="1.25" Y="6.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAACAAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Property\IShooting.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Singularity.Property.ISpatial">
-    <Position X="68.25" Y="48.25" Width="1.5" />
+    <Position X="5.5" Y="3.75" Width="1.5" />
     <InheritanceLine Type="Singularity.Property.IDraw" ManuallyRouted="true">
       <Path>
-        <Point X="71.5" Y="47.353" />
-        <Point X="71.5" Y="47.881" />
-        <Point X="69" Y="47.881" />
-        <Point X="69" Y="48.25" />
+        <Point X="8.75" Y="2.853" />
+        <Point X="8.75" Y="3.38" />
+        <Point X="6.25" Y="3.38" />
+        <Point X="6.25" Y="3.75" />
       </Path>
     </InheritanceLine>
     <InheritanceLine Type="Singularity.Property.IUpdate" ManuallyRouted="true" FixedToPoint="true">
       <Path>
-        <Point X="75.25" Y="47.353" />
-        <Point X="75.25" Y="47.875" />
-        <Point X="69" Y="47.875" />
-        <Point X="69" Y="48.25" />
+        <Point X="12.25" Y="2.853" />
+        <Point X="12.25" Y="3.375" />
+        <Point X="6.25" Y="3.375" />
+        <Point X="6.25" Y="3.75" />
       </Path>
     </InheritanceLine>
     <InheritanceLine Type="Singularity.Property.IDie" ManuallyRouted="true" FixedToPoint="true">
       <Path>
-        <Point X="69" Y="47.353" />
-        <Point X="69" Y="47.923" />
-        <Point X="69" Y="47.923" />
-        <Point X="69" Y="48.25" />
+        <Point X="6.25" Y="2.853" />
+        <Point X="6.25" Y="3.423" />
+        <Point X="6.25" Y="3.423" />
+        <Point X="6.25" Y="3.75" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
@@ -1780,28 +1786,28 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Singularity.Property.IUpdate">
-    <Position X="74.5" Y="46.25" Width="1.5" />
+    <Position X="11.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Property\IUpdate.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Singularity.Screen.IScreen">
-    <Position X="75.5" Y="48.25" Width="1.5" />
+    <Position X="12.75" Y="3.75" Width="1.5" />
     <InheritanceLine Type="Singularity.Property.IUpdate" ManuallyRouted="true" FixedToPoint="true">
       <Path>
-        <Point X="75.25" Y="47.353" />
-        <Point X="75.25" Y="47.877" />
-        <Point X="76.25" Y="47.877" />
-        <Point X="76.25" Y="48.25" />
+        <Point X="12.25" Y="2.853" />
+        <Point X="12.25" Y="3.377" />
+        <Point X="13.5" Y="3.377" />
+        <Point X="13.5" Y="3.75" />
       </Path>
     </InheritanceLine>
     <InheritanceLine Type="Singularity.Property.IDraw" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="71.5" Y="47.353" />
-        <Point X="71.5" Y="47.87" />
-        <Point X="76.25" Y="47.87" />
-        <Point X="76.25" Y="48.25" />
+        <Point X="8.75" Y="2.853" />
+        <Point X="8.75" Y="3.373" />
+        <Point X="13.5" Y="3.373" />
+        <Point X="13.5" Y="3.75" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
@@ -1810,21 +1816,21 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Singularity.Screen.IScreenManager">
-    <Position X="70.25" Y="48.25" Width="1.5" />
+    <Position X="7.5" Y="3.75" Width="1.5" />
     <InheritanceLine Type="Singularity.Property.IUpdate" ManuallyRouted="true" FixedToPoint="true">
       <Path>
-        <Point X="75.25" Y="47.353" />
-        <Point X="75.25" Y="47.875" />
-        <Point X="71" Y="47.875" />
-        <Point X="71" Y="48.25" />
+        <Point X="12.25" Y="2.853" />
+        <Point X="12.25" Y="3.375" />
+        <Point X="8.25" Y="3.375" />
+        <Point X="8.25" Y="3.75" />
       </Path>
     </InheritanceLine>
     <InheritanceLine Type="Singularity.Property.IDraw" ManuallyRouted="true" FixedToPoint="true">
       <Path>
-        <Point X="71.5" Y="47.353" />
-        <Point X="71.5" Y="47.873" />
-        <Point X="71" Y="47.873" />
-        <Point X="71" Y="48.25" />
+        <Point X="8.75" Y="2.853" />
+        <Point X="8.75" Y="3.373" />
+        <Point X="8.25" Y="3.373" />
+        <Point X="8.25" Y="3.75" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
@@ -1833,28 +1839,28 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Singularity.Screen.ITransitionableMenu">
-    <Position X="75.25" Y="51.25" Width="2" />
+    <Position X="12.5" Y="6.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAIAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAA=</HashCode>
       <FileName>Screen\ITransitionableMenu.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Singularity.Screen.IWindowItem">
-    <Position X="72.25" Y="48.25" Width="2.5" />
+    <Position X="9.5" Y="3.75" Width="2.5" />
     <InheritanceLine Type="Singularity.Property.IUpdate" ManuallyRouted="true" FixedToPoint="true">
       <Path>
-        <Point X="75.25" Y="47.353" />
-        <Point X="75.25" Y="47.863" />
-        <Point X="73.5" Y="47.863" />
-        <Point X="73.5" Y="48.25" />
+        <Point X="12.25" Y="2.853" />
+        <Point X="12.25" Y="3.382" />
+        <Point X="10.75" Y="3.382" />
+        <Point X="10.75" Y="3.75" />
       </Path>
     </InheritanceLine>
     <InheritanceLine Type="Singularity.Property.IDraw" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="71.5" Y="47.353" />
-        <Point X="71.5" Y="47.869" />
-        <Point X="73.5" Y="47.869" />
-        <Point X="73.5" Y="48.25" />
+        <Point X="8.75" Y="2.853" />
+        <Point X="8.75" Y="3.373" />
+        <Point X="10.75" Y="3.373" />
+        <Point X="10.75" Y="3.75" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
@@ -1863,7 +1869,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Singularity.Utils.IId">
-    <Position X="66.25" Y="48.25" Width="1.5" />
+    <Position X="3.5" Y="3.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Utils\IdGenerator.cs</FileName>
