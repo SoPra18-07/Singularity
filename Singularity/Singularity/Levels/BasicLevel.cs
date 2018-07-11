@@ -75,7 +75,7 @@ namespace Singularity.Levels
 
             //INITIALIZE SCREENS
             GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
-            Ui = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
+            Ui = new UserInterfaceScreen(ref mDirector, mGraphics, Map, Camera, mScreenManager);
             Ui.LoadContent(content);
             mDirector.GetUserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
 
@@ -104,10 +104,10 @@ namespace Singularity.Levels
 
             //Map related stuff
             Camera.ReloadContent(mGraphics, ref mDirector);
-            mFow.ReloadContent(mGraphics);
+            mFow.ReloadContent(mGraphics, Camera);
             Map.ReloadContent(mapBackground, Camera, mFow, ref mDirector, content);
 
-            Ui = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
+            Ui = new UserInterfaceScreen(ref mDirector, mGraphics, Map, Camera, mScreenManager);
             Ui.LoadContent(content);
 
             GameScreen.ReloadContent(content, graphics, Map, mFow, Camera, ref mDirector, Ui);

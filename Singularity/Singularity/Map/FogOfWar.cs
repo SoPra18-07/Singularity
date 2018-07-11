@@ -63,8 +63,7 @@ namespace Singularity.Map
         /// <summary>
         /// The camera object of the game used for screen coordinae calculation.
         /// </summary>
-        [DataMember]
-        private readonly Camera mCamera;
+        private Camera mCamera;
 
         /// <summary>
         /// Creates a new FogOfWar object for the given mapTexture.
@@ -120,8 +119,9 @@ namespace Singularity.Map
 
         }
 
-        public void ReloadContent(GraphicsDeviceManager graphics)
+        public void ReloadContent(GraphicsDeviceManager graphics, Camera camera)
         {
+            mCamera = camera;
             mInitializeMaskStencilState = new DepthStencilState
             {
                 StencilEnable = true,

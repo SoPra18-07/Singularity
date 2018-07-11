@@ -30,7 +30,6 @@ namespace Singularity.Screen.ScreenClasses
         public bool Loaded { get; set; }
 
         // map and fog of war
-        [DataMember]
         private Map.Map mMap;
         private FogOfWar mFow;
 
@@ -93,7 +92,7 @@ namespace Singularity.Screen.ScreenClasses
         public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, Map.Map map, FogOfWar fow , Camera camera, ref Director director, UserInterfaceScreen ui)
         {
             mGraphicsDevice = graphics.GraphicsDevice;
-            //mMap = map;
+            mMap = map;
             mFow = fow;
             mCamera = camera;
             mDirector = director;

@@ -281,14 +281,15 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         /// <param name="director"></param>
         /// <param name="mgraphics"></param>
-        /// <param name="gameScreen"></param>
+        /// <param name="map"></param>
+        /// /// <param name="camera"></param>
         /// <param name="stackScreenManager"></param>
-        public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, GameScreen gameScreen, IScreenManager stackScreenManager)
+        public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, Map.Map map, Camera camera, IScreenManager stackScreenManager)
         {
-            mMap = gameScreen.GetMap();
-            mStructureMap = gameScreen.GetMap().GetStructureMap();
-            mResourceMap = gameScreen.GetMap().GetResourceMap();
-            mCamera = gameScreen.GetCamera();
+            mMap = map;
+            mStructureMap = mMap.GetStructureMap();
+            mResourceMap = mMap.GetResourceMap();
+            mCamera = camera;
             mCanBuildPlatform = true;
 
             mDirector = director;
@@ -1095,7 +1096,7 @@ namespace Singularity.Screen.ScreenClasses
             }
             else
             {
-                Deactivate();
+                //Deactivate();
             }
         }
 
