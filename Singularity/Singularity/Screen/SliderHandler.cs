@@ -174,7 +174,7 @@ namespace Singularity.Screen
         }
 
         //TODO: this is only used for temporarily not crashing the game and keeping the graphID up to date
-        public void SetGraphID(int id)
+        public void SetGraphId(int id)
         {
             mCurrentGraphid = id;
         }
