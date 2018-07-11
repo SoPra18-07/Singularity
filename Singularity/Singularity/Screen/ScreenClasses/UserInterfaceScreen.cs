@@ -1824,7 +1824,15 @@ namespace Singularity.Screen.ScreenClasses
 
         private void OnButtonmRoadButtonClick(object sender, EventArgs eventArgs)
         {
-            // TODO : ROAD PLACEMENT
+            if (!mCanBuildPlatform)
+            {
+                return;
+            }
+            mPlatformToPlace = new StructurePlacer(default(EPlatformType), EPlacementType.RoadMouseFollowAndRoad, EScreen.UserInterfaceScreen, mCamera, ref mDirector);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+
+            mCanBuildPlatform = false;
         }
 
         private void OnButtonmCommandcenterPlatformClick(object sender, EventArgs eventArgs)
