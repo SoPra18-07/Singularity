@@ -62,7 +62,7 @@ namespace Singularity.Map
 
             mFow = fow;
 
-            var initialResources = GetRandomlyDistributedResources(50);
+            var initialResources = ResourceHelper.GetRandomlyDistributedResources(50);
 
             mCollisionMap = new CollisionMap();
             mStructureMap = new StructureMap(fow, ref director);
