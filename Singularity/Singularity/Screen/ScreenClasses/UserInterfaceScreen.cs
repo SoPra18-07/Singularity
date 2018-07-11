@@ -325,11 +325,6 @@ namespace Singularity.Screen.ScreenClasses
             if (mGraphSwitcher != null && mCivilUnitsGraphId != mGraphSwitcher.GetCurrentId())
             {
                 mCivilUnitsGraphId = mGraphSwitcher.GetCurrentId();
-
-                mCivilUnitsSliderHandler.SetGraphId(mCivilUnitsGraphId, -1);
-
-                mCivilUnitsSliderHandler.Refresh();
-                mCivilUnitsSliderHandler.ForceSliderPages();
             }
 
             // if the resolution has changed -> reset windows to standard positions
