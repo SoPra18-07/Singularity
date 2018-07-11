@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
@@ -13,9 +15,11 @@ namespace Singularity.Map
     /// <remarks>
     /// The camera object is used to move and zoom the map and all its components.
     /// </remarks>
-    public sealed class Camera : IUpdate, IKeyListener, IMouseWheelListener, IMousePositionListener
+    public sealed class Camera : IKeyListener, IMouseWheelListener, IMousePositionListener
     {
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
+
+        private const float MaxZoom = 1.5f;
 
         /// <summary>
         /// The speed at which the camera moves in pixels per update.
@@ -27,15 +31,18 @@ namespace Singularity.Map
         /// </summary>
         private readonly GraphicsDevice mGraphics;
 
-        /// <summary>
-        /// The x location of the camera unzoomed. Could also be called the "true" or "absolute" x location.
-        /// </summary>
-        private float mX;
+        private Vector2 mPosition;
 
-        /// <summary>
-        /// The y location of the camera unzoomed. Could also be called the "true" or "absolute" y location.
-        /// </summary>
-        private float mY;
+        private Vector2 Position
+        {
+            get { return mPosition; }
+
+            set
+            {
+                mPosition = value;
+                ValidatePosition();
+            }
+        }
 
         private float mMouseX;
 
@@ -45,6 +52,18 @@ namespace Singularity.Map
         /// The current zoom value of the camera.
         /// </summary>
         private float mZoom;
+
+        private float Zoom
+        {
+            get { return mZoom; }
+            set
+            {
+                mZoom = value;
+                ValidateZoom();
+                ValidatePosition();
+
+            }
+        }
 
         /// <summary>
         /// The matrix used to transform every position to the actual camera view.
@@ -59,6 +78,8 @@ namespace Singularity.Map
         private readonly bool mNeo;
 
         private readonly InputManager mInputManager;
+
+        private readonly Vector2 mOrigin;
 
 
         /// <summary>
@@ -83,11 +104,13 @@ namespace Singularity.Map
                 y = 0;
             }
 
-            mX = x;
-            mY = y;
+            mOrigin = new Vector2(graphics.Viewport.Width / 2f, graphics.Viewport.Height / 2f);
+
+            mZoom = 1.0f;
+            mPosition = new Vector2(x, y);
+
             mNeo = neo;
             mGraphics = graphics;
-            mZoom = 1.0f;
             mBounds = new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight);
             mInputManager = director.GetInputManager;
 
@@ -95,9 +118,7 @@ namespace Singularity.Map
             director.GetInputManager.AddMouseWheelListener(this);
             director.GetInputManager.AddMousePositionListener(this);
 
-            mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
-
-            mInputManager.CameraMoved(mTransform);
+            UpdateTransformMatrix();
 
         }
 
@@ -108,13 +129,8 @@ namespace Singularity.Map
         /// <returns>The mentioned matrix</returns>
         public Matrix GetTransform()
         {
-            return mTransform;
-        }
-
-        public void Update(GameTime gametime)
-        {
-            //finally update the matrix to all the fitting values.
             UpdateTransformMatrix();
+            return mTransform;
         }
 
         /// <summary>
@@ -126,14 +142,13 @@ namespace Singularity.Map
             return mZoom;
         }
 
-        // TODO: update this method such that rounding will not cause slight out of map clipping when zoomed in
         /// <summary>
         /// Checks whether the camera would move out of bounds and corrects the camera to
         /// clip to the edge if its the case.
         /// </summary>
         private void ValidatePosition()
         {
-            // first of all we need to update our matrix with the new values, since they got changed by moving.
+
             UpdateTransformMatrix();
 
             /*
@@ -142,6 +157,7 @@ namespace Singularity.Map
              * to know the "true" top left point of the camera in world space, we need to revert the
              * multiplication for the point we want to know, thus multiplying by the inverse matrix.
              * vector zero is simply the origin point of the camera view. (top-left).
+             *
              */
             var cameraWorldMin = Vector2.Transform(Vector2.Zero, Matrix.Invert(mTransform));
 
@@ -153,17 +169,11 @@ namespace Singularity.Map
             var limitWorldMax = new Vector2(mBounds.Right, mBounds.Bottom);
 
             //The offset created by zooming.
-            var positionOffsetX = mX - cameraWorldMin.X;
-            var positionOffsetY = mY - cameraWorldMin.Y;
+            var positionOffset = mPosition - cameraWorldMin;
 
-            //finally adjust the values by the given bounds.
-            mX = (int) (MathHelper.Clamp(cameraWorldMin.X, limitWorldMin.X, limitWorldMax.X - cameraSize.X) +
-                        positionOffsetX);
-            mY = (int) (MathHelper.Clamp(cameraWorldMin.Y, limitWorldMin.Y, limitWorldMax.Y - cameraSize.Y) +
-                        positionOffsetY);
+            mPosition = Vector2.Clamp(cameraWorldMin, limitWorldMin, limitWorldMax - cameraSize) + positionOffset;
 
             UpdateTransformMatrix();
-
         }
 
         /// <summary>
@@ -173,16 +183,34 @@ namespace Singularity.Map
         /// <param name="amount">The amount to zoom</param>
         private void ZoomToTarget(Vector2 zoomTarget, float amount)
         {
-            // the mouse position in world space with the old zoom
-            var abs = Vector2.Transform(zoomTarget, Matrix.Invert(mTransform));
+            var oldZoom = Zoom;
 
-            mZoom += amount;
+            Zoom += amount;
 
-            // set the cameras x, y coordinates such that the zoomTarget stays in the same spot. (screen space)
-            mX = abs.X * mZoom - zoomTarget.X;
-            mY = abs.Y * mZoom - zoomTarget.Y;
+            //we don't want to move to move to the target if the zoom hasn't changed
+            if (Math.Abs(Zoom - oldZoom) < float.Epsilon)
+            {
+                return;
+            }
 
-            ValidatePosition();
+            var diff = Math.Sign(amount) * (mOrigin - zoomTarget) / Zoom;
+
+            SetPosition(Position - diff / 10);
+
+        }
+
+        private void ValidateZoom()
+        {
+
+            if (mZoom > MaxZoom)
+            {
+                mZoom = MaxZoom;
+            }
+
+            var minZoomX = (float) mGraphics.Viewport.Width / mBounds.Width;
+            var minZoomY = (float) mGraphics.Viewport.Height / mBounds.Height;
+
+            mZoom = MathHelper.Max(mZoom, MathHelper.Max(minZoomX, minZoomY));
         }
 
         ///<summary>
@@ -215,7 +243,10 @@ namespace Singularity.Map
         ///</summary>
         private void UpdateTransformMatrix()
         {
-            mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
+            mTransform = Matrix.CreateTranslation(new Vector3(-mPosition, 0f))
+                         * Matrix.CreateTranslation(new Vector3(-mOrigin, 0f))
+                         * Matrix.CreateScale(mZoom, mZoom, 1f)
+                         * Matrix.CreateTranslation(new Vector3(mOrigin, 0f));
             mInputManager.CameraMoved(mTransform);
         }
 
@@ -226,69 +257,60 @@ namespace Singularity.Map
 
         public void KeyPressed(KeyEvent keyEvent)
         {
-            var moved = false;
+            var movementVector = new Vector2();
 
             if (mNeo)
             {
                 foreach (var key in keyEvent.CurrentKeys)
                 {
-
                     switch (key)
                     {
                         case Keys.V:
-                            mY -= CameraMovementSpeed;
-                            moved = true;
+                            movementVector.Y = -CameraMovementSpeed;
                             break;
 
                         case Keys.I:
-                            mY += CameraMovementSpeed;
-                            moved = true;
+                            movementVector.Y = CameraMovementSpeed;
                             break;
 
                         case Keys.U:
-                            mX -= CameraMovementSpeed;
-                            moved = true;
+                            movementVector.X = -CameraMovementSpeed;
                             break;
 
                         case Keys.A:
-                            mX += CameraMovementSpeed;
-                            moved = true;
+                            movementVector.X = CameraMovementSpeed;
                             break;
                     }
                 }
-            } else
+            }
+            else
             {
                 foreach (var key in keyEvent.CurrentKeys)
                 {
                     switch (key)
                     {
                         case Keys.W:
-                            mY -= CameraMovementSpeed;
-                            moved = true;
+                            movementVector.Y = -CameraMovementSpeed;
                             break;
 
                         case Keys.S:
-                            mY += CameraMovementSpeed;
-                            moved = true;
+                            movementVector.Y = CameraMovementSpeed;
                             break;
 
                         case Keys.A:
-                            mX -= CameraMovementSpeed;
-                            moved = true;
+                            movementVector.X = -CameraMovementSpeed;
                             break;
 
                         case Keys.D:
-                            mX += CameraMovementSpeed;
-                            moved = true;
+                            movementVector.X = CameraMovementSpeed;
                             break;
                     }
                 }
             }
 
-            if (moved)
-            {
-                ValidatePosition();
-            }
+            // make sure to scale the movement vector with the zoom level, since we don't want super slow movement when zoomed out
+            // and super fast movement when zoomed in
+            Position = Position + movementVector * (1 / Zoom);
         }
 
         public void KeyReleased(KeyEvent keyEvent)
@@ -310,12 +332,7 @@ namespace Singularity.Map
                     scrollChange = -0.1f;
                     break;
             }
-
-            if (!((mZoom + scrollChange) * MapConstants.MapWidth < mGraphics.Viewport.Width ||
-                  (mZoom + scrollChange) * MapConstants.MapHeight < mGraphics.Viewport.Height))
-            {
-                ZoomToTarget(new Vector2(mMouseX, mMouseY), scrollChange);
-            }
+            ZoomToTarget(new Vector2(mMouseX, mMouseY), scrollChange * Zoom);
 
             return false;
         }
@@ -326,8 +343,8 @@ namespace Singularity.Map
             var cameraWorldMin = Vector2.Transform(Vector2.Zero, Matrix.Invert(mTransform));
 
             return Matrix.CreateOrthographicOffCenter(cameraWorldMin.X,
-                cameraWorldMin.X + mGraphics.Viewport.Width / mZoom,
-                cameraWorldMin.Y + mGraphics.Viewport.Height / mZoom,
+                cameraWorldMin.X + GetSize().X,
+                cameraWorldMin.Y + GetSize().Y,
                 cameraWorldMin.Y,
                 0,
                 1);
@@ -344,17 +361,23 @@ namespace Singularity.Map
             return Vector2.Transform(Vector2.Zero, Matrix.Invert(mTransform));
         }
 
-        public void SetPosition(Vector2 position)
+        private void SetPosition(Vector2 position)
         {
-            mX = position.X;
-            mY = position.Y;
+            Position = new Vector2(position.X, position.Y);
+        }
 
-            ValidatePosition();
+        public void CenterOn(Vector2 position)
+        {
+            var size = GetSize();
+            var rel = GetRelativePosition();
+            var offset = Position - rel;
+
+            SetPosition(new Vector2(position.X - (size.X / 2) + offset.X, position.Y - (size.Y / 2) + offset.Y));
         }
 
         public Vector2 GetSize()
         {
-            return new Vector2(mGraphics.Viewport.Width, mGraphics.Viewport.Height) / mZoom;
+            return new Vector2(mGraphics.Viewport.Width, mGraphics.Viewport.Height) / Zoom;
         }
     }
 }

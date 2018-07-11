@@ -95,20 +95,49 @@ namespace Singularity.Screen.ScreenClasses
 
             spriteBatch.End();
 
-            mFow.DrawMasks(spriteBatch);
-
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, mFow.GetApplyMaskStencilState(), null, null, mTransformMatrix);
-
-            mMap.GetStructureMap().Draw(spriteBatch);
-
-            foreach (var spatial in mSpatialObjects)
+            if (GlobalVariables.FowEnabled)
             {
-                spatial.Draw(spriteBatch);
+
+                mFow.DrawMasks(spriteBatch);
+
+                spriteBatch.Begin(SpriteSortMode.FrontToBack,
+                    BlendState.AlphaBlend,
+                    null,
+                    mFow.GetApplyMaskStencilState(),
+                    null,
+                    null,
+                    mTransformMatrix);
+
+                mMap.GetStructureMap().Draw(spriteBatch);
+
+                foreach (var spatial in mSpatialObjects)
+                {
+                    spatial.Draw(spriteBatch);
+                }
+
+                spriteBatch.End();
+
+                mFow.FillInvertedMask(spriteBatch);
             }
+            else
+            {
+                spriteBatch.Begin(SpriteSortMode.FrontToBack,
+                    BlendState.AlphaBlend,
+                    null,
+                    null,
+                    null,
+                    null,
+                    mTransformMatrix);
 
-            spriteBatch.End();
+                mMap.GetStructureMap().Draw(spriteBatch);
 
-            mFow.FillInvertedMask(spriteBatch);
+                foreach (var spatial in mSpatialObjects)
+                {
+                    spatial.Draw(spriteBatch);
+                }
+
+                spriteBatch.End();
+            }
 
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mTransformMatrix);
 

@@ -21,6 +21,7 @@ namespace Singularity.Nature
 
         // used to first generate the rock drawing matrix
         private bool mNotGenerated;
+
         public Rectangle AbsBounds { get; }
         public bool Moved { get; } = false;
         public int Id { get; }
@@ -28,6 +29,8 @@ namespace Singularity.Nature
         public Vector2 RelativeSize { get; set; }
         public Vector2 AbsolutePosition { get; set; }
         public Vector2 AbsoluteSize { get; set; }
+
+        public static Random mRandom = new Random();
 
         public bool Friendly { get; } = false;
 
@@ -62,7 +65,7 @@ namespace Singularity.Nature
         /// </summary>
         private void CreateRock()
         {
-            Random rnd = new Random();
+
 
             // create the rotation and placement chart for rocks
             for (int i = 0; i < 14; i++)
@@ -70,10 +73,10 @@ namespace Singularity.Nature
                 for (int j = 0; j < 18; j++)
                 {
                     // this give the rotation of the rock
-                    mDrawAngle[i,j] = rnd.Next(1,101);
+                    mDrawAngle[i,j] = mRandom.Next(1,101);
 
                     // this gives whether a rock will be placed at that position
-                    mDrawRock[i, j] = (rnd.Next(1, 60) % 2 == 0);
+                    mDrawRock[i, j] = (mRandom.Next(1, 60) % 2 == 0);
                 }
             }
 

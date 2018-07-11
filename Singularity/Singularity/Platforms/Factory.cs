@@ -27,7 +27,7 @@ namespace Singularity.Platforms
                 basesprite,
                 ref director,
                 EPlatformType.Factory,
-                -12,
+                -50,
                 friendly: friendly)
         {
             //mIPlatformActions[0] = new ProduceFactoryResource(this);
