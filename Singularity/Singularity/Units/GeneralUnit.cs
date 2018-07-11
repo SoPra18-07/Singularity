@@ -437,9 +437,13 @@ namespace Singularity.Units
 
             mIsMoving = true;
 
-            var movementVector = Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y));
+            var distance = new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y);
+            var movementVector = Vector2.Multiply(Geometry.NormalizeVector(distance), Speed);
+            var dist = (float) Geometry.Length(distance);
+            if (dist < 50)
+                movementVector = Vector2.Multiply(movementVector, dist / 50f);
 
-            AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X * Speed, AbsolutePosition.Y + movementVector.Y * Speed);
+            AbsolutePosition = AbsolutePosition + movementVector;
         }
 
         private void RegulateMovement()
