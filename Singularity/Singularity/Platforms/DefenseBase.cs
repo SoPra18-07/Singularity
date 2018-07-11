@@ -49,7 +49,7 @@ namespace Singularity.Platforms
             type,
             friendly: friendly)
         {
-            
+
             mType = type;
             mSpritename = "Cone";
             Property = JobType.Defense;

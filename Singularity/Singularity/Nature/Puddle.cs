@@ -79,7 +79,7 @@ namespace Singularity.Nature
                 spriteBatch.DrawLine(new Vector2(mPosition.X + 89, mPosition.Y + 22), 26, 2.68f, Color.Gray);
 
 
-                // draw the water in the puddle 
+                // draw the water in the puddle
                 for (int i = 0; i < 45; i++)
                 {
                     spriteBatch.DrawLine(
@@ -106,7 +106,7 @@ namespace Singularity.Nature
                 spriteBatch.DrawLine(new Vector2(mPosition.X + 71, mPosition.Y + 16), 23, 2.7f, Color.Gray);
 
 
-                // draw the water in the puddle 
+                // draw the water in the puddle
                 for (int i = 0; i < 38; i++)
                 {
                     spriteBatch.DrawLine(new Vector2(mPosition.X + 71 + (i * 1.959f), mPosition.Y - 20 + i), 63, 2.7f, Color.CornflowerBlue * .7f);

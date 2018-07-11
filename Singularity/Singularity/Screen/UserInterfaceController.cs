@@ -15,7 +15,7 @@ namespace Singularity.Screen
     public sealed class UserInterfaceController
     {
         private readonly Director mDirector;
-        
+
         // the currently selected platform
         private PlatformBlank mActivePlatform;
 
