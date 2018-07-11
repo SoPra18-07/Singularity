@@ -87,8 +87,6 @@ namespace Singularity.Units
 
         public void ReloadContent(ContentManager content, ref Director director, Camera camera, ref Map.Map map)
         {
-            mGlowTexture = content.Load<Texture2D>("UnitSpriteSheet");
-            mMilSheet = content.Load<Texture2D>("UnitGlowSprite");
             ReloadContent(ref director, camera, ref map);
         }
 
