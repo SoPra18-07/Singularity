@@ -8,15 +8,26 @@ using Singularity.Resources;
 
 namespace Singularity.Platforms
 {
-    [DataContract()]
+    [DataContract]
     class Storage: PlatformBlank
     {
-        [DataMember()]
-        private const int PlatformWidth = 144;
-        [DataMember()]
-        private const int PlatformHeight = 127;
+        [DataMember]
+        private new const int PlatformWidth = 144;
+        [DataMember]
+        private new const int PlatformHeight = 127;
 
-        public Storage(Vector2 position, Texture2D spritesheet, Texture2D basesprite, ref Director director): base(position, spritesheet, basesprite, ref director, EPlatformType.Storage, -50)
+        public Storage(Vector2 position,
+            Texture2D spritesheet,
+            Texture2D basesprite,
+            ref Director director,
+            bool friendly = true)
+            : base(position,
+                spritesheet,
+                basesprite,
+                ref director,
+                EPlatformType.Storage,
+                -50,
+                friendly: friendly)
         {
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.

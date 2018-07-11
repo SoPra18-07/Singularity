@@ -8,7 +8,7 @@ using Singularity.Units;
 
 namespace Singularity.PlatformActions
 {
-    public class ProduceWellResource : APlatformResourceAction
+    public sealed class ProduceWellResource : APlatformResourceAction
     {
         // The ResourceMap is needed for actually 'producing' the resources.
         private readonly ResourceMap mResourceMap;
@@ -30,7 +30,7 @@ namespace Singularity.PlatformActions
         }
     }
 
-    public class ProduceQuarryResource : APlatformResourceAction
+    public sealed class ProduceQuarryResource : APlatformResourceAction
     {
         // The ResourceMap is needed for actually 'producing' the resources.
         private ResourceMap mResourceMap;
@@ -52,7 +52,7 @@ namespace Singularity.PlatformActions
         }
     }
 
-    public class ProduceMineResource : APlatformResourceAction
+    public sealed class ProduceMineResource : APlatformResourceAction
     {
         // The ResourceMap is needed for actually 'producing' the resources.
         private ResourceMap mResourceMap;
@@ -117,12 +117,12 @@ namespace Singularity.PlatformActions
             switch (State)
             {
                 case PlatformActionState.Active:
-                    mDirector.GetDistributionManager.PausePlatformAction(this);
+                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this);
                     State = PlatformActionState.Available;
                     break;
                 case PlatformActionState.Available:
-                    //TODO: You dont request Units anymore. Are there other things to be changed too then?
-                    //mDirector.GetDistributionManager.RequestUnits(mPlatform, JobType.Production, this);
+                    // TODO: You dont request Units anymore. Are there other things to be changed too then?
+                    // mDirector.GetDistributionManager.RequestUnits(mPlatform, JobType.Production, this);
                     State = PlatformActionState.Active;
                     break;
                 default:

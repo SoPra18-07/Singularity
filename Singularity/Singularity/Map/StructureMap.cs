@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Graph;
+using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Property;
-using System.Linq;
-using Singularity.Graph;
-using Singularity.Input;
+using Singularity.Units;
 
 namespace Singularity.Map
 {
@@ -29,7 +32,7 @@ namespace Singularity.Map
         /// <summary>
         /// A list of all the platformPlacements in the game (the platforms following the mouse when building).
         /// </summary>
-        private readonly LinkedList<PlatformPlacement> mPlatformsToPlace;
+        private readonly LinkedList<StructurePlacer> mStructuresToPlace;
 
         /// <summary>
         /// The director for the game
@@ -45,6 +48,11 @@ namespace Singularity.Map
         /// A dictionary mapping graph IDs to the graph object they belong to
         /// </summary>
         private readonly Dictionary<int, Graph.Graph> mGraphIdToGraph;
+
+        /// <summary>
+        /// A dictioanry mapping graph IDs to the energy level of the graph
+        /// </summary>
+        private readonly Dictionary<int, int> mGraphIdToEnergyLevel;
 
         /// <summary>
         /// The Fog of war of the current game
@@ -72,10 +80,11 @@ namespace Singularity.Map
 
             mPlatformToGraphId = new Dictionary<PlatformBlank, int>();
             mGraphIdToGraph = new Dictionary<int, Graph.Graph>();
+            mGraphIdToEnergyLevel = new Dictionary<int, int>();
 
             mDirector = director;
 
-            mPlatformsToPlace = new LinkedList<PlatformPlacement>();
+            mStructuresToPlace = new LinkedList<StructurePlacer>();
             mPlatforms = new LinkedList<PlatformBlank>();
             mRoads = new LinkedList<Road>();
         }
@@ -116,6 +125,7 @@ namespace Singularity.Map
                 mPlatformToGraphId[platform] = graphIndex;
                 mGraphIdToGraph[graphIndex].AddNode(platform);
                 platform.SetGraphIndex(graphIndex);
+                UpdateGenUnitsGraphIndex(mGraphIdToGraph[graphIndex], graphIndex);
                 return;
             }
 
@@ -123,9 +133,13 @@ namespace Singularity.Map
             // intuitively: "the reachability graph from this node is only this node"
             var index = mGraphIdToGraph.Count;
 
+            mGraphIdToEnergyLevel[index] = 0;
             mGraphIdToGraph[index] = graph;
             mPlatformToGraphId[platform] = index;
             platform.SetGraphIndex(index);
+            UpdateGenUnitsGraphIndex(mGraphIdToGraph[index], index);
+
+            mDirector.GetDistributionDirector.AddManager(index);
             mDirector.GetPathManager.AddGraph(index, graph);
         }
 
@@ -199,6 +213,14 @@ namespace Singularity.Map
                 // and add the new graph
                 mGraphIdToGraph[childIndex] = null;
                 mGraphIdToGraph[parentIndex] = graph;
+
+                UpdateGenUnitsGraphIndex(mGraphIdToGraph[parentIndex], parentIndex);
+
+                mGraphIdToEnergyLevel[parentIndex] =
+                    mGraphIdToEnergyLevel[parentIndex] + mGraphIdToEnergyLevel[childIndex];
+                mGraphIdToEnergyLevel[childIndex] = 0;
+
+                mDirector.GetDistributionDirector.MergeManagers(childIndex, parentIndex, parentIndex);
                 mDirector.GetPathManager.RemoveGraph(childIndex);
                 mDirector.GetPathManager.AddGraph(parentIndex, graph);
                 return;
@@ -222,7 +244,6 @@ namespace Singularity.Map
             ((PlatformBlank)child).RemoveEdge(road);
             ((PlatformBlank)parent).RemoveEdge(road);
 
-            //TODO: adjust underlying graph structures
             // more accurately: we have two cases:
             // 1. road gets destroyed -> two new seperate graphs get created
             // because they only were connected by the road to be removed.
@@ -292,6 +313,9 @@ namespace Singularity.Map
             mGraphIdToGraph[newChildIndex] = childReachableGraph;
             mGraphIdToGraph[mPlatformToGraphId[(PlatformBlank) parent]] = parentReachableGraph;
 
+            UpdateGenUnitsGraphIndex(mGraphIdToGraph[newChildIndex], newChildIndex);
+
+            //TODO: split the two dist managers here, wasn't sure how to implement it since i didnt understand the signature
             mDirector.GetPathManager.AddGraph(newChildIndex, childReachableGraph);
             mDirector.GetPathManager.AddGraph(mPlatformToGraphId[(PlatformBlank)parent], parentReachableGraph);
         }
@@ -340,7 +364,7 @@ namespace Singularity.Map
         /// <param name="spriteBatch">The sprite batch on which drawing gets performed</param>
         public void DrawAboveFow(SpriteBatch spriteBatch)
         {
-            foreach (var platformToAdd in mPlatformsToPlace)
+            foreach (var platformToAdd in mStructuresToPlace)
             {
                 platformToAdd.Draw(spriteBatch);
             }
@@ -379,21 +403,26 @@ namespace Singularity.Map
                 // we only want to continue if we have platforms to place.
                 // the reason this is in this for loop is simply due to me
                 // not having to iterate the same list twice.
-                if (mPlatformsToPlace.Count <= 0)
+                if (mStructuresToPlace.Count <= 0)
                 {
                     continue;
                 }
 
                 // this for loop is needed to fulfill the first hovering purpose mentioned.
-                foreach(var platformToAdd in mPlatformsToPlace)
+                foreach(var structureToAdd in mStructuresToPlace)
                 {
+                    if (structureToAdd.GetPlatform() == null)
+                    {
+                        continue;
+                    }
+
                     // first make sure to update the bounds, etc., since our platforms normally don't move
                     // these don't get updated automatically.
-                    platformToAdd.GetPlatform().UpdateValues();
+                    structureToAdd.GetPlatform().UpdateValues();
 
                     // if our current platform doesn't intersect with the platform to be placed we 
                     // aren't hovering it, thus we continue to the next platform.
-                    if (!platformToAdd.GetPlatform().AbsBounds.Intersects(platform.AbsBounds))
+                    if (!structureToAdd.GetPlatform().AbsBounds.Intersects(platform.AbsBounds))
                     {
                         continue;
                     }
@@ -420,58 +449,167 @@ namespace Singularity.Map
 
             // we use this list to "mark" all the platformplacements to remove from the actual list. Since
             // we need to ensure that the actual list doesn't change size while iterating.
-            var toRemove = new LinkedList<PlatformPlacement>();
+            var toRemove = new LinkedList<StructurePlacer>();
 
-            foreach (var platformToAdd in mPlatformsToPlace)
+            foreach (var structureToAdd in mStructuresToPlace)
             {
                 // finished means, that the platform either got set, or got canceled, where canceled means
                 // that the building process got canceled
-                if (!platformToAdd.IsFinished())
+                if (!structureToAdd.IsFinished())
                 {
-                    platformToAdd.SetHovering(hovering);
-                    platformToAdd.Update(gametime);
+                    structureToAdd.SetHovering(hovering);
+                    structureToAdd.Update(gametime);
                     continue;
                 }
                 // the platform is finished AND canceled. Make sure to remove it, and update it a last time so it can clean up all its references
                 // to other classes.
-                if (platformToAdd.IsCanceled())
+                if (structureToAdd.IsCanceled())
                 {
-                    platformToAdd.Update(gametime);
-                    toRemove.AddLast(platformToAdd);
+                    structureToAdd.Update(gametime);
+                    toRemove.AddLast(structureToAdd);
                     continue;
                 }
 
                 //platform is finished
-                toRemove.AddLast(platformToAdd);
-
-                AddPlatform(platformToAdd.GetPlatform());
-                platformToAdd.GetPlatform().Register();
-                platformToAdd.GetRoad().Place(platformToAdd.GetPlatform(), hovering);
-                AddRoad(platformToAdd.GetRoad());
+                toRemove.AddLast(structureToAdd);
+                if (structureToAdd.GetPlatform() != null)
+                {
+                    AddPlatform(structureToAdd.GetPlatform());
+                    structureToAdd.GetPlatform().Register();
+                    structureToAdd.GetConnectionRoad().Place(structureToAdd.GetPlatform(), hovering);
+                    AddRoad(structureToAdd.GetConnectionRoad());
+                }
+                else
+                {
+                    AddRoad(structureToAdd.GetRoad());
+                }
 
             }
 
             //finally make sure to remove the "marked" platformplacements to be removed
             foreach(var platformToRemove in toRemove)
             {
-                mPlatformsToPlace.Remove(platformToRemove);
+                mStructuresToPlace.Remove(platformToRemove);
             }
+
+            // now update the energy level of all graphs
+            foreach (var graphId in mGraphIdToGraph.Keys)
+            {
+                if (mGraphIdToGraph[graphId] == null)
+                {
+                    continue;
+                }
+
+                UpdateEnergyLevel(graphId);
+            }
+        }
+
+        private void UpdateEnergyLevel(int graphId)
+        {
+            var wasNegative = mGraphIdToEnergyLevel[graphId] < 0;
+
+            mGraphIdToEnergyLevel[graphId] = 0;
+
+            foreach (var node in mGraphIdToGraph[graphId].GetNodes())
+            {
+                if (((PlatformBlank) node).IsManuallyDeactivated())
+                {
+                    continue;
+                }
+
+                mGraphIdToEnergyLevel[graphId] = mGraphIdToEnergyLevel[graphId] + ((PlatformBlank) node).GetProvidingEnergy();
+                mGraphIdToEnergyLevel[graphId] = mGraphIdToEnergyLevel[graphId] - ((PlatformBlank) node).GetDrainingEnergy();
+            }
+
+            CheckEnergyLevel(graphId, wasNegative);
         }
 
         /// <summary>
         /// Adds a platform to place to this map. This should solely be used building, which is also the only
         /// method to add platforms to our game dynamically.
         /// </summary>
-        /// <param name="platformPlacement">The platformplacement to place</param>
-        public void AddPlatformToPlace(PlatformPlacement platformPlacement)
+        /// <param name="structurePlacer">The platformplacement to place</param>
+        public void AddPlatformToPlace(StructurePlacer structurePlacer)
         {
-            mPlatformsToPlace.AddLast(platformPlacement);
+            mStructuresToPlace.AddLast(structurePlacer);
+        }
+
+        public int GetGraphCount()
+        {
+            var graphs = 0;
+
+            for (var i = 0; i < mGraphIdToGraph.Count; i++)
+            {
+                if (mGraphIdToGraph[i] != null)
+                {
+                    graphs++;
+                }
+            }
+
+            return graphs;
         }
 
         public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
             mMouseX = worldX;
             mMouseY = worldY;
+        }
+
+        private void CheckEnergyLevel(int graphId, bool wasNegative)
+        {
+            // energy level was positive and still is
+            if (!wasNegative && mGraphIdToEnergyLevel[graphId] >= 0)
+            {
+                return;
+            }
+
+            // energy level was negative and is positive considering all the platforms that weren't manually deactivated
+            // -> reactivate all the platforms which weren't manually deactivated
+            if (wasNegative && mGraphIdToEnergyLevel[graphId] >= 0)
+            {
+                foreach (var node in mGraphIdToGraph[graphId].GetNodes())
+                {
+                    if (((PlatformBlank) node).IsManuallyDeactivated())
+                    {
+                        continue;
+                    }
+                    ((PlatformBlank)node).Activate(false);
+                }
+                return;
+            }
+
+            // energy level was something and is now negative
+            foreach (var node in mGraphIdToGraph[graphId].GetNodes())
+            {
+                ((PlatformBlank)node).Deactivate(false);
+            }
+        }
+
+        private List<GeneralUnit> GetGenUnitsOnGraph(Graph.Graph graph)
+        {
+            var genUnits = new List<GeneralUnit>();
+
+            foreach (var node in graph.GetNodes())
+            {
+                var nodeAsPlat = (PlatformBlank) node;
+
+                foreach (var unit in nodeAsPlat.GetGeneralUnitsOnPlatform())
+                {
+                    genUnits.Add(unit);
+                }
+            }
+
+            return genUnits;
+        }
+
+        private void UpdateGenUnitsGraphIndex(Graph.Graph graph, int newId)
+        {
+            var list = GetGenUnitsOnGraph(graph);
+
+            foreach (var genUnit in list)
+            {
+                genUnit.Graphid = newId;
+            }
         }
     }
 }

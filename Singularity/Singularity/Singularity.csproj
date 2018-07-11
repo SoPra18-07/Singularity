@@ -60,24 +60,50 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Nature\Rock.cs" />
+    <Compile Include="Levels\BasicLevel.cs" />
     <Compile Include="Levels\ILevel.cs" />
+    <Compile Include="Manager\DistributionDirector.cs" />
     <Compile Include="Manager\DistributionManager.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />
+    <Compile Include="Nature\Puddle.cs" />
+    <Compile Include="Screen\BarIWindowItem.cs" />
+    <Compile Include="Screen\PlatformActionIWindowItem.cs" />
+    <Compile Include="PlatformActions\ConsumeResource.cs" />
+    <Compile Include="Exceptions\MiniMapProportionsOffException.cs" />
+    <Compile Include="Map\MiniMap.cs" />
+    <Compile Include="Map\UnitMap.cs" />
+    <Compile Include="Map\UnitMapTile.cs" />
     <Compile Include="PlatformActions\MakeUnit.cs" />
+    <Compile Include="PlatformActions\Shoot.cs" />
     <Compile Include="Platforms\Barracks.cs" />
+    <Compile Include="Platforms\DefenseLaser.cs" />
+    <Compile Include="Platforms\DefenseKinetic.cs" />
+    <Compile Include="Platforms\DefenseBase.cs" />
     <Compile Include="Platforms\EPlacementType.cs" />
     <Compile Include="Platforms\PlatformFactory.cs" />
-    <Compile Include="Platforms\PlatformPlacement.cs" />
+    <Compile Include="Platforms\StructurePlacer.cs" />
+    <Compile Include="Property\IDamageable.cs" />
     <Compile Include="Property\IDie.cs" />
+    <Compile Include="Property\IShooting.cs" />
     <Compile Include="Screen\InfoBoxWindow.cs" />
     <Compile Include="Property\GlobalVariables.cs" />
+    <Compile Include="Screen\ResourceIWindowItem.cs" />
     <Compile Include="Screen\InfoBarWindowObject.cs" />
+    <Compile Include="Screen\ScreenClasses\DebugScreen.cs" />
+    <Compile Include="Screen\ActivationIWindowItem.cs" />
     <Compile Include="Screen\SliderHandler.cs" />
     <Compile Include="Units\ControllableUnit.cs" />
+    <Compile Include="Screen\TextAndAmountIWindowItem.cs" />
     <Compile Include="Units\EnemyUnit.cs" />
+    <Compile Include="Units\EUnitType.cs" />
     <Compile Include="Units\FreeMovingUnit.cs" />
+    <Compile Include="Units\MilitaryFast.cs" />
+    <Compile Include="Units\MilitaryHeavy.cs" />
+    <Compile Include="Units\MilitaryUnitStats.cs" />
     <Compile Include="Units\SelectionBox.cs" />
     <Compile Include="Units\Settler.cs" />
+    <Compile Include="Units\Target.cs" />
     <Compile Include="Units\Task.cs" />
     <Compile Include="Exceptions\InvalidGenericArgumentException.cs" />
     <Compile Include="Exceptions\NoSuchElementException.cs" />
@@ -98,13 +124,11 @@
     <Compile Include="Levels\Skirmish.cs" />
     <Compile Include="Levels\Tutorial.cs" />
     <Compile Include="Libraries\Animations.cs" />
-    <Compile Include="Libraries\Bloom Filter.cs" />
     <Compile Include="Input\EClickType.cs" />
     <Compile Include="Input\IMouseClickListener.cs" />
     <Compile Include="Input\IMousePositionListener.cs" />
     <Compile Include="Input\IMouseWheelListener.cs" />
     <Compile Include="Libraries\Primitives2D.cs" />
-    <Compile Include="Libraries\QuadRenderer.cs" />
     <Compile Include="Manager\Director.cs" />
     <Compile Include="Map\Camera.cs" />
     <Compile Include="Map\CollisionMap.cs" />
@@ -169,12 +193,13 @@
     <Compile Include="Screen\TextField.cs" />
     <Compile Include="Units\GeneralUnit.cs" />
     <Compile Include="Units\JobType.cs" />
-    <Compile Include="Units\MilitaryPathfinder.cs" />
+    <Compile Include="Units\FreeMovingPathfinder.cs" />
     <Compile Include="Units\MilitaryUnit.cs" />
     <Compile Include="Property\IDraw.cs" />
     <Compile Include="Property\IUpdate.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Screen\UserInterfaceController.cs" />
     <Compile Include="Utils\State3.cs" />
     <Compile Include="Utils\Geometry.cs" />
     <Compile Include="Screen\IScreen.cs" />
@@ -216,9 +241,7 @@
     <None Include="Content\Shaders\Bloom.fx" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Libraries\JumpPoint\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
       <Visible>False</Visible>

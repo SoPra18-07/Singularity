@@ -50,12 +50,12 @@ namespace Singularity.Map
         /// </summary>
         private readonly DepthStencilState mApplyInvertedMaskStencilState;
 
-        private DepthStencilState mApplyMaskStencilState;
+        private readonly DepthStencilState mApplyMaskStencilState;
 
         /// <summary>
         /// The AlphaTestEffect compares alpha values of pixels and sets them given certain restraints.
         /// </summary>
-        private AlphaTestEffect mAlphaComparator;
+        private readonly AlphaTestEffect mAlphaComparator;
 
         /// <summary>
         /// The camera object of the game used for screen coordinae calculation.
@@ -172,6 +172,15 @@ namespace Singularity.Map
         public DepthStencilState GetApplyMaskStencilState()
         {
             return mApplyMaskStencilState;
+        }
+
+        /// <summary>
+        /// Gets all the revealing objects currently in the game.
+        /// </summary>
+        /// <returns>A list of all the revealing objects in the game</returns>
+        public LinkedList<IRevealing> GetRevealingObjects()
+        {
+            return mRevealingObjects;
         }
     }
 }

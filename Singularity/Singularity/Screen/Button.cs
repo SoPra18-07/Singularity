@@ -27,7 +27,7 @@ namespace Singularity.Screen
 
         private readonly float mScale;
         private readonly Texture2D mButtonTexture;
-        private readonly string mButtonText;
+        private string mButtonText;
         private readonly SpriteFont mFont;
 
         // distinguish between mouse over hover or not
@@ -35,7 +35,7 @@ namespace Singularity.Screen
 
         private Rectangle mBounds;
         private bool mClicked;
-        private bool mWithBorder;
+        private readonly bool mWithBorder;
 
         /// <summary>
         /// Opacity of the button useful for transitions or transparent buttons
@@ -76,7 +76,7 @@ namespace Singularity.Screen
             mColor = Color.White;
             CreateRectangularBounds();
             Opacity = 1;
-            ActiveWindow = true;
+            ActiveInWindow = true;
             mWithBorder = withBorder;
         }
 
@@ -101,7 +101,7 @@ namespace Singularity.Screen
             mColor = Color.White;
             CreateRectangularBounds();
             Opacity = 1;
-            ActiveWindow = true;
+            ActiveInWindow = true;
             mWithBorder = withBorder;
         }
 
@@ -112,7 +112,7 @@ namespace Singularity.Screen
         /// <param name="buttonText">text that button will appear as</param>
         /// <param name="font"></param>
         /// <param name="position"></param>
-        public Button(string buttonText, SpriteFont font, Vector2 position)
+        public Button(string buttonText, SpriteFont font, Vector2 position, bool withBorder = false)
         {
             mIsText = true;
             mButtonText = buttonText;
@@ -120,11 +120,12 @@ namespace Singularity.Screen
             Position = position;
             Size = new Vector2((int)mFont.MeasureString(mButtonText).X, (int)mFont.MeasureString(mButtonText).Y);
             mColor = Color.White;
+            mWithBorder = withBorder;
             CreateRectangularBounds();
-            ActiveWindow = true;
+            ActiveInWindow = true;
         }
 
-        public Button(string buttonText, SpriteFont font, Vector2 position, Color color)
+        public Button(string buttonText, SpriteFont font, Vector2 position, Color color, bool withBorder = false)
         {
             mIsText = true;
             mButtonText = buttonText;
@@ -133,7 +134,8 @@ namespace Singularity.Screen
             Size = new Vector2((int)mFont.MeasureString(mButtonText).X, (int)mFont.MeasureString(mButtonText).Y);
             mColor = color;
             CreateRectangularBounds();
-            ActiveWindow = true;
+            mWithBorder = withBorder;
+            ActiveInWindow = true;
         }
 
 
@@ -150,7 +152,7 @@ namespace Singularity.Screen
         /// </summary>
         protected virtual void OnButtonReleased()
         {
-            if (ButtonReleased != null && ActiveWindow)
+            if (ButtonReleased != null && ActiveInWindow)
             {
                 ButtonReleased(this, EventArgs.Empty);
             }
@@ -162,7 +164,7 @@ namespace Singularity.Screen
         /// </summary>
         protected virtual void OnButtonHovering()
         {
-            if (ButtonHovering != null && ActiveWindow)
+            if (ButtonHovering != null && ActiveInWindow)
             {
                 ButtonHovering(this, EventArgs.Empty);
             }
@@ -173,7 +175,7 @@ namespace Singularity.Screen
         /// </summary>
         protected virtual void OnButtonHoveringEnd()
         {
-            if (ButtonHoveringEnd != null && ActiveWindow)
+            if (ButtonHoveringEnd != null && ActiveInWindow)
             {
                 ButtonHoveringEnd(this, EventArgs.Empty);
             }
@@ -184,7 +186,7 @@ namespace Singularity.Screen
         /// </summary>
         protected virtual void OnButtonClicked()
         {
-            if (ActiveWindow)
+            if (ActiveInWindow)
             {
                 ButtonClicked?.Invoke(this, EventArgs.Empty);
             }
@@ -198,7 +200,7 @@ namespace Singularity.Screen
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (ActiveWindow)
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
             {
                 // draw for button that uses a Texture2D
                 if (mIsText == false)
@@ -254,6 +256,12 @@ namespace Singularity.Screen
                         scale: 1f,
                         effects: SpriteEffects.None,
                         layerDepth: 0.2f);
+
+                    if (mWithBorder)
+                    {
+                        // draw border around texture if feauture selected, also give a small padding
+                        spriteBatch.DrawRectangle(new Vector2(Position.X - 2, Position.Y - 1), new Vector2(Size.X + 4, Size.Y + 2), Color.White, 1);
+                    }
                 }
             }
         }
@@ -266,7 +274,7 @@ namespace Singularity.Screen
         /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
-            if (ActiveWindow)
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
             {
                 // if mouse is hovering over button then make draw color gray
                 if (Mouse.GetState().X >= Position.X &&
@@ -323,13 +331,26 @@ namespace Singularity.Screen
             }
         }
 
+        public void ChangeText(string newText)
+        {
+            if (!mIsText)
+            {
+                return;
+            }
+
+            mButtonText = newText;
+            Size = new Vector2((int)mFont.MeasureString(mButtonText).X, (int)mFont.MeasureString(mButtonText).Y);
+        }
+
         // position of the button
         public Vector2 Position { get; set; }
 
         // Size of the button
-        public Vector2 Size { get; }
+        public Vector2 Size { get; private set; }
 
         // active button <-> inactive button
-        public bool ActiveWindow { get; set; }
+        public bool ActiveInWindow { get; set; }
+        public bool InactiveInSelectedPlatformWindow { get; set; }
+        public bool OutOfScissorRectangle { get; set; }
     }
 }
