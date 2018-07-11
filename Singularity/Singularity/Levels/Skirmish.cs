@@ -75,7 +75,7 @@ namespace Singularity.Levels
             var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, mUi);
 
             var rock1 = new Rock(new Vector2(3500, 2800));
-            var rock2 = new Rock(new Vector2(2800, 2000));
+            var rock2 = new Rock(new Vector2(3500, 3000));
             GameScreen.AddObject(rock1);
             GameScreen.AddObject(rock2);
 
@@ -106,6 +106,7 @@ namespace Singularity.Levels
 
             // add a puddle
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2500)));
+            GameScreen.AddObject(new Puddle(new Vector2(3300, 2700), false));
 
             //TESTMETHODS HERE ====================================
             mDirector.GetDistributionDirector.GetManager(0).RequestResource(platform2, EResourceType.Oil, null);
