@@ -55,8 +55,11 @@ namespace Singularity.Screen
             // set to Vector.Zero, since the window will manage this item's position
             Position = Vector2.Zero;
 
-            // set size to automatically fit the text height
-            Size = new Vector2(size.X, mSpriteFont.MeasureString(mResourceText).Y);
+            var minItemWidth = size.Y / 2 + mSpriteFont.MeasureString(Amount.ToString()).X +
+                               mSpriteFont.MeasureString(mResourceText).X + 10;
+
+            // set size to automatically fit the text height + width
+            Size = size.X < minItemWidth ? new Vector2(minItemWidth, mSpriteFont.MeasureString(mResourceText).Y) : new Vector2(size.X, mSpriteFont.MeasureString(mResourceText).Y);
 
             ActiveInWindow = true;
         }
@@ -89,7 +92,7 @@ namespace Singularity.Screen
                 // draw the color rectangle at the beginning
                 spriteBatch.StrokedRectangle(
                     location: mColorPosition,
-                    size: new Vector2(Size.Y - Size.Y / 2, Size.Y - Size.Y / 2),
+                    size: new Vector2(Size.Y / 2, Size.Y / 2),
                     colorBorder: Color.White,
                     colorCenter: mTypeColor,
                     opacityBorder: 1f,

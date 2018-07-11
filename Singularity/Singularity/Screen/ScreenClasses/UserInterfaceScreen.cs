@@ -211,52 +211,64 @@ namespace Singularity.Screen.ScreenClasses
 
         #region buildMenuWindow members
 
-        // build menu window
+        // Build menu window
         private WindowObject mBuildMenuWindow;
 
-        // vertical lists
-        private HorizontalCollection mButtonTopList;
-        private HorizontalCollection mButtonBasicList;
-        private HorizontalCollection mButtonSpecialList;
-        private HorizontalCollection mButtonMilitaryList;
+        // Horizontal lists
+        private HorizontalCollection mListSwitchingList;
+        private HorizontalCollection mMainBuildingsList;
+        private HorizontalCollection mResourceProductionList;
+        private HorizontalCollection mResourceProcessingList;
+        private HorizontalCollection mMilitaryBuildingList;
 
-        // Top Bar buttons
+        // ListSwitchingList buttons
+        private Button mMainBuildingsListButton;
+        private Button mResourceProductionListButton;
+        private Button mResourceProcessingButton;
+        private Button mMilitaryBuildingsListButton;
+
+        // MainBuildingsList buttons
         private Button mBlankPlatformButton;
-        private Button mBasicListButton;
-        private Button mSpecialListButton;
-        private Button mMilitaryListButton;
+        private Button mRoadButton;
+        private Button mCommandcenterPlatformButton;
 
-        // basic list buttons
-        private Button mJunkyardPlatformButton;
+        // ResourceProductionList buttons
         private Button mQuarryPlatformButton;
         private Button mMinePlatformButton;
         private Button mWellPlatformButton;
+        private Button mPowerhousePlatformButton;
 
-        // special list buttons
+        // ResourceProcessingList buttons
+        private Button mJunkyardPlatformButton;
         private Button mFactoryPlatformButton;
         private Button mStoragePlatformButton;
-        private Button mPowerhousePlatformButton;
-        private Button mCommandcenterPlatformButton;
-
-        // military list buttons
         private Button mPackagingPlatformButton;
+
+        // MilitaryBuildingsList buttons
         private Button mKineticTowerPlatformButton;
         private Button mLaserTowerPlatformButton;
         private Button mBarracksPlatformButton;
 
-        private InfoBoxWindow mInfoBuildBlank;
-        private InfoBoxWindow mInfoBasicList;
-        private InfoBoxWindow mInfoSpecialList;
+        // infoBoxes when hovering above the buttons
+        private InfoBoxWindow mInfoMainBuildingsList;
+        private InfoBoxWindow mInfoResourceProductionList;
+        private InfoBoxWindow mInfoResourceProcessingList;
         private InfoBoxWindow mInfoMilitaryList;
-        private InfoBoxWindow mInfoBuildJunkyard;
+
+        private InfoBoxWindow mInfoBuildBlank;
+        private InfoBoxWindow mInfoBuildRoad;
+        private InfoBoxWindow mInfoBuildCommandcenter;
+
         private InfoBoxWindow mInfoBuildQuarry;
         private InfoBoxWindow mInfoBuildMine;
         private InfoBoxWindow mInfoBuildWell;
+        private InfoBoxWindow mInfoBuildPowerhouse;
+
+        private InfoBoxWindow mInfoBuildJunkyard;
         private InfoBoxWindow mInfoBuildFactory;
         private InfoBoxWindow mInfoBuildStorage;
-        private InfoBoxWindow mInfoBuildPowerhouse;
-        private InfoBoxWindow mInfoBuildCommandcenter;
         private InfoBoxWindow mInfoBuildPackaging;
+
         private InfoBoxWindow mInfoBuildKineticTower;
         private InfoBoxWindow mInfoBuildLaserTower;
         private InfoBoxWindow mInfoBuildBarracks;
@@ -650,36 +662,57 @@ namespace Singularity.Screen.ScreenClasses
 
             #region button definitions
 
+            #region open lists 
+
+            // Open MainBuildingsList button
+            mMainBuildingsListButton = new Button(0.25f, mBlankPlatformTexture, Vector2.Zero, false);
+            mMainBuildingsListButton.ButtonClicked += OnButtonmMainBuildingsListButtonClick;
+            mMainBuildingsListButton.ButtonHovering += OnButtonmMainBuildingsListButtonHovering;
+            mMainBuildingsListButton.ButtonHoveringEnd += OnButtonmMainBuildingsListButtonHoveringEnd;
+
+            // Open ResourceProductionList button
+            mResourceProductionListButton = new Button(0.25f, mBlankPlatformTexture, Vector2.Zero, false);
+            mResourceProductionListButton.ButtonClicked += OnButtonmResourceProductionListClick;
+            mResourceProductionListButton.ButtonHovering += OnButtonmResourceProductionListHovering;
+            mResourceProductionListButton.ButtonHoveringEnd += OnButtonmResourceProductionListHoveringEnd;
+
+            // Open ResourceProcessingList button
+            mResourceProcessingButton = new Button(0.25f, mBlankPlatformTexture, Vector2.Zero, false);
+            mResourceProcessingButton.ButtonClicked += OnButtonmResourceProcessingClick;
+            mResourceProcessingButton.ButtonHovering += OnButtonmResourceProcessingHovering;
+            mResourceProcessingButton.ButtonHoveringEnd += OnButtonmResourceProcessingHoveringEnd;
+
+            // Open MilitaryBuildingList button
+            mMilitaryBuildingsListButton = new Button(0.25f, mBlankPlatformTexture, Vector2.Zero, false);
+            mMilitaryBuildingsListButton.ButtonClicked += OnButtonmMilitaryBuildingsListClick;
+            mMilitaryBuildingsListButton.ButtonHovering += OnButtonmMilitaryBuildingsListHovering;
+            mMilitaryBuildingsListButton.ButtonHoveringEnd += OnButtonmMilitaryBuildingsListHoveringEnd;
+
+            #endregion
+
+            #region main buildings
+
             // blank platform button
             mBlankPlatformButton = new Button(0.25f, mBlankPlatformTexture, Vector2.Zero, false);
             mBlankPlatformButton.ButtonClicked += OnButtonmBlankPlatformClick;
             mBlankPlatformButton.ButtonHovering += OnButtonmBlankPlatformHovering;
             mBlankPlatformButton.ButtonHoveringEnd += OnButtonmBlankPlatformHoveringEnd;
 
-            // open basic list button
-            mBasicListButton = new Button(0.25f, mBlankPlatformTexture, Vector2.Zero, false);
-            mBasicListButton.ButtonClicked += OnButtonmBasicListClick;
-            mBasicListButton.ButtonHovering += OnButtonmBasicListHovering;
-            mBasicListButton.ButtonHoveringEnd += OnButtonmBasicListHoveringEnd;
+            // road button
+            mRoadButton = new Button(0.25f, mBlankPlatformTexture, Vector2.Zero, false);
+            mRoadButton.ButtonClicked += OnButtonmRoadButtonClick;
+            mRoadButton.ButtonHovering += OnButtonmRoadButtonHovering;
+            mRoadButton.ButtonHoveringEnd += OnButtonmRoadButtonHoveringEnd;
 
-            // open special list button
-            mSpecialListButton = new Button(0.25f, mBlankPlatformTexture, Vector2.Zero, false);
-            mSpecialListButton.ButtonClicked += OnButtonmSpecialListClick;
-            mSpecialListButton.ButtonHovering += OnButtonmSpecialListHovering;
-            mSpecialListButton.ButtonHoveringEnd += OnButtonmSpecialListHoveringEnd;
+            // commandcenter platform button
+            mCommandcenterPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 1 * 175, 150, 175), Vector2.Zero, false);
+            mCommandcenterPlatformButton.ButtonClicked += OnButtonmCommandcenterPlatformClick;
+            mCommandcenterPlatformButton.ButtonHovering += OnButtonmCommandcenterPlatformHovering;
+            mCommandcenterPlatformButton.ButtonHoveringEnd += OnButtonmCommandcenterPlatformHoveringEnd;
 
-            // open military list button
-            mMilitaryListButton = new Button(0.25f, mBlankPlatformTexture, Vector2.Zero, false);
-            mMilitaryListButton.ButtonClicked += OnButtonmMilitaryListClick;
-            mMilitaryListButton.ButtonHovering += OnButtonmMilitaryListHovering;
-            mMilitaryListButton.ButtonHoveringEnd += OnButtonmMilitaryListHoveringEnd;
+            #endregion
 
-
-            // junkyard platform button
-            mJunkyardPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 2 * 130, 150, 130), Vector2.Zero, false);
-            mJunkyardPlatformButton.ButtonClicked += OnButtonmJunkyardPlatformClick;
-            mJunkyardPlatformButton.ButtonHovering += OnButtonmJunkyardPlatformHovering;
-            mJunkyardPlatformButton.ButtonHoveringEnd += OnButtonmJunkyardPlatformHoveringEnd;
+            #region resourceProduction buildings
 
             // quarry platform button
             mQuarryPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 3 * 130 + 2 * 175 + 2 * 130, 150, 130), Vector2.Zero, false);
@@ -699,6 +732,21 @@ namespace Singularity.Screen.ScreenClasses
             mWellPlatformButton.ButtonHovering += OnButtonmWellPlatformHovering;
             mWellPlatformButton.ButtonHoveringEnd += OnButtonmWellPlatformHoveringEnd;
 
+            // powerhouse platform button
+            mPowerhousePlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175, 150, 130), Vector2.Zero, false);
+            mPowerhousePlatformButton.ButtonClicked += OnButtonmPowerhousePlatformClick;
+            mPowerhousePlatformButton.ButtonHovering += OnButtonmPowerhousePlatformHovering;
+            mPowerhousePlatformButton.ButtonHoveringEnd += OnButtonmPowerhousePlatformHoveringEnd;
+
+            #endregion
+
+            #region resourceProcessing buildings
+
+            // junkyard platform button
+            mJunkyardPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 2 * 130, 150, 130), Vector2.Zero, false);
+            mJunkyardPlatformButton.ButtonClicked += OnButtonmJunkyardPlatformClick;
+            mJunkyardPlatformButton.ButtonHovering += OnButtonmJunkyardPlatformHovering;
+            mJunkyardPlatformButton.ButtonHoveringEnd += OnButtonmJunkyardPlatformHoveringEnd;
 
             // factory platform button
             mFactoryPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 130, 150, 130), Vector2.Zero, false);
@@ -712,24 +760,15 @@ namespace Singularity.Screen.ScreenClasses
             mStoragePlatformButton.ButtonHovering += OnButtonmStoragePlatformHovering;
             mStoragePlatformButton.ButtonHoveringEnd += OnButtonmStoragePlatformHoveringEnd;
 
-            // powerhouse platform button
-            mPowerhousePlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175, 150, 130), Vector2.Zero, false);
-            mPowerhousePlatformButton.ButtonClicked += OnButtonmPowerhousePlatformClick;
-            mPowerhousePlatformButton.ButtonHovering += OnButtonmPowerhousePlatformHovering;
-            mPowerhousePlatformButton.ButtonHoveringEnd += OnButtonmPowerhousePlatformHoveringEnd;
-
-            // commandcenter platform button
-            mCommandcenterPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 1 * 175, 150, 175), Vector2.Zero, false);
-            mCommandcenterPlatformButton.ButtonClicked += OnButtonmCommandcenterPlatformClick;
-            mCommandcenterPlatformButton.ButtonHovering += OnButtonmCommandcenterPlatformHovering;
-            mCommandcenterPlatformButton.ButtonHoveringEnd += OnButtonmCommandcenterPlatformHoveringEnd;
-
-
             // packaging platform button
             mPackagingPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 3 * 130 + 2 * 175 + 1 * 130, 150, 130), Vector2.Zero, false);
             mPackagingPlatformButton.ButtonClicked += OnButtonmPackagingPlatformClick;
             mPackagingPlatformButton.ButtonHovering += OnButtonmPackagingPlatformHovering;
             mPackagingPlatformButton.ButtonHoveringEnd += OnButtonmPackagingPlatformHoveringEnd;
+
+            #endregion
+
+            #region military buildings
 
             // kineticTower platform button
             mKineticTowerPlatformButton = new Button(0.25f, mOtherPlatformTexture, new Rectangle(0, 2 * 175 + 3 * 130, 150, 170), Vector2.Zero, false);
@@ -751,6 +790,8 @@ namespace Singularity.Screen.ScreenClasses
 
             #endregion
 
+            #endregion
+
             // TODO : ADD RESSOURCES TO ALL BUILD BUTTONS
             #region info when hovering over the building menu buttons
 
@@ -759,69 +800,69 @@ namespace Singularity.Screen.ScreenClasses
             var infoBoxBorderColor = Color.White;
             var infoBoxCenterColor = Color.Black;
 
-            // Build Blank Platform info
-            var infoBuildBlank = new TextField("Build Blank Platform",
+            #region listSwitching
+
+            // Open MainBuildingsList info
+            var infoMainBuildingsList = new TextField("Main Buildings",
                 Vector2.Zero,
-                mLibSans10.MeasureString("Build Blank Platform"),
-                mLibSans10, 
-                Color.White);
-            
-            var infoBuildBlankResource1 = new ResourceIWindowItem(EResourceType.Chip, 2, mLibSans10.MeasureString("Build Blank Platform"), mLibSans10);
-
-            mInfoBuildBlank = new InfoBoxWindow(
-                itemList: new List<IWindowItem> {infoBuildBlank, infoBuildBlankResource1 },
-                size: mLibSans10.MeasureString("Build Blank Platform"),
-                borderColor: infoBoxBorderColor,
-                centerColor: infoBoxCenterColor,
-                boxed: true,
-                director: mDirector);
-
-            mInfoBoxList.Add(mInfoBuildBlank);
-
-            // Open Basic List info
-            var infoBasicList = new TextField("Basic Building Menu",
-                Vector2.Zero,
-                mLibSans10.MeasureString("Basic Building Menu"),
+                mLibSans10.MeasureString("Main Buildings"),
                 mLibSans10,
                 Color.White);
 
-            mInfoBasicList = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoBasicList },
-                size: mLibSans10.MeasureString("Basic Building Menu"),
+            mInfoMainBuildingsList = new InfoBoxWindow(
+                itemList: new List<IWindowItem> { infoMainBuildingsList },
+                size: mLibSans10.MeasureString("Main Buildings"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
                 boxed: true,
                 director: mDirector);
 
-            mInfoBoxList.Add(mInfoBasicList);
+            mInfoBoxList.Add(mInfoMainBuildingsList);
 
-            // Open Special List info
-            var infoSpecialList = new TextField("Special Building Menu",
+            // Open ResourceProductionList info
+            var infoResourceProduction = new TextField("Resource Production Buildings",
                 Vector2.Zero,
-                mLibSans10.MeasureString("Special Building Menu"),
+                mLibSans10.MeasureString("Resource Production Buildings"),
+                mLibSans10,
+                Color.White);
+
+            mInfoResourceProductionList = new InfoBoxWindow(
+                itemList: new List<IWindowItem> { infoResourceProduction },
+                size: mLibSans10.MeasureString("Resource Production Buildings"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
+                boxed: true,
+                director: mDirector);
+
+            mInfoBoxList.Add(mInfoResourceProductionList);
+
+            // Open ResourceProcessingList info
+            var infoResourceProcessing = new TextField("Resource Processing Buildings",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Resource Processing Buildings"),
                 mLibSans10, 
                 Color.White);
 
-            mInfoSpecialList = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoSpecialList },
-                size: mLibSans10.MeasureString("Special Building Menu"),
+            mInfoResourceProcessingList = new InfoBoxWindow(
+                itemList: new List<IWindowItem> { infoResourceProcessing },
+                size: mLibSans10.MeasureString("Resource Processing Buildings"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
                 boxed: true,
                 director: mDirector);
 
-            mInfoBoxList.Add(mInfoSpecialList);
+            mInfoBoxList.Add(mInfoResourceProcessingList);
 
-            // Open Military List info
-            var infoMilitaryList = new TextField("Military Building Menu",
+            // Open MilitaryBuildingsList info
+            var infoMilitaryList = new TextField("Military Buildings",
                 Vector2.Zero,
-                mLibSans10.MeasureString("Military Building Menu"),
+                mLibSans10.MeasureString("Military Buildings"),
                 mLibSans10, 
                 Color.White);
 
             mInfoMilitaryList = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoMilitaryList },
-                size: mLibSans10.MeasureString("Military Building Menu"),
+                size: mLibSans10.MeasureString("Military Buildings"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
                 boxed: true,
@@ -829,33 +870,129 @@ namespace Singularity.Screen.ScreenClasses
 
             mInfoBoxList.Add(mInfoMilitaryList);
 
-            // Build Junkyard info
-            var infoJunkyard = new TextField("Build Junkyard",
+            #endregion
+
+            #region mainBuildings
+
+            // Build Blank Platform info
+            var infoBuildBlank = new TextField("Blank Platform",
                 Vector2.Zero,
-                mLibSans10.MeasureString("Build Junkyard"),
-                mLibSans10, 
+                mLibSans10.MeasureString("Blank Platform"),
+                mLibSans10,
                 Color.White);
 
-            mInfoBuildJunkyard = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoJunkyard },
-                size: mLibSans10.MeasureString("Build Junkyard"),
+            var infoBuildBlankStone = new ResourceIWindowItem(
+                EResourceType.Stone,
+                1,
+                mLibSans10.MeasureString("Blank Platform"),
+                mLibSans10);
+
+            var infoBuildBlankMetal = new ResourceIWindowItem(
+                EResourceType.Metal,
+                1,
+                mLibSans10.MeasureString("Blank Platform"),
+                mLibSans10);
+
+            mInfoBuildBlank = new InfoBoxWindow(
+                itemList: new List<IWindowItem> { infoBuildBlank, infoBuildBlankStone, infoBuildBlankMetal },
+                size: mLibSans10.MeasureString("Blank Platform"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
                 boxed: true,
                 director: mDirector);
 
-            mInfoBoxList.Add(mInfoBuildJunkyard);
+            mInfoBoxList.Add(mInfoBuildBlank);
+
+            // Build Road info
+            var infoRoad = new TextField("Road",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Road"),
+                mLibSans10,
+                Color.White);
+
+            var infoRoadStone = new ResourceIWindowItem(
+                EResourceType.Stone,
+                1,
+                mLibSans10.MeasureString("Road"),
+                mLibSans10);
+
+            var infoRoadMetal = new ResourceIWindowItem(
+                EResourceType.Metal,
+                1,
+                mLibSans10.MeasureString("Road"),
+                mLibSans10);
+
+            mInfoBuildRoad = new InfoBoxWindow(
+                itemList: new List<IWindowItem> { infoRoad, infoRoadStone, infoRoadMetal },
+                size: mLibSans10.MeasureString("Road"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
+                boxed: true,
+                director: mDirector);
+
+            mInfoBoxList.Add(mInfoBuildRoad);
+
+            // Build Commandcenter info
+            var infoCommandcenter = new TextField("Commandcenter",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Commandcenter"),
+                mLibSans10,
+                Color.White);
+
+            var infoCommandConcrete = new ResourceIWindowItem(
+                EResourceType.Concrete,
+                1,
+                mLibSans10.MeasureString("Commandcenter"),
+                mLibSans10);
+
+            var infoCommandChip = new ResourceIWindowItem(
+                EResourceType.Chip,
+                1,
+                mLibSans10.MeasureString("Commandcenter"),
+                mLibSans10);
+
+            var infoCommandSteel = new ResourceIWindowItem(
+                EResourceType.Steel,
+                1,
+                mLibSans10.MeasureString("Commandcenter"),
+                mLibSans10);
+
+            mInfoBuildCommandcenter = new InfoBoxWindow(
+                itemList: new List<IWindowItem> { infoCommandcenter, infoCommandConcrete, infoCommandChip, infoCommandSteel },
+                size: mLibSans10.MeasureString("Commandcenter"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
+                boxed: true,
+                director: mDirector);
+
+            mInfoBoxList.Add(mInfoBuildCommandcenter);
+
+            #endregion
+
+            #region resourceProductionBuildings
 
             // Build Quarry info
-            var infoQuarry = new TextField("Build Quarry",
+            var infoQuarry = new TextField("Quarry",
                 Vector2.Zero,
-                mLibSans10.MeasureString("Build Quarry"),
+                mLibSans10.MeasureString("Quarry"),
                 mLibSans10, 
                 Color.White);
 
+            var infoBuildQuarryStone = new ResourceIWindowItem(
+                EResourceType.Stone,
+                1,
+                mLibSans10.MeasureString("Quarry"),
+                mLibSans10);
+
+            var infoBuildQuarryMetal = new ResourceIWindowItem(
+                EResourceType.Metal,
+                1,
+                mLibSans10.MeasureString("Quarry"),
+                mLibSans10);
+
             mInfoBuildQuarry = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoQuarry },
-                size: mLibSans10.MeasureString("Build Quarry"),
+                itemList: new List<IWindowItem> { infoQuarry, infoBuildQuarryStone, infoBuildQuarryMetal },
+                size: mLibSans10.MeasureString("Quarry"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
                 boxed: true,
@@ -864,15 +1001,27 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoBuildQuarry);
 
             // Build Mine info
-            var infoMine = new TextField("Build Mine",
+            var infoMine = new TextField("Mine",
                 Vector2.Zero,
-                mLibSans10.MeasureString("Build Mine"),
+                mLibSans10.MeasureString("Mine"),
                 mLibSans10, 
                 Color.White);
 
+            var infoBuildMineStone = new ResourceIWindowItem(
+                EResourceType.Stone,
+                1,
+                mLibSans10.MeasureString("Mine"),
+                mLibSans10);
+
+            var infoBuildMineMetal = new ResourceIWindowItem(
+                EResourceType.Metal,
+                1,
+                mLibSans10.MeasureString("Mine"),
+                mLibSans10);
+
             mInfoBuildMine = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoMine },
-                size: mLibSans10.MeasureString("Build Mine"),
+                itemList: new List<IWindowItem> { infoMine, infoBuildMineStone, infoBuildMineMetal },
+                size: mLibSans10.MeasureString("Mine"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
                 boxed: true,
@@ -881,15 +1030,27 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoBuildMine);
 
             // Build Well info
-            var infoWell = new TextField("Build Well",
+            var infoWell = new TextField("Well",
                 Vector2.Zero,
-                mLibSans10.MeasureString("Build Well"),
+                mLibSans10.MeasureString("Well"),
                 mLibSans10, 
                 Color.White);
 
+            var infoBuildWellStone = new ResourceIWindowItem(
+                EResourceType.Stone,
+                1,
+                mLibSans10.MeasureString("Well"),
+                mLibSans10);
+
+            var infoBuildWellMetal = new ResourceIWindowItem(
+                EResourceType.Metal,
+                1,
+                mLibSans10.MeasureString("Well"),
+                mLibSans10);
+
             mInfoBuildWell = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoWell },
-                size: mLibSans10.MeasureString("Build Well"),
+                itemList: new List<IWindowItem> { infoWell, infoBuildWellStone, infoBuildWellMetal },
+                size: mLibSans10.MeasureString("Well"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
                 boxed: true,
@@ -897,16 +1058,108 @@ namespace Singularity.Screen.ScreenClasses
 
             mInfoBoxList.Add(mInfoBuildWell);
 
-            // Build Factory info
-            var infoFactory = new TextField("Build Factory",
+            // Build Powerhouse info
+            var infoPowerhouse = new TextField("Powerhouse",
                 Vector2.Zero,
-                mLibSans10.MeasureString("Build Factory"),
+                mLibSans10.MeasureString("Powerhouse"),
                 mLibSans10,
                 Color.White);
 
+            var infoBuildPowerhouseCopper = new ResourceIWindowItem(
+                EResourceType.Copper,
+                1,
+                mLibSans10.MeasureString("Powerhouse"),
+                mLibSans10);
+
+            var infoBuildPowerhouseMetal = new ResourceIWindowItem(
+                EResourceType.Metal,
+                1,
+                mLibSans10.MeasureString("Powerhouse"),
+                mLibSans10);
+
+            var infoBuildPowerhouseSilicon = new ResourceIWindowItem(
+                EResourceType.Silicon,
+                1,
+                mLibSans10.MeasureString("Powerhouse"),
+                mLibSans10);
+
+            mInfoBuildPowerhouse = new InfoBoxWindow(
+                itemList: new List<IWindowItem> { infoPowerhouse, infoBuildPowerhouseCopper, infoBuildPowerhouseMetal, infoBuildPowerhouseSilicon },
+                size: mLibSans10.MeasureString("Powerhouse"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
+                boxed: true,
+                director: mDirector);
+
+            mInfoBoxList.Add(mInfoBuildPowerhouse);
+
+            #endregion
+
+            #region resourceProcessingBuildings
+
+            // Build Junkyard info
+            var infoJunkyard = new TextField("Junkyard",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Junkyard"),
+                mLibSans10,
+                Color.White);
+
+            var infoBuildJunkyardStone = new ResourceIWindowItem(
+                EResourceType.Stone,
+                1,
+                mLibSans10.MeasureString("Junkyard"),
+                mLibSans10);
+
+            var infoBuildJunkyardMetal = new ResourceIWindowItem(
+                EResourceType.Metal,
+                1,
+                mLibSans10.MeasureString("Junkyard"),
+                mLibSans10);
+
+            var infoBuildJunkyardWater = new ResourceIWindowItem(
+                EResourceType.Water,
+                1,
+                mLibSans10.MeasureString("Junkyard"),
+                mLibSans10);
+
+            mInfoBuildJunkyard = new InfoBoxWindow(
+                itemList: new List<IWindowItem> { infoJunkyard, infoBuildJunkyardStone, infoBuildJunkyardMetal, infoBuildJunkyardWater },
+                size: mLibSans10.MeasureString("Junkyard"),
+                borderColor: infoBoxBorderColor,
+                centerColor: infoBoxCenterColor,
+                boxed: true,
+                director: mDirector);
+
+            mInfoBoxList.Add(mInfoBuildJunkyard);
+
+            // Build Factory info
+            var infoFactory = new TextField("Factory",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Factory"),
+                mLibSans10,
+                Color.White);
+
+            var infoBuildFactoryStone = new ResourceIWindowItem(
+                EResourceType.Stone,
+                1,
+                mLibSans10.MeasureString("Factory"),
+                mLibSans10);
+
+            var infoBuildFactoryMetal = new ResourceIWindowItem(
+                EResourceType.Metal,
+                1,
+                mLibSans10.MeasureString("Factory"),
+                mLibSans10);
+
+            var infoBuildFactoryWater = new ResourceIWindowItem(
+                EResourceType.Water,
+                1,
+                mLibSans10.MeasureString("Factory"),
+                mLibSans10);
+
             mInfoBuildFactory = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoFactory },
-                size: mLibSans10.MeasureString("Build Factory"),
+                itemList: new List<IWindowItem> { infoFactory, infoBuildFactoryStone, infoBuildFactoryMetal, infoBuildFactoryWater },
+                size: mLibSans10.MeasureString("Factory"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
                 boxed: true,
@@ -915,15 +1168,27 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoBuildFactory);
 
             // Build Storage info
-            var infoStorage = new TextField("Build Storage",
+            var infoStorage = new TextField("Storage",
                 Vector2.Zero,
-                mLibSans10.MeasureString("Build Storage"),
+                mLibSans10.MeasureString("Storage"),
                 mLibSans10, 
                 Color.White);
 
+            var infoBuildStorageConcrete = new ResourceIWindowItem(
+                EResourceType.Concrete,
+                1,
+                mLibSans10.MeasureString("Storage"),
+                mLibSans10);
+
+            var infoBuildStorageMetal = new ResourceIWindowItem(
+                EResourceType.Metal,
+                1,
+                mLibSans10.MeasureString("Storage"),
+                mLibSans10);
+
             mInfoBuildStorage = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoStorage },
-                size: mLibSans10.MeasureString("Build Storage"),
+                itemList: new List<IWindowItem> { infoStorage, infoBuildStorageConcrete, infoBuildStorageMetal },
+                size: mLibSans10.MeasureString("Storage"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
                 boxed: true,
@@ -931,50 +1196,16 @@ namespace Singularity.Screen.ScreenClasses
 
             mInfoBoxList.Add(mInfoBuildStorage);
 
-            // Build Powerhouse info
-            var infoPowerhouse = new TextField("Build Powerhouse",
-                Vector2.Zero,
-                mLibSans10.MeasureString("Build Powerhouse"),
-                mLibSans10, 
-                Color.White);
-
-            mInfoBuildPowerhouse = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoPowerhouse },
-                size: mLibSans10.MeasureString("Build Powerhouse"),
-                borderColor: infoBoxBorderColor,
-                centerColor: infoBoxCenterColor,
-                boxed: true,
-                director: mDirector);
-
-            mInfoBoxList.Add(mInfoBuildPowerhouse);
-
-            // Build Commandcenter info
-            var infoCommandcenter = new TextField("Build Commandcenter",
-                Vector2.Zero,
-                mLibSans10.MeasureString("Build Commandcenter"),
-                mLibSans10, 
-                Color.White);
-
-            mInfoBuildCommandcenter = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoCommandcenter },
-                size: mLibSans10.MeasureString("Build Commandcenter"),
-                borderColor: infoBoxBorderColor,
-                centerColor: infoBoxCenterColor,
-                boxed: true,
-                director: mDirector);
-
-            mInfoBoxList.Add(mInfoBuildCommandcenter);
-
             // Build Packaging info
-            var infoPackaging = new TextField("Build Packaging",
+            var infoPackaging = new TextField("Packaging",
                 Vector2.Zero,
-                mLibSans10.MeasureString("Build Packaging"),
+                mLibSans10.MeasureString("Packaging"),
                 mLibSans10, 
                 Color.White);
 
             mInfoBuildPackaging = new InfoBoxWindow(
                 itemList: new List<IWindowItem> { infoPackaging },
-                size: mLibSans10.MeasureString("Build Packaging"),
+                size: mLibSans10.MeasureString("Packaging"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
                 boxed: true,
@@ -982,16 +1213,32 @@ namespace Singularity.Screen.ScreenClasses
 
             mInfoBoxList.Add(mInfoBuildPackaging);
 
+            #endregion
+
+            #region militaryBuildings
+
             // Build Kinetic Tower info
-            var infoKineticTower = new TextField("Build Kinetic Tower",
+            var infoKineticTower = new TextField("Kinetic Tower",
                 Vector2.Zero,
-                mLibSans10.MeasureString("Build Kinetic Tower"),
+                mLibSans10.MeasureString("Kinetic Tower"),
                 mLibSans10, 
                 Color.White);
 
+            var infoBuildKineticTowerConcrete = new ResourceIWindowItem(
+                EResourceType.Concrete,
+                1,
+                mLibSans10.MeasureString("Kinetic Tower"),
+                mLibSans10);
+
+            var infoBuildKineticTowerMetal = new ResourceIWindowItem(
+                EResourceType.Metal,
+                1,
+                mLibSans10.MeasureString("Kinetic Tower"),
+                mLibSans10);
+
             mInfoBuildKineticTower = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoKineticTower },
-                size: mLibSans10.MeasureString("Build Kinetic Tower"),
+                itemList: new List<IWindowItem> { infoKineticTower, infoBuildKineticTowerConcrete, infoBuildKineticTowerMetal },
+                size: mLibSans10.MeasureString("Kinetic Tower"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
                 boxed: true,
@@ -1000,15 +1247,27 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoBuildKineticTower);
 
             // Build Laser Tower info
-            var infoLaserTower = new TextField("Build Laser Tower",
+            var infoLaserTower = new TextField("Laser Tower",
                 Vector2.Zero,
-                mLibSans10.MeasureString("Build Laser Tower"),
+                mLibSans10.MeasureString("Laser Tower"),
                 mLibSans10, 
                 Color.White);
 
+            var infoBuildLaserTowerConcrete = new ResourceIWindowItem(
+                EResourceType.Concrete,
+                1,
+                mLibSans10.MeasureString("Laser Tower"),
+                mLibSans10);
+
+            var infoBuildLaserTowerMetal = new ResourceIWindowItem(
+                EResourceType.Metal,
+                1,
+                mLibSans10.MeasureString("Laser Tower"),
+                mLibSans10);
+
             mInfoBuildLaserTower = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoLaserTower },
-                size: mLibSans10.MeasureString("Build Laser Tower"),
+                itemList: new List<IWindowItem> { infoLaserTower, infoBuildLaserTowerConcrete, infoBuildLaserTowerMetal },
+                size: mLibSans10.MeasureString("Laser Tower"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
                 boxed: true,
@@ -1017,15 +1276,33 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBoxList.Add(mInfoBuildLaserTower);
 
             // Build Barracks info
-            var infoBarracks = new TextField("Build Barracks",
+            var infoBarracks = new TextField("Barracks",
                 Vector2.Zero,
-                mLibSans10.MeasureString("Build Barracks"),
+                mLibSans10.MeasureString("Barracks"),
                 mLibSans10, 
                 Color.White);
 
+            var infoBuildBarracksSteel = new ResourceIWindowItem(
+                EResourceType.Steel,
+                1,
+                mLibSans10.MeasureString("Barracks"),
+                mLibSans10);
+
+            var infoBuildBarracksConcrete = new ResourceIWindowItem(
+                EResourceType.Concrete,
+                1,
+                mLibSans10.MeasureString("Barracks"),
+                mLibSans10);
+
+            var infoBuildBarracksChip = new ResourceIWindowItem(
+                EResourceType.Chip,
+                1,
+                mLibSans10.MeasureString("Barracks"),
+                mLibSans10);
+
             mInfoBuildBarracks = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoBarracks },
-                size: mLibSans10.MeasureString("Build Barracks"),
+                itemList: new List<IWindowItem> { infoBarracks, infoBuildBarracksSteel, infoBuildBarracksConcrete, infoBuildBarracksChip },
+                size: mLibSans10.MeasureString("Barracks"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
                 boxed: true,
@@ -1035,27 +1312,33 @@ namespace Singularity.Screen.ScreenClasses
 
             #endregion
 
+            #endregion
+
             #region put buttons -> buttonList -> horizontalCollection -> buildmenu -> windowList
 
             // create lists each containing all the buttons to place in one row
-            var topList = new List<IWindowItem> { mBlankPlatformButton, mBasicListButton, mSpecialListButton, mMilitaryListButton };
-            var basicList = new List<IWindowItem> { mFactoryPlatformButton, mStoragePlatformButton, mPowerhousePlatformButton, mCommandcenterPlatformButton };
-            var specialList = new List<IWindowItem> { mJunkyardPlatformButton, mQuarryPlatformButton, mMinePlatformButton, mWellPlatformButton };
-            var militaryList = new List<IWindowItem> { mPackagingPlatformButton, mKineticTowerPlatformButton, mLaserTowerPlatformButton, mBarracksPlatformButton };
+            var listSwitchingList = new List<IWindowItem> { mMainBuildingsListButton, mResourceProductionListButton, mResourceProcessingButton, mMilitaryBuildingsListButton };
+            var mainBuildingsList = new List<IWindowItem> { mBlankPlatformButton, mRoadButton, mCommandcenterPlatformButton };
+            var resourceProductionBuildingsList = new List<IWindowItem> { mQuarryPlatformButton, mMinePlatformButton, mWellPlatformButton , mPowerhousePlatformButton };
+            var resourceProcessingBuildingsList = new List<IWindowItem> { mJunkyardPlatformButton, mFactoryPlatformButton, mStoragePlatformButton, mPackagingPlatformButton};
+            var militaryBuildingsList = new List<IWindowItem> { mKineticTowerPlatformButton, mLaserTowerPlatformButton, mBarracksPlatformButton };
             // create the horizontalCollection objects which process the button-row placement
-            mButtonTopList = new HorizontalCollection(topList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
-            mButtonBasicList = new HorizontalCollection(basicList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
-            mButtonSpecialList = new HorizontalCollection(specialList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
-            mButtonMilitaryList = new HorizontalCollection(militaryList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
-            // add the all horizontalCollection to the build menu window, but deactivate all but topList
-            // (they get activated if the corresponding button is pressed)
-            mBuildMenuWindow.AddItem(mButtonTopList);
-            mBuildMenuWindow.AddItem(mButtonBasicList);
-            mButtonBasicList.ActiveHorizontalCollection = true;
-            mBuildMenuWindow.AddItem(mButtonSpecialList);
-            mButtonSpecialList.ActiveHorizontalCollection = false;
-            mBuildMenuWindow.AddItem(mButtonMilitaryList);
-            mButtonMilitaryList.ActiveHorizontalCollection = false;
+            mListSwitchingList = new HorizontalCollection(listSwitchingList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
+            mMainBuildingsList = new HorizontalCollection(mainBuildingsList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
+            mResourceProductionList = new HorizontalCollection(resourceProductionBuildingsList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
+            mResourceProcessingList = new HorizontalCollection(resourceProcessingBuildingsList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
+            mMilitaryBuildingList = new HorizontalCollection(militaryBuildingsList, new Vector2(buildMenuWidth - 30, mBlankPlatformButton.Size.X), Vector2.Zero);
+            // add the all horizontalCollection to the build menu window, deactivate all but listswitcher + mainBuildingsList
+            mBuildMenuWindow.AddItem(mListSwitchingList);
+            mListSwitchingList.ActiveHorizontalCollection = true;
+            mBuildMenuWindow.AddItem(mMainBuildingsList);
+            mMainBuildingsList.ActiveHorizontalCollection = true;
+            mBuildMenuWindow.AddItem(mResourceProductionList);
+            mResourceProductionList.ActiveHorizontalCollection = false;
+            mBuildMenuWindow.AddItem(mResourceProcessingList);
+            mResourceProcessingList.ActiveHorizontalCollection = false;
+            mBuildMenuWindow.AddItem(mMilitaryBuildingList);
+            mMilitaryBuildingList.ActiveHorizontalCollection = false;
 
             // add the build menu to the UI's windowList
             mWindowList.Add(mBuildMenuWindow);
@@ -1465,34 +1748,55 @@ namespace Singularity.Screen.ScreenClasses
 
         #region button management
 
-        // mouse click on basic list button opens the basic platform build menu
-        private void OnButtonmBasicListClick(object sender, EventArgs eventArgs)
+        #region buildMenu
+
+        #region listSwitchings in buildMenu
+
+        // click on mainBuildings button opens the mainBuildingsList
+        private void OnButtonmMainBuildingsListButtonClick(object sender, EventArgs eventArgs)
         {
-            // on click open the basic platform list + close all open lists
-            mButtonBasicList.ActiveHorizontalCollection = true;
-            mButtonSpecialList.ActiveHorizontalCollection = false;
-            mButtonMilitaryList.ActiveHorizontalCollection = false;
+            // on click open the mainBuildingsList + close all other lists
+            mMainBuildingsList.ActiveHorizontalCollection = true;
+            mResourceProductionList.ActiveHorizontalCollection = false;
+            mResourceProcessingList.ActiveHorizontalCollection = false;
+            mMilitaryBuildingList.ActiveHorizontalCollection = false;
         }
 
-        // mouse click on special list button opens the special platform build menu
-        private void OnButtonmSpecialListClick(object sender, EventArgs eventArgs)
+        // click on resourceProduction button opens the resourceProductionList
+        private void OnButtonmResourceProductionListClick(object sender, EventArgs eventArgs)
         {
-            // on click open the basic platform list + close all open lists
-            mButtonBasicList.ActiveHorizontalCollection = false;
-            mButtonSpecialList.ActiveHorizontalCollection = true;
-            mButtonMilitaryList.ActiveHorizontalCollection = false;
+            // on click open the resourceProductionList + close all other lists
+            mMainBuildingsList.ActiveHorizontalCollection = false;
+            mResourceProductionList.ActiveHorizontalCollection = true;
+            mResourceProcessingList.ActiveHorizontalCollection = false;
+            mMilitaryBuildingList.ActiveHorizontalCollection = false;
         }
 
-        // a click on military button opens the military build menu
-        private void OnButtonmMilitaryListClick(object sender, EventArgs eventArgs)
+        // mouse click on resourceProcessing button opens the resourceProcessingList
+        private void OnButtonmResourceProcessingClick(object sender, EventArgs eventArgs)
         {
-            // on click open the basic platform list + close all open lists
-            mButtonBasicList.ActiveHorizontalCollection = false;
-            mButtonSpecialList.ActiveHorizontalCollection = false;
-            mButtonMilitaryList.ActiveHorizontalCollection = true;
+            // on click open the resourceProcessingList + close all other lists
+            mMainBuildingsList.ActiveHorizontalCollection = false;
+            mResourceProductionList.ActiveHorizontalCollection = false;
+            mResourceProcessingList.ActiveHorizontalCollection = true;
+            mMilitaryBuildingList.ActiveHorizontalCollection = false;
         }
 
-        #region platform placement
+        // a click on militaryBuildings button opens the militaryBuildingsList
+        private void OnButtonmMilitaryBuildingsListClick(object sender, EventArgs eventArgs)
+        {
+            // on click open the militaryBuildingsList + close all other lists
+            mMainBuildingsList.ActiveHorizontalCollection = false;
+            mResourceProductionList.ActiveHorizontalCollection = false;
+            mResourceProcessingList.ActiveHorizontalCollection = false;
+            mMilitaryBuildingList.ActiveHorizontalCollection = true;
+        }
+
+        #endregion
+
+        #region placements
+
+        #region mainBuildings
 
         private void OnButtonmBlankPlatformClick(object sender, EventArgs eventArgs)
         {
@@ -1518,7 +1822,12 @@ namespace Singularity.Screen.ScreenClasses
 
         }
 
-        private void OnButtonmJunkyardPlatformClick(object sender, EventArgs eventArgs)
+        private void OnButtonmRoadButtonClick(object sender, EventArgs eventArgs)
+        {
+            // TODO : ROAD PLACEMENT
+        }
+
+        private void OnButtonmCommandcenterPlatformClick(object sender, EventArgs eventArgs)
         {
             if (!mCanBuildPlatform)
             {
@@ -1526,7 +1835,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Junkyard,
+                EPlatformType.Command,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -1539,6 +1848,10 @@ namespace Singularity.Screen.ScreenClasses
 
             mCanBuildPlatform = false;
         }
+
+        #endregion
+
+        #region resourceProductionBuildings
 
         private void OnButtonmQuarryPlatformClick(object sender, EventArgs eventArgs)
         {
@@ -1606,6 +1919,54 @@ namespace Singularity.Screen.ScreenClasses
             mCanBuildPlatform = false;
         }
 
+        private void OnButtonmPowerhousePlatformClick(object sender, EventArgs eventArgs)
+        {
+            if (!mCanBuildPlatform)
+            {
+                return;
+            }
+
+            mPlatformToPlace = new StructurePlacer(
+                EPlatformType.Energy,
+                EPlacementType.PlatformMouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+
+            mCanBuildPlatform = false;
+        }
+
+        #endregion
+
+        #region resourceProcessingBuidings
+
+        private void OnButtonmJunkyardPlatformClick(object sender, EventArgs eventArgs)
+        {
+            if (!mCanBuildPlatform)
+            {
+                return;
+            }
+
+            mPlatformToPlace = new StructurePlacer(
+                EPlatformType.Junkyard,
+                EPlacementType.PlatformMouseFollowAndRoad,
+                EScreen.UserInterfaceScreen,
+                mCamera,
+                ref mDirector,
+                0f,
+                0f,
+                mResourceMap);
+
+            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
+
+            mCanBuildPlatform = false;
+        }
+
         private void OnButtonmFactoryPlatformClick(object sender, EventArgs eventArgs)
         {
             if (!mCanBuildPlatform)
@@ -1650,50 +2011,6 @@ namespace Singularity.Screen.ScreenClasses
             mCanBuildPlatform = false;
         }
 
-        private void OnButtonmPowerhousePlatformClick(object sender, EventArgs eventArgs)
-        {
-            if (!mCanBuildPlatform)
-            {
-                return;
-            }
-
-            mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Energy,
-                EPlacementType.PlatformMouseFollowAndRoad,
-                EScreen.UserInterfaceScreen,
-                mCamera,
-                ref mDirector,
-                0f,
-                0f,
-                mResourceMap);
-
-            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
-
-            mCanBuildPlatform = false;
-        }
-
-        private void OnButtonmCommandcenterPlatformClick(object sender, EventArgs eventArgs)
-        {
-            if (!mCanBuildPlatform)
-            {
-                return;
-            }
-
-            mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Command,
-                EPlacementType.PlatformMouseFollowAndRoad,
-                EScreen.UserInterfaceScreen,
-                mCamera,
-                ref mDirector,
-                0f,
-                0f,
-                mResourceMap);
-
-            mStructureMap.AddPlatformToPlace(mPlatformToPlace);
-
-            mCanBuildPlatform = false;
-        }
-
         private void OnButtonmPackagingPlatformClick(object sender, EventArgs eventArgs)
         {
             if (!mCanBuildPlatform)
@@ -1714,6 +2031,10 @@ namespace Singularity.Screen.ScreenClasses
 
             mCanBuildPlatform = false;
         }
+
+        #endregion
+
+        #region militaryBuildings
 
         private void OnButtonmKineticTowerPlatformClick(object sender, EventArgs eventArgs)
         {
@@ -1783,142 +2104,72 @@ namespace Singularity.Screen.ScreenClasses
 
         #endregion
 
-        // All build buttons show a little info window mouse is hovering of costs + name of what gets build
+        #endregion
+
+        // All build buttons show a little info window when hovering
         #region buttonHovering Info
 
         // NOTICE : all following hovering- or hoveringEnd- methods do basically the same:
         //              - hovering: activate infoBox and set Rectangle
-        //              - hoveringEnd: deactivate ALL infoBoxes
+        //              - hoveringEnd: deactivate infoBox
+        #region listSwitching
+
+        private void OnButtonmMainBuildingsListButtonHovering(object sender, EventArgs eventArgs)
+        {
+            mInfoMainBuildingsList.Active = true;
+        }
+        private void OnButtonmMainBuildingsListButtonHoveringEnd(object sender, EventArgs eventArgs)
+        {
+            mInfoMainBuildingsList.Active = false;
+        }
+
+        private void OnButtonmResourceProductionListHovering(object sender, EventArgs eventArgs)
+        {
+            mInfoResourceProductionList.Active = true;
+        }
+        private void OnButtonmResourceProductionListHoveringEnd(object sender, EventArgs eventArgs)
+        {
+            mInfoResourceProductionList.Active = false;
+        }
+
+        private void OnButtonmResourceProcessingHovering(object sender, EventArgs eventArgs)
+        {
+            mInfoResourceProcessingList.Active = true;
+        }
+        private void OnButtonmResourceProcessingHoveringEnd(object sender, EventArgs eventArgs)
+        {
+            mInfoResourceProcessingList.Active = false;
+        }
+
+        private void OnButtonmMilitaryBuildingsListHovering(object sender, EventArgs eventArgs)
+        {
+            mInfoMilitaryList.Active = true;
+        }
+        private void OnButtonmMilitaryBuildingsListHoveringEnd(object sender, EventArgs eventArgs)
+        {
+            mInfoMilitaryList.Active = false;
+        }
+
+        #endregion
+
+        #region mainBuildings 
+
         private void OnButtonmBlankPlatformHovering(object sender, EventArgs eventArgs)
         {
             mInfoBuildBlank.Active = true;
         }
         private void OnButtonmBlankPlatformHoveringEnd(object sender, EventArgs eventArgs)
         {
-            foreach (var infoBox in mInfoBoxList)
-            {
-                infoBox.Active = false;
-            }
+            mInfoBuildBlank.Active = false;
         }
 
-        private void OnButtonmBasicListHovering(object sender, EventArgs eventArgs)
+        private void OnButtonmRoadButtonHovering(object sender, EventArgs eventArgs)
         {
-            mInfoBasicList.Active = true;
+            mInfoBuildRoad.Active = true;
         }
-        private void OnButtonmBasicListHoveringEnd(object sender, EventArgs eventArgs)
+        private void OnButtonmRoadButtonHoveringEnd(object sender, EventArgs eventArgs)
         {
-            foreach (var infoBox in mInfoBoxList)
-            {
-                infoBox.Active = false;
-            }
-        }
-
-        private void OnButtonmSpecialListHovering(object sender, EventArgs eventArgs)
-        {
-            mInfoSpecialList.Active = true;
-        }
-        private void OnButtonmSpecialListHoveringEnd(object sender, EventArgs eventArgs)
-        {
-            foreach (var infoBox in mInfoBoxList)
-            {
-                infoBox.Active = false;
-            }
-        }
-
-        private void OnButtonmMilitaryListHovering(object sender, EventArgs eventArgs)
-        {
-            mInfoMilitaryList.Active = true;
-        }
-        private void OnButtonmMilitaryListHoveringEnd(object sender, EventArgs eventArgs)
-        {
-            foreach (var infoBox in mInfoBoxList)
-            {
-                infoBox.Active = false;
-            }
-        }
-
-        private void OnButtonmJunkyardPlatformHovering(object sender, EventArgs eventArgs)
-        {
-            mInfoBuildJunkyard.Active = true;
-        }
-        private void OnButtonmJunkyardPlatformHoveringEnd(object sender, EventArgs eventArgs)
-        {
-            foreach (var infoBox in mInfoBoxList)
-            {
-                infoBox.Active = false;
-            }
-        }
-
-        private void OnButtonmQuarryPlatformHovering(object sender, EventArgs eventArgs)
-        {
-            mInfoBuildQuarry.Active = true;
-        }
-        private void OnButtonmQuarryPlatformHoveringEnd(object sender, EventArgs eventArgs)
-        {
-            foreach (var infoBox in mInfoBoxList)
-            {
-                infoBox.Active = false;
-            }
-        }
-
-        private void OnButtonmMinePlatformHovering(object sender, EventArgs eventArgs)
-        {
-            mInfoBuildMine.Active = true;
-        }
-        private void OnButtonmMinePlatformHoveringEnd(object sender, EventArgs eventArgs)
-        {
-            foreach (var infoBox in mInfoBoxList)
-            {
-                infoBox.Active = false;
-            }
-        }
-
-        private void OnButtonmWellPlatformHovering(object sender, EventArgs eventArgs)
-        {
-            mInfoBuildWell.Active = true;
-        }
-        private void OnButtonmWellPlatformHoveringEnd(object sender, EventArgs eventArgs)
-        {
-            foreach (var infoBox in mInfoBoxList)
-            {
-                infoBox.Active = false;
-            }
-        }
-
-        private void OnButtonmFactoryPlatformHovering(object sender, EventArgs eventArgs)
-        {
-            mInfoBuildFactory.Active = true;
-        }
-        private void OnButtonmFactoryPlatformHoveringEnd(object sender, EventArgs eventArgs)
-        {
-            foreach (var infoBox in mInfoBoxList)
-            {
-                infoBox.Active = false;
-            }
-        }
-
-        private void OnButtonmStoragePlatformHovering(object sender, EventArgs eventArgs)
-        {
-            mInfoBuildStorage.Active = true;
-        }
-        private void OnButtonmStoragePlatformHoveringEnd(object sender, EventArgs eventArgs)
-        {
-            foreach (var infoBox in mInfoBoxList)
-            {
-                infoBox.Active = false;
-            }
-        }
-
-        private void OnButtonmPowerhousePlatformHovering(object sender, EventArgs eventArgs)
-        {
-            mInfoBuildPowerhouse.Active = true;
-        }
-        private void OnButtonmPowerhousePlatformHoveringEnd(object sender, EventArgs eventArgs)
-        {
-            foreach (var infoBox in mInfoBoxList)
-            {
-                infoBox.Active = false;
-            }
+            mInfoBuildRoad.Active = false;
         }
 
         private void OnButtonmCommandcenterPlatformHovering(object sender, EventArgs eventArgs)
@@ -1927,10 +2178,77 @@ namespace Singularity.Screen.ScreenClasses
         }
         private void OnButtonmCommandcenterPlatformHoveringEnd(object sender, EventArgs eventArgs)
         {
-            foreach (var infoBox in mInfoBoxList)
-            {
-                infoBox.Active = false;
-            }
+            mInfoBuildCommandcenter.Active = false;
+        }
+
+        #endregion
+
+        #region resourceProduction
+
+        private void OnButtonmQuarryPlatformHovering(object sender, EventArgs eventArgs)
+        {
+            mInfoBuildQuarry.Active = true;
+        }
+        private void OnButtonmQuarryPlatformHoveringEnd(object sender, EventArgs eventArgs)
+        {
+            mInfoBuildQuarry.Active = false;
+        }
+
+        private void OnButtonmMinePlatformHovering(object sender, EventArgs eventArgs)
+        {
+            mInfoBuildMine.Active = true;
+        }
+        private void OnButtonmMinePlatformHoveringEnd(object sender, EventArgs eventArgs)
+        {
+            mInfoBuildMine.Active = false;
+        }
+
+        private void OnButtonmWellPlatformHovering(object sender, EventArgs eventArgs)
+        {
+            mInfoBuildWell.Active = true;
+        }
+        private void OnButtonmWellPlatformHoveringEnd(object sender, EventArgs eventArgs)
+        {
+            mInfoBuildWell.Active = false;
+        }
+
+        private void OnButtonmPowerhousePlatformHovering(object sender, EventArgs eventArgs)
+        {
+            mInfoBuildPowerhouse.Active = true;
+        }
+        private void OnButtonmPowerhousePlatformHoveringEnd(object sender, EventArgs eventArgs)
+        {
+            mInfoBuildPowerhouse.Active = false;
+        }
+
+        #endregion
+
+        #region resourceProcessing
+
+        private void OnButtonmJunkyardPlatformHovering(object sender, EventArgs eventArgs)
+        {
+            mInfoBuildJunkyard.Active = true;
+        }
+        private void OnButtonmJunkyardPlatformHoveringEnd(object sender, EventArgs eventArgs)
+        {
+            mInfoBuildJunkyard.Active = false;
+        }
+        private void OnButtonmFactoryPlatformHovering(object sender, EventArgs eventArgs)
+        {
+            mInfoBuildFactory.Active = true;
+        }
+        private void OnButtonmFactoryPlatformHoveringEnd(object sender, EventArgs eventArgs)
+        {
+            mInfoBuildFactory.Active = false;
+        }
+
+        private void OnButtonmStoragePlatformHovering(object sender, EventArgs eventArgs)
+        {
+            mInfoBuildStorage.Active = true;
+        }
+        private void OnButtonmStoragePlatformHoveringEnd(object sender, EventArgs eventArgs)
+        {
+            mInfoBuildStorage.Active = false;
         }
 
         private void OnButtonmPackagingPlatformHovering(object sender, EventArgs eventArgs)
@@ -1939,11 +2257,12 @@ namespace Singularity.Screen.ScreenClasses
         }
         private void OnButtonmPackagingPlatformHoveringEnd(object sender, EventArgs eventArgs)
         {
-            foreach (var infoBox in mInfoBoxList)
-            {
-                infoBox.Active = false;
-            }
+            mInfoBuildPackaging.Active = false;
         }
+
+        #endregion
+
+        #region militaryBuildings
 
         private void OnButtonmKineticTowerPlatformHovering(object sender, EventArgs eventArgs)
         {
@@ -1951,10 +2270,7 @@ namespace Singularity.Screen.ScreenClasses
         }
         private void OnButtonmKineticTowerPlatformHoveringEnd(object sender, EventArgs eventArgs)
         {
-            foreach (var infoBox in mInfoBoxList)
-            {
-                infoBox.Active = false;
-            }
+            mInfoBuildKineticTower.Active = false;
         }
 
         private void OnButtonmLaserTowerPlatformHovering(object sender, EventArgs eventArgs)
@@ -1963,10 +2279,7 @@ namespace Singularity.Screen.ScreenClasses
         }
         private void OnButtonmLaserTowerPlatformHoveringEnd(object sender, EventArgs eventArgs)
         {
-            foreach (var infoBox in mInfoBoxList)
-            {
-                infoBox.Active = false;
-            }
+            mInfoBuildLaserTower.Active = false;
         }
 
         private void OnButtonmBarracksPlatformHovering(object sender, EventArgs eventArgs)
@@ -1975,13 +2288,16 @@ namespace Singularity.Screen.ScreenClasses
         }
         private void OnButtonmBarracksPlatformHoveringEnd(object sender, EventArgs eventArgs)
         {
-            foreach (var infoBox in mInfoBoxList)
-            {
-                infoBox.Active = false;
-            }
+            mInfoBuildBarracks.Active = false;
         }
 
         #endregion
+
+        #endregion
+
+        #endregion
+
+        #region selectedPlatformWindow
 
         #region close sections in selectedPlatformWindow
 
@@ -2011,15 +2327,23 @@ namespace Singularity.Screen.ScreenClasses
 
         #endregion
 
+        #region (de)activation of the selected platform
+
+        // Manually deactivate a selected platform
         private void SelectedPlatformDeactivate(object sender, EventArgs eventArgs)
         {
             mUserInterfaceController.DeactivateSelectedPlatform();
         }
 
+        // Manually activate a selected platform
         private void SelectedPlatformActivate(object sender, EventArgs eventArgs)
         {
             mUserInterfaceController.ActivateSelectedPlatform();
         }
+
+        #endregion
+
+        #endregion
 
         #endregion
 

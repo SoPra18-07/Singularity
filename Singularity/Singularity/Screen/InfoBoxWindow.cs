@@ -41,7 +41,7 @@ namespace Singularity.Screen
         /// Creates a info box which is displayed above the mouse position
         /// </summary>
         /// <param name="itemList">list of items for infoBox</param>
-        /// <param name="size">size of infobox</param>
+        /// <param name="size">size (width important) of infobox</param>
         /// <param name="borderColor">bordercolor of infoBox</param>
         /// <param name="centerColor">fillcolor of infoBox</param>
         /// <param name="boxed">true, if window should have a border</param>
@@ -50,10 +50,22 @@ namespace Singularity.Screen
         {
             // set members
             mItemList = itemList;
-            mSize = new Vector2(size.X + 10, size.Y + 10);
             mBorderColor = borderColor;
             mCenterColor = centerColor;
             mBoxed = boxed;
+
+            var maxWidth = size.X;
+
+            // get the widest item
+            foreach (var item in itemList)
+            {
+                if (maxWidth < item.Size.X)
+                {
+                    maxWidth = item.Size.X;
+                }
+            }
+
+            mSize = new Vector2(maxWidth + 10, size.Y + 10);
 
             // window only active if mouse on Bound Rectangle
             director.GetInputManager.AddMousePositionListener(this);
@@ -108,7 +120,7 @@ namespace Singularity.Screen
                     item.Update(gametime);
                     item.Position = new Vector2(Position.X + 5, Position.Y + yShift);
 
-                    yShift = (int)item.Size.Y + 5;
+                    yShift += (int)item.Size.Y + 5;
 
                     // update width values so that the rectangle matches the items width
                     if (item.Size.X > maxWidth)
@@ -116,8 +128,8 @@ namespace Singularity.Screen
                         maxWidth = item.Size.X;
                     }
 
-                    // update height values so that the rectangle matches the items height
-                    maxHeight = maxHeight + yShift;
+                    // update height values so that the rectangle matches the items height (-3 to get some padding at the bottom)
+                    maxHeight = yShift - 3;
                 }
 
                 // update size
