@@ -17,6 +17,7 @@ namespace Singularity.Map
     [DataContract]
     public sealed class Camera : IUpdate, IKeyListener, IMouseWheelListener, IMousePositionListener
     {
+        [DataMember]
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
 
         /// <summary>
@@ -109,11 +110,10 @@ namespace Singularity.Map
 
         }
 
-        public void ReloadContent(GraphicsDeviceManager graphics, ref Director director)
+        internal void ReloadContent(GraphicsDeviceManager graphics, ref Director director)
         {
             mGraphics = graphics.GraphicsDevice;
             mDirector = director;
-            Screen = EScreen.GameScreen;
             director.GetInputManager.AddKeyListener(this);
             director.GetInputManager.AddMouseWheelListener(this);
             director.GetInputManager.AddMousePositionListener(this);
