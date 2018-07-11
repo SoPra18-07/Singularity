@@ -161,6 +161,7 @@ namespace Singularity.Screen.ScreenClasses
         private Slider mBuildSlider;
         private Slider mLogisticsSlider;
         private Slider mProductionSlider;
+        private SliderHandler mHandler;
 
         // text for sliders
         private TextField mDefTextField;
@@ -312,6 +313,7 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Update(GameTime gametime)
         {
+            Console.Out.WriteLine(GetHashCode());
             // update screen size
             mCurrentScreenWidth = mDirector.GetGraphicsDeviceManager.PreferredBackBufferWidth;
             mCurrentScreenHeight = mDirector.GetGraphicsDeviceManager.PreferredBackBufferHeight;
@@ -578,7 +580,7 @@ namespace Singularity.Screen.ScreenClasses
             mIdleUnitsTextAndAmount = new TextAndAmountIWindowItem("Idle", 0, Vector2.Zero, new Vector2(civilUnitsWidth, 0), mLibSans12, Color.White );
 
             //This instance will handle the comunication between Sliders and DistributionManager.
-            var handler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mBuildSlider, mLogisticsSlider);
+            mHandler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mBuildSlider, mLogisticsSlider);
 
             // adding all items
             mCivilUnitsWindow.AddItem(mIdleUnitsTextAndAmount);

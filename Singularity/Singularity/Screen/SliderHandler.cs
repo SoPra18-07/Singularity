@@ -8,25 +8,24 @@ namespace Singularity.Screen
     /// <summary>
     /// A class to handle the communication between sliders and DistributionManager.
     /// </summary>
-    [DataContract]
     internal class SliderHandler
     {
-        [DataMember]
-        private Slider mDefSlider;
-        [DataMember]
-        private Slider mProductionSlider;
-        [DataMember]
-        private Slider mConstructionSlider;
-        [DataMember]
-        private Slider mLogisticsSlider;
-        [DataMember]
-        private Director mDirector;
+
+        private readonly Slider mDefSlider;
+
+        private readonly Slider mProductionSlider;
+
+        private readonly Slider mConstructionSlider;
+
+        private readonly Slider mLogisticsSlider;
+
+        private readonly Director mDirector;
 
         //This is an Array of length 4. The entrys will be (with rising index): Defense, Construction, Logistics, Production
-        [DataMember]
+
         private int[] mCurrentPages;
 
-        [DataMember]
+
         private int mCurrentGraphid;
 
         public SliderHandler(ref Director director, Slider def, Slider prod, Slider constr, Slider logi)
@@ -130,6 +129,7 @@ namespace Singularity.Screen
 
         public void ProdListen(object sender, EventArgs eventArgs, int page)
         {
+            Console.WriteLine(GetHashCode());
             var amount = mCurrentPages[3] - page;
             //A negative value means there will be more units assigned to this job and vice versa.
             if (amount < 0)

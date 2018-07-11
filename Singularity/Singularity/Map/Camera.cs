@@ -66,7 +66,7 @@ namespace Singularity.Map
         [DataMember]
         private readonly bool mNeo;
 
-        private InputManager mInputManager;
+        private Director mDirector;
 
 
         /// <summary>
@@ -97,22 +97,22 @@ namespace Singularity.Map
             mGraphics = graphics;
             mZoom = 1.0f;
             mBounds = new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight);
-            mInputManager = director.GetInputManager;
 
+            mDirector = director;
             director.GetInputManager.AddKeyListener(this);
             director.GetInputManager.AddMouseWheelListener(this);
             director.GetInputManager.AddMousePositionListener(this);
 
             mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
 
-            mInputManager.CameraMoved(mTransform);
+            mDirector.GetInputManager.CameraMoved(mTransform);
 
         }
 
         public void ReloadContent(GraphicsDeviceManager graphics, ref Director director)
         {
             mGraphics = graphics.GraphicsDevice;
-            mInputManager = director.GetInputManager;
+            mDirector = director;
 
             director.GetInputManager.AddKeyListener(this);
             director.GetInputManager.AddMouseWheelListener(this);
@@ -120,7 +120,7 @@ namespace Singularity.Map
 
             mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
 
-            mInputManager.CameraMoved(mTransform);
+            director.GetInputManager.CameraMoved(mTransform);
         }
 
         /// <summary>
@@ -238,7 +238,7 @@ namespace Singularity.Map
         private void UpdateTransformMatrix()
         {
             mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
-            mInputManager.CameraMoved(mTransform);
+            mDirector.GetInputManager.CameraMoved(mTransform);
         }
 
         public void KeyTyped(KeyEvent keyEvent)

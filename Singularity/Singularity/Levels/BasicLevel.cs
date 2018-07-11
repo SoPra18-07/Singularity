@@ -108,7 +108,6 @@ namespace Singularity.Levels
             Map.ReloadContent(mapBackground, Camera, mFow, ref mDirector, content);
 
             Ui = new UserInterfaceScreen(ref mDirector, mGraphics, Map, Camera, mScreenManager);
-            Ui.LoadContent(content);
 
             GameScreen.ReloadContent(content, graphics, Map, mFow, Camera, ref mDirector, Ui);
             mDirector.GetUserInterfaceController.ReloadContent(ref mDirector);

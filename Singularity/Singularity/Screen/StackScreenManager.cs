@@ -62,7 +62,6 @@ namespace Singularity.Screen
 
         public void Update(GameTime gameTime)
         {
-            Console.Out.WriteLine(mScreenStack.Count);
             // Note that this already "reverses" the stack, since the implementation calls
             // LinkedList.addLast(mScreenStack.pop()) for every element in the stack, thus the
             // formerly "top" item in the stack is now the first item in the linked list. This

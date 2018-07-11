@@ -28,7 +28,6 @@ namespace Singularity.Screen.ScreenClasses
         private ITransitionableMenu mOptionsScreen;
         private ITransitionableMenu mSplashScreen;
         private ITransitionableMenu mMainMenuScreen;
-        private ITransitionableMenu mLoadingScreen;
 
         // Background
         private MenuBackgroundScreen mMenuBackgroundScreen;
@@ -43,7 +42,6 @@ namespace Singularity.Screen.ScreenClasses
         // viewport resolution changes
         private static Vector2 sViewportResolution;
         private static bool sResolutionChanged;
-        private ContentManager mContent;
 
         /// <summary>
         /// Creates an instance of the MainMenuManagerScreen class
@@ -74,7 +72,6 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="content">Content Manager that should handle the content loading</param>
         public void LoadContent(ContentManager content)
         {
-            mContent = content;
 
             // Add screen to screen manager
             mScreenManager.AddScreen(mMenuBackgroundScreen);
@@ -327,7 +324,6 @@ namespace Singularity.Screen.ScreenClasses
             mMenuBackgroundScreen = new MenuBackgroundScreen(screenResolution);
             mSplashScreen = new SplashScreen(screenResolution);
             mMainMenuScreen = new MainMenuScreen(screenResolution);
-            mLoadingScreen = new LoadingScreen(screenResolution);
         }
 
         /*
