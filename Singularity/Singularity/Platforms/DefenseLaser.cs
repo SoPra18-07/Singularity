@@ -15,7 +15,7 @@ namespace Singularity.Platforms
     internal sealed class DefenseLaser : DefenseBase
     {
         private const int DrainingEnergy = 40;
-        
+
         /// <summary>
         /// Constructs a Laser (i.e. uses energy) defense platform that automatically attacks
         /// enemy units. This platform uses no ammunition but requires energy.

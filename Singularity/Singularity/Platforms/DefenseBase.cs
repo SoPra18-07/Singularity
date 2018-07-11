@@ -43,7 +43,7 @@ namespace Singularity.Platforms
             bool friendly = true)
             : base(position, platformSpriteSheet, baseSprite, ref director, type, friendly: friendly)
         {
-            
+
             mType = type;
             mSpritename = "Cone";
             Property = JobType.Defense;

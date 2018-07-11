@@ -26,7 +26,7 @@ namespace Singularity.Units
         /// Color overlay used on the unit to show it is an enemy unit not a friendly unit.
         /// </summary>
         protected readonly Color mColor = Color.Red;
-        
+
         /// <summary>
         /// Stores the time since the last random movement.
         /// </summary>
@@ -80,7 +80,7 @@ namespace Singularity.Units
         /// <param name="camera">Game camera being used.</param>
         /// <param name="director">Reference to the game director.</param>
         /// <param name="map">Reference to the game map.</param>
-        public EnemyUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map) 
+        public EnemyUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
             : base(position, camera, ref director, ref map, false)
         {
             AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
@@ -113,7 +113,7 @@ namespace Singularity.Units
                             LayerConstants.MilitaryUnitLayer
                             );
 
-            
+
 
             if (GlobalVariables.DebugState)
             {
@@ -179,11 +179,11 @@ namespace Singularity.Units
             // these are values needed to properly get the current sprite out of the spritesheet.
             mRow = mRotation / 18;
             mColumn = (mRotation - mRow * 18) / 3;
-            
+
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
             AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
             Moved = mIsMoving;
-            
+
         }
     }
 }

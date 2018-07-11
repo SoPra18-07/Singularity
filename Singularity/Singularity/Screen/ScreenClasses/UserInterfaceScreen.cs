@@ -768,9 +768,9 @@ namespace Singularity.Screen.ScreenClasses
             var infoBuildBlank = new TextField("Build Blank Platform",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Blank Platform"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
-            
+
             var infoBuildBlankResource1 = new ResourceIWindowItem(EResourceType.Chip, 2, mLibSans10.MeasureString("Build Blank Platform"), mLibSans10);
 
             mInfoBuildBlank = new InfoBoxWindow(
@@ -804,7 +804,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoSpecialList = new TextField("Special Building Menu",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Special Building Menu"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoSpecialList = new InfoBoxWindow(
@@ -821,7 +821,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoMilitaryList = new TextField("Military Building Menu",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Military Building Menu"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoMilitaryList = new InfoBoxWindow(
@@ -838,7 +838,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoJunkyard = new TextField("Build Junkyard",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Junkyard"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildJunkyard = new InfoBoxWindow(
@@ -855,7 +855,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoQuarry = new TextField("Build Quarry",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Quarry"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildQuarry = new InfoBoxWindow(
@@ -872,7 +872,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoMine = new TextField("Build Mine",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Mine"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildMine = new InfoBoxWindow(
@@ -889,7 +889,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoWell = new TextField("Build Well",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Well"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildWell = new InfoBoxWindow(
@@ -923,7 +923,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoStorage = new TextField("Build Storage",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Storage"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildStorage = new InfoBoxWindow(
@@ -940,7 +940,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoPowerhouse = new TextField("Build Powerhouse",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Powerhouse"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildPowerhouse = new InfoBoxWindow(
@@ -957,7 +957,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoCommandcenter = new TextField("Build Commandcenter",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Commandcenter"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildCommandcenter = new InfoBoxWindow(
@@ -974,7 +974,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoArmory = new TextField("Build Armory",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Armory"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildArmory = new InfoBoxWindow(
@@ -991,7 +991,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoKineticTower = new TextField("Build Kinetic Tower",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Kinetic Tower"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildKineticTower = new InfoBoxWindow(
@@ -1008,7 +1008,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoLaserTower = new TextField("Build Laser Tower",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Laser Tower"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildLaserTower = new InfoBoxWindow(
@@ -1025,7 +1025,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoBarracks = new TextField("Build Barracks",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Build Barracks"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildBarracks = new InfoBoxWindow(
