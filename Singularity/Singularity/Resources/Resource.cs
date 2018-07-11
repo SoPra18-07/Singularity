@@ -38,21 +38,20 @@ namespace Singularity.Resources
         public void Follow(GeneralUnit unit)
         {
             // now, using an actual velocity and without abruptly stopping, this should look way better.
-
-            // the actual targetPosition is a certain distance (usually 50) from the unit, in the direction of the unit.
             var diff = unit.AbsolutePosition - AbsolutePosition;
+            // var targetPosition = diff - Geometry.NormalizeVector(diff) * 40 + AbsolutePosition;
             var dist = (float) Geometry.Length(diff);
-            var targetPosition = diff - 40 * Geometry.NormalizeVector(diff) + AbsolutePosition;
-
-            var factor = 0.4f; // experimental. seems to be a good value though.
-            var movementVector = Vector2.Multiply(Geometry.NormalizeVector(mVelocity), factor) + Vector2.Multiply(Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y)), 1 - factor);
-            mVelocity = movementVector * Speed;
-            if (dist < 40)
+            mVelocity = Geometry.NormalizeVector(diff) * Speed;
+            if (dist < 10)
             {
-                Vector2.Multiply(mVelocity, dist / 40f);
-            } 
-            AbsolutePosition = AbsolutePosition + mVelocity;
+                mVelocity = default(Vector2);
+            } else if (dist < 30) {
+                mVelocity = Vector2.Multiply(mVelocity, dist / 120f);
+            } else if (dist < 70) {
+                mVelocity = Vector2.Multiply(mVelocity, dist / 70f);
+            }
 
+            AbsolutePosition += mVelocity;
         }
 
         public Vector2 GetVelocity()
