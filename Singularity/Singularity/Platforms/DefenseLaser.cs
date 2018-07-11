@@ -23,9 +23,15 @@ namespace Singularity.Platforms
         internal DefenseLaser(Vector2 position,
             Texture2D platformSpriteSheet,
             Texture2D baseSprite,
+            SpriteFont libSans12,
             ref Director director,
-            bool friendly = true)
-            : base(position, platformSpriteSheet, baseSprite, ref director, EPlatformType.Laser, friendly: friendly)
+            bool friendly = true) : base(position,
+            platformSpriteSheet,
+            baseSprite,
+            libSans12,
+            ref director,
+            EPlatformType.Laser,
+            friendly: friendly)
         {
             mDrainingEnergy = DrainingEnergy;
 

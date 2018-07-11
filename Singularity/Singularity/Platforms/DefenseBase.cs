@@ -38,10 +38,16 @@ namespace Singularity.Platforms
         internal DefenseBase(Vector2 position,
             Texture2D platformSpriteSheet,
             Texture2D baseSprite,
+            SpriteFont libSans12,
             ref Director director,
             EPlatformType type,
-            bool friendly = true)
-            : base(position, platformSpriteSheet, baseSprite, ref director, type, friendly: friendly)
+            bool friendly = true) : base(position,
+            platformSpriteSheet,
+            baseSprite,
+            libSans12,
+            ref director,
+            type,
+            friendly: friendly)
         {
 
             mType = type;
