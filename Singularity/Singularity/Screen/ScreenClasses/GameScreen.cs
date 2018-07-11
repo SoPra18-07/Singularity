@@ -30,6 +30,7 @@ namespace Singularity.Screen.ScreenClasses
         public bool Loaded { get; set; }
 
         // map and fog of war
+        [DataMember]
         private Map.Map mMap;
         private FogOfWar mFow;
 
@@ -92,7 +93,7 @@ namespace Singularity.Screen.ScreenClasses
         public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, Map.Map map, FogOfWar fow , Camera camera, ref Director director, UserInterfaceScreen ui)
         {
             mGraphicsDevice = graphics.GraphicsDevice;
-            mMap = map;
+            //mMap = map;
             mFow = fow;
             mCamera = camera;
             mDirector = director;
@@ -116,11 +117,35 @@ namespace Singularity.Screen.ScreenClasses
             foreach (var drawable in mDrawables)
             {
                 //TODO: Add terrain when its in master
-                var possibleplatform = drawable as PlatformBlank;
                 var possibleMilitaryUnit = drawable as MilitaryUnit;
                 var possibleSettler = drawable as Settler;
                 var possiblegenunit = drawable as GeneralUnit;
-                possibleplatform?.ReloadContent(content, ref mDirector);
+                //This should also affect enemy units, since they are military units
+                possibleMilitaryUnit?.ReloadContent(content, ref mDirector, camera, ref map);
+                possibleSettler?.ReloadContent(ref mDirector, mCamera, ref map, this, ui);
+                possiblegenunit?.ReloadContent(ref mDirector);
+            }
+
+            //Reload the content for all ingame objects like Platforms etc.
+            foreach (var updateable in mUpdateables)
+            {
+                //TODO: Add terrain when its in master
+                var possibleMilitaryUnit = updateable as MilitaryUnit;
+                var possibleSettler = updateable as Settler;
+                var possiblegenunit = updateable as GeneralUnit;
+                //This should also affect enemy units, since they are military units
+                possibleMilitaryUnit?.ReloadContent(content, ref mDirector, camera, ref map);
+                possibleSettler?.ReloadContent(ref mDirector, mCamera, ref map, this, ui);
+                possiblegenunit?.ReloadContent(ref mDirector);
+            }
+
+            //Reload the content for all ingame objects like Platforms etc.
+            foreach (var spatial in mSpatialObjects)
+            {
+                //TODO: Add terrain when its in master
+                var possibleMilitaryUnit = spatial as MilitaryUnit;
+                var possibleSettler = spatial as Settler;
+                var possiblegenunit = spatial as GeneralUnit;
                 //This should also affect enemy units, since they are military units
                 possibleMilitaryUnit?.ReloadContent(content, ref mDirector, camera, ref map);
                 possibleSettler?.ReloadContent(ref mDirector, mCamera, ref map, this, ui);

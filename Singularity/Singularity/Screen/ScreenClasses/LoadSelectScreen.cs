@@ -188,7 +188,7 @@ namespace Singularity.Screen.ScreenClasses
                     Saves = 0;
                     break;
                 case 1:
-                    mSave1 = new Button(mGameSaveStrings[0], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     mSave2 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     mSave3 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     mSave4 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
@@ -196,45 +196,45 @@ namespace Singularity.Screen.ScreenClasses
                     Saves = 1;
                     break;
                 case 2:
-                    mSave1 = new Button(mGameSaveStrings[0], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave2 = new Button(mGameSaveStrings[1], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave2 = new Button(mGameSaveStrings[1].Remove(mGameSaveStrings[1].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     mSave3 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     mSave4 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     mSave5 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     Saves = 2;
                     break;
                 case 3:
-                    mSave1 = new Button(mGameSaveStrings[0], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave2 = new Button(mGameSaveStrings[1], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave3 = new Button(mGameSaveStrings[2], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave2 = new Button(mGameSaveStrings[1].Remove(mGameSaveStrings[1].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave3 = new Button(mGameSaveStrings[2].Remove(mGameSaveStrings[2].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     mSave4 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     mSave5 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     Saves = 3;
                     break;
                 case 4:
-                    mSave1 = new Button(mGameSaveStrings[0], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave2 = new Button(mGameSaveStrings[1], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave3 = new Button(mGameSaveStrings[2], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave4 = new Button(mGameSaveStrings[3], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave2 = new Button(mGameSaveStrings[1].Remove(mGameSaveStrings[1].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave3 = new Button(mGameSaveStrings[2].Remove(mGameSaveStrings[2].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave4 = new Button(mGameSaveStrings[3].Remove(mGameSaveStrings[3].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     mSave5 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     Saves = 4;
                     break;
                 case 5:
-                    mSave1 = new Button(mGameSaveStrings[0], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave2 = new Button(mGameSaveStrings[1], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave3 = new Button(mGameSaveStrings[2], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave4 = new Button(mGameSaveStrings[3], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave5 = new Button(mGameSaveStrings[4], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave2 = new Button(mGameSaveStrings[1].Remove(mGameSaveStrings[1].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave3 = new Button(mGameSaveStrings[2].Remove(mGameSaveStrings[2].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave4 = new Button(mGameSaveStrings[3].Remove(mGameSaveStrings[3].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave5 = new Button(mGameSaveStrings[4].Remove(mGameSaveStrings[4].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     Saves = 5;
                     break;
                 default:
                     //Just load 5 saves, if by any chance there are more than 5 saves. It means that the player has added more saves and knows what he does...I hope...
                     //TODO: Spawn Textbox informing the player that there are only 5 slots but more saves
-                    mSave1 = new Button(mGameSaveStrings[0], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave2 = new Button(mGameSaveStrings[1], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave3 = new Button(mGameSaveStrings[2], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave4 = new Button(mGameSaveStrings[3], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave5 = new Button(mGameSaveStrings[4], mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave2 = new Button(mGameSaveStrings[1].Remove(mGameSaveStrings[1].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave3 = new Button(mGameSaveStrings[2].Remove(mGameSaveStrings[2].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave4 = new Button(mGameSaveStrings[3].Remove(mGameSaveStrings[3].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave5 = new Button(mGameSaveStrings[4].Remove(mGameSaveStrings[4].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     Saves = 5;
                     break;
             }

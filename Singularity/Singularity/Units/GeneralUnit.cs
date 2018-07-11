@@ -119,7 +119,7 @@ namespace Singularity.Units
             mFinishTask = false;
         }
 
-        public void ReloadContent(ref Director director)
+        internal void ReloadContent(ref Director director)
         {
             mDirector = director;
         }
@@ -251,7 +251,8 @@ namespace Singularity.Units
                         {
                             mDone = false;
 
-                            mTask = mDirector.GetDistributionDirector.GetManager(Graphid).RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
+                            mTask = mDirector.GetDistributionDirector.GetManager(Graphid)
+                                .RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
                             //Check if the given destination is null (it shouldnt)
                             if (mTask.End.IsPresent())
                             {

@@ -42,7 +42,6 @@ namespace Singularity.Manager
             GetPathManager = dir.GetPathManager;
             GetUserInterfaceController = dir.GetUserInterfaceController;
             GetDistributionDirector = dir.GetDistributionDirector;
-
             GetStoryManager.LoadAchievements();
         }
 

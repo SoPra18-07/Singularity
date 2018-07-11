@@ -105,12 +105,13 @@ namespace Singularity.Levels
             //Map related stuff
             Camera.ReloadContent(mGraphics, ref mDirector);
             mFow.ReloadContent(mGraphics);
-            Map.ReloadContent(mapBackground, Camera, mFow, ref mDirector);
+            Map.ReloadContent(mapBackground, Camera, mFow, ref mDirector, content);
 
             Ui = new UserInterfaceScreen(ref mDirector, mGraphics, GameScreen, mScreenManager);
             Ui.LoadContent(content);
 
             GameScreen.ReloadContent(content, graphics, Map, mFow, Camera, ref mDirector, Ui);
+            mDirector.GetUserInterfaceController.ReloadContent(ref mDirector);
             mDirector.GetUserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
 
             // the input manager keeps this from not getting collected by the GC

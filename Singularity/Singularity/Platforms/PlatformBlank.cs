@@ -172,6 +172,8 @@ namespace Singularity.Platforms
         public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36)
         {
 
+            mPrevPlatformActions = new List<IPlatformAction>();
+
             Id = director.GetIdGenerator.NextiD();
 
             mDirector = director;
@@ -229,12 +231,13 @@ namespace Singularity.Platforms
 
         }
 
-        public void ReloadContent(ContentManager content, ref Director dir)
+        internal void ReloadContent(ContentManager content, ref Director dir)
         {
             mPlatformSpriteSheet = content.Load<Texture2D>(mSpritename);
             mPlatformBaseTexture = content.Load<Texture2D>("PlatformBasic");
             mDirector = dir;
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            mAddedToInputManager = true;
             foreach (var action in mIPlatformActions)
             {
                 action.ReloadContent(ref dir);
@@ -521,7 +524,8 @@ namespace Singularity.Platforms
             if (!mAddedToInputManager)
             {
                 // add this platform to inputManager once
-                mDirector.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+                mDirector.GetInputManager
+                    .AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
                 mAddedToInputManager = true;
             }
 

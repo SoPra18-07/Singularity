@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
 using Singularity.Input;
@@ -99,7 +100,7 @@ namespace Singularity.Map
         }
 
 
-        public void ReloadContent(FogOfWar fow, ref Director dir, Camera camera)
+        public void ReloadContent(ContentManager content, FogOfWar fow, ref Director dir, Camera camera)
         {
             mFow = fow;
             mDirector = dir;
@@ -107,6 +108,11 @@ namespace Singularity.Map
             foreach (var placement in mPlatformsToPlace)
             {
                 placement.ReloadContent(camera, ref dir);
+            }
+
+            foreach (var platform in mPlatforms)
+            {
+                platform.ReloadContent(content, ref dir);
             }
         }
 
