@@ -6,6 +6,7 @@ using Singularity.Graph.Paths;
 using Singularity.Input;
 using Singularity.Screen;
 using Singularity.Sound;
+using Singularity.Utils;
 
 namespace Singularity.Manager
 {
@@ -15,6 +16,7 @@ namespace Singularity.Manager
 
         public Director(ContentManager content, GraphicsDeviceManager graphics)
         {
+            GetIdGenerator = new IdGenerator();
             GetInputManager = new InputManager();
             GetStoryManager = new StoryManager();
             GetPathManager = new PathManager();
@@ -34,14 +36,18 @@ namespace Singularity.Manager
 
         internal void ReloadContent(Director dir)
         {
+            GetIdGenerator = dir.GetIdGenerator;
             GetStoryManager = dir.GetStoryManager;
             GetMilitaryManager = dir.GetMilitaryManager;
             GetPathManager = dir.GetPathManager;
             GetUserInterfaceController = dir.GetUserInterfaceController;
             GetDistributionDirector = dir.GetDistributionDirector;
 
-            //GetStoryManager.ReloadContent();
+            GetStoryManager.LoadAchievements();
         }
+
+        [DataMember]
+        public IdGenerator GetIdGenerator { get; private set; }
 
         public InputManager GetInputManager { get; private set; }
 

@@ -78,7 +78,7 @@ namespace Singularity.Serialization
             string path;
             if (isAchievement)
             {
-                path = @"%USERPROFILE%\Saved Games\Singularity";
+                path = @"%USERPROFILE%\Saved Games\Singularity\Achievements";
             }
             else
             {
@@ -106,18 +106,20 @@ namespace Singularity.Serialization
             string path;
             if (isAchievement)
             {
-                path = @"%USERPROFILE%\Saved Games\Singularity";
+                path = @"%USERPROFILE%\Saved Games\Singularity\Achievements";
             }
             else
             {
                 path = @"%USERPROFILE%\Saved Games\Singularity\Saves";
             }
 
+            path = Environment.ExpandEnvironmentVariables(path);
+
             if (!Directory.Exists(path))
             {
                 return Optional<object>.Of(null);
             }
-            path = Environment.ExpandEnvironmentVariables(path);
+
             path += @"\" + name;
             if (!File.Exists(path))
             {

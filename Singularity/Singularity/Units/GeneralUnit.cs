@@ -17,7 +17,7 @@ namespace Singularity.Units
     public sealed class GeneralUnit : ISpatial
     {
         [DataMember]
-        public int Id { get; }
+        public int Id { get; private set; }
         [DataMember]
         private int mPositionId;
         [DataMember]
@@ -102,7 +102,7 @@ namespace Singularity.Units
         public GeneralUnit(PlatformBlank platform, ref Director director, int graphid)
         {
             Graphid = graphid;
-            Id = IdGenerator.NextiD();
+            Id = director.GetIdGenerator.NextiD();
             mDestination = Optional<INode>.Of(null);
 
             CurrentNode = platform;

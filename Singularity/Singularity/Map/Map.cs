@@ -87,7 +87,7 @@ namespace Singularity.Map
             mCamera = camera;
             mFow = fow;
             //ADD ALL THE THINGS TO THE CAMERA AND THE FOW
-            mStructureMap.ReloadContent(mFow, ref dir);
+            mStructureMap.ReloadContent(mFow, ref dir, mCamera);
             mCollisionMap.ReloadContent();
         }
 

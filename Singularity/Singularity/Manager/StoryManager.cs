@@ -28,6 +28,7 @@ namespace Singularity.Manager
         [DataMember]
         public StructureMap StructureMap { get; set; }
 
+        [DataMember]
         public ILevel Level { get; set; }
 
         //Do not serialize this, BUT also do not forget to load the achievements again after deserialization!
@@ -83,12 +84,12 @@ namespace Singularity.Manager
         }
 
         /// <summary>
-        /// The Method to load the Achievements. The Achievements file has to be at %USERPROFILE%\Saved Games\Singularity. If no one like this exists
+        /// The Method to load the Achievements. The Achievements file has to be at %USERPROFILE%\Saved Games\Singularity\Achievements. If no one like this exists
         /// it will just create a new one.
         /// </summary>
         internal void LoadAchievements()
         {
-            var achievements = XSerializer.Load(@"\Achievements.xml", true);
+            var achievements = XSerializer.Load(@"Achievements.xml", true);
             if (achievements.IsPresent())
             {
                 mAchievements = (Achievements) achievements.Get();
@@ -98,6 +99,15 @@ namespace Singularity.Manager
                 mAchievements = new Achievements();
             }
 
+        }
+
+        /// <summary>
+        /// The Method to save the Achievements. The Achievements file will be saved to %USERPROFILE%\Saved Games\Singularity\Achievements. If no such directory
+        /// exists it will create a new one. You want to call this method before serializing everything.
+        /// </summary>
+        internal void SaveAchievements()
+        {
+            XSerializer.Save(mAchievements, @"Achievements.xml" ,true);
         }
 
         /// <summary>

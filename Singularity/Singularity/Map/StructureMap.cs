@@ -99,11 +99,15 @@ namespace Singularity.Map
         }
 
 
-        public void ReloadContent(FogOfWar fow, ref Director dir)
+        public void ReloadContent(FogOfWar fow, ref Director dir, Camera camera)
         {
             mFow = fow;
             mDirector = dir;
             dir.GetInputManager.AddMousePositionListener(this);
+            foreach (var placement in mPlatformsToPlace)
+            {
+                placement.ReloadContent(camera, ref dir);
+            }
         }
 
         /// <summary>

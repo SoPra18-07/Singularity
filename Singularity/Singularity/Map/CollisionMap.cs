@@ -23,7 +23,6 @@ namespace Singularity.Map
         /// <summary>
         /// The collision map is used to store the position and the id of every object which is able to collide.
         /// </summary>
-        [DataMember]
         private CollisionNode[,] mCollisionMap;
 
         /// <summary>

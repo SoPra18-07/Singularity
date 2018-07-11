@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Manager;
 using Singularity.Platforms;
@@ -10,7 +11,7 @@ using Singularity.Units;
 
 namespace Singularity.PlatformActions
 {
-
+    [DataContract]
     internal sealed class MakeFastMilitaryUnit : AMakeUnit
     {
         public MakeFastMilitaryUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
@@ -29,6 +30,7 @@ namespace Singularity.PlatformActions
         }
     }
 
+    [DataContract]
     internal sealed class MakeStrongMilitrayUnit : AMakeUnit
     {
         public MakeStrongMilitrayUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
@@ -42,13 +44,16 @@ namespace Singularity.PlatformActions
         }
     }
 
-
+    [DataContract]
     public abstract class AMakeUnit : APlatformAction, IUpdate
     {
-
+        [DataMember]
         protected Dictionary<EResourceType, int> mBuildingCost;
+        [DataMember]
         protected Dictionary<EResourceType, int> mMissingResources;
+        [DataMember]
         protected Dictionary<EResourceType, int> mToRequest;
+        [DataMember]
         protected Vector2 mOffset = new Vector2(200f);
 
         protected AMakeUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
@@ -63,8 +68,8 @@ namespace Singularity.PlatformActions
             // throw new NotImplementedException();
             // theres nothing a unit should be able to do, except bringing Resources.
         }
-
-        public override List<JobType> UnitsRequired { get; } = new List<JobType>{ JobType.Logistics };
+        [DataMember]
+        public override List<JobType> UnitsRequired { get; set; } = new List<JobType>{ JobType.Logistics };
 
         public void Update(GameTime gametime)
         {

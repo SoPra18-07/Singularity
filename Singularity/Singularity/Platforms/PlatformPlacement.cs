@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Runtime.Serialization;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
 using Singularity.Manager;
@@ -12,9 +13,12 @@ namespace Singularity.Platforms
     /// <summary>
     /// This handles platforms which can get placed on the game screen as objects.
     /// </summary>
+    [DataContract]
     public sealed class PlatformPlacement : IDraw, IUpdate, IMousePositionListener, IMouseClickListener
     {
+        [DataMember]
         public EScreen Screen { get; private set; }
+        [DataMember]
         public Rectangle Bounds { get; private set; }
 
         /// <summary>
@@ -24,49 +28,57 @@ namespace Singularity.Platforms
         /// last state with right click, and next state when a road is connected.
         /// State 3 (add)   : A new platform object gets added to the structure map.
         /// </summary>
+        [DataMember]
         private readonly State3 mCurrentState;
 
         /// <summary>
         /// Whether to only follow the mouse or not
         /// </summary>
+        [DataMember]
         private readonly bool mMouseFollowOnly;
 
         /// <summary>
         /// Whether the placement is finished or not
         /// </summary>
+        [DataMember]
         private bool mIsFinished;
 
         /// <summary>
         /// The platform to place
         /// </summary>
+        [DataMember]
         private readonly PlatformBlank mPlatform;
 
         /// <summary>
         /// The platform which is currently hovered.
         /// </summary>
+        [DataMember]
         private PlatformBlank mHoveringPlatform;
 
         /// <summary>
         /// The current road that needs to get connected to another platform
         /// </summary>
+        [DataMember]
         private Road mConnectionRoad;
 
         /// <summary>
         /// The world space X coordinate of the mouse
         /// </summary>
+        [DataMember]
         private float mMouseX;
 
         /// <summary>
         /// The world space Y coordinate of the mouse
         /// </summary>
+        [DataMember]
         private float mMouseY;
-
+        [DataMember]
         private bool mCanceled;
 
-        private readonly Camera mCamera;
+        private Camera mCamera;
 
-        private readonly Director mDirector;
-
+        private Director mDirector;
+        [DataMember]
         private bool mUnregister;
 
         public PlatformPlacement(EPlatformType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null, Vector2 position = default(Vector2))
@@ -108,6 +120,12 @@ namespace Singularity.Platforms
             mPlatform.SetLayer(LayerConstants.PlatformAboveFowLayer);
             UpdateBounds();
 
+        }
+
+        internal void ReloadContent(Camera camera, ref Director director)
+        {
+            mCamera = camera;
+            mDirector = director;
         }
 
         /// <summary>

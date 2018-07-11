@@ -390,7 +390,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO eventually the EPlacementType should be instance but currently that
             // TODO requires a road to be place and therefore throws an exception !!!!!
 
-            var graphid = IdGenerator.NextiD();
+            var graphid = mDirector.GetIdGenerator.NextiD();
             mDirector.GetDistributionDirector.AddManager(graphid);
             CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, ref mDirector, false);
             var genUnit = new GeneralUnit(cCenter, ref mDirector, graphid);

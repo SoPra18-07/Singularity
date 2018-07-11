@@ -1,18 +1,22 @@
-﻿namespace Singularity.Utils
+﻿using System.Runtime.Serialization;
+
+namespace Singularity.Utils
 {
     public interface IId
     {
         int MId { get; }
     }
 
-    public static class IdGenerator
+    [DataContract]
+    public class IdGenerator
     {
-        private static int sId; // (defaults to 0)
+        [DataMember]
+        private int mId; // (defaults to 0)
 
-        public static int NextiD()
+        public int NextiD()
         {
-            sId++;
-            return sId;
+            mId++;
+            return mId;
         }
 
     }

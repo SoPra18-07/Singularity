@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -15,17 +16,19 @@ using Singularity.Units;
 
 namespace Singularity.Platforms
 {
-
+    [DataContract]
     internal abstract class DefenseBase : PlatformBlank, IShooting
     {
         /// <summary>
         /// For defense platforms, indicates if they are shooting.
         /// </summary>
+        [DataMember]
         protected bool mShoot;
 
         /// <summary>
         /// For defense platforms, indicates where there target is
         /// </summary>
+        [DataMember]
         internal Vector2 EnemyPosition { get; set; }
 
         /// <summary>

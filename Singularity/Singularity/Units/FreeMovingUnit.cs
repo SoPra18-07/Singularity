@@ -107,7 +107,7 @@ namespace Singularity.Units
         protected double mZoomSnapshot;
         [DataMember]
         public Rectangle AbsBounds { get; protected set; }
-        [DataMember]
+        //TODO: Make clear whether we need to reload that
         public bool[,] ColliderGrid { get; protected set; }
         [DataMember]
         public int RevelationRadius { get; protected set; }
@@ -173,7 +173,7 @@ namespace Singularity.Units
         /// health and to be damaged.
         protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
         {
-            Id = IdGenerator.NextiD(); // id for the specific unit.
+            Id = director.GetIdGenerator.NextiD(); // id for the specific unit.
 
             AbsolutePosition = position;
             mMap = map;

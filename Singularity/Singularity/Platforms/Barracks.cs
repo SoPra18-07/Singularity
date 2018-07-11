@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
@@ -6,6 +7,7 @@ using Singularity.PlatformActions;
 
 namespace Singularity.Platforms
 {
+    [DataContract]
     internal class Barracks : PlatformBlank
     {
         public Barracks(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director)

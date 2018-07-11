@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
@@ -7,24 +8,26 @@ using Singularity.Property;
 
 namespace Singularity.Platforms
 {
+    [DataContract]
     public sealed class Road : ISpatial, IEdge
     {
+        [DataMember]
         public Vector2 Source { get; set; }
-
+        [DataMember]
         public Vector2 Destination { get; set; }
-
+        [DataMember]
         public INode SourceAsNode { get; set; }
-
+        [DataMember]
         public INode DestinationAsNode { get; set; }
-
+        [DataMember]
         private bool mBlueprint;
-
+        [DataMember]
         public Vector2 AbsolutePosition { get; set; }
-
+        [DataMember]
         public Vector2 AbsoluteSize { get; set; }
-
+        [DataMember]
         public Vector2 RelativePosition { get; set; }
-
+        [DataMember]
         public Vector2 RelativeSize { get; set; }
 
         /// <summary>

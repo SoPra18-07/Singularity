@@ -117,19 +117,19 @@ namespace Singularity.Screen.ScreenClasses
                     mNewGame = true;
                     break;
                 case "Save1":
-                    mName = XSerializer.GetSaveNames()[1];
+                    mName = XSerializer.GetSaveNames()[0];
                     break;
                 case "Save2":
-                    mName = XSerializer.GetSaveNames()[2];
+                    mName = XSerializer.GetSaveNames()[1];
                     break;
                 case "Save3":
-                    mName = XSerializer.GetSaveNames()[3];
+                    mName = XSerializer.GetSaveNames()[2];
                     break;
                 case "Save4":
-                    mName = XSerializer.GetSaveNames()[4];
+                    mName = XSerializer.GetSaveNames()[3];
                     break;
                 case "Save5":
-                    mName = XSerializer.GetSaveNames()[5];
+                    mName = XSerializer.GetSaveNames()[4];
                     break;
                 default:
                     throw new InvalidGenericArgumentException(

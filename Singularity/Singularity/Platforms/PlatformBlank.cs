@@ -129,13 +129,13 @@ namespace Singularity.Platforms
         [DataMember]
         public Vector2 Center { get; set; }
         [DataMember]
-        public int RevelationRadius { get; } = 200;
+        public int RevelationRadius { get; private set; } = 200;
         [DataMember]
         public Rectangle AbsBounds { get; internal set; }
         [DataMember]
         public bool Moved { get; private set; }
         [DataMember]
-        public int Id { get; }
+        public int Id { get; private set; }
 
         protected Director mDirector;
 
@@ -150,9 +150,6 @@ namespace Singularity.Platforms
         /// </summary>
         [DataMember]
         protected int mSheetPosition;
-
-        // the userinterface controller to send all informations to
-        private readonly UserInterfaceController mUserInterfaceController;
 
 
         [DataMember]
@@ -169,13 +166,13 @@ namespace Singularity.Platforms
         private readonly float mCenterOffsetY;
         [DataMember]
         protected Color mColor = Color.White;
-        [DataMember]
+
         public bool[,] ColliderGrid { get; internal set; }
 
         public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36)
         {
 
-            Id = IdGenerator.NextiD();
+            Id = director.GetIdGenerator.NextiD();
 
             mDirector = director;
 
@@ -228,8 +225,6 @@ namespace Singularity.Platforms
             Moved = false;
             UpdateValues();
 
-            // user interface controller
-            mUserInterfaceController = director.GetUserInterfaceController;
             Debug.WriteLine("PlatformBlank created");
 
         }
@@ -240,6 +235,16 @@ namespace Singularity.Platforms
             mPlatformBaseTexture = content.Load<Texture2D>("PlatformBasic");
             mDirector = dir;
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            foreach (var action in mIPlatformActions)
+            {
+                action.ReloadContent(ref dir);
+            }
+
+            foreach (var action in mPrevPlatformActions)
+            {
+                action.ReloadContent(ref dir);
+            }
+            SetPlatfromParameters();
         }
 
         public void SetColor(Color color)
@@ -544,7 +549,7 @@ namespace Singularity.Platforms
                 mPreviousIsActiveState = IsActive();
 
                 // send data to UIController
-                mUserInterfaceController.SetDataOfSelectedPlatform(Id, mIsActive, mIsManuallyDeactivated, mType, GetPlatformResources(), GetAssignedUnits(), GetIPlatformActions());
+                mDirector.GetUserInterfaceController.SetDataOfSelectedPlatform(Id, mIsActive, mIsManuallyDeactivated, mType, GetPlatformResources(), GetAssignedUnits(), GetIPlatformActions());
 
                 // set the bool for sent-data to true, since the data has just been sent
                 mDataSent = true;
@@ -1032,7 +1037,7 @@ namespace Singularity.Platforms
 
             if (mouseAction == EMouseAction.LeftClick)
             {
-                mUserInterfaceController.ActivateMe(this);
+                mDirector.GetUserInterfaceController.ActivateMe(this);
             }
             return false;
         }

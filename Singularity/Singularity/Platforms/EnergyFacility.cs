@@ -10,6 +10,7 @@ namespace Singularity.Platforms
     [DataContract]
     internal sealed class EnergyFacility : PlatformBlank
     {
+        [DataMember]
         private const int ProvidingEnergy = 20;
 
         [DataMember]
