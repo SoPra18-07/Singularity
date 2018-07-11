@@ -30,6 +30,9 @@ namespace Singularity.Screen
         // barItem under the action to increase visibility between the actions
         private readonly BarIWindowItem mBottomBar;
 
+        // the platformaction
+        private IPlatformAction mPlatformAction;
+
         // button has been clicked on - to prevent the button from keeping firing
         private bool mClicked;
 
@@ -45,6 +48,7 @@ namespace Singularity.Screen
         /// <param name="director">director</param>
         public PlatformActionIWindowItem(IPlatformAction platformAction, SpriteFont spriteFont, Vector2 position, Vector2 size, Director director)
         {
+            mPlatformAction = platformAction;
             Size = new Vector2(size.X, spriteFont.MeasureString("A").Y * 2 + 5);
             Position = position;
 
@@ -73,7 +77,7 @@ namespace Singularity.Screen
                 color: Color.White);
 
             // button that (de)activates the platformAction
-            mStateToggleButton = new Button("change State", spriteFont, Vector2.Zero) {Opacity = 1f};
+            mStateToggleButton = new Button("(de)activate", spriteFont, Vector2.Zero) {Opacity = 1f};
 
             // a textfiel that is just added to shift the button in the horizontal collection
             var emptyToShift = new TextField(
@@ -223,7 +227,7 @@ namespace Singularity.Screen
         {
             if (mClicked)
             {
-                //mPlatformAction.UiToggleState(); TODO : crashes
+                mPlatformAction.UiToggleState(); //TODO : crashes
             }
         }
 

@@ -326,6 +326,10 @@ namespace Singularity.Screen.ScreenClasses
             mUserInterfaceController = director.GetUserInterfaceController;
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
             // update screen size
@@ -379,6 +383,10 @@ namespace Singularity.Screen.ScreenClasses
             }
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, mRasterizerState);
@@ -403,6 +411,10 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.End();
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="content"></param>
         public void LoadContent(ContentManager content)
         {
             // load all spritefonts
@@ -794,7 +806,7 @@ namespace Singularity.Screen.ScreenClasses
 
             #endregion
 
-            // TODO : ADD RESSOURCES TO ALL BUILD BUTTONS
+            // TODO : UPDATE VALUES OF RESOURCE COSTS FOR PLATFORMS
             #region info when hovering over the building menu buttons
 
             mInfoBoxList = new List<InfoBoxWindow>();
@@ -1383,16 +1395,25 @@ namespace Singularity.Screen.ScreenClasses
             }
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
         public bool UpdateLower()
         {
             return true;
         }
-
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
         public bool DrawLower()
         {
             return true;
         }
-
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
         public bool Loaded { get; set; }
 
         /// <summary>
@@ -1657,6 +1678,11 @@ namespace Singularity.Screen.ScreenClasses
             }
         }
 
+        /// <summary>
+        /// Gets called by the UIController when a new event was created by any object
+        /// </summary>
+        /// <param name="newEvent">the newly created event</param>
+        /// <param name="oldEvent">the event which was thrown out of the eventList (if any)</param>
         public void UpdateEventLog(EventLogIWindowItem newEvent, EventLogIWindowItem oldEvent)
         {
             float oldEventSizeY = 0;
@@ -1704,7 +1730,7 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         /// <summary>
-        /// Automatically open the civilUnits window for the selectedPlatform
+        /// Automatically change graphSwitcher to get the id of the selectedPlatform and open it's unitAssignment in civilUnitsWindow
         /// </summary>
         /// <param name="graphId"></param>
         public void SelectedPlatformSetsGraphId(int graphId)
