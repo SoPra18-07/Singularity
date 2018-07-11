@@ -23,28 +23,47 @@ namespace Singularity.PlatformActions
         {
             // unsure why this is a static method since it just returns a military unit anyways
             // var unit = MilitaryUnit.CreateMilitaryUnit(mPlatform.Center + mOffset, ref mDirector);
-            
+
             var camera = mDirector.GetStoryManager.Level.Camera;
             var map = mDirector.GetStoryManager.Level.Map;
-            var unit = new MilitaryUnit(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
+            var unit = new MilitaryFast(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
         }
     }
 
     [DataContract]
-    internal sealed class MakeStrongMilitrayUnit : AMakeUnit
+    internal sealed class MakeStrongMilitaryUnit : AMakeUnit
     {
-        public MakeStrongMilitrayUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
+        public MakeStrongMilitaryUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
             mBuildingCost = new Dictionary<EResourceType, int> {{EResourceType.Steel, 3}, {EResourceType.Chip, 2}, {EResourceType.Fuel, 2}};
         }
 
         public override void CreateUnit()
         {
-            throw new NotImplementedException();
+            var camera = mDirector.GetStoryManager.Level.Camera;
+            var map = mDirector.GetStoryManager.Level.Map;
+            var unit = new MilitaryHeavy(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
         }
     }
 
+
     [DataContract]
+    internal sealed class MakeStandardMilitaryUnit : AMakeUnit
+    {
+        public MakeStandardMilitaryUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
+        {
+            mBuildingCost = new Dictionary<EResourceType, int> { { EResourceType.Steel, 3 }, { EResourceType.Chip, 2 }, { EResourceType.Fuel, 2 } };
+        }
+
+        public override void CreateUnit()
+        {
+            var camera = mDirector.GetStoryManager.Level.Camera;
+            var map = mDirector.GetStoryManager.Level.Map;
+            var unit = new MilitaryUnit(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
+        }
+    }
+
+
     public abstract class AMakeUnit : APlatformAction, IUpdate
     {
         [DataMember]
@@ -101,7 +120,7 @@ namespace Singularity.PlatformActions
             }
 
             var res = mPlatform.GetResource(type);
-                
+
             mMissingResources[type] -= 1;
             if (mMissingResources[type] <= 0)
             {

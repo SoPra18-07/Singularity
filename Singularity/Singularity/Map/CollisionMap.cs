@@ -138,7 +138,6 @@ namespace Singularity.Map
             mLookUpTable[collider.Id] = collider.AbsBounds;
         }
 
-        //TODO: this method exists solely for debugging purposes, so the map can draw a representation of the current collision map.
         public CollisionNode[,] GetCollisionMap()
         {
             return mCollisionMap;

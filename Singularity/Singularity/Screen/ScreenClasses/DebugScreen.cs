@@ -19,12 +19,13 @@ namespace Singularity.Screen.ScreenClasses
     /// <summary>
     /// Used to show debug information. This might not be the prettiest, but it definitely does its work... 
     /// </summary>
-    [DataContract]
     public sealed class DebugScreen : IScreen, IKeyListener
     {
-        [DataMember]
+        private const string DisableText = "Disable FoW";
+        private const string EnableText = "Enable Fow";
+
         public bool Loaded { get; set; }
-        [DataMember]
+
         public EScreen Screen { get; private set; } = EScreen.DebugScreen;
 
         private SpriteFont mFont;
@@ -32,20 +33,39 @@ namespace Singularity.Screen.ScreenClasses
         private StackScreenManager mScreenManager;
 
         private Camera mCamera;
-        [DataMember]
+
         private int mCurrentFps;
 
         private Map.Map mMap;
-        [DataMember]
+
+        private readonly Director mDirector;
+
         private int mActivePlatforms;
-        [DataMember]
+
+
         private int mDeactivePlatforms;
+
+        private int mFrameCount;
+
+        private double mDt;
+
+        private int mFps;
+        private readonly float mUpdateRate;
+
+        private Button mFowButton;
+
+        private int mUps;
+
+        private bool mClicked;
 
         public DebugScreen(StackScreenManager screenManager, Camera camera, Map.Map map, ref Director director)
         {
+            mUpdateRate = 2.0f;
+
             mScreenManager = screenManager;
             mCamera = camera;
             mMap = map;
+            mDirector = director;
 
         }
 
@@ -82,7 +102,7 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.DrawString(mFont, "GameObjects", new Vector2(15, 200), Color.White);
             spriteBatch.DrawString(mFont, "PlatformCount: " + mMap.GetStructureMap().GetPlatformList().Count + ", " + mActivePlatforms + ", " + mDeactivePlatforms, new Vector2(30, 235), Color.White);
             spriteBatch.DrawString(mFont, "GraphCount: " + mMap.GetStructureMap().GetGraphCount(), new Vector2(30, 255), Color.White);
-            spriteBatch.DrawString(mFont, "MilitaryUnitCount: " + "TODO", new Vector2(30, 275), Color.White);
+            spriteBatch.DrawString(mFont, "MilitaryUnitCount: " + mDirector.GetMilitaryManager.TotalUnitCount, new Vector2(30, 275), Color.White);
             spriteBatch.DrawString(mFont, "GeneralUnitCount: " + "TODO", new Vector2(30, 295), Color.White);
 
             spriteBatch.DrawLine(150, 209, 300, 209, Color.White);
@@ -92,8 +112,10 @@ namespace Singularity.Screen.ScreenClasses
 
 
 
-            spriteBatch.DrawString(mFont, "FPS: " + mCurrentFps, new Vector2(15, 365), Color.White);
+            spriteBatch.DrawString(mFont, "FPS: " + mFps, new Vector2(15, 365), Color.White);
+            spriteBatch.DrawString(mFont, "UPS: " + mUps, new Vector2(15, 385), Color.White);
 
+            mFowButton.Draw(spriteBatch);
 
             //spriteBatch.DrawString(mFont, "FPS: " + mCurrentFps, new Vector2(15, 200), Color.White);
             spriteBatch.End();
@@ -107,11 +129,27 @@ namespace Singularity.Screen.ScreenClasses
         public void LoadContent(ContentManager content)
         {
             mFont = content.Load<SpriteFont>("LibSans14");
+
+
+            mFowButton = new Button(DisableText, mFont, new Vector2(130, 450), Color.Red, true) {Opacity = 1f};
+
+            mFowButton.ButtonClicked += FowButtonClicked;
+            mFowButton.ButtonReleased += FowButtonReleased;
         }
 
         public void Update(GameTime gametime)
         {
-            mCurrentFps = (int) Math.Round(1 / gametime.ElapsedGameTime.TotalSeconds, MidpointRounding.ToEven);
+
+            mFrameCount++;
+            mDt += Game1.mDeltaTime;
+            if (mDt > 1f / mUpdateRate)
+            {
+                mFps = (int) Math.Round(mFrameCount / mDt);
+                mFrameCount = 0;
+                mDt -= 1 / mUpdateRate;
+            }
+
+            mUps = (int) Math.Round(1 / gametime.ElapsedGameTime.TotalSeconds);
 
             var activeCounter = 0;
             var deactiveCounter = 0;
@@ -129,6 +167,8 @@ namespace Singularity.Screen.ScreenClasses
 
             mActivePlatforms = activeCounter;
             mDeactivePlatforms = deactiveCounter;
+
+            mFowButton.Update(gametime);
         }
 
         public bool UpdateLower()
@@ -162,6 +202,33 @@ namespace Singularity.Screen.ScreenClasses
         public void KeyReleased(KeyEvent keyEvent)
         {
             
+        }
+
+        private void FowButtonClicked(object sender, EventArgs args)
+        {
+            if (mClicked)
+            {
+                return;
+            }
+
+            GlobalVariables.mFowEnabled = !GlobalVariables.mFowEnabled;
+
+            if (GlobalVariables.mFowEnabled)
+            {
+                mFowButton.ChangeText(DisableText);
+            }
+            else
+            {
+                mFowButton.ChangeText(EnableText);
+            }
+
+
+            mClicked = true;
+        }
+
+        private void FowButtonReleased(object sender, EventArgs args)
+        {
+            mClicked = false;
         }
     }
 }

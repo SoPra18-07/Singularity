@@ -29,8 +29,6 @@ namespace Singularity.Manager
 
             GetSoundManager.LoadContent(content);
             GetSoundManager.PlaySoundTrack();
-
-
             // Dd}{_:
         }
 
@@ -43,6 +41,7 @@ namespace Singularity.Manager
             GetUserInterfaceController = dir.GetUserInterfaceController;
             GetDistributionDirector = dir.GetDistributionDirector;
             GetStoryManager.LoadAchievements();
+            GetMilitaryManager.ReloadContent();
         }
 
         [DataMember]
@@ -76,6 +75,7 @@ namespace Singularity.Manager
                 GetInputManager.Update(gametime);
             }
             GetStoryManager.Update(gametime);
+            GetMilitaryManager.Update(gametime);
         }
     }
 }

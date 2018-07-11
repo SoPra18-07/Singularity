@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Singularity.Input;
+
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map.Properties;
@@ -24,6 +23,7 @@ namespace Singularity.Map
         private readonly StructureMap mStructureMap;
         [DataMember]
         private readonly ResourceMap mResourceMap;
+        private UnitMap mUnitMap;
 
         [DataMember]
         private readonly int mWidth;
@@ -78,12 +78,14 @@ namespace Singularity.Map
             mCollisionMap = new CollisionMap();
             mStructureMap = new StructureMap(fow, ref director);
             mResourceMap = new ResourceMap(initialResources);
+            mUnitMap = new UnitMap(width, height);
 
             director.GetStoryManager.StructureMap = mStructureMap;
         }
 
         public void ReloadContent(Texture2D background, Camera camera, FogOfWar fow, ref Director dir, ContentManager content)
         {
+            mUnitMap = new UnitMap(mWidth, mHeight);
             mBackgroundTexture = background;
             mCamera = camera;
             mFow = fow;
@@ -104,7 +106,7 @@ namespace Singularity.Map
             var x = 0;
             var y = 0;
             //draw the background texture
-            for (int column = 0; column < mWidth; column++)
+            for (var column = 0; column < mWidth; column++)
             {
                 // variables are used to choose which tile to draw
 
@@ -170,12 +172,11 @@ namespace Singularity.Map
 
             for (var columnCount = 0; columnCount <= colMap.GetLength(0); columnCount++)
             {
-
                 spriteBatch.DrawLine(
                     new Vector2(columnCount * MapConstants.GridWidth, 0), MapConstants.MapHeight, MathHelper.Pi / 2f, Color.Blue, 1, LayerConstants.GridDebugLayer);
             }
 
-            for (var rowCount = 0; rowCount <= colMap.GetLength(0); rowCount++)
+            for (var rowCount = 0; rowCount <= colMap.GetLength(1); rowCount++)
             {
                 spriteBatch.DrawLine(
                     new Vector2(0, rowCount * MapConstants.GridHeight), MapConstants.MapWidth, 0, Color.Yellow, 1, LayerConstants.GridDebugLayer);
@@ -183,13 +184,13 @@ namespace Singularity.Map
 
 
 
-            for(var i = 0; i < colMap.GetLength(dimension: 0); i++)
+            for(var i = (int) (mCamera.GetRelativePosition().X / MapConstants.GridWidth); i < (mCamera.GetRelativePosition().X + mCamera.GetSize().X) / MapConstants.GridWidth; i++)
             {
-                for (var j = 0; j < colMap.GetLength(dimension: 1); j ++)
+                for (var j = (int) (mCamera.GetRelativePosition().Y / MapConstants.GridHeight); j < (mCamera.GetRelativePosition().Y + mCamera.GetSize().Y) / MapConstants.GridHeight; j ++)
                 {
                     if (!walkabilityGrid.IsWalkableAt(i, j))
                     {
-                        spriteBatch.FillRectangle(rect: new Rectangle(x: i * MapConstants.GridWidth, y: j * MapConstants.GridHeight, width: MapConstants.GridWidth, height: MapConstants.GridHeight),
+                        spriteBatch.FillRectangle(rect: new Rectangle(x: (i * MapConstants.GridWidth), y: j * MapConstants.GridHeight, width: MapConstants.GridWidth, height: MapConstants.GridHeight),
                             color: new Color(color: new Vector4(x: 1, y: 0, z: 0, w: 0.2f)), angle: 0f, layer: LayerConstants.CollisionDebugLayer);
                     }
                 }
@@ -211,46 +212,51 @@ namespace Singularity.Map
         }
 
 
-        public FogOfWar GetFogOfWar()
+        internal FogOfWar GetFogOfWar()
         {
             return mFow;
         }
 
         /// <see cref="StructureMap.AddPlatform(PlatformBlank)"/>
-        public void AddPlatform(PlatformBlank platform)
+        internal void AddPlatform(PlatformBlank platform)
         {
             mStructureMap.AddPlatform(platform);
         }
 
         /// <see cref="StructureMap.RemovePlatform(PlatformBlank)"/>
-        public void RemovePlatform(PlatformBlank platform)
+        internal void RemovePlatform(PlatformBlank platform)
         {
             mStructureMap.RemovePlatform(platform);
         }
 
-        public void AddRoad(Road road)
+        internal void AddRoad(Road road)
         {
             mStructureMap.AddRoad(road);
         }
 
-        public void RemoveRoad(Road road)
+        internal void RemoveRoad(Road road)
         {
             mStructureMap.RemoveRoad(road);
         }
 
-        public StructureMap GetStructureMap()
+        internal StructureMap GetStructureMap()
         {
             return mStructureMap;
         }
 
-        public CollisionMap GetCollisionMap()
+        internal CollisionMap GetCollisionMap()
         {
             return mCollisionMap;
         }
 
-        public ResourceMap GetResourceMap()
+        internal ResourceMap GetResourceMap()
         {
             return mResourceMap;
+        }
+
+        internal UnitMap GetUnitMap()
+        {
+            return mUnitMap;
         }
 
         /// <summary>
@@ -259,7 +265,7 @@ namespace Singularity.Map
         /// <param name="position">The position of which to check whether it is on the map</param>
         /// <param name="camera">The camera is needed to translate relative coordinates into absolute ones, if null then the given coordinates are treated as absolute ones</param>
         /// <returns>True if the position is on the map, false otherwise</returns>
-        public static bool IsOnTop(Vector2 position, Camera camera = null)
+        internal static bool IsOnTop(Vector2 position, Camera camera = null)
         {
             //TODO: extend to rectangle, so we move away from whether the origin point is on the map.
 
@@ -310,7 +316,7 @@ namespace Singularity.Map
         /// <param name="rect">The rectangle which should be checked whether its on the map</param>
         /// <param name="camera">The camera is needed to translate relative coordinates into absolute ones, if null then the given coordinates are treated as absolute ones</param>
         /// <returns>True if the rectangle is on the map, false otherwise</returns>
-        public static bool IsOnTop(Rectangle rect, Camera camera = null)
+        internal static bool IsOnTop(Rectangle rect, Camera camera = null)
         {
 
             // simple logic, this yields true if all of them are true and false if one is false. One can easily convince himself,

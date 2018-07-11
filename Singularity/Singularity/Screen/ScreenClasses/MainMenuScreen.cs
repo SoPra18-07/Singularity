@@ -176,7 +176,7 @@ namespace Singularity.Screen.ScreenClasses
                     mTransitionDuration = 350d;
                     mMenuOpacity = 0f;
                     mMenuBoxSize = new Vector2(408, 420);
-                    mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - 204, mScreenResolution.Y / 4);
+                    mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - 204, mScreenResolution.Y / 2 - 210);
                     mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter);
                     break;
                 case EScreen.OptionsScreen:
@@ -192,7 +192,30 @@ namespace Singularity.Screen.ScreenClasses
             switch (mTargetScreen)
             {
                 case EScreen.AchievementsScreen:
+                    if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
+                    {
+                        TransitionRunning = false;
+                        mMenuOpacity = 0f;
+                        mMenuBoxSize = new Vector2(600, 650);
+                        mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - 300, mScreenResolution.Y / 2 - 325);
+                    }
 
+                    var widthAch = (float)Animations.Easing(408,
+                        600,
+                        mTransitionStartTime,
+                        mTransitionDuration,
+                        gameTime);
+
+                    var heightAch = (float)Animations.Easing(420,
+                        650,
+                        mTransitionStartTime,
+                        mTransitionDuration,
+                        gameTime);
+
+                    mMenuBoxSize = new Vector2(widthAch, heightAch);
+                    mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - (int)Math.Floor(widthAch / 2), mScreenResolution.Y / 2 - (int)Math.Floor(heightAch / 2));
+
+                    mMenuOpacity = (float)Animations.Easing(1f, 0f, mTransitionStartTime, mTransitionDuration, gameTime);
                     break;
                 case EScreen.GameModeSelectScreen:
                     if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
@@ -224,7 +247,7 @@ namespace Singularity.Screen.ScreenClasses
                         }
 
                         var opacity =
-                            (float) Animations.Easing(0, 1f, mTransitionStartTime, mTransitionDuration, gameTime);
+                            (float)Animations.Easing(0, 1f, mTransitionStartTime, mTransitionDuration, gameTime);
                         mMenuOpacity = opacity;
                         mWindowOpacity = opacity;
                     }
@@ -247,7 +270,7 @@ namespace Singularity.Screen.ScreenClasses
                         TransitionRunning = false;
                         mMenuOpacity = 0f;
                         mMenuBoxSize = new Vector2(612, 420);
-                        mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - 306, mScreenResolution.Y / 4);
+                        mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - 306, mScreenResolution.Y / 2 - 210);
                     }
 
                     var width = (float)Animations.Easing(408,
@@ -256,7 +279,7 @@ namespace Singularity.Screen.ScreenClasses
                         mTransitionDuration,
                         gameTime);
 
-                    mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - (int)Math.Floor(width / 2), mScreenResolution.Y / 4);
+                    mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - (int)Math.Floor(width / 2), mScreenResolution.Y / 2 - 210);
                     mMenuBoxSize = new Vector2(width, 420);
 
                     mMenuOpacity = (float)Animations.Easing(1f, 0f, mTransitionStartTime, mTransitionDuration, gameTime);

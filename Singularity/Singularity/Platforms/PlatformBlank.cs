@@ -8,13 +8,13 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Exceptions;
 using Singularity.Graph;
-using Singularity.Libraries;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.PlatformActions;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Screen;
+using Singularity.Sound;
 using Singularity.Units;
 using Singularity.Utils;
 
@@ -23,9 +23,14 @@ namespace Singularity.Platforms
     /// <inheritdoc cref="IRevealing"/>
     /// <inheritdoc cref="INode"/>
     /// <inheritdoc cref="ICollider"/>
+    /// <inheritdoc cref="IDamageable"/>
     [DataContract]
     public class PlatformBlank : IRevealing, INode, ICollider, IMouseClickListener
     {
+
+        [DataMember]
+        private List<GeneralUnit> mAllGenUnits;
+
         [DataMember]
         private int mGraphIndex;
         [DataMember]
@@ -62,6 +67,8 @@ namespace Singularity.Platforms
         /// </summary>
         [DataMember]
         private List<IEdge> mOutwardsEdges;
+        [DataMember]
+        public bool Friendly { get; set; }
 
         /// <summary>
         /// Indicates the type of platform this is, defaults to blank.
@@ -128,8 +135,9 @@ namespace Singularity.Platforms
 
         [DataMember]
         public Vector2 Center { get; set; }
+
         [DataMember]
-        public int RevelationRadius { get; private set; } = 200;
+        public int RevelationRadius { get; protected set; } = 200;
         [DataMember]
         public Rectangle AbsBounds { get; internal set; }
         [DataMember]
@@ -166,10 +174,16 @@ namespace Singularity.Platforms
         private readonly float mCenterOffsetY;
         [DataMember]
         protected Color mColor = Color.White;
+        [DataMember]
+        protected Color mColorBase;
 
         public bool[,] ColliderGrid { get; internal set; }
 
-        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36)
+        //This is for registering the platform at the DistrManager.
+        [DataMember]
+        public JobType Property { get; set; }
+
+        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36, bool friendly = true)
         {
 
             mPrevPlatformActions = new List<IPlatformAction>();
@@ -183,6 +197,8 @@ namespace Singularity.Platforms
             mLayer = LayerConstants.PlatformLayer;
 
             mType = type;
+
+            mColorBase = friendly ? Color.White : Color.Red;
 
             mInwardsEdges = new List<IEdge>();
             mOutwardsEdges = new List<IEdge>();
@@ -215,6 +231,7 @@ namespace Singularity.Platforms
             mDrainingEnergy = 0;
             mIsActive = true;
 
+            mAllGenUnits = new List<GeneralUnit>();
             mResources = new List<Resource>();
 
             mPlatformSpriteSheet = platformSpriteSheet;
@@ -228,6 +245,8 @@ namespace Singularity.Platforms
             UpdateValues();
 
             Debug.WriteLine("PlatformBlank created");
+
+            Friendly = friendly;
 
         }
 
@@ -383,6 +402,8 @@ namespace Singularity.Platforms
                 }
                 else
                 {
+                    // makes destruction sound
+                    mDirector.GetSoundManager.PlaySound("DestroyPlat", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
                     DieBlank();
                 }
             }
@@ -465,7 +486,7 @@ namespace Singularity.Platforms
                     spritebatch.Draw(mPlatformBaseTexture,
                         Vector2.Add(AbsolutePosition, new Vector2(0, 81)),
                         null,
-                        mColor * transparency,
+                        mColorBase * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
@@ -487,7 +508,7 @@ namespace Singularity.Platforms
                     spritebatch.Draw(mPlatformBaseTexture,
                         Vector2.Add(AbsolutePosition, new Vector2(-3, 38)),
                         null,
-                        mColor * transparency,
+                        mColorBase * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
@@ -933,6 +954,15 @@ namespace Singularity.Platforms
             //TODO: Tell the PlatformAction to request everything it needs again.
             if (manually)
             {
+                // TODO find a power on sound
+                mDirector.GetSoundManager.PlaySound("PowerOff",
+                    Center.X,
+                    Center.Y,
+                    .1f,
+                    .01f,
+                    true,
+                    false,
+                    SoundClass.Effect);
                 mIsManuallyDeactivated = false;
             }
             mIsActive = true;
@@ -983,6 +1013,16 @@ namespace Singularity.Platforms
         {
             if (manually)
             {
+                // TODO maybe need to regulate sound a little when put to action 
+                mDirector.GetSoundManager.PlaySound("PowerDown",
+                    Center.X,
+                    Center.Y,
+                    .1f,
+                    .01f,
+                    true,
+                    false,
+                    SoundClass.Effect);
+
                 mIsManuallyDeactivated = true;
             }
 
@@ -1003,6 +1043,21 @@ namespace Singularity.Platforms
                 selflist.Add(this);
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, false, true);
             }
+        }
+
+        public List<GeneralUnit> GetGeneralUnitsOnPlatform()
+        {
+            return mAllGenUnits;
+        }
+
+        public void AddGeneralUnit(GeneralUnit unit)
+        {
+            mAllGenUnits.Add(unit);
+        }
+
+        public void RemoveGeneralUnit(GeneralUnit unit)
+        {
+            mAllGenUnits.Remove(unit);
         }
 
         public bool IsManuallyDeactivated()

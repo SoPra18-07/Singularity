@@ -61,17 +61,22 @@ namespace Singularity.Levels
             var platformCylTexture = content.Load<Texture2D>("Cylinders");
             var platformBlankTexture = content.Load<Texture2D>("PlatformBasic");
             var platformDomeTexture = content.Load<Texture2D>("Dome");
-            MilitaryUnit.mMilSheet = content.Load<Texture2D>("UnitSpriteSheet");
-            MilitaryUnit.mGlowTexture = content.Load<Texture2D>("UnitGlowSprite");
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
 
-            //TODO: have a cone texture
             PlatformFactory.Init(platformConeTexture, platformCylTexture, platformDomeTexture, platformBlankTexture);
 
             //Map related stuff
             Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 2800, 2800);
             mFow = new FogOfWar(Camera, mGraphics.GraphicsDevice);
-            Map = new Map.Map(mapBackground, 60, 60, mFow, Camera, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
+
+            var map = new Map.Map(mapBackground, 60, 60, mFow, Camera, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
+            Map = map;
+            var milUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
+            var milGlowSheet = content.Load<Texture2D>("UnitGlowSprite");
+
+            MilitaryUnit.mMilSheet = milUnitSheet;
+            MilitaryUnit.mGlowTexture = milGlowSheet;
+            mDirector.GetMilitaryManager.SetMap(ref map);
 
             //INITIALIZE SCREENS
             GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
@@ -106,7 +111,8 @@ namespace Singularity.Levels
             Camera.ReloadContent(mGraphics, ref mDirector);
             mFow.ReloadContent(mGraphics, Camera);
             Map.ReloadContent(mapBackground, Camera, mFow, ref mDirector, content);
-
+            var map = Map;
+            mDirector.GetMilitaryManager.SetMap(ref map);
             Ui = new UserInterfaceScreen(ref mDirector, mGraphics, Map, Camera, mScreenManager);
 
             GameScreen.ReloadContent(content, graphics, Map, mFow, Camera, ref mDirector, Ui);

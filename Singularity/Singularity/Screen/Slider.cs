@@ -1,5 +1,4 @@
 ﻿using System;
-using System;
 using System.Globalization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,7 +9,7 @@ using Singularity.Manager;
 
 namespace Singularity.Screen
 {
-    class Slider : IWindowItem, IMouseClickListener, IMousePositionListener
+    public class Slider : IWindowItem, IMouseClickListener, IMousePositionListener
     {
         #region Declaration
 
@@ -62,7 +61,7 @@ namespace Singularity.Screen
         #endregion
 
         ///  <summary>
-        /// 
+        ///
         ///  </summary>
         ///  <param name="position"> position of the slider bar left hand corner</param>
         ///  <param name="length"> length of the slider bar</param>

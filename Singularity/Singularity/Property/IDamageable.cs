@@ -14,6 +14,11 @@ namespace Singularity.Property
         int Health { get; }
 
         /// <summary>
+        /// Determines if a unit is friendly or not.
+        /// </summary>
+        bool Friendly { get; }
+
+        /// <summary>
         /// Heal the platform or inflict damage on it.
         /// </summary>
         /// <param name="damage">Amount of damage to take. Negative values mean healing</param>
