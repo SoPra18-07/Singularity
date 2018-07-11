@@ -372,9 +372,11 @@ namespace Singularity.Screen.ScreenClasses
                 mCanBuildPlatform = true;
             }
 
-            // update the idle units amount
-            //TODO: The hardcoded value won't work here, since it is not guaranteed that at index 0 there is always a graph.
-            // mIdleUnitsTextAndAmount.Amount = mUserInterfaceController.GetIdleUnits(0);
+            // update the idle units amount of the current graph (of civilUnitsWindow)
+            if (mGraphSwitcher != null)
+            {
+                mIdleUnitsTextAndAmount.Amount = mUserInterfaceController.GetIdleUnits(mGraphSwitcher.GetCurrentId());
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -1691,17 +1693,14 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="oldGraphId2">old graph ID 2</param>
         public void MergeGraph(int newGraphId, int oldGraphId1, int oldGraphId2)
         {
-            // remove old graphs from list
+            // remove old graphs from list + add new graph + jump to the new graph in civilUnitsWindow
             mGraphSwitcher?.ListOfElements.Remove(oldGraphId1);
-            mGraphSwitcher?.ListOfElements.Remove(oldGraphId2);
 
             mGraphSwitcher?.ListOfElements.Add(newGraphId);
 
-            if (mGraphSwitcher != null && (mGraphSwitcher.GetCurrentId() == oldGraphId1 ||
-                                           mGraphSwitcher.GetCurrentId() == oldGraphId2))
-            {
-                mGraphSwitcher.JumpToEnd = true;
-            }
+            mGraphSwitcher?.ListOfElements.Remove(oldGraphId2);
+
+            mGraphSwitcher?.JumpToId(newGraphId);
         }
 
         /// <summary>

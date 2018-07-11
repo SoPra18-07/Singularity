@@ -27,6 +27,9 @@ namespace Singularity.Screen
         // infoBox for required resources / units
         private readonly InfoBoxWindow mInfoBoxRequirements;
 
+        // barItem under the action to increase visibility between the actions
+        private readonly BarIWindowItem mBottomBar;
+
         // button has been clicked on - to prevent the button from keeping firing
         private bool mClicked;
 
@@ -87,9 +90,11 @@ namespace Singularity.Screen
             mStateToggleButton.ButtonHoveringEnd += HideRequirements;
 
             // create a horizontal collection of the state and the button
-            mCollection = new HorizontalCollection(new List<IWindowItem> {stateTextField, mStateToggleButton, emptyToShift}, Size, Position);
+            mCollection = new HorizontalCollection(new List<IWindowItem> {stateTextField, mStateToggleButton, emptyToShift}, new Vector2(size.X, spriteFont.MeasureString("A").Y + 5), Position);
 
-            #region manage the unit requirement section
+            mBottomBar = new BarIWindowItem(size.X - 50, Color.White);
+
+            #region manage the requirement
 
             // set up
             var productionUnits = 0;
@@ -151,8 +156,6 @@ namespace Singularity.Screen
                     Color.White));
             }
 
-            #endregion
-
             // add required resources + count to infoBox
             foreach (var resource in platformAction.GetRequiredResources())
             {
@@ -161,6 +164,8 @@ namespace Singularity.Screen
 
             // create a infoBox containing all requirements to activate the platformAction
             mInfoBoxRequirements = new InfoBoxWindow(infoBoxItemsList, Vector2.Zero, Color.White, Color.Black, true, director);
+
+            #endregion
         }
 
         /// <inheritdoc />
@@ -174,6 +179,7 @@ namespace Singularity.Screen
                 // update all positions
                 mNameTextField.Position = Position;
                 mCollection.Position = new Vector2(Position.X, Position.Y + mNameTextField.Size.Y + 5);
+                mBottomBar.Position = new Vector2(Position.X, mCollection.Position.Y + mCollection.Size.Y + 5 + 5);
 
                 // update all components
                 mInfoBoxRequirements.Update(gametime);
@@ -193,6 +199,7 @@ namespace Singularity.Screen
                 //draw all components
                 mCollection.Draw(spriteBatch);
                 mNameTextField.Draw(spriteBatch);
+                mBottomBar.Draw(spriteBatch);
                 mInfoBoxRequirements.Draw(spriteBatch);
             }
         }
