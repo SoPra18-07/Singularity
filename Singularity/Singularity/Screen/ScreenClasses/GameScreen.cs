@@ -86,7 +86,6 @@ namespace Singularity.Screen.ScreenClasses
 
             mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
             AddObject(mSelBox);
-
         }
 
         public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, Map.Map map, FogOfWar fow , Camera camera, ref Director director, UserInterfaceScreen ui)
@@ -293,7 +292,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             AddObject(mMap);
 
-            AddObjects(ResourceHelper.GetRandomlyDistributedResources(50));
+            // AddObjects(ResourceHelper.GetRandomlyDistributedResources(50));
 
             mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
             mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
@@ -342,7 +341,7 @@ namespace Singularity.Screen.ScreenClasses
                 mDirector.GetMilitaryManager.AddPlatform(platform);
                 return true;
             }
-            
+
             // subscribes the game screen the the settler event (to build a command center)
             // TODO unsubscribe / delete settler when event is fired
             if (settler != null)
@@ -422,6 +421,11 @@ namespace Singularity.Screen.ScreenClasses
                 return false;
             }
 
+            if (typeof(ICollider).IsAssignableFrom(typeof(T)))
+            {
+                //TODO: remove from collision map
+            }
+
             if (road != null)
             {
                 mMap.RemoveRoad(road);
@@ -491,13 +495,13 @@ namespace Singularity.Screen.ScreenClasses
 
             var graphid = mDirector.GetIdGenerator.NextiD();
             mDirector.GetDistributionDirector.AddManager(graphid);
-            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, ref mDirector, false);
-            var genUnit = new GeneralUnit(cCenter, ref mDirector, graphid);
-            var genUnit2 = new GeneralUnit(cCenter, ref mDirector, graphid);
-
-            // adds the command center to the GameScreen, as well as two general units
+            var cCenter = PlatformFactory.Get(EPlatformType.Command, ref mDirector, v.X - 55, v.Y - 100);
             AddObject(cCenter);
+
+            var genUnit = new GeneralUnit(cCenter, ref mDirector, cCenter.GetGraphIndex());
             AddObject(genUnit);
+
+            var genUnit2 = new GeneralUnit(cCenter, ref mDirector, cCenter.GetGraphIndex());
             AddObject(genUnit2);
 
             // removes the settler from the GameScreen

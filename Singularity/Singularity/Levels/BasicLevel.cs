@@ -37,8 +37,6 @@ namespace Singularity.Levels
 
         protected IScreenManager mScreenManager;
 
-        protected Texture2D mPlatformBlankTexture;
-
         protected BasicLevel(GraphicsDeviceManager graphics,
             ref Director director,
             ContentManager content,
@@ -62,9 +60,9 @@ namespace Singularity.Levels
             var platformBlankTexture = content.Load<Texture2D>("PlatformBasic");
             var platformDomeTexture = content.Load<Texture2D>("Dome");
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
+            var libSans12 = content.Load<SpriteFont>("LibSans12");
 
-            PlatformFactory.Init(platformConeTexture, platformCylTexture, platformDomeTexture, platformBlankTexture);
-
+            PlatformFactory.Init(platformConeTexture, platformCylTexture, platformDomeTexture, platformBlankTexture, libSans12);
             //Map related stuff
             Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 2800, 2800);
             mFow = new FogOfWar(Camera, mGraphics.GraphicsDevice);
@@ -99,9 +97,10 @@ namespace Singularity.Levels
             MilitaryUnit.mMilSheet = content.Load<Texture2D>("UnitSpriteSheet");
             MilitaryUnit.mGlowTexture = content.Load<Texture2D>("UnitGlowSprite");
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
+            var libSans12 = content.Load<SpriteFont>("LibSans12");
 
-            //TODO: have a cone texture
-            PlatformFactory.Init(platformConeTexture, platformCylTexture, platformDomeTexture, platformBlankTexture);
+            PlatformFactory.Init(platformConeTexture, platformCylTexture, platformDomeTexture, platformBlankTexture, libSans12);
+            PlatformBlank.mLibSans12 = libSans12;
             director.ReloadContent(mDirector, Map.GetMeasurements());
             mDirector = director;
 

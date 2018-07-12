@@ -16,7 +16,7 @@ namespace Singularity.Input
     public sealed class InputManager : IUpdate
     {
 
-        private readonly List<IKeyListener> mKeyListener;
+        private readonly Dictionary<EScreen, List<IKeyListener>> mKeyListener;
 
         private readonly List<IMousePositionListener> mMousePositionListener;
 
@@ -48,7 +48,7 @@ namespace Singularity.Input
         {
             mScreensToCheck = new List<EScreen>();
 
-            mKeyListener = new List<IKeyListener>();
+            mKeyListener = new Dictionary<EScreen, List<IKeyListener>>();
             mMousePositionListener = new List<IMousePositionListener>();
             mMouseClickListener = new Dictionary<EScreen, List<IMouseClickListener>>();
             mMouseWheelListener = new Dictionary<EScreen, List<IMouseWheelListener>>();
@@ -63,17 +63,27 @@ namespace Singularity.Input
 
         public void AddKeyListener(IKeyListener iKeyListener)
         {
-            mKeyListener.Add(iKeyListener);
+            if (!mKeyListener.ContainsKey(iKeyListener.Screen))
+            {
+                mKeyListener[iKeyListener.Screen] = new List<IKeyListener>();
+            }
+
+            mKeyListener[iKeyListener.Screen].Add(iKeyListener);
         }
 
         public bool RemoveKeyListener(IKeyListener iKeyListener)
         {
-            if (!mKeyListener.Contains(iKeyListener))
+            if (!mKeyListener.ContainsKey(iKeyListener.Screen))
             {
                 return false;
             }
 
-            mKeyListener.Remove(iKeyListener);
+            if (!mKeyListener[iKeyListener.Screen].Contains(iKeyListener))
+            {
+                return false;
+            }
+
+            mKeyListener[iKeyListener.Screen].Remove(iKeyListener);
             return true;
         }
 
@@ -427,9 +437,16 @@ namespace Singularity.Input
             }
         }
 
-        private void CreateKeyEvents()
+        private bool CreateKeyEvents(EScreen screen)
         {
+            if (!mKeyListener.ContainsKey(screen))
+            {
+                return true;
+            }
+
             var createPressed = false;
+
+            var giveThrough = true;
 
             foreach (var pressedKey in mCurrentKeyboardState.GetPressedKeys())
                 // go through all pressed keys and create events accordingly
@@ -437,9 +454,9 @@ namespace Singularity.Input
                 if (!mPreviousKeyboardState.GetPressedKeys().Contains(pressedKey))
                     // new key was pressed -> create events 'typed' + 'pressed'
                 {
-                    foreach (var keyListener in mKeyListener)
+                    foreach (var keyListener in mKeyListener[screen])
                     {
-                        keyListener.KeyTyped(new KeyEvent(mCurrentKeyboardState.GetPressedKeys()));
+                        giveThrough = giveThrough && keyListener.KeyTyped(new KeyEvent(mCurrentKeyboardState.GetPressedKeys()));
                     }
                 }
                 else
@@ -451,9 +468,9 @@ namespace Singularity.Input
 
             if (createPressed)
             {
-                foreach (var keyListener in mKeyListener)
+                foreach (var keyListener in mKeyListener[screen])
                 {
-                    keyListener.KeyPressed(new KeyEvent(mCurrentKeyboardState.GetPressedKeys()));
+                    giveThrough = giveThrough && keyListener.KeyPressed(new KeyEvent(mCurrentKeyboardState.GetPressedKeys()));
                 }
             }
 
@@ -474,11 +491,13 @@ namespace Singularity.Input
             {
 
                 // the key was released -> create event 'release'
-                foreach (var keyListener in mKeyListener)
+                foreach (var keyListener in mKeyListener[screen])
                 {
-                    keyListener.KeyReleased(new KeyEvent(releasedKeys.ToArray()));
+                    giveThrough = giveThrough && keyListener.KeyReleased(new KeyEvent(releasedKeys.ToArray()));
                 }
             }
+
+            return giveThrough;
         }
 
         public void Update(GameTime gametime)
@@ -490,6 +509,8 @@ namespace Singularity.Input
             var giveWheelThrough = true;
 
             var giveClickThrough = true;
+
+            var giveKeyThrough = true;
 
             foreach (var screen in mScreensToCheck)
             {
@@ -503,11 +524,14 @@ namespace Singularity.Input
 
                 }
 
+                if (giveKeyThrough)
+                {
+                    giveKeyThrough = giveKeyThrough && CreateKeyEvents(screen);
+                }
+
             }
 
             CreateMousePositionEvents();
-
-            CreateKeyEvents();
 
 
             // update 'previous'-values

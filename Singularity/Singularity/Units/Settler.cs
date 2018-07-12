@@ -152,7 +152,7 @@ namespace Singularity.Units
 
         }
 
-        public void KeyTyped(KeyEvent keyEvent)
+        public bool KeyTyped(KeyEvent keyEvent)
         {
             // b key is used to convert the settler unit into a command center
             var keyArray = keyEvent.CurrentKeys;
@@ -163,20 +163,23 @@ namespace Singularity.Units
                 if (key == Keys.B && mSelected && (HasReachedTarget() || mNeverMoved))
                 {
                     OnBuildCommandCenter();
+                    return false;
                 }
             }
+
+            return true;
         }
 
 
         #region Unused EventListeners
-        public void KeyPressed(KeyEvent keyEvent)
+        public bool KeyPressed(KeyEvent keyEvent)
         {
-
+            return true;
         }
 
-        public void KeyReleased(KeyEvent keyEvent)
+        public bool KeyReleased(KeyEvent keyEvent)
         {
-
+            return true;
         }
 
         #endregion

@@ -168,7 +168,7 @@ namespace Singularity.Manager
                     mHostileDefensePlatforms.Remove(defensePlatform);
                 }
             }
-            
+
             mUnitMap.RemoveUnit(platform);
         }
 
@@ -180,7 +180,7 @@ namespace Singularity.Manager
         {
             var friendlyMilitary = unit as MilitaryUnit;
             var hostileMilitary = unit as EnemyUnit;
-            
+
             if (friendlyMilitary != null)
             {
                 mFriendlyMilitary.Remove(friendlyMilitary);

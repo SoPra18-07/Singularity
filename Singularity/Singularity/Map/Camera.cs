@@ -85,8 +85,7 @@ namespace Singularity.Map
                 {
                     ValidateZoom();
                     ValidatePosition();
-                }
-                
+                }               
             }
         }
 
@@ -108,7 +107,6 @@ namespace Singularity.Map
 
         [DataMember]
         private readonly Vector2 mOrigin; 
-
 
         /// <summary>
         /// Creates a new Camera object which provides a transform matrix to adjust
@@ -288,21 +286,23 @@ namespace Singularity.Map
         ///</summary>
         private void UpdateTransformMatrix()
         {
-            mTransform = Matrix.CreateTranslation(new Vector3(-mPosition, 0f)) 
-                         * Matrix.CreateTranslation(new Vector3(-mOrigin, 0f)) 
-                         * Matrix.CreateScale(mZoom, mZoom, 1f) 
+            mTransform = Matrix.CreateTranslation(new Vector3(-mPosition, 0f))
+                         * Matrix.CreateTranslation(new Vector3(-mOrigin, 0f))
+                         * Matrix.CreateScale(mZoom, mZoom, 1f)
                          * Matrix.CreateTranslation(new Vector3(mOrigin, 0f));
             mDirector.GetInputManager.CameraMoved(mTransform);
         }
 
-        public void KeyTyped(KeyEvent keyEvent)
+        public bool KeyTyped(KeyEvent keyEvent)
         {
-            // KeyTyped is unused by the camera.
+            return true;
         }
 
-        public void KeyPressed(KeyEvent keyEvent)
+        public bool KeyPressed(KeyEvent keyEvent)
         {
             var movementVector = new Vector2();
+
+            var giveThrough = true;
 
             if (mNeo)
             {
@@ -312,18 +312,22 @@ namespace Singularity.Map
                     {
                         case Keys.V:
                             movementVector.Y = -CameraMovementSpeed;
+                            giveThrough = false;
                             break;
 
                         case Keys.I:
                             movementVector.Y = CameraMovementSpeed;
+                            giveThrough = false;
                             break;
 
                         case Keys.U:
                             movementVector.X = -CameraMovementSpeed;
+                            giveThrough = false;
                             break;
 
                         case Keys.A:
                             movementVector.X = CameraMovementSpeed;
+                            giveThrough = false;
                             break;
                     }
                 }
@@ -336,18 +340,22 @@ namespace Singularity.Map
                     {
                         case Keys.W:
                             movementVector.Y = -CameraMovementSpeed;
+                            giveThrough = false;
                             break;
 
                         case Keys.S:
                             movementVector.Y = CameraMovementSpeed;
+                            giveThrough = false;
                             break;
 
                         case Keys.A:
                             movementVector.X = -CameraMovementSpeed;
+                            giveThrough = false;
                             break;
 
                         case Keys.D:
                             movementVector.X = CameraMovementSpeed;
+                            giveThrough = false;
                             break;
                     }
                 }
@@ -356,11 +364,13 @@ namespace Singularity.Map
             // make sure to scale the movement vector with the zoom level, since we don't want super slow movement when zoomed out
             // and super fast movement when zoomed in
             Position = Position + movementVector * (1 / Zoom);
+
+            return giveThrough;
         }
 
-        public void KeyReleased(KeyEvent keyEvent)
+        public bool KeyReleased(KeyEvent keyEvent)
         {
-            // KeyReleased is unused by the camera.
+            return true;
         }
 
         public bool MouseWheelValueChanged(EMouseAction mouseAction)

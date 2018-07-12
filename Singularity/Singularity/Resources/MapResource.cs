@@ -32,7 +32,7 @@ namespace Singularity.Resources
         [DataMember]
         public Vector2 RelativeSize { get; set; }
         [DataMember]
-        public EResourceType Type { get; }
+        public EResourceType Type { get; private set; }
         [DataMember]
         private int Amount { get; set; }
 

@@ -147,5 +147,10 @@ namespace Singularity.Map
         {
             return mWalkableGrid;
         }
+
+        public void RemoveCollider(ICollider toRemove)
+        {
+            //TODO: remove collider
+        }
     }
 }

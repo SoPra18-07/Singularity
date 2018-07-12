@@ -17,7 +17,7 @@ using Singularity.Property;
 namespace Singularity.Screen.ScreenClasses
 {
     /// <summary>
-    /// Used to show debug information. This might not be the prettiest, but it definitely does its work... 
+    /// Used to show debug information. This might not be the prettiest, but it definitely does its work...
     /// </summary>
     public sealed class DebugScreen : IScreen, IKeyListener
     {
@@ -26,7 +26,7 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool Loaded { get; set; }
 
-        public EScreen Screen { get; private set; } = EScreen.DebugScreen;
+        public EScreen Screen { get; private set; } = EScreen.GameScreen;
 
         private SpriteFont mFont;
 
@@ -176,7 +176,7 @@ namespace Singularity.Screen.ScreenClasses
             return true;
         }
 
-        public void KeyTyped(KeyEvent keyEvent)
+        public bool KeyTyped(KeyEvent keyEvent)
         {
             // switch the debug state on f4 press
             if (keyEvent.CurrentKeys.Contains(Keys.F4))
@@ -191,17 +191,21 @@ namespace Singularity.Screen.ScreenClasses
                     mScreenManager.RemoveScreen();
                     GlobalVariables.DebugState = !GlobalVariables.DebugState;
                 }
+
+                return false;
             }
+
+            return true;
         }
 
-        public void KeyPressed(KeyEvent keyEvent)
+        public bool KeyPressed(KeyEvent keyEvent)
         {
-
+            return true;
         }
 
-        public void KeyReleased(KeyEvent keyEvent)
+        public bool KeyReleased(KeyEvent keyEvent)
         {
-            
+            return true;
         }
 
         private void FowButtonClicked(object sender, EventArgs args)
