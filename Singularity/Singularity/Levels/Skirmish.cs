@@ -19,6 +19,7 @@ namespace Singularity.Levels
     [DataContract]
     internal sealed class Skirmish : BasicLevel
     {
+
         public Skirmish(GraphicsDeviceManager graphics,
             ref Director director,
             ContentManager content,

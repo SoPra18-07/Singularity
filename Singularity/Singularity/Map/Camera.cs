@@ -61,7 +61,7 @@ namespace Singularity.Map
                 mZoom = value;
                 ValidateZoom();
                 ValidatePosition();
-
+                
             }
         }
 
@@ -79,7 +79,7 @@ namespace Singularity.Map
 
         private readonly InputManager mInputManager;
 
-        private readonly Vector2 mOrigin;
+        private readonly Vector2 mOrigin; 
 
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace Singularity.Map
         {
             return mZoom;
         }
-
+        
         /// <summary>
         /// Checks whether the camera would move out of bounds and corrects the camera to
         /// clip to the edge if its the case.
@@ -243,9 +243,9 @@ namespace Singularity.Map
         ///</summary>
         private void UpdateTransformMatrix()
         {
-            mTransform = Matrix.CreateTranslation(new Vector3(-mPosition, 0f))
-                         * Matrix.CreateTranslation(new Vector3(-mOrigin, 0f))
-                         * Matrix.CreateScale(mZoom, mZoom, 1f)
+            mTransform = Matrix.CreateTranslation(new Vector3(-mPosition, 0f)) 
+                         * Matrix.CreateTranslation(new Vector3(-mOrigin, 0f)) 
+                         * Matrix.CreateScale(mZoom, mZoom, 1f) 
                          * Matrix.CreateTranslation(new Vector3(mOrigin, 0f));
             mInputManager.CameraMoved(mTransform);
         }

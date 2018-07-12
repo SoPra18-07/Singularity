@@ -218,23 +218,25 @@ namespace Singularity.Units
             {
                 RegulateMovement();
                 if (Carrying.IsPresent())
-                {
-                    Carrying.Get().Follow(this);
-                }
+                        {
+                            Carrying.Get().Follow(this);
+                        }
                 //This means we arrived at the point we want to leave the Resource and consider our work done
-                if (!mTask.End.IsPresent() || !CurrentNode.Equals(mTask.End.Get()) ||
-                    !ReachedTarget(mTask.End.Get().Center)) return;
-                if (Carrying.IsPresent())
+                if (mTask.End.IsPresent() && CurrentNode.Equals(mTask.End.Get()) &&
+                    ReachedTarget(mTask.End.Get().Center))
                 {
-                    var res = Carrying.Get();
-                    res.UnFollow();
-                    ((PlatformBlank)CurrentNode).StoreResource(res);
-                    Carrying = Optional<Resource>.Of(null);
-                }
+                    if (Carrying.IsPresent())
+                    {
+                        var res = Carrying.Get();
+                        res.UnFollow();
+                        ((PlatformBlank)CurrentNode).StoreResource(res);
+                        Carrying = Optional<Resource>.Of(null);
+                    }
 
-                mDone = true;
-                //We can now do the job we were assigned to.
-                mFinishTask = false;
+                    mDone = true;
+                    //We can now do the job we were assigned to.
+                    mFinishTask = false;
+                }
             }
             else
             {

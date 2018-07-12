@@ -1,4 +1,6 @@
-﻿namespace Singularity.Platforms
+﻿using System.Runtime.Serialization;
+
+namespace Singularity.Platforms
 {
     public enum EPlatformType
     {

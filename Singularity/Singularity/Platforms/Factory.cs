@@ -20,13 +20,11 @@ namespace Singularity.Platforms
         public Factory(Vector2 position,
             Texture2D spritesheet,
             Texture2D basesprite,
-            SpriteFont libSans12,
             ref Director director,
             bool friendly = true)
             : base(position,
                 spritesheet,
                 basesprite,
-                libSans12,
                 ref director,
                 EPlatformType.Factory,
                 -50,

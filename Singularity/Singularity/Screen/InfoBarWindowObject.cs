@@ -12,12 +12,14 @@ namespace Singularity.Screen
 {
     /// <summary>
     /// The InfoBar is the UI's top bar.
-    /// It includes the time, mission time, the pause button and buttons to close the given 6 windows
+    /// It includes the time, mission time, the pause button and buttons to close the given 6 windows 
     /// </summary>
     sealed class InfoBarWindowObject : IDraw, IUpdate, IMouseClickListener
     {
+        #region member variables
+
         // list of items in info bar
-        private readonly List<IWindowItem> mInfoBarItemList;
+        private readonly List<IWindowItem> mInfoBarItemList = new List<IWindowItem>();
 
         // pause button of info bar
         private readonly Button mPauseButton;
@@ -70,6 +72,8 @@ namespace Singularity.Screen
         // pause menu screen
         private readonly GamePauseScreen mGamePauseScreen;
 
+        #endregion
+
         /// <summary>
         /// The infoBar is part of the UI. It is placed on the top of the screen
         /// and includes the time, a pause button and buttons to disable the WindowObject it gets in constructor
@@ -86,9 +90,9 @@ namespace Singularity.Screen
         /// <param name="minimapWindow">the minimapWindow to close/open</param>
         /// <param name="director">director</param>
         public InfoBarWindowObject(
-            Color borderColor,
-            Color fillColor,
-            SpriteFont spriteFont,
+            Color borderColor, 
+            Color fillColor, 
+            SpriteFont spriteFont, 
             IScreenManager screenManager,
             WindowObject civilUnitsWindow,
             WindowObject resourceWindow,
@@ -111,12 +115,11 @@ namespace Singularity.Screen
             mSelectedPlatformWindow = selectedPlatformWindow;
             mMinimapWindow = minimapWindow;
 
-            mInfoBarItemList = new List<IWindowItem>();
-
             // set to zero to force the update 'change-in-res'-call once (because width and backup are different from the beginning)
             mWidthBackup = 0;
 
-            mWidthPadding = Width / 10;
+            // divide the width to get a padding between the buttons
+            mWidthPadding = Width / 25;
 
             // set starting values
             Screen = EScreen.UserInterfaceScreen;
@@ -125,7 +128,6 @@ namespace Singularity.Screen
 
             // the entire infoBar
             Bounds = new Rectangle(0, 0, Width, 25);
-
 
             // NOTICE : all buttons can start with position (0,0) since they will be positioned at the first update-call
             // pause button
@@ -157,7 +159,6 @@ namespace Singularity.Screen
             mMinimapButton = new Button("minimap", mSpriteFont, new Vector2(0, 0)) { Opacity = 1f };
             mInfoBarItemList.Add(mMinimapButton);
             mMinimapButton.ButtonReleased += TogglerMinimap;
-
 
             // add input manager to prevent other objects from behind the infoBar to get input through the infoBar
             director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
@@ -202,7 +203,7 @@ namespace Singularity.Screen
         {
             if (Active)
             {
-                // changes in resolution result in changes in width of the info bar and the button locations
+                // changes in resolution result in changes in width of the info bar and the button locations 
                 if (mWidthBackup != Width)
                 {
                     // update backup

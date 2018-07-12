@@ -1146,11 +1146,25 @@ namespace Singularity.Manager
             }
             //If there are any units to redistribute do it now
             AssignUnitsFairly(unitstodistribute, isDef);
-
+            
             //TODO: this is a dirty fix and might cause slider adjustment issues (null propagation added)
             mHandler?.ForceSliderPages();
 
         }
+
+        /// <summary>
+        /// This will be called from the SliderHandler when it changes.
+        /// It just unregisters its reference, so the DistributionManager can't communicate with it anymore.
+        /// </summary>
+        /// <param name="handler"></param>
+        internal void Unregister(SliderHandler handler)
+        {
+            if (mHandler == handler)
+            {
+                mHandler = null;
+            }
+        }
+
         #endregion
 
         public void PausePlatformAction(IPlatformAction action)

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
@@ -13,13 +12,15 @@ namespace Singularity.Screen
     /// InfoBoxes are small boxes which can be used to quickly show a notice to the player. (With or without border)
     /// These boxes can contain IWindowItems and will be shown when the mouse is above a specific rectangle that needs to be set.
     /// </summary>
-    public class InfoBoxWindow : IDraw, IUpdate, IMousePositionListener
+    sealed class InfoBoxWindow : IDraw, IUpdate, IMousePositionListener
     {
+        #region member variables 
+
         // list of items to put in info box
-        protected readonly List<IWindowItem> mItemList;
+        private readonly List<IWindowItem> mItemList;
 
         // size of info box
-        protected Vector2 mSize;
+        private Vector2 mSize;
 
         // colors for the info box rectangle
         private readonly Color mBorderColor;
@@ -32,7 +33,9 @@ namespace Singularity.Screen
         private readonly bool mBoxed;
 
         // counter to prevent the infoBox showing up at the wrong position by updating the position first before drawing
-        protected int mCounter;
+        private int mCounter;
+
+        #endregion
 
         /// <summary>
         /// Creates a info box which is displayed above the mouse position
@@ -41,12 +44,9 @@ namespace Singularity.Screen
         /// <param name="size">size of infobox</param>
         /// <param name="borderColor">bordercolor of infoBox</param>
         /// <param name="centerColor">fillcolor of infoBox</param>
-        /// <param name="boundsRectangle"></param>
         /// <param name="boxed">true, if window should have a border</param>
         /// <param name="director">the director</param>
-        /// <param name="mousePosition"></param>
-        /// <param name="location"></param>
-        public InfoBoxWindow(List<IWindowItem> itemList, Vector2 size, Color borderColor, Color centerColor, bool boxed, Director director, bool mousePosition = true, Vector2 location = default(Vector2))
+        public InfoBoxWindow(List<IWindowItem> itemList, Vector2 size, Color borderColor, Color centerColor, bool boxed, Director director)
         {
             // set members
             mItemList = itemList;
@@ -55,15 +55,8 @@ namespace Singularity.Screen
             mCenterColor = centerColor;
             mBoxed = boxed;
 
-            if (mousePosition)
-            {
-                // window only active if mouse on Bound Rectangle
-                director.GetInputManager.AddMousePositionListener(this);
-            }
-            else
-            {
-                mMouse = location;
-            }
+            // window only active if mouse on Bound Rectangle
+            director.GetInputManager.AddMousePositionListener(this);
 
             Active = false;
             mCounter = 0;
@@ -75,17 +68,19 @@ namespace Singularity.Screen
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (!Active || mCounter <= 10) return;
-            if (mBoxed)
+            if (Active && mCounter > 10)
             {
-                // infoBox Rectangle
-                spriteBatch.StrokedRectangle(new Vector2(Position.X, Position.Y), new Vector2(mSize.X, mSize.Y), mBorderColor, mCenterColor, 1f, 0.8f);
-            }
+                if (mBoxed)
+                {
+                    // infoBox Rectangle
+                    spriteBatch.StrokedRectangle(new Vector2(Position.X, Position.Y), new Vector2(mSize.X, mSize.Y), mBorderColor, mCenterColor, 1f, 0.8f);
+                }
 
-            // draw all items of infoBox
-            foreach (var item in mItemList)
-            {
-                item.Draw(spriteBatch);
+                // draw all items of infoBox
+                foreach (var item in mItemList)
+                {
+                    item.Draw(spriteBatch);
+                }
             }
         }
 
@@ -93,7 +88,7 @@ namespace Singularity.Screen
         /// standard update method
         /// </summary>
         /// <param name="gametime"></param>
-        public virtual void Update(GameTime gametime)
+        public void Update(GameTime gametime)
         {
             if (Active)
             {
@@ -102,10 +97,12 @@ namespace Singularity.Screen
 
                 // shifts the items from the top left corner to their position
                 var yShift = 2;
-                //
+
+                // set starting values, maxWidth is the maximum width of all items added to the infoBox, maxHeight ~ same just with height
                 float maxWidth = 0;
                 float maxHeight = 0;
 
+                // update the position of all items from inside the infoBox
                 foreach (var item in mItemList)
                 {
                     item.Update(gametime);
@@ -123,6 +120,7 @@ namespace Singularity.Screen
                     maxHeight = maxHeight + yShift;
                 }
 
+                // update size
                 mSize = new Vector2(maxWidth + 10, maxHeight);
 
                 ++mCounter;
@@ -133,6 +131,13 @@ namespace Singularity.Screen
             }
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="screenX"></param>
+        /// <param name="screenY"></param>
+        /// <param name="worldX"></param>
+        /// <param name="worldY"></param>
         public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {
             if (Active)
@@ -143,7 +148,7 @@ namespace Singularity.Screen
         }
 
         // top left corner of infoBox
-        protected Vector2 Position { get; set; }
+        private Vector2 Position { get; set; }
 
         // true if the infoBox is active
         public bool Active { get; set; }

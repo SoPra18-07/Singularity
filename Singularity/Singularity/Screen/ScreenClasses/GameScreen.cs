@@ -78,6 +78,7 @@ namespace Singularity.Screen.ScreenClasses
 
             mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
             AddObject(mSelBox);
+
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -183,7 +184,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             AddObject(mMap);
 
-            // AddObjects(ResourceHelper.GetRandomlyDistributedResources(50));
+            AddObjects(ResourceHelper.GetRandomlyDistributedResources(50));
 
             mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
             mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
@@ -232,7 +233,7 @@ namespace Singularity.Screen.ScreenClasses
                 mDirector.GetMilitaryManager.AddPlatform(platform);
                 return true;
             }
-
+            
             // subscribes the game screen the the settler event (to build a command center)
             // TODO unsubscribe / delete settler when event is fired
             if (settler != null)
@@ -378,17 +379,13 @@ namespace Singularity.Screen.ScreenClasses
         {
             // TODO eventually the EPlacementType should be instance but currently that
             // TODO requires a road to be place and therefore throws an exception !!!!!
-
-            var graphid = IdGenerator.NextiD();
-            mDirector.GetDistributionDirector.AddManager(graphid);
-            var cCenter = PlatformFactory.Get(EPlatformType.Command, ref mDirector, v.X - 55, v.Y - 100);
-            // CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, ref mDirector, false);
-
-            var genUnit = new GeneralUnit(cCenter, ref mDirector, graphid);
-            var genUnit2 = new GeneralUnit(cCenter, ref mDirector, graphid);
+            
+            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, ref mDirector, false);
+            AddObject(cCenter);
+            var genUnit = new GeneralUnit(cCenter, ref mDirector, cCenter.GetGraphIndex());
+            var genUnit2 = new GeneralUnit(cCenter, ref mDirector, cCenter.GetGraphIndex());
 
             // adds the command center to the GameScreen, as well as two general units
-            AddObject(cCenter);
             AddObject(genUnit);
             AddObject(genUnit2);
 
