@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -12,7 +12,7 @@ namespace Singularity.Screen
     class HorizontalCollection : IWindowItem
     {
         // list holding the collection of IWindowItems
-        private readonly List<IWindowItem> mItemList;
+        public List<IWindowItem> mItemList;
 
         // padding between the IWindowItems in collection s.t. the items fit the size (if possible) while maximizing the padding between them
         private float mPadding;
@@ -85,12 +85,11 @@ namespace Singularity.Screen
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (ActiveInWindow && ActiveHorizontalCollection && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
+            if (!ActiveInWindow || !ActiveHorizontalCollection || InactiveInSelectedPlatformWindow ||
+                OutOfScissorRectangle) return;
+            foreach (var item in mItemList)
             {
-                foreach (var item in mItemList)
-                {
-                    item.Draw(spriteBatch);
-                }
+                item.Draw(spriteBatch);
             }
         }
 
@@ -100,14 +99,9 @@ namespace Singularity.Screen
         /// <param name="itemList">list of objects</param>
         /// <param name="size">size to fit the objects</param>
         /// <returns></returns>
-        private float CalcPadding(List<IWindowItem> itemList, Vector2 size)
+        private float CalcPadding(IReadOnlyCollection<IWindowItem> itemList, Vector2 size)
         {
-            float width = 0;
-
-            foreach (var item in mItemList)
-            {
-                width = width + item.Size.X * 0.25f;
-            }
+            float width = mItemList.Aggregate<IWindowItem, float>(0, (current, item) => current + item.Size.X * 0.25f);
 
             return (size.X - width - 20) / (itemList.Count - 1);
         }

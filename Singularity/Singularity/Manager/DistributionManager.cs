@@ -1155,7 +1155,7 @@ namespace Singularity.Manager
 
         public void PausePlatformAction(IPlatformAction action)
         {
-            throw new NotImplementedException();
+            // TODO: throw new NotImplementedException(); // (currently commented out, since it'd break stuff)
             // Actions need a sleep method
             // No, they're just being removed from occurences in the DistributionManager. As soon as they unpause, they'll send requests for Resources and units again.
             // Ah ok I got that part

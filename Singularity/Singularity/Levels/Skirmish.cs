@@ -34,7 +34,7 @@ namespace Singularity.Levels
             var map = Map;
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
-            var platform1 = PlatformFactory.Get(EPlatformType.Blank, ref mDirector, 3000, 3000, Map.GetResourceMap());
+            var platform1 = PlatformFactory.Get(EPlatformType.Barracks, ref mDirector, 3000, 3000, Map.GetResourceMap());
 
             GameScreen.AddObject(platform1);
 
@@ -69,7 +69,7 @@ namespace Singularity.Levels
 
             // Enemy Unit
             var enemyUnit = new Target(new Vector2(3000, 2950), Camera, ref mDirector, ref map);
-            var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
+            // var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
 
             var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, mUi);
 
@@ -86,9 +86,11 @@ namespace Singularity.Levels
             }
 
             // Resources
-            var res = new Resource(EResourceType.Trash, platform2.Center);
-            var res4 = new Resource(EResourceType.Trash, platform2.Center);
-            var res5 = new Resource(EResourceType.Trash, platform2.Center);
+            var res = new Resource(EResourceType.Metal, platform2.Center);
+            var res4 = new Resource(EResourceType.Metal, platform2.Center);
+            var res5 = new Resource(EResourceType.Metal, platform2.Center);
+            var res6 = new Resource(EResourceType.Metal, platform3.Center);
+            var res7 = new Resource(EResourceType.Metal, platform4.Center);
             var res2 = new Resource(EResourceType.Chip, platform3.Center);
             var res3 = new Resource(EResourceType.Oil, platform4.Center);
 
@@ -97,10 +99,12 @@ namespace Singularity.Levels
             platform4.StoreResource(res3);
             platform2.StoreResource(res4);
             platform2.StoreResource(res5);
+            platform3.StoreResource(res6);
+            platform4.StoreResource(res7);
 
             GameScreen.AddObjects(genUnit);
             GameScreen.AddObject(enemyUnit);
-            GameScreen.AddObject(milUnit);
+            // GameScreen.AddObject(milUnit);
             GameScreen.AddObject(settler);
 
             // add a puddle

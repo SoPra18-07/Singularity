@@ -10,7 +10,7 @@ namespace Singularity.Screen
     internal sealed class TextField : IWindowItem
     {
 
-        private readonly string mSplittedText;
+        private string mSplittedText;
         private readonly SpriteFont mSpriteFont;
         private readonly Color mColor;
 
@@ -36,6 +36,12 @@ namespace Singularity.Screen
             Size = new Vector2(size.X, spriteFont.MeasureString(mSplittedText).Y);
 
             ActiveInWindow = true;
+        }
+
+        public void UpdateText(string newText)
+        {
+            Size = mSpriteFont.MeasureString(newText);
+            mSplittedText = SplitLineToMultiline(newText, Size, mSpriteFont);
         }
 
         public void Update(GameTime gametime)
@@ -128,7 +134,7 @@ namespace Singularity.Screen
         /// <summary>
         /// size of the textfield
         /// </summary>
-        public Vector2 Size { get; }
+        public Vector2 Size { get; set; }
 
         /// <summary>
         ///

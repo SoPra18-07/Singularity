@@ -131,20 +131,6 @@ namespace Singularity.PlatformActions
         public abstract Dictionary<EResourceType, int> GetRequiredResources();
 
         public abstract void UiToggleState();
-        /* {
-            switch (State)
-            {
-                case PlatformActionState.Available:
-                    State = PlatformActionState.Deactivated;
-                    break;
-                case PlatformActionState.Deactivated:
-                    State = PlatformActionState.Available;
-                    break;
-                default:
-                    throw new AccessViolationException("Someone/Something acccessed the state!!");
-            }
-        }
-        */
 
         public List<GeneralUnit> UnAssignUnits(int amount, JobType job)
         {

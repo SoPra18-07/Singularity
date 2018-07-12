@@ -123,7 +123,12 @@ namespace Singularity.PlatformActions
                 case PlatformActionState.Available:
                     // TODO: You dont request Units anymore. Are there other things to be changed too then?
                     // mDirector.GetDistributionManager.RequestUnits(mPlatform, JobType.Production, this);
+                    // does this work, then?
+                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(mPlatform, false);
                     State = PlatformActionState.Active;
+                    break;
+                case PlatformActionState.Deactivated:
+                case PlatformActionState.Disabled:
                     break;
                 default:
                     throw new AccessViolationException("Someone/Something acccessed the state!!");

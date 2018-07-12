@@ -349,7 +349,7 @@ namespace Singularity.Platforms
         /// Get the special IPlatformActions you can perform on this platform.
         /// </summary>
         /// <returns> an array with the available IPlatformActions.</returns>
-        public List<IPlatformAction> GetIPlatformActions()
+        public virtual List<IPlatformAction> GetIPlatformActions()
         {
             return mIPlatformActions;
         }
@@ -567,22 +567,19 @@ namespace Singularity.Platforms
             }
 
             // manage updating of values in the UI
-            if (IsSelected && !mDataSent)
-                // the platform is selected + the current data has yet to be sent then
-            {
-                // update previous values
-                mPrevResources = GetPlatformResources();
-                mPrevUnitAssignments = GetAssignedUnits();
-                mPrevPlatformActions = GetIPlatformActions();
-                mPreviousIsManuallyDeactivatedState = IsManuallyDeactivated();
-                mPreviousIsActiveState = IsActive();
+            if (!IsSelected || mDataSent) return;
+            // update previous values
+            mPrevResources = GetPlatformResources();
+            mPrevUnitAssignments = GetAssignedUnits();
+            mPrevPlatformActions = GetIPlatformActions();
+            mPreviousIsManuallyDeactivatedState = IsManuallyDeactivated();
+            mPreviousIsActiveState = IsActive();
 
-                // send data to UIController
-                mUserInterfaceController.SetDataOfSelectedPlatform(Id, mIsActive, mIsManuallyDeactivated, mType, GetPlatformResources(), GetAssignedUnits(), GetIPlatformActions());
+            // send data to UIController
+            mUserInterfaceController.SetDataOfSelectedPlatform(Id, mIsActive, mIsManuallyDeactivated, mType, GetPlatformResources(), GetAssignedUnits(), GetIPlatformActions());
 
-                // set the bool for sent-data to true, since the data has just been sent
-                mDataSent = true;
-            }
+            // set the bool for sent-data to true, since the data has just been sent
+            mDataSent = true;
         }
 
         private void Uncollide()

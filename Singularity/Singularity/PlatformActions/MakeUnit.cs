@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Singularity.Manager;
@@ -26,6 +27,7 @@ namespace Singularity.PlatformActions
             var camera = mDirector.GetStoryManager.Level.Camera;
             var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryFast(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
+            mDirector.GetMilitaryManager.AddUnit(unit);
         }
     }
 
@@ -41,6 +43,7 @@ namespace Singularity.PlatformActions
             var camera = mDirector.GetStoryManager.Level.Camera;
             var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryHeavy(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
+            mDirector.GetMilitaryManager.AddUnit(unit);
         }
     }
 
@@ -56,6 +59,7 @@ namespace Singularity.PlatformActions
             var camera = mDirector.GetStoryManager.Level.Camera;
             var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryUnit(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
+            mDirector.GetMilitaryManager.AddUnit(unit);
         }
     }
 
@@ -63,8 +67,8 @@ namespace Singularity.PlatformActions
     {
 
         protected Dictionary<EResourceType, int> mBuildingCost;
-        protected Dictionary<EResourceType, int> mMissingResources;
-        protected Dictionary<EResourceType, int> mToRequest;
+        protected Dictionary<EResourceType, int> mMissingResources = new Dictionary<EResourceType, int>();
+        protected Dictionary<EResourceType, int> mToRequest = new Dictionary<EResourceType, int>();
         protected Vector2 mOffset = new Vector2(200f);
 
         protected AMakeUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
@@ -94,13 +98,15 @@ namespace Singularity.PlatformActions
                     mToRequest[resource] = mToRequest[resource] - 1;
                 }
                 mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).RequestResource(mPlatform, resource, this);
+                Debug.WriteLine("just requested " + resource + " from the DistrMgr. Let's wait and see.");
             }
 
             mPlatform.GetPlatformResources().ForEach(action: r => GetResource(r.Type));
 
-            if (mMissingResources.Count <= 0)
+            if (mMissingResources.Count <= 0 && State == PlatformActionState.Active)
             {
                 CreateUnit();
+                State = PlatformActionState.Available;
             }
         }
 
@@ -125,18 +131,33 @@ namespace Singularity.PlatformActions
             return mMissingResources;
         }
 
+        private void UpdateResources()
+        {
+            if (mMissingResources.Values.Sum() > 0)
+            {
+                mToRequest = new Dictionary<EResourceType, int>(mMissingResources);
+            }
+            else
+            {
+                mMissingResources = new Dictionary<EResourceType, int>(mBuildingCost);
+                mToRequest = new Dictionary<EResourceType, int>(mMissingResources);
+            }
+        }
+
         public override void UiToggleState()
         {
             switch (State)
             {
                 case PlatformActionState.Available:
-                    mMissingResources = new Dictionary<EResourceType, int>(mBuildingCost);
-                    mToRequest = new Dictionary<EResourceType, int>(mMissingResources);
+                    UpdateResources();
                     State = PlatformActionState.Active;
                     break;
                 case PlatformActionState.Active:
                     mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this);
                     State = PlatformActionState.Available;
+                    break;
+                case PlatformActionState.Deactivated:
+                case PlatformActionState.Disabled:
                     break;
                 default:
                     throw new AccessViolationException("Someone/Something acccessed the state!!");

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -1311,28 +1312,35 @@ namespace Singularity.Screen.ScreenClasses
                 mProduceWellResourceAction.ActiveInWindow = false;
             }
 
+
             // activate all actions possible on this platform + add them to the window if they haven't been added yet
             foreach (var action in actionsList)
             {
+                /*
+                var actionIWindowItem = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
+                mSelectedPlatformWindow.AddItem(actionIWindowItem);
+                mSelectedPlatformActionList.Add(actionIWindowItem);
+                // */
+
+                // Debug.WriteLine("Element in actionlist: " + action.GetType());
+
+
+                // /*
                 if (action is MakeFastMilitaryUnit)
                 {
                     mMakeFastMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
-                    if (!mFastMilitaryAdded)
-                    {
-                        mSelectedPlatformWindow.AddItem(mMakeFastMilitaryAction);
-                        mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
-                    }
+                    if (mFastMilitaryAdded) continue;
+                    mSelectedPlatformWindow.AddItem(mMakeFastMilitaryAction);
+                    mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
                 }
                 else if (action is MakeHeavyMilitaryUnit)
                 {
                     mMakeStrongMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
-                    if (!mStronggMilitaryAdded)
-                    {
-                        mSelectedPlatformWindow.AddItem(mMakeStrongMilitaryAction);
-                        mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
-                    }
+                    if (mStronggMilitaryAdded) continue;
+                    mSelectedPlatformWindow.AddItem(mMakeStrongMilitaryAction);
+                    mSelectedPlatformActionList.Add(mMakeStrongMilitaryAction);
                 }
                 else if (action is ProduceMineResource)
                 {
@@ -1341,7 +1349,7 @@ namespace Singularity.Screen.ScreenClasses
                     if (!mProduceMineResourceAdded)
                     {
                         mSelectedPlatformWindow.AddItem(mProduceMineResourceAction);
-                        mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
+                        mSelectedPlatformActionList.Add(mProduceMineResourceAction);
                     }
                 }
                 else if (action is ProduceQuarryResource)
@@ -1364,6 +1372,7 @@ namespace Singularity.Screen.ScreenClasses
                         mSelectedPlatformActionList.Add(mProduceWellResourceAction);
                     }
                 }
+                // */
             }
 
             #endregion

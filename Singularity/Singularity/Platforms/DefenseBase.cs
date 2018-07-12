@@ -23,14 +23,14 @@ namespace Singularity.Platforms
         /// </summary>
         protected bool mShoot;
 
-        /// <summary>
-        /// For defense platforms, indicates where there target is
-        /// </summary>
-        internal Vector2 EnemyPosition { get; set; }
-
         public int Range { get; } = 400;
 
+        /// <summary>
+        /// For defense platforms, indicates who the target is
+        /// </summary>
         protected ICollider mShootingTarget;
+
+        protected Shoot mDefenseAction;
 
         /// <summary>
         /// Represents an abstract class for all defense platforms. Implements their draw methods.
@@ -50,12 +50,18 @@ namespace Singularity.Platforms
             friendly: friendly)
         {
 
-            mType = type;
+            mDefenseAction = new Shoot(this, ref mDirector);
+            
             mSpritename = "Cone";
             Property = JobType.Defense;
             SetPlatfromParameters();
 
             RevelationRadius = 500;
+        }
+
+        public void Shoot()
+        {
+            Shoot(mShootingTarget);
         }
 
         public abstract void Shoot(ICollider target);
@@ -92,8 +98,8 @@ namespace Singularity.Platforms
             }
 
             // draws a laser line a a slight glow around the line, then sets the shoot future off
-            spriteBatch.DrawLine(Center, EnemyPosition, Color.White, 2);
-            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), EnemyPosition, Color.White * .2f, 6);
+            spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2);
+            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6);
             mShoot = false;
         }
 
@@ -114,6 +120,13 @@ namespace Singularity.Platforms
             return new Vector2(Vector2.Transform(new Vector2(v.X, v.Y),
                 Matrix.Invert(camera.GetTransform())).X, Vector2.Transform(new Vector2(v.X, v.Y),
                 Matrix.Invert(camera.GetTransform())).Y);
+        }
+
+        public override List<IPlatformAction> GetIPlatformActions()
+        {
+            var list = new List<IPlatformAction> { { mDefenseAction } };
+            list.AddRange(base.GetIPlatformActions().AsEnumerable());
+            return list;
         }
     }
 }
