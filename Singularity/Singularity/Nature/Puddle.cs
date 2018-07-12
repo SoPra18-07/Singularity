@@ -33,9 +33,9 @@ namespace Singularity.Nature
         [DataMember]
         private readonly bool mBigPuddle;
         [DataMember]
-        public Vector2 Center { get; }
+        public Vector2 Center { get; private set; }
         [DataMember]
-        public bool Friendly { get; } = false;
+        public bool Friendly { get; private set; }
 
         public Puddle(Vector2 position, ref Director director, bool bigPuddle = true)
         {

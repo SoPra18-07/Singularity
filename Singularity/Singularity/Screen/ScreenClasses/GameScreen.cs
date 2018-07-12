@@ -7,12 +7,12 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Nature;
 using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Sound;
 using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -119,6 +119,10 @@ namespace Singularity.Screen.ScreenClasses
                 var possibleMilitaryUnit = drawable as MilitaryUnit;
                 var possibleSettler = drawable as Settler;
                 var possiblegenunit = drawable as GeneralUnit;
+                var possiblerock = drawable as Rock;
+                var possiblepuddle = drawable as Puddle;
+                possiblepuddle?.ReloadContent();
+                possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
                 possibleMilitaryUnit?.ReloadContent(content, ref mDirector, camera, ref map);
                 possibleSettler?.ReloadContent(ref mDirector, mCamera, ref map, this, ui);
@@ -132,6 +136,10 @@ namespace Singularity.Screen.ScreenClasses
                 var possibleMilitaryUnit = updateable as MilitaryUnit;
                 var possibleSettler = updateable as Settler;
                 var possiblegenunit = updateable as GeneralUnit;
+                var possiblerock = updateable as Rock;
+                var possiblepuddle = updateable as Puddle;
+                possiblepuddle?.ReloadContent();
+                possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
                 possibleMilitaryUnit?.ReloadContent(content, ref mDirector, camera, ref map);
                 possibleSettler?.ReloadContent(ref mDirector, mCamera, ref map, this, ui);
@@ -145,6 +153,10 @@ namespace Singularity.Screen.ScreenClasses
                 var possibleMilitaryUnit = spatial as MilitaryUnit;
                 var possibleSettler = spatial as Settler;
                 var possiblegenunit = spatial as GeneralUnit;
+                var possiblerock = spatial as Rock;
+                var possiblepuddle = spatial as Puddle;
+                possiblepuddle?.ReloadContent();
+                possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
                 possibleMilitaryUnit?.ReloadContent(content, ref mDirector, camera, ref map);
                 possibleSettler?.ReloadContent(ref mDirector, mCamera, ref map, this, ui);

@@ -41,6 +41,7 @@ namespace Singularity.Units
         /// <summary>
         /// Scalar for the unit size.
         /// </summary>
+        [DataMember]
         protected const float Scale = 0.4f;
 
         /// <summary>
@@ -52,14 +53,14 @@ namespace Singularity.Units
         /// <summary>
         /// The spriteSheet used to draw enemy units.
         /// </summary>
-        protected readonly Texture2D mMilSheet = MilitaryUnit.mMilSheet;
-
-        public new bool Friendly { get; } = false;
-
+        protected Texture2D mMilSheet = MilitaryUnit.mMilSheet;
+        [DataMember]
+        public new bool Friendly { get; private set; }
+        [DataMember]
         protected bool mShoot;
-
+        [DataMember]
         protected ICollider mShootingTarget;
-
+        [DataMember]
         public int Range { get; protected set; }
 
         public void Shoot(ICollider target)
@@ -104,7 +105,12 @@ namespace Singularity.Units
             // makes sure that the textures are loaded
             if (mMilSheet == null)
             {
-                throw new Exception("load the MilSheet and GlowTexture first!");
+                mMilSheet = MilitaryUnit.mMilSheet;
+            }
+
+            if (mMilSheet == null)
+            {
+                throw new Exception("Load the MilSheet and GlowTexture first!");
             }
 
             // Draw military unit

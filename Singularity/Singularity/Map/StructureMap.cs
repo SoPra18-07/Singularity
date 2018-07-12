@@ -163,6 +163,7 @@ namespace Singularity.Map
             mGraphIdToGraph[index] = graph;
             mPlatformToGraphId[platform] = index;
             platform.SetGraphIndex(index);
+            
             UpdateGenUnitsGraphIndex(mGraphIdToGraph[index], index);
 
             mDirector.GetDistributionDirector.AddManager(index);

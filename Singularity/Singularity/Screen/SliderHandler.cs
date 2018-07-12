@@ -36,14 +36,14 @@ namespace Singularity.Screen
             mConstructionSlider = constr;
             mLogisticsSlider = logi;
             //TODO: CURRENTLY HARDCODED Change when implementing graphswitch
-            mDirector.GetDistributionDirector.GetManager(0).Register(this);
+            //mDirector.GetDistributionDirector.GetManager(0).Register(this);
             mCurrentPages = new int[4];
 
             mDefSlider.PageMoving += DefListen;
             mConstructionSlider.PageMoving += ConstrListen;
             mLogisticsSlider.PageMoving += LogiListen;
             mProductionSlider.PageMoving += ProdListen;
-            Refresh();
+            //Refresh();
 
             //TODO: this won't work, since it is not guaranteed that theres always a graph at 0
             mCurrentGraphid = 0;

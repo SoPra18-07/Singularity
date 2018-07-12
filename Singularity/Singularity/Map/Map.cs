@@ -85,7 +85,6 @@ namespace Singularity.Map
 
         public void ReloadContent(Texture2D background, Camera camera, FogOfWar fow, ref Director dir, ContentManager content)
         {
-            mUnitMap = new UnitMap(mWidth, mHeight);
             mBackgroundTexture = background;
             mCamera = camera;
             mFow = fow;
@@ -252,6 +251,11 @@ namespace Singularity.Map
         internal ResourceMap GetResourceMap()
         {
             return mResourceMap;
+        }
+
+        internal Vector2 GetMeasurements()
+        {
+            return new Vector2(mWidth, mHeight);
         }
 
         internal UnitMap GetUnitMap()

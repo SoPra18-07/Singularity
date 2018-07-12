@@ -66,8 +66,9 @@ namespace Singularity.Manager
             mUnitMap = map.GetUnitMap();
         }
 
-        public void ReloadContent()
+        public void ReloadContent(Vector2 mapmeasurements)
         {
+            mUnitMap = new UnitMap((int)mapmeasurements.X, (int)mapmeasurements.Y);
             foreach(var funit in mFriendlyMilitary)
             {
                 mUnitMap.AddUnit(funit);

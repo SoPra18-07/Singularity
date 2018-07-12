@@ -93,7 +93,6 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
-            //Currently we give the GameScreen one cycle to load. Change that if you notice weird happenings during loading.
             if (mLoadingGame)
             {
                 mScreenManager.RemoveScreen();

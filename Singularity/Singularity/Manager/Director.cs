@@ -32,7 +32,7 @@ namespace Singularity.Manager
             // Dd}{_:
         }
 
-        internal void ReloadContent(Director dir)
+        internal void ReloadContent(Director dir, Vector2 mapmeasurements)
         {
             GetIdGenerator = dir.GetIdGenerator;
             GetStoryManager = dir.GetStoryManager;
@@ -41,7 +41,7 @@ namespace Singularity.Manager
             GetUserInterfaceController = dir.GetUserInterfaceController;
             GetDistributionDirector = dir.GetDistributionDirector;
             GetStoryManager.LoadAchievements();
-            GetMilitaryManager.ReloadContent();
+            GetMilitaryManager.ReloadContent(mapmeasurements);
         }
 
         [DataMember]

@@ -81,7 +81,6 @@ namespace Singularity.Levels
             //INITIALIZE SCREENS
             GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
             Ui = new UserInterfaceScreen(ref mDirector, mGraphics, Map, Camera, mScreenManager);
-            Ui.LoadContent(content);
             mDirector.GetUserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
 
             // the input manager keeps this from not getting collected by the GC
@@ -103,16 +102,13 @@ namespace Singularity.Levels
 
             //TODO: have a cone texture
             PlatformFactory.Init(platformConeTexture, platformCylTexture, platformDomeTexture, platformBlankTexture);
-
-            director.ReloadContent(mDirector);
+            director.ReloadContent(mDirector, Map.GetMeasurements());
             mDirector = director;
 
             //Map related stuff
             Camera.ReloadContent(mGraphics, ref mDirector);
             mFow.ReloadContent(mGraphics, Camera);
             Map.ReloadContent(mapBackground, Camera, mFow, ref mDirector, content);
-            var map = Map;
-            mDirector.GetMilitaryManager.SetMap(ref map);
             Ui = new UserInterfaceScreen(ref mDirector, mGraphics, Map, Camera, mScreenManager);
 
             GameScreen.ReloadContent(content, graphics, Map, mFow, Camera, ref mDirector, Ui);

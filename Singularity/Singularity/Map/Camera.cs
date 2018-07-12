@@ -57,7 +57,10 @@ namespace Singularity.Map
             set
             {
                 mPosition = value;
-                ValidatePosition();
+                if(mDirector != null)
+                {
+                    ValidatePosition();
+                }
             }
         }
 
@@ -78,8 +81,11 @@ namespace Singularity.Map
             set
             {
                 mZoom = value;
-                ValidateZoom();
-                ValidatePosition();
+                if (mDirector != null)
+                {
+                    ValidateZoom();
+                    ValidatePosition();
+                }
                 
             }
         }
@@ -180,14 +186,13 @@ namespace Singularity.Map
         {
             return mZoom;
         }
-        
+
         /// <summary>
         /// Checks whether the camera would move out of bounds and corrects the camera to
         /// clip to the edge if its the case.
         /// </summary>
         private void ValidatePosition()
         {
-
             UpdateTransformMatrix();
 
             /*
@@ -214,6 +219,7 @@ namespace Singularity.Map
 
             UpdateTransformMatrix();
         }
+
 
         /// <summary>
         /// Zooms to the given zoomTarget by the amount specified
