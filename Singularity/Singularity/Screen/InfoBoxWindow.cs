@@ -31,7 +31,7 @@ namespace Singularity.Screen
         private readonly bool mBoxed;
 
         // counter to prevent the infoBox showing up at the wrong position by updating the position first before drawing
-        private int mCounter;
+        protected int mCounter;
 
         /// <summary>
         /// Creates a info box which is displayed above the mouse position
@@ -40,7 +40,7 @@ namespace Singularity.Screen
         /// <param name="size">size of infobox</param>
         /// <param name="borderColor">bordercolor of infoBox</param>
         /// <param name="centerColor">fillcolor of infoBox</param>
-        /// <param name="boundsRectangle">rectangle in which the windowBox is active</param>
+        /// <param name="boundsRectangle"></param>
         /// <param name="boxed">true, if window should have a border</param>
         /// <param name="director">the director</param>
         /// <param name="mousePosition"></param>
@@ -81,19 +81,17 @@ namespace Singularity.Screen
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (Active && mCounter > 10)
+            if (!Active || mCounter <= 10) return;
+            if (mBoxed)
             {
-                if (mBoxed)
-                {
-                    // infoBox Rectangle
-                    spriteBatch.StrokedRectangle(new Vector2(Position.X, Position.Y), new Vector2(mSize.X, mSize.Y), mBorderColor, mCenterColor, 1f, 0.8f);
-                }
+                // infoBox Rectangle
+                spriteBatch.StrokedRectangle(new Vector2(Position.X, Position.Y), new Vector2(mSize.X, mSize.Y), mBorderColor, mCenterColor, 1f, 0.8f);
+            }
 
-                // draw all items of infoBox
-                foreach (var item in mItemList)
-                {
-                    item.Draw(spriteBatch);
-                }
+            // draw all items of infoBox
+            foreach (var item in mItemList)
+            {
+                item.Draw(spriteBatch);
             }
         }
 
@@ -110,6 +108,7 @@ namespace Singularity.Screen
 
                 // shifts the items from the top left corner to their position
                 var yShift = 2;
+
                 float maxWidth = 0;
                 float maxHeight = 0;
 

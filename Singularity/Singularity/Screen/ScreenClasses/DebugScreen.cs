@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,6 +20,9 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     public sealed class DebugScreen : IScreen, IKeyListener
     {
+        private const string DisableText = "Disable FoW";
+        private const string EnableText = "Enable Fow";
+
         public bool Loaded { get; set; }
 
         public EScreen Screen { get; private set; } = EScreen.DebugScreen;
@@ -27,8 +33,6 @@ namespace Singularity.Screen.ScreenClasses
 
         private readonly Camera mCamera;
 
-        private int mCurrentFps;
-
         private readonly Map.Map mMap;
 
         private readonly Director mDirector;
@@ -36,8 +40,21 @@ namespace Singularity.Screen.ScreenClasses
         private int mActivePlatforms;
         private int mDeactivePlatforms;
 
+        private int mFrameCount;
+        private double mDt;
+        private int mFps;
+        private readonly float mUpdateRate;
+
+        private Button mFowButton;
+
+        private int mUps;
+
+        private bool mClicked;
+
         public DebugScreen(StackScreenManager screenManager, Camera camera, Map.Map map, ref Director director)
         {
+            mUpdateRate = 2.0f;
+
             mScreenManager = screenManager;
             mCamera = camera;
             mMap = map;
@@ -81,8 +98,10 @@ namespace Singularity.Screen.ScreenClasses
 
 
 
-            spriteBatch.DrawString(mFont, "FPS: " + mCurrentFps, new Vector2(15, 365), Color.White);
+            spriteBatch.DrawString(mFont, "FPS: " + mFps, new Vector2(15, 365), Color.White);
+            spriteBatch.DrawString(mFont, "UPS: " + mUps, new Vector2(15, 385), Color.White);
 
+            mFowButton.Draw(spriteBatch);
 
             //spriteBatch.DrawString(mFont, "FPS: " + mCurrentFps, new Vector2(15, 200), Color.White);
             spriteBatch.End();
@@ -96,11 +115,27 @@ namespace Singularity.Screen.ScreenClasses
         public void LoadContent(ContentManager content)
         {
             mFont = content.Load<SpriteFont>("LibSans14");
+
+
+            mFowButton = new Button(DisableText, mFont, new Vector2(130, 450), Color.Red, true) {Opacity = 1f};
+
+            mFowButton.ButtonClicked += FowButtonClicked;
+            mFowButton.ButtonReleased += FowButtonReleased;
         }
 
         public void Update(GameTime gametime)
         {
-            mCurrentFps = (int) Math.Round(1 / gametime.ElapsedGameTime.TotalSeconds, MidpointRounding.ToEven);
+
+            mFrameCount++;
+            mDt += Game1.mDeltaTime;
+            if (mDt > 1f / mUpdateRate)
+            {
+                mFps = (int) Math.Round(mFrameCount / mDt);
+                mFrameCount = 0;
+                mDt -= 1 / mUpdateRate;
+            }
+
+            mUps = (int) Math.Round(1 / gametime.ElapsedGameTime.TotalSeconds);
 
             var activeCounter = 0;
             var deactiveCounter = 0;
@@ -118,6 +153,8 @@ namespace Singularity.Screen.ScreenClasses
 
             mActivePlatforms = activeCounter;
             mDeactivePlatforms = deactiveCounter;
+
+            mFowButton.Update(gametime);
         }
 
         public bool UpdateLower()
@@ -151,6 +188,33 @@ namespace Singularity.Screen.ScreenClasses
         public void KeyReleased(KeyEvent keyEvent)
         {
 
+        }
+
+        private void FowButtonClicked(object sender, EventArgs args)
+        {
+            if (mClicked)
+            {
+                return;
+            }
+
+            GlobalVariables.mFowEnabled = !GlobalVariables.mFowEnabled;
+
+            if (GlobalVariables.mFowEnabled)
+            {
+                mFowButton.ChangeText(DisableText);
+            }
+            else
+            {
+                mFowButton.ChangeText(EnableText);
+            }
+
+
+            mClicked = true;
+        }
+
+        private void FowButtonReleased(object sender, EventArgs args)
+        {
+            mClicked = false;
         }
     }
 }

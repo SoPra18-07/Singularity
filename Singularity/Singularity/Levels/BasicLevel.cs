@@ -37,8 +37,6 @@ namespace Singularity.Levels
         [DataMember]
         protected IScreenManager mScreenManager;
 
-        protected Texture2D mPlatformBlankTexture;
-
         protected BasicLevel(GraphicsDeviceManager graphics,
             ref Director director,
             ContentManager content,
@@ -64,7 +62,6 @@ namespace Singularity.Levels
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
             var libSans12 = content.Load<SpriteFont>("LibSans12");
 
-            //TODO: have a cone texture
             PlatformFactory.Init(platformConeTexture, platformCylTexture, platformDomeTexture, platformBlankTexture, libSans12);
 
             //Map related stuff

@@ -7,6 +7,7 @@ using Singularity.Map;
 using Singularity.PlatformActions;
 using Singularity.Property;
 using Singularity.Screen;
+using Singularity.Sound;
 using Singularity.Utils;
 
 namespace Singularity.Platforms
@@ -14,12 +15,15 @@ namespace Singularity.Platforms
     /// <summary>
     /// This handles platforms which can get placed on the game screen as objects.
     /// </summary>
-    public sealed class PlatformPlacement : IDraw, IUpdate, IMousePositionListener, IMouseClickListener
+    public sealed class StructurePlacer : IDraw, IUpdate, IMousePositionListener, IMouseClickListener
     {
         public EScreen Screen { get; private set; }
         public Rectangle Bounds { get; private set; }
 
+        private bool mPlaySound;
+
         /// <summary>
+        /// this is somewhat outdated
         /// A 3 state machine if you will.
         /// State 1 (inital): Platform follows the mouse and left click triggers next state
         /// State 2 (road)  : The platform is locked in place and a road is needs to be connected to another platform.
@@ -31,7 +35,7 @@ namespace Singularity.Platforms
         /// <summary>
         /// Whether to only follow the mouse or not
         /// </summary>
-        private readonly bool mMouseFollowOnly;
+        private readonly bool mIsRoadPlacement;
 
         /// <summary>
         /// Whether the placement is finished or not
@@ -58,6 +62,10 @@ namespace Singularity.Platforms
         /// </summary>
         private float mMouseX;
 
+        private Road mRoadToBuild;
+
+        private PlatformBlank mOldHovering;
+
         /// <summary>
         /// The world space Y coordinate of the mouse
         /// </summary>
@@ -71,7 +79,7 @@ namespace Singularity.Platforms
 
         private bool mUnregister;
 
-        public PlatformPlacement(EPlatformType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null, Vector2 position = default(Vector2))
+        public StructurePlacer(EPlatformType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null)
         {
             mUnregister = false;
 
@@ -81,31 +89,27 @@ namespace Singularity.Platforms
 
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
+            mCurrentState = new State3(1);
+
 
             // for further information as to why which states refer to the documentation for mCurrentState
             switch (placementType)
             {
-                case EPlacementType.Instant:
-                    mCurrentState = new State3(3);
+                case EPlacementType.RoadMouseFollowAndRoad:
+                    mIsRoadPlacement = true;
                     break;
 
-                case EPlacementType.MouseFollowAndRoad:
-                    mCurrentState = new State3(1);
-                    break;
-
-                case EPlacementType.OnlyMouseFollow:
-                    mCurrentState = new State3(1);
-                    mMouseFollowOnly = true;
-                    break;
-
-                case EPlacementType.OnlyRoad:
-                    mCurrentState = new State3(2);
+                case EPlacementType.PlatformMouseFollowAndRoad:
                     break;
 
                 default:
                     break;
             }
 
+            if (mIsRoadPlacement)
+            {
+                return;
+            }
             mPlatform = PlatformFactory.Get(platformType, ref director, x, y, resourceMap);
             mPlatform.SetLayer(LayerConstants.PlatformAboveFowLayer);
             UpdateBounds();
@@ -118,6 +122,11 @@ namespace Singularity.Platforms
         /// </summary>
         private void UpdateBounds()
         {
+            if (mIsRoadPlacement)
+            {
+                return;
+            }
+
             mPlatform.RelativePosition = Vector2.Transform(mPlatform.AbsolutePosition, mCamera.GetTransform());
             mPlatform.RelativeSize = mPlatform.AbsoluteSize * mCamera.GetZoom();
             Bounds = new Rectangle((int) mPlatform.RelativePosition.X, (int) mPlatform.RelativePosition.Y, (int) mPlatform.RelativeSize.X, (int) mPlatform.RelativeSize.Y);
@@ -126,8 +135,9 @@ namespace Singularity.Platforms
         public void Draw(SpriteBatch spriteBatch)
         {
             //make sure to draw the platform and the road if available.
-            mPlatform.Draw(spriteBatch);
+            mPlatform?.Draw(spriteBatch);
             mConnectionRoad?.Draw(spriteBatch);
+            mRoadToBuild?.Draw(spriteBatch);
         }
 
         public void Update(GameTime gametime)
@@ -135,50 +145,94 @@ namespace Singularity.Platforms
             switch (mCurrentState.GetState())
             {
                 case 1:
-                    mPlatform.ResetColor();
-                    // for this, we want the platform to follow the mouse, and also be centered on the sprite.
-                    mPlatform.AbsolutePosition = new Vector2(mMouseX - mPlatform.AbsoluteSize.X / 2f,
-                        mMouseY - mPlatform.AbsoluteSize.Y / 2f);
-
-                    if (mHoveringPlatform == null)
+                    if (!mIsRoadPlacement)
                     {
-                        break;
+                        mPlatform.ResetColor();
+                        // for this, we want the platform to follow the mouse, and also be centered on the sprite.
+                        mPlatform.AbsolutePosition = new Vector2(mMouseX - mPlatform.AbsoluteSize.X / 2f,
+                            mMouseY - mPlatform.AbsoluteSize.Y / 2f);
+
+                        if (mHoveringPlatform == null)
+                        {
+                            break;
+                        }
+
+                        mPlatform.SetColor(Color.Red);
+                        mPlaySound = false;
                     }
-                    mPlatform.SetColor(Color.Red);
 
                     break;
 
                 case 2:
-                    // now we want a road to follow our mouse
-                    mConnectionRoad.Destination = new Vector2(mMouseX, mMouseY);
-
-                    // we prematurely reset the color of the platform, so we don't have to worry about it being red
-                    mPlatform.ResetColor();
-                    if (mHoveringPlatform == null)
+                    if (!mIsRoadPlacement)
                     {
-                        break;
+                        // now we want a road to follow our mouse
+                        mConnectionRoad.Destination = new Vector2(mMouseX, mMouseY);
 
+                        if (!mPlaySound)
+                        {
+                            // makes a sound once when platform is placed
+                            mDirector.GetSoundManager.PlaySound("PlatformCreate",
+                                mPlatform.Center.X,
+                                mPlatform.Center.Y,
+                                .24f,
+                                .01f,
+                                true,
+                                false,
+                                SoundClass.Effect);
+                            mPlaySound = true;
+                        }
+
+                        // we prematurely reset the color of the platform, so we don't have to worry about it being red
+                        mPlatform.ResetColor();
+                        if (mHoveringPlatform == null)
+                        {
+                            break;
+
+                        }
+
+                        // at this point we have a hovering platform, so we clip the road destination to its center
+                        mConnectionRoad.Destination = mHoveringPlatform.Center;
+
+                        // we only color the platform red if the distance to the platform hovered is too great
+                        if (Vector2.Distance(mHoveringPlatform.Center, mPlatform.Center) >
+                            mPlatform.RevelationRadius + mHoveringPlatform.RevelationRadius)
+                        {
+                            mPlatform.SetColor(Color.Red);
+                        }
                     }
-                    // at this point we have a hovering platform, so we clip the road destination to its center
-                    mConnectionRoad.Destination = mHoveringPlatform.Center;
-
-                    // we only color the platform red if the distance to the platform hovered is too great
-                    if (Vector2.Distance(mHoveringPlatform.Center, mPlatform.Center) >
-                        mPlatform.RevelationRadius + mHoveringPlatform.RevelationRadius)
+                    else
                     {
-                        mPlatform.SetColor(Color.Red);
+                        mRoadToBuild.Destination = new Vector2(mMouseX, mMouseY);
+
+                        if (mHoveringPlatform == null)
+                        {
+                            break;
+                        }
+                        mRoadToBuild.Destination = mHoveringPlatform.Center;
+
                     }
 
                     break;
 
                 case 3:
-                    // this case is the 'finish' state, we set everything up, so the platform can get added to the game
-                    mPlatform.SetLayer(LayerConstants.PlatformLayer);
-                    mHoveringPlatform.AddBlueprint(new BuildBluePrint(mPlatform, mHoveringPlatform, ref mDirector));
-                    Debug.WriteLine("Blueprint created, at " + mHoveringPlatform.Id + " for " + mPlatform.Id);
-                    mConnectionRoad.Blueprint = false;
+                    if (!mIsRoadPlacement)
+                    {
+                        // this case is the 'finish' state, we set everything up, so the platform can get added to the game
+                        mPlatform.SetLayer(LayerConstants.PlatformLayer);
+                        mHoveringPlatform.AddBlueprint(new BuildBluePrint(mPlatform, mHoveringPlatform, ref mDirector));
+                        Debug.WriteLine("Blueprint created, at " + mHoveringPlatform.Id + " for " + mPlatform.Id);
+                        mConnectionRoad.Blueprint = false;
+                    }
+                    else
+                    {
+                        mRoadToBuild.Place(mOldHovering, mHoveringPlatform);
+                        mRoadToBuild.Blueprint = false;
+
+                    }
                     mIsFinished = true;
                     mUnregister = true;
+
                     break;
 
                 default:
@@ -204,42 +258,66 @@ namespace Singularity.Platforms
                 switch (mCurrentState.GetState())
                 {
                     case 1:
-                        mPlatform.UpdateValues();
-
-                        //first check if the platform is even on the map, if not we don't want to progress, since it isn't a valid position
-                        if (!Map.Map.IsOnTop(mPlatform.AbsBounds) || mHoveringPlatform != null)
+                        if (!mIsRoadPlacement)
                         {
-                            break;
-                        }
+                            mPlatform.UpdateValues();
 
-                        // the platform was on the map -> advance to next state and create the road to connect to another platform
-                        mCurrentState.NextState();
-                        mConnectionRoad = new Road(mPlatform, null, true);
+                            //first check if the platform is even on the map, if not we don't want to progress, since it isn't a valid position
+                            if (!Map.Map.IsOnTop(mPlatform.AbsBounds) || mHoveringPlatform != null)
+                            {
+                                break;
+                            }
 
-                        if (mMouseFollowOnly)
-                        {
+                            // the platform was on the map -> advance to next state and create the road to connect to another platform
                             mCurrentState.NextState();
-                            mConnectionRoad = null;
+                            mConnectionRoad = new Road(mPlatform, null, true);
+
+                            giveThrough = false;
+                        }
+                        else
+                        {
+                            if (mHoveringPlatform != null)
+                            {
+                                mRoadToBuild = new Road(mHoveringPlatform, null, true);
+                                mOldHovering = mHoveringPlatform;
+                                mCurrentState.NextState();
+                                giveThrough = false;
+                            }
                         }
 
-                        giveThrough = false;
                         break;
 
+
                     case 2:
-                        if (mHoveringPlatform == null)
+                        if (!mIsRoadPlacement)
                         {
-                            break;
 
-                        }
+                            if (mHoveringPlatform == null)
+                            {
+                                break;
 
-                        // this limits two platforms to only be connectable by a road if the road isn't in the fog of war this was requested by felix
-                        if (Vector2.Distance(mHoveringPlatform.Center, mPlatform.Center) <=
+                            }
+
+                            // this limits two platforms to only be connectable by a road if the road isn't in the fog of war this was requested by felix
+                            if (Vector2.Distance(mHoveringPlatform.Center, mPlatform.Center) <=
                                 mPlatform.RevelationRadius + mHoveringPlatform.RevelationRadius)
+                            {
+                                mCurrentState.NextState();
+                            }
+
+                            giveThrough = false;
+                        }
+                        else
                         {
+                            if (mHoveringPlatform == null || mHoveringPlatform.Equals(mOldHovering))
+                            {
+                                break;
+                            }
+
+                            mRoadToBuild.DestinationAsNode = mHoveringPlatform;
+                            mRoadToBuild.Destination = mHoveringPlatform.Center;
                             mCurrentState.NextState();
                         }
-
-                        giveThrough = false;
 
                         break;
 
@@ -268,12 +346,21 @@ namespace Singularity.Platforms
                     return giveThrough;
                 }
 
-                // make sure to reset colors when reverting to the last state. The rest is just some cleanup to properly
-                // get to the previous state
-                mPlatform.ResetColor();
-                mConnectionRoad = null;
-                mCurrentState.PreviousState();
-                giveThrough = false;
+                if (!mIsRoadPlacement)
+                {
+                    // make sure to reset colors when reverting to the last state. The rest is just some cleanup to properly
+                    // get to the previous state
+                    mPlatform.ResetColor();
+                    mConnectionRoad = null;
+                    mCurrentState.PreviousState();
+                    giveThrough = false;
+                }
+                else
+                {
+                    mRoadToBuild = null;
+                    mCurrentState.PreviousState();
+                    giveThrough = false;
+                }
             }
 
             return giveThrough;
@@ -323,11 +410,16 @@ namespace Singularity.Platforms
             return mPlatform;
         }
 
+        public Road GetRoad()
+        {
+            return mRoadToBuild;
+        }
+
         /// <summary>
         /// Gets the road created by this
         /// </summary>
         /// <returns>The road mentioned</returns>
-        public Road GetRoad()
+        public Road GetConnectionRoad()
         {
             return mConnectionRoad;
         }
@@ -344,3 +436,4 @@ namespace Singularity.Platforms
         }
     }
 }
+

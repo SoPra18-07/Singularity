@@ -1,10 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using Singularity.Utils;
 
 namespace Singularity.Property
 {
     /// <inheritdoc cref="ISpatial"/>
     /// <inheritdoc cref="IDamageable"/>
-    internal interface ICollider : ISpatial, IDamageable
+    /// <inheritdoc cref="IId"/>
+    internal interface ICollider : ISpatial, IDamageable, IId
     {
         /// <summary>
         /// Provides a lookup table for which spaces have a collider in them and which don't within the bounding box

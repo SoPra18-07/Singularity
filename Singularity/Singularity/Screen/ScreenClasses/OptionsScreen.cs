@@ -95,7 +95,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             // scaling of all positions according to viewport size
             mScreenResolution = screenResolution;
-            mBoxPosition = new Vector2(mScreenResolution.X / 2 - 306, mScreenResolution.Y / 4);
+            mBoxPosition = new Vector2(mScreenResolution.X / 2 - 306, mScreenResolution.Y / 2 - 210);
             mMenuBoxSize = new Vector2(612, 420);
 
             mTabPadding = mBoxPosition.X + 36;
@@ -252,8 +252,8 @@ namespace Singularity.Screen.ScreenClasses
                 0.21f);
 
             // line in the middle
-            spriteBatch.DrawLine(mLinePosition,
-                angle: (float) Math.PI / 2,
+            spriteBatch.DrawLine(point: mLinePosition,
+                angle: (float)Math.PI / 2,
                 length: 301,
                 color: new Color(new Vector4(1, 1, 1, 0.5f)) * mMenuOpacity,
                 thickness: 1);
@@ -308,10 +308,10 @@ namespace Singularity.Screen.ScreenClasses
                         TransitionRunning = false;
                         mMenuOpacity = 0f;
                         mMenuBoxSize = new Vector2(408, 420);
-                        mBoxPosition = new Vector2(mScreenResolution.X / 2 - 204, mScreenResolution.Y / 4);
+                        mBoxPosition = new Vector2(mScreenResolution.X / 2 - 204, mScreenResolution.Y / 2 - 210);
                     }
 
-                    var width = (float) Animations.Easing(612,
+                    var width = (float)Animations.Easing(612,
                         408,
                         mTransitionStartTime,
                         mTransitionDuration,
@@ -330,7 +330,7 @@ namespace Singularity.Screen.ScreenClasses
                     }
 
                     mMenuOpacity =
-                        (float) Animations.Easing(0, 1f, mTransitionStartTime, mTransitionDuration, gameTime);
+                        (float)Animations.Easing(0, 1f, mTransitionStartTime, mTransitionDuration, gameTime);
 
                     break;
                 default:
@@ -451,7 +451,7 @@ namespace Singularity.Screen.ScreenClasses
             {
                 mMenuOpacity = 0f;
             }
-            mBoxPosition = new Vector2(mScreenResolution.X / 2 - 306, mScreenResolution.Y / 4);
+            mBoxPosition = new Vector2(mScreenResolution.X / 2 - 306, mScreenResolution.Y / 2 - 210);
             mMenuBoxSize = new Vector2(612, 420);
             mTargetScreen = targetScreen;
             mTransitionDuration = 350f;

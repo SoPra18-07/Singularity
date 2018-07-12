@@ -95,20 +95,49 @@ namespace Singularity.Screen.ScreenClasses
 
             spriteBatch.End();
 
-            mFow.DrawMasks(spriteBatch);
-
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, mFow.GetApplyMaskStencilState(), null, null, mTransformMatrix);
-
-            mMap.GetStructureMap().Draw(spriteBatch);
-
-            foreach (var spatial in mSpatialObjects)
+            if (GlobalVariables.mFowEnabled)
             {
-                spatial.Draw(spriteBatch);
+
+                mFow.DrawMasks(spriteBatch);
+
+                spriteBatch.Begin(SpriteSortMode.FrontToBack,
+                    BlendState.AlphaBlend,
+                    null,
+                    mFow.GetApplyMaskStencilState(),
+                    null,
+                    null,
+                    mTransformMatrix);
+
+                mMap.GetStructureMap().Draw(spriteBatch);
+
+                foreach (var spatial in mSpatialObjects)
+                {
+                    spatial.Draw(spriteBatch);
+                }
+
+                spriteBatch.End();
+
+                mFow.FillInvertedMask(spriteBatch);
             }
+            else
+            {
+                spriteBatch.Begin(SpriteSortMode.FrontToBack,
+                    BlendState.AlphaBlend,
+                    null,
+                    null,
+                    null,
+                    null,
+                    mTransformMatrix);
 
-            spriteBatch.End();
+                mMap.GetStructureMap().Draw(spriteBatch);
 
-            mFow.FillInvertedMask(spriteBatch);
+                foreach (var spatial in mSpatialObjects)
+                {
+                    spatial.Draw(spriteBatch);
+                }
+
+                spriteBatch.End();
+            }
 
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, mTransformMatrix);
 
@@ -155,7 +184,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             AddObject(mMap);
 
-            AddObjects(ResourceHelper.GetRandomlyDistributedResources(5));
+            // AddObjects(ResourceHelper.GetRandomlyDistributedResources(50));
 
             mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
             mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
@@ -205,7 +234,7 @@ namespace Singularity.Screen.ScreenClasses
                 mDirector.GetMilitaryManager.AddPlatform(platform);
                 return true;
             }
-            
+
             // subscribes the game screen the the settler event (to build a command center)
             // TODO unsubscribe / delete settler when event is fired
             if (settler != null)
@@ -295,7 +324,6 @@ namespace Singularity.Screen.ScreenClasses
                 mMap.RemovePlatform(platform);
             }
 
-            // TODO don't know if this is necessary, but unsubscribe GameScreen from this instance event
             if (settler != null)
             {
                 settler.BuildCommandCenter -= SettlerBuild;
@@ -352,12 +380,14 @@ namespace Singularity.Screen.ScreenClasses
         {
             // TODO eventually the EPlacementType should be instance but currently that
             // TODO requires a road to be place and therefore throws an exception !!!!!
-            
+
             var graphid = IdGenerator.NextiD();
             mDirector.GetDistributionDirector.AddManager(graphid);
-            CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, mLibSans12, ref mDirector, false);
-            var genUnit = new GeneralUnit(cCenter, ref mDirector);
-            var genUnit2 = new GeneralUnit(cCenter, ref mDirector);
+            var cCenter = PlatformFactory.Get(EPlatformType.Command, ref mDirector, v.X - 55, v.Y - 100);
+            // CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, ref mDirector, false);
+
+            var genUnit = new GeneralUnit(cCenter, ref mDirector, graphid);
+            var genUnit2 = new GeneralUnit(cCenter, ref mDirector, graphid);
 
             // adds the command center to the GameScreen, as well as two general units
             AddObject(cCenter);

@@ -22,14 +22,15 @@ namespace Singularity.Platforms
             Texture2D basesprite,
             SpriteFont libSans12,
             ref Director director,
-            bool friendly) : base(position,
-            spritesheet,
-            libSans12Font: libSans12,
-            baseSprite: basesprite,
-            director: ref director,
-            type: EPlatformType.Factory,
-            centerOffsetY: -12,
-            friendly: friendly)
+            bool friendly = true)
+            : base(position,
+                spritesheet,
+                basesprite,
+                libSans12,
+                ref director,
+                EPlatformType.Factory,
+                -50,
+                friendly: friendly)
         {
             //mIPlatformActions[0] = new ProduceFactoryResource(this);
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"

@@ -21,8 +21,13 @@ namespace Singularity.Platforms
             Texture2D baseSprite,
             SpriteFont libSans12,
             ref Director director,
-            bool friendly)
-            : base(position, platformSpriteSheet, baseSprite, libSans12, ref director, EPlatformType.Laser, friendly: friendly)
+            bool friendly = true) : base(position,
+            platformSpriteSheet,
+            baseSprite,
+            libSans12,
+            ref director,
+            EPlatformType.Laser,
+            friendly: friendly)
         {
             mDrainingEnergy = DrainingEnergy;
 
@@ -37,6 +42,7 @@ namespace Singularity.Platforms
                 // Consume Energy
                 mShoot = true;
                 mEnemyPosition = target;
+                mDirector.GetSoundManager.PlaySound("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
             }
             */
         }

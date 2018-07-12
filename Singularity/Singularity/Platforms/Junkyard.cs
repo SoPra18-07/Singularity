@@ -20,15 +20,15 @@ namespace Singularity.Platforms
             Texture2D baseSprite,
             SpriteFont libSans12,
             ref Director director,
-            bool friendly) : base(position,
-            platformSpriteSheet,
-            baseSprite,
-            libSans12,
-            ref director,
-            EPlatformType.Junkyard,
-            -50,
-            friendly)
-
+            bool friendly = true)
+            : base(position,
+                platformSpriteSheet,
+                baseSprite,
+                libSans12,
+                ref director,
+                EPlatformType.Junkyard,
+                -50,
+                friendly: friendly)
         {
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.

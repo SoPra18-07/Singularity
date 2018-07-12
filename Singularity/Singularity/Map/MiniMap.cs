@@ -59,7 +59,6 @@ namespace Singularity.Map
         /// <summary>
         /// A list of all the military units in the game
         /// </summary>
-        private List<MilitaryUnit> mMilitaryUnits;
 
         /// <summary>
         /// A list of all the resources in the game
@@ -90,7 +89,6 @@ namespace Singularity.Map
 
             mRevealing = new LinkedList<IRevealing>();
             mPlatforms = new LinkedList<PlatformBlank>();
-            mMilitaryUnits = new List<MilitaryUnit>();
             mMapResources = new List<MapResource>();
 
             Size = new Vector2(MapConstants.MiniMapWidth, MapConstants.MiniMapHeight);
@@ -113,7 +111,8 @@ namespace Singularity.Map
 
                 var centerInMiniMap = new Vector2(Position.X + newCenter.X, Position.Y + 10 + newCenter.Y);
 
-                spriteBatch.FillCircle(centerInMiniMap, (int)(revealing.RevelationRadius / mDownscaleFactor), 40, Color.White);
+                // ReSharper disable once PossibleLossOfFraction
+                spriteBatch.FillCircle(centerInMiniMap, revealing.RevelationRadius / mDownscaleFactor, 40, Color.White);
             }
 
             // now draw the platforms. Currently platforms are resembled with a 1 pixel green dot

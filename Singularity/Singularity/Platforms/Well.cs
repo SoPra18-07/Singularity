@@ -22,18 +22,19 @@ namespace Singularity.Platforms
         public Well(Vector2 position,
             Texture2D platformSpriteSheet,
             Texture2D baseSprite,
+            SpriteFont libSans12,
             ResourceMap resource,
             SpriteFont libSans12,
             ref Director director,
-            bool friendly,
-            bool autoRegister = true) : base(position,
-            platformSpriteSheet,
-            baseSprite,
-            libSans12,
-            ref director,
-            EPlatformType.Well,
-            -50,
-            friendly)
+            bool friendly = true)
+            : base(position,
+                platformSpriteSheet,
+                baseSprite,
+                libSans12,
+                ref director,
+                EPlatformType.Well,
+                -50,
+                friendly: friendly)
         {
             //Add possible Actions in this array
             mIPlatformActions.Add(new ProduceWellResource(this, resource, ref mDirector));

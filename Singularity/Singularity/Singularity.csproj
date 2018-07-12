@@ -84,7 +84,7 @@
     <Compile Include="Platforms\DefenseBase.cs" />
     <Compile Include="Platforms\EPlacementType.cs" />
     <Compile Include="Platforms\PlatformFactory.cs" />
-    <Compile Include="Platforms\PlatformPlacement.cs" />
+    <Compile Include="Platforms\StructurePlacer.cs" />
     <Compile Include="Property\IDamageable.cs" />
     <Compile Include="Property\IDie.cs" />
     <Compile Include="Property\IShooting.cs" />
@@ -95,6 +95,7 @@
     <Compile Include="Screen\PlatformInfoBox.cs" />
     <Compile Include="Screen\ScreenClasses\DebugScreen.cs" />
     <Compile Include="Screen\ActivationIWindowItem.cs" />
+    <Compile Include="Screen\PlatformInfoBox.cs" />
     <Compile Include="Screen\SliderHandler.cs" />
     <Compile Include="Units\ControllableUnit.cs" />
     <Compile Include="Screen\TextAndAmountIWindowItem.cs" />
@@ -132,7 +133,6 @@
     <Compile Include="Input\IMousePositionListener.cs" />
     <Compile Include="Input\IMouseWheelListener.cs" />
     <Compile Include="Libraries\Primitives2D.cs" />
-    <Compile Include="Libraries\QuadRenderer.cs" />
     <Compile Include="Manager\Director.cs" />
     <Compile Include="Map\Camera.cs" />
     <Compile Include="Map\CollisionMap.cs" />
@@ -197,7 +197,7 @@
     <Compile Include="Screen\TextField.cs" />
     <Compile Include="Units\GeneralUnit.cs" />
     <Compile Include="Units\JobType.cs" />
-    <Compile Include="Units\MilitaryPathfinder.cs" />
+    <Compile Include="Units\FreeMovingPathfinder.cs" />
     <Compile Include="Units\MilitaryUnit.cs" />
     <Compile Include="Property\IDraw.cs" />
     <Compile Include="Property\IUpdate.cs" />
@@ -245,9 +245,7 @@
     <None Include="Content\Shaders\Bloom.fx" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Libraries\JumpPoint\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
       <Visible>False</Visible>

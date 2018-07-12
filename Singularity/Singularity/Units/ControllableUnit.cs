@@ -53,7 +53,6 @@ namespace Singularity.Units
         #region Mouse Handlers
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
-            // todo: someone look at the ReSharper warning following here:
             var giveThrough = true;
 
             switch (mouseAction)

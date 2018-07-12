@@ -14,6 +14,7 @@ using Singularity.PlatformActions;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Screen;
+using Singularity.Sound;
 using Singularity.Units;
 using Singularity.Utils;
 
@@ -27,6 +28,8 @@ namespace Singularity.Platforms
     public class PlatformBlank : IRevealing, INode, ICollider, IMouseClickListener
     {
         #region private
+
+        private List<GeneralUnit> mAllGenUnits;
 
         private int mGraphIndex;
 
@@ -54,7 +57,7 @@ namespace Singularity.Platforms
         /// List of outwards facing edges/roads.
         /// </summary>
         private List<IEdge> mOutwardsEdges;
-        
+
         #endregion
 
         #region protected
@@ -122,7 +125,7 @@ namespace Singularity.Platforms
 
         [DataMember]
         private bool mIsManuallyDeactivated;
-        
+
         public Vector2 Center { get; protected set; }
 
         public int RevelationRadius { get; protected set; } = 200;
@@ -163,22 +166,26 @@ namespace Singularity.Platforms
         private readonly float mCenterOffsetY;
 
         protected Color mColor = Color.White;
-        
+
         protected PlatformInfoBox mInfoBox;
 
         #endregion
 
         public SpriteFont mLibSans12;
-        
+
         protected Color mColorBase;
+
+        protected PlatformInfoBox mInfoBox;
+
+        public static SpriteFont mLibSans12;
 
         public bool[,] ColliderGrid { get; internal set; }
 
         //This is for registering the platform at the DistrManager.
         [DataMember]
         public JobType Property { get; set; }
-        
-        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libSans12Font, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36, bool friendly = true)
+
+        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libsans12, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36, bool friendly = true)
         {
 
             Id = IdGenerator.NextiD();
@@ -197,8 +204,6 @@ namespace Singularity.Platforms
             mOutwardsEdges = new List<IEdge>();
 
             AbsolutePosition = position;
-
-            mLibSans12 = libSans12Font;
 
             SetPlatfromParameters(); // this changes the draw parameters based on the platform type but
             // also sets the AbsoluteSize and collider grids
@@ -226,11 +231,13 @@ namespace Singularity.Platforms
             mDrainingEnergy = 0;
             mIsActive = true;
 
+            mAllGenUnits = new List<GeneralUnit>();
             mResources = new List<Resource>();
 
             mPlatformSpriteSheet = platformSpriteSheet;
             mPlatformBaseTexture = baseSprite;
             mSpritename = "PlatformBasic";
+            mLibSans12 = libsans12;
 
             mIsBlueprint = true;
             mRequested = new Dictionary<EResourceType, int>();
@@ -240,7 +247,37 @@ namespace Singularity.Platforms
 
             // user interface controller
             mUserInterfaceController = director.GetUserInterfaceController;
+
             Friendly = friendly;
+            var str = GetResourceString();
+            mInfoBox = new PlatformInfoBox(
+                itemList: new List<IWindowItem>
+                {
+                    new TextField(text: str, position: AbsolutePosition + new Vector2(x: 0, y: AbsoluteSize.Y + 10), size: mLibSans12.MeasureString(text: str), spriteFont: mLibSans12, color: Color.White)
+                },
+                size: mLibSans12.MeasureString(str),
+                platform: this, director: mDirector);
+                // mInfoBox = new PlatformInfoBox(new List<IWindowItem> { new TextField("PlattformInfo", AbsolutePosition, AbsoluteSize, mLibSans12, Color.White) }, AbsoluteSize, new Color(0.86f, 0.86f, 0.86f), new Color(1f, 1, 1), true, this, mDirector);
+
+            /*
+            var infoBuildBlank = new TextField("Blank Platform",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Blank Platform"),
+                mLibSans12);
+
+            mInfoBuildBlank = new InfoBoxWindow(
+                itemList: new List<IWindowItem> { infoBuildBlank },
+                size: mLibSans12.MeasureString("Blank Platform"),
+                borderColor: new Color(0.86f, 0.85f, 0.86f),
+                centerColor: new Color(1f, 1f, 1f),//(0.75f, 0.75f, 0.75f),
+                boundsRectangle: new Rectangle(
+                    (int)mBlankPlatformButton.Position.X,
+                    (int)mBlankPlatformButton.Position.Y,
+                    (int)mBlankPlatformButton.Size.X,
+                    (int)mBlankPlatformButton.Size.Y),
+                boxed: true,
+                director: mDirector);
+            // */
 
 
             var str = GetResourceString();
@@ -413,6 +450,8 @@ namespace Singularity.Platforms
                 }
                 else
                 {
+                    // makes destruction sound
+                    mDirector.GetSoundManager.PlaySound("DestroyPlat", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
                     DieBlank();
                 }
             }
@@ -1007,6 +1046,15 @@ namespace Singularity.Platforms
             //TODO: Tell the PlatformAction to request everything it needs again.
             if (manually)
             {
+                // TODO find a power on sound
+                mDirector.GetSoundManager.PlaySound("PowerOff",
+                    Center.X,
+                    Center.Y,
+                    .1f,
+                    .01f,
+                    true,
+                    false,
+                    SoundClass.Effect);
                 mIsManuallyDeactivated = false;
             }
             mIsActive = true;
@@ -1057,6 +1105,16 @@ namespace Singularity.Platforms
         {
             if (manually)
             {
+                // TODO maybe need to regulate sound a little when put to action
+                mDirector.GetSoundManager.PlaySound("PowerDown",
+                    Center.X,
+                    Center.Y,
+                    .1f,
+                    .01f,
+                    true,
+                    false,
+                    SoundClass.Effect);
+
                 mIsManuallyDeactivated = true;
             }
 
@@ -1077,6 +1135,21 @@ namespace Singularity.Platforms
                 selflist.Add(this);
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, false, true);
             }
+        }
+
+        public List<GeneralUnit> GetGeneralUnitsOnPlatform()
+        {
+            return mAllGenUnits;
+        }
+
+        public void AddGeneralUnit(GeneralUnit unit)
+        {
+            mAllGenUnits.Add(unit);
+        }
+
+        public void RemoveGeneralUnit(GeneralUnit unit)
+        {
+            mAllGenUnits.Remove(unit);
         }
 
         public bool IsManuallyDeactivated()
@@ -1108,15 +1181,9 @@ namespace Singularity.Platforms
         public Rectangle Bounds { get; private set; }
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
-            if (!withinBounds)
-            {
-                return true;
-            }
-
-            if (mouseAction == EMouseAction.LeftClick)
-            {
-                mUserInterfaceController.ActivateMe(this);
-            }
+            if (!withinBounds) return true;
+            if (mouseAction != EMouseAction.LeftClick) return false;
+            mUserInterfaceController.ActivateMe(this);
             return false;
         }
 
@@ -1128,6 +1195,28 @@ namespace Singularity.Platforms
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
             return !withinBounds;
+        }
+
+        private string GetResourceString()
+        {
+            if (mResources.Count == 0)
+            {
+                return "None";
+            }
+            var resString = "";
+            var cType = (EResourceType)0;
+            var counter = 0;
+            foreach (var res in mResources)
+            {
+                if (counter > 0 && res.Type != cType)
+                {
+                    resString += cType + ": " + counter + ", ";
+                    counter = 0;
+                }
+                cType = res.Type;
+                counter++;
+            }
+            return resString + cType + ": " + counter;
         }
     }
 }

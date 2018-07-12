@@ -21,15 +21,15 @@ namespace Singularity.Platforms
             Texture2D basesprite,
             SpriteFont libSans12,
             ref Director director,
-            bool friendly) : base(position,
-            spritesheet,
-            basesprite,
-            libSans12,
-            ref director,
-            EPlatformType.Storage,
-            -50,
-            friendly)
-
+            bool friendly = true)
+            : base(position,
+                spritesheet,
+                basesprite,
+                libSans12,
+                ref director,
+                EPlatformType.Storage,
+                -50,
+                friendly: friendly)
         {
             // Todo: Add Costs of the platform here if you got them.
             // mCost = new Dictionary<EResourceType, int>();

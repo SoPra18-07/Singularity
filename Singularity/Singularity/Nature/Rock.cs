@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Property;
+using Singularity.Utils;
 
 namespace Singularity.Nature
 {
@@ -11,22 +12,25 @@ namespace Singularity.Nature
         public bool[,] ColliderGrid { get; internal set; }
 
         // specifies the angle of the given rock
-        private float[,] mDrawAngle;
+        private readonly float[,] mDrawAngle;
 
         // specifies whethere a rock should be drawn at that location
-        private bool[,] mDrawRock;
+        private readonly bool[,] mDrawRock;
 
         private readonly Vector2 mDrawSize;
 
         // used to first generate the rock drawing matrix
         private bool mNotGenerated;
+
         public Rectangle AbsBounds { get; }
-        public bool Moved { get; }
+        public bool Moved { get; } = false;
         public int Id { get; }
         public Vector2 RelativePosition { get; set; }
         public Vector2 RelativeSize { get; set; }
         public Vector2 AbsolutePosition { get; set; }
         public Vector2 AbsoluteSize { get; set; }
+
+        public static Random mRandom = new Random();
 
         public bool Friendly { get; } = false;
 
@@ -34,10 +38,12 @@ namespace Singularity.Nature
 
         public Rock(Vector2 position)
         {
+            Id = IdGenerator.NextiD();
             AbsoluteSize = new Vector2(160, 130);
             mDrawSize = new Vector2(80,40);
             AbsolutePosition = position;
             Center = new Vector2((AbsolutePosition.X + AbsoluteSize.X) * 0.5f, (AbsolutePosition.Y + AbsoluteSize.Y) * 0.5f);
+            AbsBounds = new Rectangle((int) position.X, (int) position.Y, (int) AbsoluteSize.X, (int) AbsoluteSize.Y );
             ColliderGrid = new [,]
             {
                 {false, false, true, true, true, true, false, false},
@@ -59,7 +65,7 @@ namespace Singularity.Nature
         /// </summary>
         private void CreateRock()
         {
-            Random rnd = new Random();
+
 
             // create the rotation and placement chart for rocks
             for (int i = 0; i < 14; i++)
@@ -67,10 +73,10 @@ namespace Singularity.Nature
                 for (int j = 0; j < 18; j++)
                 {
                     // this give the rotation of the rock
-                    mDrawAngle[i,j] = rnd.Next(1,101);
+                    mDrawAngle[i,j] = mRandom.Next(1,101);
 
                     // this gives whether a rock will be placed at that position
-                    mDrawRock[i, j] = (rnd.Next(1, 60) % 2 == 0);
+                    mDrawRock[i, j] = (mRandom.Next(1, 60) % 2 == 0);
                 }
             }
 
@@ -78,7 +84,7 @@ namespace Singularity.Nature
             // make the rock formation into a diamond shape to fit with isometric view
             for (int i = 0; i < 18; i++)
             {
-                if (i != 8 & i != 9)
+                if (i != 8 && i != 9)
                 {
                     mDrawRock[0, i] = false;
                     mDrawRock[13, i] = false;
@@ -117,14 +123,14 @@ namespace Singularity.Nature
 
         public void Draw(SpriteBatch spriteBatch)
             {
-                // generate the rotation and placement matrix at the beginning 
+                // generate the rotation and placement matrix at the beginning
                 if (!mNotGenerated)
                 {
                     CreateRock();
                     mNotGenerated = true;
                 }
 
-                // draw the rock formation 
+                // draw the rock formation
 
                 for (int i = 0; i < 18; i++)
                 {
@@ -146,7 +152,7 @@ namespace Singularity.Nature
                                     mDrawSize.X / 18,
                                     20,
                                     (mDrawAngle[j, i] % 2 == 0) ? Color.DimGray * .9f : Color.Gray * .9f,
-                                    1f);                           
+                                    1f);
                             }
 
                             // otherwise draw a square

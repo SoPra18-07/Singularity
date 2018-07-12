@@ -22,18 +22,19 @@ namespace Singularity.Platforms
         public Mine(Vector2 position,
             Texture2D spritesheet,
             Texture2D basesprite,
+            SpriteFont libSans12,
             ResourceMap resource,
             SpriteFont libSans12,
             ref Director director,
-            bool autoRegister = true,
-            bool friendly = true) : base(position,
-            spritesheet,
-            basesprite,
-            libSans12,
-            ref director,
-            EPlatformType.Mine,
-            -50,
-            friendly)
+            bool friendly = true)
+            : base(position,
+                spritesheet,
+                basesprite,
+                libSans12,
+                ref director,
+                EPlatformType.Mine,
+                -50,
+                friendly)
         {
             mIPlatformActions.Add(new ProduceMineResource(platform: this, resourceMap: resource, director: ref mDirector));
             // Todo: Add Costs of the platform here if you got them.

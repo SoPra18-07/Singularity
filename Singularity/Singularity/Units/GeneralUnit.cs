@@ -102,6 +102,7 @@ namespace Singularity.Units
         public GeneralUnit(PlatformBlank platform, ref Director director)
         {
             Graphid = platform.GetGraphIndex();
+            platform.AddGeneralUnit(this);
             Id = IdGenerator.NextiD();
             mDestination = Optional<INode>.Of(null);
 
@@ -217,9 +218,9 @@ namespace Singularity.Units
             {
                 RegulateMovement();
                 if (Carrying.IsPresent())
-                        {
-                            Carrying.Get().Follow(this);
-                        }
+                {
+                    Carrying.Get().Follow(this);
+                }
                 //This means we arrived at the point we want to leave the Resource and consider our work done
                 if (!mTask.End.IsPresent() || !CurrentNode.Equals(mTask.End.Get()) ||
                     !ReachedTarget(mTask.End.Get().Center)) return;
@@ -286,7 +287,7 @@ namespace Singularity.Units
                         }
                         RegulateMovement();
                         break;
-                        
+
                     case JobType.Logistics:
 
                         HandleTransport();
@@ -319,7 +320,7 @@ namespace Singularity.Units
             if (!mIsMoving && mDone)
             {
                 mDone = false;
-                
+
                 mTask = mDirector.GetDistributionDirector.GetManager(Graphid).RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
                 //First go to the location where you want to get your Resource from
                 //Check if the given destination is null (it shouldnt).
@@ -435,9 +436,13 @@ namespace Singularity.Units
 
             mIsMoving = true;
 
-            var movementVector = Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y));
+            var distance = new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y);
+            var movementVector = Vector2.Multiply(Geometry.NormalizeVector(distance), Speed);
+            var dist = (float) Geometry.Length(distance);
+            if (dist < 50)
+                movementVector = Vector2.Multiply(movementVector, dist / 50f);
 
-            AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X * Speed, AbsolutePosition.Y + movementVector.Y * Speed);
+            AbsolutePosition = AbsolutePosition + movementVector;
         }
 
         private void RegulateMovement()
@@ -448,9 +453,13 @@ namespace Singularity.Units
             // current nodequeue is empty (the path)
             if (mDestination.IsPresent() && mNodeQueue.Count <= 0 && !mIsMoving)
             {
+                ((PlatformBlank)CurrentNode).RemoveGeneralUnit(this);
+
                 mNodeQueue = mDirector.GetPathManager.GetPath(this, mDestination.Get(), ((PlatformBlank)mDestination.Get()).GetGraphIndex()).GetNodePath();
 
                 CurrentNode = mNodeQueue.Dequeue();
+
+                ((PlatformBlank) CurrentNode)?.AddGeneralUnit(this);
             }
 
             if (CurrentNode == null)
@@ -461,7 +470,11 @@ namespace Singularity.Units
             // update the current node to move to after the last one got reached.
             if (ReachedTarget(((PlatformBlank)CurrentNode).Center) && mNodeQueue.Count > 0)
             {
+                ((PlatformBlank)CurrentNode).RemoveGeneralUnit(this);
+
                 CurrentNode = mNodeQueue.Dequeue();
+
+                ((PlatformBlank)CurrentNode).AddGeneralUnit(this);
             }
 
             // finally move to the current node.

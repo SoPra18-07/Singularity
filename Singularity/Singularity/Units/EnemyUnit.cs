@@ -26,7 +26,7 @@ namespace Singularity.Units
         /// Color overlay used on the unit to show it is an enemy unit not a friendly unit.
         /// </summary>
         protected readonly Color mColor = Color.Red;
-        
+
         /// <summary>
         /// Stores the time since the last random movement.
         /// </summary>
@@ -80,7 +80,7 @@ namespace Singularity.Units
         /// <param name="camera">Game camera being used.</param>
         /// <param name="director">Reference to the game director.</param>
         /// <param name="map">Reference to the game map.</param>
-        public EnemyUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map) 
+        public EnemyUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
             : base(position, camera, ref director, ref map, false)
         {
             AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
@@ -113,11 +113,10 @@ namespace Singularity.Units
                             LayerConstants.MilitaryUnitLayer
                             );
 
-            
+
 
             if (GlobalVariables.DebugState)
             {
-                // TODO DEBUG REGION
                 if (mDebugPath != null)
                 {
                     for (var i = 0; i < mDebugPath.Length - 1; i++)
@@ -133,8 +132,8 @@ namespace Singularity.Units
             }
 
             // draws a laser line a a slight glow around the line, then sets the shoot future off
-            spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2);
-            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6);
+            spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2, .15f);
+            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6, .15f);
             mShoot = false;
         }
 
@@ -184,7 +183,7 @@ namespace Singularity.Units
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
             AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
             Moved = mIsMoving;
-            
+
         }
     }
 }

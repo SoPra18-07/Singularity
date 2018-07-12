@@ -43,7 +43,7 @@ namespace Singularity.PlatformActions
             var unit = new MilitaryHeavy(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
         }
     }
-    
+
     internal sealed class MakeGeneralUnit : AMakeUnit
     {
         public MakeGeneralUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
@@ -54,11 +54,11 @@ namespace Singularity.PlatformActions
 
         protected override void CreateUnit()
         {
-            
+
             mDirector.GetStoryManager.Level.GameScreen.AddObject(new GeneralUnit(mPlatform, ref mDirector));
         }
     }
-    
+
     internal sealed class MakeStandardMilitaryUnit : AMakeUnit
     {
         public MakeStandardMilitaryUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)

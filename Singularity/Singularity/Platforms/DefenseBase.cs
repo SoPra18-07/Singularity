@@ -34,8 +34,15 @@ namespace Singularity.Platforms
             ref Director director,
             EPlatformType type,
             bool friendly = true)
-            : base(position, platformSpriteSheet, baseSprite, libSans12, ref director, type, friendly: friendly)
+            : base(position,
+                platformSpriteSheet,
+                baseSprite,
+                libSans12,
+                ref director,
+                type,
+                friendly: friendly)
         {
+            mType = type;
             mSpritename = "Cone";
             Property = JobType.Defense;
             SetPlatfromParameters();

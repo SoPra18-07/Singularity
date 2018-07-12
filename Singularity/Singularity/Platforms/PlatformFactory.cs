@@ -52,7 +52,6 @@ namespace Singularity.Platforms
             float x = 0,
             float y = 0,
             ResourceMap resourceMap = null,
-            bool autoRegister = true,
             bool friendly = true)
         {
             //TODO: add conesheet to this query. Its not included right now since it doesn't exists at this point in time
@@ -66,7 +65,7 @@ namespace Singularity.Platforms
             switch (type)
             {
                 case EPlatformType.Quarry:
-                    return new Quarry(position, sDomeSheet, sBlankSheet, libSans12: sLibSans12, resource: resourceMap, director: ref director, autoRegister: autoRegister, friendly: friendly);
+                    return new Quarry(position, sDomeSheet, sBlankSheet, sLibSans12, resourceMap, ref director, friendly);
 
                 case EPlatformType.Barracks:
                     return new Barracks(position, sCylinderSheet, sBlankSheet, sLibSans12, ref director, friendly);
@@ -90,8 +89,7 @@ namespace Singularity.Platforms
                     return new DefenseKinetic(position, sConeSheet, sBlankSheet, sLibSans12, ref director, friendly);
 
                 case EPlatformType.Mine:
-                    return new Mine(position, sDomeSheet, sBlankSheet, libSans12: sLibSans12, resource: resourceMap, director: ref director, autoRegister: autoRegister, friendly: friendly);
-
+                    return new Mine(position, sDomeSheet, sBlankSheet, sLibSans12, resourceMap, ref director, friendly);
 
                 case EPlatformType.Packaging:
                     throw new NotImplementedException("Packaging facilities have not yet been implemented");
@@ -100,7 +98,7 @@ namespace Singularity.Platforms
                     return new Storage(position, sDomeSheet, sBlankSheet, sLibSans12, ref director, friendly);
 
                 case EPlatformType.Well:
-                    return new Well(position, sDomeSheet, sBlankSheet, libSans12: sLibSans12, resource: resourceMap, director: ref director, autoRegister: autoRegister, friendly: friendly);
+                    return new Well(position, sDomeSheet, sBlankSheet, sLibSans12, resourceMap, ref director, friendly);
 
                 case EPlatformType.Laser:
                     return new DefenseLaser(position, sConeSheet, sBlankSheet, sLibSans12, ref director, friendly);

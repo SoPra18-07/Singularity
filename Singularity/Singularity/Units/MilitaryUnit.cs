@@ -48,7 +48,7 @@ namespace Singularity.Units
         /// Indicates if the unit is currently shooting.
         /// </summary>
         private bool mShoot;
-        
+
         public int Range { get; protected set; }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Singularity.Units
 
         private float mShootingTimer = -1f;
         private double mCurrentTime;
-        
+
         public MilitaryUnit(Vector2 position,
             Camera camera,
             ref Director director,
@@ -120,7 +120,6 @@ namespace Singularity.Units
 
             if (GlobalVariables.DebugState)
             {
-                // TODO DEBUG REGION
                 if (mDebugPath != null)
                 {
                     for (var i = 0; i < mDebugPath.Length - 1; i++)
@@ -138,8 +137,8 @@ namespace Singularity.Units
             if (mCurrentTime <= mShootingTimer + 200)
             {
                 // draws a laser line a a slight glow around the line, then sets the shoot future off
-                spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2);
-                spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6);
+                spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2, .15f);
+                spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6, .15f);
                 mShoot = false;
             }
         }
@@ -151,13 +150,13 @@ namespace Singularity.Units
             Bounds = new Rectangle(
                 (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
 
-            
+
             // this makes the unit rotate according to the mouse position when its selected and not moving.
             if (mSelected && !mIsMoving && !mShoot)
             {
                  Rotate(new Vector2(mMouseX, mMouseY));
             }
-            
+
 
             else if (HasReachedTarget())
             {

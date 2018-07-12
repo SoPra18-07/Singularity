@@ -50,8 +50,7 @@ namespace Singularity.Map
             int height,
             FogOfWar fow,
             Camera camera,
-            ref Director director,
-            IEnumerable<MapResource> initialResources = null)
+            ref Director director)
         {
             mWidth = width;
             mHeight = height;
@@ -61,6 +60,8 @@ namespace Singularity.Map
             mBackgroundTexture = backgroundTexture;
 
             mFow = fow;
+
+            var initialResources = ResourceHelper.GetRandomlyDistributedResources(50);
 
             mCollisionMap = new CollisionMap();
             mStructureMap = new StructureMap(fow, ref director);
@@ -148,12 +149,11 @@ namespace Singularity.Map
 
             for (var columnCount = 0; columnCount <= colMap.GetLength(0); columnCount++)
             {
-
                 spriteBatch.DrawLine(
                     new Vector2(columnCount * MapConstants.GridWidth, 0), MapConstants.MapHeight, MathHelper.Pi / 2f, Color.Blue, 1, LayerConstants.GridDebugLayer);
             }
 
-            for (var rowCount = 0; rowCount <= colMap.GetLength(0); rowCount++)
+            for (var rowCount = 0; rowCount <= colMap.GetLength(1); rowCount++)
             {
                 spriteBatch.DrawLine(
                     new Vector2(0, rowCount * MapConstants.GridHeight), MapConstants.MapWidth, 0, Color.Yellow, 1, LayerConstants.GridDebugLayer);
@@ -161,14 +161,14 @@ namespace Singularity.Map
 
 
 
-            for(var i = 0; i < colMap.GetLength(0); i++)
+            for(var i = (int) (mCamera.GetRelativePosition().X / MapConstants.GridWidth); i < (mCamera.GetRelativePosition().X + mCamera.GetSize().X) / MapConstants.GridWidth; i++)
             {
-                for (var j = 0; j < colMap.GetLength(1); j ++)
+                for (var j = (int) (mCamera.GetRelativePosition().Y / MapConstants.GridHeight); j < (mCamera.GetRelativePosition().Y + mCamera.GetSize().Y) / MapConstants.GridHeight; j ++)
                 {
                     if (!walkabilityGrid.IsWalkableAt(i, j))
                     {
-                        spriteBatch.FillRectangle(new Rectangle(i * MapConstants.GridWidth, j * MapConstants.GridHeight, MapConstants.GridWidth, MapConstants.GridHeight),
-                            new Color(new Vector4(1, 0, 0, 0.2f)), 0f, LayerConstants.CollisionDebugLayer);
+                        spriteBatch.FillRectangle(rect: new Rectangle(x: (i * MapConstants.GridWidth), y: j * MapConstants.GridHeight, width: MapConstants.GridWidth, height: MapConstants.GridHeight),
+                            color: new Color(color: new Vector4(x: 1, y: 0, z: 0, w: 0.2f)), angle: 0f, layer: LayerConstants.CollisionDebugLayer);
                     }
                 }
             }
