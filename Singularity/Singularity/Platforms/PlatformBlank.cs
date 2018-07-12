@@ -983,7 +983,7 @@ namespace Singularity.Platforms
         {
             if (manually)
             {
-                // TODO maybe need to regulate sound a little when put to action 
+                // TODO maybe need to regulate sound a little when put to action
                 mDirector.GetSoundManager.PlaySound("PowerDown",
                     Center.X,
                     Center.Y,
@@ -997,7 +997,7 @@ namespace Singularity.Platforms
             }
 
             mIsActive = false;
-            // TODO: remove this or change it to something more appropriately, this is used by @Ativelox for 
+            // TODO: remove this or change it to something more appropriately, this is used by @Ativelox for
             // TODO: debugging purposes to easily see which platforms are currently deactivated
             mColor = Color.Green;
             //Only unregister if this platform is a defense or production platform

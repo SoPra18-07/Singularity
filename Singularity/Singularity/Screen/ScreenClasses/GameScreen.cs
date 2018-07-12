@@ -184,7 +184,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             AddObject(mMap);
 
-            AddObjects(ResourceHelper.GetRandomlyDistributedResources(50));
+            // AddObjects(ResourceHelper.GetRandomlyDistributedResources(50));
 
             mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
             mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
@@ -233,7 +233,7 @@ namespace Singularity.Screen.ScreenClasses
                 mDirector.GetMilitaryManager.AddPlatform(platform);
                 return true;
             }
-            
+
             // subscribes the game screen the the settler event (to build a command center)
             // TODO unsubscribe / delete settler when event is fired
             if (settler != null)

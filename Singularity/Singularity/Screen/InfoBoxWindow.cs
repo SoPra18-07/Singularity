@@ -97,8 +97,12 @@ namespace Singularity.Screen
 
                 // shifts the items from the top left corner to their position
                 var yShift = 2;
+<<<<<<< HEAD
 
                 // set starting values, maxWidth is the maximum width of all items added to the infoBox, maxHeight ~ same just with height
+=======
+                //
+>>>>>>> master
                 float maxWidth = 0;
                 float maxHeight = 0;
 
