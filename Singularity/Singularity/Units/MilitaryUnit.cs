@@ -9,7 +9,6 @@ using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
 using Singularity.Sound;
-using Singularity.Utils;
 
 namespace Singularity.Units
 {

@@ -92,7 +92,6 @@ namespace Singularity.Units
             : base(position, camera, ref director, ref map, false)
         {
             AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
-
             RevelationRadius = 400;
 
             mSpeed = MilitaryUnitStats.StandardSpeed;

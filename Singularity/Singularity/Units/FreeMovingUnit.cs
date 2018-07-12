@@ -8,7 +8,6 @@ using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
 using Singularity.Screen;
-using Singularity.Utils;
 
 namespace Singularity.Units
 {
@@ -22,7 +21,7 @@ namespace Singularity.Units
         /// </summary>
         [DataMember]
         public int Id { get; private set; }
-
+        [DataMember]
         public bool Friendly { get; protected set; }
         #region Movement Variables
 
