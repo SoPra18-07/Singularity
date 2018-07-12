@@ -139,6 +139,8 @@ namespace Singularity.Manager
             }
 
             // update UI
+            Console.Out.WriteLine("old: " + oldgraphid); // TODO : DELETE
+            Console.Out.WriteLine("new: " + newgraphid); // TODO : DELETE
             mUserInterfaceController.AddGraph(newgraphid);
         }
 

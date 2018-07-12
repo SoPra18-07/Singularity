@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Singularity.Manager;
 using Singularity.PlatformActions;
 using Singularity.Platforms;
@@ -123,6 +124,7 @@ namespace Singularity.Screen
         /// <param name="graphId"></param>
         internal void AddGraph(int graphId)
         {
+            Console.Out.WriteLine("addGraphCalledInUIC");
             ControlledUserInterface?.AddGraph(graphId);
         }
 
