@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.KI;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Nature;
@@ -76,9 +77,9 @@ namespace Singularity.Levels
             var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, mUi);
 
             var rock1 = new Rock(new Vector2(3500, 2800));
-            var rock2 = new Rock(new Vector2(3500, 3000));
+            //var rock2 = new Rock(new Vector2(3500, 3000));
             GameScreen.AddObject(rock1);
-            GameScreen.AddObject(rock2);
+            //GameScreen.AddObject(rock2);
 
             // GenUnits
             var genUnit = new List<GeneralUnit>(5);
@@ -95,6 +96,14 @@ namespace Singularity.Levels
             var res2 = new Resource(EResourceType.Chip, platform3.Center);
             var res3 = new Resource(EResourceType.Oil, platform4.Center);
 
+            var spawner = new Spawner(new Vector2(3500, 3000),
+                content.Load<Texture2D>("Cylinders"),
+                content.Load<Texture2D>("PlatformBasic"),
+                ref mDirector);
+
+            
+
+
             platform2.StoreResource(res);
             platform3.StoreResource(res2);
             platform4.StoreResource(res3);
@@ -106,12 +115,16 @@ namespace Singularity.Levels
             GameScreen.AddObject(milUnit);
             GameScreen.AddObject(settler);
 
+            // TODO : adds spawner
+            GameScreen.AddObject(spawner);
+
             // add a puddle
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2500)));
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2700), false));
 
             //TESTMETHODS HERE ====================================
             mDirector.GetDistributionDirector.GetManager(0).RequestResource(platform2, EResourceType.Oil, null);
+            spawner.SpawnEnemy(Camera, map, GameScreen);
         }
 
         public GameScreen GetGameScreen()

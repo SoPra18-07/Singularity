@@ -70,6 +70,7 @@ namespace Singularity.Levels
 
             PlatformFactory.Init(platformConeTexture, platformCylTexture, platformDomeTexture, platformBlankTexture);
 
+
             //Map related stuff
             Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 2800, 2800);
             mFow = new FogOfWar(Camera, mGraphics.GraphicsDevice);
