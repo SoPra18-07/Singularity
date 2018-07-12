@@ -132,5 +132,10 @@ namespace Singularity.Manager
         {
             return mDMs[graphid];
         }
+
+        public void RemoveManager(int graphId)
+        {
+            mDMs[graphId] = null;
+        }
     }
 }

@@ -60,6 +60,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Levels\PlatformDestructionTestLevel.cs" />
     <Compile Include="Nature\Rock.cs" />
     <Compile Include="Levels\BasicLevel.cs" />
     <Compile Include="Levels\ILevel.cs" />
