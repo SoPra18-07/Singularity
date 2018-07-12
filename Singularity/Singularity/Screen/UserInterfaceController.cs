@@ -146,6 +146,10 @@ namespace Singularity.Screen
             return mDirector.GetDistributionDirector?.CallingAllGraphs();
         }
 
+        /// <summary>
+        /// Automatically update the civilUnitsWindow with the selected Platform's graphId
+        /// </summary>
+        /// <param name="graphId">selectedPlatform graphID</param>
         public void SelectedPlatformSetsGraphId(int graphId)
         {
             ControlledUserInterface?.SelectedPlatformSetsGraphId(graphId);

@@ -345,7 +345,7 @@ namespace Singularity.Screen.ScreenClasses
             if (mGraphSwitcher != null && mCivilUnitsGraphId != mGraphSwitcher.GetCurrentId())
             {
                 mCivilUnitsGraphId = mGraphSwitcher.GetCurrentId();
-                mCivilUnitsSliderHandler.SetGraphId(mCivilUnitsGraphId);
+                mCivilUnitsSliderHandler.SetGraphId(mCivilUnitsGraphId, -1);
             }
 
             // if the resolution has changed -> reset windows to standard positions
@@ -610,7 +610,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // create items
 
-            mGraphSwitcher = new IndexSwitcherIWindowItem(new List<int> {0}, "Graph: ", civilUnitsWidth - 40, mLibSans12, mDirector);
+            mGraphSwitcher = new IndexSwitcherIWindowItem("Graph: ", civilUnitsWidth - 40, mLibSans12);
 
             mDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
             mDefSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true);
@@ -1695,14 +1695,17 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="oldEvent">the event which was thrown out of the eventList (if any)</param>
         public void UpdateEventLog(EventLogIWindowItem newEvent, EventLogIWindowItem oldEvent)
         {
+            // used to calculate the height the old event had to reduce the windowheight by this height
             float oldEventSizeY = 0;
 
+            // if an old event is given, delete it + shrink eventLogWindow size by oldEvent height
             if (oldEvent != null)
             {
                 mEventLogWindow.DeleteItem(oldEvent);
                 oldEventSizeY = oldEvent.Size.Y;
             }
 
+            // add the new event to the eventLogWindow
             mEventLogWindow.AddItem(newEvent);
             mEventLogWindow.AutoScrollToEnd(newEvent.Size.Y, oldEventSizeY);
         }
@@ -1713,11 +1716,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="graphId"></param>
         public void AddGraph(int graphId)
         {
-            mGraphSwitcher?.ListOfElements.Add(graphId);
-            if (mGraphSwitcher != null)
-            {
-                mGraphSwitcher.JumpToEnd = true;
-            }
+            mGraphSwitcher?.AddElement(graphId);
         }
 
         /// <summary>
@@ -1729,14 +1728,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="oldGraphId2">old graph ID 2</param>
         public void MergeGraph(int newGraphId, int oldGraphId1, int oldGraphId2)
         {
-            // remove old graphs from list + add new graph + jump to the new graph in civilUnitsWindow
-            mGraphSwitcher?.ListOfElements.Remove(oldGraphId1);
-
-            mGraphSwitcher?.ListOfElements.Add(newGraphId);
-
-            mGraphSwitcher?.ListOfElements.Remove(oldGraphId2);
-
-            mGraphSwitcher?.JumpToId(newGraphId);
+            mGraphSwitcher?.MergeElements(newGraphId, oldGraphId1, oldGraphId2);
         }
 
         /// <summary>
@@ -1748,11 +1740,12 @@ namespace Singularity.Screen.ScreenClasses
             // update graph sliders
             if (mGraphSwitcher != null)
             {
-                mCivilUnitsGraphId = graphId;
-                mGraphSwitcher.JumpToId(graphId);
-                mCivilUnitsSliderHandler.SetGraphId(mCivilUnitsGraphId);
+                mGraphSwitcher.UpdateCurrentIndex(graphId);
+
+                mCivilUnitsSliderHandler.SetGraphId(graphId, mCivilUnitsGraphId);
 
                 mCivilUnitsSliderHandler.Refresh();
+                mCivilUnitsSliderHandler.ForceSliderPages();
             }
         }
 

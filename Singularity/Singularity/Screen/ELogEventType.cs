@@ -13,7 +13,7 @@ namespace Singularity.Screen
         [EnumMember(Value = "Platform built")]
         PlatformBuilt,
 
-        [EnumMember(Value = "unit built")]
+        [EnumMember(Value = "Unit built")]
         UnitBuilt,
 
         [EnumMember(Value = "INFO")]
