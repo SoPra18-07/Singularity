@@ -99,7 +99,7 @@ namespace Singularity.Screen.ScreenClasses
             mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
             mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
             mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
-
+            AddObject(mSelBox);
             //All collider items have to be readded to the ColliderMap
             var colliderlist = new List<ICollider>();
             foreach (var spatial in mSpatialObjects)

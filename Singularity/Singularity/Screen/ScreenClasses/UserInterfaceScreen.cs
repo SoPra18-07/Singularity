@@ -313,7 +313,6 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Update(GameTime gametime)
         {
-            Console.Out.WriteLine(GetHashCode());
             // update screen size
             mCurrentScreenWidth = mDirector.GetGraphicsDeviceManager.PreferredBackBufferWidth;
             mCurrentScreenHeight = mDirector.GetGraphicsDeviceManager.PreferredBackBufferHeight;
