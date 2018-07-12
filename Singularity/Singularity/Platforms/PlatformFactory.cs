@@ -56,8 +56,7 @@ namespace Singularity.Platforms
             bool friendly = true,
             bool commandBlueprint = true)
         {
-            //TODO: add conesheet to this query. Its not included right now since it doesn't exists at this point in time
-            if (sCylinderSheet == null || sDomeSheet == null || sBlankSheet == null)
+            if (sConeSheet == null || sCylinderSheet == null || sDomeSheet == null || sBlankSheet == null)
             {
                 throw new Exception("Init needs to be called before.");
             }

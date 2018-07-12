@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
 using Singularity.Libraries;
+using Singularity.Manager;
 using Singularity.Property;
 
 namespace Singularity.Platforms
@@ -43,13 +44,15 @@ namespace Singularity.Platforms
             }
         }
 
+        private readonly Director mDirector;
+
         /// <summary>
         /// Road is simply an edge between two platforms.
         /// </summary>
         /// <param name="source">The source IRevealing object from which this road gets drawn</param>
         /// <param name="destination">The destinaion IRevealing object to which this road gets drawn</param>
         /// <param name="blueprint">Whether this road is a blueprint or not</param>
-        public Road(PlatformBlank source, PlatformBlank destination , bool blueprint)
+        public Road(PlatformBlank source, PlatformBlank destination, ref Director director, bool blueprint = false)
         {
 
             // the hardcoded values need some changes for different platforms, ill wait until those are implemented to find a good solution.
@@ -70,6 +73,7 @@ namespace Singularity.Platforms
                 Place(source, destination);
             }
             Blueprint = blueprint;
+            mDirector = director;
 
         }
 
@@ -119,8 +123,7 @@ namespace Singularity.Platforms
 
         public bool Die()
         {
-            ((PlatformBlank) SourceAsNode).Kill(this);
-            ((PlatformBlank) DestinationAsNode).Kill(this);
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             return true;
         }
     }

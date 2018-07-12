@@ -900,26 +900,36 @@ namespace Singularity.Platforms
 
             // removing the PlatformActions first
 
-            mInwardsEdges.RemoveAll(e => ((Road) e).Die());
-            mOutwardsEdges.RemoveAll(e => ((Road) e).Die()); // this is indirectly calling the Kill(road) function below
+            var toKill = new List<IEdge>();
+
+            foreach (var road in mInwardsEdges)
+            {
+                toKill.Add(road);
+            }
+
+            foreach (var road in mOutwardsEdges)
+            {
+                toKill.Add(road);
+            }
+
+            foreach (var road in toKill)
+            {
+                ((Road)road).Die();
+            }
+
+            toKill.Clear();
+            mInwardsEdges.Clear();
+            mOutwardsEdges.Clear();
+            ;
+
 
 
             mResources.RemoveAll(r => r.Die());
 
             mIPlatformActions.ForEach(a => a.Platform = null);
             mIPlatformActions.RemoveAll(a => a.Die());
-            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
-            mDirector.GetStoryManager.StructureMap.RemovePlatform(this);
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             return true;
-        }
-
-        public void Kill(IEdge road)
-        {
-            mInwardsEdges.Remove(road);
-            mOutwardsEdges.Remove(road);
-            mDirector.GetStoryManager.StructureMap.RemoveRoad((Road) road);
-            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(road);
         }
 
         public IEnumerable<INode> GetChilds()
@@ -1088,8 +1098,16 @@ namespace Singularity.Platforms
         public Rectangle Bounds { get; private set; }
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
-            if (!withinBounds) return true;
-            if (mouseAction != EMouseAction.LeftClick) return false;
+            if (!withinBounds)
+            {
+                return true;
+            }
+
+            if (mouseAction != EMouseAction.LeftClick)
+            {
+                MakeDamage(Health);
+                return false;
+            }
             mUserInterfaceController.ActivateMe(this);
             return false;
         }
