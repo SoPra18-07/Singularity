@@ -1168,7 +1168,7 @@ namespace Singularity.Platforms
 
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
-            return !withinBounds;
+            return true;
         }
 
         private string GetResourceString()
