@@ -24,7 +24,6 @@ namespace Singularity.Platforms
             Texture2D basesprite,
             SpriteFont libSans12,
             ResourceMap resource,
-            SpriteFont libSans12,
             ref Director director,
             bool friendly = true)
             : base(position,

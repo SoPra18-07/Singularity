@@ -171,11 +171,7 @@ namespace Singularity.Platforms
 
         #endregion
 
-        public SpriteFont mLibSans12;
-
         protected Color mColorBase;
-
-        protected PlatformInfoBox mInfoBox;
 
         public static SpriteFont mLibSans12;
 
@@ -1195,28 +1191,6 @@ namespace Singularity.Platforms
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
             return !withinBounds;
-        }
-
-        private string GetResourceString()
-        {
-            if (mResources.Count == 0)
-            {
-                return "None";
-            }
-            var resString = "";
-            var cType = (EResourceType)0;
-            var counter = 0;
-            foreach (var res in mResources)
-            {
-                if (counter > 0 && res.Type != cType)
-                {
-                    resString += cType + ": " + counter + ", ";
-                    counter = 0;
-                }
-                cType = res.Type;
-                counter++;
-            }
-            return resString + cType + ": " + counter;
         }
     }
 }
