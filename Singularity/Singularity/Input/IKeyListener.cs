@@ -1,26 +1,30 @@
-﻿namespace Singularity.Input
+﻿using Singularity.Screen;
+
+namespace Singularity.Input
 {
     /// <summary>
     /// Provides an interface for everything that uses keys
     /// </summary>
     public interface IKeyListener
     {
+        EScreen Screen { get; }
+
         /// <summary>
         /// Used to set a key as typed
         /// </summary>
         /// <param name="keyEvent"></param>
-        void KeyTyped(KeyEvent keyEvent);
+        bool KeyTyped(KeyEvent keyEvent);
 
         /// <summary>
         /// Used to set a key as pressed
         /// </summary>
         /// <param name="keyEvent"></param>
-        void KeyPressed(KeyEvent keyEvent);
+        bool KeyPressed(KeyEvent keyEvent);
 
         /// <summary>
         /// Used to set a key as released
         /// </summary>
         /// <param name="keyEvent"></param>
-        void KeyReleased(KeyEvent keyEvent);
+        bool KeyReleased(KeyEvent keyEvent);
     }
 }

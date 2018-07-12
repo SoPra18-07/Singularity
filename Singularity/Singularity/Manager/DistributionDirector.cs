@@ -147,9 +147,9 @@ namespace Singularity.Manager
             return mDMs[graphid];
         }
 
-        public List<int> CallingAllGraphs()
+        public void RemoveManager(int graphId)
         {
-            return mDMs.Keys.ToList();
+            mDMs[graphId] = null;
         }
     }
 }

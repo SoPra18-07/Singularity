@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Singularity.Property
 {
-    internal interface IDamageable
+    public interface IDamageable
     {
         /// <summary>
         /// Stores an object's health

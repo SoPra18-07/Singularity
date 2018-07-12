@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
 
@@ -12,7 +13,7 @@ namespace Singularity.Screen.ScreenClasses
     /// Shows the pause menu when in the middle of a game. It shows the
     /// following: Resume, Quick Save, Save, Statistics, Quit Game.
     /// </summary>
-    class GamePauseScreen : IScreen
+    class GamePauseScreen : IScreen, IKeyListener, IMouseClickListener, IMouseWheelListener
     {
 
         // fonts
@@ -31,6 +32,8 @@ namespace Singularity.Screen.ScreenClasses
         // screen manager to add / close screens
         private IScreenManager mScreenManager;
 
+        private readonly Director mDirector;
+
         /// <summary>
         /// TODO
         /// </summary>
@@ -43,6 +46,8 @@ namespace Singularity.Screen.ScreenClasses
 
             Position = new Vector2(screenSize.X / 2 - 150, screenSize.Y / 2 - 200);
             mPrevPosition = Position;
+
+            mDirector = director;
         }
 
         /// <summary>
@@ -108,13 +113,43 @@ namespace Singularity.Screen.ScreenClasses
 
         private void StatisticsButtonReleased(object sender, EventArgs eventArgs)
         {
+            RegisterToInputManager();
+
             // TODO : ADD PARAMETERS IF NEEDED (FOR EXAMPLE GRAPHICS DEVICE TO CALCULATE POSITIONS/SIZES
             mScreenManager.AddScreen(mStatisticsScreen);
         }
 
         private void CloseButtonReleased(object sender, EventArgs eventArgs)
         {
+            UnregisterFromInputManager();
+
             mScreenManager.RemoveScreen();
+        }
+
+        private void RegisterToInputManager()
+        {
+            RegisterOrUnregisterFromInputManager(true);
+        }
+
+        private void UnregisterFromInputManager()
+        {
+            RegisterOrUnregisterFromInputManager(false);
+        }
+
+        private void RegisterOrUnregisterFromInputManager(bool shouldRegister)
+        {
+            if (shouldRegister)
+            {
+                mDirector.GetInputManager.AddKeyListener(this);
+                mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+                mDirector.GetInputManager.AddMouseWheelListener(this);
+            }
+            else
+            {
+                mDirector.GetInputManager.RemoveKeyListener(this);
+                mDirector.GetInputManager.RemoveMouseClickListener(this);
+                mDirector.GetInputManager.RemoveMouseWheelListener(this);
+            }
         }
 
         #endregion
@@ -124,5 +159,46 @@ namespace Singularity.Screen.ScreenClasses
 
         // TODO : USE MEMBER VARIABLE INSTEAD?
         private Vector2 Position { get; }
+
+        #region InputManagerDenial
+
+        public Rectangle Bounds => Rectangle.Empty;
+
+        public bool KeyTyped(KeyEvent keyEvent)
+        {
+            return false;
+        }
+
+        public bool KeyPressed(KeyEvent keyEvent)
+        {
+            return false;
+        }
+
+        public bool KeyReleased(KeyEvent keyEvent)
+        {
+            return false;
+        }
+
+        public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
+        {
+            return false;
+        }
+
+        public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
+        {
+            return false;
+        }
+
+        public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
+        {
+            return false;
+        }
+
+        public bool MouseWheelValueChanged(EMouseAction mouseAction)
+        {
+            return false;
+        }
+
+        #endregion
     }
 }

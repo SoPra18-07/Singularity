@@ -143,7 +143,8 @@ namespace Singularity.Screen
         /// </summary>
         public List<int> CallingAllGraphs()
         {
-            return mDirector.GetDistributionDirector?.CallingAllGraphs();
+            //return mDirector.GetDistributionDirector?.CallingAllGraphs();
+            return new List<int>();
         }
 
         /// <summary>
