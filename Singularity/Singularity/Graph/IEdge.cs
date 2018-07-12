@@ -6,6 +6,8 @@
     /// </summary>
     public interface IEdge
     {
+        EEdgeFacing EEdgeFacing { get; set; }
+
         /// <summary>
         /// Gets the parent node this edge.
         /// </summary>

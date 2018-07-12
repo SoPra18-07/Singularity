@@ -124,6 +124,18 @@ namespace Singularity.Screen
             }
         }
 
+        public EScreen EScreen
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         public void AddScreen(IScreen screen)
         {
             mScreensToAdd.AddLast(screen);

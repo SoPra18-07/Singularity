@@ -12,6 +12,7 @@ namespace Singularity.Input
         /// The screen this object is on
         /// </summary>
         EScreen Screen { get; }
+        EMouseAction EMouseAction { get; set; }
 
         /// <summary>
         /// This event is fired if the mouse wheel value has been changed.

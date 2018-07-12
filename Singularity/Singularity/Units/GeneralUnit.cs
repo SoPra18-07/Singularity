@@ -549,5 +549,17 @@ namespace Singularity.Units
             {
             }
         }
+
+        public JobType JobType
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
     }
 }

@@ -2024,5 +2024,17 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         #endregion
+
+        public StructurePlacer StructurePlacer
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
     }
 }

@@ -97,5 +97,17 @@ namespace Singularity.Resources
             UnFollow();
             return true;
         }
+
+        public EResourceType EResourceType
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
     }
 }

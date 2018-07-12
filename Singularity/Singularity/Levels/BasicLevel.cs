@@ -50,6 +50,18 @@ namespace Singularity.Levels
             }
         }
 
+        public LevelType LevelType
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         [DataMember]
         protected GraphicsDeviceManager mGraphics;
 

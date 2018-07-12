@@ -459,5 +459,17 @@ namespace Singularity.Screen.ScreenClasses
             TransitionRunning = true;
 
         }
+
+        internal EOptionScreenState EOptionScreenState
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
     }
 }

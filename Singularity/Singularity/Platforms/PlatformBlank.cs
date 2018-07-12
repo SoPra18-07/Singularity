@@ -1085,5 +1085,17 @@ namespace Singularity.Platforms
             {
             }
         }
+
+        public EPlatformType EPlatformType
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
     }
 }

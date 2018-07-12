@@ -5,6 +5,8 @@
     /// </summary>
     public interface IKeyListener
     {
+        KeyEvent KeyEvent { get; set; }
+
         /// <summary>
         /// Used to set a key as typed
         /// </summary>

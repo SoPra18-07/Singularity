@@ -33,6 +33,30 @@ namespace Singularity.Graph.Paths
             }
         }
 
+        public DefaultPathfinding DefaultPathfinding
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public SortedPath SortedPath
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         public void AddGraph(int id, Graph graph)
         {
 

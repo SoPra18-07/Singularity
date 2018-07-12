@@ -219,5 +219,17 @@ namespace Singularity.Manager
         {
             mEnergyLevel += energy;
         }
+
+        internal Achievements Achievements
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
     }
 }

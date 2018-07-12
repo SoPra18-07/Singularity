@@ -19,6 +19,30 @@ namespace Singularity.Platforms
         public EScreen Screen { get; private set; }
         public Rectangle Bounds { get; private set; }
 
+        public EPlacementType EPlacementType
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public Road Road
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         private bool mPlaySound;
 
         /// <summary>

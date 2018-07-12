@@ -66,6 +66,30 @@ namespace Singularity.Sound
             mInstanceMap = new Dictionary<int, Tuple<SoundClass, int>>();
         }
 
+        public SoundPhase SoundPhase
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        public SoundClass SoundClass
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         public void LoadContent(ContentManager contentManager)
         {
             // Load all sound files from the directory.

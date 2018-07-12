@@ -17,6 +17,8 @@ namespace Singularity.Input
         /// The bounds of this object. Simplifies click events.
         /// </summary>
         Rectangle Bounds { get; }
+        EMouseAction EMouseAction { get; set; }
+        EClickType EClickType { get; set; }
 
         /// <summary>
         /// This will only be fired ONCE per mouse press, even if the mouse button is held down.

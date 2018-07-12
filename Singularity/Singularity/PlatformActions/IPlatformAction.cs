@@ -177,5 +177,17 @@ namespace Singularity.PlatformActions
         {
             mAssignedUnits.Remove(unit);
         }
+
+        public PlatformActionState PlatformActionState
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
     }
 }

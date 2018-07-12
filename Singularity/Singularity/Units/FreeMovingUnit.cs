@@ -331,6 +331,18 @@ namespace Singularity.Units
                 Matrix.Invert(mCamera.GetTransform())).Y);
         }
 
+        public EUnitType EUnitType
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
         internal FreeMovingPathfinder FreeMovingPathfinder
         {
             get
