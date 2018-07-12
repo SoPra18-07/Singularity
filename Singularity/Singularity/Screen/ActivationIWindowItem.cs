@@ -10,7 +10,7 @@ namespace Singularity.Screen
         private readonly IWindowItem mDeactiveItem;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="activeItem"></param>
         /// <param name="deactiveItem"></param>

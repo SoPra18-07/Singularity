@@ -17,7 +17,7 @@ using Singularity.Property;
 namespace Singularity.Screen.ScreenClasses
 {
     /// <summary>
-    /// Used to show debug information. This might not be the prettiest, but it definitely does its work... 
+    /// Used to show debug information. This might not be the prettiest, but it definitely does its work...
     /// </summary>
     public sealed class DebugScreen : IScreen, IKeyListener
     {
@@ -188,7 +188,7 @@ namespace Singularity.Screen.ScreenClasses
 
         public void KeyReleased(KeyEvent keyEvent)
         {
-            
+
         }
 
         private void FowButtonClicked(object sender, EventArgs args)
@@ -198,9 +198,9 @@ namespace Singularity.Screen.ScreenClasses
                 return;
             }
 
-            GlobalVariables.FowEnabled = !GlobalVariables.FowEnabled;
+            GlobalVariables.mFowEnabled = !GlobalVariables.mFowEnabled;
 
-            if (GlobalVariables.FowEnabled)
+            if (GlobalVariables.mFowEnabled)
             {
                 mFowButton.ChangeText(DisableText);
             }

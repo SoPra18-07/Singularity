@@ -3,7 +3,7 @@ using Singularity.Property;
 
 namespace Singularity.Screen
 {
-    internal interface IWindowItem : IUpdate, IDraw
+    public interface IWindowItem : IUpdate, IDraw
     {
         /// <summary>
         /// The IWindowItem's position

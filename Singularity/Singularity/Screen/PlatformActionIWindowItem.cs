@@ -62,16 +62,16 @@ namespace Singularity.Screen
 
             // the platformAction's name
             mNameTextField = new TextField(
-                text: name, 
-                position: Vector2.Zero, 
+                text: name,
+                position: Vector2.Zero,
                 size: new Vector2(spriteFont.MeasureString(name).X, 0), // the size of the textfield should be as big as the string it contains
-                spriteFont: spriteFont, 
+                spriteFont: spriteFont,
                 color: Color.White);
 
             // the platformAction's current state ((de)active)
             var stateTextField = new TextField(
-                text: platformAction.State.ToString(), 
-                position: Vector2.Zero, 
+                text: platformAction.State.ToString(),
+                position: Vector2.Zero,
                 size: new Vector2(spriteFont.MeasureString(platformAction.State.ToString()).X, 0), // the size of the textfield should be as big as the string it contains
                 spriteFont: spriteFont,
                 color: Color.White);

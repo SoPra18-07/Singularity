@@ -16,7 +16,7 @@ namespace Singularity.Screen
     {
         // the basic director
         private readonly Director mDirector;
-        
+
         // the currently selected platform
         private PlatformBlank mActivePlatform;
 

@@ -1146,7 +1146,7 @@ namespace Singularity.Manager
             }
             //If there are any units to redistribute do it now
             AssignUnitsFairly(unitstodistribute, isDef);
-            
+
             //TODO: this is a dirty fix and might cause slider adjustment issues (null propagation added)
             mHandler?.ForceSliderPages();
 
