@@ -425,7 +425,6 @@ namespace Singularity.Screen.ScreenClasses
             // TODO: implement start game with story
             throw new NotImplementedException("No story yet unfortunately");
 
-
         }
 
         /// <summary>

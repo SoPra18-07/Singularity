@@ -82,7 +82,7 @@ namespace Singularity
 
             var mainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
             //ATTENTION: THE INGAME SCREENS ARE HANDLED IN THE LEVELS NOW!
-            //mScreenManager.AddScreen(mMainMenuManager); // TODO: This makes it so that the main menu is bypassed
+            mScreenManager.AddScreen(mainMenuManager); // TODO: This makes it so that the main menu is bypassed
 
             // TODO: load and play Soundtrack as background music
             // director.GetSoundManager.LoadContent(Content);

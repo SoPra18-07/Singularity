@@ -57,8 +57,6 @@ namespace Singularity.Screen.ScreenClasses
         private readonly Camera mCamera;
 
         private SelectionBox mSelBox;
-        private Texture2D mBlankPlat;
-        private Texture2D mCylPlat;
 
 
 
@@ -183,14 +181,9 @@ namespace Singularity.Screen.ScreenClasses
         {
             AddObject(mMap);
 
-            // AddObjects(ResourceHelper.GetRandomlyDistributedResources(50));
-
             mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
             mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
-
-            // This is for the creation of the Command Centers from the settlers
-            mBlankPlat = content.Load<Texture2D>("PlatformBasic");
-            mCylPlat = content.Load<Texture2D>("Cylinders");
+            
         }
 
         public bool UpdateLower()
@@ -381,7 +374,7 @@ namespace Singularity.Screen.ScreenClasses
 
             var graphid = IdGenerator.NextiD();
             mDirector.GetDistributionDirector.AddManager(graphid);
-            var cCenter = PlatformFactory.Get(EPlatformType.Command, ref mDirector, v.X - 55, v.Y - 100);
+            var cCenter = PlatformFactory.Get(EPlatformType.Command, ref mDirector, v.X - 55, v.Y - 100, commandBlueprint: false);
             // CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, ref mDirector, false);
 
             var genUnit = new GeneralUnit(cCenter, ref mDirector, graphid);
