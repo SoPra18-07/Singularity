@@ -121,11 +121,20 @@ namespace Singularity.Screen.ScreenClasses
                 var possiblegenunit = drawable as GeneralUnit;
                 var possiblerock = drawable as Rock;
                 var possiblepuddle = drawable as Puddle;
+                var conUnit = drawable as ControllableUnit;
+                if (conUnit != null)
+                {
+                    mSelBox.SelectingBox += conUnit.BoxSelected;
+                }
                 possiblepuddle?.ReloadContent();
                 possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
                 possibleMilitaryUnit?.ReloadContent(content, ref mDirector, camera, ref map);
                 possibleSettler?.ReloadContent(ref mDirector, mCamera, ref map, this, ui);
+                if (possibleSettler != null)
+                {
+                    possibleSettler.BuildCommandCenter += SettlerBuild;
+                }
                 possiblegenunit?.ReloadContent(ref mDirector);
             }
 
@@ -138,11 +147,20 @@ namespace Singularity.Screen.ScreenClasses
                 var possiblegenunit = updateable as GeneralUnit;
                 var possiblerock = updateable as Rock;
                 var possiblepuddle = updateable as Puddle;
+                var conUnit = updateable as ControllableUnit;
+                if (conUnit != null)
+                {
+                    mSelBox.SelectingBox += conUnit.BoxSelected;
+                }
                 possiblepuddle?.ReloadContent();
                 possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
                 possibleMilitaryUnit?.ReloadContent(content, ref mDirector, camera, ref map);
                 possibleSettler?.ReloadContent(ref mDirector, mCamera, ref map, this, ui);
+                if (possibleSettler != null)
+                {
+                    possibleSettler.BuildCommandCenter += SettlerBuild;
+                }
                 possiblegenunit?.ReloadContent(ref mDirector);
             }
 
@@ -155,11 +173,20 @@ namespace Singularity.Screen.ScreenClasses
                 var possiblegenunit = spatial as GeneralUnit;
                 var possiblerock = spatial as Rock;
                 var possiblepuddle = spatial as Puddle;
+                var conUnit = spatial as ControllableUnit;
+                if (conUnit != null)
+                {
+                    mSelBox.SelectingBox += conUnit.BoxSelected;
+                }
                 possiblepuddle?.ReloadContent();
                 possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
                 possibleMilitaryUnit?.ReloadContent(content, ref mDirector, camera, ref map);
                 possibleSettler?.ReloadContent(ref mDirector, mCamera, ref map, this, ui);
+                if (possibleSettler != null)
+                {
+                    possibleSettler.BuildCommandCenter += SettlerBuild;
+                }
                 possiblegenunit?.ReloadContent(ref mDirector);
             }
         }
