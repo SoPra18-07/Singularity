@@ -8,7 +8,7 @@ using Singularity.Utils;
 namespace Singularity.Nature
 {
     public class Rock : ICollider
-    {   
+    {
         public bool[,] ColliderGrid { get; internal set; }
 
         // specifies the angle of the given rock
@@ -65,7 +65,7 @@ namespace Singularity.Nature
         /// </summary>
         private void CreateRock()
         {
-           
+
 
             // create the rotation and placement chart for rocks
             for (int i = 0; i < 14; i++)
@@ -123,14 +123,14 @@ namespace Singularity.Nature
 
         public void Draw(SpriteBatch spriteBatch)
             {
-                // generate the rotation and placement matrix at the beginning 
+                // generate the rotation and placement matrix at the beginning
                 if (!mNotGenerated)
                 {
                     CreateRock();
                     mNotGenerated = true;
                 }
 
-                // draw the rock formation 
+                // draw the rock formation
 
                 for (int i = 0; i < 18; i++)
                 {
@@ -152,7 +152,7 @@ namespace Singularity.Nature
                                     mDrawSize.X / 18,
                                     20,
                                     (mDrawAngle[j, i] % 2 == 0) ? Color.DimGray * .9f : Color.Gray * .9f,
-                                    1f);                           
+                                    1f);
                             }
 
                             // otherwise draw a square

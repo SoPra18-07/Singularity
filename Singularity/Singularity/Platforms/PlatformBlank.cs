@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -127,7 +128,8 @@ namespace Singularity.Platforms
         public bool Moved { get; private set; }
 
         public int Id { get; }
-
+        
+        [DataMember]
         protected Director mDirector;
 
         ///<summary>
@@ -160,13 +162,17 @@ namespace Singularity.Platforms
 
         protected Color mColorBase;
 
+        protected PlatformInfoBox mInfoBox;
+
+        public static SpriteFont mLibSans12;
+
         public bool[,] ColliderGrid { get; internal set; }
 
         //This is for registering the platform at the DistrManager.
         [DataMember]
         public JobType Property { get; set; }
 
-        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36, bool friendly = true)
+        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libsans12, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36, bool friendly = true)
         {
 
             Id = IdGenerator.NextiD();
@@ -218,6 +224,7 @@ namespace Singularity.Platforms
             mPlatformSpriteSheet = platformSpriteSheet;
             mPlatformBaseTexture = baseSprite;
             mSpritename = "PlatformBasic";
+            mLibSans12 = libsans12;
 
             mIsBlueprint = true;
             mRequested = new Dictionary<EResourceType, int>();
@@ -228,8 +235,37 @@ namespace Singularity.Platforms
             // user interface controller
             mUserInterfaceController = director.GetUserInterfaceController;
             Debug.WriteLine("PlatformBlank created");
-
+            
             Friendly = friendly;
+            var str = GetResourceString();
+            mInfoBox = new PlatformInfoBox(
+                itemList: new List<IWindowItem>
+                {
+                    new TextField(text: str, position: AbsolutePosition + new Vector2(x: 0, y: AbsoluteSize.Y + 10), size: mLibSans12.MeasureString(text: str), spriteFont: mLibSans12, color: Color.White)
+                },
+                size: mLibSans12.MeasureString(str),
+                platform: this, director: mDirector);
+                // mInfoBox = new PlatformInfoBox(new List<IWindowItem> { new TextField("PlattformInfo", AbsolutePosition, AbsoluteSize, mLibSans12, Color.White) }, AbsoluteSize, new Color(0.86f, 0.86f, 0.86f), new Color(1f, 1, 1), true, this, mDirector);
+
+            /*
+            var infoBuildBlank = new TextField("Blank Platform",
+                Vector2.Zero,
+                mLibSans12.MeasureString("Blank Platform"),
+                mLibSans12);
+
+            mInfoBuildBlank = new InfoBoxWindow(
+                itemList: new List<IWindowItem> { infoBuildBlank },
+                size: mLibSans12.MeasureString("Blank Platform"),
+                borderColor: new Color(0.86f, 0.85f, 0.86f),
+                centerColor: new Color(1f, 1f, 1f),//(0.75f, 0.75f, 0.75f),
+                boundsRectangle: new Rectangle(
+                    (int)mBlankPlatformButton.Position.X,
+                    (int)mBlankPlatformButton.Position.Y,
+                    (int)mBlankPlatformButton.Size.X,
+                    (int)mBlankPlatformButton.Size.Y),
+                boxed: true,
+                director: mDirector);
+            // */
 
         }
 
@@ -380,6 +416,7 @@ namespace Singularity.Platforms
         public void StoreResource(Resource resource)
         {
             mResources.Add(resource);
+            mResources = mResources.OrderBy(r => r.Type).ToList();
             Uncollide();
         }
 
@@ -491,12 +528,16 @@ namespace Singularity.Platforms
                     break;
             }
 
-            // also draw the resources on top
+            mInfoBox.UpdateString(GetResourceString());
+            mInfoBox.Draw(spritebatch);
 
+            // also draw the resources on top
+            /*
             foreach (var res in mResources)
             {
                 res.Draw(spritebatch);
             }
+            // */
         }
 
         /// <inheritdoc cref="Singularity.Property.IUpdate"/>
@@ -612,12 +653,7 @@ namespace Singularity.Platforms
             {
                 return false;
             }
-            if(mType != b.GetMyType())
-            {
-                return false;
-            }
-            return true;
-
+            return mType == b.GetMyType();
         }
 
         [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
@@ -976,7 +1012,7 @@ namespace Singularity.Platforms
         {
             if (manually)
             {
-                // TODO maybe need to regulate sound a little when put to action 
+                // TODO maybe need to regulate sound a little when put to action
                 mDirector.GetSoundManager.PlaySound("PowerDown",
                     Center.X,
                     Center.Y,
@@ -990,7 +1026,7 @@ namespace Singularity.Platforms
             }
 
             mIsActive = false;
-            // TODO: remove this or change it to something more appropriately, this is used by @Ativelox for 
+            // TODO: remove this or change it to something more appropriately, this is used by @Ativelox for
             // TODO: debugging purposes to easily see which platforms are currently deactivated
             mColor = Color.Green;
             //Only unregister if this platform is a defense or production platform
@@ -1052,15 +1088,9 @@ namespace Singularity.Platforms
         public Rectangle Bounds { get; private set; }
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
-            if (!withinBounds)
-            {
-                return true;
-            }
-
-            if (mouseAction == EMouseAction.LeftClick)
-            {
-                mUserInterfaceController.ActivateMe(this);
-            }
+            if (!withinBounds) return true;
+            if (mouseAction != EMouseAction.LeftClick) return false;
+            mUserInterfaceController.ActivateMe(this);
             return false;
         }
 
@@ -1072,6 +1102,28 @@ namespace Singularity.Platforms
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
             return !withinBounds;
+        }
+
+        private string GetResourceString()
+        {
+            if (mResources.Count == 0)
+            {
+                return "None";
+            }
+            var resString = "";
+            var cType = (EResourceType)0;
+            var counter = 0;
+            foreach (var res in mResources)
+            {
+                if (counter > 0 && res.Type != cType)
+                {
+                    resString += cType + ": " + counter + ", ";
+                    counter = 0;
+                }
+                cType = res.Type;
+                counter++;
+            }
+            return resString + cType + ": " + counter;
         }
     }
 }
