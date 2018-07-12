@@ -57,6 +57,16 @@ namespace Singularity.Platforms
         private bool mPreviousIsManuallyDeactivatedState;
 
         /// <summary>
+        /// true, if the platform is sleected in the UI
+        /// </summary>
+        [DataMember]
+        public bool IsSelected { get; set; }
+        [DataMember]
+        public EScreen Screen { get; private set; } = EScreen.GameScreen;
+        [DataMember]
+        public Rectangle Bounds { get; private set; }
+
+        /// <summary>
         /// List of inwards facing edges/roads towards the platform.
         /// </summary>
         [DataMember]
@@ -1080,13 +1090,6 @@ namespace Singularity.Platforms
             return mIsActive;
         }
 
-        /// <summary>
-        /// true, if the platform is sleected in the UI
-        /// </summary>
-        public bool IsSelected { get; set; }
-
-        public EScreen Screen { get; } = EScreen.GameScreen;
-        public Rectangle Bounds { get; private set; }
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
             if (!withinBounds)

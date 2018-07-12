@@ -107,7 +107,8 @@ namespace Singularity.Input
                 mMouseClickListener[iMouseClickListener.Screen] = new List<IMouseClickListener>();
             }
 
-            mMouseClickListener[iMouseClickListener.Screen].Add(iMouseClickListener);
+            mMouseClickListener[iMouseClickListener.Screen]
+                .Add(iMouseClickListener);
 
             mLeftClickType.Add(iMouseClickListener, leftClickType);
             mRightClickType.Add(iMouseClickListener, rightClickType);
