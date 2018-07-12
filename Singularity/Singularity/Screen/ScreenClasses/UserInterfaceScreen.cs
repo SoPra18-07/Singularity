@@ -332,9 +332,6 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
-        /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
             // update screen size
@@ -389,9 +386,6 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
-        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, mRasterizerState);
@@ -417,9 +411,6 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
-        /// <param name="content"></param>
         public void LoadContent(ContentManager content)
         {
             // load all spritefonts
@@ -807,7 +798,7 @@ namespace Singularity.Screen.ScreenClasses
             mLaserTowerPlatformButton.ButtonHoveringEnd += OnButtonmLaserTowerPlatformHoveringEnd;
 
             // barracks platform button
-            mBarracksPlatformButton = new Button(1, mOtherPlatformTexture, new Rectangle(0, 44, 38, 44), Vector2.Zero, false);
+            mBarracksPlatformButton = new Button(1, mOtherPlatformTexture, new Rectangle(0, 0, 38, 44), Vector2.Zero, false);
             mBarracksPlatformButton.ButtonClicked += OnButtonmBarracksPlatformClick;
             mBarracksPlatformButton.ButtonHovering += OnButtonmBarracksPlatformHovering;
             mBarracksPlatformButton.ButtonHoveringEnd += OnButtonmBarracksPlatformHoveringEnd;
@@ -1406,24 +1397,16 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
         public bool UpdateLower()
         {
             return true;
         }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
         public bool DrawLower()
         {
             return true;
         }
         /// <inheritdoc />
-        /// <summary>
-        /// </summary>
         public bool Loaded { get; set; }
 
         /// <summary>
