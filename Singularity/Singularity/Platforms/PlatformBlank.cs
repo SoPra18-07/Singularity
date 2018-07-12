@@ -1098,6 +1098,7 @@ namespace Singularity.Platforms
             if (!withinBounds) return true;
             if (mouseAction != EMouseAction.LeftClick) return false;
             mUserInterfaceController.ActivateMe(this);
+            mUserInterfaceController.SelectedPlatformSetsGraphId(mGraphIndex);
             return false;
         }
 
