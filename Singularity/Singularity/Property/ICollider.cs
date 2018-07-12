@@ -6,7 +6,7 @@ namespace Singularity.Property
     /// <inheritdoc cref="ISpatial"/>
     /// <inheritdoc cref="IDamageable"/>
     /// <inheritdoc cref="IId"/>
-    internal interface ICollider : ISpatial, IDamageable, IId
+    public interface ICollider : ISpatial, IDamageable, IId
     {
         /// <summary>
         /// Provides a lookup table for which spaces have a collider in them and which don't within the bounding box
