@@ -60,12 +60,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <Compile Include="KI\KI.cs" />
     <Compile Include="KI\Spawner.cs" />
-=======
     <Compile Include="Levels\PlatformDestructionTestLevel.cs" />
->>>>>>> origin/master
     <Compile Include="Nature\Rock.cs" />
     <Compile Include="Levels\BasicLevel.cs" />
     <Compile Include="Levels\ILevel.cs" />
