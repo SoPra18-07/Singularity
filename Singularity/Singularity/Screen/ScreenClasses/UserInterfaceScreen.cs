@@ -307,7 +307,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="gameScreen"></param>
         /// <param name="stackScreenManager"></param>
         /// <param name="map"></param>
-        public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, GameScreen gameScreen, IScreenManager stackScreenManager
+        public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, GameScreen gameScreen, IScreenManager stackScreenManager)
         {
             mMap = gameScreen.GetMap();
             mStructureMap = gameScreen.GetMap().GetStructureMap();
@@ -1852,7 +1852,7 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-            mPlatformToPlace = new StructurePlacer(default(EPlatformType), EPlacementType.RoadMouseFollowAndRoad, EScreen.UserInterfaceScreen, mCamera, ref mDirector);
+            mPlatformToPlace = new StructurePlacer(default(EPlatformType), EPlacementType.RoadMouseFollowAndRoad, EScreen.UserInterfaceScreen, mCamera, ref mDirector, ref mMap);
 
             mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
@@ -2063,6 +2063,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
