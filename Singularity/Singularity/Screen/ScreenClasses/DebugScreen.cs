@@ -30,8 +30,6 @@ namespace Singularity.Screen.ScreenClasses
 
         private Camera mCamera;
 
-        private int mCurrentFps;
-
         private Map.Map mMap;
 
         private readonly Director mDirector;

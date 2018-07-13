@@ -10,9 +10,9 @@ namespace Singularity.Platforms
     class Storage: PlatformBlank
     {
         [DataMember]
-        private new const int PlatformWidth = 144;
+        private const int PlatformWidth = 144;
         [DataMember]
-        private new const int PlatformHeight = 127;
+        private const int PlatformHeight = 127;
 
         public Storage(Vector2 position,
             Texture2D spritesheet,

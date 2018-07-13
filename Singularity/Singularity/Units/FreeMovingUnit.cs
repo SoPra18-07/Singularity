@@ -23,14 +23,8 @@ namespace Singularity.Units
         public int Id { get; private set; }
         [DataMember]
         public bool Friendly { get; protected set; }
-        #region Movement Variables
 
-        /// <summary>
-        /// Indicates the vector that needs to be added to the current vector to indicate the movement
-        /// direction.
-        /// </summary>
-        [DataMember]
-        protected Vector2 mToAdd;
+        #region Movement Variables
 
         /// <summary>
         /// Target position that the unit wants to reach.
@@ -41,8 +35,8 @@ namespace Singularity.Units
         /// <summary>
         /// Indicates if the unit is currently moving towards a target.
         /// </summary>
-        [DataMember]
-        protected bool mIsMoving;
+        // [DataMember]
+        // protected bool mIsMoving;
 
         /// <summary>
         /// Path the unit must take to get to the target position without colliding with obstacles.
@@ -55,18 +49,13 @@ namespace Singularity.Units
         /// </summary>
         [DataMember]
         protected Vector2[] mDebugPath;
-
+        
         /// <summary>
-        /// Provides a snapshot of the current bounds of the unit at every update call.
+        /// This is simply the velocity the current unit has.
         /// </summary>
         [DataMember]
-        protected Rectangle mBoundsSnapshot;
+        protected Vector2 mVeloctiyVector;
 
-        /// <summary>
-        /// Normalized vector to indicate direction of movement.
-        /// </summary>
-        [DataMember]
-        protected Vector2 mMovementVector;
         [DataMember]
         protected float mSpeed;
 
@@ -204,26 +193,22 @@ namespace Singularity.Units
         /// Calculates the direction the unit should be moving and moves it into that direction.
         /// </summary>
         /// <param name="target">The target to which to move.</param>
-        /// <param name="speed">Speed to go towards the target at.</param>
-        protected void MoveToTarget(Vector2 target, float speed)
+        protected void MoveToTarget(Vector2 target)
         {
 
-            var movementVector = new Vector2(target.X - Center.X, target.Y - Center.Y);
-            movementVector.Normalize();
-            mToAdd += mMovementVector * (float)(mZoomSnapshot * speed);
+            mVeloctiyVector = new Vector2(target.X - Center.X, target.Y - Center.Y);
 
-            AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X * speed, AbsolutePosition.Y + movementVector.Y * speed);
         }
 
-        protected void FindPath(Vector2 currentPosition, Vector2 targetPosition)
+        protected void FindPath()
         {
 
             mIsMoving = true;
-            Debug.WriteLine("Starting path finding at: " + currentPosition.X + ", " + currentPosition.Y);
+            Debug.WriteLine("Starting path finding at: " + Center.X + ", " + Center.Y);
             Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
 
             mPath = new Stack<Vector2>();
-            mPath = mPathfinder.FindPath(currentPosition,
+            mPath = mPathfinder.FindPath(Center,
                 mTargetPosition,
                 ref mMap);
 
@@ -231,8 +216,7 @@ namespace Singularity.Units
             {
                 mDebugPath = mPath.ToArray();
             }
-
-            mBoundsSnapshot = Bounds;
+            
             mZoomSnapshot = mCamera.GetZoom();
         }
 
@@ -259,18 +243,14 @@ namespace Singularity.Units
         /// <returns></returns>
         protected bool HasReachedWaypoint()
         {
-            if (Math.Abs(Center.X + mToAdd.X - mPath.Peek().X) < 8
-                && Math.Abs(Center.Y + mToAdd.Y - mPath.Peek().Y) < 8)
-            {
-                // If the position is within 8 pixels of the waypoint, (i.e. it will overshoot the waypoint if it moves
-                // for one more update, do the following
+            if (!(Math.Abs(Center.X + mToAdd.X - mPath.Peek().X) < 8) ||
+                !(Math.Abs(Center.Y + mToAdd.Y - mPath.Peek().Y) < 8)) return false;
+            // If the position is within 8 pixels of the waypoint, (i.e. it will overshoot the waypoint if it moves
+            // for one more update, do the following
 
-                Debug.WriteLine("Waypoint reached.");
-                Debug.WriteLine("Next waypoint: " + mPath.Peek());
-                return true;
-            }
-
-            return false;
+            Debug.WriteLine("Waypoint reached.");
+            Debug.WriteLine("Next waypoint: " + mPath.Peek());
+            return true;
         }
 
         /// <summary>
@@ -315,7 +295,10 @@ namespace Singularity.Units
 
         #region Abstract Methods
 
-        public abstract void Update(GameTime gametime);
+        public virtual void Update(GameTime gametime)
+        {
+            AbsolutePosition += mVeloctiyVector;
+        }
 
         public abstract void Draw(SpriteBatch spriteBatch);
 
