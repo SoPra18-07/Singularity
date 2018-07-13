@@ -113,6 +113,11 @@ namespace Singularity.Map
             {
                 platform.ReloadContent(content, ref dir);
             }
+
+            foreach(var roads in mRoads)
+            {
+                roads.ReloadContent(ref dir);
+            }
         }
 
         /// <summary>
