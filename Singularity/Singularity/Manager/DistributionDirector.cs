@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using Singularity.Exceptions;
 using Singularity.Platforms;
+using Singularity.Screen;
 using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.Manager
 {
@@ -20,8 +15,11 @@ namespace Singularity.Manager
         [DataMember]
         private Dictionary<int, DistributionManager> mDMs;
 
-        public DistributionDirector()
+        private readonly UserInterfaceController mUserInterfaceController;
+
+        public DistributionDirector(Director director)
         {
+            mUserInterfaceController = director.GetUserInterfaceController;
             mDMs = new Dictionary<int, DistributionManager>();
         }
 
@@ -32,6 +30,9 @@ namespace Singularity.Manager
         public void AddManager(int graphid)
         {
             mDMs[graphid] = new DistributionManager(graphid);
+
+            // update UI
+            mUserInterfaceController.AddGraph(graphid);
         }
 
         /// <summary>
@@ -97,6 +98,9 @@ namespace Singularity.Manager
             mDMs.Remove(graphid1);
             mDMs.Remove(graphid2);
             mDMs[newgraphid] = dist3;
+
+            // update UI
+            mUserInterfaceController.MergeGraph(newgraphid, graphid1, graphid2);
         }
 
         /// <summary>
@@ -107,7 +111,8 @@ namespace Singularity.Manager
         /// <param name="newgraphid">The graphid of the split-off DistributionManager</param>
         /// <param name="platforms">The platforms of the new split-off DistributionManager</param>
         /// <param name="units">The units of the new split-off DistributionManager</param>
-        public void SplitManagers(int oldgraphid, int newgraphid, List<PlatformBlank> platforms, List<GeneralUnit> units)
+        /// <param name="graphIdToGraph">the structuremap's graphIdToGraph-dictionary</param>
+        public void SplitManagers(int oldgraphid, int newgraphid, List<PlatformBlank> platforms, List<GeneralUnit> units, Dictionary<int, Graph.Graph> graphIdToGraph)
         {
             var olddist = mDMs[oldgraphid];
             mDMs[newgraphid] = new DistributionManager(newgraphid);
@@ -126,11 +131,20 @@ namespace Singularity.Manager
                 olddist.Kill(unit);
                 newdist.Register(unit, unit.Job);
             }
+
+            // update UI by "calling all graphs" - see description in UIController
+            mUserInterfaceController.CallingAllGraphs(graphIdToGraph);
         }
 
         public DistributionManager GetManager(int graphid)
         {
             return mDMs[graphid];
+        }
+
+        public void RemoveManager(int graphId, Dictionary<int, Graph.Graph> graphIdToGraph)
+        {
+            mDMs[graphId] = null;
+            mUserInterfaceController.CallingAllGraphs(graphIdToGraph);
         }
     }
 }

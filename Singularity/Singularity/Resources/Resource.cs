@@ -8,24 +8,26 @@ using Singularity.Utils;
 
 namespace Singularity.Resources
 {
+    [DataContract]
     public class Resource : ISpatial
     {
         // TODO: fkarg implement
-
+        [DataMember]
         private const float Speed = 4f;
+        [DataMember]
         private Vector2 mVelocity;
-
+        [DataMember]
         public Vector2 RelativePosition { get; set; }
-
+        [DataMember]
         public Vector2 RelativeSize { get; set; }
-
+        [DataMember]
         public Vector2 AbsolutePosition { get; set; }
-
+        [DataMember]
         public Vector2 AbsoluteSize { get; set; }
 
         [DataMember]
         public EResourceType Type { get; internal set; }
-
+        [DataMember]
         private Optional<GeneralUnit> mFollowing;
 
         public Resource(EResourceType type, Vector2 position)
@@ -78,8 +80,8 @@ namespace Singularity.Resources
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawCircle(AbsolutePosition, 8, 20, ResourceHelper.GetColor(Type), 10, LayerConstants.ResourceLayer);
-            spriteBatch.DrawCircle(AbsolutePosition, 10, 20, Color.Black, 2, LayerConstants.ResourceLayer);
+            spriteBatch.DrawCircle(AbsolutePosition, 6, 20, ResourceHelper.GetColor(Type), 6, LayerConstants.ResourceLayer);
+            spriteBatch.DrawCircle(AbsolutePosition, 7, 20, Color.Black, 1, LayerConstants.ResourceLayer);
         }
 
         public void Update(GameTime gametime)

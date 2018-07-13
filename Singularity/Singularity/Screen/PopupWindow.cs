@@ -86,51 +86,51 @@ namespace Singularity.Screen
             var buttonSize = new Vector2(button.Size.X + 10, button.Size.Y + 10);
 
             // position where the next item will be drawn
-            mItemPosTop = new Vector2(Position.X + 10, Position.Y + titleSizeY + 30); // TODO
+            mItemPosTop = new Vector2(Position.X + 10, Position.Y + titleSizeY + 30);
 
             // set the window rectangle
             mWindowRectangle = new Rectangle(
-                x: (int)(Position.X + 1),
-                y: (int)(Position.Y + 2),
-                width: (int)(mSize.X - 2),
-                height: (int)(mSize.Y - 2)
+                (int)(Position.X + 1),
+                (int)(Position.Y + 2),
+                (int)(mSize.X - 2),
+                (int)(mSize.Y - 2)
                 );
             mBorderRectangle = new Rectangle(
-                x: (int)Position.X,
-                y: (int)Position.Y,
-                width: (int)mSize.X,
-                height: (int)mSize.Y
+                (int)Position.X,
+                (int)Position.Y,
+                (int)mSize.X,
+                (int)mSize.Y
                 );
 
             // ScissorRectangle will cut everything drawn outside of this rectangle when set
             mScissorRectangle = new Rectangle(
-                x: (int)(Position.X + 10),
-                y: (int)(Position.Y + titleSizeY + 30),
-                width: mWindowRectangle.Width - 20,
-                height: (int)(mSize.Y - titleSizeY - 3 * 10 - buttonSize.Y)
+                (int)(Position.X + 10),
+                (int)(Position.Y + titleSizeY + 30),
+                mWindowRectangle.Width - 20,
+                (int)(mSize.Y - titleSizeY - 3 * 10 - buttonSize.Y)
                 );
 
             // set the rectangle of the title bar
             mTitleBarRectangle = new Rectangle(
-                x: (int)Position.X + 10,
-                y: (int)Position.Y + titleSizeY + 20,
-                width: (int)mSize.X - 40,
-                height: 1
+                (int)Position.X + 10,
+                (int)Position.Y + titleSizeY + 20,
+                (int)mSize.X - 40,
+                1
                 );
 
             // set the rectangle of the button
             mButtonBorderRectangle = new Rectangle(
-                x: (int)(Position.X + mSize.X / 2 - buttonSize.X / 2),
-                y: (int)(Position.Y + mSize.Y - buttonSize.Y + 1),
-                width: (int)buttonSize.X,
-                height: (int)buttonSize.Y - 2);
+                (int)(Position.X + mSize.X / 2 - buttonSize.X / 2),
+                (int)(Position.Y + mSize.Y - buttonSize.Y + 1),
+                (int)buttonSize.X,
+                (int)buttonSize.Y - 2);
 
             // set the rectangle for scrolling
             mScrollBarBorderRectangle = new Rectangle(
-                x: (int)(Position.X + mSize.X - 20),
-                y: mScissorRectangle.Y,
-                width: 20,
-                height: mScissorRectangle.Height
+                (int)(Position.X + mSize.X - 20),
+                mScissorRectangle.Y,
+                20,
+                mScissorRectangle.Height
             );
 
             // set button position
@@ -175,17 +175,13 @@ namespace Singularity.Screen
             // TODO: what is there still to be done?
 
             // draw window
-            /*spriteBatch.FillRectangle(mWindowRectangle, mColorFill);
-            spriteBatch.DrawRectangle(mBorderRectangle, mColorBorder, 2);*/
             spriteBatch.StrokedRectangle(new Vector2(mWindowRectangle.X, mWindowRectangle.Y), new Vector2(mWindowRectangle.Width, mWindowRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
 
             // draw window title + bar
             spriteBatch.DrawString(mSpriteFontTitle, mWindowName, new Vector2(Position.X + 10, Position.Y + 10), new Color(255, 255, 255));
-            //spriteBatch.DrawRectangle(mTitleBarRectangle, mColorBorder, 1);
             spriteBatch.StrokedRectangle(new Vector2(mTitleBarRectangle.X, mTitleBarRectangle.Y), new Vector2(mTitleBarRectangle.Width, mTitleBarRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
 
             // draw 'button'
-            //spriteBatch.DrawRectangle(mButtonBorderRectangle, mColorBorder, 2);
             spriteBatch.StrokedRectangle(new Vector2(mButtonBorderRectangle.X, mButtonBorderRectangle.Y), new Vector2(mButtonBorderRectangle.Width, mButtonBorderRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
 
             // backup current scissor so we can restore later
@@ -194,7 +190,6 @@ namespace Singularity.Screen
             // Add the scrollbar if the window is scrollable
             if (mScrollable)
             {
-                //spriteBatch.DrawRectangle(mScrollBarBorderRectangle, mColorBorder, 2);
                 spriteBatch.StrokedRectangle(new Vector2(mScrollBarBorderRectangle.X - 1, mScrollBarBorderRectangle.Y), new Vector2(mScrollBarBorderRectangle.Width, mScrollBarBorderRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
 
                 // set up current scissor rectangle
@@ -297,7 +292,7 @@ namespace Singularity.Screen
         /// </summary>
         /// <param name="scissorRectangle">the scissorrectangle used to cut the winodw</param>
         /// <param name="combinedItemsSize">the size of all items combined with padding</param>
-        /// <returns></returns>
+        /// <returns>the scrollbar rectangle</returns>
         private Rectangle CalcScrollbarRectangle(Rectangle scissorRectangle, float combinedItemsSize)
         {
             // scrollbar to scrollbarRectangleBorder has the same ratio as scissorRectangle to combinedItemSize

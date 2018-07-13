@@ -1,4 +1,6 @@
-﻿namespace Singularity.Utils
+﻿using System.Runtime.Serialization;
+
+namespace Singularity.Utils
 {
     public interface IId
     {
@@ -11,21 +13,25 @@
     /// <summary>
     /// This static class provides unique IDs to anything that requests it.
     /// </summary>
-    public static class IdGenerator
+    [DataContract]
+    public class IdGenerator
+
     {
         /// <summary>
         /// Holds the last ID that was generated to make sure the next ID is not the same.
         /// </summary>
-        private static int sId; // (defaults to 0)
+        [DataMember]
+        private int mId; // (defaults to 0)
+
 
         /// <summary>
         /// Get the next unique ID from the ID generator.
         /// </summary>
         /// <returns>A unique ID for the object.</returns>
-        public static int NextiD()
+        internal int NextiD()
         {
-            sId++;
-            return sId;
+            mId++;
+            return mId;
         }
 
     }

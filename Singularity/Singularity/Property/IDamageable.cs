@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Singularity.Property
+﻿namespace Singularity.Property
 {
-    internal interface IDamageable
+    public interface IDamageable
     {
         /// <summary>
         /// Stores an object's health

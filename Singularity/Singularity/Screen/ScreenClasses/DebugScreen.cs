@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -26,23 +22,29 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool Loaded { get; set; }
 
-        public EScreen Screen { get; private set; } = EScreen.DebugScreen;
+        public EScreen Screen { get; private set; } = EScreen.GameScreen;
 
         private SpriteFont mFont;
 
-        private readonly StackScreenManager mScreenManager;
+        private StackScreenManager mScreenManager;
 
-        private readonly Camera mCamera;
+        private Camera mCamera;
 
-        private readonly Map.Map mMap;
+        private int mCurrentFps;
+
+        private Map.Map mMap;
 
         private readonly Director mDirector;
 
         private int mActivePlatforms;
+
+
         private int mDeactivePlatforms;
 
         private int mFrameCount;
+
         private double mDt;
+
         private int mFps;
         private readonly float mUpdateRate;
 
@@ -63,6 +65,15 @@ namespace Singularity.Screen.ScreenClasses
 
             director.GetInputManager.AddKeyListener(this);
 
+        }
+
+        public void ReloadContent(ContentManager content, Camera camera, Map.Map map, StackScreenManager screenManager, ref Director director)
+        {
+            director.GetInputManager.AddKeyListener(this);
+            mFont = content.Load<SpriteFont>("LibSans14");
+            mCamera = camera;
+            mMap = map;
+            mScreenManager = screenManager;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -163,7 +174,7 @@ namespace Singularity.Screen.ScreenClasses
             return true;
         }
 
-        public void KeyTyped(KeyEvent keyEvent)
+        public bool KeyTyped(KeyEvent keyEvent)
         {
             // switch the debug state on f4 press
             if (keyEvent.CurrentKeys.Contains(Keys.F4))
@@ -178,17 +189,21 @@ namespace Singularity.Screen.ScreenClasses
                     mScreenManager.RemoveScreen();
                     GlobalVariables.DebugState = !GlobalVariables.DebugState;
                 }
+
+                return false;
             }
+
+            return true;
         }
 
-        public void KeyPressed(KeyEvent keyEvent)
+        public bool KeyPressed(KeyEvent keyEvent)
         {
-
+            return true;
         }
 
-        public void KeyReleased(KeyEvent keyEvent)
+        public bool KeyReleased(KeyEvent keyEvent)
         {
-
+            return true;
         }
 
         private void FowButtonClicked(object sender, EventArgs args)

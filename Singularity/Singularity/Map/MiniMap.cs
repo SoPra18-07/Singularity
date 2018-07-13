@@ -8,7 +8,6 @@ using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Screen;
-using Singularity.Units;
 
 namespace Singularity.Map
 {

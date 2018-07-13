@@ -1,12 +1,8 @@
 ﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
-using Singularity.Map;
-using Singularity.Platforms;
 using Singularity.Screen;
-using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 
 namespace Singularity.Levels
@@ -30,7 +26,8 @@ namespace Singularity.Levels
 
             //SetUnit
             var map = Map;
-            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, mUi);
+            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, Ui);
+
             GameScreen.AddObject(setUnit);
 
             //TESTMETHODS HERE =====================================

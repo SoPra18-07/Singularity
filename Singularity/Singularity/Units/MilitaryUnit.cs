@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
@@ -11,16 +12,19 @@ using Singularity.Sound;
 namespace Singularity.Units
 {
     /// <inheritdoc cref="ControllableUnit"/>
+    [DataContract]
     internal class MilitaryUnit : ControllableUnit, IShooting
     {
         /// <summary>
         /// Default width of a unit before scaling.
         /// </summary>
+        [DataMember]
         private const int DefaultWidth = 150;
 
         /// <summary>
         /// Default height of a unit before scaling.
         /// </summary>
+        [DataMember]
         private const int DefaultHeight = 75;
 
         /// <summary>
@@ -36,31 +40,40 @@ namespace Singularity.Units
         /// <summary>
         /// Scalar for the unit size.
         /// </summary>
-        private const float Scale = 0.4f;
+        [DataMember]
+        protected const float Scale = 0.4f;
 
         /// <summary>
         /// Indicates the position the closest enemy is at.
         /// </summary>
+        [DataMember]
+        private Vector2 mEnemyPosition;
+        [DataMember]
         private ICollider mShootingTarget;
+
 
         /// <summary>
         /// Indicates if the unit is currently shooting.
         /// </summary>
+        [DataMember]
         private bool mShoot;
-
+        [DataMember]
         public int Range { get; protected set; }
 
         /// <summary>
         /// Color of the unit while selected.
         /// </summary>
+        [DataMember]
         protected Color mSelectedColor = Color.DarkGray;
 
         /// <summary>
         /// Color of the unit while not selected
         /// </summary>
+        [DataMember]
         protected Color mColor = Color.Gray;
-
+        [DataMember]
         private float mShootingTimer = -1f;
+        [DataMember]
         private double mCurrentTime;
 
         public MilitaryUnit(Vector2 position,
@@ -79,6 +92,11 @@ namespace Singularity.Units
             Center = new Vector2((AbsolutePosition.X + AbsoluteSize.X) * 0.5f, (AbsolutePosition.Y + AbsoluteSize.Y) * 0.5f );
 
             Range = MilitaryUnitStats.StandardRange;
+        }
+
+        public void ReloadContent(ContentManager content, ref Director director, Camera camera, ref Map.Map map)
+        {
+            ReloadContent(ref director, camera, ref map);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -133,13 +151,11 @@ namespace Singularity.Units
                 return;
             }
 
-            if (mCurrentTime <= mShootingTimer + 200)
-            {
-                // draws a laser line a a slight glow around the line, then sets the shoot future off
-                spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2, .15f);
-                spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6, .15f);
-                mShoot = false;
-            }
+            if (!(mCurrentTime <= mShootingTimer + 200)) return;
+            // draws a laser line a a slight glow around the line, then sets the shoot future off
+            spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2, .15f);
+            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6, .15f);
+            mShoot = false;
         }
 
         public override void Update(GameTime gameTime)
@@ -203,7 +219,7 @@ namespace Singularity.Units
             }
         }
 
-        public void Shoot(ICollider target)
+        private void Shoot(ICollider target)
         {
             mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
             target.MakeDamage(MilitaryUnitStats.mUnitStrength);

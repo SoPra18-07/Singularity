@@ -40,8 +40,8 @@ namespace Singularity.Units
                 }
                 else
                 {
-                    mJpParam = new JumpPointParam(iGrid: map.GetCollisionMap().GetWalkabilityGrid(),
-                        iStartPos: startGridPos,
+                    mJpParam = new JumpPointParam(map.GetCollisionMap().GetWalkabilityGrid(),
+                        startGridPos,
                         iDiagonalMovement: DiagonalMovement.OnlyWhenNoObstacles,
                         iEndPos: endGridPos,
                         iAllowEndNodeUnWalkable: EndNodeUnWalkableTreatment.DISALLOW,

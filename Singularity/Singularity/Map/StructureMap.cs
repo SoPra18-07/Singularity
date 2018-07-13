@@ -1,8 +1,8 @@
-﻿using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
 using Singularity.Input;
@@ -17,56 +17,65 @@ namespace Singularity.Map
     /// A Structure map holds all the structures currently in the game. Additionally the structure map holds a graph
     /// representation of all the platforms and roads in the game. These graphes are used by pathfinding algorithms etc.
     /// </summary>
+    [DataContract]
     public sealed class StructureMap : IDraw, IUpdate, IMousePositionListener
     {
         /// <summary>
         /// A list of all the platforms currently in the game
         /// </summary>
+        [DataMember]
         private readonly LinkedList<PlatformBlank> mPlatforms;
 
         /// <summary>
         /// A list of all the roads in the game, identified by a source and destination platform.
         /// </summary>
+        [DataMember]
         private readonly LinkedList<Road> mRoads;
 
         /// <summary>
         /// A list of all the platformPlacements in the game (the platforms following the mouse when building).
         /// </summary>
+        [DataMember]
         private readonly LinkedList<StructurePlacer> mStructuresToPlace;
 
         /// <summary>
         /// The director for the game
         /// </summary>
-        private readonly Director mDirector;
+        private Director mDirector;
 
         /// <summary>
         /// A dictionary mapping platforms to the ID of the graph they are currently on
         /// </summary>
+        [DataMember]
         private readonly Dictionary<PlatformBlank, int> mPlatformToGraphId;
 
         /// <summary>
         /// A dictionary mapping graph IDs to the graph object they belong to
         /// </summary>
+        [DataMember]
         private readonly Dictionary<int, Graph.Graph> mGraphIdToGraph;
 
         /// <summary>
         /// A dictioanry mapping graph IDs to the energy level of the graph
         /// </summary>
+        [DataMember]
         private readonly Dictionary<int, int> mGraphIdToEnergyLevel;
 
         /// <summary>
         /// The Fog of war of the current game
         /// </summary>
-        private readonly FogOfWar mFow;
+        private FogOfWar mFow;
 
         /// <summary>
         /// The x coordinate of the mouse in world space
         /// </summary>
+        [DataMember]
         private float mMouseX;
 
         /// <summary>
         /// The y coordinate of the mouse in world space
         /// </summary>
+        [DataMember]
         private float mMouseY;
 
         /// <summary>
@@ -89,6 +98,23 @@ namespace Singularity.Map
             mRoads = new LinkedList<Road>();
         }
 
+
+        public void ReloadContent(ContentManager content, FogOfWar fow, ref Director dir, Camera camera, Map map)
+        {
+            mFow = fow;
+            mDirector = dir;
+            dir.GetInputManager.AddMousePositionListener(this);
+            foreach (var placement in mStructuresToPlace)
+            {
+                placement.ReloadContent(camera, ref dir, map);
+            }
+
+            foreach (var platform in mPlatforms)
+            {
+                platform.ReloadContent(content, ref dir);
+            }
+        }
+
         /// <summary>
         /// A method existing so the DistributionManager has access to all platforms.
         /// </summary>
@@ -105,6 +131,7 @@ namespace Singularity.Map
         /// <param name="platform">The platform to be added</param>
         public void AddPlatform(PlatformBlank platform)
         {
+
             mPlatforms.AddLast(platform);
             mFow.AddRevealingObject(platform);
 
@@ -137,6 +164,7 @@ namespace Singularity.Map
             mGraphIdToGraph[index] = graph;
             mPlatformToGraphId[platform] = index;
             platform.SetGraphIndex(index);
+            
             UpdateGenUnitsGraphIndex(mGraphIdToGraph[index], index);
 
             mDirector.GetDistributionDirector.AddManager(index);
@@ -152,21 +180,12 @@ namespace Singularity.Map
             mPlatforms.Remove(platform);
             mFow.RemoveRevealingObject(platform);
 
-            // first update the references to all the roads connected to this accordingly
-            foreach (var roads in platform.GetOutwardsEdges())
-            {
-                ((Road) roads).SourceAsNode = null;
-            }
+            var index = mPlatformToGraphId[platform];
 
-            foreach (var roads in platform.GetInwardsEdges())
-            {
-                ((Road) roads).DestinationAsNode = null;
-            }
+            mGraphIdToGraph[index] = null;
 
-            // possible outcomes, no new graphs, 1 new graph, ..., n new graphs.
-            // TODO: no idea how to efficiently handle this, implementation needed
-
-
+            mDirector.GetDistributionDirector.RemoveManager(index, mGraphIdToGraph);
+            mDirector.GetPathManager.RemoveGraph(index);
         }
 
         /// <summary>
@@ -241,8 +260,8 @@ namespace Singularity.Map
             var child = road.GetChild();
             var parent = road.GetParent();
 
-            ((PlatformBlank)child).RemoveEdge(road);
-            ((PlatformBlank)parent).RemoveEdge(road);
+            ((PlatformBlank)child)?.RemoveEdge(road);
+            ((PlatformBlank)parent)?.RemoveEdge(road);
 
             // more accurately: we have two cases:
             // 1. road gets destroyed -> two new seperate graphs get created
@@ -271,6 +290,7 @@ namespace Singularity.Map
             // now check the 2nd case.
             if (child == null || parent == null)
             {
+
                 INode existent = null;
 
                 if (child != null)
@@ -315,7 +335,24 @@ namespace Singularity.Map
 
             UpdateGenUnitsGraphIndex(mGraphIdToGraph[newChildIndex], newChildIndex);
 
-            //TODO: split the two dist managers here, wasn't sure how to implement it since i didnt understand the signature
+            var platforms = new List<PlatformBlank>();
+            var units = new List<GeneralUnit>();
+
+            foreach (var node in parentReachableGraph.GetNodes())
+            {
+                platforms.Add((PlatformBlank)node);
+                foreach (var unit in ((PlatformBlank) node).GetGeneralUnitsOnPlatform())
+                {
+                    units.Add(unit);
+                }
+            }
+
+            mGraphIdToEnergyLevel[newChildIndex] = 0;
+            mGraphIdToEnergyLevel[mPlatformToGraphId[(PlatformBlank) parent]] = 0;
+            UpdateEnergyLevel(newChildIndex);
+            UpdateEnergyLevel(mPlatformToGraphId[(PlatformBlank)parent]);
+
+            mDirector.GetDistributionDirector.SplitManagers(mPlatformToGraphId[(PlatformBlank)parent], newChildIndex, platforms, units, mGraphIdToGraph);
             mDirector.GetPathManager.AddGraph(newChildIndex, childReachableGraph);
             mDirector.GetPathManager.AddGraph(mPlatformToGraphId[(PlatformBlank)parent], parentReachableGraph);
         }
@@ -345,6 +382,11 @@ namespace Singularity.Map
 
                 foreach (var child in node.GetChilds())
                 {
+                    if (child == null)
+                    {
+                        continue;
+                    }
+
                     if (visited.ContainsKey(child))
                     {
                         continue;

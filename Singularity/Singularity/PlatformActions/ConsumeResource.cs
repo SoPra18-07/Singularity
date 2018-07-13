@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platforms;
@@ -20,7 +17,7 @@ namespace Singularity.PlatformActions
             mResourceMap = resourceMap;
         }
 
-        public override List<JobType> UnitsRequired { get; } = new List<JobType> { JobType.Defense };
+        public override List<JobType> UnitsRequired { get; set; } = new List<JobType> { JobType.Defense };
 
         public override void Execute()
         {
@@ -47,7 +44,7 @@ namespace Singularity.PlatformActions
             throw new NotImplementedException();
         }
 
-        public override List<JobType> UnitsRequired { get; } = new List<JobType>(0); // how do you specify a platform resource action that requires 0 units?
+        public override List<JobType> UnitsRequired { get; set; } = new List<JobType>(0); // how do you specify a platform resource action that requires 0 units?
     }
 
 

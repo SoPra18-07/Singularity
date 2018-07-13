@@ -1,58 +1,65 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
-using Singularity.Map.Properties;
 using Singularity.Property;
 
 namespace Singularity.Units
 {
     /// <inheritdoc cref="MilitaryUnit"/>
+    [DataContract]
     internal class EnemyUnit : FreeMovingUnit, IShooting
     {
         /// <summary>
         /// Default width of a unit before scaling.
         /// </summary>
+        [DataMember]
         private const int DefaultWidth = 150;
 
         /// <summary>
         /// Default height of a unit before scaling.
         /// </summary>
+        [DataMember]
         private const int DefaultHeight = 75;
 
         /// <summary>
         /// Color overlay used on the unit to show it is an enemy unit not a friendly unit.
         /// </summary>
-        protected readonly Color mColor = Color.Red;
+        [DataMember]
+        private readonly Color mColor = Color.Red;
 
         /// <summary>
         /// Stores the time since the last random movement.
         /// </summary>
+        [DataMember]
         private float mElapsedTime;
 
         /// <summary>
         /// Scalar for the unit size.
         /// </summary>
+        [DataMember]
         protected const float Scale = 0.4f;
 
         /// <summary>
         /// Random seed to calculate paths.
         /// </summary>
+        [DataMember]
         private readonly Random mRand = new Random();
 
         /// <summary>
         /// The spriteSheet used to draw enemy units.
         /// </summary>
-        protected readonly Texture2D mMilSheet = MilitaryUnit.mMilSheet;
-
-        public new bool Friendly { get; } = false;
-
+        protected Texture2D mMilSheet = MilitaryUnit.mMilSheet;
+        [DataMember]
+        public new bool Friendly { get; private set; }
+        [DataMember]
         protected bool mShoot;
-
+        [DataMember]
         protected ICollider mShootingTarget;
-
+        [DataMember]
         public int Range { get; protected set; }
 
         public void Shoot(ICollider target)
@@ -84,7 +91,6 @@ namespace Singularity.Units
             : base(position, camera, ref director, ref map, false)
         {
             AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
-
             RevelationRadius = 400;
 
             mSpeed = MilitaryUnitStats.StandardSpeed;
@@ -97,7 +103,12 @@ namespace Singularity.Units
             // makes sure that the textures are loaded
             if (mMilSheet == null)
             {
-                throw new Exception("load the MilSheet and GlowTexture first!");
+                mMilSheet = MilitaryUnit.mMilSheet;
+            }
+
+            if (mMilSheet == null)
+            {
+                throw new Exception("Load the MilSheet and GlowTexture first!");
             }
 
             // Draw military unit

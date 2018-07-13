@@ -1,36 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Manager;
-using Singularity.PlatformActions;
-using Singularity.Property;
-using Singularity.Resources;
+ using Singularity.PlatformActions;
+ using Singularity.Property;
 using Singularity.Units;
 
 namespace Singularity.Platforms
 {
-
+    [DataContract]
     internal abstract class DefenseBase : PlatformBlank, IShooting
     {
         /// <summary>
         /// For defense platforms, indicates if they are shooting.
         /// </summary>
+        [DataMember]
         protected bool mShoot;
-
+        
         /// <summary>
         /// For defense platforms, indicates where there target is
         /// </summary>
+        [DataMember]
         internal Vector2 EnemyPosition { get; set; }
-
-        public int Range { get; } = 400;
-
+        [DataMember]
+        public int Range { get; private set; } = 400;
+        [DataMember]
         protected ICollider mShootingTarget;
+
+        [DataMember]
+        protected Shoot mDefenseAction;
 
         /// <summary>
         /// Represents an abstract class for all defense platforms. Implements their draw methods.
@@ -40,7 +41,7 @@ namespace Singularity.Platforms
             Texture2D baseSprite,
             SpriteFont libSans12,
             ref Director director,
-            EPlatformType type,
+            EStructureType type,
             bool friendly = true) : base(position,
             platformSpriteSheet,
             baseSprite,
@@ -50,12 +51,17 @@ namespace Singularity.Platforms
             friendly: friendly)
         {
 
-            mType = type;
+            mDefenseAction = new Shoot(this, ref mDirector);
             mSpritename = "Cone";
             Property = JobType.Defense;
             SetPlatfromParameters();
 
             RevelationRadius = 500;
+        }
+
+        public void Shoot()
+        {
+            Shoot(mShootingTarget);
         }
 
         public abstract void Shoot(ICollider target);
@@ -78,7 +84,7 @@ namespace Singularity.Platforms
             // then draw what's on top of that
             spriteBatch.Draw(mPlatformSpriteSheet,
                 AbsolutePosition,
-                new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 148),
+                new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 148),
                 mColor * transparency,
                 0f,
                 Vector2.Zero,
@@ -92,8 +98,8 @@ namespace Singularity.Platforms
             }
 
             // draws a laser line a a slight glow around the line, then sets the shoot future off
-            spriteBatch.DrawLine(Center, EnemyPosition, Color.White, 2);
-            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), EnemyPosition, Color.White * .2f, 6);
+            spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2);
+            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6);
             mShoot = false;
         }
 
@@ -114,6 +120,13 @@ namespace Singularity.Platforms
             return new Vector2(Vector2.Transform(new Vector2(v.X, v.Y),
                 Matrix.Invert(camera.GetTransform())).X, Vector2.Transform(new Vector2(v.X, v.Y),
                 Matrix.Invert(camera.GetTransform())).Y);
+        }
+
+        public override List<IPlatformAction> GetIPlatformActions()
+        {
+            var list = new List<IPlatformAction> { { mDefenseAction } };
+            list.AddRange(base.GetIPlatformActions().AsEnumerable());
+            return list;
         }
     }
 }

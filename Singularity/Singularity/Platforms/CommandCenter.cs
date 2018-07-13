@@ -10,8 +10,9 @@ using Singularity.Units;
 namespace Singularity.Platforms
 {
     [DataContract]
-    class CommandCenter: PlatformBlank
+    internal sealed class CommandCenter: PlatformBlank
     {
+        [DataMember]
         private const int ProvidingEnergy = 20;
 
         [DataMember]
@@ -28,13 +29,13 @@ namespace Singularity.Platforms
             Texture2D baseSprite,
             SpriteFont libSans12,
             ref Director director,
-            bool blueprintState = true) 
+            bool blueprintState = true)
              : base(position,
                 spritesheet,
                 baseSprite,
                 libSans12,
                 ref director,
-                EPlatformType.Command,
+                EStructureType.Command,
                 -50)
         {
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
@@ -43,12 +44,13 @@ namespace Singularity.Platforms
             mProvidingEnergy = ProvidingEnergy;
 
             mCost = new Dictionary<EResourceType, int>();
-            mType = EPlatformType.Command;
+            mType = EStructureType.Command;
             mSpritename = "Cylinders";
             SetPlatfromParameters();
             mControlledUnits = new List<GeneralUnit>();
-            director.GetStoryManager.AddEnergy(5);
             mIsBlueprint = blueprintState;
+            mPlatformWidth = 200;
+            mPlatformHeight = 233;
         }
 
         public override void Produce()

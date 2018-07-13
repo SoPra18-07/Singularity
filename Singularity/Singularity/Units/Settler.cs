@@ -17,9 +17,8 @@ namespace Singularity.Units
     internal sealed class Settler: ControllableUnit, IKeyListener
     {
         #region Declarations
-        [DataMember]
         private GameScreen mGameScreen;
-        [DataMember]
+
         private UserInterfaceScreen mUi;
 
         [DataMember]
@@ -73,9 +72,18 @@ namespace Singularity.Units
                 //to true, that has been true already.
                 mUi.Activate();
             }
+            // debug.
+            mUi.Activate();
         }
         #endregion
 
+        public void ReloadContent(ref Director director, Camera camera, ref Map.Map map, GameScreen gamescreen, UserInterfaceScreen ui)
+        {
+            ReloadContent(ref director, camera, ref map);
+            mGameScreen = gamescreen;
+            mUi = ui;
+            mDirector.GetInputManager.AddKeyListener(this);
+        }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -146,7 +154,7 @@ namespace Singularity.Units
 
         }
 
-        public void KeyTyped(KeyEvent keyEvent)
+        public bool KeyTyped(KeyEvent keyEvent)
         {
             // b key is used to convert the settler unit into a command center
             var keyArray = keyEvent.CurrentKeys;
@@ -157,20 +165,23 @@ namespace Singularity.Units
                 if (key == Keys.B && mSelected && (HasReachedTarget() || mNeverMoved))
                 {
                     OnBuildCommandCenter();
+                    return false;
                 }
             }
+
+            return true;
         }
 
 
         #region Unused EventListeners
-        public void KeyPressed(KeyEvent keyEvent)
+        public bool KeyPressed(KeyEvent keyEvent)
         {
-
+            return true;
         }
 
-        public void KeyReleased(KeyEvent keyEvent)
+        public bool KeyReleased(KeyEvent keyEvent)
         {
-
+            return true;
         }
 
         #endregion

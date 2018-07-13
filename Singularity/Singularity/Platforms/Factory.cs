@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Resources;
-using Singularity.Units;
 
 namespace Singularity.Platforms
 {
@@ -28,7 +27,7 @@ namespace Singularity.Platforms
                 basesprite,
                 libSans12,
                 ref director,
-                EPlatformType.Factory,
+                EStructureType.Factory,
                 -50,
                 friendly: friendly)
         {
@@ -36,7 +35,7 @@ namespace Singularity.Platforms
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
-            mType = EPlatformType.Factory;
+            mType = EStructureType.Factory;
             mSpritename = "Dome";
             SetPlatfromParameters();
         }
