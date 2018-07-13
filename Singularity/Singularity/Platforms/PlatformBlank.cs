@@ -961,12 +961,6 @@ namespace Singularity.Platforms
 
             mIPlatformActions.RemoveAll(a => a.Die());
 
-            mAssignedUnits[JobType.Idle].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
-            mAssignedUnits[JobType.Defense].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
-            mAssignedUnits[JobType.Construction].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
-            mAssignedUnits[JobType.Logistics].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
-            mAssignedUnits[JobType.Production].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
-
 
             mResources.RemoveAll(r => r.Die());
             mResources = new List<Resource> {new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center),
@@ -995,6 +989,13 @@ namespace Singularity.Platforms
             // removing the PlatformActions first
 
             var toKill = new List<IEdge>();
+
+
+            foreach (var unit in GetGeneralUnitsOnPlatform())
+            {
+                unit.Die();
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(unit);
+            }
 
             foreach (var road in mInwardsEdges)
             {
