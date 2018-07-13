@@ -105,7 +105,6 @@ namespace Singularity.Screen
             Vector2 size,
             bool minimizable,
             SpriteFont spriteFont,
-            InputManager inputManager,
             Director director)
         {
             // use parameter-variables
@@ -127,9 +126,9 @@ namespace Singularity.Screen
 
             mBackgroundGiven = true;
 
-            inputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
-            inputManager.AddMouseWheelListener(this);
-            inputManager.AddMousePositionListener(this);
+            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.GetInputManager.AddMouseWheelListener(this);
+            director.GetInputManager.AddMousePositionListener(this);
         }
 
 
@@ -157,7 +156,6 @@ namespace Singularity.Screen
             float objectPadding,
             bool minimizable,
             SpriteFont spriteFont,
-            InputManager inputManager,
             Director director)
         {
             // set parameter-variables
@@ -180,9 +178,9 @@ namespace Singularity.Screen
             // set start values
             mBackgroundGiven = true;
 
-            inputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
-            inputManager.AddMouseWheelListener(this);
-            inputManager.AddMousePositionListener(this);
+            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.GetInputManager.AddMouseWheelListener(this);
+            director.GetInputManager.AddMousePositionListener(this);
         }
 
 
@@ -208,7 +206,6 @@ namespace Singularity.Screen
             float objectPadding,
             bool minimizable,
             SpriteFont spriteFont,
-            InputManager inputManager,
             Director director)
         {
             // set parameter-variables
@@ -231,9 +228,9 @@ namespace Singularity.Screen
             // set start values
             mBackgroundGiven = false;
 
-            inputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
-            inputManager.AddMouseWheelListener(this);
-            inputManager.AddMousePositionListener(this);
+            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.GetInputManager.AddMouseWheelListener(this);
+            director.GetInputManager.AddMousePositionListener(this);
         }
 
         #endregion

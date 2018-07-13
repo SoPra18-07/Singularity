@@ -18,7 +18,7 @@ namespace Singularity.Screen
     public sealed class UserInterfaceController
     {
         // the basic director
-        private readonly Director mDirector;
+        private Director mDirector;
 
         // the currently selected platform
         [DataMember]

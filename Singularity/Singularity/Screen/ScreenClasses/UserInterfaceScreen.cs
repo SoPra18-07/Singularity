@@ -171,7 +171,6 @@ namespace Singularity.Screen.ScreenClasses
         private Slider mBuildSlider;
         private Slider mLogisticsSlider;
         private Slider mProductionSlider;
-        private SliderHandler mHandler;
 
         // text for sliders
         private TextField mDefTextField;
@@ -316,8 +315,6 @@ namespace Singularity.Screen.ScreenClasses
 
             mDirector = director;
             mScreenManager = stackScreenManager;
-            mGraphics = mgraphics;
-            mInputManager = director.GetInputManager;
 
             // initialize input manager
             director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
@@ -469,7 +466,7 @@ namespace Singularity.Screen.ScreenClasses
             #region selectedPlatformWindow
 
             // create the window object
-            mSelectedPlatformWindow = new WindowObject("No Selection", new Vector2(250, 200), new Vector2(selectedPlatformWidth, selectedPlatformHeight), true, mLibSans14, mInputManager, mDirector);
+            mSelectedPlatformWindow = new WindowObject("No Selection", new Vector2(250, 200), new Vector2(selectedPlatformWidth, selectedPlatformHeight), true, mLibSans14, mDirector);
 
             // list to add all item to be able to iterate through them
             mSelectedPlatformResourcesList = new List<ResourceIWindowItem>();
@@ -594,7 +591,7 @@ namespace Singularity.Screen.ScreenClasses
 
             #region eventLogWindow
 
-            mEventLogWindow = new WindowObject("// EVENT LOG", new Vector2(0, 0), new Vector2(eventLogWidth, eventLogHeight), true, mLibSans14, mInputManager, mDirector);
+            mEventLogWindow = new WindowObject("// EVENT LOG", new Vector2(0, 0), new Vector2(eventLogWidth, eventLogHeight), true, mLibSans14, mDirector);
 
             mWindowList.Add(mEventLogWindow);
 
@@ -602,7 +599,7 @@ namespace Singularity.Screen.ScreenClasses
 
             #region civilUnitsWindow
 
-            mCivilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(0, 0), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 10, 15, true, mLibSans14, mInputManager, mDirector);
+            mCivilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(0, 0), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 10, 15, true, mLibSans14, mDirector);
 
             // create items
 
@@ -641,7 +638,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO : WHAT IS THE RESOURCE WINDOW SUPPOSED TO SHOW ? - IMPLEMENT IT
             #region resourceWindow
 
-            mResourceWindow = new WindowObject("// RESOURCES", new Vector2(0, 0), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mInputManager, mDirector);
+            mResourceWindow = new WindowObject("// RESOURCES", new Vector2(0, 0), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mDirector);
 
             // create all items (these are simple starting values which will be updated automatically by the UI controller)
             mResourceItemChip = new ResourceIWindowItem(EResourceType.Chip, 10, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
@@ -678,7 +675,7 @@ namespace Singularity.Screen.ScreenClasses
 
             #region buildMenuWindow
 
-            mBuildMenuWindow = new WindowObject("// BUILDMENU", new Vector2(0, 0), new Vector2(buildMenuWidth, buildMenuHeight), true, mLibSans14, mInputManager, mDirector);
+            mBuildMenuWindow = new WindowObject("// BUILDMENU", new Vector2(0, 0), new Vector2(buildMenuWidth, buildMenuHeight), true, mLibSans14, mDirector);
 
             #region button definitions
 
@@ -1372,7 +1369,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO: properly place the minimapObject to better fit with the rest. Don't change the size
             // TODO: other than changing it in MapConstants, the +20 is for the padding left and right.
             var minimap = new MiniMap(mMap, mCamera, content.Load<Texture2D>("minimap"));
-            mMinimapWindow = new WindowObject("", new Vector2(0, 0), new Vector2(MapConstants.MiniMapWidth + 20, MapConstants.MiniMapHeight + 20), false, mLibSans12, mDirector.GetInputManager, mDirector);
+            mMinimapWindow = new WindowObject("", new Vector2(0, 0), new Vector2(MapConstants.MiniMapWidth + 20, MapConstants.MiniMapHeight + 20), false, mLibSans12, mDirector);
             mMinimapWindow.AddItem(minimap);
 
             mWindowList.Add(mMinimapWindow);
@@ -1768,7 +1765,7 @@ namespace Singularity.Screen.ScreenClasses
                 window.Active = true;
             }
             mInfoBar.Active = true;
-            mHandler.Initialize();
+            mCivilUnitsSliderHandler.Initialize();
         }
 
         #region button management
