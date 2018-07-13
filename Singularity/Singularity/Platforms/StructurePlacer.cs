@@ -96,7 +96,10 @@ namespace Singularity.Platforms
         [DataMember]
         private bool mUnregister;
 
-        public StructurePlacer(EPlatformType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, ref Map.Map map, float x = 0, float y = 0, ResourceMap resourceMap = null)
+        [DataMember]
+        private EStructureType mPlatformType;
+
+        public StructurePlacer(EStructureType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, ref Map.Map map, float x = 0, float y = 0, ResourceMap resourceMap = null)
         {
             mUnregister = false;
 
@@ -104,12 +107,16 @@ namespace Singularity.Platforms
             Screen = screen;
             mDirector = director;
 
+            mPlatformType = platformType;
+
             // need the structure map to make sure platforms arent placed on collidable objects
             mMap = map;
 
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
             mCurrentState = new State3(1);
+
+            director.GetUserInterfaceController.BuildingProcessStarted(platformType);
 
 
             // for further information as to why which states refer to the documentation for mCurrentState
@@ -257,6 +264,7 @@ namespace Singularity.Platforms
                     }
                     mIsFinished = true;
                     mUnregister = true;
+                    mDirector.GetUserInterfaceController.BuildingProcessFinished(mPlatformType);
 
                     break;
 
@@ -358,6 +366,8 @@ namespace Singularity.Platforms
             {
                 if (mCurrentState.GetState() == 1)
                 {
+
+                    mDirector.GetUserInterfaceController.BuildingProcessFinished(mPlatformType);
                     mCanceled = true;
                     mIsFinished = true;
                     giveThrough = false;

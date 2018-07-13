@@ -433,7 +433,7 @@ namespace Singularity.Screen.ScreenClasses
 
             if (typeof(ICollider).IsAssignableFrom(typeof(T)))
             {
-                //TODO: remove from collision map
+                mMap.GetCollisionMap().RemoveCollider((ICollider)toRemove);
             }
 
             if (road != null)
@@ -503,9 +503,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO eventually the EPlacementType should be instance but currently that
             // TODO requires a road to be place and therefore throws an exception !!!!!
 
-            var graphid = mDirector.GetIdGenerator.NextiD();
-            mDirector.GetDistributionDirector.AddManager(graphid);
-            var cCenter = PlatformFactory.Get(EPlatformType.Command, ref mDirector, v.X - 55, v.Y - 100);
+            var cCenter = PlatformFactory.Get(EStructureType.Command, ref mDirector, v.X - 55, v.Y - 100);
             AddObject(cCenter);
 
             var genUnit = new GeneralUnit(cCenter, ref mDirector, cCenter.GetGraphIndex());

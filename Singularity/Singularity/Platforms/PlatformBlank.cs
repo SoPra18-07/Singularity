@@ -85,7 +85,7 @@ namespace Singularity.Platforms
         /// Indicates the type of platform this is, defaults to blank.
         /// </summary>
         [DataMember]
-        internal EPlatformType mType;
+        internal EStructureType mType;
 
         /// <summary>
         /// Indicates the platform width
@@ -200,7 +200,7 @@ namespace Singularity.Platforms
         [DataMember]
         public JobType Property { get; set; }
 
-        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libsans12, ref Director director, EPlatformType type = EPlatformType.Blank, float centerOffsetY = -36, bool friendly = true)
+        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libsans12, ref Director director, EStructureType type = EStructureType.Blank, float centerOffsetY = -36, bool friendly = true)
         {
 
             mPrevPlatformActions = new List<IPlatformAction>();
@@ -451,7 +451,7 @@ namespace Singularity.Platforms
             Health -= damage;
             if (Health <= 0)
             {
-                if (mType == EPlatformType.Blank)
+                if (mType == EStructureType.Blank)
                 {
                     Die();
                 }
@@ -648,7 +648,7 @@ namespace Singularity.Platforms
             // take care of the Resources on top not colliding. todo: fixme. @fkarg
         }
 
-        public EPlatformType GetMyType()
+        public EStructureType GetMyType()
         {
             return mType;
         }
@@ -713,11 +713,10 @@ namespace Singularity.Platforms
             }
             return mType == b.GetMyType();
         }
-
-        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
+        
         public override int GetHashCode()
         {
-            return AbsoluteSize.GetHashCode() * 17 + AbsolutePosition.GetHashCode() + mType.GetHashCode();
+            return base.GetHashCode() * Id.GetHashCode() + mType.GetHashCode();
         }
 
 
@@ -730,21 +729,21 @@ namespace Singularity.Platforms
             mSheetPosition = 0;
             switch (mType)
             {
-                case EPlatformType.Blank:
+                case EStructureType.Blank:
                     mSheet = 0;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
                         PlatformWidth,
                         88);
                     break;
-                case EPlatformType.Energy:
+                case EStructureType.Energy:
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
                         PlatformWidth,
                         127);
                     break;
-                case EPlatformType.Factory:
+                case EStructureType.Factory:
                     mSheetPosition = 1;
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
@@ -752,7 +751,7 @@ namespace Singularity.Platforms
                         PlatformWidth,
                         127);
                     break;
-                case EPlatformType.Junkyard:
+                case EStructureType.Junkyard:
                     mSheetPosition = 2;
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
@@ -760,7 +759,7 @@ namespace Singularity.Platforms
                         PlatformWidth,
                         127);
                     break;
-                case EPlatformType.Mine:
+                case EStructureType.Mine:
                     mSheetPosition = 3;
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
@@ -768,7 +767,7 @@ namespace Singularity.Platforms
                         PlatformWidth,
                         127);
                     break;
-                case EPlatformType.Packaging:
+                case EStructureType.Packaging:
                     mSheetPosition = 4;
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
@@ -776,7 +775,7 @@ namespace Singularity.Platforms
                         PlatformWidth,
                         127);
                     break;
-                case EPlatformType.Quarry:
+                case EStructureType.Quarry:
                     mSheetPosition = 5;
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
@@ -784,7 +783,7 @@ namespace Singularity.Platforms
                         PlatformWidth,
                         127);
                     break;
-                case EPlatformType.Storage:
+                case EStructureType.Storage:
                     mSheetPosition = 6;
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
@@ -792,7 +791,7 @@ namespace Singularity.Platforms
                         PlatformWidth,
                         127);
                     break;
-                case EPlatformType.Well:
+                case EStructureType.Well:
                     mSheetPosition = 7;
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
@@ -800,14 +799,14 @@ namespace Singularity.Platforms
                         PlatformWidth,
                         127);
                     break;
-                case EPlatformType.Kinetic:
+                case EStructureType.Kinetic:
                     mSheet = 1;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
                         PlatformWidth,
                         165);
                     break;
-                case EPlatformType.Laser:
+                case EStructureType.Laser:
                     mSheet = 1;
                     mSheetPosition = 1;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
@@ -815,7 +814,7 @@ namespace Singularity.Platforms
                         PlatformWidth,
                         165);
                     break;
-                case EPlatformType.Barracks:
+                case EStructureType.Barracks:
                     mSheet = 2;
                     mSheetPosition = 1;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
@@ -823,7 +822,7 @@ namespace Singularity.Platforms
                         PlatformWidth,
                         170);
                     break;
-                case EPlatformType.Command:
+                case EStructureType.Command:
                     mSheet = 2;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
@@ -916,13 +915,15 @@ namespace Singularity.Platforms
         {
 
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
-            mType = EPlatformType.Blank;
+            mType = EStructureType.Blank;
 
             // create the event in eventLog that the specialised part has been destroyed
             mDirector.GetEventLog.AddEvent(ELogEventType.PlatformDestroyed, mType + " has been destroyed", this);
             // if platform was an enemy keep red base
             mColor = Friendly ? Color.White : Color.Red;
 
+            mColor = Color.White;
+            mType = EStructureType.Blank;
             mSpritename = "PlatformBasic";
             SetPlatfromParameters();
 
@@ -1059,8 +1060,8 @@ namespace Singularity.Platforms
         /// <returns>True if thats the case, false otherwise</returns>
         public bool IsDefense()
         {
-            if (mType == EPlatformType.Kinetic
-                || mType == EPlatformType.Laser)
+            if (mType == EStructureType.Kinetic
+                || mType == EStructureType.Laser)
             {
                 return true;
             }
@@ -1074,10 +1075,10 @@ namespace Singularity.Platforms
         /// <returns>True if thats the casem, false otherwise</returns>
         public bool IsProduction()
         {
-            if (mType == EPlatformType.Well
-                || mType == EPlatformType.Quarry
-                || mType == EPlatformType.Mine
-                || mType == EPlatformType.Factory)
+            if (mType == EStructureType.Well
+                || mType == EStructureType.Quarry
+                || mType == EStructureType.Mine
+                || mType == EStructureType.Factory)
             {
                 return true;
             }

@@ -26,14 +26,14 @@ namespace Singularity.Platforms
                 baseSprite,
                 libSans12,
                 ref director,
-                EPlatformType.Junkyard,
+                EStructureType.Junkyard,
                 -50,
                 friendly: friendly)
         {
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
-            mType = EPlatformType.Junkyard;
+            mType = EStructureType.Junkyard;
             mSpritename = "Dome";
             SetPlatfromParameters();
         }
