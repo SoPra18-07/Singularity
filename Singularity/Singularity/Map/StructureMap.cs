@@ -107,7 +107,12 @@ namespace Singularity.Map
         public void AddPlatform(PlatformBlank platform)
         {
             mPlatforms.AddLast(platform);
-            mFow.AddRevealingObject(platform);
+
+            // TODO: quick implementation to prevent enemy platforms from being discoverable through FOW
+            if (platform.Friendly)
+            {
+                mFow.AddRevealingObject(platform);
+            }
 
             // first of all get the "connection graph" of the platform to add. The connection graph
             // describes the graph (nodes and edges) reachable from this platform
@@ -153,12 +158,17 @@ namespace Singularity.Map
             mPlatforms.Remove(platform);
             mFow.RemoveRevealingObject(platform);
 
-            var index = mPlatformToGraphId[platform];
+            // TODO : made this only for friendly platforms since right now enemy platforms should not be added to Graph ID
+            if (platform.Friendly)
+            {
+                var index = mPlatformToGraphId[platform];
+                mGraphIdToGraph[index] = null;
 
-            mGraphIdToGraph[index] = null;
+                mDirector.GetDistributionDirector.RemoveManager(index);
+                mDirector.GetPathManager.RemoveGraph(index);
+            }
 
-            mDirector.GetDistributionDirector.RemoveManager(index);
-            mDirector.GetPathManager.RemoveGraph(index);
+            
 
 
         }

@@ -85,8 +85,6 @@ namespace Singularity.Units
         {
             AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
 
-            RevelationRadius = 400;
-
             mSpeed = MilitaryUnitStats.StandardSpeed;
             Health = MilitaryUnitStats.StandardHealth;
             Range = MilitaryUnitStats.StandardRange;
@@ -132,8 +130,8 @@ namespace Singularity.Units
             }
 
             // draws a laser line a a slight glow around the line, then sets the shoot future off
-            spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2, .15f);
-            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6, .15f);
+            spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.Red, 2, .15f);
+            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.Red * .2f, 6, .15f);
             mShoot = false;
         }
 

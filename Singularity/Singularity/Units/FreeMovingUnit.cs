@@ -12,8 +12,7 @@ using Singularity.Utils;
 namespace Singularity.Units
 {
     /// <inheritdoc cref="ICollider"/>
-    /// <inheritdoc cref="IRevealing"/>
-    internal abstract class FreeMovingUnit : ICollider, IRevealing
+    internal abstract class FreeMovingUnit : ICollider
     {
         /// <summary>
         /// The unique ID of the unit.
@@ -98,8 +97,6 @@ namespace Singularity.Units
         public Rectangle AbsBounds { get; protected set; }
 
         public bool[,] ColliderGrid { get; protected set; }
-
-        public int RevelationRadius { get; protected set; }
 
         public Vector2 RelativePosition { get; set; }
 

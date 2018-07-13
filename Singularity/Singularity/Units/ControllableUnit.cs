@@ -5,13 +5,15 @@ using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Map.Properties;
+using Singularity.Property;
 
 namespace Singularity.Units
 {
     /// <inheritdoc cref="IMouseClickListener"/>
     /// <inheritdoc cref="IMousePositionListener"/>
     /// <inheritdoc cref="FreeMovingUnit"/>
-    internal abstract class ControllableUnit : FreeMovingUnit, IMouseClickListener, IMousePositionListener
+    /// <inheritdoc cref="IRevealing"/>
+    internal abstract class ControllableUnit : FreeMovingUnit, IMouseClickListener, IMousePositionListener, IRevealing
     {
         #region Fields
 
@@ -19,6 +21,8 @@ namespace Singularity.Units
         /// Indicates if the unit is currently selected.
         /// </summary>
         internal bool mSelected;
+
+        public int RevelationRadius { get; protected set; }
 
         /// <summary>
         /// Stores the current x position of the mouse

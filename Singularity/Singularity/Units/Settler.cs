@@ -43,7 +43,7 @@ namespace Singularity.Units
 
             AbsoluteSize = new Vector2(20, 20);
 
-            RevelationRadius = (int)AbsoluteSize.X * 3;
+            RevelationRadius = (int)AbsoluteSize.X * 6;
 
             mDirector.GetInputManager.AddKeyListener(this);
 

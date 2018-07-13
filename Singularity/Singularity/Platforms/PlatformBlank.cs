@@ -528,8 +528,11 @@ namespace Singularity.Platforms
                     break;
             }
 
-            mInfoBox.UpdateString(GetResourceString());
-            mInfoBox.Draw(spritebatch);
+            if (Friendly)
+            {
+                mInfoBox.UpdateString(GetResourceString());
+                mInfoBox.Draw(spritebatch);
+            }
 
             // also draw the resources on top
             /*
@@ -547,7 +550,9 @@ namespace Singularity.Platforms
 
             Bounds = new Rectangle((int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
 
-            if (!mAddedToInputManager)
+            // TODO: if the platform is an enemy it should not be subscribed to the input manager
+            // TODO: if the platform is an enemy it should not be subscribed to the input manager
+            if (!mAddedToInputManager && Friendly)
             {
                 // add this platform to inputManager once
                 mDirector.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
@@ -870,7 +875,7 @@ namespace Singularity.Platforms
             AbsolutePosition = new Vector2(AbsolutePosition.X, AbsolutePosition.Y + 81);
 
             //default?
-            Health = 100;
+            Health = 10;
 
             mIPlatformActions.RemoveAll(a => a.Die());
 
@@ -1118,12 +1123,12 @@ namespace Singularity.Platforms
 
         public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {
-            return !withinBounds;
+            return true;
         }
 
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
-            return !withinBounds;
+            return true;
         }
 
         private string GetResourceString()
