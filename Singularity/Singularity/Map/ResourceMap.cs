@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Resources;
 using Singularity.Utils;
@@ -11,14 +12,16 @@ namespace Singularity.Map
     /// We removed the whole Dictionary stuff, since felix mentioned we could just use the Resource
     /// itself. So we literally obtain all our desired information from the resource directly.
     /// </summary>
+    [DataContract]
     public sealed class ResourceMap
     {
-
+        [DataMember]
         private readonly Dictionary<Vector2, List<MapResource>> mLocationCache;
 
         /// <summary>
         /// The internal resource map used to store said resources.
         /// </summary>
+        [DataMember]
         private readonly List<MapResource> mResourceMap;
 
         /// <summary>

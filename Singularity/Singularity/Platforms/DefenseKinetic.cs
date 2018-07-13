@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -13,28 +14,33 @@ using Singularity.Sound;
 
 namespace Singularity.Platforms
 {
+    [DataContract]
     internal sealed class DefenseKinetic : DefenseBase
     {
 
         /// <summary>
         /// Stores the amount of ammunition the platform currently has. Max is 50.
         /// </summary>
+        [DataMember]
         internal int AmmoCount { get; private set; }
 
         /// <summary>
         /// State of the platform.
         /// </summary>
+        [DataMember]
         private bool mRequesting = false;
 
         /// <summary>
         /// Stores how many times materials have been requested between states
         /// </summary>
+        [DataMember]
         private int mTotalMaterialsRequested;
 
         /// <summary>
         /// Stores when the last material was requested so it will periodically request to reload to
         /// maximum ammo.
         /// </summary>
+        [DataMember]
         private double mLastRequestTime;
 
         /// <summary>

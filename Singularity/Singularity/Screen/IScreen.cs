@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Singularity.Property;
-using Singularity.Screen;
 
 namespace Singularity.Screen
 {

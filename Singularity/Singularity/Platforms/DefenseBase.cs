@@ -1,35 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Manager;
-using Singularity.PlatformActions;
 using Singularity.Property;
-using Singularity.Resources;
 using Singularity.Units;
 
 namespace Singularity.Platforms
 {
-
+    [DataContract]
     internal abstract class DefenseBase : PlatformBlank, IShooting
     {
         /// <summary>
         /// For defense platforms, indicates if they are shooting.
         /// </summary>
+        [DataMember]
         protected bool mShoot;
 
         /// <summary>
         /// For defense platforms, indicates where there target is
         /// </summary>
+        [DataMember]
         internal Vector2 EnemyPosition { get; set; }
-
-        public int Range { get; } = 400;
-
+        [DataMember]
+        public int Range { get; private set; } = 400;
+        [DataMember]
         protected ICollider mShootingTarget;
 
         /// <summary>

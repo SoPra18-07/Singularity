@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Singularity.Exceptions;
 using Singularity.Units;
 
@@ -9,11 +10,13 @@ namespace Singularity.Graph.Paths
     /// The path manager holds all the graphs currently in the game and can
     /// get paths for general and military units, given a destination.
     /// </summary>
+    [DataContract]
     public sealed class PathManager
     {
         /// <summary>
         /// All the graphs currently in the game
         /// </summary>
+        [DataMember]
         private readonly Dictionary<int, Graph> mGraphs;
 
         public PathManager()

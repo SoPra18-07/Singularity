@@ -12,6 +12,7 @@ namespace Singularity.Platforms
     [DataContract]
     class CommandCenter: PlatformBlank
     {
+        [DataMember]
         private const int ProvidingEnergy = 20;
 
         [DataMember]
@@ -47,7 +48,6 @@ namespace Singularity.Platforms
             mSpritename = "Cylinders";
             SetPlatfromParameters();
             mControlledUnits = new List<GeneralUnit>();
-            director.GetStoryManager.AddEnergy(5);
             mIsBlueprint = blueprintState;
         }
 

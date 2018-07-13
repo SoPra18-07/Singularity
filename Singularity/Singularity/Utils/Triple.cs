@@ -1,4 +1,6 @@
-﻿namespace Singularity.Utils
+﻿using System.Runtime.Serialization;
+
+namespace Singularity.Utils
 {
 
     /// <summary>
@@ -7,10 +9,14 @@
     /// <typeparam name="T1">The type of the first value of the tuple</typeparam>
     /// <typeparam name="T2">The type of the second value of the tuple</typeparam>
     /// <typeparam name="T3">The type of the third value of the tuple</typeparam>
+    [DataContract]
     internal sealed class Triple<T1, T2, T3>
     {
+        [DataMember]
         private readonly T1 mFirstValue;
+        [DataMember]
         private readonly T2 mSecondValue;
+        [DataMember]
         private readonly T3 mThirdValue;
 
         /// <summary>

@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Serialization;
 
 namespace Singularity.Graph
 {
     /// <summary>
     /// Provides a basic Graph object, holding a list of nodes and edges. Self explanatory
     /// </summary>
+    [DataContract]
     public sealed class Graph
     {
+        [DataMember]
         private readonly List<INode> mNodes;
-
+        [DataMember]
         private readonly List<IEdge> mEdges;
 
         public Graph(List<INode> nodes = null, List<IEdge> edges = null)

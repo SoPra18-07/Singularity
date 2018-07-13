@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Property;
 
@@ -12,9 +13,7 @@ namespace Singularity.Map
         /// Stores which units are in which grid position on the map.
         /// </summary>
         private readonly UnitMapTile[,] mUnitGrid;
-
-        private readonly Dictionary<int, Vector2> mLookupTable = new Dictionary<int, Vector2>();
-
+        private readonly Dictionary<int, Vector2> mLookupTable;
         private readonly int mMapSizeX;
 
         /// <summary>
@@ -29,6 +28,7 @@ namespace Singularity.Map
         /// </remarks>
         internal UnitMap(int mapSizeX, int mapSizeY)
         {
+            mLookupTable = new Dictionary<int, Vector2>();
             mUnitGrid = new UnitMapTile[mapSizeX / 2, mapSizeY / 2];
 
             for (var i = 0; i < mUnitGrid.GetLength(0); i++)

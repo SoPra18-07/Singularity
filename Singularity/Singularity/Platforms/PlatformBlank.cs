@@ -5,10 +5,10 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Exceptions;
 using Singularity.Graph;
-using Singularity.Libraries;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.PlatformActions;
@@ -29,35 +29,56 @@ namespace Singularity.Platforms
     public class PlatformBlank : IRevealing, INode, ICollider, IMouseClickListener
     {
 
+        [DataMember]
         private List<GeneralUnit> mAllGenUnits;
 
+        [DataMember]
         private int mGraphIndex;
-
+        [DataMember]
         private float mLayer;
 
         // true, if this platform has already sent data since activation
+        [DataMember]
         private bool mDataSent;
 
         // determines whether the platform has already been added to the inputManager
+        [DataMember]
         private bool mAddedToInputManager;
 
         // previous values sent to the UIController - used to only send data if the values have been updated
+        [DataMember]
         private List<Resource> mPrevResources;
+        [DataMember]
         private Dictionary<JobType, List<Pair<GeneralUnit, bool>>> mPrevUnitAssignments;
+        [DataMember]
         private List<IPlatformAction> mPrevPlatformActions;
+        [DataMember]
         private bool mPreviousIsActiveState;
+        [DataMember]
         private bool mPreviousIsManuallyDeactivatedState;
+
+        /// <summary>
+        /// true, if the platform is sleected in the UI
+        /// </summary>
+        [DataMember]
+        public bool IsSelected { get; set; }
+        [DataMember]
+        public EScreen Screen { get; private set; } = EScreen.GameScreen;
+        [DataMember]
+        public Rectangle Bounds { get; private set; }
 
         /// <summary>
         /// List of inwards facing edges/roads towards the platform.
         /// </summary>
+        [DataMember]
         private List<IEdge> mInwardsEdges;
 
         /// <summary>
         /// List of outwards facing edges/roads.
         /// </summary>
+        [DataMember]
         private List<IEdge> mOutwardsEdges;
-
+        [DataMember]
         public bool Friendly { get; set; }
 
         /// <summary>
@@ -101,10 +122,14 @@ namespace Singularity.Platforms
         protected Dictionary<EResourceType, int> mCost;
         [DataMember]
         protected List<IPlatformAction> mIPlatformActions;
-        protected readonly Texture2D mPlatformSpriteSheet;
-        protected readonly Texture2D mPlatformBaseTexture;
+
+        protected Texture2D mPlatformSpriteSheet;
+        protected Texture2D mPlatformBaseTexture;
+
+        //This means the platformspritesheetname not the name of the base texture
         [DataMember]
         protected string mSpritename;
+
         [DataMember]
         protected Dictionary<JobType, List<Pair<GeneralUnit, bool>>> mAssignedUnits;
 
@@ -119,30 +144,33 @@ namespace Singularity.Platforms
         [DataMember]
         private bool mIsManuallyDeactivated;
 
+        [DataMember]
         public Vector2 Center { get; set; }
 
+        [DataMember]
         public int RevelationRadius { get; protected set; } = 200;
-
+        [DataMember]
         public Rectangle AbsBounds { get; internal set; }
-
+        [DataMember]
         public bool Moved { get; private set; }
 
-        public int Id { get; }
-        
+        [DataMember]
+        public int Id { get; private set; }
+
         [DataMember]
         protected Director mDirector;
 
         ///<summary>
         /// The sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome.
         /// </summary>
+        [DataMember]
         protected int mSheet;
 
         /// <summary>
         /// Where on the spritesheet the platform is located
         /// </summary>
+        [DataMember]
         protected int mSheetPosition;
-        // the userinterface controller to send all informations to
-        private readonly UserInterfaceController mUserInterfaceController;
 
 
         [DataMember]
@@ -157,9 +185,9 @@ namespace Singularity.Platforms
 
         [DataMember]
         private readonly float mCenterOffsetY;
-
+        [DataMember]
         protected Color mColor = Color.White;
-
+        [DataMember]
         protected Color mColorBase;
 
         protected PlatformInfoBox mInfoBox;
@@ -175,7 +203,9 @@ namespace Singularity.Platforms
         public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libsans12, ref Director director, EStructureType type = EStructureType.Blank, float centerOffsetY = -36, bool friendly = true)
         {
 
-            Id = IdGenerator.NextiD();
+            mPrevPlatformActions = new List<IPlatformAction>();
+
+            Id = director.GetIdGenerator.NextiD();
 
             mDirector = director;
 
@@ -232,8 +262,6 @@ namespace Singularity.Platforms
             Moved = false;
             UpdateValues();
 
-            // user interface controller
-            mUserInterfaceController = director.GetUserInterfaceController;
             Debug.WriteLine("PlatformBlank created");
             
             Friendly = friendly;
@@ -267,6 +295,33 @@ namespace Singularity.Platforms
                 director: mDirector);
             // */
 
+        }
+
+        internal void ReloadContent(ContentManager content, ref Director dir)
+        {
+            mPlatformSpriteSheet = content.Load<Texture2D>(mSpritename);
+            mPlatformBaseTexture = content.Load<Texture2D>("PlatformBasic");
+            mDirector = dir;
+            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            mAddedToInputManager = true;
+            foreach (var action in mIPlatformActions)
+            {
+                action.ReloadContent(ref dir);
+            }
+
+            foreach (var action in mPrevPlatformActions)
+            {
+                action.ReloadContent(ref dir);
+            }
+            var str = GetResourceString();
+            mInfoBox = new PlatformInfoBox(
+                itemList: new List<IWindowItem>
+                {
+                    new TextField(text: str, position: AbsolutePosition + new Vector2(x: 0, y: AbsoluteSize.Y + 10), size: mLibSans12.MeasureString(text: str), spriteFont: mLibSans12, color: Color.White)
+                },
+                size: mLibSans12.MeasureString(str),
+                platform: this, director: mDirector);
+            SetPlatfromParameters();
         }
 
         public void SetColor(Color color)
@@ -550,8 +605,11 @@ namespace Singularity.Platforms
             if (!mAddedToInputManager)
             {
                 // add this platform to inputManager once
-                mDirector.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+                mDirector.GetInputManager
+                    .AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
                 mAddedToInputManager = true;
+
+                mDirector.GetEventLog.AddEvent(ELogEventType.PlatformBuilt, mType + " has been built", this);
             }
 
             // set the mDataSent bool to false if there was a change in platform infos since the data was sent last time
@@ -578,7 +636,7 @@ namespace Singularity.Platforms
                 mPreviousIsActiveState = IsActive();
 
                 // send data to UIController
-                mUserInterfaceController.SetDataOfSelectedPlatform(Id, mIsActive, mIsManuallyDeactivated, mType, GetPlatformResources(), GetAssignedUnits(), GetIPlatformActions());
+                mDirector.GetUserInterfaceController.SetDataOfSelectedPlatform(Id, mIsActive, mIsManuallyDeactivated, mType, GetPlatformResources(), GetAssignedUnits(), GetIPlatformActions());
 
                 // set the bool for sent-data to true, since the data has just been sent
                 mDataSent = true;
@@ -858,12 +916,20 @@ namespace Singularity.Platforms
         {
 
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
+            mType = EPlatformType.Blank;
 
+            // create the event in eventLog that the specialised part has been destroyed
+            mDirector.GetEventLog.AddEvent(ELogEventType.PlatformDestroyed, mType + " has been destroyed", this);
+            // if platform was an enemy keep red base
+            mColor = Friendly ? Color.White : Color.Red;
 
             mColor = Color.White;
             mType = EStructureType.Blank;
             mSpritename = "PlatformBasic";
             SetPlatfromParameters();
+
+            // position of blank needs to be adjusted to fit previous location of specialized plat base
+            AbsolutePosition = new Vector2(AbsolutePosition.X, AbsolutePosition.Y + 81);
 
             //default?
             Health = 100;
@@ -894,6 +960,9 @@ namespace Singularity.Platforms
         {
 
             DieBlank();
+
+            // create event in eventLog that the platform has been destroyed
+            mDirector.GetEventLog.AddEvent(ELogEventType.PlatformDestroyed, mType + " has been destroyed", this);
 
             // TODO: REMOVE from everywhere.
             // see https://github.com/SoPra18-07/Singularity/issues/215
@@ -1089,13 +1158,6 @@ namespace Singularity.Platforms
             return mIsActive;
         }
 
-        /// <summary>
-        /// true, if the platform is sleected in the UI
-        /// </summary>
-        public bool IsSelected { get; set; }
-
-        public EScreen Screen { get; } = EScreen.GameScreen;
-        public Rectangle Bounds { get; private set; }
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
             if (!withinBounds)
@@ -1108,7 +1170,8 @@ namespace Singularity.Platforms
                 MakeDamage(Health);
                 return false;
             }
-            mUserInterfaceController.ActivateMe(this);
+            mDirector.GetUserInterfaceController.ActivateMe(this);
+            mDirector.GetUserInterfaceController.SelectedPlatformSetsGraphId(mGraphIndex);
             return false;
         }
 
@@ -1119,7 +1182,7 @@ namespace Singularity.Platforms
 
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
-            return !withinBounds;
+            return true;
         }
 
         private string GetResourceString()

@@ -58,6 +58,8 @@ namespace Singularity.Screen
         public event EventHandler ButtonClicked;
         public event EventHandler ButtonHoveringEnd;
 
+        private readonly EventArgs mEventArgs;
+
 
         /// <summary>
         /// Creates a button using a Texture2D
@@ -67,7 +69,7 @@ namespace Singularity.Screen
         /// <param name="buttonTexture"></param>
         /// <param name="position"></param>
         /// <param name="withBorder"></param>
-        public Button(float scale, Texture2D buttonTexture, Vector2 position, bool withBorder)
+        public Button(float scale, Texture2D buttonTexture, Vector2 position, bool withBorder, EventArgs eventArgs = default(EventArgs))
         {
             mIsText = false;
             mScale = scale;
@@ -79,6 +81,7 @@ namespace Singularity.Screen
             Opacity = 1;
             ActiveInWindow = true;
             mWithBorder = withBorder;
+            mEventArgs = eventArgs;
         }
 
 
@@ -90,7 +93,7 @@ namespace Singularity.Screen
         /// <param name="sourceRectangle">crop the buttonTexture</param>
         /// <param name="position"></param>
         /// <param name="withBorder"></param>
-        public Button(float scale, Texture2D buttonTexture, Rectangle sourceRectangle, Vector2 position, bool withBorder)
+        public Button(float scale, Texture2D buttonTexture, Rectangle sourceRectangle, Vector2 position, bool withBorder, EventArgs eventArgs = default(EventArgs))
         {
             mIsText = false;
             mCrop = true;
@@ -104,6 +107,7 @@ namespace Singularity.Screen
             Opacity = 1;
             ActiveInWindow = true;
             mWithBorder = withBorder;
+            mEventArgs = eventArgs;
         }
 
 
@@ -113,7 +117,7 @@ namespace Singularity.Screen
         /// <param name="buttonText">text that button will appear as</param>
         /// <param name="font"></param>
         /// <param name="position"></param>
-        public Button(string buttonText, SpriteFont font, Vector2 position, bool withBorder = false)
+        public Button(string buttonText, SpriteFont font, Vector2 position, bool withBorder = false, EventArgs eventArgs = default(EventArgs))
         {
             mIsText = true;
             mButtonText = buttonText;
@@ -124,9 +128,10 @@ namespace Singularity.Screen
             mWithBorder = withBorder;
             CreateRectangularBounds();
             ActiveInWindow = true;
+            mEventArgs = eventArgs;
         }
 
-        public Button(string buttonText, SpriteFont font, Vector2 position, Color color, bool withBorder = false)
+        public Button(string buttonText, SpriteFont font, Vector2 position, Color color, bool withBorder = false, EventArgs eventArgs = default(EventArgs))
         {
             mIsText = true;
             mButtonText = buttonText;
@@ -137,6 +142,7 @@ namespace Singularity.Screen
             CreateRectangularBounds();
             mWithBorder = withBorder;
             ActiveInWindow = true;
+            mEventArgs = eventArgs;
         }
 
 
@@ -155,7 +161,7 @@ namespace Singularity.Screen
         {
             if (ButtonReleased != null && ActiveInWindow)
             {
-                ButtonReleased(this, EventArgs.Empty);
+                ButtonReleased(this, mEventArgs);
             }
 
         }
@@ -167,7 +173,7 @@ namespace Singularity.Screen
         {
             if (ButtonHovering != null && ActiveInWindow)
             {
-                ButtonHovering(this, EventArgs.Empty);
+                ButtonHovering(this, mEventArgs);
             }
         }
 
@@ -178,7 +184,7 @@ namespace Singularity.Screen
         {
             if (ButtonHoveringEnd != null && ActiveInWindow)
             {
-                ButtonHoveringEnd(this, EventArgs.Empty);
+                ButtonHoveringEnd(this, mEventArgs);
             }
         }
 
@@ -189,7 +195,7 @@ namespace Singularity.Screen
         {
             if (ActiveInWindow)
             {
-                ButtonClicked?.Invoke(this, EventArgs.Empty);
+                ButtonClicked?.Invoke(this, mEventArgs);
             }
         }
 
