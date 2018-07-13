@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
@@ -30,12 +31,12 @@ namespace Singularity.Screen
         // barItem under the action to increase visibility between the actions
         private readonly BarIWindowItem mBottomBar;
 
-        // the platformaction
+        // The PlatformAction to take care of
         private IPlatformAction mPlatformAction;
 
         // button has been clicked on - to prevent the button from keeping firing
         private bool mClicked;
-
+        
         #endregion
 
         /// <summary>
@@ -51,6 +52,8 @@ namespace Singularity.Screen
             mPlatformAction = platformAction;
             Size = new Vector2(size.X, spriteFont.MeasureString("A").Y * 2 + 5);
             Position = position;
+
+            mPlatformAction = platformAction;
 
             ActiveInWindow = true;
 
@@ -161,11 +164,8 @@ namespace Singularity.Screen
             }
 
             // add required resources + count to infoBox
-            foreach (var resource in platformAction.GetRequiredResources())
-            {
-                infoBoxItemsList.Add(new ResourceIWindowItem(resource.Key, resource.Value, Vector2.Zero, spriteFont));
-            }
-
+            infoBoxItemsList.AddRange(platformAction.GetRequiredResources().Select(resource => new ResourceIWindowItem(resource.Key, resource.Value, Vector2.Zero, spriteFont)));
+            
             // create a infoBox containing all requirements to activate the platformAction
             mInfoBoxRequirements = new InfoBoxWindow(infoBoxItemsList, Vector2.Zero, Color.White, Color.Black, true, director);
 
@@ -175,31 +175,27 @@ namespace Singularity.Screen
         /// <inheritdoc />
         public void Update(GameTime gametime)
         {
-            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
-            {
-                // update all positions
-                mNameTextField.Position = Position;
-                mCollection.Position = new Vector2(Position.X, Position.Y + mNameTextField.Size.Y + 5);
-                mBottomBar.Position = new Vector2(Position.X, mCollection.Position.Y + mCollection.Size.Y + 5 + 5);
+            if (!ActiveInWindow || InactiveInSelectedPlatformWindow || OutOfScissorRectangle) return;
+            // update all positions
+            mNameTextField.Position = Position;
+            mCollection.Position = new Vector2(Position.X, Position.Y + mNameTextField.Size.Y + 5);
+            mBottomBar.Position = new Vector2(Position.X, mCollection.Position.Y + mCollection.Size.Y + 5 + 5);
 
-                // update all components
-                mInfoBoxRequirements.Update(gametime);
-                mStateToggleButton.Update(gametime);
-                mCollection.Update(gametime);
-            }
+            // update all components
+            mInfoBoxRequirements.Update(gametime);
+            mStateToggleButton.Update(gametime);
+            mCollection.Update(gametime);
         }
 
         /// <inheritdoc />
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
-            {
-                //draw all components
-                mCollection.Draw(spriteBatch);
-                mNameTextField.Draw(spriteBatch);
-                mBottomBar.Draw(spriteBatch);
-                mInfoBoxRequirements.Draw(spriteBatch);
-            }
+            if (!ActiveInWindow || InactiveInSelectedPlatformWindow || OutOfScissorRectangle) return;
+            //draw all components
+            mCollection.Draw(spriteBatch);
+            mNameTextField.Draw(spriteBatch);
+            mBottomBar.Draw(spriteBatch);
+            mInfoBoxRequirements.Draw(spriteBatch);
         }
 
         /// <summary>
@@ -219,10 +215,9 @@ namespace Singularity.Screen
         /// <param name="eventArgs"></param>
         private void ToggleButton(object sender, EventArgs eventArgs)
         {
-            if (mClicked)
-            {
-                mPlatformAction.UiToggleState(); //TODO : crashes
-            }
+            if (!mClicked) return;
+            mPlatformAction.UiToggleState();
+            ((TextField) mCollection.mItemList[0]).UpdateText(mPlatformAction.State.ToString());
         }
 
         /// <summary>

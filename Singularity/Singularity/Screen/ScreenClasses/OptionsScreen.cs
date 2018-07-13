@@ -260,9 +260,9 @@ namespace Singularity.Screen.ScreenClasses
 
             // window title
             spriteBatch.DrawString(mLibSans36,
-                text: mWindowTitleString,
-                position: mWindowTitlePosition,
-                color: mTextColor * mMenuOpacity);
+                mWindowTitleString,
+                mWindowTitlePosition,
+                mTextColor * mMenuOpacity);
 
             // tab buttons
             foreach (Button button in mTabButtons)

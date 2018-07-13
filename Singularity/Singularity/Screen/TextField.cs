@@ -13,8 +13,7 @@ namespace Singularity.Screen
     {
         #region member variables
 
-        // text after splitting
-        private readonly string mSplittedText;
+        private string mSplittedText;
 
         // textfont
         private readonly SpriteFont mSpriteFont;
@@ -47,8 +46,13 @@ namespace Singularity.Screen
 
             ActiveInWindow = true;
         }
-
-        /// <inheritdoc />
+        
+        public void UpdateText(string newText)
+        {
+            Size = mSpriteFont.MeasureString(newText);
+            mSplittedText = SplitLineToMultiline(newText, Size, mSpriteFont);
+        }
+        
         public void Update(GameTime gametime)
         {
             // no update needed
@@ -135,12 +139,16 @@ namespace Singularity.Screen
 
         /// <inheritdoc />
         public Vector2 Position { get; set; }
+
         /// <inheritdoc />
-        public Vector2 Size { get; }
+        public Vector2 Size { get; set; }
+
         /// <inheritdoc />
         public bool ActiveInWindow { get; set; }
+
         /// <inheritdoc />
         public bool InactiveInSelectedPlatformWindow { get; set; }
+
         /// <inheritdoc />
         public bool OutOfScissorRectangle { get; set; }
     }
