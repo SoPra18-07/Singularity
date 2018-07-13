@@ -1372,7 +1372,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // TODO: properly place the minimapObject to better fit with the rest. Don't change the size
             // TODO: other than changing it in MapConstants, the +20 is for the padding left and right.
-            var minimap = new MiniMap(mMap, mCamera, content.Load<Texture2D>("minimap"));
+            var minimap = new MiniMap(ref mDirector, content.Load<Texture2D>("minimap"));
             mMinimapWindow = new WindowObject("", new Vector2(0, 0), new Vector2(MapConstants.MiniMapWidth + 20, MapConstants.MiniMapHeight + 20), false, mLibSans12, mDirector);
             mMinimapWindow.AddItem(minimap);
 
