@@ -158,10 +158,8 @@ namespace Singularity.Map
 
             mGraphIdToGraph[index] = null;
 
-            mDirector.GetDistributionDirector.RemoveManager(index);
+            mDirector.GetDistributionDirector.RemoveManager(index, mGraphIdToGraph);
             mDirector.GetPathManager.RemoveGraph(index);
-
-
         }
 
         /// <summary>
@@ -328,7 +326,7 @@ namespace Singularity.Map
             UpdateEnergyLevel(newChildIndex);
             UpdateEnergyLevel(mPlatformToGraphId[(PlatformBlank)parent]);
 
-            mDirector.GetDistributionDirector.SplitManagers(mPlatformToGraphId[(PlatformBlank)parent], newChildIndex, platforms, units);
+            mDirector.GetDistributionDirector.SplitManagers(mPlatformToGraphId[(PlatformBlank)parent], newChildIndex, platforms, units, mGraphIdToGraph);
             mDirector.GetPathManager.AddGraph(newChildIndex, childReachableGraph);
             mDirector.GetPathManager.AddGraph(mPlatformToGraphId[(PlatformBlank)parent], parentReachableGraph);
         }

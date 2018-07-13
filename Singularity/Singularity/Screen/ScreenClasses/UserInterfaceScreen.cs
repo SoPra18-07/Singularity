@@ -1718,6 +1718,14 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         /// <summary>
+        /// Sends an info to the graphSwitcher to update its dictionaries
+        /// </summary>
+        public void CallingAllGraphs(Dictionary<int, Graph.Graph> graphIdToGraph)
+        {
+            mGraphSwitcher?.CallingAllGraphs(graphIdToGraph, mCivilUnitsSliderHandler);
+        }
+
+        /// <summary>
         /// Automatically change graphSwitcher to get the id of the selectedPlatform and open it's unitAssignment in civilUnitsWindow
         /// </summary>
         /// <param name="graphId"></param>

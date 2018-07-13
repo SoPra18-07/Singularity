@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Manager;
+using Singularity.Screen.ScreenClasses;
 
 namespace Singularity.Screen
 {
@@ -11,6 +13,8 @@ namespace Singularity.Screen
     /// </summary>
     internal sealed class IndexSwitcherIWindowItem : IWindowItem
     {
+        #region member variables
+
         /// <summary>
         /// the list's current index that is shown
         /// </summary>
@@ -58,6 +62,8 @@ namespace Singularity.Screen
         private readonly Dictionary<int, int> mIndexToIdDict = new Dictionary<int, int> { { 0, 0 } };
         private readonly Dictionary<int, int> mIdToIndexDict = new Dictionary<int, int> { { 0, 0 } };
 
+        #endregion
+
         /// <summary>
         /// Creates an IndexSwitcher consisting of two buttons and text between them.
         /// The buttons can be used to switch the index and get the values at the index of the set List.
@@ -65,6 +71,7 @@ namespace Singularity.Screen
         /// <param name="descriptionText">text between buttons (i.e. "graph No: ")</param>
         /// <param name="width">width of the window, where this is placed in - eventual padding</param>
         /// <param name="spriteFont">textFont</param>
+        /// <param name="director">director</param>
         public IndexSwitcherIWindowItem(
             string descriptionText,
             float width,
@@ -202,6 +209,11 @@ namespace Singularity.Screen
             if (mIdToIndexDict[oldElementId1] < mIdToIndexDict[oldElementId2])
             // first element is smaller therefore update the index of this element with the mergedElement 
             {
+                if (mCurrentIndex == mIdToIndexDict[oldElementId2])
+                {
+                    mCurrentIndex = mIdToIndexDict[oldElementId1];
+                }
+
                 var indexToUpdate = mIdToIndexDict[oldElementId1];
 
                 // update smaller index with new GraphID
@@ -223,12 +235,15 @@ namespace Singularity.Screen
             else
             // second element is smaller therefore update the index of this element with the mergedElement 
             {
+                if (mCurrentIndex == mIdToIndexDict[oldElementId1])
+                {
+                    mCurrentIndex = mIdToIndexDict[oldElementId2];
+                }
+
                 var indexToUpdate = mIdToIndexDict[oldElementId2];
 
                 // update smaller index with new GraphID
                 mIndexToIdDict[indexToUpdate] = newElementId;
-                // add new graphID
-                mIdToIndexDict.Add(newElementId, indexToUpdate);
 
                 // add the index which will become free since it will be removed
                 mFreeIndexList.Add(mIdToIndexDict[oldElementId1]);
@@ -239,7 +254,69 @@ namespace Singularity.Screen
                 // remove both graphID's from the graphDict
                 mIdToIndexDict.Remove(oldElementId2);
                 mIdToIndexDict.Remove(oldElementId1);
+
+                // add new graphID
+                mIdToIndexDict.Add(newElementId, indexToUpdate);
             }
+        }
+
+        /// <summary>
+        /// Calling all graphs will compare the mIdToIndexDict with the given graphIdDict and update
+        /// the mIdToIndexDict + mIndexToIdDict to fit the current situation on the structure map
+        /// </summary>
+        /// <param name="graphIdToGraphs">the graphIdToGraphs dict from the structure map</param>
+        /// <param name="sliderHandler"></param>
+        public void CallingAllGraphs(Dictionary<int, Graph.Graph> graphIdToGraphs, SliderHandler sliderHandler)
+        {
+            // all the keys from the graphIdToGraphs dict
+            var graphIdsWithNull = graphIdToGraphs.Keys;
+
+            // all keys from graphIdToGraphsDict that aren't null
+            var graphIdsWithoutNull = new List<int>();
+
+            // add all graphIds which are not represented in mIdToIndexDict yet
+            foreach (var id in graphIdsWithNull)
+            {
+                if (graphIdToGraphs[id] == null)
+                {
+                    continue;
+                }
+
+                if (!mIdToIndexDict.Keys.Contains(id))
+                {
+                    AddElement(id);
+                    sliderHandler.Refresh();
+                    sliderHandler.ForceSliderPages();
+                }
+
+                graphIdsWithoutNull.Add(id);
+            }
+
+            // calculate all removed graphs which are still present in the mIdToIndexDict
+            var savedGraphIds = mIdToIndexDict.Keys;
+            var listOfIdsToDelete = new List<int>();
+            foreach (var savedId in savedGraphIds)
+            {
+                if (!graphIdsWithoutNull.Contains(savedId))
+                {
+                    listOfIdsToDelete.Add(savedId);
+                }
+            }
+
+            // delete all removed graphs from mIdToIndexDict + mIndexToIdDict
+            foreach (var idToDelete in listOfIdsToDelete)
+            {
+                // add the index which will become free since it will be removed
+                mFreeIndexList.Add(mIdToIndexDict[idToDelete]);
+
+                // remove graphID's index from indexDict
+                mIndexToIdDict.Remove(mIdToIndexDict[idToDelete]);
+
+                // remove graphID from graphDict
+                mIdToIndexDict.Remove(idToDelete);
+            }
+
+            mCurrentIndex = mIndexToIdDict.Keys.Min();
         }
 
         /// <summary>

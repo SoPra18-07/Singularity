@@ -182,7 +182,7 @@ namespace Singularity.Screen
         {
             if (oldId != -1)
             {
-                mDirector.GetDistributionDirector.GetManager(oldId).Unregister(this);
+                mDirector.GetDistributionDirector.GetManager(oldId)?.Unregister(this);
             }
 
             mCurrentGraphid = id;

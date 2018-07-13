@@ -124,7 +124,6 @@ namespace Singularity.Screen
         /// <param name="graphId"></param>
         internal void AddGraph(int graphId)
         {
-            Console.Out.WriteLine("addGraphCalledInUIC");
             ControlledUserInterface?.AddGraph(graphId);
         }
 
@@ -140,13 +139,12 @@ namespace Singularity.Screen
         }
 
         /// <summary>
-        /// This will send an info to the Distribution manager, which, in return, will send all graph ids to the UI.
-        /// This method will only be called by the UI to reset graph ids or to reload them, since the UI won't be serialized
+        /// This will send an info to the UI, which, in return, will send an info to the graphSwitcher,
+        /// which will call all graphIDs from the structure map and use them to update it's dictionaries.
         /// </summary>
-        public List<int> CallingAllGraphs()
+        public void CallingAllGraphs(Dictionary<int, Graph.Graph> graphIdToGraph)
         {
-            //return mDirector.GetDistributionDirector?.CallingAllGraphs();
-            return new List<int>();
+            ControlledUserInterface?.CallingAllGraphs(graphIdToGraph);
         }
 
         /// <summary>
