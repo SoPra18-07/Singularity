@@ -91,7 +91,7 @@ namespace Singularity.Platforms
                 case EStructureType.Mine:
                     return new Mine(position, sDomeSheet, sBlankSheet, sLibSans12, resourceMap, ref director, friendly);
 
-                case EPlatformType.Packaging:
+                case EStructureType.Packaging:
 
                     var mine = new Mine(position, sDomeSheet, sBlankSheet, sLibSans12, resourceMap, ref director);
 

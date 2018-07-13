@@ -916,7 +916,7 @@ namespace Singularity.Platforms
         {
 
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
-            mType = EPlatformType.Blank;
+            mType = EStructureType.Blank;
 
             // create the event in eventLog that the specialised part has been destroyed
             mDirector.GetEventLog.AddEvent(ELogEventType.PlatformDestroyed, mType + " has been destroyed", this);

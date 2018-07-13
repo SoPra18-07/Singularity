@@ -1913,7 +1913,7 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-            mPlatformToPlace = new StructurePlacer(default(EPlatformType), EPlacementType.RoadMouseFollowAndRoad, EScreen.UserInterfaceScreen, mCamera, ref mDirector, ref mMap);
+            mPlatformToPlace = new StructurePlacer(EStructureType.Road, EPlacementType.RoadMouseFollowAndRoad, EScreen.UserInterfaceScreen, mCamera, ref mDirector, ref mMap);
 
             mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
@@ -1928,7 +1928,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Command,
+                EStructureType.Command,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -2024,7 +2024,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Energy,
+                EStructureType.Energy,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -2051,7 +2051,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Junkyard,
+                EStructureType.Junkyard,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -2074,7 +2074,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Factory,
+                EStructureType.Factory,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -2097,7 +2097,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Storage,
+                EStructureType.Storage,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -2119,7 +2119,7 @@ namespace Singularity.Screen.ScreenClasses
                 return;
             }
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Packaging,
+                EStructureType.Packaging,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,

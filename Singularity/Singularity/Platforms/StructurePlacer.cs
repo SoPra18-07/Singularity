@@ -96,13 +96,18 @@ namespace Singularity.Platforms
         [DataMember]
         private bool mUnregister;
 
-        public StructurePlacer(EPlatformType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, ref Map.Map map, float x = 0, float y = 0, ResourceMap resourceMap = null)
+        [DataMember]
+        private EStructureType mPlatformType;
+
+        public StructurePlacer(EStructureType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, ref Map.Map map, float x = 0, float y = 0, ResourceMap resourceMap = null)
         {
             mUnregister = false;
 
             mCamera = camera;
             Screen = screen;
             mDirector = director;
+
+            mPlatformType = platformType;
 
             // need the structure map to make sure platforms arent placed on collidable objects
             mMap = map;
