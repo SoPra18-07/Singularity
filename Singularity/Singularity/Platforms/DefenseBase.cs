@@ -41,15 +41,14 @@ namespace Singularity.Platforms
             Texture2D baseSprite,
             SpriteFont libSans12,
             ref Director director,
-            EPlatformType type,
-            bool friendly = true)
-            : base(position,
-                platformSpriteSheet,
-                baseSprite,
-                libSans12,
-                ref director,
-                type,
-                friendly: friendly)
+            EStructureType type,
+            bool friendly = true) : base(position,
+            platformSpriteSheet,
+            baseSprite,
+            libSans12,
+            ref director,
+            type,
+            friendly: friendly)
         {
 
             mDefenseAction = new Shoot(this, ref mDirector);

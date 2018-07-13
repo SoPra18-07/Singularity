@@ -36,8 +36,8 @@ namespace Singularity.Platforms
             baseSprite,
             libSans12,
             ref director,
-            EPlatformType.Kinetic,
-            friendly)
+            EStructureType.Kinetic,
+            friendly: friendly)
         {
             // Todo: Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int> {{EResourceType.Metal, 1}};

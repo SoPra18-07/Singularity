@@ -435,7 +435,7 @@ namespace Singularity.Screen.ScreenClasses
 
             if (typeof(ICollider).IsAssignableFrom(typeof(T)))
             {
-                //TODO: remove from collision map
+                mMap.GetCollisionMap().RemoveCollider((ICollider)toRemove);
             }
 
             if (road != null)
@@ -506,10 +506,9 @@ namespace Singularity.Screen.ScreenClasses
             // TODO requires a road to be place and therefore throws an exception !!!!!
             
             // CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, ref mDirector, false);
-
-
+            
             // adds the command center to the GameScreen, as well as two general units
-            var cCenter = PlatformFactory.Get(EPlatformType.Command, ref mDirector, v.X - 55, v.Y - 100);
+            var cCenter = PlatformFactory.Get(EStructureType.Command, ref mDirector, v.X - 55, v.Y - 100);
             AddObject(cCenter);
             
 

@@ -45,7 +45,7 @@ namespace Singularity.PlatformActions
 
         public void FillAmmo()
         {
-            if (mPlatform.mType == EPlatformType.Kinetic)
+            if (mPlatform.mType == EStructureType.Kinetic)
             {
                 var res = mPlatform.GetResource(EResourceType.Metal);
                 if (res.IsPresent())
@@ -53,7 +53,7 @@ namespace Singularity.PlatformActions
                     AmmoCount += 20;
                 }
             }
-            if (mPlatform.mType == EPlatformType.Laser)
+            if (mPlatform.mType == EStructureType.Laser)
             {
                 AmmoCount += 5;
             }

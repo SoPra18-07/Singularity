@@ -30,16 +30,17 @@ namespace Singularity.Platforms
                 baseSprite,
                 libSans12,
                 ref director,
-                EPlatformType.Quarry,
+                EStructureType.Quarry,
                 -50,
                 friendly)
         {
 
-            //Add possible Actions in this array
-            mIPlatformActions.Add(new ProduceQuarryResource(this, resource, ref mDirector));
+            // Add possible Actions in this List
+            mIPlatformActions.Add(new ProduceQuarryResource(platform: this, resourceMap: resource, director: ref mDirector));
             // Todo: Add Costs of the platform here if you got them.
             // mCost = new Dictionary<EResourceType, int>();
-            mType = EPlatformType.Quarry;
+            mCost = new Dictionary<EResourceType, int>();
+            mType = EStructureType.Quarry;
             mSpritename = "Dome";
             Property = JobType.Production;
             SetPlatfromParameters();

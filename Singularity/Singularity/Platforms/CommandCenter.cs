@@ -35,7 +35,7 @@ namespace Singularity.Platforms
                 baseSprite,
                 libSans12,
                 ref director,
-                EPlatformType.Command,
+                EStructureType.Command,
                 -50)
         {
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
@@ -44,7 +44,7 @@ namespace Singularity.Platforms
             mProvidingEnergy = ProvidingEnergy;
 
             mCost = new Dictionary<EResourceType, int>();
-            mType = EPlatformType.Command;
+            mType = EStructureType.Command;
             mSpritename = "Cylinders";
             SetPlatfromParameters();
             mControlledUnits = new List<GeneralUnit>();

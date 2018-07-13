@@ -55,7 +55,7 @@ namespace Singularity.Screen
             int id,
             bool isActive,
             bool isManuallyDeactivated,
-            EPlatformType type,
+            EStructureType type,
             List<Resource> resourceAmountList,
             Dictionary<JobType, List<Pair<GeneralUnit, bool>>> unitAssignmentDict,
             List<IPlatformAction> actionsList)
@@ -163,5 +163,16 @@ namespace Singularity.Screen
         {
             ControlledUserInterface?.SelectedPlatformSetsGraphId(graphId);
         }
+        public void BuildingProcessStarted(EStructureType structureType)
+        {
+            ControlledUserInterface.BuildingProcessStarted(structureType);
+        }
+
+        public void BuildingProcessFinished(EStructureType structureType)
+        {
+            ControlledUserInterface.BuildingProcessFinished(structureType);
+        }
+
+        // TODO : ADD EVENT LOG CONTROLLING
     }
 }

@@ -29,7 +29,7 @@ namespace Singularity.Platforms
                 baseSprite,
                 libSans12,
                 ref director,
-                EPlatformType.Energy,
+                EStructureType.Energy,
                 -50,
                 friendly)
         {
@@ -37,7 +37,7 @@ namespace Singularity.Platforms
             //Something like "Hello InstanceThatManagesEnergyLevels I exist now(Myself)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
-            mType = EPlatformType.Energy;
+            mType = EStructureType.Energy;
             mSpritename = "Dome";
             mProvidingEnergy = ProvidingEnergy;
 

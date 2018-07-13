@@ -31,14 +31,15 @@ namespace Singularity.Platforms
                 basesprite,
                 libSans12,
                 ref director,
-                EPlatformType.Mine,
+                EStructureType.Mine,
                 -50,
                 friendly)
         {
             mIPlatformActions.Add(new ProduceMineResource(platform: this, resourceMap: resource, director: ref mDirector));
             // Todo: Add Costs of the platform here if you got them.
             // mCost = new Dictionary<EResourceType, int>();
-            mType = EPlatformType.Mine;
+            mCost = new Dictionary<EResourceType, int>();
+            mType = EStructureType.Mine;
             mSpritename = "Dome";
             Property = JobType.Production;
             SetPlatfromParameters();
