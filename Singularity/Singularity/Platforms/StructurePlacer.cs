@@ -76,15 +76,20 @@ namespace Singularity.Platforms
 
         private Director mDirector;
 
+        private Map.Map mMap;
+
         private bool mUnregister;
 
-        public StructurePlacer(EPlatformType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null)
+        public StructurePlacer(EPlatformType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, ref Map.Map map, float x = 0, float y = 0, ResourceMap resourceMap = null)
         {
             mUnregister = false;
 
             mCamera = camera;
             Screen = screen;
             mDirector = director;
+
+            // need the structure map to make sure platforms arent placed on collidable objects
+            mMap = map;
 
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
@@ -263,8 +268,9 @@ namespace Singularity.Platforms
                             if (!Map.Map.IsOnTop(mPlatform.AbsBounds) || mHoveringPlatform != null)
                             {
                                 break;
+   
                             }
-
+                            
                             // the platform was on the map -> advance to next state and create the road to connect to another platform
                             mCurrentState.NextState();
                             mConnectionRoad = new Road(mPlatform, null, ref mDirector, true);
