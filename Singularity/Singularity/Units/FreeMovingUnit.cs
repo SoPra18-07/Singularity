@@ -8,6 +8,7 @@ using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
 using Singularity.Screen;
+using EventLog = Singularity.Screen.EventLog;
 
 namespace Singularity.Units
 {
@@ -23,6 +24,26 @@ namespace Singularity.Units
         public int Id { get; private set; }
         [DataMember]
         public bool Friendly { get; protected set; }
+
+        /// <summary>
+        /// The state of the unit in terms of living or dead. False when alive.
+        /// </summary>
+        [DataMember]
+        protected bool mDead;
+
+        /// <summary>
+        /// The time of death of the unit, used to calculate when to fade away.
+        /// </summary>
+        [DataMember]
+        protected double mTimeOfDeath;
+
+        /// <summary>
+        /// The current time used for moving time information between methods not called by update.
+        /// </summary>
+        protected double mCurrentTime;
+
+        [DataMember]
+        public bool KillMe { get; protected set; }
         #region Movement Variables
 
         /// <summary>
@@ -207,10 +228,11 @@ namespace Singularity.Units
         /// <param name="speed">Speed to go towards the target at.</param>
         protected void MoveToTarget(Vector2 target, float speed)
         {
-
             var movementVector = new Vector2(target.X - Center.X, target.Y - Center.Y);
             movementVector.Normalize();
             mToAdd += mMovementVector * (float)(mZoomSnapshot * speed);
+
+            Rotate(target, true);
 
             AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X * speed, AbsolutePosition.Y + movementVector.Y * speed);
         }
@@ -277,13 +299,26 @@ namespace Singularity.Units
         /// Rotates unit when selected in order to face
         /// user mouse and eventually target destination.
         /// </summary>
-        /// <param name="target"></param>
-        protected void Rotate(Vector2 target)
+        /// <param name="target">Target rotation position</param>
+        /// <param name="absolute">Whether the target position is absolute or relative. True for absolute.</param>
+        protected void Rotate(Vector2 target, bool absolute=false)
         {
+            float x;
+            float y;
             // form a triangle from unit location to mouse location
             // adjust to be at center of sprite
-            var x = target.X - (RelativePosition.X + RelativeSize.X / 2);
-            var y = target.Y - (RelativePosition.Y + RelativeSize.Y / 2);
+            if (absolute)
+            {
+                x = target.X - (AbsolutePosition.X + AbsoluteSize.X / 2);
+                y = target.Y - (AbsolutePosition.Y + AbsoluteSize.Y / 2);
+            }
+            else
+            {
+                x = target.X - (RelativePosition.X + RelativeSize.X / 2);
+                y = target.Y - (RelativePosition.Y + RelativeSize.Y / 2);
+            }
+            
+            
             var hypot = Math.Sqrt(x * x + y * y);
 
             // calculate degree between formed triangle
@@ -340,8 +375,8 @@ namespace Singularity.Units
 
         public bool Die()
         {
-            // TODO: Allow implementation
-
+            mDead = true;
+            mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, Friendly ? "A Friendly" : "An enemy" + " unit was killed!", this);
             return true;
         }
 

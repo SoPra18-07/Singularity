@@ -82,6 +82,7 @@ namespace Singularity.Levels
             Map = map;
             var milUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
             var milGlowSheet = content.Load<Texture2D>("UnitGlowSprite");
+            MilitaryUnit.mDeadTexture = content.Load<Texture2D>("DeadUnit");
 
             MilitaryUnit.mMilSheet = milUnitSheet;
             MilitaryUnit.mGlowTexture = milGlowSheet;
@@ -109,6 +110,7 @@ namespace Singularity.Levels
             var platformDomeTexture = content.Load<Texture2D>("Dome");
             MilitaryUnit.mMilSheet = content.Load<Texture2D>("UnitSpriteSheet");
             MilitaryUnit.mGlowTexture = content.Load<Texture2D>("UnitGlowSprite");
+            MilitaryUnit.mDeadTexture = content.Load<Texture2D>("DeadUnit");
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
             var libSans12 = content.Load<SpriteFont>("LibSans12");
 
