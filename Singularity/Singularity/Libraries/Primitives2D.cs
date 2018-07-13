@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Utils;
+// ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace Singularity.Libraries
 {
@@ -480,10 +482,37 @@ namespace Singularity.Libraries
         public static void DrawLine(this SpriteBatch spriteBatch, Vector2 point1, Vector2 point2, Color color, float thickness, float layerDepth = 0)
         {
             // calculate the distance between the two vectors
-            float distance = Vector2.Distance(point1, point2);
+            var distance = Vector2.Distance(point1, point2);
+            float angle;
+            
+            // see if the angles are multiples of 90 degrees:
 
-            // calculate the angle between the two vectors
-            float angle = (float)Math.Atan2(point2.Y - point1.Y, point2.X - point1.X);
+            // E
+            if (point1.Y == point2.Y && point1.X < point2.X)
+            {
+                angle = 0;
+            }
+            
+            // W
+            else if (point1.Y == point2.Y && point1.X > point2.X)
+            {
+                angle = 3.14159274f;
+            }
+            // N
+            else if (point1.X == point2.X && point1.Y > point2.Y)
+            {
+                angle = -1.57079637f;
+            }
+            // S
+            else if (point1.X == point2.X && point1.Y < point2.Y)
+            {
+                angle = 1.57079637f;
+            }
+            else
+            {
+                // calculate the angle between the two vectors
+                angle = (float)Math.Atan2(point2.Y - point1.Y, point2.X - point1.X);
+            }
 
             DrawLine(spriteBatch, point1, distance, angle, color, thickness, layerDepth);
         }
