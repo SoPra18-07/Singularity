@@ -858,12 +858,16 @@ namespace Singularity.Platforms
         {
 
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
-
-
-            mColor = Color.White;
             mType = EPlatformType.Blank;
+
+            // if platform was an enemy keep red base
+            mColor = Friendly ? Color.White : Color.Red;
+
             mSpritename = "PlatformBasic";
             SetPlatfromParameters();
+
+            // position of blank needs to be adjusted to fit previous location of specialized plat base
+            AbsolutePosition = new Vector2(AbsolutePosition.X, AbsolutePosition.Y + 81);
 
             //default?
             Health = 100;
