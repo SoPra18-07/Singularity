@@ -713,11 +713,10 @@ namespace Singularity.Platforms
             }
             return mType == b.GetMyType();
         }
-
-        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
+        
         public override int GetHashCode()
         {
-            return AbsoluteSize.GetHashCode() * 17 + AbsolutePosition.GetHashCode() + mType.GetHashCode();
+            return base.GetHashCode() * Id.GetHashCode() + mType.GetHashCode();
         }
 
 

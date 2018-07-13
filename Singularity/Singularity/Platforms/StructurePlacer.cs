@@ -264,6 +264,7 @@ namespace Singularity.Platforms
                     }
                     mIsFinished = true;
                     mUnregister = true;
+                    mDirector.GetUserInterfaceController.BuildingProcessFinished(mPlatformType);
 
                     break;
 
@@ -396,7 +397,6 @@ namespace Singularity.Platforms
                     mCurrentState.PreviousState();
                     giveThrough = false;
                 }
-                mDirector.GetUserInterfaceController.BuildingProcessFinished(mPlatformType);
             }
 
             return giveThrough;

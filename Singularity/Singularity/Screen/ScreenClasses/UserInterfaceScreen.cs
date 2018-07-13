@@ -1820,7 +1820,7 @@ namespace Singularity.Screen.ScreenClasses
                     return mQuarryPlatformButton;
 
                 case EStructureType.Road:
-                    throw new Exception("implement road button return here");
+                    return mRoadButton;
 
                 case EStructureType.Storage:
                     return mStoragePlatformButton;
