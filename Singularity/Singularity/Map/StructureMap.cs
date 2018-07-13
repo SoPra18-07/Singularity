@@ -327,29 +327,25 @@ namespace Singularity.Map
 
             var newChildIndex = mGraphIdToGraph.Count;
 
+            var platforms = new List<PlatformBlank>();
+            var units = new List<GeneralUnit>();
+
             // update the values for the child nodes, the parent nodes reuse their values.
             foreach (var childNode in childReachableGraph.GetNodes())
             {
                 mPlatformToGraphId[(PlatformBlank)childNode] = newChildIndex;
                 ((PlatformBlank)childNode).SetGraphIndex(newChildIndex);
+                platforms.Add((PlatformBlank) childNode);
+                foreach (var unit in ((PlatformBlank)childNode).GetGeneralUnitsOnPlatform())
+                {
+                    units.Add(unit);
+                }
             }
 
             mGraphIdToGraph[newChildIndex] = childReachableGraph;
             mGraphIdToGraph[mPlatformToGraphId[(PlatformBlank) parent]] = parentReachableGraph;
 
             UpdateGenUnitsGraphIndex(mGraphIdToGraph[newChildIndex], newChildIndex);
-
-            var platforms = new List<PlatformBlank>();
-            var units = new List<GeneralUnit>();
-
-            foreach (var node in parentReachableGraph.GetNodes())
-            {
-                platforms.Add((PlatformBlank)node);
-                foreach (var unit in ((PlatformBlank) node).GetGeneralUnitsOnPlatform())
-                {
-                    units.Add(unit);
-                }
-            }
 
             mGraphIdToEnergyLevel[newChildIndex] = 0;
             mGraphIdToEnergyLevel[mPlatformToGraphId[(PlatformBlank) parent]] = 0;
