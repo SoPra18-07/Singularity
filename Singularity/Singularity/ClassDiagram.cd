@@ -24,20 +24,20 @@
   <Comment CommentText="Game map which holds the different maps of the level required by the game logic">
     <Position X="44.275" Y="12.315" Height="0.676" Width="1.759" />
   </Comment>
-  <Comment CommentText="Exceptions">
-    <Position X="28.026" Y="27.731" Height="0.291" Width="1.7" />
+  <Comment CommentText="Exceptions which can be used by any class in the diagram.">
+    <Position X="28.026" Y="27.348" Height="0.674" Width="1.7" />
   </Comment>
-  <Comment CommentText="Serializer">
-    <Position X="18.496" Y="36.443" Height="0.322" Width="1.7" />
+  <Comment CommentText="The serializer must interact with almost every class to be able to serialize the game. Showing such associations would make the diagram too complicated and as such the serializer is separated from the rest of the diagram.">
+    <Position X="42.512" Y="26.288" Height="1.508" Width="1.987" />
   </Comment>
-  <Comment CommentText="Utilities">
-    <Position X="18.534" Y="27.794" Height="0.332" Width="0.7" />
+  <Comment CommentText="Utilities are a separate from the rest of the diagram because they are not associated with any one class and can be used freely by any class in the diagram.">
+    <Position X="18.534" Y="27.291" Height="0.835" Width="2.521" />
   </Comment>
   <Comment CommentText="Nature">
     <Position X="48.399" Y="15.19" Height="0.291" Width="0.7" />
   </Comment>
-  <Comment CommentText="Window Objects used by the different screens">
-    <Position X="32.673" Y="27.214" Height="0.506" Width="1.602" />
+  <Comment CommentText="Window Objects are used by the screens to display information and interactive elements. As such they are not associated with any single screen.">
+    <Position X="32.673" Y="26.699" Height="1.021" Width="2.021" />
   </Comment>
   <Comment CommentText="FreeMovingUnit is an abstract class that is used for objects that move outside of the graph">
     <Position X="34.185" Y="2.054" Height="0.816" Width="1.652" />
@@ -65,6 +65,9 @@
   </Comment>
   <Comment CommentText="PathManager uses PathfindingFactory to get paths from DefaultPathfinding, which returns a SortedPath">
     <Position X="23.5" Y="6.5" Height="0.805" Width="2" />
+  </Comment>
+  <Comment CommentText="Theseare the interfaces used by the project.">
+    <Position X="2.771" Y="26.823" Height="0.437" Width="1.7" />
   </Comment>
   <Class Name="Singularity.Exceptions.InvalidGenericArgumentException" Collapsed="true">
     <Position X="28" Y="28.25" Width="2.5" />
@@ -325,7 +328,7 @@
         <Point X="35.75" Y="11.261" />
         <Point X="39.75" Y="11.261" />
         <Point X="39.75" Y="15.625" />
-        <Point X="40.117" Y="15.625" Type="JumpStart" />
+        <Point X="40.118" Y="15.625" Type="JumpStart" />
         <Point X="40.284" Y="15.625" Type="JumpEnd" />
         <Point X="43.944" Y="15.625" />
         <Point X="43.944" Y="16" />
@@ -1060,7 +1063,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.Screen.InfoBarWindowObject" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="34.75" Y="32.5" Width="1.5" />
+    <Position X="41.75" Y="22.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AgYBQCgAIAEAgjEQJAAYIECAAAEQIoAgAQCICABBEgA=</HashCode>
       <FileName>Screen\InfoBarWindowObject.cs</FileName>
@@ -1068,11 +1071,14 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.Screen.InfoBoxWindow" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="36.5" Y="32.5" Width="1.5" />
+    <Position X="41.75" Y="21" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AIQAAAAABAAAAgAgQAAAAAQAAgAABAAgAAAAABAAAAA=</HashCode>
+      <HashCode>AIQAAAAABAAAAgAgQAAAAAQAAgAABAAkAAAAABAAAAA=</HashCode>
       <FileName>Screen\InfoBoxWindow.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="InfoBarWindowObject" />
+    </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.Screen.PlatformActionIWindowItem" Collapsed="true" BaseTypeListCollapsed="true">
@@ -1084,7 +1090,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.Screen.PopupWindow" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="32.75" Y="34" Width="1.5" />
+    <Position X="44" Y="21" Width="1.5" />
     <TypeIdentifier>
       <HashCode>CIwCAIIYABAEQgAgBSEAAURIgAAABAABAEJAAAAQAgQ=</HashCode>
       <FileName>Screen\PopupWindow.cs</FileName>
@@ -1100,19 +1106,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.Screen.Slider" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="36.5" Y="34" Width="1.5" />
-    <NestedTypes>
-      <Delegate Name="Singularity.Screen.Slider.SliderMovingEventHandler" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Screen\Slider.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Delegate>
-      <Delegate Name="Singularity.Screen.Slider.PageMovingEventHandler" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Screen\Slider.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Delegate>
-    </NestedTypes>
+    <Position X="36.75" Y="32.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AIQAIABAEQmAghAiNCACIAABhIDiBwAACAAIAACAAgA=</HashCode>
       <FileName>Screen\Slider.cs</FileName>
@@ -1123,7 +1117,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.Screen.SliderHandler" Collapsed="true">
-    <Position X="36.5" Y="35" Width="1.5" />
+    <Position X="36.75" Y="33.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AACAAAAIAARAAIAAIAIgAgAEAAAIwgAAAAAAAAAAAAA=</HashCode>
       <FileName>Screen\SliderHandler.cs</FileName>
@@ -1168,7 +1162,7 @@
       <Path>
         <Point X="35" Y="17.062" />
         <Point X="35" Y="17.437" />
-        <Point X="40.117" Y="17.437" Type="JumpStart" />
+        <Point X="40.118" Y="17.437" Type="JumpStart" />
         <Point X="40.284" Y="17.437" Type="JumpEnd" />
         <Point X="41.375" Y="17.437" />
         <Point X="41.375" Y="18.5" />
@@ -1181,7 +1175,7 @@
       <Path>
         <Point X="35" Y="17.062" />
         <Point X="35" Y="17.437" />
-        <Point X="40.117" Y="17.437" Type="JumpStart" />
+        <Point X="40.118" Y="17.437" Type="JumpStart" />
         <Point X="40.284" Y="17.437" Type="JumpEnd" />
         <Point X="43.625" Y="17.437" />
         <Point X="43.625" Y="18.5" />
@@ -1488,17 +1482,35 @@
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
+    <AssociationLine Name="InfoBoxWindow" Type="Singularity.Screen.InfoBoxWindow" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="43.625" Y="19.062" />
+        <Point X="43.625" Y="19.437" />
+        <Point X="42.5" Y="19.437" />
+        <Point X="42.5" Y="21" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="PopupWindow" Type="Singularity.Screen.PopupWindow" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="43.625" Y="19.062" />
+        <Point X="43.625" Y="19.437" />
+        <Point X="44.75" Y="19.437" />
+        <Point X="44.75" Y="21" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>CEcsPBsWqb1V33nmLGcZrW+pOUNff6Pc9a5uGe4uVv4=</HashCode>
+      <HashCode>CEcsPBsWqb1V33nmLG8ZrW+pOVNff6Pc9a5uGe4uVv4=</HashCode>
       <FileName>Screen\ScreenClasses\UserInterfaceScreen.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="StructurePlacer" />
+      <Property Name="InfoBoxWindow" />
+      <Property Name="PopupWindow" />
     </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Singularity.Serialization.XSerializer">
-    <Position X="18.5" Y="37" Width="1.5" />
+    <Position X="42.5" Y="28" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAgIAAAAAAAAAAAAAAAAQAACBAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Serialization\XSerializer.cs</FileName>
@@ -1623,7 +1635,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Singularity.Units.SelectionBox" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="34.75" Y="34" Width="1.5" />
+    <Position X="34.75" Y="32.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AASIAAAAAACAMgAAJAAAYAQAAAACBgAAABAIAAAAAgA=</HashCode>
       <FileName>Units\SelectionBox.cs</FileName>
@@ -1632,13 +1644,6 @@
   </Class>
   <Class Name="Singularity.Units.Settler" Collapsed="true">
     <Position X="37.25" Y="3.75" Width="2" />
-    <NestedTypes>
-      <Delegate Name="Singularity.Units.Settler.SettlerEventHandler" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Units\Settler.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Delegate>
-    </NestedTypes>
     <InheritanceLine Type="Singularity.Units.ControllableUnit" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="36" Y="4.063" />

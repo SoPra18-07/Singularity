@@ -140,5 +140,17 @@ namespace Singularity.Screen
 
         // true if the infoBox is active
         public bool Active { get; set; }
+
+        internal InfoBarWindowObject InfoBarWindowObject
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
     }
 }

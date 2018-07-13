@@ -2036,5 +2036,29 @@ namespace Singularity.Screen.ScreenClasses
             {
             }
         }
+
+        internal InfoBoxWindow InfoBoxWindow
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
+
+        internal PopupWindow PopupWindow
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+
+            set
+            {
+            }
+        }
     }
 }
