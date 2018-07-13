@@ -67,6 +67,8 @@ namespace Singularity.Screen.ScreenClasses
             mMap = map;
             mDirector = director;
 
+            director.GetInputManager.AddKeyListener(this);
+
         }
 
         public void ReloadContent(ContentManager content, Camera camera, Map.Map map, StackScreenManager screenManager, ref Director director)

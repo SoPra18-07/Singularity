@@ -608,6 +608,8 @@ namespace Singularity.Platforms
                 mDirector.GetInputManager
                     .AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
                 mAddedToInputManager = true;
+
+                mDirector.GetEventLog.AddEvent(ELogEventType.PlatformBuilt, mType + " has been built", this);
             }
 
             // set the mDataSent bool to false if there was a change in platform infos since the data was sent last time
@@ -916,6 +918,8 @@ namespace Singularity.Platforms
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
             mType = EPlatformType.Blank;
 
+            // create the event in eventLog that the specialised part has been destroyed
+            mDirector.GetEventLog.AddEvent(ELogEventType.PlatformDestroyed, mType + " has been destroyed", this);
             // if platform was an enemy keep red base
             mColor = Friendly ? Color.White : Color.Red;
 
@@ -954,6 +958,9 @@ namespace Singularity.Platforms
         {
 
             DieBlank();
+
+            // create event in eventLog that the platform has been destroyed
+            mDirector.GetEventLog.AddEvent(ELogEventType.PlatformDestroyed, mType + " has been destroyed", this);
 
             // TODO: REMOVE from everywhere.
             // see https://github.com/SoPra18-07/Singularity/issues/215
@@ -1162,6 +1169,7 @@ namespace Singularity.Platforms
                 return false;
             }
             mDirector.GetUserInterfaceController.ActivateMe(this);
+            mDirector.GetUserInterfaceController.SelectedPlatformSetsGraphId(mGraphIndex);
             return false;
         }
 

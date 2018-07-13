@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -9,16 +8,20 @@ namespace Singularity.Screen
     /// HorizontalCollection enables the creation of a new IWindowItem composed of other IWindowItems.
     /// The IWindowItems get placed beside each other horizontally
     /// </summary>
-    class HorizontalCollection : IWindowItem
+    sealed class HorizontalCollection : IWindowItem
     {
+        #region member variables
+
         // list holding the collection of IWindowItems
         private readonly List<IWindowItem> mItemList;
 
         // padding between the IWindowItems in collection s.t. the items fit the size (if possible) while maximizing the padding between them
-        private float mPadding;
+        private readonly float mPadding;
 
         // backup to reset if the horizontalCollection was inactive (->update)
-        private Vector2 mSizeBackup;
+        private readonly Vector2 mSizeBackup;
+
+        #endregion
 
         /// <summary>
         /// Creates a new IWindowItem with a collection of IWindowItems placed beside one another horizontally
@@ -28,6 +31,7 @@ namespace Singularity.Screen
         /// <param name="position">top left corner of created IWindowItem</param>
         public HorizontalCollection(List<IWindowItem> itemList, Vector2 size, Vector2 position)
         {
+            // set starting values + member variables
             mItemList = itemList;
             Size = size;
             mSizeBackup = size;
@@ -43,10 +47,7 @@ namespace Singularity.Screen
             }
         }
 
-        /// <summary>
-        /// standard update method
-        /// </summary>
-        /// <param name="gametime"></param>
+        /// <inheritdoc />
         public void Update(GameTime gametime)
         {
             // if the horizontalCollection is deactivated shrink size to -10, else use backup Size,
@@ -79,14 +80,12 @@ namespace Singularity.Screen
             }
         }
 
-        /// <summary>
-        /// standard draw method
-        /// </summary>
-        /// <param name="spriteBatch"></param>
+        /// <inheritdoc />
         public void Draw(SpriteBatch spriteBatch)
         {
             if (ActiveInWindow && ActiveHorizontalCollection && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
             {
+                // draw all items
                 foreach (var item in mItemList)
                 {
                     item.Draw(spriteBatch);
@@ -100,7 +99,7 @@ namespace Singularity.Screen
         /// <param name="itemList">list of objects</param>
         /// <param name="size">size to fit the objects</param>
         /// <returns></returns>
-        private float CalcPadding(List<IWindowItem> itemList, Vector2 size)
+        private float CalcPadding(IReadOnlyCollection<IWindowItem> itemList, Vector2 size)
         {
             float width = 0;
 
@@ -112,17 +111,20 @@ namespace Singularity.Screen
             return (size.X - width - 20) / (itemList.Count - 1);
         }
 
-        // top left corner of the horizontalCollection
+        /// <inheritdoc />
         public Vector2 Position { get; set; }
-        // size of the horizontalCollection
+        /// <inheritdoc />
         public Vector2 Size { get; private set; }
-        // true if the window that holds this item is active, else false
+        /// <inheritdoc />
         public bool ActiveInWindow { get; set; }
-
+        /// <inheritdoc />
         public bool InactiveInSelectedPlatformWindow { get; set; }
+        /// <inheritdoc />
         public bool OutOfScissorRectangle { get; set; }
 
-        // true if this horizontalCollection is active, else false
+        /// <summary>
+        /// true if this horizontalCollection should active, else false - used to shrink size if deactivated
+        /// </summary>
         public bool ActiveHorizontalCollection { private get; set; }
     }
 }

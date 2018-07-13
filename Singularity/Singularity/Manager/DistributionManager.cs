@@ -1150,6 +1150,20 @@ namespace Singularity.Manager
             mHandler?.ForceSliderPages();
 
         }
+
+        /// <summary>
+        /// This will be called from the SliderHandler when it changes.
+        /// It just unregisters its reference, so the DistributionManager can't communicate with it anymore.
+        /// </summary>
+        /// <param name="handler"></param>
+        internal void Unregister(SliderHandler handler)
+        {
+            if (mHandler == handler)
+            {
+                mHandler = null;
+            }
+        }
+
         #endregion
 
         public void PausePlatformAction(IPlatformAction action)
