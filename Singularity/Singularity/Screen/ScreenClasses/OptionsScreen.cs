@@ -420,6 +420,7 @@ namespace Singularity.Screen.ScreenClasses
             mGame.mGraphics.IsFullScreen = truth;
             mGame.mGraphics.ApplyChanges();
             MainMenuManagerScreen.SetResolution(new Vector2(width, height));
+            LoadGameManagerScreen.SetResolution(new Vector2(width, height));
         }
 
         private void OnResoOneReleased(Object sender, EventArgs eventArgs)
@@ -428,6 +429,7 @@ namespace Singularity.Screen.ScreenClasses
             mGame.mGraphics.PreferredBackBufferHeight = 600;
             mGame.mGraphics.ApplyChanges();
             MainMenuManagerScreen.SetResolution(new Vector2(800, 600));
+            LoadGameManagerScreen.SetResolution(new Vector2(800, 600));
         }
 
         private void OnResoTwoReleased(Object sender, EventArgs eventArgs)
@@ -436,6 +438,7 @@ namespace Singularity.Screen.ScreenClasses
             mGame.mGraphics.PreferredBackBufferHeight = 720;
             mGame.mGraphics.ApplyChanges();
             MainMenuManagerScreen.SetResolution(new Vector2(960, 720));
+            LoadGameManagerScreen.SetResolution(new Vector2(960, 720));
         }
 
         private void OnMuteReleased(Object sender, EventArgs eventArgs)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -41,9 +42,6 @@ namespace Singularity.Screen.ScreenClasses
         private Texture2D mProductionIcon;
         private Texture2D mProcessingIcon;
         private Texture2D mMilitaryIcon;
-
-        // manage input
-        private readonly InputManager mInputManager;
 
         // used to calculate the positions of the windows at the beginning
         private int mCurrentScreenWidth;
@@ -173,6 +171,7 @@ namespace Singularity.Screen.ScreenClasses
         private Slider mBuildSlider;
         private Slider mLogisticsSlider;
         private Slider mProductionSlider;
+        private SliderHandler mHandler;
 
         // text for sliders
         private TextField mDefTextField;
@@ -304,24 +303,25 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         /// <param name="director"></param>
         /// <param name="mgraphics"></param>
-        /// <param name="gameScreen"></param>
-        /// <param name="stackScreenManager"></param>
         /// <param name="map"></param>
-        public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, GameScreen gameScreen, IScreenManager stackScreenManager)
+        /// /// <param name="camera"></param>
+        /// <param name="stackScreenManager"></param>
+        public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, Map.Map map, Camera camera, IScreenManager stackScreenManager)
         {
-            mMap = gameScreen.GetMap();
-            mStructureMap = gameScreen.GetMap().GetStructureMap();
-            mResourceMap = gameScreen.GetMap().GetResourceMap();
-            mCamera = gameScreen.GetCamera();
+            mMap = map;
+            mStructureMap = mMap.GetStructureMap();
+            mResourceMap = mMap.GetResourceMap();
+            mCamera = camera;
             mCanBuildPlatform = true;
 
             mDirector = director;
             mScreenManager = stackScreenManager;
+            mGraphics = mgraphics;
             mInputManager = director.GetInputManager;
 
             // initialize input manager
-            mInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
-            Bounds = new Rectangle(0,0, director.GetGraphicsDeviceManager.PreferredBackBufferWidth, director.GetGraphicsDeviceManager.PreferredBackBufferHeight);
+            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            Bounds = new Rectangle(0,0, mgraphics.PreferredBackBufferWidth, mgraphics.PreferredBackBufferHeight);
 
             // create the windowList
             mWindowList = new List<WindowObject>();
@@ -1625,7 +1625,7 @@ namespace Singularity.Screen.ScreenClasses
                         mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
                     }
                 }
-                else if (action is MakeHeavyMilitaryUnit)
+                else if (action is MakeStrongMilitaryUnit)
                 {
                     mMakeStrongMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
@@ -1768,6 +1768,7 @@ namespace Singularity.Screen.ScreenClasses
                 window.Active = true;
             }
             mInfoBar.Active = true;
+            mHandler.Initialize();
         }
 
         #region button management

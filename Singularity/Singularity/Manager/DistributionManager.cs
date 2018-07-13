@@ -39,7 +39,6 @@ namespace Singularity.Manager
         [DataMember]
         private Random mRandom;
 
-        [DataMember]
         private SliderHandler mHandler;
 
         [DataMember]

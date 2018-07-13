@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -12,8 +13,10 @@ using Singularity.Resources;
 namespace Singularity.Platforms
 {
     /// <inheritdoc cref="DefenseBase"/>
+    [DataContract]
     internal sealed class DefenseLaser : DefenseBase
     {
+        [DataMember]
         private const int DrainingEnergy = 40;
 
         /// <summary>

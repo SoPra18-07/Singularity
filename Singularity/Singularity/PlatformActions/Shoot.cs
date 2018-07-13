@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -11,8 +12,10 @@ using Singularity.Units;
 
 namespace Singularity.PlatformActions
 {
+    [DataContract]
     internal sealed class Shoot : APlatformAction
     {
+        [DataMember]
         private new DefenseBase mPlatform;
         public Shoot(DefenseBase platform, ref Director director) : base(platform, ref director)
         {
@@ -35,6 +38,6 @@ namespace Singularity.PlatformActions
             throw new NotImplementedException();
         }
 
-        public override List<JobType> UnitsRequired { get; }
+        public override List<JobType> UnitsRequired { get; set; }
     }
 }
