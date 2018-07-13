@@ -40,6 +40,7 @@ namespace Singularity.Units
         /// <summary>
         /// The current time used for moving time information between methods not called by update.
         /// </summary>
+        [DataMember]
         protected double mCurrentTime;
 
         [DataMember]

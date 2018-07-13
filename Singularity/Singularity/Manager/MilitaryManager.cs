@@ -82,23 +82,28 @@ namespace Singularity.Manager
         /// </summary>
         internal void SetMap(ref Map.Map map)
         {
-            mUnitMap = map.GetUnitMap();
+            mUnitMap = new UnitMap((int)map.GetMeasurements().X, (int)map.GetMeasurements().Y);
             mMap = map;
         }
 
         public void ReloadContent(Vector2 mapmeasurements, Director director)
         {
             mDirector = director;
-            mUnitMap = new UnitMap((int)mapmeasurements.X, (int)mapmeasurements.Y);
-            foreach(var funit in mFriendlyMilitary)
+        }
+
+        public void ReloadSetMap(ref Map.Map map)
+        {
+            mMap = map;
+            mUnitMap = new UnitMap((int) map.GetMeasurements().X, (int) map.GetMeasurements().Y);
+            foreach (var funit in mFriendlyMilitary)
             {
                 mUnitMap.AddUnit(funit);
             }
 
             foreach (var fplatform in mFriendlyDefensePlatforms)
             {
-                var position = mUnitMap.VectorToTilePos(fplatform.AbsolutePosition);
-                mUnitMap.AddUnit(fplatform, position);
+
+                mUnitMap.AddUnit(fplatform);
             }
 
             foreach (var hunit in mHostileMilitary)
@@ -108,8 +113,7 @@ namespace Singularity.Manager
 
             foreach (var hplatform in mHostileDefensePlatforms)
             {
-                var position = mUnitMap.VectorToTilePos(hplatform.AbsolutePosition);
-                mUnitMap.AddUnit(hplatform, position);
+                mUnitMap.AddUnit(hplatform);
             }
         }
 

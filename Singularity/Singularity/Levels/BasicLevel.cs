@@ -82,7 +82,6 @@ namespace Singularity.Levels
             Map = map;
             var milUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
             var milGlowSheet = content.Load<Texture2D>("UnitGlowSprite");
-            MilitaryUnit.mDeadTexture = content.Load<Texture2D>("DeadUnit");
 
             MilitaryUnit.mMilSheet = milUnitSheet;
             MilitaryUnit.mGlowTexture = milGlowSheet;
@@ -110,7 +109,6 @@ namespace Singularity.Levels
             var platformDomeTexture = content.Load<Texture2D>("Dome");
             MilitaryUnit.mMilSheet = content.Load<Texture2D>("UnitSpriteSheet");
             MilitaryUnit.mGlowTexture = content.Load<Texture2D>("UnitGlowSprite");
-            MilitaryUnit.mDeadTexture = content.Load<Texture2D>("DeadUnit");
             var mapBackground = content.Load<Texture2D>("backgroundGrid");
             var libSans12 = content.Load<SpriteFont>("LibSans12");
 
@@ -130,6 +128,9 @@ namespace Singularity.Levels
             mDirector.GetUserInterfaceController.ReloadContent(ref mDirector);
             mDirector.GetUserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
 
+            // Reload map for the military manager
+            var map = Map;
+            director.GetMilitaryManager.ReloadSetMap(ref map);
             // the input manager keeps this from not getting collected by the GC
             mDebugscreen = new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
             mDirector.GetInputManager.AddKeyListener(this);
