@@ -17,6 +17,7 @@ namespace Singularity.Manager
 
         public Director(ContentManager content, GraphicsDeviceManager graphics)
         {
+            GetClock = new Clock();
             GetIdGenerator = new IdGenerator();
             GetInputManager = new InputManager();
             GetStoryManager = new StoryManager();
@@ -36,6 +37,7 @@ namespace Singularity.Manager
 
         internal void ReloadContent(Director dir, Vector2 mapmeasurements)
         {
+            GetClock = dir.GetClock;
             GetIdGenerator = dir.GetIdGenerator;
             GetStoryManager = dir.GetStoryManager;
             GetMilitaryManager = dir.GetMilitaryManager;
@@ -46,6 +48,8 @@ namespace Singularity.Manager
             GetMilitaryManager.ReloadContent(mapmeasurements);
         }
 
+        [DataMember]
+        public Clock GetClock { get; private set; }
         [DataMember]
         public IdGenerator GetIdGenerator { get; private set; }
 
@@ -81,6 +85,7 @@ namespace Singularity.Manager
             }
             GetStoryManager.Update(gametime);
             GetMilitaryManager.Update(gametime);
+            GetClock.Update(gametime);
         }
     }
 }
