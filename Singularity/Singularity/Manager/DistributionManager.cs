@@ -138,12 +138,8 @@ namespace Singularity.Manager
                             continue;
                         }
                         //Check for the resource
-                        foreach (var resource in candidatePlatform.GetPlatformResources())
+                        if (candidatePlatform.GetPlatformResources().Any(resource => resource.Type == res))
                         {
-                            if (resource.Type != res)
-                            {
-                                continue;
-                            }
                             return candidatePlatform;
                         }
 
@@ -159,12 +155,8 @@ namespace Singularity.Manager
                             continue;
                         }
                         //Check for the resource
-                        foreach (var resource in candidatePlatform.GetPlatformResources())
+                        if (candidatePlatform.GetPlatformResources().Any(resource => resource.Type == res))
                         {
-                            if (resource.Type != res)
-                            {
-                                continue;
-                            }
                             return candidatePlatform;
                         }
                         nextlevel.Add(candidatePlatform);

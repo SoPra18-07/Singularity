@@ -15,7 +15,8 @@ namespace Singularity.PlatformActions
     {
         public MakeFastMilitaryUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
-            mBuildingCost = new Dictionary<EResourceType, int> { { EResourceType.Metal, 3 }, { EResourceType.Chip, 2 }, {EResourceType.Fuel, 1} };
+            // mBuildingCost = new Dictionary<EResourceType, int> { { EResourceType.Metal, 3 }, { EResourceType.Chip, 2 }, {EResourceType.Fuel, 1} };
+            mBuildingCost = new Dictionary<EResourceType, int> { {EResourceType.Metal, 2} };
         }
 
         protected override void CreateUnit()
