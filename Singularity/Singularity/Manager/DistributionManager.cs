@@ -1031,6 +1031,7 @@ namespace Singularity.Manager
             mHandler = handler;
         }
 
+
         /// <summary>
         /// Is called by producing and defending Platforms when they are created or added to the distributionmanager.
         /// </summary>
