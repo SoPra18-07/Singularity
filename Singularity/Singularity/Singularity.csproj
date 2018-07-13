@@ -63,14 +63,18 @@
     <Compile Include="KI\KI.cs" />
     <Compile Include="KI\Spawner.cs" />
     <Compile Include="Levels\PlatformDestructionTestLevel.cs" />
+    <Compile Include="Events\SpatialPositionEventArgs.cs" />
     <Compile Include="Nature\Rock.cs" />
     <Compile Include="Levels\BasicLevel.cs" />
     <Compile Include="Levels\ILevel.cs" />
     <Compile Include="Manager\DistributionDirector.cs" />
     <Compile Include="Manager\DistributionManager.cs" />
+    <Compile Include="Screen\ELogEventType.cs" />
+    <Compile Include="Screen\EventLog.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />
     <Compile Include="Nature\Puddle.cs" />
     <Compile Include="Screen\BarIWindowItem.cs" />
+    <Compile Include="Screen\EventLogIWindowItem.cs" />
     <Compile Include="Screen\PlatformActionIWindowItem.cs" />
     <Compile Include="PlatformActions\ConsumeResource.cs" />
     <Compile Include="Exceptions\MiniMapProportionsOffException.cs" />
@@ -78,6 +82,8 @@
     <Compile Include="Map\UnitMap.cs" />
     <Compile Include="Map\UnitMapTile.cs" />
     <Compile Include="PlatformActions\MakeUnit.cs" />
+    <Compile Include="PlatformActions\APlatformAction.cs" />
+    <Compile Include="PlatformActions\BuildBluePrint.cs" />
     <Compile Include="PlatformActions\Shoot.cs" />
     <Compile Include="Platforms\Barracks.cs" />
     <Compile Include="Platforms\DefenseLaser.cs" />
@@ -96,6 +102,7 @@
     <Compile Include="Screen\ScreenClasses\LoadGameManagerScreen.cs" />
     <Compile Include="Screen\ScreenClasses\DebugScreen.cs" />
     <Compile Include="Screen\ActivationIWindowItem.cs" />
+    <Compile Include="Screen\IndexSwitcherIWindowItem.cs" />
     <Compile Include="Screen\PlatformInfoBox.cs" />
     <Compile Include="Screen\SliderHandler.cs" />
     <Compile Include="Units\ControllableUnit.cs" />

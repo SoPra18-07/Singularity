@@ -138,14 +138,14 @@ namespace Singularity.Screen.ScreenClasses
 
             // Draw selector triangle
             spriteBatch.Draw(mMSelectorTriangle,
-                position: mMSelectorPosition,
-                sourceRectangle: null,
-                color: Color.White * mMMenuOpacity,
-                rotation: 0f,
-                origin: new Vector2(0, 11),
-                scale: 1f,
-                effects: SpriteEffects.None,
-                layerDepth: 0f);
+                mMSelectorPosition,
+                null,
+                Color.White * mMMenuOpacity,
+                0f,
+                new Vector2(0, 11),
+                1f,
+                SpriteEffects.None,
+                0f);
 
             // Draw menu window
             spriteBatch.StrokedRectangle(mMMenuBoxPosition,

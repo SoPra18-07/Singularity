@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
 using Singularity.Libraries;
+using Singularity.Manager;
 using Singularity.Property;
 
 namespace Singularity.Screen
@@ -54,7 +54,7 @@ namespace Singularity.Screen
         // size of the rectangle in the top right corner of the window which minimizes the window when clicked on
         private int mMinimizationSize;
 
-        // true when the window's windowItems and the padding between them
+        // true when the window's windowItems and the padding between them are too big for the scissorRectangle's height
         private bool mScrollable; // = false as default value
 
         // activates the window movement after a mouse click on the title bar
@@ -74,9 +74,6 @@ namespace Singularity.Screen
         // current mouse position
         private float mMouseX;
         private float mMouseY;
-
-        // used by scissorrectangle to create a scrollable window by cutting everything outside specific bounds
-        private readonly RasterizerState mRasterizerState;
 
         // title font
         private readonly SpriteFont mSpriteFont;
@@ -101,15 +98,14 @@ namespace Singularity.Screen
         /// <param name="minimizable">window minimizable</param>
         /// <param name="spriteFont">title font</param>
         /// <param name="inputManager">standard inputManager</param>
-        /// <param name="graphics">standard graphicManager</param>
+        /// <param name="director">basic director</param>
         public WindowObject(
             string windowName,
             Vector2 position,
             Vector2 size,
             bool minimizable,
             SpriteFont spriteFont,
-            InputManager inputManager,
-            GraphicsDeviceManager graphics)
+            Director director)
         {
             // use parameter-variables
             WindowName = windowName;
@@ -123,19 +119,16 @@ namespace Singularity.Screen
             mSpriteFont = spriteFont;
 
             // screen size - needed for input management
-            mCurrentScreenWidth = graphics.PreferredBackBufferWidth;
-            mCurrentScreenHeight = graphics.PreferredBackBufferHeight;
-
-            // Initialize scissor window
-            mRasterizerState = new RasterizerState { ScissorTestEnable = true };
+            mCurrentScreenWidth = director.GetGraphicsDeviceManager.PreferredBackBufferWidth;
+            mCurrentScreenHeight = director.GetGraphicsDeviceManager.PreferredBackBufferHeight;
 
             Initialization();
 
             mBackgroundGiven = true;
 
-            inputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
-            inputManager.AddMouseWheelListener(this);
-            inputManager.AddMousePositionListener(this);
+            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.GetInputManager.AddMouseWheelListener(this);
+            director.GetInputManager.AddMousePositionListener(this);
         }
 
 
@@ -152,7 +145,7 @@ namespace Singularity.Screen
         /// <param name="minimizable">window minimizable</param>
         /// <param name="spriteFont">title font</param>
         /// <param name="inputManager">standard inputManager</param>
-        /// <param name="graphics">standard graphicManager</param>
+        /// <param name="director">basic director</param>
         public WindowObject(
             string windowName,
             Vector2 position,
@@ -163,8 +156,7 @@ namespace Singularity.Screen
             float objectPadding,
             bool minimizable,
             SpriteFont spriteFont,
-            InputManager inputManager,
-            GraphicsDeviceManager graphics)
+            Director director)
         {
             // set parameter-variables
             WindowName = windowName;
@@ -178,20 +170,17 @@ namespace Singularity.Screen
             mSpriteFont = spriteFont;
 
             // screen size - needed for input management
-            mCurrentScreenWidth = graphics.PreferredBackBufferWidth;
-            mCurrentScreenHeight = graphics.PreferredBackBufferHeight;
-
-            // Initialize scissor window
-            mRasterizerState = new RasterizerState { ScissorTestEnable = true };
+            mCurrentScreenWidth = director.GetGraphicsDeviceManager.PreferredBackBufferWidth;
+            mCurrentScreenHeight = director.GetGraphicsDeviceManager.PreferredBackBufferHeight;
 
             Initialization();
 
             // set start values
             mBackgroundGiven = true;
 
-            inputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
-            inputManager.AddMouseWheelListener(this);
-            inputManager.AddMousePositionListener(this);
+            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.GetInputManager.AddMouseWheelListener(this);
+            director.GetInputManager.AddMousePositionListener(this);
         }
 
 
@@ -207,7 +196,7 @@ namespace Singularity.Screen
         /// <param name="minimizable">window minimizable</param>
         /// <param name="spriteFont">title font</param>
         /// <param name="inputManager">standard inputManager</param>
-        /// <param name="graphics">standard graphicManager</param>
+        /// <param name="director">basic director</param>
         public WindowObject(
             string windowName,
             Vector2 position,
@@ -217,8 +206,7 @@ namespace Singularity.Screen
             float objectPadding,
             bool minimizable,
             SpriteFont spriteFont,
-            InputManager inputManager,
-            GraphicsDeviceManager graphics)
+            Director director)
         {
             // set parameter-variables
             WindowName = windowName;
@@ -232,20 +220,17 @@ namespace Singularity.Screen
             mSpriteFont = spriteFont;
 
             // screen size - needed for input management
-            mCurrentScreenWidth = graphics.PreferredBackBufferWidth;
-            mCurrentScreenHeight = graphics.PreferredBackBufferHeight;
-
-            // Initialize scissor window
-            mRasterizerState = new RasterizerState { ScissorTestEnable = true };
+            mCurrentScreenWidth = director.GetGraphicsDeviceManager.PreferredBackBufferWidth;
+            mCurrentScreenHeight = director.GetGraphicsDeviceManager.PreferredBackBufferHeight;
 
             Initialization();
 
             // set start values
             mBackgroundGiven = false;
 
-            inputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
-            inputManager.AddMouseWheelListener(this);
-            inputManager.AddMousePositionListener(this);
+            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.GetInputManager.AddMouseWheelListener(this);
+            director.GetInputManager.AddMousePositionListener(this);
         }
 
         #endregion
@@ -298,6 +283,10 @@ namespace Singularity.Screen
             return true;
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
             if (!Active)
@@ -373,6 +362,10 @@ namespace Singularity.Screen
             spriteBatch.DrawRectangle(mTitleBarRectangle, mColorBorder, 1);
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
             if (!Active)
@@ -446,60 +439,60 @@ namespace Singularity.Screen
 
             // set the window rectangle
             mWindowRectangle = new Rectangle(
-                x: (int)(Position.X + 1),
-                y: (int)(Position.Y + 2),
-                width: (int)(Size.X - 2),
-                height: (int)(Size.Y - 2)
+                (int)(Position.X + 1),
+                (int)(Position.Y + 2),
+                (int)(Size.X - 2),
+                (int)(Size.Y - 2)
                 );
             mBorderRectangle = new Rectangle(
-                x: (int)Position.X,
-                y: (int)Position.Y,
-                width: (int)Size.X,
-                height: (int)Size.Y
+                (int)Position.X,
+                (int)Position.Y,
+                (int)Size.X,
+                (int)Size.Y
                 );
 
             // ScissorRectangle will cut everything drawn outside of this rectangle when set
             mScissorRectangle = new Rectangle(
-                x: (int)(Position.X - 1),
-                y: (int)(Position.Y + mTitleSizeY + 2 * mMinimizationSize),
-                width: (int)(Size.X + 2),
-                height: (int)(Size.Y + 2 - mTitleSizeY - 2 * mMinimizationSize - 2)
+                (int)(Position.X - 1),
+                (int)(Position.Y + mTitleSizeY + 2 * mMinimizationSize),
+                (int)(Size.X + 2),
+                (int)(Size.Y + 2 - mTitleSizeY - 2 * mMinimizationSize - 2)
                 );
 
             // set the rectangle for minimization in the top right corner of the window
             mMinimizationRectangle = new Rectangle(
-                x: (int)(Position.X + Size.X - mMinimizationSize),
-                y: (int)Position.Y,
-                width: mMinimizationSize,
-                height: mMinimizationSize
+                (int)(Position.X + Size.X - mMinimizationSize),
+                (int)Position.Y,
+                mMinimizationSize,
+                mMinimizationSize
                 );
             mMinimizationLine = new Rectangle(
-                x: (int)(Position.X + Size.X - 3 * mMinimizationSize / 4f),
-                y: (int)(Position.Y + mMinimizationSize / 2f),
-                width: mMinimizationSize / 2,
-                height: 1
+                (int)(Position.X + Size.X - 3 * mMinimizationSize / 4f),
+                (int)(Position.Y + mMinimizationSize / 2f),
+                mMinimizationSize / 2,
+                1
                 );
 
             // set the rectangle for the minimized window
             mMinimizedWindowRectangle = new Rectangle(
-                x: (int)(Position.X + 1),
-                y: (int)(Position.Y + 2),
-                width: (int)Size.X - 2,
-                height: mTitleSizeY + mMinimizationSize
+                (int)(Position.X + 1),
+                (int)(Position.Y + 2),
+                (int)Size.X - 2,
+                mTitleSizeY + mMinimizationSize
                 );
             mMinimizedBorderRectangle = new Rectangle(
-                x: (int)Position.X,
-                y: (int)Position.Y,
-                width: (int)Size.X,
-                height: mTitleSizeY + mMinimizationSize
+                (int)Position.X,
+                (int)Position.Y,
+                (int)Size.X,
+                mTitleSizeY + mMinimizationSize
                 );
 
             // set the rectangle for scrolling
             mScrollBarBorderRectangle = new Rectangle(
-                x: (int)(Position.X + Size.X - mMinimizationSize),
-                y: (int)(Position.Y + mTitleSizeY + 2 * mMinimizationSize),
-                width: mMinimizationSize,
-                height: (int)(Size.Y - mTitleSizeY - 3 * mMinimizationSize)
+                (int)(Position.X + Size.X - mMinimizationSize),
+                (int)(Position.Y + mTitleSizeY + 2 * mMinimizationSize),
+                mMinimizationSize,
+                (int)(Size.Y - mTitleSizeY - 3 * mMinimizationSize)
                 );
             mScrollBarRectangle = CalcScrollbarRectangle(mScissorRectangle, mCombinedItemsSize
             );
@@ -510,237 +503,12 @@ namespace Singularity.Screen
             }
             // set the rectangle of the title bar
             mTitleBarRectangle = new Rectangle(
-                x: (int)Position.X + mMinimizationSize / 2,
-                y: (int)Position.Y + mTitleSizeY + mMinimizationSize,
-                width: (int)Size.X - 2 * mMinimizationSize,
-                height: 1
+                (int)Position.X + mMinimizationSize / 2,
+                (int)Position.Y + mTitleSizeY + mMinimizationSize,
+                (int)Size.X - 2 * mMinimizationSize,
+                1
                 );
         }
-
-        #region InputManagement
-
-        public Rectangle Bounds { get; private set; }
-
-        public EScreen Screen { get; } = EScreen.UserInterfaceScreen;
-
-        public bool MouseWheelValueChanged(EMouseAction mouseAction)
-        {
-            // enabled only if
-            //  - the mouse is above the scrollable part of the window
-            //  - the window is not minimized
-            //  - the window is scrollable (the number of items is too big for one window)
-            //  - the window is active
-            if (mMouseX > Position.X && mMouseX < Position.X + Size.X && mMouseY > Position.Y &&
-                mMouseY < Position.Y + Size.Y && !mMinimized && mScrollable && Active)
-            {
-                // scroll up or down
-                switch (mouseAction)
-                {
-                    case EMouseAction.ScrollUp:
-                        if (!(mItemPosTop.Y > Position.Y + mTitleSizeY + 1.5 * mMinimizationSize))
-                            // stop from overflowing
-                        {
-                            mItemScrolledValue += +10;
-                        }
-                        break;
-                    case EMouseAction.ScrollDown:
-                        if (!(mItemPosBottom.Y < Position.Y + Size.Y))
-                            // stop from overflowing
-                        {
-                            mItemScrolledValue += -10;
-                        }
-                        break;
-                }
-            }
-
-            // everything following handles if the input is given through or not
-            if (!mMinimized && (mMouseX > Position.X && mMouseX < Position.X + Size.X) && mMouseY > Position.Y && mMouseY < Position.Y + Size.Y)
-                // not minimized + mouse on window
-            {
-                return false;
-            }
-
-            // resharper wanted it this 'overseeable' way o.O
-            // minimized + mouse on minimized window -> return false ... else true
-            return !mMinimized || (!(mMouseX > Position.X) || !(mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width)) || !(mMouseY > Position.Y) || !(mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height);
-        }
-
-        public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
-        {
-            if (mouseAction == EMouseAction.LeftClick && withinBounds && Active)
-            {
-                #region minimization
-
-                if (mMouseX >= mMinimizationRectangle.X &&
-                    mMouseX < mMinimizationRectangle.X + mMinimizationSize &&
-                    mMouseY >= mMinimizationRectangle.Y &&
-                    mMouseY < mMinimizationRectangle.Y + mMinimizationSize)
-                // mouse on minimization rectangle
-                {
-                    if (!mMinimized && mMinimizable)
-                    // window IS NOT minimized and it's minimizable
-                    // -> use minimized rectangles
-                    {
-                        mMinimized = true;
-
-                        // disable all items due to minimization
-                        foreach (var item in mItemList)
-                        {
-                            item.ActiveInWindow = false;
-                        }
-                    }
-                else if (mMinimized)
-                    // LeftClick on Minimize-Button, window IS minimized
-                    // -> use regular rectangles + move window back in screen if outside
-                    {
-                        mMinimized = false;
-
-                        // enable all items due to maximization
-                        foreach (var item in mItemList)
-                        {
-                            item.ActiveInWindow = true;
-                        }
-
-                        // catch window being out of screen at the bottom after maximization
-                        if (Position.Y + Size.Y > mCurrentScreenHeight)
-                        {
-                            // reset window position
-                            Position = new Vector2(Position.X, mCurrentScreenHeight - Size.Y);
-                        }
-                    }
-                }
-
-                #endregion
-
-                #region window movement initiation
-
-            if (mMouseX > Position.X &&
-                mMouseX < Position.X + Position.X + Size.X &&
-                mMouseY > Position.Y &&
-                mMouseY < Position.Y + mTitleSizeY + mMinimizationSize &&
-                !mClickOnTitleBar ||
-                (WindowName == "" &&
-                 mMouseX > Position.X &&
-                 mMouseX < Position.X + Position.X + Size.X &&
-                 mMouseY > Position.Y &&
-                 mMouseY < Position.Y + Position.Y + Size.Y &&
-                 !mClickOnTitleBar))
-                // mouse above the title rectangle
-                {
-                    if (!(mMouseX >= mMinimizationRectangle.X &&
-                          mMouseX < mMinimizationRectangle.X + mMinimizationSize &&
-                          mMouseY >= mMinimizationRectangle.Y &&
-                          mMouseY < mMinimizationRectangle.Y + mMinimizationSize))
-                    // mouse not on minimization rectangle (no movement when pressing the minimization rectangle)
-                    {
-                        mClickOnTitleBar = true;
-
-                        // set 'previous mouse position'
-                        mWindowDragPos = new Vector2(mMouseX - Position.X, mMouseY - Position.Y);
-                    }
-                }
-
-                #endregion
-            }
-
-
-            // everything following handles if the input is given through or not
-
-            if (!mMinimized && (mMouseX > Position.X && mMouseX < Position.X + Size.X) && mMouseY > Position.Y && mMouseY < Position.Y + Size.Y)
-                // not minimized + mouse on window
-            {
-                return false;
-            }
-
-            // resharper wanted it this 'overseeable' way o.O
-            // minimized + mouse on minimized window -> return false ... else true
-            return !(mMinimized && mMouseX > Position.X && mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width &&
-                                   mMouseY > Position.Y && mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height);
-        }
-
-        public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
-        {
-            #region window movement
-
-            if (mClickOnTitleBar && Active)
-                // enable single window movement + no reaction when deactivated
-            {
-                // backup old window position to calculate the movement
-                var positionOld = Position;
-
-                // update window position
-                Position = new Vector2(mMouseX - mWindowDragPos.X, mMouseY - mWindowDragPos.Y);
-
-                #region catch window moving out of screen
-                // catch left / right
-                if (Position.X < 0)
-                {
-                    Position = new Vector2(0, Position.Y);
-                }
-                else if (Position.X + Size.X > mCurrentScreenWidth)
-                {
-                    Position = new Vector2(mCurrentScreenWidth - Size.X, Position.Y);
-                }
-
-                // catch top / bottom
-                if (!mMinimized)
-                    // full window
-                {
-                    if (Position.Y < 0)
-                    {
-                        Position = new Vector2(Position.X, 0);
-                    }
-                    else if (Position.Y + Size.Y > mCurrentScreenHeight)
-                    {
-                        Position = new Vector2(Position.X, mCurrentScreenHeight - Size.Y);
-                    }
-                }
-                else
-                    // minimized window
-                {
-                    if (Position.Y < 0)
-                    {
-                        Position = new Vector2(Position.X, 0);
-                    }
-                    else if (Position.Y + mMinimizedBorderRectangle.Height > mCurrentScreenHeight)
-                    {
-                        Position = new Vector2(Position.X, mCurrentScreenHeight - Size.Y);
-                    }
-                }
-                #endregion
-            }
-
-            #endregion
-
-            return false;
-        }
-
-        public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
-        {
-            if (!Active)
-                // window deactivated
-            {
-                return true;
-            }
-
-            mClickOnTitleBar = false;
-
-            return false;
-        }
-
-        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
-        {
-            if (!Active)
-                // window is deactivated
-            {
-                return;
-            }
-
-            // update member variable with new mouse position
-            mMouseX = screenX;
-            mMouseY = screenY;
-        }
-        #endregion
 
         /// <summary>
         /// Calculate the scrollbar
@@ -765,21 +533,314 @@ namespace Singularity.Screen
             return new Rectangle((int)(Position.X + Size.X - mMinimizationSize + 2), (int)positionY, mMinimizationSize - 4, (int)sizeY);
         }
 
-        // true if window is active (window + items in window will be drawn/updated) or inactive (not drawn/updated)
+        /// <summary>
+        /// true if window is active (window + items in window will be drawn/updated) or inactive (not drawn/updated)
+        /// </summary>
         internal bool Active { get; set; }
 
-        // position of the window
+        /// <summary>
+        /// position of the window
+        /// </summary>
         public Vector2 Position { get; set; }
 
-        // size of the window
+        /// <summary>
+        /// size of the window
+        /// </summary>
         public Vector2 Size { get; }
 
-        // the window name is the windows title
+        /// <summary>
+        /// the window name is the windows title
+        /// </summary>
         public string WindowName { private get; set; }
 
+        /// <summary>
+        /// reset scrolling
+        /// </summary>
         public void ResetScrollValue()
         {
             mItemScrolledValue = 0;
         }
+
+        /// <summary>
+        /// Scroll the window to the end, probably while adding a new item and removing an old item
+        /// </summary>
+        /// <param name="newEventHeight"></param>
+        /// <param name="oldEventHeight"></param>
+        public void AutoScrollToEnd(float newEventHeight, float oldEventHeight)
+        {
+            // this will be the new combinedItemSize
+            var newCombinedItemsSize = mCombinedItemsSize + mObjectPadding + newEventHeight - oldEventHeight;
+
+            // calculate the maximum scroll value
+            mItemScrolledValue = - (int)(Position.Y + mTitleSizeY + 2 * mMinimizationSize + newCombinedItemsSize - (Position.Y + Size.Y));
+        }
+
+        #region InputManagement
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        public Rectangle Bounds { get; private set; }
+        /// <summary>
+        /// the screen on which this object is placed
+        /// </summary>
+        public EScreen Screen { get; } = EScreen.UserInterfaceScreen;
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="mouseAction"></param>
+        /// <returns></returns>
+        public bool MouseWheelValueChanged(EMouseAction mouseAction)
+        {
+            // enabled only if
+            //  - the mouse is above the scrollable part of the window
+            //  - the window is not minimized
+            //  - the window is scrollable (the number of items is too big for one window)
+            //  - the window is active
+            if (mMouseX > Position.X && mMouseX < Position.X + Size.X && mMouseY > Position.Y &&
+                mMouseY < Position.Y + Size.Y && !mMinimized && mScrollable && Active)
+            {
+                // scroll up or down
+                switch (mouseAction)
+                {
+                    case EMouseAction.ScrollUp:
+                        if (!(mItemPosTop.Y > Position.Y + mTitleSizeY + 1.5 * mMinimizationSize))
+                        // stop from overflowing
+                        {
+                            mItemScrolledValue += +10;
+
+                            // catch scroll-value being too big for the window
+                            if (mItemPosTop.Y + 10 > Position.Y + mTitleSizeY + 1.5 * mMinimizationSize)
+                            {
+                                mItemScrolledValue += (int)(Position.Y + mTitleSizeY + 1.5 * mMinimizationSize - mItemPosTop.Y);
+                            }
+                        }
+                        break;
+                    case EMouseAction.ScrollDown:
+                        if (!(mItemPosBottom.Y < Position.Y + Size.Y))
+                        // stop from overflowing
+                        {
+                            mItemScrolledValue += -10;
+
+                            // catch scroll-value being too small for the window
+                            if (mItemPosBottom.Y - 10 < Position.Y + Size.Y - 5)
+                            {
+                                mItemScrolledValue = -(int)(Position.Y + mTitleSizeY + 2 * mMinimizationSize + mCombinedItemsSize - (Position.Y + Size.Y));
+                            }
+                        }
+                        break;
+                }
+            }
+
+            // everything following handles if the input is given through or not
+
+            if (!mMinimized && (mMouseX > Position.X && mMouseX < Position.X + Size.X) && mMouseY > Position.Y && mMouseY < Position.Y + Size.Y)
+            // not minimized + mouse on window
+            {
+                return false;
+            }
+
+            // resharper wanted it this 'overseeable' way o.O
+            // minimized + mouse on minimized window -> return false ... else true
+            return !mMinimized || (!(mMouseX > Position.X) || !(mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width)) || !(mMouseY > Position.Y) || !(mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height);
+        }
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="mouseAction"></param>
+        /// <param name="withinBounds"></param>
+        /// <returns></returns>
+        public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
+        {
+            if (mouseAction == EMouseAction.LeftClick && withinBounds && Active)
+            {
+                #region minimization
+
+                if (mMouseX >= mMinimizationRectangle.X &&
+                    mMouseX < mMinimizationRectangle.X + mMinimizationSize &&
+                    mMouseY >= mMinimizationRectangle.Y &&
+                    mMouseY < mMinimizationRectangle.Y + mMinimizationSize)
+                // mouse on minimization rectangle
+                {
+                    if (!mMinimized && mMinimizable)
+                    // window IS NOT minimized and it's minimizable
+                    // -> use minimized rectangles
+                    {
+                        mMinimized = true;
+
+                        // disable all items due to minimization
+                        foreach (var item in mItemList)
+                        {
+                            item.ActiveInWindow = false;
+                        }
+                    }
+                    else if (mMinimized)
+                    // LeftClick on Minimize-Button, window IS minimized
+                    // -> use regular rectangles + move window back in screen if outside
+                    {
+                        mMinimized = false;
+
+                        // enable all items due to maximization
+                        foreach (var item in mItemList)
+                        {
+                            item.ActiveInWindow = true;
+                        }
+
+                        // catch window being out of screen at the bottom after maximization
+                        if (Position.Y + Size.Y > mCurrentScreenHeight)
+                        {
+                            // reset window position
+                            Position = new Vector2(Position.X, mCurrentScreenHeight - Size.Y);
+                        }
+                    }
+                }
+
+                #endregion
+
+                #region window movement initiation
+
+                if (mMouseX > Position.X &&
+                    mMouseX < Position.X + Position.X + Size.X &&
+                    mMouseY > Position.Y &&
+                    mMouseY < Position.Y + mTitleSizeY + mMinimizationSize &&
+                    !mClickOnTitleBar ||
+                    (WindowName == "" &&
+                     mMouseX > Position.X &&
+                     mMouseX < Position.X + Position.X + Size.X &&
+                     mMouseY > Position.Y &&
+                     mMouseY < Position.Y + Position.Y + Size.Y &&
+                     !mClickOnTitleBar))
+                // mouse above the title rectangle
+                {
+                    if (!(mMouseX >= mMinimizationRectangle.X &&
+                          mMouseX < mMinimizationRectangle.X + mMinimizationSize &&
+                          mMouseY >= mMinimizationRectangle.Y &&
+                          mMouseY < mMinimizationRectangle.Y + mMinimizationSize))
+                    // mouse not on minimization rectangle (no movement when pressing the minimization rectangle)
+                    {
+                        mClickOnTitleBar = true;
+
+                        // set 'previous mouse position'
+                        mWindowDragPos = new Vector2(mMouseX - Position.X, mMouseY - Position.Y);
+                    }
+                }
+
+                #endregion
+            }
+
+            #region handle input givethrough
+
+            if (!mMinimized && (mMouseX > Position.X && mMouseX < Position.X + Size.X) && mMouseY > Position.Y && mMouseY < Position.Y + Size.Y)
+            // not minimized + mouse on window
+            {
+                return false;
+            }
+
+            // resharper wanted it this 'overseeable' way o.O
+            // minimized + mouse on minimized window -> return false ... else true
+            return !(mMinimized && mMouseX > Position.X && mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width &&
+                                   mMouseY > Position.Y && mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height);
+
+            #endregion
+        }
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="mouseAction"></param>
+        /// <param name="withinBounds"></param>
+        /// <returns></returns>
+        public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
+        {
+            #region window movement
+
+            if (mClickOnTitleBar && Active)
+            // enable single window movement + no reaction when deactivated
+            {
+                // backup old window position to calculate the movement
+                var positionOld = Position;
+
+                // update window position
+                Position = new Vector2(mMouseX - mWindowDragPos.X, mMouseY - mWindowDragPos.Y);
+
+                #region catch window moving out of screen
+                // catch left / right
+                if (Position.X < 0)
+                {
+                    Position = new Vector2(0, Position.Y);
+                }
+                else if (Position.X + Size.X > mCurrentScreenWidth)
+                {
+                    Position = new Vector2(mCurrentScreenWidth - Size.X, Position.Y);
+                }
+
+                // catch top / bottom
+                if (!mMinimized)
+                // full window
+                {
+                    if (Position.Y < 0)
+                    {
+                        Position = new Vector2(Position.X, 0);
+                    }
+                    else if (Position.Y + Size.Y > mCurrentScreenHeight)
+                    {
+                        Position = new Vector2(Position.X, mCurrentScreenHeight - Size.Y);
+                    }
+                }
+                else
+                // minimized window
+                {
+                    if (Position.Y < 0)
+                    {
+                        Position = new Vector2(Position.X, 0);
+                    }
+                    else if (Position.Y + mMinimizedBorderRectangle.Height > mCurrentScreenHeight)
+                    {
+                        Position = new Vector2(Position.X, mCurrentScreenHeight - Size.Y);
+                    }
+                }
+                #endregion
+            }
+
+            #endregion
+
+            return false;
+        }
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="mouseAction"></param>
+        /// <param name="withinBounds"></param>
+        /// <returns></returns>
+        public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
+        {
+            if (!Active)
+            // window deactivated
+            {
+                return true;
+            }
+
+            mClickOnTitleBar = false;
+
+            return false;
+        }
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="screenX"></param>
+        /// <param name="screenY"></param>
+        /// <param name="worldX"></param>
+        /// <param name="worldY"></param>
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
+        {
+            if (!Active)
+            // window is deactivated
+            {
+                return;
+            }
+
+            // update member variable with new mouse position
+            mMouseX = screenX;
+            mMouseY = screenY;
+        }
+        #endregion
     }
 }

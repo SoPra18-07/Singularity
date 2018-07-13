@@ -35,19 +35,17 @@ namespace Singularity.Levels
 
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
-            var platform1 = PlatformFactory.Get(EPlatformType.Blank, ref mDirector, 3000, 3000, Map.GetResourceMap());
+            var platform1 = PlatformFactory.Get(EStructureType.Blank, ref mDirector, 3000, 3000, Map.GetResourceMap());
 
             GameScreen.AddObject(platform1);
 
-            var platform2 = PlatformFactory.Get(EPlatformType.Well, ref mDirector, 2800, 3000, Map.GetResourceMap());
+            var platform2 = PlatformFactory.Get(EStructureType.Well, ref mDirector, 2800, 3000, Map.GetResourceMap());
             GameScreen.AddObject(platform2);
 
             var road1 = new Road(platform1, platform2, ref mDirector);
             GameScreen.AddObject(road1);
 
-            var platform3 = PlatformFactory.Get(EPlatformType.Quarry, ref mDirector, 3200, 3200, Map.GetResourceMap());
-
-
+            var platform3 = PlatformFactory.Get(EStructureType.Quarry, ref mDirector, 3200, 3200, Map.GetResourceMap());
 
             GameScreen.AddObject(platform3);
             var road2 = new Road(platform2, platform3, ref mDirector);
@@ -57,7 +55,7 @@ namespace Singularity.Levels
 
 
 
-            var platform4 = PlatformFactory.Get(EPlatformType.Energy, ref mDirector, 3000, 2800, Map.GetResourceMap());
+            var platform4 = PlatformFactory.Get(EStructureType.Energy, ref mDirector, 3000, 2800, Map.GetResourceMap());
 
             GameScreen.AddObject(platform4);
             var road4 = new Road(platform1, platform4, ref mDirector);
@@ -84,13 +82,15 @@ namespace Singularity.Levels
             var genUnit = new List<GeneralUnit>(5);
             for (var i = 0; i < 5; i++)
             {
-                genUnit.Add(new GeneralUnit(platform1, ref mDirector, 0));
+                genUnit.Add(new GeneralUnit(platform1, ref mDirector));
             }
 
             // Resources
-            var res = new Resource(EResourceType.Trash, platform2.Center);
-            var res4 = new Resource(EResourceType.Trash, platform2.Center);
-            var res5 = new Resource(EResourceType.Trash, platform2.Center);
+            var res = new Resource(EResourceType.Metal, platform2.Center);
+            var res4 = new Resource(EResourceType.Metal, platform2.Center);
+            var res5 = new Resource(EResourceType.Metal, platform2.Center);
+            var res6 = new Resource(EResourceType.Metal, platform3.Center);
+            var res7 = new Resource(EResourceType.Metal, platform4.Center);
             var res2 = new Resource(EResourceType.Chip, platform3.Center);
             var res3 = new Resource(EResourceType.Oil, platform4.Center);
 
@@ -118,6 +118,8 @@ namespace Singularity.Levels
             platform4.StoreResource(res3);
             platform2.StoreResource(res4);
             platform2.StoreResource(res5);
+            platform3.StoreResource(res6);
+            platform4.StoreResource(res7);
 
             GameScreen.AddObjects(genUnit);
             GameScreen.AddObject(enemyUnit);

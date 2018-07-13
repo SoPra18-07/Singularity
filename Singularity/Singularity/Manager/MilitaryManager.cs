@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Map;
@@ -263,10 +264,12 @@ namespace Singularity.Manager
                         }
                     }
                 }
+                
                 else
                 {
                     unit.SetShootingTarget(null);
                 }
+                Debug.WriteLine(closestAdjacent);
             }
 
             #endregion

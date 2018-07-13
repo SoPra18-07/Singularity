@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -72,6 +73,8 @@ namespace Singularity.Units
                 //to true, that has been true already.
                 mUi.Activate();
             }
+            // debug.
+            mUi.Activate();
         }
         #endregion
 
