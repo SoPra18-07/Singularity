@@ -6,6 +6,7 @@ using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
+using Singularity.Sound;
 
 namespace Singularity.Units
 {
@@ -13,6 +14,12 @@ namespace Singularity.Units
     [DataContract]
     internal class EnemyUnit : FreeMovingUnit, IShooting
     {
+        /// <summary>
+        /// Decides if a unit is a practice target or not (for debug purposes)
+        /// </summary>
+        [DataMember]
+        protected bool mTarget;
+
         /// <summary>
         /// Default width of a unit before scaling.
         /// </summary>
@@ -32,12 +39,6 @@ namespace Singularity.Units
         private readonly Color mColor = Color.Red;
 
         /// <summary>
-        /// Stores the time since the last random movement.
-        /// </summary>
-        [DataMember]
-        private float mElapsedTime;
-
-        /// <summary>
         /// Scalar for the unit size.
         /// </summary>
         [DataMember]
@@ -49,10 +50,6 @@ namespace Singularity.Units
         [DataMember]
         private readonly Random mRand = new Random();
 
-        /// <summary>
-        /// The spriteSheet used to draw enemy units.
-        /// </summary>
-        protected Texture2D mMilSheet = MilitaryUnit.mMilSheet;
         [DataMember]
         public new bool Friendly { get; private set; }
         [DataMember]
@@ -62,23 +59,13 @@ namespace Singularity.Units
         [DataMember]
         public int Range { get; protected set; }
 
-        public void Shoot(ICollider target)
-        {
-            // Todo
-        }
-
-        public void SetShootingTarget(ICollider target)
-        {
-            if (target == null)
-            {
-                mShoot = false;
-            }
-            else
-            {
-                mShoot = true;
-                mShootingTarget = target;
-            }
-        }
+        /// <summary>
+        /// Makes sure that the unit doesn't shoot too often.
+        /// </summary>
+        [DataMember]
+        protected double mShootingTimer;
+        
+        
 
         /// <summary>
         /// Enemy units controlled by AI and opposed to the player.
@@ -101,54 +88,60 @@ namespace Singularity.Units
         public override void Draw(SpriteBatch spriteBatch)
         {
             // makes sure that the textures are loaded
-            if (mMilSheet == null)
-            {
-                mMilSheet = MilitaryUnit.mMilSheet;
-            }
-
-            if (mMilSheet == null)
+            if (MilitaryUnit.mMilSheet == null)
             {
                 throw new Exception("Load the MilSheet and GlowTexture first!");
             }
 
             // Draw military unit
             spriteBatch.Draw(
-                            mMilSheet,
-                            AbsolutePosition,
-                            new Rectangle(150 * mColumn, 75 * mRow, (int)(AbsoluteSize.X / Scale), (int)(AbsoluteSize.Y / Scale)),
-                            mColor,
-                            0f,
-                            Vector2.Zero,
-                            new Vector2(Scale),
-                            SpriteEffects.None,
-                            LayerConstants.MilitaryUnitLayer
-                            );
+                MilitaryUnit.mMilSheet,
+                AbsolutePosition,
+                new Rectangle(150 * mColumn, 75 * mRow, (int)(AbsoluteSize.X / Scale), (int)(AbsoluteSize.Y / Scale)),
+                mColor,
+                0f,
+                Vector2.Zero,
+                Scale,
+                SpriteEffects.None,
+                LayerConstants.MilitaryUnitLayer
+            );
 
-
-
-            if (GlobalVariables.DebugState)
+            if (mShoot && !mTarget)
             {
-                if (mDebugPath != null)
+                if (mCurrentTime <= mShootingTimer + 200)
                 {
-                    for (var i = 0; i < mDebugPath.Length - 1; i++)
-                    {
-                        spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
-                    }
+                    // draws a laser line a a slight glow around the line, then sets the shoot future off
+                    spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2, .15f);
+                    spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y),
+                        mShootingTarget.Center,
+                        Color.White * .2f,
+                        6,
+                        .15f);
+                    mShoot = false;
                 }
             }
 
-            if (!mShoot)
+
+            // Debug draw stuff
+            if (!GlobalVariables.DebugState)
             {
                 return;
             }
 
-            // draws a laser line a a slight glow around the line, then sets the shoot future off
-            spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2, .15f);
-            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6, .15f);
-            mShoot = false;
+            if (mDebugPath == null)
+            {
+                return;
+            }
+
+            for (var i = 0; i < mDebugPath.Length - 1; i++)
+            {
+                spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
+            }
+                    
+            
+            
         }
-
-
+        
         public override void Update(GameTime gameTime)
         {
             /*
@@ -195,6 +188,42 @@ namespace Singularity.Units
             AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
             Moved = mIsMoving;
 
+            if (!mIsMoving && mShoot && !mTarget)
+            {
+                if (mShootingTimer < 0.5f)
+                {
+                    mShootingTimer = (float)gameTime.TotalGameTime.TotalMilliseconds;
+                    Shoot(mShootingTarget);
+                }
+
+                mCurrentTime = gameTime.TotalGameTime.TotalMilliseconds;
+                if (mShootingTimer + 750 <= gameTime.TotalGameTime.TotalMilliseconds)
+                {
+                    mShootingTimer = (float)gameTime.TotalGameTime.TotalMilliseconds;
+                    Shoot(mShootingTarget);
+                }
+            }
+        }
+
+        protected virtual void Shoot(ICollider target)
+        {
+            mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+            target.MakeDamage(MilitaryUnitStats.mUnitStrength);
+        }
+
+        public void SetShootingTarget(ICollider target)
+        {
+            if (target == null)
+            {
+                mShoot = false;
+                mShootingTimer = -1;
+            }
+            else
+            {
+                mShoot = true;
+            }
+
+            mShootingTarget = target;
         }
     }
 }

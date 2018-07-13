@@ -23,6 +23,11 @@ namespace Singularity.Manager
         /// </summary>
         private UnitMap mUnitMap;
 
+        /// <summary>
+        /// Required because it holds a reference to the unit.
+        /// </summary>
+        private Map.Map mMap;
+
         #region Friendly unit lists
 
         /// <summary>
@@ -54,8 +59,21 @@ namespace Singularity.Manager
         private readonly List<DefenseBase> mHostileDefensePlatforms = new List<DefenseBase>();
 
         #endregion
+
+        private Director mDirector;
+
+        /// <summary>
+        /// The total number of military units on the map.
+        /// </summary>
         [DataMember]
         internal int TotalUnitCount { get; private set; }
+
+
+
+        internal MilitaryManager(Director director)
+        {
+            mDirector = director;
+        }
 
         /// <summary>
         /// Sets the unit map for referencing later on. This is required because the map is created
@@ -63,21 +81,28 @@ namespace Singularity.Manager
         /// </summary>
         internal void SetMap(ref Map.Map map)
         {
-            mUnitMap = map.GetUnitMap();
+            mUnitMap = new UnitMap((int)map.GetMeasurements().X, (int)map.GetMeasurements().Y);
+            mMap = map;
         }
 
-        public void ReloadContent(Vector2 mapmeasurements)
+        public void ReloadContent(Vector2 mapmeasurements, Director director)
         {
-            mUnitMap = new UnitMap((int)mapmeasurements.X, (int)mapmeasurements.Y);
-            foreach(var funit in mFriendlyMilitary)
+            mDirector = director;
+        }
+
+        public void ReloadSetMap(ref Map.Map map)
+        {
+            mMap = map;
+            mUnitMap = new UnitMap((int) map.GetMeasurements().X, (int) map.GetMeasurements().Y);
+            foreach (var funit in mFriendlyMilitary)
             {
                 mUnitMap.AddUnit(funit);
             }
 
             foreach (var fplatform in mFriendlyDefensePlatforms)
             {
-                var position = mUnitMap.VectorToTilePos(fplatform.AbsolutePosition);
-                mUnitMap.AddUnit(fplatform, position);
+
+                mUnitMap.AddUnit(fplatform);
             }
 
             foreach (var hunit in mHostileMilitary)
@@ -87,8 +112,7 @@ namespace Singularity.Manager
 
             foreach (var hplatform in mHostileDefensePlatforms)
             {
-                var position = mUnitMap.VectorToTilePos(hplatform.AbsolutePosition);
-                mUnitMap.AddUnit(hplatform, position);
+                mUnitMap.AddUnit(hplatform);
             }
         }
 
@@ -198,7 +222,6 @@ namespace Singularity.Manager
 
         public void Update(GameTime gametime)
         {
-            // get a list of things to kill so the actual lists don't get modified during the run
             var unitsToKill = new List<FreeMovingUnit>();
             var platformsToKill = new List<PlatformBlank>();
 
@@ -356,8 +379,8 @@ namespace Singularity.Manager
                 // iterate through all adjacent units to find the closest adjacent unit.
                 foreach (var adjacentUnit in adjacentUnits)
                 {
-                    // only calculate the distance to the adjacent unit if the unit is not friendly.
-                    if (!adjacentUnit.Friendly)
+                    // only calculate the distance to the adjacent unit if the unit is friendly.
+                    if (adjacentUnit.Friendly)
                     {
                         // calculate the distance
                         var dist = Geometry.GetQuickDistance(unit.AbsolutePosition, adjacentUnit.AbsolutePosition);
@@ -418,8 +441,8 @@ namespace Singularity.Manager
                 // iterate through all adjacent units to find the closest adjacent unit.
                 foreach (var adjacentUnit in adjacentUnits)
                 {
-                    // only calculate the distance to the adjacent unit if the unit is not friendly.
-                    if (!adjacentUnit.Friendly)
+                    // only calculate the distance to the adjacent unit if the unit is friendly.
+                    if (adjacentUnit.Friendly)
                     {
                         // calculate the distance
                         var dist = Geometry.GetQuickDistance(turret.AbsolutePosition, adjacentUnit.AbsolutePosition);
@@ -467,19 +490,21 @@ namespace Singularity.Manager
 
             #region Kill them
 
+            var newUnitKillList = new List<FreeMovingUnit>();
             foreach (var unit in unitsToKill)
             {
-                RemoveUnit(unit);
-
-                // in any case, kill the unit.
+                // tell the unit to die.
                 unit.Die();
+                mDirector.GetStoryManager.Level.GameScreen.RemoveObject(unit);
+                mUnitMap.RemoveUnit(unit);
+                mMap.GetCollisionMap().RemoveCollider(unit);
+                mMap.GetFogOfWar().RemoveRevealingObject(unit);
             }
 
             foreach (var platform in platformsToKill)
             {
                 RemovePlatform(platform);
 
-                // in any case, kill it.
                 platform.Die();
             }
             #endregion

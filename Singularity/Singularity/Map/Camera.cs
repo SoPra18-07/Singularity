@@ -33,20 +33,8 @@ namespace Singularity.Map
         /// </summary>
         private GraphicsDevice mGraphics;
 
-        /// <summary>
-        /// The x location of the camera unzoomed. Could also be called the "true" or "absolute" x location.
-        /// </summary>
-        [DataMember]
-        private float mX;
-
         [DataMember]
         private Vector2 mPosition;
-
-        /// <summary>
-        /// The y location of the camera unzoomed. Could also be called the "true" or "absolute" y location.
-        /// </summary>
-        [DataMember]
-        private float mY;
 
         [DataMember]
         private Vector2 Position
@@ -143,7 +131,7 @@ namespace Singularity.Map
             director.GetInputManager.AddMouseWheelListener(this);
             director.GetInputManager.AddMousePositionListener(this);
 
-            mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
+            mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(0, 0, 0);
 
             mDirector.GetInputManager.CameraMoved(mTransform);
 
@@ -157,7 +145,7 @@ namespace Singularity.Map
             director.GetInputManager.AddMouseWheelListener(this);
             director.GetInputManager.AddMousePositionListener(this);
 
-            mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(-mX, -mY, 0);
+            mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(0, 0, 0);
 
             UpdateTransformMatrix();
 

@@ -151,7 +151,6 @@ namespace Singularity.Units
             {
                 mNeverMoved = false;
             }
-
         }
 
         public bool KeyTyped(KeyEvent keyEvent)
