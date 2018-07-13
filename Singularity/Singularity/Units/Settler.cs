@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,9 +18,8 @@ namespace Singularity.Units
     internal sealed class Settler: ControllableUnit, IKeyListener
     {
         #region Declarations
-        [DataMember]
         private GameScreen mGameScreen;
-        [DataMember]
+
         private UserInterfaceScreen mUi;
 
         [DataMember]
@@ -76,6 +76,13 @@ namespace Singularity.Units
         }
         #endregion
 
+        public void ReloadContent(ref Director director, Camera camera, ref Map.Map map, GameScreen gamescreen, UserInterfaceScreen ui)
+        {
+            ReloadContent(ref director, camera, ref map);
+            mGameScreen = gamescreen;
+            mUi = ui;
+            mDirector.GetInputManager.AddKeyListener(this);
+        }
 
         public override void Draw(SpriteBatch spriteBatch)
         {

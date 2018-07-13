@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
@@ -7,12 +6,23 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Singularity.Screen
 {
+    /// <summary>
+    /// A TextField constists of a string which is cut to fit a specified width
+    /// </summary>
     internal sealed class TextField : IWindowItem
     {
+        #region member variables
 
+        // text after splitting
         private readonly string mSplittedText;
+
+        // textfont
         private readonly SpriteFont mSpriteFont;
+
+        // textcolor
         private readonly Color mColor;
+
+        #endregion
 
         /// <summary>
         /// Creates a TextField which is automatically multilined to fit the size
@@ -32,21 +42,24 @@ namespace Singularity.Screen
             // split text to fit size-width
             mSplittedText = SplitLineToMultiline(text, size, spriteFont);
 
-            // update size
+            // update to fot the newly splitted text-height
             Size = new Vector2(size.X, spriteFont.MeasureString(mSplittedText).Y);
 
             ActiveInWindow = true;
         }
 
+        /// <inheritdoc />
         public void Update(GameTime gametime)
         {
             // no update needed
         }
 
+        /// <inheritdoc />
         public void Draw(SpriteBatch spriteBatch)
         {
             if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
             {
+                // draw the text
                 spriteBatch.DrawString(mSpriteFont, mSplittedText, Position, mColor);
             }
         }
@@ -57,7 +70,7 @@ namespace Singularity.Screen
         /// <param name="text">text to split</param>
         /// <param name="size">size to fit</param>
         /// <param name="spriteFont">text font</param>
-        /// <returns></returns>
+        /// <returns>the string splitted to fit the size-width</returns>
         private static string SplitLineToMultiline(string text, Vector2 size, SpriteFont spriteFont)
         {
             var splittedLines = new StringBuilder();
@@ -120,22 +133,15 @@ namespace Singularity.Screen
             return splittedLines.ToString();
         }
 
-        /// <summary>
-        /// top left corner of the textfield
-        /// </summary>
+        /// <inheritdoc />
         public Vector2 Position { get; set; }
-
-        /// <summary>
-        /// size of the textfield
-        /// </summary>
+        /// <inheritdoc />
         public Vector2 Size { get; }
-
-        /// <summary>
-        ///
-        /// </summary>
+        /// <inheritdoc />
         public bool ActiveInWindow { get; set; }
-
+        /// <inheritdoc />
         public bool InactiveInSelectedPlatformWindow { get; set; }
+        /// <inheritdoc />
         public bool OutOfScissorRectangle { get; set; }
     }
 }
