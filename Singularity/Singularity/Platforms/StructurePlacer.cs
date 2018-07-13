@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Diagnostics;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
@@ -186,6 +187,7 @@ namespace Singularity.Platforms
 
                         mPlatform.SetColor(Color.Red);
                         mPlaySound = false;
+
                     }
 
                     break;

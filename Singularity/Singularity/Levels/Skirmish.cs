@@ -98,8 +98,19 @@ namespace Singularity.Levels
                 content.Load<Texture2D>("Cylinders"),
                 content.Load<Texture2D>("PlatformBasic"),
                 ref mDirector);
+            var spawner2 = new Spawner(new Vector2(4000, 3000), content.Load<Texture2D>("Cylinders"),
+                content.Load<Texture2D>("PlatformBasic"),
+                ref mDirector);
 
-            
+            GameScreen.AddObject(spawner2);
+
+            var road6 = new Road(spawner, spawner2, ref mDirector);
+            GameScreen.AddObject(road6);
+
+
+
+
+
 
 
             platform2.StoreResource(res);

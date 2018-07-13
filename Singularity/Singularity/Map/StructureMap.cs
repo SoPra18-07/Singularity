@@ -183,11 +183,12 @@ namespace Singularity.Map
         public void RemovePlatform(PlatformBlank platform)
         {
             mPlatforms.Remove(platform);
-            mFow.RemoveRevealingObject(platform);
+            
 
             // TODO : made this only for friendly platforms since right now enemy platforms should not be added to Graph ID
             if (platform.Friendly)
             {
+                mFow.RemoveRevealingObject(platform);
                 var index = mPlatformToGraphId[platform];
                 mGraphIdToGraph[index] = null;
 
@@ -211,53 +212,59 @@ namespace Singularity.Map
             // first check if two graphs got connected.
             // because we need to differ between road connected two graphs, or road was added to one graph only
 
-            if (mPlatformToGraphId[(PlatformBlank) road.GetChild()] !=
-                mPlatformToGraphId[(PlatformBlank) road.GetParent()])
+            if (((PlatformBlank) road.GetChild()).Friendly || ((PlatformBlank) road.GetParent()).Friendly)
             {
-                var childIndex = mPlatformToGraphId[(PlatformBlank) road.GetChild()];
-                var parentIndex = mPlatformToGraphId[(PlatformBlank) road.GetParent()];
 
-                // since the graphes will get connected by this road, we first
-                // get all the nodes and edges from both graphes
-                var connectGraphNodes = mGraphIdToGraph[childIndex].GetNodes()
-                    .Concat(mGraphIdToGraph[parentIndex].GetNodes()).ToList();
-
-                var connectGraphEdges = mGraphIdToGraph[childIndex].GetEdges()
-                    .Concat(mGraphIdToGraph[parentIndex].GetEdges()).ToList();
-
-                // don't forget to add the current road to the graph aswell
-                connectGraphEdges.Add(road);
-
-                foreach (var node in connectGraphNodes)
+                if (mPlatformToGraphId[(PlatformBlank) road.GetChild()] !=
+                    mPlatformToGraphId[(PlatformBlank) road.GetParent()])
                 {
-                    // now we update our dictionary, such that all nodes formerly in the graph
-                    // of the node road.GetChild() are now in the parent nodes graph.
-                    // this is "arbitrary", we could also do it the other way around
-                    mPlatformToGraphId[(PlatformBlank) node] = parentIndex;
-                    ((PlatformBlank)node).SetGraphIndex(parentIndex);
+                    var childIndex = mPlatformToGraphId[(PlatformBlank) road.GetChild()];
+                    var parentIndex = mPlatformToGraphId[(PlatformBlank) road.GetParent()];
+
+                    // since the graphes will get connected by this road, we first
+                    // get all the nodes and edges from both graphes
+                    var connectGraphNodes = mGraphIdToGraph[childIndex].GetNodes()
+                        .Concat(mGraphIdToGraph[parentIndex].GetNodes()).ToList();
+
+                    var connectGraphEdges = mGraphIdToGraph[childIndex].GetEdges()
+                        .Concat(mGraphIdToGraph[parentIndex].GetEdges()).ToList();
+
+                    // don't forget to add the current road to the graph aswell
+                    connectGraphEdges.Add(road);
+
+                    foreach (var node in connectGraphNodes)
+                    {
+                        // now we update our dictionary, such that all nodes formerly in the graph
+                        // of the node road.GetChild() are now in the parent nodes graph.
+                        // this is "arbitrary", we could also do it the other way around
+                        mPlatformToGraphId[(PlatformBlank) node] = parentIndex;
+                        ((PlatformBlank) node).SetGraphIndex(parentIndex);
+                    }
+
+                    // now we create the actual connected graph
+                    var graph = new Graph.Graph(connectGraphNodes, connectGraphEdges);
+
+                    // the only thing left is to update the two former graph references
+                    // and add the new graph
+                    mGraphIdToGraph[childIndex] = null;
+                    mGraphIdToGraph[parentIndex] = graph;
+
+                    UpdateGenUnitsGraphIndex(mGraphIdToGraph[parentIndex], parentIndex);
+
+                    mGraphIdToEnergyLevel[parentIndex] =
+                        mGraphIdToEnergyLevel[parentIndex] + mGraphIdToEnergyLevel[childIndex];
+                    mGraphIdToEnergyLevel[childIndex] = 0;
+
+                    mDirector.GetDistributionDirector.MergeManagers(childIndex, parentIndex, parentIndex);
+                    mDirector.GetPathManager.RemoveGraph(childIndex);
+                    mDirector.GetPathManager.AddGraph(parentIndex, graph);
+                    return;
                 }
 
-                // now we create the actual connected graph
-                var graph = new Graph.Graph(connectGraphNodes, connectGraphEdges);
 
-                // the only thing left is to update the two former graph references
-                // and add the new graph
-                mGraphIdToGraph[childIndex] = null;
-                mGraphIdToGraph[parentIndex] = graph;
-
-                UpdateGenUnitsGraphIndex(mGraphIdToGraph[parentIndex], parentIndex);
-
-                mGraphIdToEnergyLevel[parentIndex] =
-                    mGraphIdToEnergyLevel[parentIndex] + mGraphIdToEnergyLevel[childIndex];
-                mGraphIdToEnergyLevel[childIndex] = 0;
-
-                mDirector.GetDistributionDirector.MergeManagers(childIndex, parentIndex, parentIndex);
-                mDirector.GetPathManager.RemoveGraph(childIndex);
-                mDirector.GetPathManager.AddGraph(parentIndex, graph);
-                return;
+                // the road was in the same graph, thus just add it to the graph
+                mGraphIdToGraph[mPlatformToGraphId[(PlatformBlank) road.GetChild()]].AddEdge(road);
             }
-            // the road was in the same graph, thus just add it to the graph
-            mGraphIdToGraph[mPlatformToGraphId[(PlatformBlank) road.GetChild()]].AddEdge(road);
 
         }
 

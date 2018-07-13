@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Singularity.Map;
 using Singularity.Screen.ScreenClasses;
+using Singularity.Units;
 
 namespace Singularity.KI
 {
@@ -13,7 +14,7 @@ namespace Singularity.KI
         // Camera Property (for Spawner)
         internal Camera Camera { get; private set; }
 
-
+        
         // Map property (for Spawner)
         internal Map.Map Map { get; private set; }
 
@@ -21,6 +22,11 @@ namespace Singularity.KI
         internal GameScreen GameScreen { get; private set; }
 
         // Keeps track of all the military Units present 
+        internal List<EnemyUnit> mEnemyUnits;
+
+        // state machine
+
+
 
     }
 }
