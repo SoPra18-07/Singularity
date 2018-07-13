@@ -48,7 +48,7 @@ namespace Singularity.Serialization
         {
             var ser = new NetDataContractSerializer();
             var fs = new FileStream(filepath, FileMode.Open);
-            var reader = XmlDictionaryReader.CreateTextReader(fs, new XmlDictionaryReaderQuotas());
+            var reader = XmlDictionaryReader.CreateTextReader(fs, XmlDictionaryReaderQuotas.Max);
             var deserializedObject = new List<object>();
 
             while (reader.Read())

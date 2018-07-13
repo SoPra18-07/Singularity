@@ -48,7 +48,6 @@ namespace Singularity.Screen.ScreenClasses
 
         // director
         private Director mDirector;
-
         // screen manager -- needed for pause menu
         private readonly IScreenManager mScreenManager;
 
@@ -70,7 +69,8 @@ namespace Singularity.Screen.ScreenClasses
 
         private readonly ResourceMap mResourceMap;
 
-        private readonly Map.Map mMap;
+        // TODO : changed this form readonly so that it can be passed on in constructor
+        private Map.Map mMap;
 
         private readonly Camera mCamera;
 
@@ -1442,7 +1442,7 @@ namespace Singularity.Screen.ScreenClasses
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
-                ref mDirector,
+                ref mDirector, ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -1471,6 +1471,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -1497,6 +1498,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -1523,6 +1525,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -1549,6 +1552,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -1575,6 +1579,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -1601,6 +1606,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -1627,6 +1633,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -1653,6 +1660,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -1688,6 +1696,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -1714,6 +1723,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -1740,6 +1750,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);

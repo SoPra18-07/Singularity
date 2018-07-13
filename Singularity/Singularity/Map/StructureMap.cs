@@ -100,14 +100,14 @@ namespace Singularity.Map
         }
 
 
-        public void ReloadContent(ContentManager content, FogOfWar fow, ref Director dir, Camera camera)
+        public void ReloadContent(ContentManager content, FogOfWar fow, ref Director dir, Camera camera, Map map)
         {
             mFow = fow;
             mDirector = dir;
             dir.GetInputManager.AddMousePositionListener(this);
             foreach (var placement in mStructuresToPlace)
             {
-                placement.ReloadContent(camera, ref dir);
+                placement.ReloadContent(camera, ref dir, map);
             }
 
             foreach (var platform in mPlatforms)

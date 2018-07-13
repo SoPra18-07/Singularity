@@ -96,9 +96,6 @@ namespace Singularity
             // TODO: load and play Soundtrack as background music
             // director.GetSoundManager.LoadContent(Content);
             //_mSoundManager.PlaySoundTrack();
-
-            //For testing load
-            //mDirector.GetStoryManager.SaveAchievements();
             //XSerializer.Save(new Skirmish(mGraphics, ref mDirector, Content, mScreenManager), "SwagSireDrizzle's_Game.xml", false);
         }
 

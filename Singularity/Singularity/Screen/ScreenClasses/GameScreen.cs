@@ -10,7 +10,6 @@ using Singularity.Map;
 using Singularity.Nature;
 using Singularity.Platforms;
 using Singularity.Property;
-using Singularity.Resources;
 using Singularity.Sound;
 using Singularity.Units;
 
@@ -58,6 +57,9 @@ namespace Singularity.Screen.ScreenClasses
         [DataMember]
         private Matrix mTransformMatrix;
 
+        [DataMember]
+        private bool mUistarted;
+
         /// <summary>
         /// The camera object which holds transformation values.
         /// </summary>
@@ -82,6 +84,7 @@ namespace Singularity.Screen.ScreenClasses
             mCamera = camera;
             mFow = fow;
 
+            mUistarted = false;
             mDirector = director;
 
             mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
@@ -188,7 +191,14 @@ namespace Singularity.Screen.ScreenClasses
                 }
                 possiblegenunit?.ReloadContent(ref mDirector);
             }
+
+            if (mUistarted)
+            {
+                ui.Activate();
+            }
         }
+
+
         public void Draw(SpriteBatch spriteBatch)
         {
 
@@ -506,6 +516,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // removes the settler from the GameScreen
             RemoveObject(s);
+            mUistarted = true;
         }
 
 

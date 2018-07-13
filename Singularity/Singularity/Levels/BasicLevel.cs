@@ -1,19 +1,27 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platforms;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
+using Singularity.Serialization;
 using Singularity.Units;
 
 namespace Singularity.Levels
 {
     [DataContract]
-    internal abstract class BasicLevel : ILevel
+    internal abstract class BasicLevel : ILevel, IKeyListener
     {
+
+        [DataMember]
+        public EScreen Screen { get; private set; }
+
         private DebugScreen mDebugscreen;
 
         [DataMember]
@@ -37,6 +45,8 @@ namespace Singularity.Levels
 
         protected IScreenManager mScreenManager;
 
+        private ContentManager mContent;
+
         protected BasicLevel(GraphicsDeviceManager graphics,
             ref Director director,
             ContentManager content,
@@ -48,7 +58,8 @@ namespace Singularity.Levels
             mDirector.GetStoryManager.LoadAchievements();
             mGraphics = graphics;
             mScreenManager = screenmanager;
-
+            mContent = content;
+            Screen = EScreen.GameScreen;
             StandardInitialization(content);
         }
 
@@ -83,6 +94,8 @@ namespace Singularity.Levels
 
             // the input manager keeps this from not getting collected by the GC
             mDebugscreen = new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
+
+            mDirector.GetInputManager.AddKeyListener(this);
         }
 
         public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, ref Director director, IScreenManager screenmanager)
@@ -109,15 +122,48 @@ namespace Singularity.Levels
             mFow.ReloadContent(mGraphics, Camera);
             Map.ReloadContent(mapBackground, Camera, mFow, ref mDirector, content);
             Ui = new UserInterfaceScreen(ref mDirector, mGraphics, Map, Camera, mScreenManager);
-
+            Ui.LoadContent(content);
+            Ui.Loaded = true;
             GameScreen.ReloadContent(content, graphics, Map, mFow, Camera, ref mDirector, Ui);
             mDirector.GetUserInterfaceController.ReloadContent(ref mDirector);
             mDirector.GetUserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
 
             // the input manager keeps this from not getting collected by the GC
             mDebugscreen = new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
+            mDirector.GetInputManager.AddKeyListener(this);
         }
 
         public abstract void LoadContent(ContentManager content);
+
+        public bool KeyTyped(KeyEvent keyevent)
+        {
+            // b key is used to convert the settler unit into a command center
+            var keyArray = keyevent.CurrentKeys;
+            foreach (var key in keyArray)
+            {
+                // if key b has been pressed and the settler unit is selected and its not moving
+                // --> send out event that deletes settler and adds a command center
+                if (key == Keys.Q)
+                {
+                    mDirector.GetStoryManager.SaveAchievements();
+                    XSerializer.Save(this, "xXxSwaglordofYolonessxXx.xml", false);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+
+        public bool KeyPressed(KeyEvent keyEvent)
+        {
+            return true;
+        }
+
+
+        public bool KeyReleased(KeyEvent keyEvent)
+        {
+            return true;
+        }
     }
 }
