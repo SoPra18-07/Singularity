@@ -22,7 +22,7 @@ namespace Singularity.Platforms
                 baseSprite: baseSprite,
                 libsans12: libSans12,
                 director: ref director,
-                type: EPlatformType.Barracks,
+                type: EStructureType.Barracks,
                 friendly: friendly)
         {
 

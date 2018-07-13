@@ -35,7 +35,7 @@ namespace Singularity.Platforms
             Texture2D baseSprite,
             SpriteFont libSans12,
             ref Director director,
-            EPlatformType type,
+            EStructureType type,
             bool friendly = true) : base(position,
             platformSpriteSheet,
             baseSprite,

@@ -31,7 +31,7 @@ namespace Singularity.Platforms
                 baseSprite,
                 libSans12,
                 ref director,
-                EPlatformType.Well,
+                EStructureType.Well,
                 -50,
                 friendly: friendly)
         {
@@ -41,7 +41,7 @@ namespace Singularity.Platforms
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
-            mType = EPlatformType.Well;
+            mType = EStructureType.Well;
             mSpritename = "Dome";
             Property = JobType.Production;
             SetPlatfromParameters();
