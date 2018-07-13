@@ -18,22 +18,12 @@ namespace Singularity.Map
     /// "true" purpose of a minimap is to be able to see everything at once at first glance without having to
     /// move the games camera to that exact location.
     /// </summary>
-    public sealed class MiniMap : IWindowItem
+    public sealed class MiniMap : IWindowItem, IMousePositionListener, IMouseClickListener
     {
         /// <summary>
         /// The interval in which the references to all the ingame objects get updated
         /// </summary>
         private const int UpdateMilliInterval = 1000;
-
-        /// <summary>
-        /// The map of the current game
-        /// </summary>
-        private readonly Map mMap;
-
-        /// <summary>
-        /// The camera of the current game
-        /// </summary>
-        private readonly Camera mCamera;
 
         /// <summary>
         /// The factor at which to downscale game objects as a whole.
@@ -72,7 +62,17 @@ namespace Singularity.Map
         public bool InactiveInSelectedPlatformWindow { get; set; }
         public bool OutOfScissorRectangle { get; set; }
 
-        public MiniMap(Map map, Camera camera, Texture2D minimapTexture)
+        public EScreen Screen { get; set; } = EScreen.UserInterfaceScreen;
+
+        public Rectangle Bounds { get; private set; }
+
+        private float mMouseX;
+
+        private float mMouseY;
+
+        private readonly Director mDirector;
+
+        public MiniMap(ref Director director, Texture2D minimapTexture)
         {
             // note, currently the exception is always false, since the values do work together, but in the future, when
             // the map size gets changed this might occur.
@@ -81,10 +81,12 @@ namespace Singularity.Map
             {
                 throw new MiniMapProportionsOffException("The map width and/or height is not compatible with the minimap width/height");
             }
-            mMap = map;
-            mCamera = camera;
+            mDirector = director;
             mDownscaleFactor = MapConstants.MapWidth / MapConstants.MiniMapWidth;
             mTexture = minimapTexture;
+
+            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.GetInputManager.AddMousePositionListener(this);
 
             mRevealing = new LinkedList<IRevealing>();
             mPlatforms = new LinkedList<PlatformBlank>();
@@ -135,11 +137,13 @@ namespace Singularity.Map
             */
 
             // draw the cameras viewport on the minimap
-            spriteBatch.StrokedRectangle(new Vector2(Position.X + mCamera.GetRelativePosition().X / mDownscaleFactor, Position.Y + 10 + mCamera.GetRelativePosition().Y / mDownscaleFactor), mCamera.GetSize() / mDownscaleFactor, Color.Red, Color.Transparent, 1f, 0f);
+            spriteBatch.StrokedRectangle(new Vector2(Position.X + mDirector.GetStoryManager.Level.Camera.GetRelativePosition().X / mDownscaleFactor, Position.Y + 10 + mDirector.GetStoryManager.Level.Camera.GetRelativePosition().Y / mDownscaleFactor), mDirector.GetStoryManager.Level.Camera.GetSize() / mDownscaleFactor, Color.Red, Color.Transparent, 1f, 0f);
         }
 
         public void Update(GameTime gametime)
         {
+            Bounds = new Rectangle((int) Position.X, (int) Position.Y, (int) Size.X, (int) Size.Y);
+
             // only update UpdateMilliInterval milliseconds. The basic idea was to refetch all the gameobjects every second
             // but I decided to just pass the reference which makes things alot easier.
 
@@ -150,10 +154,37 @@ namespace Singularity.Map
                 return;
             }
 
-            mPlatforms = mMap.GetStructureMap().GetPlatformList();
-            mMapResources = mMap.GetResourceMap().GetAllResources();
-            mRevealing = mMap.GetFogOfWar().GetRevealingObjects();
+            mPlatforms = mDirector.GetStoryManager.Level.Map.GetStructureMap().GetPlatformList();
+            mMapResources = mDirector.GetStoryManager.Level.Map.GetResourceMap().GetAllResources();
+            mRevealing = mDirector.GetStoryManager.Level.Map.GetFogOfWar().GetRevealingObjects();
 
+        }
+
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
+        {
+            mMouseX = (screenX - Position.X);
+            mMouseY = (screenY - (Position.Y + 10));
+        }
+
+        public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
+        {
+            if(mouseAction != EMouseAction.LeftClick)
+            {
+                return true;
+            }
+
+            mDirector.GetStoryManager.Level.Camera.CenterOn(new Vector2(mMouseX * mDownscaleFactor, mMouseY * mDownscaleFactor));
+            return false;
+        }
+
+        public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
+        {
+            return true;
+        }
+
+        public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
+        {
+            return true;
         }
     }
 }

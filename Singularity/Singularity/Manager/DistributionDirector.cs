@@ -15,7 +15,7 @@ namespace Singularity.Manager
         [DataMember]
         private Dictionary<int, DistributionManager> mDMs;
 
-        private readonly UserInterfaceController mUserInterfaceController;
+        private UserInterfaceController mUserInterfaceController;
 
         public DistributionDirector(Director director)
         {
@@ -145,6 +145,11 @@ namespace Singularity.Manager
         {
             mDMs[graphId] = null;
             mUserInterfaceController.CallingAllGraphs(graphIdToGraph);
+        }
+
+        public void ReloadContent(ref Director director)
+        {
+            mUserInterfaceController = director.GetUserInterfaceController;
         }
     }
 }
