@@ -1382,6 +1382,10 @@ namespace Singularity.Screen.ScreenClasses
             {
                 mSelectedPlatformWindow.ResetScrollValue();
             }
+
+            //selected platform id was never set, resulting in the comparision above to always equal to true -> permanently setting
+            // the scroll value to 0 which lead to not being able to scroll anymore.
+            selectedPlatformId = id;
         }
 
         /// <summary>
