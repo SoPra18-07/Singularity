@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Property;
 using Singularity.Screen;
+using Singularity.Utils;
 
 namespace Singularity.Input
 {
