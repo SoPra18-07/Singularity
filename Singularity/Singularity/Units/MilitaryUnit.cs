@@ -39,11 +39,6 @@ namespace Singularity.Units
         internal static Texture2D mGlowTexture;
 
         /// <summary>
-        /// Sprite for a dead unit.
-        /// </summary>
-        internal static Texture2D mDeadTexture;
-
-        /// <summary>
         /// Scalar for the unit size.
         /// </summary>
         [DataMember]
