@@ -74,7 +74,7 @@ namespace Singularity.Screen
                     text: mResourceText,
                     position: mTextPosition,
                     color: Color.White);
-                // draw the amount aligned to the right side 
+                // draw the amount aligned to the right side
                 spriteBatch.DrawString(
                     spriteFont: mSpriteFont,
                     text: Amount.ToString(),

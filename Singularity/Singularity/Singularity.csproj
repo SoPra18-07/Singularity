@@ -60,8 +60,12 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <Compile Include="KI\KI.cs" />
     <Compile Include="KI\Spawner.cs" />
+=======
+    <Compile Include="Levels\PlatformDestructionTestLevel.cs" />
+>>>>>>> origin/master
     <Compile Include="Nature\Rock.cs" />
     <Compile Include="Levels\BasicLevel.cs" />
     <Compile Include="Levels\ILevel.cs" />
@@ -94,6 +98,7 @@
     <Compile Include="Screen\InfoBarWindowObject.cs" />
     <Compile Include="Screen\ScreenClasses\DebugScreen.cs" />
     <Compile Include="Screen\ActivationIWindowItem.cs" />
+    <Compile Include="Screen\PlatformInfoBox.cs" />
     <Compile Include="Screen\SliderHandler.cs" />
     <Compile Include="Units\ControllableUnit.cs" />
     <Compile Include="Screen\TextAndAmountIWindowItem.cs" />

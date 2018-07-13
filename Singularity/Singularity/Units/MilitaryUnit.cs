@@ -63,7 +63,7 @@ namespace Singularity.Units
 
         private float mShootingTimer = -1f;
         private double mCurrentTime;
-        
+
         public MilitaryUnit(Vector2 position,
             Camera camera,
             ref Director director,
@@ -150,13 +150,13 @@ namespace Singularity.Units
             Bounds = new Rectangle(
                 (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
 
-            
+
             // this makes the unit rotate according to the mouse position when its selected and not moving.
             if (mSelected && !mIsMoving && !mShoot)
             {
                  Rotate(new Vector2(mMouseX, mMouseY));
             }
-            
+
 
             else if (HasReachedTarget())
             {
@@ -207,7 +207,7 @@ namespace Singularity.Units
         public void Shoot(ICollider target)
         {
             mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
-            target.MakeDamage(MilitaryUnitStats.UnitStrength);
+            target.MakeDamage(MilitaryUnitStats.mUnitStrength);
         }
 
         public void SetShootingTarget(ICollider target)
@@ -224,6 +224,6 @@ namespace Singularity.Units
 
             mShootingTarget = target;
         }
-        
+
     }
 }

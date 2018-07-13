@@ -51,8 +51,7 @@ namespace Singularity.Map
             int height,
             FogOfWar fow,
             Camera camera,
-            ref Director director,
-            IEnumerable<MapResource> initialResources = null)
+            ref Director director)
         {
             mWidth = width;
             mHeight = height;
@@ -62,6 +61,8 @@ namespace Singularity.Map
             mBackgroundTexture = backgroundTexture;
 
             mFow = fow;
+
+            var initialResources = ResourceHelper.GetRandomlyDistributedResources(50);
 
             mCollisionMap = new CollisionMap();
             mStructureMap = new StructureMap(fow, ref director);

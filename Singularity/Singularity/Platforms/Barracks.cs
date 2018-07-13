@@ -12,11 +12,13 @@ namespace Singularity.Platforms
         public Barracks(Vector2 position,
             Texture2D platformSpriteSheet,
             Texture2D baseSprite,
+            SpriteFont libSans12,
             ref Director director,
             bool friendly = true)
             : base(position: position,
                 platformSpriteSheet: platformSpriteSheet,
                 baseSprite: baseSprite,
+                libsans12: libSans12,
                 director: ref director,
                 type: EPlatformType.Barracks,
                 friendly: friendly)

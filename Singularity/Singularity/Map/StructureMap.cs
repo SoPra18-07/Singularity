@@ -10,6 +10,7 @@ using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Units;
+using Singularity.Utils;
 
 namespace Singularity.Map
 {
@@ -152,19 +153,12 @@ namespace Singularity.Map
             mPlatforms.Remove(platform);
             mFow.RemoveRevealingObject(platform);
 
-            // first update the references to all the roads connected to this accordingly
-            foreach (var roads in platform.GetOutwardsEdges())
-            {
-                ((Road) roads).SourceAsNode = null;
-            }
+            var index = mPlatformToGraphId[platform];
 
-            foreach (var roads in platform.GetInwardsEdges())
-            {
-                ((Road) roads).DestinationAsNode = null;
-            }
+            mGraphIdToGraph[index] = null;
 
-            // possible outcomes, no new graphs, 1 new graph, ..., n new graphs.
-            // TODO: no idea how to efficiently handle this, implementation needed
+            mDirector.GetDistributionDirector.RemoveManager(index);
+            mDirector.GetPathManager.RemoveGraph(index);
 
 
         }
@@ -186,7 +180,7 @@ namespace Singularity.Map
                 var childIndex = mPlatformToGraphId[(PlatformBlank) road.GetChild()];
                 var parentIndex = mPlatformToGraphId[(PlatformBlank) road.GetParent()];
 
-                // since the graphes will get connected by this road, we first 
+                // since the graphes will get connected by this road, we first
                 // get all the nodes and edges from both graphes
                 var connectGraphNodes = mGraphIdToGraph[childIndex].GetNodes()
                     .Concat(mGraphIdToGraph[parentIndex].GetNodes()).ToList();
@@ -241,8 +235,8 @@ namespace Singularity.Map
             var child = road.GetChild();
             var parent = road.GetParent();
 
-            ((PlatformBlank)child).RemoveEdge(road);
-            ((PlatformBlank)parent).RemoveEdge(road);
+            ((PlatformBlank)child)?.RemoveEdge(road);
+            ((PlatformBlank)parent)?.RemoveEdge(road);
 
             // more accurately: we have two cases:
             // 1. road gets destroyed -> two new seperate graphs get created
@@ -251,7 +245,7 @@ namespace Singularity.Map
             // 1.1 road gets destroyed -> graph doesn't change, since child reachability graph
             // and parent reachability graph are the same even without the road. Just remove
             // the road from the graph
-            // 
+            //
             // 2. road gets destroyed -> the graph stays the same, just
             // this road removed, this can be the case if either the child
             // or parent of the road is not existent anymore.
@@ -271,6 +265,7 @@ namespace Singularity.Map
             // now check the 2nd case.
             if (child == null || parent == null)
             {
+
                 INode existent = null;
 
                 if (child != null)
@@ -315,7 +310,24 @@ namespace Singularity.Map
 
             UpdateGenUnitsGraphIndex(mGraphIdToGraph[newChildIndex], newChildIndex);
 
-            //TODO: split the two dist managers here, wasn't sure how to implement it since i didnt understand the signature
+            var platforms = new List<PlatformBlank>();
+            var units = new List<GeneralUnit>();
+
+            foreach (var node in parentReachableGraph.GetNodes())
+            {
+                platforms.Add((PlatformBlank)node);
+                foreach (var unit in ((PlatformBlank) node).GetGeneralUnitsOnPlatform())
+                {
+                    units.Add(unit);
+                }
+            }
+
+            mGraphIdToEnergyLevel[newChildIndex] = 0;
+            mGraphIdToEnergyLevel[mPlatformToGraphId[(PlatformBlank) parent]] = 0;
+            UpdateEnergyLevel(newChildIndex);
+            UpdateEnergyLevel(mPlatformToGraphId[(PlatformBlank)parent]);
+
+            mDirector.GetDistributionDirector.SplitManagers(mPlatformToGraphId[(PlatformBlank)parent], newChildIndex, platforms, units);
             mDirector.GetPathManager.AddGraph(newChildIndex, childReachableGraph);
             mDirector.GetPathManager.AddGraph(mPlatformToGraphId[(PlatformBlank)parent], parentReachableGraph);
         }
@@ -345,6 +357,11 @@ namespace Singularity.Map
 
                 foreach (var child in node.GetChilds())
                 {
+                    if (child == null)
+                    {
+                        continue;
+                    }
+
                     if (visited.ContainsKey(child))
                     {
                         continue;
@@ -386,12 +403,12 @@ namespace Singularity.Map
         public void Update(GameTime gametime)
         {
             // the platform which currently gets hovered. This only gets set if we actually need it
-            // e.g. when we have a "to be placed platform" currently in the game. This also 
+            // e.g. when we have a "to be placed platform" currently in the game. This also
             // fulfills multiple purposes.
             // First is when the platform to be placed is in its
             // first state, then the hovering refers to the platform which is under the platform
             // to place. This is needed to make sure that the platform to be placed doesn't get
-            // placed ontop of another. 
+            // placed ontop of another.
             // The second is when the platform to be placed is in its second state,
             // then the hovering refers to the platform the road snaps to.
             PlatformBlank hovering = null;
@@ -420,7 +437,7 @@ namespace Singularity.Map
                     // these don't get updated automatically.
                     structureToAdd.GetPlatform().UpdateValues();
 
-                    // if our current platform doesn't intersect with the platform to be placed we 
+                    // if our current platform doesn't intersect with the platform to be placed we
                     // aren't hovering it, thus we continue to the next platform.
                     if (!structureToAdd.GetPlatform().AbsBounds.Intersects(platform.AbsBounds))
                     {

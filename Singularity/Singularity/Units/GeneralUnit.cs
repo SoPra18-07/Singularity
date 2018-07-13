@@ -218,25 +218,23 @@ namespace Singularity.Units
             {
                 RegulateMovement();
                 if (Carrying.IsPresent())
-                        {
-                            Carrying.Get().Follow(this);
-                        }
-                //This means we arrived at the point we want to leave the Resource and consider our work done
-                if (mTask.End.IsPresent() && CurrentNode.Equals(mTask.End.Get()) &&
-                    ReachedTarget(mTask.End.Get().Center))
                 {
-                    if (Carrying.IsPresent())
-                    {
-                        var res = Carrying.Get();
-                        res.UnFollow();
-                        ((PlatformBlank)CurrentNode).StoreResource(res);
-                        Carrying = Optional<Resource>.Of(null);
-                    }
-
-                    mDone = true;
-                    //We can now do the job we were assigned to.
-                    mFinishTask = false;
+                    Carrying.Get().Follow(this);
                 }
+                //This means we arrived at the point we want to leave the Resource and consider our work done
+                if (!mTask.End.IsPresent() || !CurrentNode.Equals(mTask.End.Get()) ||
+                    !ReachedTarget(mTask.End.Get().Center)) return;
+                if (Carrying.IsPresent())
+                {
+                    var res = Carrying.Get();
+                    res.UnFollow();
+                    ((PlatformBlank)CurrentNode).StoreResource(res);
+                    Carrying = Optional<Resource>.Of(null);
+                }
+
+                mDone = true;
+                //We can now do the job we were assigned to.
+                mFinishTask = false;
             }
             else
             {
@@ -439,9 +437,13 @@ namespace Singularity.Units
 
             mIsMoving = true;
 
-            var movementVector = Geometry.NormalizeVector(new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y));
+            var distance = new Vector2(targetPosition.X - AbsolutePosition.X, targetPosition.Y - AbsolutePosition.Y);
+            var movementVector = Vector2.Multiply(Geometry.NormalizeVector(distance), Speed);
+            var dist = (float) Geometry.Length(distance);
+            if (dist < 50)
+                movementVector = Vector2.Multiply(movementVector, dist / 50f);
 
-            AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X * Speed, AbsolutePosition.Y + movementVector.Y * Speed);
+            AbsolutePosition = AbsolutePosition + movementVector;
         }
 
         private void RegulateMovement()
