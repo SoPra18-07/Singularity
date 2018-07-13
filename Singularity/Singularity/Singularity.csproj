@@ -91,6 +91,7 @@
     <Compile Include="Property\GlobalVariables.cs" />
     <Compile Include="Screen\ResourceIWindowItem.cs" />
     <Compile Include="Screen\InfoBarWindowObject.cs" />
+    <Compile Include="Screen\ScreenClasses\LoadGameManagerScreen.cs" />
     <Compile Include="Screen\ScreenClasses\DebugScreen.cs" />
     <Compile Include="Screen\ActivationIWindowItem.cs" />
     <Compile Include="Screen\PlatformInfoBox.cs" />

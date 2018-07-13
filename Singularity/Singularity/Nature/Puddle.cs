@@ -1,33 +1,45 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
+using Singularity.Manager;
 using Singularity.Property;
 using Singularity.Utils;
 
 namespace Singularity.Nature
 {
+    [DataContract]
     public class Puddle : ICollider
     {
         public bool[,] ColliderGrid { get; internal set; }
 
-
-        public Rectangle AbsBounds { get; }
-        public bool Moved { get; } = false;
-        public int Id { get; }
+        [DataMember]
+        public Rectangle AbsBounds { get; private set; }
+        [DataMember]
+        public bool Moved { get; private set; }
+        [DataMember]
+        public int Id { get; private set; }
+        [DataMember]
         public Vector2 RelativePosition { get; set; }
+        [DataMember]
         public Vector2 RelativeSize { get; set; }
+        [DataMember]
         public Vector2 AbsolutePosition { get; set; }
+        [DataMember]
         public Vector2 AbsoluteSize { get; set; }
+        [DataMember]
         private readonly Vector2 mPosition;
+        [DataMember]
         private readonly bool mBigPuddle;
+        [DataMember]
+        public Vector2 Center { get; private set; }
+        [DataMember]
+        public bool Friendly { get; private set; }
 
-        public Vector2 Center { get; }
-        public bool Friendly { get; } = false;
-
-        public Puddle(Vector2 position, bool bigPuddle = true)
+        public Puddle(Vector2 position, ref Director director, bool bigPuddle = true)
         {
-            Id = IdGenerator.NextiD();
+            Id = director.GetIdGenerator.NextiD();
             AbsoluteSize = new Vector2(160, 130);
 
             mBigPuddle = bigPuddle;
@@ -66,6 +78,33 @@ namespace Singularity.Nature
         }
 
 
+        public void ReloadContent()
+        {
+            if (mBigPuddle)
+            {
+                ColliderGrid = new[,]
+                {
+                    {false, true, true, true, true, true, true, true, false, false},
+                    {true, true, true, true, true, true, true, true, true, false},
+                    {true, true, true, true, true, true, true, true, true, true},
+                    {true, true, true, true, true, true, true, true, true, true},
+                    {true, true, true, true, true, true, true, true, true, true},
+                    {false, true, true, true, true, true, true, true, false, false},
+                };
+            }
+            else
+            {
+                ColliderGrid = new[,]
+                {
+                    {false, true, true, true, true, true, true, true, false},
+                    {true, true, true, true, true, true, true,  true, true},
+                    {true, true, true, true, true, true, true, true, true},
+                    {true, true, true, true, true, true, true, true, true},
+                    {true, true, true, true, true, true, true, true, true},
+                    {false, true, true, true, true, true, true, true, false},
+                };
+            }
+        }
 
         public void Draw(SpriteBatch spriteBatch)
         {

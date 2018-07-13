@@ -9,28 +9,40 @@ using Singularity.Map.Properties;
 using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Resources;
+using System.Runtime.Serialization;
+using Microsoft.Xna.Framework.Content;
 
 namespace Singularity.Map
 {
+    [DataContract]
     public sealed class Map : IDraw, IUpdate
     {
+        [DataMember]
         private readonly CollisionMap mCollisionMap;
+        [DataMember]
         private readonly StructureMap mStructureMap;
+        [DataMember]
         private readonly ResourceMap mResourceMap;
-        private readonly UnitMap mUnitMap;
+        private UnitMap mUnitMap;
 
+        [DataMember]
         private readonly int mWidth;
+        [DataMember]
         private readonly int mHeight;
 
-        private readonly Camera mCamera;
+        private Camera mCamera;
 
-        private readonly Texture2D mBackgroundTexture;
+        private Texture2D mBackgroundTexture;
 
-        private readonly FogOfWar mFow;
+        private FogOfWar mFow;
 
+        [DataMember]
         private int mXPosMin;
+        [DataMember]
         private int mXPosMax;
+        [DataMember]
         private int mYPosMin;
+        [DataMember]
         private int mYPosMax;
 
 
@@ -70,6 +82,16 @@ namespace Singularity.Map
             mUnitMap = new UnitMap(width, height);
 
             director.GetStoryManager.StructureMap = mStructureMap;
+        }
+
+        public void ReloadContent(Texture2D background, Camera camera, FogOfWar fow, ref Director dir, ContentManager content)
+        {
+            mBackgroundTexture = background;
+            mCamera = camera;
+            mFow = fow;
+            //ADD ALL THE THINGS TO THE CAMERA AND THE FOW
+            mStructureMap.ReloadContent(content, mFow, ref dir, mCamera, this);
+            mCollisionMap.ReloadContent();
         }
 
         /// <see cref="CollisionMap.UpdateCollider(ICollider)"/>
@@ -230,6 +252,11 @@ namespace Singularity.Map
         internal ResourceMap GetResourceMap()
         {
             return mResourceMap;
+        }
+
+        internal Vector2 GetMeasurements()
+        {
+            return new Vector2(mWidth, mHeight);
         }
 
         internal UnitMap GetUnitMap()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
+using Singularity.Utils;
 
 namespace Singularity.Serialization
 {
@@ -47,7 +48,7 @@ namespace Singularity.Serialization
         {
             var ser = new NetDataContractSerializer();
             var fs = new FileStream(filepath, FileMode.Open);
-            var reader = XmlDictionaryReader.CreateTextReader(fs, new XmlDictionaryReaderQuotas());
+            var reader = XmlDictionaryReader.CreateTextReader(fs, XmlDictionaryReaderQuotas.Max);
             var deserializedObject = new List<object>();
 
             while (reader.Read())
@@ -70,10 +71,20 @@ namespace Singularity.Serialization
         /// The destination will be  %USERPROFILE%\Saved Games\Singularity (the directory will be created if it doesnt exist).
         /// </summary>
         /// <param name="toSave">The object that should be saved</param>
-        /// /// <param name="name">The name of the file. Don't forget to add .xml at the end!!!</param>
-        public static void Save(object toSave, string name)
+        /// <param name="name">The name of the file. Don't forget to add .xml at the end!!!</param>
+        /// /// <param name="isAchievement">True if you want to Save an Achievement class, false if its a GameSave</param>
+        public static void Save(object toSave, string name, bool isAchievement)
         {
-            var path = @"%USERPROFILE%\Saved Games\Singularity";
+            string path;
+            if (isAchievement)
+            {
+                path = @"%USERPROFILE%\Saved Games\Singularity\Achievements";
+            }
+            else
+            {
+                path = @"%USERPROFILE%\Saved Games\Singularity\Saves";
+            }
+
             path = Environment.ExpandEnvironmentVariables(path);
             if (!Directory.Exists(path))
             {
@@ -87,17 +98,71 @@ namespace Singularity.Serialization
         /// Load the Xml-file containing whatever data. Remember that in our Saves there should only be one object, contact me if you want to change that.
         /// It may be, that a typecast is needed since this method returns an object.
         /// </summary>
-        /// <param name="path">The Xml-file I was talking about</param>
-        /// <returns>The Object that has been loaded</returns>
-        public static object Load(string path)
+        /// <param name="name">The Xml-file-name I was talking about</param>
+        /// <param name="isAchievement">True if it is an Achievement you want to load, false if it is a GameSave</param>
+        /// <returns>An optional containing the object that has been loaded, or null if the specified xml file does not exist.</returns>
+        public static Optional<object> Load(string name, bool isAchievement)
         {
+            string path;
+            if (isAchievement)
+            {
+                path = @"%USERPROFILE%\Saved Games\Singularity\Achievements";
+            }
+            else
+            {
+                path = @"%USERPROFILE%\Saved Games\Singularity\Saves";
+            }
+
+            path = Environment.ExpandEnvironmentVariables(path);
+
+            if (!Directory.Exists(path))
+            {
+                return Optional<object>.Of(null);
+            }
+
+            path += @"\" + name;
+            if (!File.Exists(path))
+            {
+                return Optional<object>.Of(null);
+            }
+
             var loadedObjects = Deserialize(path);
             if (loadedObjects.Count == 0)
             {
                 throw new IOException("There are no deserialized Objects. Most likely your .xml file is empty.");
             }
             //One may implement additional logic here later
-            return loadedObjects[0];
+            return Optional<object>.Of(loadedObjects[0]);
+        }
+
+        /// <summary>
+        /// Returns a list of the names of all GameSaves.
+        /// </summary>
+        /// <returns>An array containing the names of all Gamesaves.</returns>
+        public static string[] GetSaveNames()
+        {
+            var path = @"%USERPROFILE%\Saved Games\Singularity\Saves";
+            path = Environment.ExpandEnvironmentVariables(path);
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+                return new string[0];
+            }
+            else
+            {
+                var names = Directory.GetFiles(path);
+                var index = 0;
+
+                //Convert the paths of the files to their names
+                foreach (var filepath in names)
+                {
+                    var name = filepath.Substring(filepath.LastIndexOf('\\') + 1);
+                    names[index] = name;
+                    index++;
+                }
+
+                return names;
+            }
         }
 
         /// <summary>

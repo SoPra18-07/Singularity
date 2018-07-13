@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,6 +12,7 @@ using Singularity.Screen;
 
 namespace Singularity.Units
 {
+    [DataContract]
     public sealed class SelectionBox : IDraw, IUpdate, IMouseClickListener, IMousePositionListener
     {
         private Color mColor;
@@ -20,6 +22,7 @@ namespace Singularity.Units
 
         private float mXStart;
         private float mYStart;
+
 
         public delegate void SelectionBoxEventHandler(object source, EventArgs args, Vector2 leftCorner, Vector2 size);
         public event SelectionBoxEventHandler SelectingBox;
@@ -40,6 +43,7 @@ namespace Singularity.Units
             mDirector = director;
             director.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             director.GetInputManager.AddMousePositionListener(this);
+            mBoxExists = false;
         }
 
 
@@ -96,6 +100,7 @@ namespace Singularity.Units
                 case EMouseAction.LeftClick:
                     if (!mBoxExists)
                     {
+                        Console.Out.WriteLine("Setting Exists on TRUE!");
                         mBoxExists = true;
                         mStartBox = MouseCoordinates();
                         mSizeBox = new Vector2(0, 0);
@@ -120,6 +125,7 @@ namespace Singularity.Units
                 case EMouseAction.LeftClick:
                     if (mBoxExists)
                     {
+                        Console.Out.WriteLine("Setting Exists on FALSE!");
                         mBoxExists = false;
 
                         // if not an "accidental selection box" send out bounds

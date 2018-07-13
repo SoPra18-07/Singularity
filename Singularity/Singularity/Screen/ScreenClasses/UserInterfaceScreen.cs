@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -37,9 +37,6 @@ namespace Singularity.Screen.ScreenClasses
         // textures
         private Texture2D mBlankPlatformTexture;
         private Texture2D mOtherPlatformTexture;
-
-        // manage input
-        private readonly InputManager mInputManager;
 
         // used to calculate the positions of the windows at the beginning
         private int mCurrentScreenWidth;
@@ -164,6 +161,7 @@ namespace Singularity.Screen.ScreenClasses
         private Slider mBuildSlider;
         private Slider mLogisticsSlider;
         private Slider mProductionSlider;
+        private SliderHandler mHandler;
 
         // text for sliders
         private TextField mDefTextField;
@@ -284,24 +282,23 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         /// <param name="director"></param>
         /// <param name="mgraphics"></param>
-        /// <param name="gameScreen"></param>
-        /// <param name="stackScreenManager"></param>
         /// <param name="map"></param>
-        public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, GameScreen gameScreen, IScreenManager stackScreenManager)
+        /// /// <param name="camera"></param>
+        /// <param name="stackScreenManager"></param>
+        public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, Map.Map map, Camera camera, IScreenManager stackScreenManager)
         {
-            mMap = gameScreen.GetMap();
-            mStructureMap = gameScreen.GetMap().GetStructureMap();
-            mResourceMap = gameScreen.GetMap().GetResourceMap();
-            mCamera = gameScreen.GetCamera();
+            mMap = map;
+            mStructureMap = mMap.GetStructureMap();
+            mResourceMap = mMap.GetResourceMap();
+            mCamera = camera;
             mCanBuildPlatform = true;
 
             mDirector = director;
             mScreenManager = stackScreenManager;
-            mInputManager = director.GetInputManager;
             mGraphics = mgraphics;
 
             // initialize input manager
-            mInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
             Bounds = new Rectangle(0,0, mgraphics.PreferredBackBufferWidth, mgraphics.PreferredBackBufferHeight);
 
             // create the windowList
@@ -430,7 +427,7 @@ namespace Singularity.Screen.ScreenClasses
             #region selectedPlatformWindow
 
             // create the window object
-            mSelectedPlatformWindow = new WindowObject("No Selection", new Vector2(250, 200), new Vector2(selectedPlatformWidth, selectedPlatformHeight), true, mLibSans14, mInputManager, mGraphics);
+            mSelectedPlatformWindow = new WindowObject("No Selection", new Vector2(250, 200), new Vector2(selectedPlatformWidth, selectedPlatformHeight), true, mLibSans14, mDirector.GetInputManager, mGraphics);
 
             // list to add all item to be able to iterate through them
             mSelectedPlatformResourcesList = new List<ResourceIWindowItem>();
@@ -556,7 +553,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO : IMPLEMENT THE EVENT LOG
             #region eventLogWindow
 
-            mEventLogWindow = new WindowObject("// EVENT LOG", new Vector2(0, 0), new Vector2(eventLogWidth, eventLogHeight), true, mLibSans14, mInputManager, mGraphics);
+            mEventLogWindow = new WindowObject("// EVENT LOG", new Vector2(0, 0), new Vector2(eventLogWidth, eventLogHeight), true, mLibSans14, mDirector.GetInputManager, mGraphics);
             // create items
 
             // add all items
@@ -567,7 +564,7 @@ namespace Singularity.Screen.ScreenClasses
 
             #region civilUnitsWindow
 
-            mCivilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(0, 0), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 10, 20, true, mLibSans14, mInputManager, mGraphics);
+            mCivilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(0, 0), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 10, 20, true, mLibSans14, mDirector.GetInputManager, mGraphics);
 
             // create items
             mDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
@@ -582,7 +579,7 @@ namespace Singularity.Screen.ScreenClasses
             mIdleUnitsTextAndAmount = new TextAndAmountIWindowItem("Idle", 0, Vector2.Zero, new Vector2(civilUnitsWidth, 0), mLibSans12, Color.White );
 
             //This instance will handle the comunication between Sliders and DistributionManager.
-            var handler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mBuildSlider, mLogisticsSlider);
+            mHandler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mBuildSlider, mLogisticsSlider);
 
             // adding all items
             mCivilUnitsWindow.AddItem(mIdleUnitsTextAndAmount);
@@ -602,7 +599,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO : WHAT IS THE RESOURCE WINDOW SUPPOSED TO SHOW ? - IMPLEMENT IT
             #region resourceWindow
 
-            mResourceWindow = new WindowObject("// RESOURCES", new Vector2(0, 0), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mInputManager, mGraphics);
+            mResourceWindow = new WindowObject("// RESOURCES", new Vector2(0, 0), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mDirector.GetInputManager, mGraphics);
 
             // create all items (these are simple starting values which will be updated automatically by the UI controller)
             mResourceItemChip = new ResourceIWindowItem(EResourceType.Chip, 10, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
@@ -639,7 +636,7 @@ namespace Singularity.Screen.ScreenClasses
 
             #region buildMenuWindow
 
-            mBuildMenuWindow = new WindowObject("// BUILDMENU", new Vector2(0, 0), new Vector2(buildMenuWidth, buildMenuHeight), true, mLibSans14, mInputManager, mGraphics);
+            mBuildMenuWindow = new WindowObject("// BUILDMENU", new Vector2(0, 0), new Vector2(buildMenuWidth, buildMenuHeight), true, mLibSans14, mDirector.GetInputManager, mGraphics);
 
             #region button definitions
 
@@ -1325,7 +1322,7 @@ namespace Singularity.Screen.ScreenClasses
                         mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
                     }
                 }
-                else if (action is MakeHeavyMilitaryUnit)
+                else if (action is MakeStrongMilitaryUnit)
                 {
                     mMakeStrongMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
@@ -1399,6 +1396,7 @@ namespace Singularity.Screen.ScreenClasses
                 window.Active = true;
             }
             mInfoBar.Active = true;
+            mHandler.Initialize();
         }
 
         #region button management

@@ -8,24 +8,26 @@ using Singularity.Utils;
 
 namespace Singularity.Resources
 {
+    [DataContract]
     public class Resource : ISpatial
     {
         // TODO: fkarg implement
-
+        [DataMember]
         private const float Speed = 4f;
+        [DataMember]
         private Vector2 mVelocity;
-
+        [DataMember]
         public Vector2 RelativePosition { get; set; }
-
+        [DataMember]
         public Vector2 RelativeSize { get; set; }
-
+        [DataMember]
         public Vector2 AbsolutePosition { get; set; }
-
+        [DataMember]
         public Vector2 AbsoluteSize { get; set; }
 
         [DataMember]
         public EResourceType Type { get; internal set; }
-
+        [DataMember]
         private Optional<GeneralUnit> mFollowing;
 
         public Resource(EResourceType type, Vector2 position)
