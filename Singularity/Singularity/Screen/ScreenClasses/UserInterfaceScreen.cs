@@ -1154,7 +1154,7 @@ namespace Singularity.Screen.ScreenClasses
             int id,
             bool isActive,
             bool isManuallyDeactivated,
-            EPlatformType type,
+            EStructureType type,
             IEnumerable<Resource> resourceAmountList,
             Dictionary<JobType, List<Pair<GeneralUnit, bool>>> unitAssignmentList,
             IEnumerable<IPlatformAction> actionsList)
@@ -1260,7 +1260,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // activate defense text/sliders + deactivate production text/sliders if the platform is a defense tower,
             // else deactivate defense text/sliders + activate production text/sliders
-            if (type == EPlatformType.Kinetic || type == EPlatformType.Laser)
+            if (type == EStructureType.Kinetic || type == EStructureType.Laser)
             {
                 mSelectedPlatformDefTextField.ActiveInWindow = true;
                 mSelectedPlatformDefSlider.ActiveInWindow = true;
@@ -1400,6 +1400,69 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBar.Active = true;
         }
 
+        private Button mCurrentlyBuildButton;
+
+        public void BuildingProcessStarted(EStructureType structureType)
+        {
+            mCurrentlyBuildButton = GetButtonByStructureType(structureType);
+            mCurrentlyBuildButton?.AddBorder();
+        }
+
+        public void BuildingProcessFinished(EStructureType structureType)
+        {
+            mCurrentlyBuildButton?.RemoveBorder();
+            mCurrentlyBuildButton = null;
+        }
+
+        private Button GetButtonByStructureType(EStructureType structureType)
+        {
+            switch (structureType)
+            {
+                case EStructureType.Barracks:
+                    return mBarracksPlatformButton;
+
+                case EStructureType.Blank:
+                    return mBlankPlatformButton;
+
+                case EStructureType.Command:
+                    return mCommandcenterPlatformButton;
+
+                case EStructureType.Energy:
+                    return mPowerhousePlatformButton;
+
+                case EStructureType.Factory:
+                    return mFactoryPlatformButton;
+
+                case EStructureType.Junkyard:
+                    return mJunkyardPlatformButton;
+
+                case EStructureType.Kinetic:
+                    return mKineticTowerPlatformButton;
+
+                case EStructureType.Laser:
+                    return mLaserTowerPlatformButton;
+                    
+                case EStructureType.Mine:
+                    return mMinePlatformButton;
+
+                case EStructureType.Packaging:
+                    throw new Exception("packaging shouldn't exists");
+
+                case EStructureType.Quarry:
+                    return mQuarryPlatformButton;
+
+                case EStructureType.Road:
+                    throw new Exception("implement road button return here");
+
+                case EStructureType.Storage:
+                    return mStoragePlatformButton;
+
+                case EStructureType.Well:
+                    return mWellPlatformButton;
+            }
+            throw new Exception("Unknown stucture type");
+        }
+
         #region button management
 
         // mouse click on basic list button opens the basic platform build menu
@@ -1439,7 +1502,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Blank,
+                EStructureType.Blank,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -1467,7 +1530,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Junkyard,
+                EStructureType.Junkyard,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -1493,7 +1556,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Quarry,
+                EStructureType.Quarry,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -1519,7 +1582,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Mine,
+                EStructureType.Mine,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -1545,7 +1608,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Well,
+                EStructureType.Well,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -1571,7 +1634,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Factory,
+                EStructureType.Factory,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -1597,7 +1660,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Storage,
+                EStructureType.Storage,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -1623,7 +1686,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Energy,
+                EStructureType.Energy,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -1649,7 +1712,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Command,
+                EStructureType.Command,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -1684,7 +1747,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Kinetic,
+                EStructureType.Kinetic,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -1710,7 +1773,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Laser,
+                EStructureType.Laser,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -1736,7 +1799,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Barracks,
+                EStructureType.Barracks,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,

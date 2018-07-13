@@ -51,7 +51,7 @@ namespace Singularity.Platforms
             baseSprite,
             libSans12,
             ref director,
-            EPlatformType.Kinetic,
+            EStructureType.Kinetic,
             friendly: friendly)
         {
             //Add possible Actions in this array

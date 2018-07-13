@@ -78,7 +78,9 @@ namespace Singularity.Platforms
 
         private bool mUnregister;
 
-        public StructurePlacer(EPlatformType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null)
+        private EStructureType mPlatformType;
+
+        public StructurePlacer(EStructureType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, float x = 0, float y = 0, ResourceMap resourceMap = null)
         {
             mUnregister = false;
 
@@ -89,6 +91,8 @@ namespace Singularity.Platforms
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
             mCurrentState = new State3(1);
+
+            director.GetUserInterfaceController.BuildingProcessStarted(platformType);
 
 
             // for further information as to why which states refer to the documentation for mCurrentState
@@ -329,6 +333,8 @@ namespace Singularity.Platforms
             {
                 if (mCurrentState.GetState() == 1)
                 {
+
+                    mDirector.GetUserInterfaceController.BuildingProcessFinished(mPlatformType);
                     mCanceled = true;
                     mIsFinished = true;
                     giveThrough = false;
@@ -358,6 +364,7 @@ namespace Singularity.Platforms
                     mCurrentState.PreviousState();
                     giveThrough = false;
                 }
+                mDirector.GetUserInterfaceController.BuildingProcessFinished(mPlatformType);
             }
 
             return giveThrough;

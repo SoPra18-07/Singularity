@@ -26,16 +26,16 @@ namespace Singularity.Levels
         {
             var map = Map;
 
-            var platform = PlatformFactory.Get(EPlatformType.Blank, ref mDirector, 3000, 3000);
+            var platform = PlatformFactory.Get(EStructureType.Blank, ref mDirector, 3000, 3000);
             GameScreen.AddObject(platform);
 
-            var platform2 = PlatformFactory.Get(EPlatformType.Blank, ref mDirector, 3000, 2500);
+            var platform2 = PlatformFactory.Get(EStructureType.Blank, ref mDirector, 3000, 2500);
             GameScreen.AddObject(platform2);
 
             var road = new Road(platform, platform2, ref mDirector);
             GameScreen.AddObject(road);
 
-            var platform3 = PlatformFactory.Get(EPlatformType.Blank, ref mDirector, 2700, 2700);
+            var platform3 = PlatformFactory.Get(EStructureType.Blank, ref mDirector, 2700, 2700);
             GameScreen.AddObject(platform3);
 
             var road2 = new Road(platform2, platform3, ref mDirector);
