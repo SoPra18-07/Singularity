@@ -46,6 +46,7 @@ namespace Singularity.Manager
             GetDistributionDirector = dir.GetDistributionDirector;
             GetStoryManager.LoadAchievements();
             GetMilitaryManager.ReloadContent(mapmeasurements);
+            GetDistributionDirector.ReloadContent(ref dir);
         }
 
         [DataMember]

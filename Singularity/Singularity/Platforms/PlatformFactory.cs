@@ -48,7 +48,7 @@ namespace Singularity.Platforms
         /// <param name="resourceMap">The resource map needed to initialize some platforms</param>
         /// <param name="friendly">The allegiance of the platform.</param>
         /// <returns></returns>
-        public static PlatformBlank Get(EPlatformType type,
+        public static PlatformBlank Get(EStructureType type,
             ref Director director,
             float x = 0,
             float y = 0,
@@ -64,47 +64,47 @@ namespace Singularity.Platforms
 
             switch (type)
             {
-                case EPlatformType.Quarry:
+                case EStructureType.Quarry:
                     return new Quarry(position, sDomeSheet, sBlankSheet, sLibSans12, resourceMap, ref director, friendly);
 
-                case EPlatformType.Barracks:
+                case EStructureType.Barracks:
                     return new Barracks(position, sCylinderSheet, sBlankSheet, sLibSans12, ref director, friendly);
 
-                case EPlatformType.Blank:
+                case EStructureType.Blank:
                     return new PlatformBlank(position, sBlankSheet, sBlankSheet, sLibSans12, ref director, friendly: friendly);
 
-                case EPlatformType.Command:
+                case EStructureType.Command:
                     return new CommandCenter(position, sCylinderSheet, sBlankSheet, sLibSans12, ref director, friendly);
 
-                case EPlatformType.Energy:
+                case EStructureType.Energy:
                     return new EnergyFacility(position, sDomeSheet, sBlankSheet, sLibSans12, ref director, friendly);
 
-                case EPlatformType.Factory:
+                case EStructureType.Factory:
                     return new Factory(position, sDomeSheet, sBlankSheet, sLibSans12, ref director, friendly);
 
-                case EPlatformType.Junkyard:
+                case EStructureType.Junkyard:
                     return new Junkyard(position, sDomeSheet, sBlankSheet, sLibSans12, ref director, friendly);
 
-                case EPlatformType.Kinetic:
+                case EStructureType.Kinetic:
                     return new DefenseKinetic(position, sConeSheet, sBlankSheet, sLibSans12, ref director, friendly);
 
-                case EPlatformType.Mine:
+                case EStructureType.Mine:
                     return new Mine(position, sDomeSheet, sBlankSheet, sLibSans12, resourceMap, ref director, friendly);
 
-                case EPlatformType.Packaging:
+                case EStructureType.Packaging:
 
                     var mine = new Mine(position, sDomeSheet, sBlankSheet, sLibSans12, resourceMap, ref director);
 
                     director.GetEventLog.AddEvent(ELogEventType.Debugging, "Packacking facilities have not yet been implemented. \n HERE, HAVE A MINE INSTEAD", mine);
                     return mine;
 
-                case EPlatformType.Storage:
+                case EStructureType.Storage:
                     return new Storage(position, sDomeSheet, sBlankSheet, sLibSans12, ref director, friendly);
 
-                case EPlatformType.Well:
+                case EStructureType.Well:
                     return new Well(position, sDomeSheet, sBlankSheet, sLibSans12, resourceMap, ref director, friendly);
 
-                case EPlatformType.Laser:
+                case EStructureType.Laser:
                     return new DefenseLaser(position, sConeSheet, sBlankSheet, sLibSans12, ref director, friendly);
 
                 default:

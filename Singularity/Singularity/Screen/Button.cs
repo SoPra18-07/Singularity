@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Libraries;
+using System.Diagnostics;
 
 namespace Singularity.Screen
 {
@@ -35,7 +36,7 @@ namespace Singularity.Screen
 
         private Rectangle mBounds;
         private bool mClicked;
-        private readonly bool mWithBorder;
+        private bool mWithBorder;
 
         /// <summary>
         /// Opacity of the button useful for transitions or transparent buttons
@@ -208,6 +209,13 @@ namespace Singularity.Screen
         {
             if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
             {
+
+                if (mWithBorder)
+                {
+                    // draw border around texture if feauture selected, also give a small padding
+                    spriteBatch.DrawRectangle(new Vector2(Position.X - 2, Position.Y - 2), new Vector2(Size.X + 4, Size.Y + 4), Color.White, 1);
+                }
+
                 // draw for button that uses a Texture2D
                 if (mIsText == false)
                 {
@@ -223,11 +231,6 @@ namespace Singularity.Screen
                             mScale,
                             SpriteEffects.None,
                             0f);
-                        if (mWithBorder)
-                        {
-                            // draw border around texture if feauture selected
-                            spriteBatch.DrawRectangle(Position, new Vector2(Size.X, Size.Y), Color.White, 1);
-                        }
                     }
                     // draw for buttons which do not need to crop the texture
                     else
@@ -241,11 +244,6 @@ namespace Singularity.Screen
                             mScale,
                             SpriteEffects.None,
                             0f);
-                        if (mWithBorder)
-                        {
-                            // draw border around texture if feauture selected
-                            spriteBatch.DrawRectangle(Position, new Vector2(Size.X, Size.Y), Color.White, 1);
-                        }
                     }
 
                 }
@@ -262,12 +260,6 @@ namespace Singularity.Screen
                         scale: 1f,
                         effects: SpriteEffects.None,
                         layerDepth: 0.2f);
-
-                    if (mWithBorder)
-                    {
-                        // draw border around texture if feauture selected, also give a small padding
-                        spriteBatch.DrawRectangle(new Vector2(Position.X - 2, Position.Y - 1), new Vector2(Size.X + 4, Size.Y + 2), Color.White, 1);
-                    }
                 }
             }
         }
@@ -346,6 +338,16 @@ namespace Singularity.Screen
 
             mButtonText = newText;
             Size = new Vector2((int)mFont.MeasureString(mButtonText).X, (int)mFont.MeasureString(mButtonText).Y);
+        }
+
+        public void AddBorder()
+        {
+            mWithBorder = true;
+        }
+
+        public void RemoveBorder()
+        {
+            mWithBorder = false;
         }
 
         // position of the button

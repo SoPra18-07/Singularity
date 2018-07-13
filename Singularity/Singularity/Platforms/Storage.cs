@@ -27,14 +27,13 @@ namespace Singularity.Platforms
                 basesprite,
                 libSans12,
                 ref director,
-                EPlatformType.Storage,
+                EStructureType.Storage,
                 -50,
                 friendly: friendly)
         {
-            //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
-            //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<EResourceType, int>();
-            mType = EPlatformType.Storage;
+            // Todo: Add Costs of the platform here if you got them.
+            // mCost = new Dictionary<EResourceType, int>();
+            mType = EStructureType.Storage;
             mSpritename = "Dome";
             SetPlatfromParameters();
         }

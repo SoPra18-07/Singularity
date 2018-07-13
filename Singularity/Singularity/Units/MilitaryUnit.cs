@@ -152,13 +152,11 @@ namespace Singularity.Units
                 return;
             }
 
-            if (mCurrentTime <= mShootingTimer + 200)
-            {
-                // draws a laser line a a slight glow around the line, then sets the shoot future off
-                spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2, .15f);
-                spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6, .15f);
-                mShoot = false;
-            }
+            if (!(mCurrentTime <= mShootingTimer + 200)) return;
+            // draws a laser line a a slight glow around the line, then sets the shoot future off
+            spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2, .15f);
+            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6, .15f);
+            mShoot = false;
         }
 
         public override void Update(GameTime gameTime)

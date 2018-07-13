@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -139,6 +141,7 @@ namespace Singularity.Screen.ScreenClasses
         private PlatformActionIWindowItem mProduceWellResourceAction;
         private PlatformActionIWindowItem mProduceQuarryResourceAction;
         private PlatformActionIWindowItem mProduceMineResourceAction;
+        private PlatformActionIWindowItem mBuildBluePrintAction;
 
         // bools if the platformactions have already been added to the selectedplatformwindow
         private bool mFastMilitaryAdded;
@@ -146,9 +149,10 @@ namespace Singularity.Screen.ScreenClasses
         private bool mProduceWellResourceAdded;
         private bool mProduceQuarryResourceAdded;
         private bool mProduceMineResourceAdded;
+        private bool mBuildBluePrintActionAdded;
 
         // save id to reset the scroll-value if the id changes
-        private int selectedPlatformId;
+        private int mSelectedPlatformId;
 
         #endregion
 
@@ -1368,7 +1372,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // TODO: properly place the minimapObject to better fit with the rest. Don't change the size
             // TODO: other than changing it in MapConstants, the +20 is for the padding left and right.
-            var minimap = new MiniMap(mMap, mCamera, content.Load<Texture2D>("minimap"));
+            var minimap = new MiniMap(ref mDirector, content.Load<Texture2D>("minimap"));
             mMinimapWindow = new WindowObject("", new Vector2(0, 0), new Vector2(MapConstants.MiniMapWidth + 20, MapConstants.MiniMapHeight + 20), false, mLibSans12, mDirector);
             mMinimapWindow.AddItem(minimap);
 
@@ -1452,7 +1456,7 @@ namespace Singularity.Screen.ScreenClasses
             int id,
             bool isActive,
             bool isManuallyDeactivated,
-            EPlatformType type,
+            EStructureType type,
             IEnumerable<Resource> resourceAmountList,
             Dictionary<JobType, List<Pair<GeneralUnit, bool>>> unitAssignmentList,
             IEnumerable<IPlatformAction> actionsList)
@@ -1558,7 +1562,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // activate defense text/sliders + deactivate production text/sliders if the platform is a defense tower,
             // else deactivate defense text/sliders + activate production text/sliders
-            if (type == EPlatformType.Kinetic || type == EPlatformType.Laser)
+            if (type == EStructureType.Kinetic || type == EStructureType.Laser)
             {
                 mSelectedPlatformDefTextField.ActiveInWindow = true;
                 mSelectedPlatformDefSlider.ActiveInWindow = true;
@@ -1608,29 +1612,40 @@ namespace Singularity.Screen.ScreenClasses
             {
                 mProduceWellResourceAction.ActiveInWindow = false;
             }
+            if (mBuildBluePrintAction != null)
+            {
+                mBuildBluePrintAction.ActiveInWindow = false;
+            }
+
 
             // activate all actions possible on this platform + add them to the window if they haven't been added yet
             foreach (var action in actionsList)
             {
+                /*
+                var actionIWindowItem = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
+                mSelectedPlatformWindow.AddItem(actionIWindowItem);
+                mSelectedPlatformActionList.Add(actionIWindowItem);
+                // */
+
+                // Debug.WriteLine("Element in actionlist: " + action.GetType());
+
+
+                // /*
                 if (action is MakeFastMilitaryUnit)
                 {
                     mMakeFastMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
-                    if (!mFastMilitaryAdded)
-                    {
-                        mSelectedPlatformWindow.AddItem(mMakeFastMilitaryAction);
-                        mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
-                    }
+                    if (mFastMilitaryAdded) continue;
+                    mSelectedPlatformWindow.AddItem(mMakeFastMilitaryAction);
+                    mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
                 }
-                else if (action is MakeStrongMilitaryUnit)
+                else if (action is MakeHeavyMilitaryUnit)
                 {
                     mMakeStrongMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
-                    if (!mStronggMilitaryAdded)
-                    {
-                        mSelectedPlatformWindow.AddItem(mMakeStrongMilitaryAction);
-                        mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
-                    }
+                    if (mStronggMilitaryAdded) continue;
+                    mSelectedPlatformWindow.AddItem(mMakeStrongMilitaryAction);
+                    mSelectedPlatformActionList.Add(mMakeStrongMilitaryAction);
                 }
                 else if (action is ProduceMineResource)
                 {
@@ -1639,7 +1654,7 @@ namespace Singularity.Screen.ScreenClasses
                     if (!mProduceMineResourceAdded)
                     {
                         mSelectedPlatformWindow.AddItem(mProduceMineResourceAction);
-                        mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
+                        mSelectedPlatformActionList.Add(mProduceMineResourceAction);
                     }
                 }
                 else if (action is ProduceQuarryResource)
@@ -1661,16 +1676,33 @@ namespace Singularity.Screen.ScreenClasses
                         mSelectedPlatformWindow.AddItem(mProduceWellResourceAction);
                         mSelectedPlatformActionList.Add(mProduceWellResourceAction);
                     }
+                } else if (action is BuildBluePrint)
+                {
+                    mBuildBluePrintAction = new PlatformActionIWindowItem(action,
+                        mLibSans10,
+                        Vector2.Zero,
+                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y),
+                        mDirector);
+                    if (!mBuildBluePrintActionAdded)
+                    {
+                        mSelectedPlatformWindow.AddItem(mBuildBluePrintAction);
+                        mSelectedPlatformActionList.Add(mBuildBluePrintAction);
+                    }
                 }
+                // */
             }
 
             #endregion
 
             // reset the window's scroll value + open all lists in selectedPlatformWindow if the id changes
-            if (selectedPlatformId != id)
+            if (mSelectedPlatformId != id)
             {
                 mSelectedPlatformWindow.ResetScrollValue();
             }
+
+            //selected platform id was never set, resulting in the comparision above to always equal to true -> permanently setting
+            // the scroll value to 0 which lead to not being able to scroll anymore.
+            mSelectedPlatformId = id;
         }
 
         /// <summary>
@@ -1768,6 +1800,69 @@ namespace Singularity.Screen.ScreenClasses
             mCivilUnitsSliderHandler.Initialize();
         }
 
+        private Button mCurrentlyBuildButton;
+
+        public void BuildingProcessStarted(EStructureType structureType)
+        {
+            mCurrentlyBuildButton = GetButtonByStructureType(structureType);
+            mCurrentlyBuildButton?.AddBorder();
+        }
+
+        public void BuildingProcessFinished(EStructureType structureType)
+        {
+            mCurrentlyBuildButton?.RemoveBorder();
+            mCurrentlyBuildButton = null;
+        }
+
+        private Button GetButtonByStructureType(EStructureType structureType)
+        {
+            switch (structureType)
+            {
+                case EStructureType.Barracks:
+                    return mBarracksPlatformButton;
+
+                case EStructureType.Blank:
+                    return mBlankPlatformButton;
+
+                case EStructureType.Command:
+                    return mCommandcenterPlatformButton;
+
+                case EStructureType.Energy:
+                    return mPowerhousePlatformButton;
+
+                case EStructureType.Factory:
+                    return mFactoryPlatformButton;
+
+                case EStructureType.Junkyard:
+                    return mJunkyardPlatformButton;
+
+                case EStructureType.Kinetic:
+                    return mKineticTowerPlatformButton;
+
+                case EStructureType.Laser:
+                    return mLaserTowerPlatformButton;
+                    
+                case EStructureType.Mine:
+                    return mMinePlatformButton;
+
+                case EStructureType.Packaging:
+                    throw new Exception("packaging shouldn't exists");
+
+                case EStructureType.Quarry:
+                    return mQuarryPlatformButton;
+
+                case EStructureType.Road:
+                    return mRoadButton;
+
+                case EStructureType.Storage:
+                    return mStoragePlatformButton;
+
+                case EStructureType.Well:
+                    return mWellPlatformButton;
+            }
+            throw new Exception("Unknown stucture type");
+        }
+
         #region button management
 
         #region buildMenu
@@ -1828,7 +1923,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Blank,
+                EStructureType.Blank,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -1850,7 +1945,7 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-            mPlatformToPlace = new StructurePlacer(default(EPlatformType), EPlacementType.RoadMouseFollowAndRoad, EScreen.UserInterfaceScreen, mCamera, ref mDirector, ref mMap);
+            mPlatformToPlace = new StructurePlacer(EStructureType.Road, EPlacementType.RoadMouseFollowAndRoad, EScreen.UserInterfaceScreen, mCamera, ref mDirector, ref mMap);
 
             mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
@@ -1865,7 +1960,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Command,
+                EStructureType.Command,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -1892,7 +1987,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Quarry,
+                EStructureType.Quarry,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -1915,7 +2010,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Mine,
+                EStructureType.Mine,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -1938,7 +2033,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Well,
+                EStructureType.Well,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -1961,7 +2056,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Energy,
+                EStructureType.Energy,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -1988,7 +2083,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Junkyard,
+                EStructureType.Junkyard,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -2011,7 +2106,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Factory,
+                EStructureType.Factory,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -2034,7 +2129,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Storage,
+                EStructureType.Storage,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -2056,7 +2151,7 @@ namespace Singularity.Screen.ScreenClasses
                 return;
             }
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Packaging,
+                EStructureType.Packaging,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -2083,7 +2178,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Kinetic,
+                EStructureType.Kinetic,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -2106,7 +2201,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Laser,
+                EStructureType.Laser,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
@@ -2129,7 +2224,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             mPlatformToPlace = new StructurePlacer(
-                EPlatformType.Barracks,
+                EStructureType.Barracks,
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,

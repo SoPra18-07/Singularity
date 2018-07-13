@@ -33,7 +33,7 @@ namespace Singularity.Platforms
             baseSprite,
             libSans12,
             ref director,
-            EPlatformType.Laser,
+            EStructureType.Laser,
             friendly: friendly)
         {
             mDrainingEnergy = DrainingEnergy;
