@@ -37,7 +37,7 @@ namespace Singularity.Platforms
         {
             var list = new List<IPlatformAction>(ProducableUnits);
             list.AddRange(base.GetIPlatformActions().AsEnumerable());
-            Debug.WriteLine("List is " + list.Count + " long. ?");
+            // Debug.WriteLine("List is " + list.Count + " long. ?");
             return list;
         }
 

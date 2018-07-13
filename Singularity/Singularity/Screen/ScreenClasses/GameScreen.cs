@@ -59,6 +59,7 @@ namespace Singularity.Screen.ScreenClasses
         private SelectionBox mSelBox;
         private Texture2D mBlankPlat;
         private Texture2D mCylPlat;
+        private SpriteFont mLibSans12;
 
 
 
@@ -191,6 +192,7 @@ namespace Singularity.Screen.ScreenClasses
             // This is for the creation of the Command Centers from the settlers
             mBlankPlat = content.Load<Texture2D>("PlatformBasic");
             mCylPlat = content.Load<Texture2D>("Cylinders");
+            mLibSans12 = content.Load<SpriteFont>("LibSans12");
         }
 
         public bool UpdateLower()
@@ -384,8 +386,8 @@ namespace Singularity.Screen.ScreenClasses
             var cCenter = PlatformFactory.Get(EPlatformType.Command, ref mDirector, v.X - 55, v.Y - 100);
             // CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, ref mDirector, false);
 
-            var genUnit = new GeneralUnit(cCenter, ref mDirector, graphid);
-            var genUnit2 = new GeneralUnit(cCenter, ref mDirector, graphid);
+            var genUnit = new GeneralUnit(cCenter, ref mDirector);
+            var genUnit2 = new GeneralUnit(cCenter, ref mDirector);
 
             // adds the command center to the GameScreen, as well as two general units
             AddObject(cCenter);

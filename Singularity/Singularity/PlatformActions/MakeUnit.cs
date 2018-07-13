@@ -5,7 +5,6 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Singularity.Manager;
 using Singularity.Platforms;
-using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
 
@@ -19,7 +18,7 @@ namespace Singularity.PlatformActions
             mBuildingCost = new Dictionary<EResourceType, int> { { EResourceType.Metal, 3 }, { EResourceType.Chip, 2 }, {EResourceType.Fuel, 1} };
         }
 
-        public override void CreateUnit()
+        protected override void CreateUnit()
         {
             // unsure why this is a static method since it just returns a military unit anyways
             // var unit = MilitaryUnit.CreateMilitaryUnit(mPlatform.Center + mOffset, ref mDirector);
@@ -38,12 +37,27 @@ namespace Singularity.PlatformActions
             mBuildingCost = new Dictionary<EResourceType, int> {{EResourceType.Steel, 3}, {EResourceType.Chip, 2}, {EResourceType.Fuel, 2}};
         }
 
-        public override void CreateUnit()
+        protected override void CreateUnit()
         {
             var camera = mDirector.GetStoryManager.Level.Camera;
             var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryHeavy(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
             mDirector.GetMilitaryManager.AddUnit(unit);
+        }
+    }
+
+    internal sealed class MakeGeneralUnit : AMakeUnit
+    {
+        public MakeGeneralUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
+        {
+            // Todo: update prices.
+            mBuildingCost = new Dictionary<EResourceType, int> { {EResourceType.Steel, 3} };
+        }
+
+        protected override void CreateUnit()
+        {
+
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(new GeneralUnit(mPlatform, ref mDirector));
         }
     }
 
@@ -54,7 +68,7 @@ namespace Singularity.PlatformActions
             mBuildingCost = new Dictionary<EResourceType, int> { { EResourceType.Steel, 3 }, { EResourceType.Chip, 2 }, { EResourceType.Fuel, 2 } };
         }
 
-        public override void CreateUnit()
+        protected override void CreateUnit()
         {
             var camera = mDirector.GetStoryManager.Level.Camera;
             var map = mDirector.GetStoryManager.Level.Map;
@@ -63,7 +77,7 @@ namespace Singularity.PlatformActions
         }
     }
 
-    public abstract class AMakeUnit : APlatformAction, IUpdate
+    public abstract class AMakeUnit : APlatformAction
     {
 
         protected Dictionary<EResourceType, int> mBuildingCost;
@@ -73,21 +87,27 @@ namespace Singularity.PlatformActions
 
         protected AMakeUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
-            State = PlatformActionState.Available;
+            State = PlatformActionState.Available; // now the init is a UIToggle. hacky but works.
+            mBuildingCost = new Dictionary<EResourceType, int>();
+            mMissingResources = new Dictionary<EResourceType, int>();
+            mToRequest = new Dictionary<EResourceType, int>();
         }
 
-        public abstract void CreateUnit();
+        // effectively only this needs to be implemented for all CreateUnit-things. Also the price needs to be set. (mBuildingCost)
+        protected abstract void CreateUnit();
 
         public override void Execute()
         {
-            // throw new NotImplementedException();
             // theres nothing a unit should be able to do, except bringing Resources.
         }
 
         public override List<JobType> UnitsRequired { get; } = new List<JobType>{ JobType.Logistics };
 
-        public void Update(GameTime gametime)
+        public override void Update(GameTime t)
         {
+            // Debug.WriteLine(mBuildingCost.Values.Sum() + ", " + mMissingResources.Values.Sum() + ", " + mToRequest.Values.Sum());
+            if (State != PlatformActionState.Active)
+                return;
             if (mToRequest.Count > 0)
             {
                 var resource = mToRequest.Keys.ElementAt(0);
@@ -98,10 +118,10 @@ namespace Singularity.PlatformActions
                     mToRequest[resource] = mToRequest[resource] - 1;
                 }
                 mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).RequestResource(mPlatform, resource, this);
-                Debug.WriteLine("just requested " + resource + " from the DistrMgr. Let's wait and see.");
+                Debug.WriteLine("Requested " + resource + " just now. Waiting. (" + mPlatform.Id + ")");
             }
 
-            mPlatform.GetPlatformResources().ForEach(action: r => GetResource(r.Type));
+            mPlatform.GetPlatformResources().ForEach(r => GetResource(r.Type));
 
             if (mMissingResources.Count <= 0 && State == PlatformActionState.Active)
             {
@@ -110,14 +130,10 @@ namespace Singularity.PlatformActions
             }
         }
 
-        protected void GetResource(EResourceType type)
+        private void GetResource(EResourceType type)
         {
-            if (!mMissingResources.ContainsKey(type))
-            {
-                return;
-            }
-
-            var res = mPlatform.GetResource(type);
+            if (!mMissingResources.ContainsKey(type)) return;
+            var unused = mPlatform.GetResource(type);
 
             mMissingResources[type] -= 1;
             if (mMissingResources[type] <= 0)
@@ -126,24 +142,20 @@ namespace Singularity.PlatformActions
             }
         }
 
+        protected void UpdateResources()
+        {
+            if (mMissingResources.Count == 0)
+            {
+                mMissingResources = new Dictionary<EResourceType, int>(mBuildingCost);
+            }
+            mToRequest = new Dictionary<EResourceType, int>(mMissingResources);
+        }
+
         public override Dictionary<EResourceType, int> GetRequiredResources()
         {
             return mMissingResources;
         }
-
-        private void UpdateResources()
-        {
-            if (mMissingResources.Values.Sum() > 0)
-            {
-                mToRequest = new Dictionary<EResourceType, int>(mMissingResources);
-            }
-            else
-            {
-                mMissingResources = new Dictionary<EResourceType, int>(mBuildingCost);
-                mToRequest = new Dictionary<EResourceType, int>(mMissingResources);
-            }
-        }
-
+        
         public override void UiToggleState()
         {
             switch (State)
@@ -154,6 +166,7 @@ namespace Singularity.PlatformActions
                     break;
                 case PlatformActionState.Active:
                     mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this);
+                    mToRequest = new Dictionary<EResourceType, int>();
                     State = PlatformActionState.Available;
                     break;
                 case PlatformActionState.Deactivated:

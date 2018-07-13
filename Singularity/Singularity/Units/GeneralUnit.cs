@@ -99,10 +99,10 @@ namespace Singularity.Units
         [DataMember]
         public bool Active { get; set; }
 
-        public GeneralUnit(PlatformBlank platform, ref Director director, int graphid)
+        public GeneralUnit(PlatformBlank platform, ref Director director)
         {
+            Graphid = platform.GetGraphIndex();
             platform.AddGeneralUnit(this);
-            Graphid = graphid;
             Id = IdGenerator.NextiD();
             mDestination = Optional<INode>.Of(null);
 
@@ -231,7 +231,6 @@ namespace Singularity.Units
                     ((PlatformBlank)CurrentNode).StoreResource(res);
                     Carrying = Optional<Resource>.Of(null);
                 }
-
                 mDone = true;
                 //We can now do the job we were assigned to.
                 mFinishTask = false;

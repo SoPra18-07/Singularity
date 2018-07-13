@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Exceptions;
 using Singularity.Graph;
-using Singularity.Libraries;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.PlatformActions;
@@ -28,6 +27,7 @@ namespace Singularity.Platforms
     [DataContract]
     public class PlatformBlank : IRevealing, INode, ICollider, IMouseClickListener
     {
+        #region private
 
         private List<GeneralUnit> mAllGenUnits;
 
@@ -58,6 +58,10 @@ namespace Singularity.Platforms
         /// </summary>
         private List<IEdge> mOutwardsEdges;
 
+        #endregion
+
+        #region protected
+
         public bool Friendly { get; set; }
 
         /// <summary>
@@ -70,13 +74,13 @@ namespace Singularity.Platforms
         /// Indicates the platform width
         /// </summary>
         [DataMember]
-        protected const int PlatformWidth = 148;
+        protected int mPlatformWidth = 148;
 
         /// <summary>
         /// Indicates the platform height.
         /// </summary>
         [DataMember]
-        protected const int PlatformHeight = 172;
+        protected int mPlatformHeight = 172;
 
         /// <summary>
         /// How much health the platform has
@@ -100,7 +104,7 @@ namespace Singularity.Platforms
         [DataMember]
         protected Dictionary<EResourceType, int> mCost;
         [DataMember]
-        protected List<IPlatformAction> mIPlatformActions;
+        protected List<IPlatformAction> mPlatformActions;
         protected readonly Texture2D mPlatformSpriteSheet;
         protected readonly Texture2D mPlatformBaseTexture;
         [DataMember]
@@ -113,22 +117,25 @@ namespace Singularity.Platforms
         [DataMember]
         protected Dictionary<EResourceType, int> mRequested;
 
+        // this is actually already in ARevealing
+        // public Vector2 Center { get; private set; }
+
         [DataMember]
         private bool mIsActive;
 
         [DataMember]
         private bool mIsManuallyDeactivated;
 
-        public Vector2 Center { get; set; }
+        public Vector2 Center { get; protected set; }
 
         public int RevelationRadius { get; protected set; } = 200;
 
-        public Rectangle AbsBounds { get; internal set; }
+        public Rectangle AbsBounds { get; private set; }
 
         public bool Moved { get; private set; }
 
         public int Id { get; }
-        
+
         [DataMember]
         protected Director mDirector;
 
@@ -160,9 +167,11 @@ namespace Singularity.Platforms
 
         protected Color mColor = Color.White;
 
-        protected Color mColorBase;
-
         protected PlatformInfoBox mInfoBox;
+
+        #endregion
+
+        protected Color mColorBase;
 
         public static SpriteFont mLibSans12;
 
@@ -200,7 +209,7 @@ namespace Singularity.Platforms
 
             //I dont think this class has to register in the DistributionManager
             //Add possible Actions in this array
-            mIPlatformActions = new List<IPlatformAction>();
+            mPlatformActions = new List<IPlatformAction>();
 
             mAssignedUnits = new Dictionary<JobType, List<Pair<GeneralUnit, bool>>>
             {
@@ -212,7 +221,7 @@ namespace Singularity.Platforms
             };
 
             //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<EResourceType, int>();
+            mCost = new Dictionary<EResourceType, int> { {EResourceType.Metal, 2} };
 
             mProvidingEnergy = 0;
             mDrainingEnergy = 0;
@@ -234,8 +243,7 @@ namespace Singularity.Platforms
 
             // user interface controller
             mUserInterfaceController = director.GetUserInterfaceController;
-            Debug.WriteLine("PlatformBlank created");
-            
+
             Friendly = friendly;
             var str = GetResourceString();
             mInfoBox = new PlatformInfoBox(
@@ -267,6 +275,11 @@ namespace Singularity.Platforms
                 director: mDirector);
             // */
 
+        }
+
+        internal void AddBlueprint(BuildBluePrint buildBluePrint)
+        {
+            mPlatformActions.Add(buildBluePrint);
         }
 
         public void SetColor(Color color)
@@ -319,6 +332,7 @@ namespace Singularity.Platforms
         /// The units will call this methods when they reached the platform they have to work on.
         /// </summary>
         /// <param name="unit"></param>
+        /// <param name="job"></param>
         public void ShowedUp(GeneralUnit unit, JobType job)
         {
             var pair = mAssignedUnits[job].Find(x => x.GetFirst().Equals(unit));
@@ -351,7 +365,7 @@ namespace Singularity.Platforms
         /// <returns> an array with the available IPlatformActions.</returns>
         public virtual List<IPlatformAction> GetIPlatformActions()
         {
-            return mIPlatformActions;
+            return mPlatformActions;
         }
 
         /// <summary>
@@ -496,7 +510,7 @@ namespace Singularity.Platforms
                     // then draw what's on top of that
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
-                        new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 153),
+                        new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 153),
                         mColor * transparency,
                         0f,
                         Vector2.Zero,
@@ -535,7 +549,7 @@ namespace Singularity.Platforms
             /*
             foreach (var res in mResources)
             {
-                res.Draw(spritebatch);
+                res.Draw(spriteBatch: spritebatch);
             }
             // */
         }
@@ -543,6 +557,10 @@ namespace Singularity.Platforms
         /// <inheritdoc cref="Singularity.Property.IUpdate"/>
         public virtual void Update(GameTime t)
         {
+            foreach (var iPlatformAction in mPlatformActions)
+            {
+                iPlatformAction.Update(t);
+            }
             Uncollide();
 
             Bounds = new Rectangle((int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
@@ -587,7 +605,7 @@ namespace Singularity.Platforms
             // take care of the Resources on top not colliding. todo: fixme. @fkarg
         }
 
-        public EPlatformType GetMyType()
+        private new EPlatformType GetType()
         {
             return mType;
         }
@@ -650,7 +668,7 @@ namespace Singularity.Platforms
             {
                 return false;
             }
-            return mType == b.GetMyType();
+            return mType == b.GetType();
         }
 
         [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
@@ -673,14 +691,14 @@ namespace Singularity.Platforms
                     mSheet = 0;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         88);
                     break;
                 case EPlatformType.Energy:
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EPlatformType.Factory:
@@ -688,7 +706,7 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EPlatformType.Junkyard:
@@ -696,7 +714,7 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EPlatformType.Mine:
@@ -704,7 +722,7 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EPlatformType.Packaging:
@@ -712,7 +730,7 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EPlatformType.Quarry:
@@ -720,7 +738,7 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EPlatformType.Storage:
@@ -728,7 +746,7 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EPlatformType.Well:
@@ -736,14 +754,14 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EPlatformType.Kinetic:
                     mSheet = 1;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         165);
                     break;
                 case EPlatformType.Laser:
@@ -751,7 +769,7 @@ namespace Singularity.Platforms
                     mSheetPosition = 1;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         165);
                     break;
                 case EPlatformType.Barracks:
@@ -759,14 +777,14 @@ namespace Singularity.Platforms
                     mSheetPosition = 1;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         170);
                     break;
                 case EPlatformType.Command:
                     mSheet = 2;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         170);
                     break;
                 default:
@@ -848,6 +866,8 @@ namespace Singularity.Platforms
             mLayer = layer;
         }
 
+        #region dying/killing
+
         /// <summary>
         /// This will kill only the specialised part of the platform.
         /// </summary>
@@ -865,7 +885,7 @@ namespace Singularity.Platforms
             //default?
             Health = 100;
 
-            mIPlatformActions.RemoveAll(a => a.Die());
+            mPlatformActions.RemoveAll(a => a.Die());
 
             mAssignedUnits[JobType.Idle].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
             mAssignedUnits[JobType.Defense].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
@@ -903,8 +923,8 @@ namespace Singularity.Platforms
 
             mResources.RemoveAll(r => r.Die());
 
-            mIPlatformActions.ForEach(a => a.Platform = null);
-            mIPlatformActions.RemoveAll(a => a.Die());
+            mPlatformActions.ForEach(a => a.Platform = null);
+            mPlatformActions.RemoveAll(a => a.Die());
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
             mDirector.GetStoryManager.StructureMap.RemovePlatform(this);
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
@@ -918,6 +938,13 @@ namespace Singularity.Platforms
             mDirector.GetStoryManager.StructureMap.RemoveRoad((Road) road);
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(road);
         }
+
+        public void Kill(IPlatformAction action)
+        {
+            mPlatformActions.Remove(action);
+        }
+
+        #endregion
 
         public IEnumerable<INode> GetChilds()
         {
@@ -943,6 +970,34 @@ namespace Singularity.Platforms
         public int GetGraphIndex()
         {
             return mGraphIndex;
+        }
+
+        public string GetResourceString()
+        {
+            if (mResources.Count == 0)
+            {
+                return "";
+            }
+            var resString = "";
+            var cType = (EResourceType) 0;
+            var counter = 0;
+            foreach (var res in mResources)
+            {
+                if (counter > 0 && res.Type != cType)
+                {
+                    resString += cType + ": " + counter + ", ";
+                    counter = 0;
+                }
+                cType = res.Type;
+                counter++;
+            }
+            return resString + cType + ": " + counter;
+        }
+
+        public void Built()
+        {
+            mIsBlueprint = false;
+            // Todo: move registering at the distributionmanager etc here. But not yet (debug)
         }
 
         public void Activate(bool manually)
@@ -1099,28 +1154,6 @@ namespace Singularity.Platforms
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
             return !withinBounds;
-        }
-
-        private string GetResourceString()
-        {
-            if (mResources.Count == 0)
-            {
-                return "None";
-            }
-            var resString = "";
-            var cType = (EResourceType)0;
-            var counter = 0;
-            foreach (var res in mResources)
-            {
-                if (counter > 0 && res.Type != cType)
-                {
-                    resString += cType + ": " + counter + ", ";
-                    counter = 0;
-                }
-                cType = res.Type;
-                counter++;
-            }
-            return resString + cType + ": " + counter;
         }
     }
 }

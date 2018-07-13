@@ -142,6 +142,7 @@ namespace Singularity.Screen.ScreenClasses
         private PlatformActionIWindowItem mProduceWellResourceAction;
         private PlatformActionIWindowItem mProduceQuarryResourceAction;
         private PlatformActionIWindowItem mProduceMineResourceAction;
+        private PlatformActionIWindowItem mBuildBluePrintAction;
 
         // bools if the platformactions have already been added to the selectedplatformwindow
         private bool mFastMilitaryAdded;
@@ -149,9 +150,10 @@ namespace Singularity.Screen.ScreenClasses
         private bool mProduceWellResourceAdded;
         private bool mProduceQuarryResourceAdded;
         private bool mProduceMineResourceAdded;
+        private bool mBuildBluePrintActionAdded;
 
         // save id to reset the scroll-value if the id changes
-        private int selectedPlatformId;
+        private int mSelectedPlatformId;
 
         #endregion
 
@@ -1311,6 +1313,10 @@ namespace Singularity.Screen.ScreenClasses
             {
                 mProduceWellResourceAction.ActiveInWindow = false;
             }
+            if (mBuildBluePrintAction != null)
+            {
+                mBuildBluePrintAction.ActiveInWindow = false;
+            }
 
 
             // activate all actions possible on this platform + add them to the window if they haven't been added yet
@@ -1371,6 +1377,18 @@ namespace Singularity.Screen.ScreenClasses
                         mSelectedPlatformWindow.AddItem(mProduceWellResourceAction);
                         mSelectedPlatformActionList.Add(mProduceWellResourceAction);
                     }
+                } else if (action is BuildBluePrint)
+                {
+                    mBuildBluePrintAction = new PlatformActionIWindowItem(action,
+                        mLibSans10,
+                        Vector2.Zero,
+                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y),
+                        mDirector);
+                    if (!mBuildBluePrintActionAdded)
+                    {
+                        mSelectedPlatformWindow.AddItem(mBuildBluePrintAction);
+                        mSelectedPlatformActionList.Add(mBuildBluePrintAction);
+                    }
                 }
                 // */
             }
@@ -1378,14 +1396,14 @@ namespace Singularity.Screen.ScreenClasses
             #endregion
 
             // reset the window's scroll value + open all lists in selectedPlatformWindow if the id changes
-            if (selectedPlatformId != id)
+            if (mSelectedPlatformId != id)
             {
                 mSelectedPlatformWindow.ResetScrollValue();
             }
 
             //selected platform id was never set, resulting in the comparision above to always equal to true -> permanently setting
             // the scroll value to 0 which lead to not being able to scroll anymore.
-            selectedPlatformId = id;
+            mSelectedPlatformId = id;
         }
 
         /// <summary>

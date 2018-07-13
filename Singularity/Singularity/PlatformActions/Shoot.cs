@@ -78,5 +78,10 @@ namespace Singularity.PlatformActions
         }
 
         public override List<JobType> UnitsRequired { get; } = new List<JobType> {JobType.Defense};
+
+        public override void Update(GameTime t)
+        {
+            // do nothing. Shooting is happening in the platform itself, as is Aiming etc.
+        }
     }
 }

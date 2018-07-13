@@ -2,7 +2,6 @@
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Nature;
@@ -46,8 +45,6 @@ namespace Singularity.Levels
 
             var platform3 = PlatformFactory.Get(EPlatformType.Quarry, ref mDirector, 3200, 3200, Map.GetResourceMap());
 
-
-
             GameScreen.AddObject(platform3);
             var road2 = new Road(platform2, platform3, false);
             GameScreen.AddObject(road2);
@@ -82,7 +79,7 @@ namespace Singularity.Levels
             var genUnit = new List<GeneralUnit>(5);
             for (var i = 0; i < 5; i++)
             {
-                genUnit.Add(new GeneralUnit(platform1, ref mDirector, 0));
+                genUnit.Add(new GeneralUnit(platform1, ref mDirector));
             }
 
             // Resources

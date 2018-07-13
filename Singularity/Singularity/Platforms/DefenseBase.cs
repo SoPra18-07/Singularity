@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.PlatformActions;
 using Singularity.Property;
-using Singularity.Resources;
 using Singularity.Units;
 
 namespace Singularity.Platforms
@@ -41,17 +36,17 @@ namespace Singularity.Platforms
             SpriteFont libSans12,
             ref Director director,
             EPlatformType type,
-            bool friendly = true) : base(position,
-            platformSpriteSheet,
-            baseSprite,
-            libSans12,
-            ref director,
-            type,
-            friendly: friendly)
+            bool friendly = true)
+            : base(position,
+                platformSpriteSheet,
+                baseSprite,
+                libSans12,
+                ref director,
+                type,
+                friendly: friendly)
         {
 
             mDefenseAction = new Shoot(this, ref mDirector);
-            
             mSpritename = "Cone";
             Property = JobType.Defense;
             SetPlatfromParameters();
@@ -84,7 +79,7 @@ namespace Singularity.Platforms
             // then draw what's on top of that
             spriteBatch.Draw(mPlatformSpriteSheet,
                 AbsolutePosition,
-                new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 148),
+                new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 148),
                 mColor * transparency,
                 0f,
                 Vector2.Zero,

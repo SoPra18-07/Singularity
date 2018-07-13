@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.PlatformActions;
 using Singularity.Property;
 using Singularity.Screen;
 using Singularity.Sound;
@@ -74,7 +75,7 @@ namespace Singularity.Platforms
 
         private readonly Camera mCamera;
 
-        private readonly Director mDirector;
+        private Director mDirector;
 
         private bool mUnregister;
 
@@ -219,6 +220,8 @@ namespace Singularity.Platforms
                     {
                         // this case is the 'finish' state, we set everything up, so the platform can get added to the game
                         mPlatform.SetLayer(LayerConstants.PlatformLayer);
+                        mHoveringPlatform.AddBlueprint(new BuildBluePrint(mPlatform, mHoveringPlatform, ref mDirector));
+                        Debug.WriteLine("Blueprint created, at " + mHoveringPlatform.Id + " for " + mPlatform.Id);
                         mConnectionRoad.Blueprint = false;
                     }
                     else

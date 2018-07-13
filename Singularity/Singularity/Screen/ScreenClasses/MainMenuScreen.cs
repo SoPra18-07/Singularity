@@ -293,31 +293,31 @@ namespace Singularity.Screen.ScreenClasses
 
             foreach (Button button in mButtonList)
             {
-                button.Draw(spriteBatch: spriteBatch);
+                button.Draw(spriteBatch);
             }
 
             // draw selector triangle
-            spriteBatch.Draw(texture: mSelectorTriangle,
-                position: mSelectorPosition,
-                sourceRectangle: null,
-                color: Color.White * mMenuOpacity,
-                rotation: 0f,
-                origin: new Vector2(x: 0, y: 11),
-                scale: 1f,
-                effects: SpriteEffects.None,
-                layerDepth: 0f);
+            spriteBatch.Draw(mSelectorTriangle,
+                mSelectorPosition,
+                null,
+                Color.White * mMenuOpacity,
+                0f,
+                new Vector2(0, 11),
+                1f,
+                SpriteEffects.None,
+                0f);
 
             // Draw menu window
-            spriteBatch.StrokedRectangle(location: mMenuBoxPosition,
-                size: mMenuBoxSize,
-                colorBorder: Color.White * mWindowOpacity,
-                colorCenter: Color.White * mWindowOpacity,
-                opacityBorder: .5f,
-                opacityCenter: .20f);
-            spriteBatch.DrawString(spriteFont: mLibSans36,
-                text: mTitle,
-                position: new Vector2(x: mMenuBoxPosition.X + 20, y: mMenuBoxPosition.Y + 10),
-                color: new Color(color: new Vector3(x: .9137f, y: .9058f, z: .8314f)) * mMenuOpacity);
+            spriteBatch.StrokedRectangle(mMenuBoxPosition,
+                mMenuBoxSize,
+                Color.White * mWindowOpacity,
+                Color.White * mWindowOpacity,
+                .5f,
+                .20f);
+            spriteBatch.DrawString(mLibSans36,
+                mTitle,
+                new Vector2(mMenuBoxPosition.X + 20, mMenuBoxPosition.Y + 10),
+                new Color(new Vector3(.9137f, .9058f, .8314f)) * mMenuOpacity);
 
             spriteBatch.End();
         }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
@@ -446,60 +445,60 @@ namespace Singularity.Screen
 
             // set the window rectangle
             mWindowRectangle = new Rectangle(
-                x: (int)(Position.X + 1),
-                y: (int)(Position.Y + 2),
-                width: (int)(Size.X - 2),
-                height: (int)(Size.Y - 2)
+                (int)(Position.X + 1),
+                (int)(Position.Y + 2),
+                (int)(Size.X - 2),
+                (int)(Size.Y - 2)
                 );
             mBorderRectangle = new Rectangle(
-                x: (int)Position.X,
-                y: (int)Position.Y,
-                width: (int)Size.X,
-                height: (int)Size.Y
+                (int)Position.X,
+                (int)Position.Y,
+                (int)Size.X,
+                (int)Size.Y
                 );
 
             // ScissorRectangle will cut everything drawn outside of this rectangle when set
             mScissorRectangle = new Rectangle(
-                x: (int)(Position.X - 1),
-                y: (int)(Position.Y + mTitleSizeY + 2 * mMinimizationSize),
-                width: (int)(Size.X + 2),
-                height: (int)(Size.Y + 2 - mTitleSizeY - 2 * mMinimizationSize - 2)
+                (int)(Position.X - 1),
+                (int)(Position.Y + mTitleSizeY + 2 * mMinimizationSize),
+                (int)(Size.X + 2),
+                (int)(Size.Y + 2 - mTitleSizeY - 2 * mMinimizationSize - 2)
                 );
 
             // set the rectangle for minimization in the top right corner of the window
             mMinimizationRectangle = new Rectangle(
-                x: (int)(Position.X + Size.X - mMinimizationSize),
-                y: (int)Position.Y,
-                width: mMinimizationSize,
-                height: mMinimizationSize
+                (int)(Position.X + Size.X - mMinimizationSize),
+                (int)Position.Y,
+                mMinimizationSize,
+                mMinimizationSize
                 );
             mMinimizationLine = new Rectangle(
-                x: (int)(Position.X + Size.X - 3 * mMinimizationSize / 4f),
-                y: (int)(Position.Y + mMinimizationSize / 2f),
-                width: mMinimizationSize / 2,
-                height: 1
+                (int)(Position.X + Size.X - 3 * mMinimizationSize / 4f),
+                (int)(Position.Y + mMinimizationSize / 2f),
+                mMinimizationSize / 2,
+                1
                 );
 
             // set the rectangle for the minimized window
             mMinimizedWindowRectangle = new Rectangle(
-                x: (int)(Position.X + 1),
-                y: (int)(Position.Y + 2),
-                width: (int)Size.X - 2,
-                height: mTitleSizeY + mMinimizationSize
+                (int)(Position.X + 1),
+                (int)(Position.Y + 2),
+                (int)Size.X - 2,
+                mTitleSizeY + mMinimizationSize
                 );
             mMinimizedBorderRectangle = new Rectangle(
-                x: (int)Position.X,
-                y: (int)Position.Y,
-                width: (int)Size.X,
-                height: mTitleSizeY + mMinimizationSize
+                (int)Position.X,
+                (int)Position.Y,
+                (int)Size.X,
+                mTitleSizeY + mMinimizationSize
                 );
 
             // set the rectangle for scrolling
             mScrollBarBorderRectangle = new Rectangle(
-                x: (int)(Position.X + Size.X - mMinimizationSize),
-                y: (int)(Position.Y + mTitleSizeY + 2 * mMinimizationSize),
-                width: mMinimizationSize,
-                height: (int)(Size.Y - mTitleSizeY - 3 * mMinimizationSize)
+                (int)(Position.X + Size.X - mMinimizationSize),
+                (int)(Position.Y + mTitleSizeY + 2 * mMinimizationSize),
+                mMinimizationSize,
+                (int)(Size.Y - mTitleSizeY - 3 * mMinimizationSize)
                 );
             mScrollBarRectangle = CalcScrollbarRectangle(mScissorRectangle, mCombinedItemsSize
             );
@@ -510,10 +509,10 @@ namespace Singularity.Screen
             }
             // set the rectangle of the title bar
             mTitleBarRectangle = new Rectangle(
-                x: (int)Position.X + mMinimizationSize / 2,
-                y: (int)Position.Y + mTitleSizeY + mMinimizationSize,
-                width: (int)Size.X - 2 * mMinimizationSize,
-                height: 1
+                (int)Position.X + mMinimizationSize / 2,
+                (int)Position.Y + mTitleSizeY + mMinimizationSize,
+                (int)Size.X - 2 * mMinimizationSize,
+                1
                 );
         }
 
