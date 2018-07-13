@@ -35,15 +35,16 @@ namespace Singularity.Platforms
                 friendly)
         {
 
-            //Add possible Actions in this array
+            // Add possible Actions in this List
             mIPlatformActions.Add(new ProduceQuarryResource(platform: this, resourceMap: resource, director: ref mDirector));
-            //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
-            //Add Costs of the platform here if you got them.
+            // Todo: Add Costs of the platform here if you got them.
+            // mCost = new Dictionary<EResourceType, int>();
             mCost = new Dictionary<EResourceType, int>();
             mType = EStructureType.Quarry;
             mSpritename = "Dome";
             Property = JobType.Production;
             SetPlatfromParameters();
+
         }
 
         public override void Produce()

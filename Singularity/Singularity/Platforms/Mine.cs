@@ -11,7 +11,7 @@ using Singularity.Units;
 namespace Singularity.Platforms
 {
     [DataContract]
-    class Mine : PlatformBlank
+    internal sealed class Mine : PlatformBlank
     {
         [DataMember]
         private new const int PlatformWidth = 144;
@@ -35,10 +35,9 @@ namespace Singularity.Platforms
                 -50,
                 friendly)
         {
-
             mIPlatformActions.Add(new ProduceMineResource(platform: this, resourceMap: resource, director: ref mDirector));
-            //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
-            //Add Costs of the platform here if you got them.
+            // Todo: Add Costs of the platform here if you got them.
+            // mCost = new Dictionary<EResourceType, int>();
             mCost = new Dictionary<EResourceType, int>();
             mType = EStructureType.Mine;
             mSpritename = "Dome";

@@ -137,12 +137,8 @@ namespace Singularity.Manager
                             continue;
                         }
                         //Check for the resource
-                        foreach (var resource in candidatePlatform.GetPlatformResources())
+                        if (candidatePlatform.GetPlatformResources().Any(resource => resource.Type == res))
                         {
-                            if (resource.Type != res)
-                            {
-                                continue;
-                            }
                             return candidatePlatform;
                         }
 
@@ -158,12 +154,8 @@ namespace Singularity.Manager
                             continue;
                         }
                         //Check for the resource
-                        foreach (var resource in candidatePlatform.GetPlatformResources())
+                        if (candidatePlatform.GetPlatformResources().Any(resource => resource.Type == res))
                         {
-                            if (resource.Type != res)
-                            {
-                                continue;
-                            }
                             return candidatePlatform;
                         }
                         nextlevel.Add(candidatePlatform);
@@ -435,9 +427,8 @@ namespace Singularity.Manager
                     }
                     task = mBuildingResources.Dequeue();
                     //This means that the Action is paused.
-                    if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()))
+                    if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()) && task.Job != JobType.Construction)
                     {
-                        mBuildingResources.Enqueue(task);
                         task = RequestNewTask(unit, job, assignedAction);
                     }
                     if (task.End.IsPresent() && task.GetResource != null)
@@ -476,7 +467,6 @@ namespace Singularity.Manager
                     //This means that the Action is paused.
                     if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()))
                     {
-                        mRefiningOrStoringResources.Enqueue(task);
                         task = RequestNewTask(unit, job, assignedAction);
                     }
                     if (task.End.IsPresent() && task.GetResource != null)
@@ -1076,6 +1066,11 @@ namespace Singularity.Manager
             }
         }
 
+        public void Register(IPlatformAction action)
+        {
+            mPlatformActions.Add(action);
+        }
+
         /// <summary>
         /// Unregister platforms from the DistributionManager.
         /// This changes the graph the distributionmanager knows and is only needed for Producing or Defending platforms.
@@ -1168,7 +1163,8 @@ namespace Singularity.Manager
 
         public void PausePlatformAction(IPlatformAction action)
         {
-            throw new NotImplementedException();
+            Kill(action);
+            // TODO: throw new NotImplementedException(); // (currently commented out, since it'd break stuff)
             // Actions need a sleep method
             // No, they're just being removed from occurences in the DistributionManager. As soon as they unpause, they'll send requests for Resources and units again.
             // Ah ok I got that part

@@ -28,6 +28,7 @@ namespace Singularity.Platforms
     [DataContract]
     public class PlatformBlank : IRevealing, INode, ICollider, IMouseClickListener
     {
+        #region private
 
         [DataMember]
         private List<GeneralUnit> mAllGenUnits;
@@ -78,6 +79,11 @@ namespace Singularity.Platforms
         /// </summary>
         [DataMember]
         private List<IEdge> mOutwardsEdges;
+
+        #endregion
+
+        #region protected
+            
         [DataMember]
         public bool Friendly { get; set; }
 
@@ -91,13 +97,13 @@ namespace Singularity.Platforms
         /// Indicates the platform width
         /// </summary>
         [DataMember]
-        protected const int PlatformWidth = 148;
+        protected int mPlatformWidth = 148;
 
         /// <summary>
         /// Indicates the platform height.
         /// </summary>
         [DataMember]
-        protected const int PlatformHeight = 172;
+        protected int mPlatformHeight = 172;
 
         /// <summary>
         /// How much health the platform has
@@ -138,14 +144,17 @@ namespace Singularity.Platforms
         [DataMember]
         protected Dictionary<EResourceType, int> mRequested;
 
+        // this is actually already in ARevealing
+        // public Vector2 Center { get; private set; }
+
         [DataMember]
         private bool mIsActive;
 
         [DataMember]
         private bool mIsManuallyDeactivated;
-
+        
         [DataMember]
-        public Vector2 Center { get; set; }
+        public Vector2 Center { get; protected set; }
 
         [DataMember]
         public int RevelationRadius { get; protected set; } = 200;
@@ -187,10 +196,13 @@ namespace Singularity.Platforms
         private readonly float mCenterOffsetY;
         [DataMember]
         protected Color mColor = Color.White;
-        [DataMember]
-        protected Color mColorBase;
 
         protected PlatformInfoBox mInfoBox;
+
+        #endregion
+
+        [DataMember]
+        protected Color mColorBase;
 
         public static SpriteFont mLibSans12;
 
@@ -242,7 +254,7 @@ namespace Singularity.Platforms
             };
 
             //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<EResourceType, int>();
+            mCost = new Dictionary<EResourceType, int> { {EResourceType.Metal, 2} };
 
             mProvidingEnergy = 0;
             mDrainingEnergy = 0;
@@ -261,8 +273,6 @@ namespace Singularity.Platforms
 
             Moved = false;
             UpdateValues();
-
-            Debug.WriteLine("PlatformBlank created");
             
             Friendly = friendly;
             var str = GetResourceString();
@@ -295,6 +305,11 @@ namespace Singularity.Platforms
                 director: mDirector);
             // */
 
+        }
+
+        internal void AddBlueprint(BuildBluePrint buildBluePrint)
+        {
+            mIPlatformActions.Add(buildBluePrint);
         }
 
         internal void ReloadContent(ContentManager content, ref Director dir)
@@ -374,6 +389,7 @@ namespace Singularity.Platforms
         /// The units will call this methods when they reached the platform they have to work on.
         /// </summary>
         /// <param name="unit"></param>
+        /// <param name="job"></param>
         public void ShowedUp(GeneralUnit unit, JobType job)
         {
             var pair = mAssignedUnits[job].Find(x => x.GetFirst().Equals(unit));
@@ -404,7 +420,7 @@ namespace Singularity.Platforms
         /// Get the special IPlatformActions you can perform on this platform.
         /// </summary>
         /// <returns> an array with the available IPlatformActions.</returns>
-        public List<IPlatformAction> GetIPlatformActions()
+        public virtual List<IPlatformAction> GetIPlatformActions()
         {
             return mIPlatformActions;
         }
@@ -551,7 +567,7 @@ namespace Singularity.Platforms
                     // then draw what's on top of that
                     spritebatch.Draw(mPlatformSpriteSheet,
                         AbsolutePosition,
-                        new Rectangle(PlatformWidth * mSheetPosition, 0, 148, 153),
+                        new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 153),
                         mColor * transparency,
                         0f,
                         Vector2.Zero,
@@ -590,7 +606,7 @@ namespace Singularity.Platforms
             /*
             foreach (var res in mResources)
             {
-                res.Draw(spritebatch);
+                res.Draw(spriteBatch: spritebatch);
             }
             // */
         }
@@ -598,6 +614,10 @@ namespace Singularity.Platforms
         /// <inheritdoc cref="Singularity.Property.IUpdate"/>
         public virtual void Update(GameTime t)
         {
+            foreach (var iPlatformAction in mIPlatformActions)
+            {
+                iPlatformAction.Update(t);
+            }
             Uncollide();
 
             Bounds = new Rectangle((int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
@@ -625,9 +645,7 @@ namespace Singularity.Platforms
             }
 
             // manage updating of values in the UI
-            if (IsSelected && !mDataSent)
-                // the platform is selected + the current data has yet to be sent then
-            {
+            if (!IsSelected || mDataSent) return;
                 // update previous values
                 mPrevResources = GetPlatformResources();
                 mPrevUnitAssignments = GetAssignedUnits();
@@ -641,13 +659,12 @@ namespace Singularity.Platforms
                 // set the bool for sent-data to true, since the data has just been sent
                 mDataSent = true;
             }
-        }
 
         private void Uncollide()
         {
             // take care of the Resources on top not colliding. todo: fixme. @fkarg
         }
-
+        
         public EStructureType GetMyType()
         {
             return mType;
@@ -733,14 +750,14 @@ namespace Singularity.Platforms
                     mSheet = 0;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         88);
                     break;
                 case EStructureType.Energy:
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EStructureType.Factory:
@@ -748,7 +765,7 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EStructureType.Junkyard:
@@ -756,7 +773,7 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EStructureType.Mine:
@@ -764,7 +781,7 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EStructureType.Packaging:
@@ -772,7 +789,7 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EStructureType.Quarry:
@@ -780,7 +797,7 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EStructureType.Storage:
@@ -788,7 +805,7 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EStructureType.Well:
@@ -796,14 +813,14 @@ namespace Singularity.Platforms
                     mSheet = 3;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         127);
                     break;
                 case EStructureType.Kinetic:
                     mSheet = 1;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         165);
                     break;
                 case EStructureType.Laser:
@@ -811,7 +828,7 @@ namespace Singularity.Platforms
                     mSheetPosition = 1;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         165);
                     break;
                 case EStructureType.Barracks:
@@ -819,14 +836,14 @@ namespace Singularity.Platforms
                     mSheetPosition = 1;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         170);
                     break;
                 case EStructureType.Command:
                     mSheet = 2;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
-                        PlatformWidth,
+                        mPlatformWidth,
                         170);
                     break;
                 default:
@@ -908,6 +925,8 @@ namespace Singularity.Platforms
             mLayer = layer;
         }
 
+        #region dying/killing
+
         /// <summary>
         /// This will kill only the specialised part of the platform.
         /// </summary>
@@ -988,17 +1007,31 @@ namespace Singularity.Platforms
             toKill.Clear();
             mInwardsEdges.Clear();
             mOutwardsEdges.Clear();
-            ;
-
-
 
             mResources.RemoveAll(r => r.Die());
 
             mIPlatformActions.ForEach(a => a.Platform = null);
             mIPlatformActions.RemoveAll(a => a.Die());
+            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
+            mDirector.GetStoryManager.StructureMap.RemovePlatform(this);
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             return true;
         }
+
+        public void Kill(IEdge road)
+        {
+            mInwardsEdges.Remove(road);
+            mOutwardsEdges.Remove(road);
+            mDirector.GetStoryManager.StructureMap.RemoveRoad((Road) road);
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(road);
+        }
+
+        public void Kill(IPlatformAction action)
+        {
+            mIPlatformActions.Remove(action);
+        }
+
+        #endregion
 
         public IEnumerable<INode> GetChilds()
         {
@@ -1024,6 +1057,34 @@ namespace Singularity.Platforms
         public int GetGraphIndex()
         {
             return mGraphIndex;
+        }
+
+        public string GetResourceString()
+        {
+            if (mResources.Count == 0)
+            {
+                return "";
+            }
+            var resString = "";
+            var cType = (EResourceType) 0;
+            var counter = 0;
+            foreach (var res in mResources)
+            {
+                if (counter > 0 && res.Type != cType)
+                {
+                    resString += cType + ": " + counter + ", ";
+                    counter = 0;
+                }
+                cType = res.Type;
+                counter++;
+            }
+            return resString + cType + ": " + counter;
+        }
+
+        public void Built()
+        {
+            mIsBlueprint = false;
+            // Todo: move registering at the distributionmanager etc here. But not yet (debug)
         }
 
         public void Activate(bool manually)
@@ -1075,15 +1136,10 @@ namespace Singularity.Platforms
         /// <returns>True if thats the casem, false otherwise</returns>
         public bool IsProduction()
         {
-            if (mType == EStructureType.Well
-                || mType == EStructureType.Quarry
-                || mType == EStructureType.Mine
-                || mType == EStructureType.Factory)
-            {
-                return true;
-            }
-
-            return false;
+            return mType == EStructureType.Well
+                   || mType == EStructureType.Quarry
+                   || mType == EStructureType.Mine
+                   || mType == EStructureType.Factory;
         }
 
         public void Deactivate(bool manually)
@@ -1182,28 +1238,6 @@ namespace Singularity.Platforms
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
             return true;
-        }
-
-        private string GetResourceString()
-        {
-            if (mResources.Count == 0)
-            {
-                return "None";
-            }
-            var resString = "";
-            var cType = (EResourceType)0;
-            var counter = 0;
-            foreach (var res in mResources)
-            {
-                if (counter > 0 && res.Type != cType)
-                {
-                    resString += cType + ": " + counter + ", ";
-                    counter = 0;
-                }
-                cType = res.Type;
-                counter++;
-            }
-            return resString + cType + ": " + counter;
         }
     }
 }

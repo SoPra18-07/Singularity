@@ -2,7 +2,6 @@
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Nature;
@@ -46,8 +45,6 @@ namespace Singularity.Levels
 
             var platform3 = PlatformFactory.Get(EStructureType.Quarry, ref mDirector, 3200, 3200, Map.GetResourceMap());
 
-
-
             GameScreen.AddObject(platform3);
             var road2 = new Road(platform2, platform3, ref mDirector);
             GameScreen.AddObject(road2);
@@ -69,7 +66,7 @@ namespace Singularity.Levels
 
             // Enemy Unit
             var enemyUnit = new Target(new Vector2(3000, 2950), Camera, ref mDirector, ref map);
-            var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
+            // var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
 
             var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, Ui);
 
@@ -82,13 +79,15 @@ namespace Singularity.Levels
             var genUnit = new List<GeneralUnit>(5);
             for (var i = 0; i < 5; i++)
             {
-                genUnit.Add(new GeneralUnit(platform1, ref mDirector, 0));
+                genUnit.Add(new GeneralUnit(platform1, ref mDirector));
             }
 
             // Resources
-            var res = new Resource(EResourceType.Trash, platform2.Center);
-            var res4 = new Resource(EResourceType.Trash, platform2.Center);
-            var res5 = new Resource(EResourceType.Trash, platform2.Center);
+            var res = new Resource(EResourceType.Metal, platform2.Center);
+            var res4 = new Resource(EResourceType.Metal, platform2.Center);
+            var res5 = new Resource(EResourceType.Metal, platform2.Center);
+            var res6 = new Resource(EResourceType.Metal, platform3.Center);
+            var res7 = new Resource(EResourceType.Metal, platform4.Center);
             var res2 = new Resource(EResourceType.Chip, platform3.Center);
             var res3 = new Resource(EResourceType.Oil, platform4.Center);
 
@@ -97,10 +96,12 @@ namespace Singularity.Levels
             platform4.StoreResource(res3);
             platform2.StoreResource(res4);
             platform2.StoreResource(res5);
+            platform3.StoreResource(res6);
+            platform4.StoreResource(res7);
 
             GameScreen.AddObjects(genUnit);
             GameScreen.AddObject(enemyUnit);
-            GameScreen.AddObject(milUnit);
+            // GameScreen.AddObject(milUnit);
             GameScreen.AddObject(settler);
 
             // add a puddle

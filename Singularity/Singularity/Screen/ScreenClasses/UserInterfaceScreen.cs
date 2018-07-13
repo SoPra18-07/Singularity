@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -139,6 +141,7 @@ namespace Singularity.Screen.ScreenClasses
         private PlatformActionIWindowItem mProduceWellResourceAction;
         private PlatformActionIWindowItem mProduceQuarryResourceAction;
         private PlatformActionIWindowItem mProduceMineResourceAction;
+        private PlatformActionIWindowItem mBuildBluePrintAction;
 
         // bools if the platformactions have already been added to the selectedplatformwindow
         private bool mFastMilitaryAdded;
@@ -146,9 +149,10 @@ namespace Singularity.Screen.ScreenClasses
         private bool mProduceWellResourceAdded;
         private bool mProduceQuarryResourceAdded;
         private bool mProduceMineResourceAdded;
+        private bool mBuildBluePrintActionAdded;
 
         // save id to reset the scroll-value if the id changes
-        private int selectedPlatformId;
+        private int mSelectedPlatformId;
 
         #endregion
 
@@ -1608,29 +1612,40 @@ namespace Singularity.Screen.ScreenClasses
             {
                 mProduceWellResourceAction.ActiveInWindow = false;
             }
+            if (mBuildBluePrintAction != null)
+            {
+                mBuildBluePrintAction.ActiveInWindow = false;
+            }
+
 
             // activate all actions possible on this platform + add them to the window if they haven't been added yet
             foreach (var action in actionsList)
             {
+                /*
+                var actionIWindowItem = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
+                mSelectedPlatformWindow.AddItem(actionIWindowItem);
+                mSelectedPlatformActionList.Add(actionIWindowItem);
+                // */
+
+                // Debug.WriteLine("Element in actionlist: " + action.GetType());
+
+
+                // /*
                 if (action is MakeFastMilitaryUnit)
                 {
                     mMakeFastMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
-                    if (!mFastMilitaryAdded)
-                    {
-                        mSelectedPlatformWindow.AddItem(mMakeFastMilitaryAction);
-                        mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
-                    }
+                    if (mFastMilitaryAdded) continue;
+                    mSelectedPlatformWindow.AddItem(mMakeFastMilitaryAction);
+                    mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
                 }
-                else if (action is MakeStrongMilitaryUnit)
+                else if (action is MakeHeavyMilitaryUnit)
                 {
                     mMakeStrongMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
-                    if (!mStronggMilitaryAdded)
-                    {
-                        mSelectedPlatformWindow.AddItem(mMakeStrongMilitaryAction);
-                        mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
-                    }
+                    if (mStronggMilitaryAdded) continue;
+                    mSelectedPlatformWindow.AddItem(mMakeStrongMilitaryAction);
+                    mSelectedPlatformActionList.Add(mMakeStrongMilitaryAction);
                 }
                 else if (action is ProduceMineResource)
                 {
@@ -1639,7 +1654,7 @@ namespace Singularity.Screen.ScreenClasses
                     if (!mProduceMineResourceAdded)
                     {
                         mSelectedPlatformWindow.AddItem(mProduceMineResourceAction);
-                        mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
+                        mSelectedPlatformActionList.Add(mProduceMineResourceAction);
                     }
                 }
                 else if (action is ProduceQuarryResource)
@@ -1661,16 +1676,33 @@ namespace Singularity.Screen.ScreenClasses
                         mSelectedPlatformWindow.AddItem(mProduceWellResourceAction);
                         mSelectedPlatformActionList.Add(mProduceWellResourceAction);
                     }
+                } else if (action is BuildBluePrint)
+                {
+                    mBuildBluePrintAction = new PlatformActionIWindowItem(action,
+                        mLibSans10,
+                        Vector2.Zero,
+                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y),
+                        mDirector);
+                    if (!mBuildBluePrintActionAdded)
+                    {
+                        mSelectedPlatformWindow.AddItem(mBuildBluePrintAction);
+                        mSelectedPlatformActionList.Add(mBuildBluePrintAction);
+                    }
                 }
+                // */
             }
 
             #endregion
 
             // reset the window's scroll value + open all lists in selectedPlatformWindow if the id changes
-            if (selectedPlatformId != id)
+            if (mSelectedPlatformId != id)
             {
                 mSelectedPlatformWindow.ResetScrollValue();
             }
+
+            //selected platform id was never set, resulting in the comparision above to always equal to true -> permanently setting
+            // the scroll value to 0 which lead to not being able to scroll anymore.
+            mSelectedPlatformId = id;
         }
 
         /// <summary>
