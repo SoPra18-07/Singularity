@@ -150,7 +150,7 @@ namespace Singularity.Manager
 
         public void RemoveManager(int graphId, Dictionary<int, Graph.Graph> graphIdToGraph)
         {
-            mDMs[graphId] = null;
+            mDMs.Remove(graphId);
             mUserInterfaceController.CallingAllGraphs(graphIdToGraph);
         }
 
