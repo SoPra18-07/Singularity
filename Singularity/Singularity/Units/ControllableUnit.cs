@@ -72,7 +72,7 @@ namespace Singularity.Units
                 case EMouseAction.LeftClick:
                     // check for if the unit is selected, not moving, the click is not within the bounds of the unit, and the click was on the map.
                     if (mSelected
-                        && !mIsMoving
+                        // && !Moved // now this should do pathfinding even while moving
                         && !withinBounds
                         && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f),
                                 (int)(mMouseY - RelativeSize.Y / 2f),
@@ -80,6 +80,7 @@ namespace Singularity.Units
                                 (int)RelativeSize.Y),
                             mCamera))
                     {
+                        // this actually sets the target position used in FindPath;
                         mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
                             Matrix.Invert(mCamera.GetTransform()));
 
@@ -87,7 +88,7 @@ namespace Singularity.Units
                             (int)mTargetPosition.X / MapConstants.GridWidth,
                             (int)mTargetPosition.Y / MapConstants.GridWidth))
                         {
-                            FindPath(Center, mTargetPosition);
+                            FindPath();
                         }
                     }
 
@@ -141,6 +142,7 @@ namespace Singularity.Units
             if (selBox.Intersects(AbsBounds))
             {
                 mSelected = true;
+                mDirector.GetMilitaryManager // send to FlockingManager
             }
         }
 

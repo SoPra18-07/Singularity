@@ -113,40 +113,8 @@ namespace Singularity.Units
 
         public override void Update(GameTime gameTime)
         {
-            //make sure to update the relative bounds rectangle enclosing this unit.
-            Bounds = new Rectangle((int) RelativePosition.X,
-                (int) RelativePosition.Y,
-                (int) RelativeSize.X,
-                (int) RelativeSize.Y);
-
-            if (HasReachedTarget())
-            {
-                mIsMoving = false;
-            }
-
-            // calculate path to target position
-            else if (mIsMoving)
-            {
-                if (!HasReachedWaypoint())
-                {
-                    MoveToTarget(mPath.Peek(), mSpeed);
-                }
-
-                else
-                {
-                    mPath.Pop();
-                    MoveToTarget(mPath.Peek(), mSpeed);
-                }
-            }
-
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
-
-            AbsBounds = new Rectangle((int) AbsolutePosition.X + 16,
-                (int) AbsolutePosition.Y + 11,
-                (int) AbsoluteSize.X,
-                (int) AbsoluteSize.Y);
-            Moved = mIsMoving;
-
+            base.Update(gameTime);
+            
             if (Moved)
             {
                 mNeverMoved = false;

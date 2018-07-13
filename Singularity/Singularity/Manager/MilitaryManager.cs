@@ -489,8 +489,7 @@ namespace Singularity.Manager
             #endregion
 
             #region Kill them
-
-            var newUnitKillList = new List<FreeMovingUnit>();
+            
             foreach (var unit in unitsToKill)
             {
                 // tell the unit to die.

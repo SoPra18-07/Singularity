@@ -177,7 +177,7 @@ namespace Singularity.Units
             // calculate path to target position
             if (mIsMoving && !HasReachedTarget())
             {
-                MoveToTarget(mTargetPosition, mSpeed);
+                MoveToTarget(mTargetPosition);
             }
 
             // these are values needed to properly get the current sprite out of the spritesheet.

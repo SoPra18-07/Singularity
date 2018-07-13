@@ -8,6 +8,7 @@ using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
 using Singularity.Screen;
+using Singularity.Utils;
 
 namespace Singularity.Units
 {
@@ -55,7 +56,13 @@ namespace Singularity.Units
         /// </summary>
         [DataMember]
         protected Vector2 mVeloctiyVector;
-
+        
+        /// <summary>
+        /// Normalized vector to indicate direction of movement.
+        /// </summary>
+        [DataMember]
+        protected Vector2 mMovementVector;
+        
         [DataMember]
         protected float mSpeed;
 
@@ -112,16 +119,13 @@ namespace Singularity.Units
         #region Positioning Variables
 
         /// <summary>
-        /// Indicates if a unit has moved between updates.
-        /// </summary>
-        [DataMember]
-        public bool Moved { get; protected set; }
-
-        /// <summary>
         /// Stores the center of a unit's position.
         /// </summary>
         [DataMember]
         public Vector2 Center { get; protected set; }
+
+        public bool Moved { get; set; }
+
         [DataMember]
         public Vector2 AbsolutePosition { get; set; }
         [DataMember]
@@ -195,15 +199,13 @@ namespace Singularity.Units
         /// <param name="target">The target to which to move.</param>
         protected void MoveToTarget(Vector2 target)
         {
-
             mVeloctiyVector = new Vector2(target.X - Center.X, target.Y - Center.Y);
-
         }
 
         protected void FindPath()
         {
 
-            mIsMoving = true;
+            Moved = true;
             Debug.WriteLine("Starting path finding at: " + Center.X + ", " + Center.Y);
             Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
 
@@ -220,38 +222,6 @@ namespace Singularity.Units
             mZoomSnapshot = mCamera.GetZoom();
         }
 
-        /// <summary>
-        /// Checks whether the target position is reached or not.
-        /// </summary>
-        protected bool HasReachedTarget()
-        {
-
-            if (!(Math.Abs(Center.X + mToAdd.X -
-                           mTargetPosition.X) < 8 &&
-                  Math.Abs(Center.Y + mToAdd.Y -
-                           mTargetPosition.Y) < 8))
-            {
-                return false;
-            }
-            mToAdd = Vector2.Zero;
-            return true;
-        }
-
-        /// <summary>
-        /// Checks whether the next waypoint has been reached.
-        /// </summary>
-        /// <returns></returns>
-        protected bool HasReachedWaypoint()
-        {
-            if (!(Math.Abs(Center.X + mToAdd.X - mPath.Peek().X) < 8) ||
-                !(Math.Abs(Center.Y + mToAdd.Y - mPath.Peek().Y) < 8)) return false;
-            // If the position is within 8 pixels of the waypoint, (i.e. it will overshoot the waypoint if it moves
-            // for one more update, do the following
-
-            Debug.WriteLine("Waypoint reached.");
-            Debug.WriteLine("Next waypoint: " + mPath.Peek());
-            return true;
-        }
 
         /// <summary>
         /// Rotates unit when selected in order to face
@@ -297,7 +267,52 @@ namespace Singularity.Units
 
         public virtual void Update(GameTime gametime)
         {
+
+
+
+            if (HasReachedTarget())
+            {
+                mIsMoving = false;
+            }
+            // calculate path to target position
+            else if (mIsMoving)
+            {
+                if (!HasReachedWaypoint())
+                {
+                    MoveToTarget(mPath.Peek());
+                }
+
+                else
+                {
+                    mPath.Pop();
+                    MoveToTarget(mPath.Peek());
+                }
+            }
+
+
+
+
+
+
+            // now actually moving the unit
+
             AbsolutePosition += mVeloctiyVector;
+
+
+            // ============ now update all the values, since the position changed ===========
+
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+
+            //make sure to update the relative bounds rectangle enclosing this unit.
+            Bounds = new Rectangle((int)RelativePosition.X,
+                (int)RelativePosition.Y,
+                (int)RelativeSize.X,
+                (int)RelativeSize.Y);
+
+            AbsBounds = new Rectangle((int)AbsolutePosition.X + 16,
+                (int)AbsolutePosition.Y + 11,
+                (int)AbsoluteSize.X,
+                (int)AbsoluteSize.Y);
         }
 
         public abstract void Draw(SpriteBatch spriteBatch);

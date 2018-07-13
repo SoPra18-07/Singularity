@@ -188,12 +188,12 @@ namespace Singularity.Units
             {
                 if (!HasReachedWaypoint())
                 {
-                    MoveToTarget(mPath.Peek(), mSpeed);
+                    MoveToTarget(mPath.Peek());
                 }
                 else
                 {
                     mPath.Pop();
-                    MoveToTarget(mPath.Peek(), mSpeed);
+                    MoveToTarget(mPath.Peek());
                 }
             }
 

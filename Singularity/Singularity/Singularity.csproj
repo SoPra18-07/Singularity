@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Levels\PlatformDestructionTestLevel.cs" />
     <Compile Include="Events\SpatialPositionEventArgs.cs" />
+    <Compile Include="Manager\FlockingManager.cs" />
     <Compile Include="Nature\Rock.cs" />
     <Compile Include="Levels\BasicLevel.cs" />
     <Compile Include="Levels\ILevel.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Screen\TextAndAmountIWindowItem.cs" />
     <Compile Include="Units\EnemyUnit.cs" />
     <Compile Include="Units\EUnitType.cs" />
+    <Compile Include="Units\FlockingGroup.cs" />
     <Compile Include="Units\FreeMovingUnit.cs" />
     <Compile Include="Units\MilitaryFast.cs" />
     <Compile Include="Units\MilitaryHeavy.cs" />
