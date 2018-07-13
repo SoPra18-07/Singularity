@@ -23,22 +23,20 @@ namespace Singularity.PlatformActions
         {
             mBuildingCost = new Dictionary<EResourceType, int>(toBeBuilt.GetResourcesRequired());
             mBuilding = toBeBuilt;
-
-            Debug.WriteLine(mBuildingCost.Values.Sum() + ", " + toBeBuilt.GetResourcesRequired().Values.Sum());
+            
             UpdateResources();
-            Debug.WriteLine(mBuildingCost.Values.Sum() + ", " + mMissingResources.Values.Sum() + ", " + mToRequest.Values.Sum());
+            mIsBuilding = true;
         }
 
         protected override void CreateUnit()
         {
-            mBuildable = true;
-            Debug.WriteLine("Platform buildable!");
+            mBuilding.Built();
+            Debug.WriteLine("Platform built!");
         }
 
         public override void Execute()
         {
             if (!mBuildable) return;
-            mBuilding.Built();
             Die();
         }
     }

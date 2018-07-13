@@ -436,9 +436,8 @@ namespace Singularity.Manager
                     }
                     task = mBuildingResources.Dequeue();
                     //This means that the Action is paused.
-                    if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()))
+                    if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()) && task.Job != JobType.Construction)
                     {
-                        mBuildingResources.Enqueue(task);
                         task = RequestNewTask(unit, job, assignedAction);
                     }
                     if (task.End.IsPresent() && task.GetResource != null)
@@ -477,20 +476,7 @@ namespace Singularity.Manager
                     //This means that the Action is paused.
                     if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()))
                     {
-                        mRefiningOrStoringResources.Enqueue(task);
-                        /*
-                        var allpaused = true;
-                        foreach (var maybepausedtask in mRefiningOrStoringResources)
-                        {
-                            if (maybepausedtask.Action.IsPresent() && mPlatformActions.Contains(maybepausedtask.Action.Get()))
-                            {
-                                allpaused = false;
-                            }
-                        }
-                        if (!allpaused)
-                        { // */
                         task = RequestNewTask(unit, job, assignedAction);
-                        // }
                     }
                     if (task.End.IsPresent() && task.GetResource != null)
                     {
@@ -1087,6 +1073,11 @@ namespace Singularity.Manager
                 //Make sure the new platform gets some units
                 NewlyDistribute(platform, false, alreadyonplatform);
             }
+        }
+
+        public void Register(IPlatformAction action)
+        {
+            mPlatformActions.Add(action);
         }
 
         /// <summary>

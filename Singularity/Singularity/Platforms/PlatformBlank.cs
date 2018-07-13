@@ -104,7 +104,7 @@ namespace Singularity.Platforms
         [DataMember]
         protected Dictionary<EResourceType, int> mCost;
         [DataMember]
-        protected List<IPlatformAction> mPlatformActions;
+        protected List<IPlatformAction> mIPlatformActions;
         protected readonly Texture2D mPlatformSpriteSheet;
         protected readonly Texture2D mPlatformBaseTexture;
         [DataMember]
@@ -135,7 +135,7 @@ namespace Singularity.Platforms
         public bool Moved { get; private set; }
 
         public int Id { get; }
-
+        
         [DataMember]
         protected Director mDirector;
 
@@ -209,7 +209,7 @@ namespace Singularity.Platforms
 
             //I dont think this class has to register in the DistributionManager
             //Add possible Actions in this array
-            mPlatformActions = new List<IPlatformAction>();
+            mIPlatformActions = new List<IPlatformAction>();
 
             mAssignedUnits = new Dictionary<JobType, List<Pair<GeneralUnit, bool>>>
             {
@@ -243,7 +243,7 @@ namespace Singularity.Platforms
 
             // user interface controller
             mUserInterfaceController = director.GetUserInterfaceController;
-
+            
             Friendly = friendly;
             var str = GetResourceString();
             mInfoBox = new PlatformInfoBox(
@@ -279,7 +279,7 @@ namespace Singularity.Platforms
 
         internal void AddBlueprint(BuildBluePrint buildBluePrint)
         {
-            mPlatformActions.Add(buildBluePrint);
+            mIPlatformActions.Add(buildBluePrint);
         }
 
         public void SetColor(Color color)
@@ -365,7 +365,7 @@ namespace Singularity.Platforms
         /// <returns> an array with the available IPlatformActions.</returns>
         public virtual List<IPlatformAction> GetIPlatformActions()
         {
-            return mPlatformActions;
+            return mIPlatformActions;
         }
 
         /// <summary>
@@ -557,7 +557,7 @@ namespace Singularity.Platforms
         /// <inheritdoc cref="Singularity.Property.IUpdate"/>
         public virtual void Update(GameTime t)
         {
-            foreach (var iPlatformAction in mPlatformActions)
+            foreach (var iPlatformAction in mIPlatformActions)
             {
                 iPlatformAction.Update(t);
             }
@@ -588,19 +588,19 @@ namespace Singularity.Platforms
 
             // manage updating of values in the UI
             if (!IsSelected || mDataSent) return;
-            // update previous values
-            mPrevResources = GetPlatformResources();
-            mPrevUnitAssignments = GetAssignedUnits();
-            mPrevPlatformActions = GetIPlatformActions();
-            mPreviousIsManuallyDeactivatedState = IsManuallyDeactivated();
-            mPreviousIsActiveState = IsActive();
+                // update previous values
+                mPrevResources = GetPlatformResources();
+                mPrevUnitAssignments = GetAssignedUnits();
+                mPrevPlatformActions = GetIPlatformActions();
+                mPreviousIsManuallyDeactivatedState = IsManuallyDeactivated();
+                mPreviousIsActiveState = IsActive();
 
-            // send data to UIController
-            mUserInterfaceController.SetDataOfSelectedPlatform(Id, mIsActive, mIsManuallyDeactivated, mType, GetPlatformResources(), GetAssignedUnits(), GetIPlatformActions());
+                // send data to UIController
+                mUserInterfaceController.SetDataOfSelectedPlatform(Id, mIsActive, mIsManuallyDeactivated, mType, GetPlatformResources(), GetAssignedUnits(), GetIPlatformActions());
 
-            // set the bool for sent-data to true, since the data has just been sent
-            mDataSent = true;
-        }
+                // set the bool for sent-data to true, since the data has just been sent
+                mDataSent = true;
+            }
 
         private void Uncollide()
         {
@@ -889,7 +889,7 @@ namespace Singularity.Platforms
             //default?
             Health = 100;
 
-            mPlatformActions.RemoveAll(a => a.Die());
+            mIPlatformActions.RemoveAll(a => a.Die());
 
             mAssignedUnits[JobType.Idle].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
             mAssignedUnits[JobType.Defense].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
@@ -944,20 +944,17 @@ namespace Singularity.Platforms
             toKill.Clear();
             mInwardsEdges.Clear();
             mOutwardsEdges.Clear();
-            ;
-
-
 
             mResources.RemoveAll(r => r.Die());
-            
-            mPlatformActions.ForEach(a => a.Platform = null);
-            mPlatformActions.RemoveAll(a => a.Die());
+
+            mIPlatformActions.ForEach(a => a.Platform = null);
+            mIPlatformActions.RemoveAll(a => a.Die());
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
             mDirector.GetStoryManager.StructureMap.RemovePlatform(this);
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             return true;
         }
-        
+
         public void Kill(IEdge road)
         {
             mInwardsEdges.Remove(road);
@@ -968,11 +965,11 @@ namespace Singularity.Platforms
 
         public void Kill(IPlatformAction action)
         {
-            mPlatformActions.Remove(action);
+            mIPlatformActions.Remove(action);
         }
 
         #endregion
-        
+
         public IEnumerable<INode> GetChilds()
         {
             var childs = new List<INode>();
@@ -1076,15 +1073,10 @@ namespace Singularity.Platforms
         /// <returns>True if thats the casem, false otherwise</returns>
         public bool IsProduction()
         {
-            if (mType == EPlatformType.Well
-                || mType == EPlatformType.Quarry
-                || mType == EPlatformType.Mine
-                || mType == EPlatformType.Factory)
-            {
-                return true;
-            }
-
-            return false;
+            return mType == EPlatformType.Well
+                   || mType == EPlatformType.Quarry
+                   || mType == EPlatformType.Mine
+                   || mType == EPlatformType.Factory;
         }
 
         public void Deactivate(bool manually)

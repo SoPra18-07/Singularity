@@ -36,7 +36,7 @@ namespace Singularity.Platforms
                 friendly: friendly)
         {
             //Add possible Actions in this array
-            mPlatformActions.Add(new ProduceWellResource(this, resource, ref mDirector));
+            mIPlatformActions.Add(new ProduceWellResource(this, resource, ref mDirector));
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
@@ -55,7 +55,7 @@ namespace Singularity.Platforms
                 {
                     continue;
                 }
-                mPlatformActions[1].Execute();
+                mIPlatformActions[1].Execute();
             }
         }
 

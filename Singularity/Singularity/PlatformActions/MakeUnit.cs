@@ -81,9 +81,10 @@ namespace Singularity.PlatformActions
     {
 
         protected Dictionary<EResourceType, int> mBuildingCost;
-        protected Dictionary<EResourceType, int> mMissingResources = new Dictionary<EResourceType, int>();
-        protected Dictionary<EResourceType, int> mToRequest = new Dictionary<EResourceType, int>();
+        protected Dictionary<EResourceType, int> mMissingResources;
+        protected Dictionary<EResourceType, int> mToRequest;
         protected Vector2 mOffset = new Vector2(200f);
+        protected bool mIsBuilding = false;
 
         protected AMakeUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
@@ -117,18 +118,18 @@ namespace Singularity.PlatformActions
                 } else {
                     mToRequest[resource] = mToRequest[resource] - 1;
                 }
-                mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).RequestResource(mPlatform, resource, this);
+                mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).RequestResource(mPlatform, resource, this, mIsBuilding);
                 Debug.WriteLine("Requested " + resource + " just now. Waiting. (" + mPlatform.Id + ")");
             }
 
-            mPlatform.GetPlatformResources().ForEach(r => GetResource(r.Type));
+            foreach (var r in mPlatform.GetPlatformResources().ToList()) GetResource(r.Type);
 
-            if (mMissingResources.Count <= 0 && State == PlatformActionState.Active)
-            {
-                CreateUnit();
-                State = PlatformActionState.Available;
-            }
+            if (mMissingResources.Count > 0) return;
+            CreateUnit();
+            State = PlatformActionState.Available;
         }
+
+        #region private function
 
         private void GetResource(EResourceType type)
         {
@@ -141,6 +142,8 @@ namespace Singularity.PlatformActions
                 mMissingResources.Remove(type);
             }
         }
+
+        #endregion
 
         protected void UpdateResources()
         {
@@ -161,12 +164,12 @@ namespace Singularity.PlatformActions
             switch (State)
             {
                 case PlatformActionState.Available:
+                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(this);
                     UpdateResources();
                     State = PlatformActionState.Active;
                     break;
                 case PlatformActionState.Active:
                     mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this);
-                    mToRequest = new Dictionary<EResourceType, int>();
                     State = PlatformActionState.Available;
                     break;
                 case PlatformActionState.Deactivated:

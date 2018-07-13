@@ -36,7 +36,7 @@ namespace Singularity.Platforms
         {
 
             //Add possible Actions in this array
-            mPlatformActions.Add(new ProduceQuarryResource(this, resource, ref mDirector));
+            mIPlatformActions.Add(new ProduceQuarryResource(this, resource, ref mDirector));
             // Todo: Add Costs of the platform here if you got them.
             // mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Quarry;
@@ -55,7 +55,7 @@ namespace Singularity.Platforms
                 {
                     continue;
                 }
-                mPlatformActions[1].Execute();
+                mIPlatformActions[1].Execute();
             }
         }
 

@@ -35,7 +35,7 @@ namespace Singularity.Platforms
                 -50,
                 friendly)
         {
-            mPlatformActions.Add(new ProduceMineResource(platform: this, resourceMap: resource, director: ref mDirector));
+            mIPlatformActions.Add(new ProduceMineResource(platform: this, resourceMap: resource, director: ref mDirector));
             // Todo: Add Costs of the platform here if you got them.
             // mCost = new Dictionary<EResourceType, int>();
             mType = EPlatformType.Mine;
@@ -53,7 +53,7 @@ namespace Singularity.Platforms
                 {
                     continue;
                 }
-                mPlatformActions[1].Execute();
+                mIPlatformActions[1].Execute();
             }
         }
 
