@@ -379,12 +379,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // adds the command center to the GameScreen, as well as two general units
             
-            var graphid = IdGenerator.NextiD();
-            mDirector.GetDistributionDirector.AddManager(graphid);
-            
             var cCenter = PlatformFactory.Get(EPlatformType.Command, ref mDirector, v.X - 55, v.Y - 100, commandBlueprint: false);
-            // CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, ref mDirector, false);
-
             AddObject(cCenter);
 
             var genUnit = new GeneralUnit(cCenter, ref mDirector, cCenter.GetGraphIndex());
