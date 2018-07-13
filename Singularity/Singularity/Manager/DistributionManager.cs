@@ -478,7 +478,19 @@ namespace Singularity.Manager
                     if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()))
                     {
                         mRefiningOrStoringResources.Enqueue(task);
+                        /*
+                        var allpaused = true;
+                        foreach (var maybepausedtask in mRefiningOrStoringResources)
+                        {
+                            if (maybepausedtask.Action.IsPresent() && mPlatformActions.Contains(maybepausedtask.Action.Get()))
+                            {
+                                allpaused = false;
+                            }
+                        }
+                        if (!allpaused)
+                        { // */
                         task = RequestNewTask(unit, job, assignedAction);
+                        // }
                     }
                     if (task.End.IsPresent() && task.GetResource != null)
                     {
@@ -1151,10 +1163,25 @@ namespace Singularity.Manager
             mHandler?.ForceSliderPages();
 
         }
+
+        /// <summary>
+        /// This will be called from the SliderHandler when it changes.
+        /// It just unregisters its reference, so the DistributionManager can't communicate with it anymore.
+        /// </summary>
+        /// <param name="handler"></param>
+        internal void Unregister(SliderHandler handler)
+        {
+            if (mHandler == handler)
+            {
+                mHandler = null;
+            }
+        }
+
         #endregion
 
         public void PausePlatformAction(IPlatformAction action)
         {
+            Kill(action);
             // TODO: throw new NotImplementedException(); // (currently commented out, since it'd break stuff)
             // Actions need a sleep method
             // No, they're just being removed from occurences in the DistributionManager. As soon as they unpause, they'll send requests for Resources and units again.

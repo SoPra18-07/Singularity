@@ -314,6 +314,11 @@ namespace Singularity.Screen.ScreenClasses
                 return false;
             }
 
+            if (typeof(ICollider).IsAssignableFrom(typeof(T)))
+            {
+                //TODO: remove from collision map
+            }
+
             if (road != null)
             {
                 mMap.RemoveRoad(road);
@@ -381,17 +386,18 @@ namespace Singularity.Screen.ScreenClasses
             // TODO eventually the EPlacementType should be instance but currently that
             // TODO requires a road to be place and therefore throws an exception !!!!!
 
-            var graphid = IdGenerator.NextiD();
-            mDirector.GetDistributionDirector.AddManager(graphid);
-            var cCenter = PlatformFactory.Get(EPlatformType.Command, ref mDirector, v.X - 55, v.Y - 100);
             // CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, ref mDirector, false);
 
-            var genUnit = new GeneralUnit(cCenter, ref mDirector);
-            var genUnit2 = new GeneralUnit(cCenter, ref mDirector);
 
             // adds the command center to the GameScreen, as well as two general units
+            var cCenter = PlatformFactory.Get(EPlatformType.Command, ref mDirector, v.X - 55, v.Y - 100);
             AddObject(cCenter);
+            
+
+            var genUnit = new GeneralUnit(cCenter, ref mDirector);
             AddObject(genUnit);
+
+            var genUnit2 = new GeneralUnit(cCenter, ref mDirector);
             AddObject(genUnit2);
 
             // removes the settler from the GameScreen

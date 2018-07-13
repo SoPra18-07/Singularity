@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Screen;
 
 namespace Singularity.Platforms
 {
@@ -54,8 +55,7 @@ namespace Singularity.Platforms
             ResourceMap resourceMap = null,
             bool friendly = true)
         {
-            //TODO: add conesheet to this query. Its not included right now since it doesn't exists at this point in time
-            if (sCylinderSheet == null || sDomeSheet == null || sBlankSheet == null)
+            if (sConeSheet == null || sCylinderSheet == null || sDomeSheet == null || sBlankSheet == null)
             {
                 throw new Exception("Init needs to be called before.");
             }
@@ -92,7 +92,11 @@ namespace Singularity.Platforms
                     return new Mine(position, sDomeSheet, sBlankSheet, sLibSans12, resourceMap, ref director, friendly);
 
                 case EPlatformType.Packaging:
-                    throw new NotImplementedException("Packaging facilities have not yet been implemented");
+
+                    var mine = new Mine(position, sDomeSheet, sBlankSheet, sLibSans12, resourceMap, ref director);
+
+                    director.GetEventLog.AddEvent(ELogEventType.Debugging, "Packacking facilities have not yet been implemented. \n HERE, HAVE A MINE INSTEAD", mine);
+                    return mine;
 
                 case EPlatformType.Storage:
                     return new Storage(position, sDomeSheet, sBlankSheet, sLibSans12, ref director, friendly);

@@ -570,6 +570,8 @@ namespace Singularity.Platforms
                 // add this platform to inputManager once
                 mDirector.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
                 mAddedToInputManager = true;
+
+                mDirector.GetEventLog.AddEvent(ELogEventType.PlatformBuilt, mType + " has been built", this);
             }
 
             // set the mDataSent bool to false if there was a change in platform infos since the data was sent last time
@@ -876,6 +878,8 @@ namespace Singularity.Platforms
 
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
 
+            // create the event in eventLog that the specialised part has been destroyed
+            mDirector.GetEventLog.AddEvent(ELogEventType.PlatformDestroyed, mType + " has been destroyed", this);
 
             mColor = Color.White;
             mType = EPlatformType.Blank;
@@ -912,17 +916,40 @@ namespace Singularity.Platforms
 
             DieBlank();
 
+            // create event in eventLog that the platform has been destroyed
+            mDirector.GetEventLog.AddEvent(ELogEventType.PlatformDestroyed, mType + " has been destroyed", this);
+
             // TODO: REMOVE from everywhere.
             // see https://github.com/SoPra18-07/Singularity/issues/215
 
             // removing the PlatformActions first
 
-            mInwardsEdges.RemoveAll(e => ((Road) e).Die());
-            mOutwardsEdges.RemoveAll(e => ((Road) e).Die()); // this is indirectly calling the Kill(road) function below
+            var toKill = new List<IEdge>();
+
+            foreach (var road in mInwardsEdges)
+            {
+                toKill.Add(road);
+            }
+
+            foreach (var road in mOutwardsEdges)
+            {
+                toKill.Add(road);
+            }
+
+            foreach (var road in toKill)
+            {
+                ((Road)road).Die();
+            }
+
+            toKill.Clear();
+            mInwardsEdges.Clear();
+            mOutwardsEdges.Clear();
+            ;
+
 
 
             mResources.RemoveAll(r => r.Die());
-
+            
             mPlatformActions.ForEach(a => a.Platform = null);
             mPlatformActions.RemoveAll(a => a.Die());
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
@@ -930,7 +957,7 @@ namespace Singularity.Platforms
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             return true;
         }
-
+        
         public void Kill(IEdge road)
         {
             mInwardsEdges.Remove(road);
@@ -945,7 +972,7 @@ namespace Singularity.Platforms
         }
 
         #endregion
-
+        
         public IEnumerable<INode> GetChilds()
         {
             var childs = new List<INode>();
@@ -1140,9 +1167,18 @@ namespace Singularity.Platforms
         public Rectangle Bounds { get; private set; }
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
-            if (!withinBounds) return true;
-            if (mouseAction != EMouseAction.LeftClick) return false;
+            if (!withinBounds)
+            {
+                return true;
+            }
+
+            if (mouseAction != EMouseAction.LeftClick)
+            {
+                MakeDamage(Health);
+                return false;
+            }
             mUserInterfaceController.ActivateMe(this);
+            mUserInterfaceController.SelectedPlatformSetsGraphId(mGraphIndex);
             return false;
         }
 

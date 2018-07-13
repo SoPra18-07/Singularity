@@ -8,6 +8,7 @@ using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Units;
+using Singularity.Utils;
 
 namespace Singularity.Map
 {
@@ -103,6 +104,7 @@ namespace Singularity.Map
         /// <param name="platform">The platform to be added</param>
         public void AddPlatform(PlatformBlank platform)
         {
+
             mPlatforms.AddLast(platform);
             mFow.AddRevealingObject(platform);
 
@@ -150,21 +152,12 @@ namespace Singularity.Map
             mPlatforms.Remove(platform);
             mFow.RemoveRevealingObject(platform);
 
-            // first update the references to all the roads connected to this accordingly
-            foreach (var roads in platform.GetOutwardsEdges())
-            {
-                ((Road) roads).SourceAsNode = null;
-            }
+            var index = mPlatformToGraphId[platform];
 
-            foreach (var roads in platform.GetInwardsEdges())
-            {
-                ((Road) roads).DestinationAsNode = null;
-            }
+            mGraphIdToGraph[index] = null;
 
-            // possible outcomes, no new graphs, 1 new graph, ..., n new graphs.
-            // TODO: no idea how to efficiently handle this, implementation needed
-
-
+            mDirector.GetDistributionDirector.RemoveManager(index, mGraphIdToGraph);
+            mDirector.GetPathManager.RemoveGraph(index);
         }
 
         /// <summary>
@@ -239,8 +232,8 @@ namespace Singularity.Map
             var child = road.GetChild();
             var parent = road.GetParent();
 
-            ((PlatformBlank)child).RemoveEdge(road);
-            ((PlatformBlank)parent).RemoveEdge(road);
+            ((PlatformBlank)child)?.RemoveEdge(road);
+            ((PlatformBlank)parent)?.RemoveEdge(road);
 
             // more accurately: we have two cases:
             // 1. road gets destroyed -> two new seperate graphs get created
@@ -269,6 +262,7 @@ namespace Singularity.Map
             // now check the 2nd case.
             if (child == null || parent == null)
             {
+
                 INode existent = null;
 
                 if (child != null)
@@ -313,7 +307,24 @@ namespace Singularity.Map
 
             UpdateGenUnitsGraphIndex(mGraphIdToGraph[newChildIndex], newChildIndex);
 
-            //TODO: split the two dist managers here, wasn't sure how to implement it since i didnt understand the signature
+            var platforms = new List<PlatformBlank>();
+            var units = new List<GeneralUnit>();
+
+            foreach (var node in parentReachableGraph.GetNodes())
+            {
+                platforms.Add((PlatformBlank)node);
+                foreach (var unit in ((PlatformBlank) node).GetGeneralUnitsOnPlatform())
+                {
+                    units.Add(unit);
+                }
+            }
+
+            mGraphIdToEnergyLevel[newChildIndex] = 0;
+            mGraphIdToEnergyLevel[mPlatformToGraphId[(PlatformBlank) parent]] = 0;
+            UpdateEnergyLevel(newChildIndex);
+            UpdateEnergyLevel(mPlatformToGraphId[(PlatformBlank)parent]);
+
+            mDirector.GetDistributionDirector.SplitManagers(mPlatformToGraphId[(PlatformBlank)parent], newChildIndex, platforms, units, mGraphIdToGraph);
             mDirector.GetPathManager.AddGraph(newChildIndex, childReachableGraph);
             mDirector.GetPathManager.AddGraph(mPlatformToGraphId[(PlatformBlank)parent], parentReachableGraph);
         }
@@ -343,6 +354,11 @@ namespace Singularity.Map
 
                 foreach (var child in node.GetChilds())
                 {
+                    if (child == null)
+                    {
+                        continue;
+                    }
+
                     if (visited.ContainsKey(child))
                     {
                         continue;

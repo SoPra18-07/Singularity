@@ -270,7 +270,7 @@ namespace Singularity.Platforms
 
                             // the platform was on the map -> advance to next state and create the road to connect to another platform
                             mCurrentState.NextState();
-                            mConnectionRoad = new Road(mPlatform, null, true);
+                            mConnectionRoad = new Road(mPlatform, null, ref mDirector, true);
 
                             giveThrough = false;
                         }
@@ -278,7 +278,7 @@ namespace Singularity.Platforms
                         {
                             if (mHoveringPlatform != null)
                             {
-                                mRoadToBuild = new Road(mHoveringPlatform, null, true);
+                                mRoadToBuild = new Road(mHoveringPlatform, null, ref mDirector, true);
                                 mOldHovering = mHoveringPlatform;
                                 mCurrentState.NextState();
                                 giveThrough = false;

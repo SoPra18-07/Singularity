@@ -86,7 +86,7 @@ namespace Singularity.Screen
             var buttonSize = new Vector2(button.Size.X + 10, button.Size.Y + 10);
 
             // position where the next item will be drawn
-            mItemPosTop = new Vector2(Position.X + 10, Position.Y + titleSizeY + 30); // TODO
+            mItemPosTop = new Vector2(Position.X + 10, Position.Y + titleSizeY + 30);
 
             // set the window rectangle
             mWindowRectangle = new Rectangle(
@@ -175,17 +175,13 @@ namespace Singularity.Screen
             // TODO: what is there still to be done?
 
             // draw window
-            /*spriteBatch.FillRectangle(mWindowRectangle, mColorFill);
-            spriteBatch.DrawRectangle(mBorderRectangle, mColorBorder, 2);*/
             spriteBatch.StrokedRectangle(new Vector2(mWindowRectangle.X, mWindowRectangle.Y), new Vector2(mWindowRectangle.Width, mWindowRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
 
             // draw window title + bar
             spriteBatch.DrawString(mSpriteFontTitle, mWindowName, new Vector2(Position.X + 10, Position.Y + 10), new Color(255, 255, 255));
-            //spriteBatch.DrawRectangle(mTitleBarRectangle, mColorBorder, 1);
             spriteBatch.StrokedRectangle(new Vector2(mTitleBarRectangle.X, mTitleBarRectangle.Y), new Vector2(mTitleBarRectangle.Width, mTitleBarRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
 
             // draw 'button'
-            //spriteBatch.DrawRectangle(mButtonBorderRectangle, mColorBorder, 2);
             spriteBatch.StrokedRectangle(new Vector2(mButtonBorderRectangle.X, mButtonBorderRectangle.Y), new Vector2(mButtonBorderRectangle.Width, mButtonBorderRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
 
             // backup current scissor so we can restore later
@@ -194,7 +190,6 @@ namespace Singularity.Screen
             // Add the scrollbar if the window is scrollable
             if (mScrollable)
             {
-                //spriteBatch.DrawRectangle(mScrollBarBorderRectangle, mColorBorder, 2);
                 spriteBatch.StrokedRectangle(new Vector2(mScrollBarBorderRectangle.X - 1, mScrollBarBorderRectangle.Y), new Vector2(mScrollBarBorderRectangle.Width, mScrollBarBorderRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
 
                 // set up current scissor rectangle
@@ -297,7 +292,7 @@ namespace Singularity.Screen
         /// </summary>
         /// <param name="scissorRectangle">the scissorrectangle used to cut the winodw</param>
         /// <param name="combinedItemsSize">the size of all items combined with padding</param>
-        /// <returns></returns>
+        /// <returns>the scrollbar rectangle</returns>
         private Rectangle CalcScrollbarRectangle(Rectangle scissorRectangle, float combinedItemsSize)
         {
             // scrollbar to scrollbarRectangleBorder has the same ratio as scissorRectangle to combinedItemSize
