@@ -80,6 +80,8 @@
     <Compile Include="Map\UnitMap.cs" />
     <Compile Include="Map\UnitMapTile.cs" />
     <Compile Include="PlatformActions\MakeUnit.cs" />
+    <Compile Include="PlatformActions\APlatformAction.cs" />
+    <Compile Include="PlatformActions\BuildBluePrint.cs" />
     <Compile Include="PlatformActions\Shoot.cs" />
     <Compile Include="Platforms\Barracks.cs" />
     <Compile Include="Platforms\DefenseLaser.cs" />
