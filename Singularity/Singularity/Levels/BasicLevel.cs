@@ -95,7 +95,7 @@ namespace Singularity.Levels
             // the input manager keeps this from not getting collected by the GC
             mDebugscreen = new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
 
-            mDirector.GetInputManager.AddKeyListener(this);
+            mDirector.GetInputManager.FlagForAddition(this);
         }
 
         public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, ref Director director, IScreenManager screenmanager)
@@ -133,7 +133,7 @@ namespace Singularity.Levels
             director.GetMilitaryManager.ReloadSetMap(ref map);
             // the input manager keeps this from not getting collected by the GC
             mDebugscreen = new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
-            mDirector.GetInputManager.AddKeyListener(this);
+            mDirector.GetInputManager.FlagForAddition(this);
         }
 
         public abstract void LoadContent(ContentManager content);

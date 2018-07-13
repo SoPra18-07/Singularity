@@ -126,8 +126,8 @@ namespace Singularity.Screen
 
             mBackgroundGiven = true;
 
-            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
-            director.GetInputManager.AddMouseWheelListener(this);
+            director.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.GetInputManager.FlagForAddition(this);
             director.GetInputManager.AddMousePositionListener(this);
         }
 
@@ -178,8 +178,8 @@ namespace Singularity.Screen
             // set start values
             mBackgroundGiven = true;
 
-            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
-            director.GetInputManager.AddMouseWheelListener(this);
+            director.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.GetInputManager.FlagForAddition(this);
             director.GetInputManager.AddMousePositionListener(this);
         }
 
@@ -228,8 +228,8 @@ namespace Singularity.Screen
             // set start values
             mBackgroundGiven = false;
 
-            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
-            director.GetInputManager.AddMouseWheelListener(this);
+            director.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.GetInputManager.FlagForAddition(this);
             director.GetInputManager.AddMousePositionListener(this);
         }
 

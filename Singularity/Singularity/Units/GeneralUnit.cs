@@ -14,7 +14,7 @@ using Singularity.Utils;
 namespace Singularity.Units
 {
     [DataContract]
-    public sealed class GeneralUnit : ISpatial
+    public sealed class GeneralUnit : ISpatial, IDie
     {
         [DataMember]
         public int Id { get; private set; }
@@ -531,7 +531,8 @@ namespace Singularity.Units
             }
 
             mDirector.GetDistributionDirector.GetManager(Graphid).Kill(this);
-            mAssignedAction.Kill(this);
+            mAssignedAction?.Kill(this);
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
 
             return true;
         }
