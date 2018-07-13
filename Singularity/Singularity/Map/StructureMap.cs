@@ -9,6 +9,7 @@ using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Property;
+using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 using Singularity.Utils;
 
@@ -100,7 +101,7 @@ namespace Singularity.Map
         }
 
 
-        public void ReloadContent(ContentManager content, FogOfWar fow, ref Director dir, Camera camera, Map map)
+        public void ReloadContent(ContentManager content, FogOfWar fow, ref Director dir, Camera camera, Map map, UserInterfaceScreen ui)
         {
             mFow = fow;
             mDirector = dir;
@@ -114,6 +115,8 @@ namespace Singularity.Map
             {
                 platform.ReloadContent(content, ref dir);
             }
+            //Update uis graphid dictionary
+            ui.CallingAllGraphs(mGraphIdToGraph);
         }
 
         /// <summary>
