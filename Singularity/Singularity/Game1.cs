@@ -6,6 +6,7 @@ using Singularity.Levels;
 using Singularity.Manager;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
+using Singularity.Serialization;
 
 namespace Singularity
 {
@@ -20,7 +21,14 @@ namespace Singularity
         internal readonly GraphicsDeviceManager mGraphics;
         internal readonly GraphicsAdapter mGraphicsAdapter;
 
+
+        // Screens
+        private ILevel mLevel;
+        private LoadGameManagerScreen mLoadGameManager;
+        private MainMenuManagerScreen mMainMenuManager;
+
         private float mLastFrameTime;
+
 
         // Sprites!
         private SpriteBatch mSpriteBatch;
@@ -72,21 +80,23 @@ namespace Singularity
         /// </summary>
         protected override void LoadContent()
         {
+
             var viewportResolution = new Vector2(GraphicsDevice.Viewport.Width,
                 GraphicsDevice.Viewport.Height);
             // Create a new SpriteBatch, which can be used to draw textures.
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            //This needs to be done because in the Constructor of Tutorial all Ingame-things (including screens) etc. are initialized and added
-            var level = new Skirmish(mGraphics, ref mDirector, Content, mScreenManager);
+            mLoadGameManager = new LoadGameManagerScreen(mGraphics, ref mDirector, Content, viewportResolution, mScreenManager, this);
+            mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
 
-            var mainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
             //ATTENTION: THE INGAME SCREENS ARE HANDLED IN THE LEVELS NOW!
-            mScreenManager.AddScreen(mainMenuManager); // TODO: This makes it so that the main menu is bypassed
+            mScreenManager.AddScreen(mLoadGameManager);
+            mScreenManager.AddScreen(mMainMenuManager);
 
             // TODO: load and play Soundtrack as background music
             // director.GetSoundManager.LoadContent(Content);
             //_mSoundManager.PlaySoundTrack();
+            //XSerializer.Save(new Skirmish(mGraphics, ref mDirector, Content, mScreenManager), "SwagSireDrizzle's_Game.xml", false);
         }
 
         /// <summary>

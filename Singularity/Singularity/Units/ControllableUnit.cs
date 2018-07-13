@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
@@ -13,25 +14,32 @@ namespace Singularity.Units
     /// <inheritdoc cref="IMousePositionListener"/>
     /// <inheritdoc cref="FreeMovingUnit"/>
     /// <inheritdoc cref="IRevealing"/>
+    
+    [DataContract]
     internal abstract class ControllableUnit : FreeMovingUnit, IMouseClickListener, IMousePositionListener, IRevealing
+
     {
         #region Fields
 
         /// <summary>
         /// Indicates if the unit is currently selected.
         /// </summary>
+        [DataMember]
         internal bool mSelected;
 
+        [DataMember]
         public int RevelationRadius { get; protected set; }
 
         /// <summary>
         /// Stores the current x position of the mouse
         /// </summary>
+        [DataMember]
         internal float mMouseX;
 
         /// <summary>
         /// Stores the current y position of the mouse
         /// </summary>
+        [DataMember]
         internal float mMouseY;
 
         #endregion
@@ -50,6 +58,13 @@ namespace Singularity.Units
         protected ControllableUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true)
             : base(position, camera, ref director, ref map, friendly)
         {
+            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            mDirector.GetInputManager.AddMousePositionListener(this);
+        }
+
+        protected new void ReloadContent(ref Director director, Camera camera, ref Map.Map map)
+        {
+            base.ReloadContent(ref director, camera, ref map);
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
         }

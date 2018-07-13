@@ -1,8 +1,8 @@
-﻿using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
 using Singularity.Input;
@@ -18,56 +18,65 @@ namespace Singularity.Map
     /// A Structure map holds all the structures currently in the game. Additionally the structure map holds a graph
     /// representation of all the platforms and roads in the game. These graphes are used by pathfinding algorithms etc.
     /// </summary>
+    [DataContract]
     public sealed class StructureMap : IDraw, IUpdate, IMousePositionListener
     {
         /// <summary>
         /// A list of all the platforms currently in the game
         /// </summary>
+        [DataMember]
         private readonly LinkedList<PlatformBlank> mPlatforms;
 
         /// <summary>
         /// A list of all the roads in the game, identified by a source and destination platform.
         /// </summary>
+        [DataMember]
         private readonly LinkedList<Road> mRoads;
 
         /// <summary>
         /// A list of all the platformPlacements in the game (the platforms following the mouse when building).
         /// </summary>
+        [DataMember]
         private readonly LinkedList<StructurePlacer> mStructuresToPlace;
 
         /// <summary>
         /// The director for the game
         /// </summary>
-        private readonly Director mDirector;
+        private Director mDirector;
 
         /// <summary>
         /// A dictionary mapping platforms to the ID of the graph they are currently on
         /// </summary>
+        [DataMember]
         private readonly Dictionary<PlatformBlank, int> mPlatformToGraphId;
 
         /// <summary>
         /// A dictionary mapping graph IDs to the graph object they belong to
         /// </summary>
+        [DataMember]
         private readonly Dictionary<int, Graph.Graph> mGraphIdToGraph;
 
         /// <summary>
         /// A dictioanry mapping graph IDs to the energy level of the graph
         /// </summary>
+        [DataMember]
         private readonly Dictionary<int, int> mGraphIdToEnergyLevel;
 
         /// <summary>
         /// The Fog of war of the current game
         /// </summary>
-        private readonly FogOfWar mFow;
+        private FogOfWar mFow;
 
         /// <summary>
         /// The x coordinate of the mouse in world space
         /// </summary>
+        [DataMember]
         private float mMouseX;
 
         /// <summary>
         /// The y coordinate of the mouse in world space
         /// </summary>
+        [DataMember]
         private float mMouseY;
 
         /// <summary>
@@ -88,6 +97,23 @@ namespace Singularity.Map
             mStructuresToPlace = new LinkedList<StructurePlacer>();
             mPlatforms = new LinkedList<PlatformBlank>();
             mRoads = new LinkedList<Road>();
+        }
+
+
+        public void ReloadContent(ContentManager content, FogOfWar fow, ref Director dir, Camera camera, Map map)
+        {
+            mFow = fow;
+            mDirector = dir;
+            dir.GetInputManager.AddMousePositionListener(this);
+            foreach (var placement in mStructuresToPlace)
+            {
+                placement.ReloadContent(camera, ref dir, map);
+            }
+
+            foreach (var platform in mPlatforms)
+            {
+                platform.ReloadContent(content, ref dir);
+            }
         }
 
         /// <summary>
@@ -143,6 +169,7 @@ namespace Singularity.Map
             mGraphIdToGraph[index] = graph;
             mPlatformToGraphId[platform] = index;
             platform.SetGraphIndex(index);
+            
             UpdateGenUnitsGraphIndex(mGraphIdToGraph[index], index);
 
             mDirector.GetDistributionDirector.AddManager(index);

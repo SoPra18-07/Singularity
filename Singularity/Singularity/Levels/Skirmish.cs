@@ -16,7 +16,6 @@ using Singularity.Units;
 namespace Singularity.Levels
 {
     /// <inheritdoc cref="BasicLevel"/>
-    //Not sure whether this should be serialized, but I guess...
     [DataContract]
     internal sealed class Skirmish : BasicLevel
     {
@@ -33,6 +32,7 @@ namespace Singularity.Levels
         public override void LoadContent(ContentManager content)
         {
             var map = Map;
+
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
             var platform1 = PlatformFactory.Get(EPlatformType.Blank, ref mDirector, 3000, 3000, Map.GetResourceMap());
@@ -72,10 +72,11 @@ namespace Singularity.Levels
             var enemyUnit = new Target(new Vector2(3000, 2950), Camera, ref mDirector, ref map);
             var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
 
-            var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, mUi);
+            var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, Ui);
 
-            var rock1 = new Rock(new Vector2(3500, 2800));
+            var rock1 = new Rock(new Vector2(3500, 2800), ref mDirector);
             //var rock2 = new Rock(new Vector2(3500, 3000));
+
             GameScreen.AddObject(rock1);
             //GameScreen.AddObject(rock2);
 
@@ -116,8 +117,8 @@ namespace Singularity.Levels
             GameScreen.AddObject(spawner);
 
             // add a puddle
-            GameScreen.AddObject(new Puddle(new Vector2(3300, 2500)));
-            GameScreen.AddObject(new Puddle(new Vector2(3300, 2700), false));
+            GameScreen.AddObject(new Puddle(new Vector2(3300, 2500), ref mDirector));
+            GameScreen.AddObject(new Puddle(new Vector2(3300, 2700), ref mDirector, false));
 
             //TESTMETHODS HERE ====================================
             mDirector.GetDistributionDirector.GetManager(0).RequestResource(platform2, EResourceType.Oil, null);

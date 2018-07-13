@@ -16,6 +16,7 @@
         StatisticsScreen,
         MainMenuManagerScreen,
         UserInterfaceScreen,
+        LoadGameManagerScreen,
         DebugScreen
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Runtime.Serialization;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Property;
@@ -12,24 +13,27 @@ namespace Singularity.Resources
     /// <summary>
     /// Represents a resource-field on the Map in the game. Resources can be extraced from it using the Well, the Mine or the Quarry.
     /// </summary>
+    [DataContract]
     public sealed class MapResource : ISpatial
     {
 
         /// <summary>
         /// The color of this resource.
         /// </summary>
+        [DataMember]
         private readonly Color mColor;
 
+        [DataMember]
         public Vector2 AbsolutePosition { get; set; }
-
+        [DataMember]
         public Vector2 AbsoluteSize { get; set; }
-
+        [DataMember]
         public Vector2 RelativePosition { get; set; }
-
+        [DataMember]
         public Vector2 RelativeSize { get; set; }
-
-        public EResourceType Type { get; }
-
+        [DataMember]
+        public EResourceType Type { get; private set; }
+        [DataMember]
         private int Amount { get; set; }
 
         /// <summary>

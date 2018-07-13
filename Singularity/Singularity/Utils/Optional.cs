@@ -1,4 +1,5 @@
-﻿using Singularity.Exceptions;
+﻿using System.Runtime.Serialization;
+using Singularity.Exceptions;
 
 namespace Singularity.Utils
 {
@@ -8,8 +9,10 @@ namespace Singularity.Utils
     /// and Get() will return the value.
     /// </summary>
     /// <typeparam name="T">The type of this optional</typeparam>
+    [DataContract]
     public sealed class Optional<T>
     {
+        [DataMember]
         private readonly T mValue;
 
         /// <summary>

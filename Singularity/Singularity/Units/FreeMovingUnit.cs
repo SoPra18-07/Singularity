@@ -1,24 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
 using Singularity.Screen;
-using Singularity.Utils;
 
 namespace Singularity.Units
 {
     /// <inheritdoc cref="ICollider"/>
+
+    [DataContract]
     internal abstract class FreeMovingUnit : ICollider
+
     {
         /// <summary>
         /// The unique ID of the unit.
         /// </summary>
-        public int Id { get; }
-
+        [DataMember]
+        public int Id { get; private set; }
+        [DataMember]
         public bool Friendly { get; protected set; }
         #region Movement Variables
 
@@ -26,38 +30,45 @@ namespace Singularity.Units
         /// Indicates the vector that needs to be added to the current vector to indicate the movement
         /// direction.
         /// </summary>
+        [DataMember]
         protected Vector2 mToAdd;
 
         /// <summary>
         /// Target position that the unit wants to reach.
         /// </summary>
+        [DataMember]
         protected Vector2 mTargetPosition;
 
         /// <summary>
         /// Indicates if the unit is currently moving towards a target.
         /// </summary>
+        [DataMember]
         protected bool mIsMoving;
 
         /// <summary>
         /// Path the unit must take to get to the target position without colliding with obstacles.
         /// </summary>
+        [DataMember]
         protected Stack<Vector2> mPath;
 
         /// <summary>
         /// Stores the path the unit is taking so that it can be drawn for debugging.
         /// </summary>
+        [DataMember]
         protected Vector2[] mDebugPath;
 
         /// <summary>
         /// Provides a snapshot of the current bounds of the unit at every update call.
         /// </summary>
+        [DataMember]
         protected Rectangle mBoundsSnapshot;
 
         /// <summary>
         /// Normalized vector to indicate direction of movement.
         /// </summary>
+        [DataMember]
         protected Vector2 mMovementVector;
-
+        [DataMember]
         protected float mSpeed;
 
         #endregion
@@ -72,7 +83,7 @@ namespace Singularity.Units
         /// <summary>
         /// MilitaryPathfinders enables pathfinding using jump point search or line of sight.
         /// </summary>
-        protected readonly FreeMovingPathfinder mPathfinder;
+        protected FreeMovingPathfinder mPathfinder;
 
         /// <summary>
         /// Stores a reference to the game map.
@@ -82,27 +93,29 @@ namespace Singularity.Units
         /// <summary>
         /// Stores the game camera.
         /// </summary>
-        protected readonly Camera mCamera;
+        protected Camera mCamera;
 
         /// <summary>
         /// Provides IMouseClickListener its bounds to know when it is clicked
         /// </summary>
+        [DataMember]
         public Rectangle Bounds { get; protected set; }
 
         /// <summary>
         /// Used by the camera to figure out where it is.
         /// </summary>
+        [DataMember]
         protected double mZoomSnapshot;
-
+        [DataMember]
         public Rectangle AbsBounds { get; protected set; }
-
+        //TODO: Make clear whether we need to reload that
         public bool[,] ColliderGrid { get; protected set; }
 
         public Vector2 RelativePosition { get; set; }
-
+        [DataMember]
         public Vector2 RelativeSize { get; set; }
-
-        public EScreen Screen { get; } = EScreen.GameScreen;
+        [DataMember]
+        public EScreen Screen { get; private set; } = EScreen.GameScreen;
 
         #endregion
 
@@ -111,27 +124,35 @@ namespace Singularity.Units
         /// <summary>
         /// Indicates if a unit has moved between updates.
         /// </summary>
+        [DataMember]
         public bool Moved { get; protected set; }
 
+        /// <summary>
+        /// Stores the center of a unit's position.
+        /// </summary>
+        [DataMember]
         public Vector2 Center { get; protected set; }
-
+        [DataMember]
         public Vector2 AbsolutePosition { get; set; }
-
+        [DataMember]
         public Vector2 AbsoluteSize { get; set; }
 
         /// <summary>
         /// Value of the unit's rotation.
         /// </summary>
+        [DataMember]
         protected int mRotation;
 
         /// <summary>
         /// Column of the spritesheet to be used in case the unit is a military unit.
         /// </summary>
+        [DataMember]
         protected int mColumn;
 
         /// <summary>
         /// Row of the spritesheet to be used in case the unit is a military unit.
         /// </summary>
+        [DataMember]
         protected int mRow;
 
 
@@ -153,7 +174,7 @@ namespace Singularity.Units
         /// </remarks>
         protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true)
         {
-            Id = IdGenerator.NextiD(); // id for the specific unit.
+            Id = director.GetIdGenerator.NextiD(); // id for the specific unit.
 
             AbsolutePosition = position;
             mMap = map;
@@ -166,6 +187,14 @@ namespace Singularity.Units
             mPathfinder = new FreeMovingPathfinder();
 
             Friendly = friendly;
+        }
+
+        protected void ReloadContent(ref Director director, Camera camera, ref Map.Map map)
+        {
+            mPathfinder = new FreeMovingPathfinder();
+            mDirector = director;
+            mCamera = camera;
+            mMap = map;
         }
 
         #region Pathfinding Methods
@@ -296,6 +325,7 @@ namespace Singularity.Units
         /// <summary>
         /// Defines the health of the unit, defaults to 10.
         /// </summary>
+        [DataMember]
         public int Health { get; set; }
 
         /// <summary>

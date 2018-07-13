@@ -1,20 +1,22 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Map;
 using Singularity.Platforms;
 using Singularity.Property;
-using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 using Singularity.Utils;
 
 namespace Singularity.Manager
 {
+
     /// <remarks>
     /// The way the MilitaryManager works is that it stores which 2x2 map tile a unit is currently located on. This way,
     /// the MilitaryManager only has to check for all units which are in the same or adjacent 2x2 map tiles for detection.
     /// As such, it won't need to check if 2 units on opposite ends of the map are near enough to each other that it can attack them.
     /// </remarks>
+    [DataContract]
     public sealed class MilitaryManager : IUpdate
     {
         /// <summary>
@@ -27,11 +29,13 @@ namespace Singularity.Manager
         /// <summary>
         /// A list of friendly military (i.e. capable of shooting) units.
         /// </summary>
+        [DataMember]
         private readonly List<MilitaryUnit> mFriendlyMilitary = new List<MilitaryUnit>();
 
         /// <summary>
         /// A list of friendly defense platforms.
         /// </summary>
+        [DataMember]
         private readonly List<DefenseBase> mFriendlyDefensePlatforms = new List<DefenseBase>();
 
         #endregion
@@ -41,16 +45,18 @@ namespace Singularity.Manager
         /// <summary>
         /// A list of hostile military (i.e. capable of shooting) units.
         /// </summary>
+        [DataMember]
         private readonly List<EnemyUnit> mHostileMilitary = new List<EnemyUnit>();
 
         /// <summary>
         /// A list of hsotile defense platforms.
         /// </summary>
+        [DataMember]
         private readonly List<DefenseBase> mHostileDefensePlatforms = new List<DefenseBase>();
 
         #endregion
-
-        internal int TotalUnitCount { get; private set; } = 0;
+        [DataMember]
+        internal int TotalUnitCount { get; private set; }
 
         /// <summary>
         /// Sets the unit map for referencing later on. This is required because the map is created
@@ -59,6 +65,32 @@ namespace Singularity.Manager
         internal void SetMap(ref Map.Map map)
         {
             mUnitMap = map.GetUnitMap();
+        }
+
+        public void ReloadContent(Vector2 mapmeasurements)
+        {
+            mUnitMap = new UnitMap((int)mapmeasurements.X, (int)mapmeasurements.Y);
+            foreach(var funit in mFriendlyMilitary)
+            {
+                mUnitMap.AddUnit(funit);
+            }
+
+            foreach (var fplatform in mFriendlyDefensePlatforms)
+            {
+                var position = mUnitMap.VectorToTilePos(fplatform.AbsolutePosition);
+                mUnitMap.AddUnit(fplatform, position);
+            }
+
+            foreach (var hunit in mHostileMilitary)
+            {
+                mUnitMap.AddUnit(hunit);
+            }
+
+            foreach (var hplatform in mHostileDefensePlatforms)
+            {
+                var position = mUnitMap.VectorToTilePos(hplatform.AbsolutePosition);
+                mUnitMap.AddUnit(hplatform, position);
+            }
         }
 
         #region Methods to add objects to the manager

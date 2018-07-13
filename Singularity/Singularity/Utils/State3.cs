@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace Singularity.Utils
 {
     /// <summary>
     /// These are the states for the PlatformPlacer.
     /// </summary>
+    [DataContract]
     public class State3
     {
+        [DataMember]
         private bool mIsFirstState;
-
+        [DataMember]
         private bool mIsSecondState;
-
+        [DataMember]
         private bool mIsThirdState;
 
         public State3(int initialState = 1)
