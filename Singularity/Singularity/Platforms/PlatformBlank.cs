@@ -196,7 +196,7 @@ namespace Singularity.Platforms
             // also sets the AbsoluteSize and collider grids
 
             //default?
-            Health = 100;
+            Health = 10;
 
             //I dont think this class has to register in the DistributionManager
             //Add possible Actions in this array
