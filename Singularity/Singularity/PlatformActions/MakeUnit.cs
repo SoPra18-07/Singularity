@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Manager;
 using Singularity.Platforms;
+using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
 
 namespace Singularity.PlatformActions
 {
-
+    [DataContract]
     internal sealed class MakeFastMilitaryUnit : AMakeUnit
     {
         public MakeFastMilitaryUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
@@ -31,6 +33,7 @@ namespace Singularity.PlatformActions
         }
     }
 
+    [DataContract]
     internal sealed class MakeHeavyMilitaryUnit : AMakeUnit
     {
         public MakeHeavyMilitaryUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
@@ -62,6 +65,8 @@ namespace Singularity.PlatformActions
         }
     }
 
+
+    [DataContract]
     internal sealed class MakeStandardMilitaryUnit : AMakeUnit
     {
         public MakeStandardMilitaryUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
@@ -77,13 +82,17 @@ namespace Singularity.PlatformActions
             mDirector.GetMilitaryManager.AddUnit(unit);
         }
     }
+    
 
     public abstract class AMakeUnit : APlatformAction
     {
-
+        [DataMember]
         protected Dictionary<EResourceType, int> mBuildingCost;
+        [DataMember]
         protected Dictionary<EResourceType, int> mMissingResources;
+        [DataMember]
         protected Dictionary<EResourceType, int> mToRequest;
+        [DataMember]
         protected Vector2 mOffset = new Vector2(200f);
         protected bool mIsBuilding = false;
 
@@ -102,8 +111,8 @@ namespace Singularity.PlatformActions
         {
             // theres nothing a unit should be able to do, except bringing Resources.
         }
-
-        public override List<JobType> UnitsRequired { get; } = new List<JobType>{ JobType.Logistics };
+        [DataMember]
+        public override List<JobType> UnitsRequired { get; set; } = new List<JobType>{ JobType.Logistics };
 
         public override void Update(GameTime t)
         {

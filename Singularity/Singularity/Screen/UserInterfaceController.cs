@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Singularity.Manager;
 using Singularity.PlatformActions;
 using Singularity.Platforms;
@@ -13,12 +14,14 @@ namespace Singularity.Screen
     /// <summary>
     /// The UserInterfaceController manages the exchange between anything and the UI
     /// </summary>
+    [DataContract]
     public sealed class UserInterfaceController
     {
         // the basic director
-        private readonly Director mDirector;
+        private Director mDirector;
 
         // the currently selected platform
+        [DataMember]
         private PlatformBlank mActivePlatform;
 
         // the UI that is controlled by this UIController
@@ -31,6 +34,11 @@ namespace Singularity.Screen
         internal UserInterfaceController(Director director)
         {
             mDirector = director;
+        }
+
+        public void ReloadContent(ref Director dir)
+        {
+            mDirector = dir;
         }
 
         /// <summary>

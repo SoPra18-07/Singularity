@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using System.Runtime.Serialization;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platforms;
@@ -9,9 +10,11 @@ using Singularity.Units;
 
 namespace Singularity.PlatformActions
 {
+    [DataContract]
     public sealed class ProduceWellResource : APlatformResourceAction
     {
         // The ResourceMap is needed for actually 'producing' the resources.
+        [DataMember]
         private readonly ResourceMap mResourceMap;
 
         public ProduceWellResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, ref director)
@@ -19,7 +22,8 @@ namespace Singularity.PlatformActions
             mResourceMap = resourceMap;
         }
 
-        public override List<JobType> UnitsRequired { get; } = new List<JobType> {JobType.Production};
+        [DataMember]
+        public override List<JobType> UnitsRequired { get; set; } = new List<JobType> {JobType.Production};
 
         public override void Execute()
         {
@@ -31,9 +35,11 @@ namespace Singularity.PlatformActions
         }
     }
 
+    [DataContract]
     public sealed class ProduceQuarryResource : APlatformResourceAction
     {
         // The ResourceMap is needed for actually 'producing' the resources.
+        [DataMember]
         private ResourceMap mResourceMap;
 
         public ProduceQuarryResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, ref director)
@@ -41,7 +47,8 @@ namespace Singularity.PlatformActions
             mResourceMap = resourceMap;
         }
 
-        public override List<JobType> UnitsRequired { get; } = new List<JobType> {JobType.Production};
+        [DataMember]
+        public override List<JobType> UnitsRequired { get; set; } = new List<JobType> {JobType.Production};
 
         public override void Execute()
         {
@@ -53,9 +60,11 @@ namespace Singularity.PlatformActions
         }
     }
 
+    [DataContract]
     public sealed class ProduceMineResource : APlatformResourceAction
     {
         // The ResourceMap is needed for actually 'producing' the resources.
+        [DataMember]
         private ResourceMap mResourceMap;
 
         public ProduceMineResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, ref director)
@@ -63,7 +72,8 @@ namespace Singularity.PlatformActions
             mResourceMap = resourceMap;
         }
 
-        public override List<JobType> UnitsRequired { get; } = new List<JobType> {JobType.Production};
+        [DataMember]
+        public override List<JobType> UnitsRequired { get; set; } = new List<JobType> {JobType.Production};
 
         public override void Execute()
         {
@@ -74,8 +84,8 @@ namespace Singularity.PlatformActions
             }
         }
     }
-
-
+    
+    [DataContract]
     public abstract class APlatformResourceAction : APlatformAction
     {
         protected APlatformResourceAction(PlatformBlank platform, ref Director director) : base(platform, ref director)

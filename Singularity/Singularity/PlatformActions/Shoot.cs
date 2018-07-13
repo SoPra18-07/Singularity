@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -12,6 +13,7 @@ using Singularity.Units;
 
 namespace Singularity.PlatformActions
 {
+    [DataContract]
     internal sealed class Shoot : APlatformAction
     {
         /// <summary>
@@ -19,6 +21,9 @@ namespace Singularity.PlatformActions
         /// </summary>
         public int AmmoCount { get; private set; }
         
+        [DataMember]
+        private new DefenseBase mPlatform;
+
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] // we actually want only DefensePlatforms to be able to shoot. Everything else is too generic though.
         public Shoot(DefenseBase platform, ref Director director) : base(platform, ref director)
         {
@@ -76,8 +81,8 @@ namespace Singularity.PlatformActions
         {
             return new Dictionary<EResourceType, int>();
         }
-
-        public override List<JobType> UnitsRequired { get; } = new List<JobType> {JobType.Defense};
+        
+        public override List<JobType> UnitsRequired { get; set; } = new List<JobType> {JobType.Defense};
 
         public override void Update(GameTime t)
         {

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Property;
 using Singularity.Screen;
+using Singularity.Screen.ScreenClasses;
 
 namespace Singularity.Input
 {
@@ -13,21 +15,30 @@ namespace Singularity.Input
     /// </summary>
     public sealed class InputManager : IUpdate
     {
+
         private readonly Dictionary<EScreen, List<IKeyListener>> mKeyListener;
+
         private readonly List<IMousePositionListener> mMousePositionListener;
+
         private readonly Dictionary<EScreen, List<IMouseClickListener>> mMouseClickListener;
+
         private readonly Dictionary<EScreen, List<IMouseWheelListener>> mMouseWheelListener;
 
         private readonly Dictionary<IMouseClickListener, EClickType> mLeftClickType;
+
         private readonly Dictionary<IMouseClickListener, EClickType> mRightClickType;
 
         private readonly List<EScreen> mScreensToCheck;
 
         private MouseState mCurrentMouseState;
+
         private MouseState mPreviousMouseState;
 
+
         private KeyboardState mCurrentKeyboardState;
+
         private KeyboardState mPreviousKeyboardState;
+
 
         private bool mCameraMoved;
 
@@ -106,7 +117,8 @@ namespace Singularity.Input
                 mMouseClickListener[iMouseClickListener.Screen] = new List<IMouseClickListener>();
             }
 
-            mMouseClickListener[iMouseClickListener.Screen].Add(iMouseClickListener);
+            mMouseClickListener[iMouseClickListener.Screen]
+                .Add(iMouseClickListener);
 
             mLeftClickType.Add(iMouseClickListener, leftClickType);
             mRightClickType.Add(iMouseClickListener, rightClickType);

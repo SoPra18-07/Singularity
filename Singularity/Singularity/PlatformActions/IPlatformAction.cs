@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
+using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Resources;
@@ -18,11 +20,13 @@ namespace Singularity.PlatformActions
         /// Gets the state of the PlatformAction
         /// </summary>
         /// <value>The current state of the PlatformAction</value>
+        [DataMember]
         PlatformActionState State { get; }
 
         /// <summary>
         /// Unique id of this PlatformAction.
         /// </summary>
+        [DataMember]
         int Id { get; }
 
         /// <summary>
@@ -31,6 +35,12 @@ namespace Singularity.PlatformActions
         /// </summary>
         /// <returns>The required resources.</returns>
         Dictionary<EResourceType, int> GetRequiredResources();
+
+        /// <summary>
+        /// Is called after deserializing
+        /// </summary>
+        /// <param name="dir">The director</param>
+        void ReloadContent(ref Director dir);
 
         /// <summary>
         /// Execute this PlatformAction.
@@ -65,14 +75,17 @@ namespace Singularity.PlatformActions
         /// and every Blueprint needs Building units, ...)
         /// </summary>
         /// <value>The units required.</value>
+        [DataMember]
         List<JobType> UnitsRequired { get; }
 
         /// <summary>
         /// Gets the assigned units and their respective JobTypes.
         /// </summary>
         /// <value>The assigned units.</value>
-        Dictionary<GeneralUnit, JobType> AssignedUnits { get; }
+        [DataMember]
+        Dictionary<GeneralUnit, JobType> AssignedUnits { get; set; }
 
+        [DataMember]
         PlatformBlank Platform { get; set; }
 
         bool Die();

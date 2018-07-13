@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -44,9 +45,6 @@ namespace Singularity.Screen.ScreenClasses
         private Texture2D mProcessingIcon;
         private Texture2D mMilitaryIcon;
 
-        // manage input
-        private readonly InputManager mInputManager;
-
         // used to calculate the positions of the windows at the beginning
         private int mCurrentScreenWidth;
         private int mCurrentScreenHeight;
@@ -57,7 +55,6 @@ namespace Singularity.Screen.ScreenClasses
 
         // director
         private Director mDirector;
-
         // screen manager -- needed for pause menu
         private readonly IScreenManager mScreenManager;
 
@@ -75,7 +72,8 @@ namespace Singularity.Screen.ScreenClasses
 
         private readonly ResourceMap mResourceMap;
 
-        private readonly Map.Map mMap;
+        // TODO : changed this form readonly so that it can be passed on in constructor
+        private Map.Map mMap;
 
         private readonly Camera mCamera;
 
@@ -306,24 +304,25 @@ namespace Singularity.Screen.ScreenClasses
         /// <summary>
         /// Creates a UserInterface with it's windows
         /// </summary>
-        /// <param name="director">basic director</param>
-        /// <param name="gameScreen">the gamescreen</param>
-        /// <param name="stackScreenManager">the stackscreenmanager to enable pause screen</param>
-        public UserInterfaceScreen(ref Director director, GameScreen gameScreen, IScreenManager stackScreenManager)
+        /// <param name="director"></param>
+        /// <param name="mgraphics"></param>
+        /// <param name="map"></param>
+        /// /// <param name="camera"></param>
+        /// <param name="stackScreenManager"></param>
+        public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, Map.Map map, Camera camera, IScreenManager stackScreenManager)
         {
-            mMap = gameScreen.GetMap();
-            mStructureMap = gameScreen.GetMap().GetStructureMap();
-            mResourceMap = gameScreen.GetMap().GetResourceMap();
-            mCamera = gameScreen.GetCamera();
+            mMap = map;
+            mStructureMap = mMap.GetStructureMap();
+            mResourceMap = mMap.GetResourceMap();
+            mCamera = camera;
             mCanBuildPlatform = true;
 
             mDirector = director;
             mScreenManager = stackScreenManager;
-            mInputManager = director.GetInputManager;
 
             // initialize input manager
-            mInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
-            Bounds = new Rectangle(0,0, director.GetGraphicsDeviceManager.PreferredBackBufferWidth, director.GetGraphicsDeviceManager.PreferredBackBufferHeight);
+            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            Bounds = new Rectangle(0,0, mgraphics.PreferredBackBufferWidth, mgraphics.PreferredBackBufferHeight);
 
             // create the windowList
             mWindowList = new List<WindowObject>();
@@ -471,7 +470,7 @@ namespace Singularity.Screen.ScreenClasses
             #region selectedPlatformWindow
 
             // create the window object
-            mSelectedPlatformWindow = new WindowObject("No Selection", new Vector2(250, 200), new Vector2(selectedPlatformWidth, selectedPlatformHeight), true, mLibSans14, mInputManager, mDirector);
+            mSelectedPlatformWindow = new WindowObject("No Selection", new Vector2(250, 200), new Vector2(selectedPlatformWidth, selectedPlatformHeight), true, mLibSans14, mDirector);
 
             // list to add all item to be able to iterate through them
             mSelectedPlatformResourcesList = new List<ResourceIWindowItem>();
@@ -596,7 +595,7 @@ namespace Singularity.Screen.ScreenClasses
 
             #region eventLogWindow
 
-            mEventLogWindow = new WindowObject("// EVENT LOG", new Vector2(0, 0), new Vector2(eventLogWidth, eventLogHeight), true, mLibSans14, mInputManager, mDirector);
+            mEventLogWindow = new WindowObject("// EVENT LOG", new Vector2(0, 0), new Vector2(eventLogWidth, eventLogHeight), true, mLibSans14, mDirector);
 
             mWindowList.Add(mEventLogWindow);
 
@@ -604,7 +603,7 @@ namespace Singularity.Screen.ScreenClasses
 
             #region civilUnitsWindow
 
-            mCivilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(0, 0), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 10, 15, true, mLibSans14, mInputManager, mDirector);
+            mCivilUnitsWindow = new WindowObject("// CIVIL UNITS", new Vector2(0, 0), new Vector2(civilUnitsWidth, civilUnitsHeight), borderColor, windowColor, 10, 15, true, mLibSans14, mDirector);
 
             // create items
 
@@ -643,7 +642,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO : WHAT IS THE RESOURCE WINDOW SUPPOSED TO SHOW ? - IMPLEMENT IT
             #region resourceWindow
 
-            mResourceWindow = new WindowObject("// RESOURCES", new Vector2(0, 0), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mInputManager, mDirector);
+            mResourceWindow = new WindowObject("// RESOURCES", new Vector2(0, 0), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mDirector);
 
             // create all items (these are simple starting values which will be updated automatically by the UI controller)
             mResourceItemChip = new ResourceIWindowItem(EResourceType.Chip, 10, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
@@ -680,7 +679,7 @@ namespace Singularity.Screen.ScreenClasses
 
             #region buildMenuWindow
 
-            mBuildMenuWindow = new WindowObject("// BUILDMENU", new Vector2(0, 0), new Vector2(buildMenuWidth, buildMenuHeight), true, mLibSans14, mInputManager, mDirector);
+            mBuildMenuWindow = new WindowObject("// BUILDMENU", new Vector2(0, 0), new Vector2(buildMenuWidth, buildMenuHeight), true, mLibSans14, mDirector);
 
             #region button definitions
 
@@ -1374,7 +1373,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO: properly place the minimapObject to better fit with the rest. Don't change the size
             // TODO: other than changing it in MapConstants, the +20 is for the padding left and right.
             var minimap = new MiniMap(mMap, mCamera, content.Load<Texture2D>("minimap"));
-            mMinimapWindow = new WindowObject("", new Vector2(0, 0), new Vector2(MapConstants.MiniMapWidth + 20, MapConstants.MiniMapHeight + 20), false, mLibSans12, mDirector.GetInputManager, mDirector);
+            mMinimapWindow = new WindowObject("", new Vector2(0, 0), new Vector2(MapConstants.MiniMapWidth + 20, MapConstants.MiniMapHeight + 20), false, mLibSans12, mDirector);
             mMinimapWindow.AddItem(minimap);
 
             mWindowList.Add(mMinimapWindow);
@@ -1798,6 +1797,7 @@ namespace Singularity.Screen.ScreenClasses
                 window.Active = true;
             }
             mInfoBar.Active = true;
+            mCivilUnitsSliderHandler.Initialize();
         }
 
         #region button management
@@ -1864,7 +1864,7 @@ namespace Singularity.Screen.ScreenClasses
                 EPlacementType.PlatformMouseFollowAndRoad,
                 EScreen.UserInterfaceScreen,
                 mCamera,
-                ref mDirector,
+                ref mDirector, ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -1882,7 +1882,7 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return;
             }
-            mPlatformToPlace = new StructurePlacer(default(EPlatformType), EPlacementType.RoadMouseFollowAndRoad, EScreen.UserInterfaceScreen, mCamera, ref mDirector);
+            mPlatformToPlace = new StructurePlacer(default(EPlatformType), EPlacementType.RoadMouseFollowAndRoad, EScreen.UserInterfaceScreen, mCamera, ref mDirector, ref mMap);
 
             mStructureMap.AddPlatformToPlace(mPlatformToPlace);
 
@@ -1902,6 +1902,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -1928,6 +1929,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -1950,6 +1952,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -1972,6 +1975,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -1994,6 +1998,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -2020,6 +2025,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -2042,6 +2048,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -2064,6 +2071,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -2085,6 +2093,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -2111,6 +2120,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -2133,6 +2143,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);
@@ -2155,6 +2166,7 @@ namespace Singularity.Screen.ScreenClasses
                 EScreen.UserInterfaceScreen,
                 mCamera,
                 ref mDirector,
+                ref mMap,
                 0f,
                 0f,
                 mResourceMap);

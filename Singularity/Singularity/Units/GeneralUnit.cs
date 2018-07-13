@@ -16,8 +16,8 @@ namespace Singularity.Units
     [DataContract]
     public sealed class GeneralUnit : ISpatial
     {
-
-        public int Id { get; }
+        [DataMember]
+        public int Id { get; private set; }
         [DataMember]
         private int mPositionId;
         [DataMember]
@@ -63,8 +63,8 @@ namespace Singularity.Units
         public Vector2 RelativePosition { get; set; }
         [DataMember]
         public Vector2 RelativeSize { get; set; }
-        [DataMember]
-        private readonly Director mDirector;
+
+        private Director mDirector;
 
         /// <summary>
         /// whether the unit is moving or currently standing still,
@@ -103,7 +103,7 @@ namespace Singularity.Units
         {
             Graphid = platform.GetGraphIndex();
             platform.AddGeneralUnit(this);
-            Id = IdGenerator.NextiD();
+            Id = director.GetIdGenerator.NextiD();
             mDestination = Optional<INode>.Of(null);
 
             CurrentNode = platform;
@@ -118,6 +118,11 @@ namespace Singularity.Units
             mDirector.GetDistributionDirector.GetManager(Graphid).Register(this);
             mDone = true;
             mFinishTask = false;
+        }
+
+        internal void ReloadContent(ref Director director)
+        {
+            mDirector = director;
         }
 
         /// <summary>
@@ -244,7 +249,8 @@ namespace Singularity.Units
                         {
                             mDone = false;
 
-                            mTask = mDirector.GetDistributionDirector.GetManager(Graphid).RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
+                            mTask = mDirector.GetDistributionDirector.GetManager(Graphid)
+                                .RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
                             //Check if the given destination is null (it shouldnt)
                             if (mTask.End.IsPresent())
                             {

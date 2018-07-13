@@ -26,7 +26,8 @@ namespace Singularity.Levels
 
             //SetUnit
             var map = Map;
-            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, mUi);
+            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, Ui);
+
             GameScreen.AddObject(setUnit);
 
             //TESTMETHODS HERE =====================================

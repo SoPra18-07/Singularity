@@ -29,19 +29,25 @@ namespace Singularity.Screen.ScreenClasses
 
         private SpriteFont mFont;
 
-        private readonly StackScreenManager mScreenManager;
+        private StackScreenManager mScreenManager;
 
-        private readonly Camera mCamera;
+        private Camera mCamera;
 
-        private readonly Map.Map mMap;
+        private int mCurrentFps;
+
+        private Map.Map mMap;
 
         private readonly Director mDirector;
 
         private int mActivePlatforms;
+
+
         private int mDeactivePlatforms;
 
         private int mFrameCount;
+
         private double mDt;
+
         private int mFps;
         private readonly float mUpdateRate;
 
@@ -62,6 +68,15 @@ namespace Singularity.Screen.ScreenClasses
 
             director.GetInputManager.AddKeyListener(this);
 
+        }
+
+        public void ReloadContent(ContentManager content, Camera camera, Map.Map map, StackScreenManager screenManager, ref Director director)
+        {
+            director.GetInputManager.AddKeyListener(this);
+            mFont = content.Load<SpriteFont>("LibSans14");
+            mCamera = camera;
+            mMap = map;
+            mScreenManager = screenManager;
         }
 
         public void Draw(SpriteBatch spriteBatch)

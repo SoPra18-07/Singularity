@@ -15,11 +15,7 @@ namespace Singularity.Manager
     public class StoryManager : IUpdate
     {
         [DataMember]
-        private int mEnergyLevel;
-
-        [DataMember]
         public TimeSpan Time { get; set; }
-
 
         //The statistics
         [DataMember]
@@ -32,6 +28,7 @@ namespace Singularity.Manager
         [DataMember]
         public StructureMap StructureMap { get; set; }
 
+        [DataMember]
         public ILevel Level { get; set; }
 
         //Do not serialize this, BUT also do not forget to load the achievements again after deserialization!
@@ -44,8 +41,7 @@ namespace Singularity.Manager
         public StoryManager(LevelType level = LevelType.None)
         {
             mLevelType = level;
-            mEnergyLevel = 0;
-            Time = new TimeSpan(0, 0, 0, 0, 0);
+            Time = new TimeSpan(0, 0, 0, 0);
             LoadAchievements();
 
             Units = new Dictionary<string, int>
@@ -88,26 +84,30 @@ namespace Singularity.Manager
         }
 
         /// <summary>
-        /// The Method to load the Achievements. The Achievements file has to be at %USERPROFILE%\Saved Games\Singularity. If no one like this exists
+        /// The Method to load the Achievements. The Achievements file has to be at %USERPROFILE%\Saved Games\Singularity\Achievements. If no one like this exists
         /// it will just create a new one.
         /// </summary>
         internal void LoadAchievements()
         {
-            var path = @"%USERPROFILE%\Saved Games\Singularity";
-            path = Environment.ExpandEnvironmentVariables(path);
-            if (!Directory.Exists(path))
+            var achievements = XSerializer.Load(@"Achievements.xml", true);
+            if (achievements.IsPresent())
             {
-                Directory.CreateDirectory(path);
-            }
-
-            if (File.Exists(path + @"\Achievements.xml"))
-            {
-                mAchievements = (Achievements)XSerializer.Load(path + @"\Achievements.xml");
+                mAchievements = (Achievements) achievements.Get();
             }
             else
             {
                 mAchievements = new Achievements();
             }
+
+        }
+
+        /// <summary>
+        /// The Method to save the Achievements. The Achievements file will be saved to %USERPROFILE%\Saved Games\Singularity\Achievements. If no such directory
+        /// exists it will create a new one. You want to call this method before serializing everything.
+        /// </summary>
+        internal void SaveAchievements()
+        {
+            XSerializer.Save(mAchievements, @"Achievements.xml" ,true);
         }
 
         /// <summary>
@@ -200,24 +200,6 @@ namespace Singularity.Manager
         public TimeSpan GetIngameTime()
         {
             return new TimeSpan(Time.Hours, Time.Minutes, Time.Seconds);
-        }
-
-        /// <summary>
-        /// Return the energylevel.
-        /// </summary>
-        /// <returns>An integer representing the energy level. Can be negative if more energy is consumed than created.</returns>
-        public int GetEnergyLevel()
-        {
-            return mEnergyLevel;
-        }
-
-        /// <summary>
-        /// Is called when energy is consumed / created. For the consuming part just give a negative energy argument.
-        /// </summary>
-        /// <param name="energy">The amount of energy consumed / created. To consume/create energy this has to be negative/positive.</param>
-        public void AddEnergy(int energy)
-        {
-            mEnergyLevel += energy;
         }
     }
 }

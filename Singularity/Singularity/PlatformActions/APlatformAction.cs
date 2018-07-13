@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Manager;
 using Singularity.Platforms;
@@ -9,36 +10,48 @@ using Singularity.Utils;
 
 namespace Singularity.PlatformActions
 {
+
+
+    [DataContract]
     public abstract class APlatformAction : IPlatformAction
     {
+        [DataMember]
         protected Dictionary<GeneralUnit, JobType> mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
+        [DataMember]
         protected PlatformBlank mPlatform;
         protected Director mDirector;
 
-        public int Id { get; }
+        [DataMember]
+        public int Id { get; private set; }
 
         protected APlatformAction(PlatformBlank platform, ref Director director)
         {
-            if (platform == null)
-                Debug.WriteLine("Platform null. Panic.");
-
             mPlatform = platform;
             mDirector = director;
-            Id = IdGenerator.NextiD();
+            Id = director.GetIdGenerator.NextiD();
         }
 
+        public void ReloadContent(ref Director dir)
+        {
+            mDirector = dir;
+        }
 
+        [DataMember]
         public PlatformActionState State { get; protected set; } = PlatformActionState.Active;
-
-        public abstract List<JobType> UnitsRequired { get; }
-
+        [DataMember]
+        public abstract List<JobType> UnitsRequired { get; set; }
+        [DataMember]
         PlatformBlank IPlatformAction.Platform
         {
             get { return mPlatform; }
             set { mPlatform = value; }
         }
-
-        Dictionary<GeneralUnit, JobType> IPlatformAction.AssignedUnits => mAssignedUnits;
+        [DataMember]
+        Dictionary<GeneralUnit, JobType> IPlatformAction.AssignedUnits
+        {
+            get { return mAssignedUnits; }
+            set { mAssignedUnits = value; }
+        }
 
         /// <summary>
         /// Assigns the unit to this PlatformAction and to this platform.
@@ -59,9 +72,7 @@ namespace Singularity.PlatformActions
         /// <returns>The required resources.</returns>
         public abstract Dictionary<EResourceType, int> GetRequiredResources();
 
-        // The button in the UI got clicked. Now change the state accordingly.
         public abstract void UiToggleState();
-
 
         public List<GeneralUnit> UnAssignUnits(int amount, JobType job)
         {
@@ -77,7 +88,6 @@ namespace Singularity.PlatformActions
             return list;
         }
 
-        // this is supposed to remove all references to this PlatformAction
         public bool Die()
         {
             mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Kill(this);
@@ -88,7 +98,6 @@ namespace Singularity.PlatformActions
             return true;
         }
 
-        // here a Unit want's to die (wants it's references to be removed)
         public void Kill(GeneralUnit unit)
         {
             mAssignedUnits.Remove(unit);
