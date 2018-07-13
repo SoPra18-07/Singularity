@@ -858,11 +858,11 @@ namespace Singularity.Platforms
         {
 
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
+            mType = EPlatformType.Blank;
 
             // if platform was an enemy keep red base
             mColor = Friendly ? Color.White : Color.Red;
 
-            mType = EPlatformType.Blank;
             mSpritename = "PlatformBasic";
             SetPlatfromParameters();
 
