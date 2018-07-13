@@ -90,7 +90,7 @@ namespace Singularity.Map
             mDownscaleFactor = MapConstants.MapWidth / MapConstants.MiniMapWidth;
             mTexture = minimapTexture;
 
-            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
             director.GetInputManager.AddMousePositionListener(this);
 
             mRevealing = new LinkedList<IRevealing>();
