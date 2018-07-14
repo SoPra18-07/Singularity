@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map.Properties;
-using Singularity.Property;
 using Singularity.Screen;
 
 namespace Singularity.Map

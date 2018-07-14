@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Resources;
-using Singularity.Units;
 
 namespace Singularity.Platforms
 {

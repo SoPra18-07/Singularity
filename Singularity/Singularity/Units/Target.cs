@@ -14,12 +14,5 @@ namespace Singularity.Units
             mSpeed = 0;
             mTarget = true;
         }
-
-
-        public override void Update(GameTime gameTime)
-        {
-            // do nothing
-            base.Update(gameTime);
-        }
     }
 }
