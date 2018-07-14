@@ -66,7 +66,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="screenResolution">Screen resolution of the game</param>
         public MainMenuScreen(Vector2 screenResolution)
         {
-            mMenuBoxPosition = new Vector2(screenResolution.X / 2 - 204, screenResolution.Y / 4);
+            mMenuBoxPosition = new Vector2(screenResolution.X / 2 - 204, screenResolution.Y / 2 - 210);
             mScreenResolution = screenResolution;
             mMenuBoxSize = new Vector2(408, 420);
 
@@ -288,10 +288,9 @@ namespace Singularity.Screen.ScreenClasses
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mTargetScreen), mTargetScreen, null);
             }
-
-
-
         }
+
+
         /// <summary>
         /// Draws the content of this screen.
         /// </summary>
