@@ -129,6 +129,9 @@ namespace Singularity.Levels
             mDirector.GetUserInterfaceController.ReloadContent(ref mDirector);
             mDirector.GetUserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
 
+            // Reload map for the military manager
+            var map = Map;
+            director.GetMilitaryManager.ReloadSetMap(ref map);
             // the input manager keeps this from not getting collected by the GC
             mDebugscreen = new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
             mDirector.GetInputManager.AddKeyListener(this);

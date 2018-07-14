@@ -22,8 +22,6 @@ namespace Singularity.Map
         private readonly StructureMap mStructureMap;
         [DataMember]
         private readonly ResourceMap mResourceMap;
-        private UnitMap mUnitMap;
-
         [DataMember]
         private readonly int mWidth;
         [DataMember]
@@ -78,7 +76,6 @@ namespace Singularity.Map
             mCollisionMap = new CollisionMap();
             mStructureMap = new StructureMap(fow, ref director);
             mResourceMap = new ResourceMap(initialResources);
-            mUnitMap = new UnitMap(width, height);
 
             director.GetStoryManager.StructureMap = mStructureMap;
         }
@@ -256,11 +253,6 @@ namespace Singularity.Map
         internal Vector2 GetMeasurements()
         {
             return new Vector2(mWidth, mHeight);
-        }
-
-        internal UnitMap GetUnitMap()
-        {
-            return mUnitMap;
         }
 
         /// <summary>
