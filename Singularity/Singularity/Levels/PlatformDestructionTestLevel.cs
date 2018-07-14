@@ -37,7 +37,7 @@ namespace Singularity.Levels
             GameScreen.AddObject(road3);
 
 
-            var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, Ui);
+            var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, GameScreen, Ui);
             GameScreen.AddObject(settler);
         }
     }

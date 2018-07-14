@@ -64,8 +64,9 @@ namespace Singularity.Units
         /// </summary>
         [DataMember]
         protected double mShootingTimer;
-        
-        
+
+        private double mCurrentTime;
+
 
         /// <summary>
         /// Enemy units controlled by AI and opposed to the player.
@@ -74,8 +75,8 @@ namespace Singularity.Units
         /// <param name="camera">Game camera being used.</param>
         /// <param name="director">Reference to the game director.</param>
         /// <param name="map">Reference to the game map.</param>
-        public EnemyUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
-            : base(position, camera, ref director, ref map, false)
+        public EnemyUnit(Vector2 position, Camera camera, ref Director director)
+            : base(position, camera, ref director, false)
         {
             AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
             RevelationRadius = 400;
@@ -120,25 +121,6 @@ namespace Singularity.Units
                     mShoot = false;
                 }
             }
-
-
-            // Debug draw stuff
-            if (!GlobalVariables.DebugState)
-            {
-                return;
-            }
-
-            if (mDebugPath == null)
-            {
-                return;
-            }
-
-            for (var i = 0; i < mDebugPath.Length - 1; i++)
-            {
-                spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
-            }
-                    
-            
             
         }
         
@@ -165,30 +147,20 @@ namespace Singularity.Units
             }
             */
 
+            base.Update(gameTime);
+
             //make sure to update the relative bounds rectangle enclosing this unit.
             Bounds = new Rectangle(
                 (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
-
-            if (HasReachedTarget())
-            {
-                mIsMoving = false;
-            }
-
-            // calculate path to target position
-            if (mIsMoving && !HasReachedTarget())
-            {
-                MoveToTarget(mTargetPosition);
-            }
-
+            
             // these are values needed to properly get the current sprite out of the spritesheet.
             mRow = mRotation / 18;
             mColumn = (mRotation - mRow * 18) / 3;
 
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
             AbsBounds = new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
-            Moved = mIsMoving;
 
-            if (!mIsMoving && mShoot && !mTarget)
+            if (!Moved && mShoot && !mTarget)
             {
                 if (mShootingTimer < 0.5f)
                 {

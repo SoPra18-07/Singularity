@@ -83,9 +83,8 @@ namespace Singularity.Units
 
         public MilitaryUnit(Vector2 position,
             Camera camera,
-            ref Director director,
-            ref Map.Map map)
-            : base(position, camera, ref director, ref map)
+            ref Director director)
+            : base(position, camera, ref director)
         {
             Speed = MilitaryUnitStats.StandardSpeed;
             Health = MilitaryUnitStats.StandardHealth;
@@ -140,16 +139,6 @@ namespace Singularity.Units
                     LayerConstants.MilitaryUnitLayer - 0.01f);
             }
 
-            if (GlobalVariables.DebugState)
-            {
-                if (mDebugPath != null)
-                {
-                    for (var i = 0; i < mDebugPath.Length - 1; i++)
-                    {
-                        spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
-                    }
-                }
-            }
 
             if (mShoot)
             {
@@ -166,37 +155,21 @@ namespace Singularity.Units
         public override void Update(GameTime gameTime)
         {
 
+            base.Update(gameTime);
+
             //make sure to update the relative bounds rectangle enclosing this unit.
-            Bounds = new Rectangle(
-                (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
+            // Bounds = new Rectangle(
+                // (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
+                // (already happening in FreeMovingUnit )
 
 
             // this makes the unit rotate according to the mouse position when its selected and not moving.
-            if (mSelected && !mIsMoving && !mShoot)
+            if (mSelected && !Moved && !mShoot)
             {
                  Rotate(new Vector2(mMouseX, mMouseY));
             }
 
-
-            else if (HasReachedTarget())
-            {
-                mIsMoving = false;
-            }
-
-            // calculate path to target position
-            else if (mIsMoving)
-            {
-                if (!HasReachedWaypoint())
-                {
-                    MoveToTarget(mPath.Peek());
-                }
-                else
-                {
-                    mPath.Pop();
-                    MoveToTarget(mPath.Peek());
-                }
-            }
-
+            
             // these are values needed to properly get the current sprite out of the spritesheet.
             mRow = mRotation / 18;
             mColumn = (mRotation - mRow * 18) / 3;

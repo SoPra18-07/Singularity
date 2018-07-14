@@ -6,6 +6,7 @@ using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Map.Properties;
+using Singularity.Utils;
 
 namespace Singularity.Units
 {
@@ -43,13 +44,12 @@ namespace Singularity.Units
         /// <param name="position">Where the unit should be spawned.</param>
         /// <param name="camera">Game camera being used.</param>
         /// <param name="director">Reference to the game director.</param>
-        /// <param name="map">Reference to the game map.</param>
         /// This abstract class is a subclass of FreeMovingUnit. It provides any of its subclasses the
         /// ability to be selected and moved by the player. As such, most of this class is simply
         /// mouse event handlers. Any object that is a subclass of this class is immediately
         /// subscribed to mouse events by the gamescreen.
-        protected ControllableUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true)
-            : base(position, camera, ref director, ref map, friendly)
+        protected ControllableUnit(Vector2 position, Camera camera, ref Director director, bool friendly = true)
+            : base(position, camera, ref director, friendly)
         {
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
@@ -57,7 +57,7 @@ namespace Singularity.Units
 
         protected new void ReloadContent(ref Director director, Camera camera, ref Map.Map map)
         {
-            base.ReloadContent(ref director, camera, ref map);
+            base.ReloadContent(ref director, camera);
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
         }
@@ -80,15 +80,18 @@ namespace Singularity.Units
                                 (int)RelativeSize.Y),
                             mCamera))
                     {
-                        // this actually sets the target position used in FindPath;
-                        mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
+                        
+                        mGroup = Optional<FlockingGroup>.Of(mDirector.GetMilitaryManager.GetNewFlock());
+                        mGroup.Get().AssignUnit(this);
+
+                        var target = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
                             Matrix.Invert(mCamera.GetTransform()));
 
-                        if (mMap.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
-                            (int)mTargetPosition.X / MapConstants.GridWidth,
-                            (int)mTargetPosition.Y / MapConstants.GridWidth))
+                        if (mGroup.Get().Map.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
+                            (int)target.X / MapConstants.GridWidth,
+                            (int)target.Y / MapConstants.GridHeight))
                         {
-                            FindPath();
+                            mGroup.Get().FindPath(target);
                         }
                     }
 
@@ -142,7 +145,7 @@ namespace Singularity.Units
             if (selBox.Intersects(AbsBounds))
             {
                 mSelected = true;
-                mDirector.GetMilitaryManager // send to FlockingManager
+                mDirector.GetMilitaryManager.AddSelected(this); // send to FlockingManager
             }
         }
 

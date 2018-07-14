@@ -28,11 +28,13 @@ namespace Singularity.Units
         [DataMember]
         int Speed { get; }
 
-        void Move();
 
         [DataMember]
         int FlockingId { get; }
 
+        void Move();
+        void ReloadContent(ref Director director);
+        void AddGroup(FlockingGroup group);
     }
 
 
@@ -55,11 +57,15 @@ namespace Singularity.Units
         [DataMember]
         public int FlockingId { get; set; }
 
+
+        private List<IFlocking> mOtherUnits = new List<IFlocking>();
+
         protected AFlocking(ref Director director, Optional<FlockingGroup> group)
         {
             mDirector = director;
             mGroup = group;
-            FlockingId = group.IsPresent() ? group.Get().FlockingId : mDirector.GetIdGenerator.NextId();
+            FlockingId = -1;
+            // FlockingId = mGroup.IsPresent() ? mGroup.Get().FlockingId : mDirector.GetIdGenerator.NextId();
         }
 
 
@@ -80,9 +86,7 @@ namespace Singularity.Units
 
             AbsolutePosition += Velocity;
         }
-
-
-
+        
 
 
         public virtual void ReloadContent(ref Director director)
@@ -95,6 +99,11 @@ namespace Singularity.Units
         public virtual void Update(GameTime gametime)
         {
             Move();
+        }
+
+        public void AddGroup(FlockingGroup group)
+        {
+            mGroup = Optional<FlockingGroup>.Of(group);
         }
     }
 }

@@ -103,7 +103,7 @@ namespace Singularity.Units
         {
             Graphid = platform.GetGraphIndex();
             platform.AddGeneralUnit(this);
-            Id = director.GetIdGenerator.NextiD();
+            Id = director.GetIdGenerator.NextId();
             mDestination = Optional<INode>.Of(null);
 
             CurrentNode = platform;

@@ -34,8 +34,8 @@ namespace Singularity.Units
         /// <param name="map">Reference to the game map.</param>
         /// <param name="gameScreen">Gamescreen of the game so that the settler can build platforms.</param>
         /// <param name="ui">UI of the game so the settler can edit the UI.</param>
-        public Settler(Vector2 position, Camera camera, ref Director director, ref Map.Map map, GameScreen gameScreen, UserInterfaceScreen ui)
-            : base(position, camera, ref director, ref map)
+        public Settler(Vector2 position, Camera camera, ref Director director, GameScreen gameScreen, UserInterfaceScreen ui)
+            : base(position, camera, ref director)
         {
             Speed = 4;
             Health = 10;
@@ -95,19 +95,7 @@ namespace Singularity.Units
                 .8f,
                 1f,
                 LayerConstants.MilitaryUnitLayer);
-
-            #region Debug
-
-            if (mDebugPath == null)
-            {
-                return;
-            }
-
-            for (var i = 0; i < mDebugPath.Length - 1; i++)
-            {
-                spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
-            }
-            #endregion
+            
         }
 
 
@@ -129,11 +117,9 @@ namespace Singularity.Units
             {
                 // if key b has been pressed and the settler unit is selected and its not moving
                 // --> send out event that deletes settler and adds a command center
-                if (key == Keys.B && mSelected && (HasReachedTarget() || mNeverMoved))
-                {
-                    OnBuildCommandCenter();
-                    return false;
-                }
+                if (key != Keys.B || !mSelected || (!mGroup.Get().NearTarget() && !mNeverMoved)) continue;
+                OnBuildCommandCenter();
+                return false;
             }
 
             return true;

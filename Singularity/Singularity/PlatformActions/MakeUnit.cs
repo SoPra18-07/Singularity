@@ -27,7 +27,7 @@ namespace Singularity.PlatformActions
 
             var camera = mDirector.GetStoryManager.Level.Camera;
             var map = mDirector.GetStoryManager.Level.Map;
-            var unit = new MilitaryFast(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
+            var unit = new MilitaryFast(mPlatform.Center + mOffset, camera, ref mDirector);
             mDirector.GetMilitaryManager.AddUnit(unit);
         }
     }
@@ -44,7 +44,7 @@ namespace Singularity.PlatformActions
         {
             var camera = mDirector.GetStoryManager.Level.Camera;
             var map = mDirector.GetStoryManager.Level.Map;
-            var unit = new MilitaryHeavy(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
+            var unit = new MilitaryHeavy(mPlatform.Center + mOffset, camera, ref mDirector);
             mDirector.GetMilitaryManager.AddUnit(unit);
         }
     }
@@ -77,7 +77,7 @@ namespace Singularity.PlatformActions
         {
             var camera = mDirector.GetStoryManager.Level.Camera;
             var map = mDirector.GetStoryManager.Level.Map;
-            var unit = new MilitaryUnit(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
+            var unit = new MilitaryUnit(mPlatform.Center + mOffset, camera, ref mDirector);
             mDirector.GetMilitaryManager.AddUnit(unit);
         }
     }

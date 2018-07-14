@@ -8,9 +8,8 @@ namespace Singularity.Units
     {
         public MilitaryHeavy(Vector2 position,
             Camera camera,
-            ref Director director,
-            ref Map.Map map)
-            : base(position, camera, ref director, ref map)
+            ref Director director)
+            : base(position, camera, ref director)
         {
             Speed = MilitaryUnitStats.HeavySpeed;
             Health = MilitaryUnitStats.HeavyHealth;

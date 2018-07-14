@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Property;
 using Singularity.Utils;
@@ -14,6 +16,7 @@ using Singularity.Utils;
 namespace Singularity.Units
 {
     
+    [DataContract]
     public class FlockingGroup : AFlocking
     {
 
@@ -22,10 +25,19 @@ namespace Singularity.Units
         /// </summary>
         protected FreeMovingPathfinder mPathfinder;
 
+        [DataMember]
         protected Vector2 mTargetPosition;
 
-        protected Stack<Vector2> mPath;
+        [DataMember]
+        protected Vector2 mUltimateTarget;
 
+        /// <summary>
+        /// Path the unit must take to get to the target position without colliding with obstacles.
+        /// </summary>
+        [DataMember]
+        protected Stack<Vector2> mPath = new Stack<Vector2>();
+
+        [DataMember]
         private List<IFlocking> mUnits;
         
         private int? mSuperiorFlockingId = null;
@@ -37,17 +49,27 @@ namespace Singularity.Units
 
         public bool Moved { get; private set; }
 
-        private Map.Map mMap;
+        public Map.Map Map { get; private set; }
+        
+        public int Counter { get; private set; } // todo: use counter in FlockingGroup to look for other units 
+
+        /// <summary>
+        /// Stores the path the unit is taking so that it can be drawn for debugging.
+        /// </summary>
+        [DataMember]
+        protected Vector2[] mDebugPath;
 
 
-
-        public FlockingGroup(ref Director director, Map.Map map) : base(ref director, Optional<FlockingGroup>.Of(null))
+        public FlockingGroup(ref Director director, ref Map.Map map) : base(ref director, Optional<FlockingGroup>.Of(null))
         {
+            mUnits = new List<IFlocking>();
             Velocity = Vector2.Zero;
             CohesionRaw = Vector2.Zero;
             SeperationRaw = Vector2.Zero;
-
-            mMap = map;
+            
+            // mMap = mDirector.GetStoryManager.Level.Map;
+            Debug.WriteLineIf(map == null, "Map is null for some reason.");
+            Map = map;
             mPathfinder = new FreeMovingPathfinder();
 
             if (mGroup.IsPresent())
@@ -57,108 +79,104 @@ namespace Singularity.Units
         public override void ReloadContent(ref Director director)
         {
             base.ReloadContent(ref director);
+            Map = mDirector.GetStoryManager.Level.Map;
+            foreach (var u in mUnits) u.ReloadContent(ref director);
             mPathfinder = new FreeMovingPathfinder();
         }
 
         public override void Move()
         {
 
-            // calculate path to target position
+            // todo: now get a velocity to the current target.
+            // also: todo: actively let units avoid obstacles. (in progress)
+            // (lookup at precomputed map velocities).
 
 
-            /*
-            else if (mIsMoving)
-            {
-                if (!HasReachedWaypoint())
-                {
-                    MoveToTarget(mPath.Peek());
-                }
 
-                else
-                {
-                    mPath.Pop();
-                    MoveToTarget(mPath.Peek());
-                }
-            }
-
-            */
-
+            // if we don't need to move, why bother recalculating all the values?
+            if (!Moved) return;
+            
 
             AbsolutePosition = Vector2.Zero;
-            Velocity = Vector2.Zero;
             SeperationRaw = Vector2.Zero;
-
+            
 
             foreach (var unit in mUnits)
             {
-                AbsolutePosition += unit.AbsolutePosition;
+                SeperationRaw += unit.AbsolutePosition;
             }
-
-            SeperationRaw = new Vector2(AbsolutePosition.X, AbsolutePosition.Y);
-            AbsolutePosition = AbsolutePosition / mUnits.Count;
+            
+            AbsolutePosition = SeperationRaw / mUnits.Count;
             CohesionRaw = AbsolutePosition;
             // ActualSpeed = mUnits.Any(u => u.Speed > ActualSpeed);
 
 
+            if (Geometry.Length(mTargetPosition - AbsolutePosition) < mUnits.Count * Speed * 0.2)
+            {
+                Moved = false;
+                if (mPath.Count > 0)
+                {
+                    Moved = true;
+                    mTargetPosition = mPath.Pop();
+                }
+            }
+
+            var diff = mTargetPosition - AbsolutePosition;
+            var dist = (float) Geometry.Length(diff);
+
+            ActualSpeed = (dist > 100 ? 1 : dist / 100) * Speed;
+
+            Velocity = Vector2.Normalize(diff) * ActualSpeed;
+            
+
             // setting variables used from the AFlocking parts
             mUnits.ForEach(u => u.Move());
 
+            /*   todo: implement / fix
+
+            Counter++;
+            if (Counter % 20 != 0) return;
+            Counter = 0;
+
+            var colliders = mDirector.GetMilitaryManager.GetAdjecentUnits(AbsolutePosition);
+            mUnits.ForEach(u => u.TakeCareof(colliders)); // todo: implement differently ... (precomputing time-velocity-based-lookup table)
+
+            // */
         }
 
 
-        
-
-        /// <summary>
-        /// Checks whether the next waypoint has been reached.
-        /// </summary>
-        /// <returns></returns>
-        protected bool HasReachedWaypoint()
+        internal void FindPath(Vector2 target)
         {
-            // Debug.WriteLine("Waypoint reached.");
-            // Debug.WriteLine("Next waypoint: " + mPath.Peek());
-
-            return Geometry.Length(mPath.Peek() - AbsolutePosition) < Speed;
-
-            // If the position is within 8 pixels of the waypoint, (i.e. it will overshoot the waypoint if it moves
-            // for one more update, do the following
-        }
-
-
-
-
-        protected void FindPath(Vector2 target)
-        {
-
+            if (target == mUltimateTarget) return;
             Moved = true;
-            Debug.WriteLine("Starting path finding at: " + Center.X + ", " + Center.Y);
-            Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
+            mUltimateTarget = target;
+            Debug.WriteLine("Starting path finding at: " + AbsolutePosition.X + ", " + AbsolutePosition.Y);
+            Debug.WriteLine("Target: " + target.X + ", " + target.Y);
 
+            var map = Map;
             mPath = new Stack<Vector2>();
             mPath = mPathfinder.FindPath(AbsolutePosition,
                 target,
-                ref mMap);
+                ref map);
+            
+            mDebugPath = mPath.ToArray();
 
-            if (GlobalVariables.DebugState)
-            {
-                mDebugPath = mPath.ToArray();
-            }
-
-            mZoomSnapshot = mCamera.GetZoom();
+            mTargetPosition = mPath.Pop(); // directly getting first goal-part.
         }
 
 
-
+        /*
         /// <summary>
         /// Calculates the direction the unit should be moving and moves it into that direction.
         /// </summary>
         /// <param name="target">The target to which to move.</param>
         protected void MoveToTarget(Vector2 target)
         {
-            Velocity = new Vector2(target.X - Center.X, target.Y - Center.Y);
+            Velocity = new Vector2(target.X - AbsolutePosition.X, target.Y - AbsolutePosition.Y);
         }
+        */
 
-
-
+        
         public void MakePartOf(FlockingGroup group)
         {
             mGroup = Optional<FlockingGroup>.Of(group);
@@ -168,13 +186,14 @@ namespace Singularity.Units
 
         public override void Update(GameTime t)
         {
-            base.Update(t);
+            base.Update(t); // this effectively only calls 'Move()'.
             // mUnits.ForEach(u => u.Update(t));
         }
 
         public void AssignUnit(IFlocking unit)
         {
             mUnits.Add(unit);
+            unit.AddGroup(this);
         }
 
         public bool RemoveUnit(IFlocking unit)
@@ -196,6 +215,13 @@ namespace Singularity.Units
         {
             // Flocking groups do not need to be seperately drawn ... yet.
             // mUnits.ForEach(u => u.Draw(spriteBatch));
+
+
+            if (!GlobalVariables.DebugState || mDebugPath == null) return;
+            for (var i = 0; i < mDebugPath.Length - 1; i++)
+            {
+                spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
+            }
         }
 
         public bool Die()
@@ -214,6 +240,21 @@ namespace Singularity.Units
         {
             // todo split this FlockingGroup based on Distance / speed.
             return null;
+        }
+
+        public void AdJust()
+        {
+            // todo: Tree-like splitting / merging if sensible.
+        }
+
+        internal void Reset()
+        {
+            mUnits = new List<IFlocking>();
+        }
+
+        public bool NearTarget()
+        {
+            return mPath.Count == 0 && !Moved;
         }
     }
 }

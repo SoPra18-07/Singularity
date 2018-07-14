@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Map;
@@ -44,6 +45,18 @@ namespace Singularity.Manager
 
         #endregion
 
+        #region Flocking and Selection
+
+        private List<IFlocking> mSelected = new List<IFlocking>();
+
+        private bool mIsSelected = true; // for initializing the FlockingGroup
+
+        private FlockingGroup mSelectedGroup;
+
+        private List<FlockingGroup> mGroups = new List<FlockingGroup>();
+
+        #endregion
+
         #region Hostile unit lists
 
         /// <summary>
@@ -67,7 +80,7 @@ namespace Singularity.Manager
         /// </summary>
         [DataMember]
         internal int TotalUnitCount { get; private set; }
-
+        
 
 
         internal MilitaryManager(Director director)
@@ -82,7 +95,11 @@ namespace Singularity.Manager
         internal void SetMap(ref Map.Map map)
         {
             mUnitMap = new UnitMap((int)map.GetMeasurements().X, (int)map.GetMeasurements().Y);
+            Debug.WriteLine("Map got apparently set.");
+            Debug.WriteLineIf(map == null, "But map is null :/");
             mMap = map;
+            mSelectedGroup = new FlockingGroup(ref mDirector, ref mMap);
+            mGroups.Add(mSelectedGroup);
         }
 
         public void ReloadContent(Vector2 mapmeasurements, Director director)
@@ -94,6 +111,8 @@ namespace Singularity.Manager
         {
             mMap = map;
             mUnitMap = new UnitMap((int) map.GetMeasurements().X, (int) map.GetMeasurements().Y);
+            mSelectedGroup = new FlockingGroup(ref mDirector, ref mMap);
+            mGroups.ForEach(g => g.ReloadContent(ref mDirector));
             foreach (var funit in mFriendlyMilitary)
             {
                 mUnitMap.AddUnit(funit);
@@ -507,6 +526,42 @@ namespace Singularity.Manager
                 platform.Die();
             }
             #endregion
+
+            #region Flocking stuff
+
+            if (mSelected.Count > 0)
+            {
+                mIsSelected = true;
+                mSelectedGroup.Reset();
+                mSelected.ForEach(u => mSelectedGroup.AssignUnit(u));
+            } else if (mIsSelected)
+            {
+                mIsSelected = false;
+                Debug.WriteLineIf(mMap == null, "mMap is null for some reason.");
+                mSelectedGroup = new FlockingGroup(ref mDirector, ref mMap);
+            }
+            mSelected = new List<IFlocking>();
+
+            mGroups.ForEach(g => g.Update(gametime));
+
+            #endregion
+        }
+
+        public List<ICollider> GetAdjecentUnits(Vector2 position)
+        {
+            return mUnitMap.GetAdjacentUnits(position);
+        }
+
+        public void AddSelected(IFlocking unit)
+        {
+            mSelected.Add(unit);
+        }
+
+        public FlockingGroup GetNewFlock()
+        {
+            var group = new FlockingGroup(ref mDirector, ref mMap);
+            mGroups.Add(group);
+            return group;
         }
     }
 }

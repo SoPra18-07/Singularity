@@ -100,7 +100,6 @@ namespace Singularity.Units
                 case EMouseAction.LeftClick:
                     if (!mBoxExists)
                     {
-                        Console.Out.WriteLine("Setting Exists on TRUE!");
                         mBoxExists = true;
                         mStartBox = MouseCoordinates();
                         mSizeBox = new Vector2(0, 0);
@@ -125,7 +124,6 @@ namespace Singularity.Units
                 case EMouseAction.LeftClick:
                     if (mBoxExists)
                     {
-                        Console.Out.WriteLine("Setting Exists on FALSE!");
                         mBoxExists = false;
 
                         // if not an "accidental selection box" send out bounds

@@ -40,17 +40,6 @@ namespace Singularity.Units
         // [DataMember]
         // protected bool mIsMoving;
 
-        /// <summary>
-        /// Path the unit must take to get to the target position without colliding with obstacles.
-        /// </summary>
-        [DataMember]
-        protected Stack<Vector2> mPath;
-
-        /// <summary>
-        /// Stores the path the unit is taking so that it can be drawn for debugging.
-        /// </summary>
-        [DataMember]
-        protected Vector2[] mDebugPath;
         
         
         /// <summary>
@@ -72,7 +61,7 @@ namespace Singularity.Units
         /// <summary>
         /// Stores a reference to the game map.
         /// </summary>
-        protected Map.Map mMap;
+        // protected Map.Map mMap;
 
         /// <summary>
         /// Stores the game camera.
@@ -155,7 +144,7 @@ namespace Singularity.Units
         /// map, and implements pathfinding for objects on the map. It also allows subclasses to have
         /// health and to be damaged.
         /// </remarks>
-        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true) : base(ref director, null)
+        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, bool friendly = true) : base(ref director, null)
         {
             Id = director.GetIdGenerator.NextId(); // id for the specific unit.
 
@@ -169,11 +158,10 @@ namespace Singularity.Units
             Friendly = friendly;
         }
 
-        protected void ReloadContent(ref Director director, Camera camera, ref Map.Map map)
+        protected void ReloadContent(ref Director director, Camera camera)
         {
             base.ReloadContent(ref director);
             mCamera = camera;
-            mMap = map;
         }
 
         #region Pathfinding Methods
@@ -225,8 +213,8 @@ namespace Singularity.Units
         public override void Update(GameTime gametime)
         {
 
-            // now actually moving the unit
-            base.Update(gametime);
+            // The unit might have gotten moved. base.Update() would only call Move(), but it's the job of the FlockingGroup to do that.
+            // base.Update(gametime);
             
 
             // ============ now update all the values, since the position changed ===========
