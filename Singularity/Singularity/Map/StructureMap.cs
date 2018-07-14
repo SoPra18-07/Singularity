@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -242,9 +243,6 @@ namespace Singularity.Map
                 mGraphIdToGraph[parentIndex] = graph;
 
                 UpdateGenUnitsGraphIndex(mGraphIdToGraph[parentIndex], parentIndex);
-
-                mGraphIdToEnergyLevel[parentIndex] =
-                    mGraphIdToEnergyLevel[parentIndex] + mGraphIdToEnergyLevel[childIndex];
                 mGraphIdToEnergyLevel[childIndex] = 0;
 
                 mDirector.GetDistributionDirector.MergeManagers(childIndex, parentIndex, parentIndex);
@@ -567,7 +565,7 @@ namespace Singularity.Map
                 mGraphIdToEnergyLevel[graphId] = mGraphIdToEnergyLevel[graphId] - ((PlatformBlank) node).GetDrainingEnergy();
             }
 
-            CheckEnergyLevel(graphId, wasNegative);
+            CheckEnergyLevel(graphId);
         }
 
         /// <summary>
@@ -601,21 +599,14 @@ namespace Singularity.Map
             mMouseY = worldY;
         }
 
-        private void CheckEnergyLevel(int graphId, bool wasNegative)
+        private void CheckEnergyLevel(int graphId)
         {
             // energy level was positive and still is
-            if (!wasNegative && mGraphIdToEnergyLevel[graphId] >= 0)
-            {
-                return;
-            }
-
-            // energy level was negative and is positive considering all the platforms that weren't manually deactivated
-            // -> reactivate all the platforms which weren't manually deactivated
-            if (wasNegative && mGraphIdToEnergyLevel[graphId] >= 0)
+            if (mGraphIdToEnergyLevel[graphId] >= 0)
             {
                 foreach (var node in mGraphIdToGraph[graphId].GetNodes())
                 {
-                    if (((PlatformBlank) node).IsManuallyDeactivated())
+                    if (((PlatformBlank)node).IsManuallyDeactivated())
                     {
                         continue;
                     }
