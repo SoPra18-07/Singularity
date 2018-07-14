@@ -627,7 +627,7 @@ namespace Singularity.Platforms
 
             // TODO: if the platform is an enemy it should not be subscribed to the input manager
             // TODO: if the platform is an enemy it should not be subscribed to the input manager
-            if (!mAddedToInputManager && Friendly)
+            if (!mAddedToInputManager)
             {
                 // add this platform to inputManager once
                 mDirector.GetInputManager
@@ -1237,6 +1237,11 @@ namespace Singularity.Platforms
             {
                 MakeDamage(Health);
                 return false;
+            }
+            //Do not react to clicks when you are the enemy
+            if (!Friendly)
+            {
+                return true;
             }
             mDirector.GetUserInterfaceController.ActivateMe(this);
             mDirector.GetUserInterfaceController.SelectedPlatformSetsGraphId(mGraphIndex);

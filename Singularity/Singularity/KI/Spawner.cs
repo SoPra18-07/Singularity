@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -18,8 +19,10 @@ namespace Singularity.KI
     /// This is essentially the Barrack Platform except that it doesnt require any resources
     /// in order to produce military units
     /// </summary>
+    [DataContract]
     class Spawner : PlatformBlank
     {
+        [DataMember]
         private readonly Vector2 mPosition;
 
         public Spawner(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director, EStructureType type = EStructureType.Barracks, float centerOffsetY = -36, bool friendly = false) : base(position, platformSpriteSheet, baseSprite, mLibSans12, ref director, type, centerOffsetY, friendly)

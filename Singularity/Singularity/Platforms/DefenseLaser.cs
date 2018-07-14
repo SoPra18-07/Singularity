@@ -9,15 +9,20 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Property;
 using Singularity.Resources;
+using Singularity.Sound;
+using Singularity.Units;
 
 namespace Singularity.Platforms
 {
     /// <inheritdoc cref="DefenseBase"/>
     [DataContract]
-    internal sealed class DefenseLaser : DefenseBase
+    internal class DefenseLaser : DefenseBase
     {
         [DataMember]
         private const int DrainingEnergy = 40;
+
+        [DataMember]
+        ICollider mEnemyPosition;
 
         /// <summary>
         /// Constructs a Laser (i.e. uses energy) defense platform that automatically attacks
@@ -44,14 +49,24 @@ namespace Singularity.Platforms
 
         public override void Shoot(ICollider target)
         {
-            /* cannot be implemented until energy is implemented
-            if (EnoughEnergy()) {
-                // Consume Energy
+            /*
+            if (IsActive()) {
                 mShoot = true;
                 mEnemyPosition = target;
                 mDirector.GetSoundManager.PlaySound("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+            }*/
+        }
+
+        public override void Update(GameTime time)
+        {
+            //Shoot for every unit thats present
+            foreach (var unitbool in mAssignedUnits[JobType.Defense])
+            {
+                if (unitbool.GetSecond())
+                {
+                    Shoot(mEnemyPosition);
+                }
             }
-            */
         }
     }
 }
