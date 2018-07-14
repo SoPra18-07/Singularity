@@ -21,9 +21,6 @@ namespace Singularity.Platforms
         [DataMember]
         private const int DrainingEnergy = 40;
 
-        [DataMember]
-        ICollider mEnemyPosition;
-
         /// <summary>
         /// Constructs a Laser (i.e. uses energy) defense platform that automatically attacks
         /// enemy units. This platform uses no ammunition but requires energy.
@@ -49,10 +46,9 @@ namespace Singularity.Platforms
 
         public override void Shoot(ICollider target)
         {
-            /*
-            if (IsActive()) {
+            /*if (IsActive()) {
                 mShoot = true;
-                mEnemyPosition = target;
+                EnemyPosition = target;
                 mDirector.GetSoundManager.PlaySound("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
             }*/
         }
@@ -64,7 +60,7 @@ namespace Singularity.Platforms
             {
                 if (unitbool.GetSecond())
                 {
-                    Shoot(mEnemyPosition);
+                    //Let it shoot here.
                 }
             }
         }
