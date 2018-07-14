@@ -197,6 +197,8 @@ namespace Singularity.Platforms
 
         protected PlatformInfoBox mInfoBox;
 
+        protected Vector2 mBaseOffset;
+
         #endregion
 
         [DataMember]
@@ -315,7 +317,7 @@ namespace Singularity.Platforms
             mPlatformSpriteSheet = content.Load<Texture2D>(mSpritename);
             mPlatformBaseTexture = content.Load<Texture2D>("PlatformBasic");
             mDirector = dir;
-            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            mDirector.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
             mAddedToInputManager = true;
             foreach (var action in mIPlatformActions)
             {
@@ -548,8 +550,6 @@ namespace Singularity.Platforms
                         SpriteEffects.None,
                         LayerConstants.BasePlatformLayer);
                     break;
-                case 1:
-                    break;
                 case 2:
                     // Cylinder (Unit Platforms
                     // Draw the basic platform first
@@ -624,7 +624,7 @@ namespace Singularity.Platforms
             {
                 // add this platform to inputManager once
                 mDirector.GetInputManager
-                    .AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+                    .FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
                 mAddedToInputManager = true;
 
                 mDirector.GetEventLog.AddEvent(ELogEventType.PlatformBuilt, mType + " has been built", this);
@@ -731,7 +731,7 @@ namespace Singularity.Platforms
         
         public override int GetHashCode()
         {
-            return base.GetHashCode() * Id.GetHashCode() + mType.GetHashCode();
+            return base.GetHashCode() + Id.GetHashCode();
         }
 
 
@@ -852,6 +852,7 @@ namespace Singularity.Platforms
             {
                 case 0:
                     // basic platforms
+                    mBaseOffset = Vector2.Zero;
                     AbsoluteSize = new Vector2(148, 85);
                     ColliderGrid = new [,]
                     {
@@ -865,6 +866,7 @@ namespace Singularity.Platforms
                     break;
                 case 1:
                     // cones
+                    mBaseOffset = new Vector2(0, 78);
                     AbsoluteSize = new Vector2(148, 165);
                     ColliderGrid = new [,]
                     {
@@ -882,6 +884,7 @@ namespace Singularity.Platforms
                     break;
                 case 2:
                     // cylinders
+                    mBaseOffset = new Vector2(0, 81);
                     AbsoluteSize = new Vector2(148, 170);
                     ColliderGrid = new [,]
                     {
@@ -899,6 +902,7 @@ namespace Singularity.Platforms
                     break;
                 case 3:
                     // domes
+                    mBaseOffset = new Vector2(-3, 38);
                     AbsoluteSize = new Vector2(148, 126);
                     ColliderGrid = new [,]
                     {
@@ -931,8 +935,10 @@ namespace Singularity.Platforms
         public void DieBlank()
         {
 
+            mDirector.GetInputManager.FlagForRemoval(this);
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
             mType = EStructureType.Blank;
+            mDirector.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
 
             // create the event in eventLog that the specialised part has been destroyed
             mDirector.GetEventLog.AddEvent(ELogEventType.PlatformDestroyed, mType + " has been destroyed", this);
@@ -942,21 +948,16 @@ namespace Singularity.Platforms
             mColor = Color.White;
             mType = EStructureType.Blank;
             mSpritename = "PlatformBasic";
+            AbsolutePosition += mBaseOffset;
             SetPlatfromParameters();
 
             // position of blank needs to be adjusted to fit previous location of specialized plat base
-            AbsolutePosition = new Vector2(AbsolutePosition.X, AbsolutePosition.Y + 81);
+            AbsolutePosition = new Vector2(AbsolutePosition.X, AbsolutePosition.Y);
 
             //default?
             Health = 100;
 
             mIPlatformActions.RemoveAll(a => a.Die());
-
-            mAssignedUnits[JobType.Idle].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
-            mAssignedUnits[JobType.Defense].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
-            mAssignedUnits[JobType.Construction].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
-            mAssignedUnits[JobType.Logistics].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
-            mAssignedUnits[JobType.Production].RemoveAll(p => p.GetSecond() && p.GetFirst().Die());
 
 
             mResources.RemoveAll(r => r.Die());
@@ -986,6 +987,13 @@ namespace Singularity.Platforms
             // removing the PlatformActions first
 
             var toKill = new List<IEdge>();
+
+
+            foreach (var unit in GetGeneralUnitsOnPlatform())
+            {
+                unit.Die();
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(unit);
+            }
 
             foreach (var road in mInwardsEdges)
             {

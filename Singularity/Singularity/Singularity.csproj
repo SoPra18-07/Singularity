@@ -213,6 +213,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Screen\UserInterfaceController.cs" />
+    <Compile Include="Utils\Clock.cs" />
     <Compile Include="Utils\State3.cs" />
     <Compile Include="Utils\Geometry.cs" />
     <Compile Include="Screen\IScreen.cs" />

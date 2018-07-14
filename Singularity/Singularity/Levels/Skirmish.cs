@@ -93,6 +93,11 @@ namespace Singularity.Levels
             var res7 = new Resource(EResourceType.Metal, platform4.Center);
             var res2 = new Resource(EResourceType.Chip, platform3.Center);
             var res3 = new Resource(EResourceType.Oil, platform4.Center);
+            var res8 = new Resource(EResourceType.Trash, platform1.Center);
+            var res9 = new Resource(EResourceType.Trash, platform1.Center);
+            var res10 = new Resource(EResourceType.Trash, platform1.Center);
+            var res11 = new Resource(EResourceType.Trash, platform1.Center);
+            var res12 = new Resource(EResourceType.Trash, platform2.Center);
 
             platform2.StoreResource(res);
             platform3.StoreResource(res2);
@@ -101,6 +106,11 @@ namespace Singularity.Levels
             platform2.StoreResource(res5);
             platform3.StoreResource(res6);
             platform4.StoreResource(res7);
+            platform1.StoreResource(res8);
+            platform1.StoreResource(res9);
+            platform1.StoreResource(res10);
+            platform1.StoreResource(res11);
+            platform2.StoreResource(res12);
 
             GameScreen.AddObjects(genUnit);
             // GameScreen.AddObject(enemyUnit);

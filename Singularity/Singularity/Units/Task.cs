@@ -35,6 +35,11 @@ namespace Singularity.Units
 
         public bool Contains(int id)
         {
+            if(Action == null)
+            {
+                return false;
+            }
+
             if (End.IsPresent() && End.Get().Id == id)
             {
                 return true;

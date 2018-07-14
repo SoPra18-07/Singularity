@@ -52,7 +52,7 @@ namespace Singularity.Units
         protected ControllableUnit(Vector2 position, Camera camera, ref Director director, bool friendly = true)
             : base(position, camera, ref director, friendly)
         {
-            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
             mGroup = Optional<FlockingGroup>.Of(null);
         }
@@ -60,7 +60,7 @@ namespace Singularity.Units
         protected new void ReloadContent(ref Director director, Camera camera, ref Map.Map map)
         {
             base.ReloadContent(ref director, camera);
-            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
         }
 

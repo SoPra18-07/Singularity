@@ -318,7 +318,7 @@ namespace Singularity.Screen.ScreenClasses
             mScreenManager = stackScreenManager;
 
             // initialize input manager
-            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
             Bounds = new Rectangle(0,0, mgraphics.PreferredBackBufferWidth, mgraphics.PreferredBackBufferHeight);
 
             // create the windowList
