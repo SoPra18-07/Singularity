@@ -30,7 +30,7 @@ namespace Singularity.KI
 
 
 
-        // method that produces enemy military units when called up by the KI
+        // method that produces enemy military units when called up by the Ki
         internal EnemyUnit SpawnEnemy(Camera camera, Map.Map map, GameScreen gameScreen)
         {
             var enemyUnit = new EnemyUnit(new Vector2(Center.X + 100, Center.Y), camera, ref mDirector, ref map);

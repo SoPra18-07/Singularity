@@ -9,7 +9,7 @@ using Singularity.Units;
 
 namespace Singularity.KI
 {
-    class KI
+    class Ki
     {
         // Camera Property (for Spawner)
         internal Camera Camera { get; private set; }
