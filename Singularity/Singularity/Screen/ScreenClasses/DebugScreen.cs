@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -33,8 +29,6 @@ namespace Singularity.Screen.ScreenClasses
         private StackScreenManager mScreenManager;
 
         private Camera mCamera;
-
-        private int mCurrentFps;
 
         private Map.Map mMap;
 
@@ -67,13 +61,13 @@ namespace Singularity.Screen.ScreenClasses
             mMap = map;
             mDirector = director;
 
-            director.GetInputManager.AddKeyListener(this);
+            director.GetInputManager.FlagForAddition(this);
 
         }
 
         public void ReloadContent(ContentManager content, Camera camera, Map.Map map, StackScreenManager screenManager, ref Director director)
         {
-            director.GetInputManager.AddKeyListener(this);
+            director.GetInputManager.FlagForAddition(this);
             mFont = content.Load<SpriteFont>("LibSans14");
             mCamera = camera;
             mMap = map;

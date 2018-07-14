@@ -25,7 +25,5 @@ namespace Singularity.Property
 
 
         bool Moved { get; }
-
-        int Id { get; }
     }
 }

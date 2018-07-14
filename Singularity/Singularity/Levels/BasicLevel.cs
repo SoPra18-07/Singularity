@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -95,7 +94,7 @@ namespace Singularity.Levels
             // the input manager keeps this from not getting collected by the GC
             mDebugscreen = new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
 
-            mDirector.GetInputManager.AddKeyListener(this);
+            mDirector.GetInputManager.FlagForAddition(this);
         }
 
         public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, ref Director director, IScreenManager screenmanager)
@@ -120,17 +119,21 @@ namespace Singularity.Levels
             //Map related stuff
             Camera.ReloadContent(mGraphics, ref mDirector);
             mFow.ReloadContent(mGraphics, Camera);
-            Map.ReloadContent(mapBackground, Camera, mFow, ref mDirector, content);
             Ui = new UserInterfaceScreen(ref mDirector, mGraphics, Map, Camera, mScreenManager);
             Ui.LoadContent(content);
             Ui.Loaded = true;
+            //This has to be after ui creation, because the ui graphid dictionary is updated in the structuremap.reloadcontent method
+            Map.ReloadContent(mapBackground, Camera, mFow, ref mDirector, content, Ui);
             GameScreen.ReloadContent(content, graphics, Map, mFow, Camera, ref mDirector, Ui);
             mDirector.GetUserInterfaceController.ReloadContent(ref mDirector);
             mDirector.GetUserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
 
+            // Reload map for the military manager
+            var map = Map;
+            director.GetMilitaryManager.ReloadSetMap(ref map);
             // the input manager keeps this from not getting collected by the GC
             mDebugscreen = new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
-            mDirector.GetInputManager.AddKeyListener(this);
+            mDirector.GetInputManager.FlagForAddition(this);
         }
 
         public abstract void LoadContent(ContentManager content);

@@ -1,9 +1,11 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Diagnostics;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.PlatformActions;
 using Singularity.Property;
 using Singularity.Screen;
 using Singularity.Sound;
@@ -96,7 +98,10 @@ namespace Singularity.Platforms
         [DataMember]
         private bool mUnregister;
 
-        public StructurePlacer(EPlatformType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, ref Map.Map map, float x = 0, float y = 0, ResourceMap resourceMap = null)
+        [DataMember]
+        private EStructureType mPlatformType;
+
+        public StructurePlacer(EStructureType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, ref Map.Map map, float x = 0, float y = 0, ResourceMap resourceMap = null)
         {
             mUnregister = false;
 
@@ -104,12 +109,16 @@ namespace Singularity.Platforms
             Screen = screen;
             mDirector = director;
 
+            mPlatformType = platformType;
+
             // need the structure map to make sure platforms arent placed on collidable objects
             mMap = map;
 
-            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
             mCurrentState = new State3(1);
+
+            director.GetUserInterfaceController.BuildingProcessStarted(platformType);
 
 
             // for further information as to why which states refer to the documentation for mCurrentState
@@ -247,6 +256,8 @@ namespace Singularity.Platforms
                     {
                         // this case is the 'finish' state, we set everything up, so the platform can get added to the game
                         mPlatform.SetLayer(LayerConstants.PlatformLayer);
+                        mHoveringPlatform.AddBlueprint(new BuildBluePrint(mHoveringPlatform, mPlatform, ref mDirector));
+                        Debug.WriteLine("Blueprint created, at " + mHoveringPlatform.Id + " for " + mPlatform.Id);
                         mConnectionRoad.Blueprint = false;
                     }
                     else
@@ -257,6 +268,7 @@ namespace Singularity.Platforms
                     }
                     mIsFinished = true;
                     mUnregister = true;
+                    mDirector.GetUserInterfaceController.BuildingProcessFinished(mPlatformType);
 
                     break;
 
@@ -358,6 +370,8 @@ namespace Singularity.Platforms
             {
                 if (mCurrentState.GetState() == 1)
                 {
+
+                    mDirector.GetUserInterfaceController.BuildingProcessFinished(mPlatformType);
                     mCanceled = true;
                     mIsFinished = true;
                     giveThrough = false;
@@ -457,7 +471,7 @@ namespace Singularity.Platforms
 
         private void UnregisterFromInputManager()
         {
-            mDirector.GetInputManager.RemoveMouseClickListener(this);
+            mDirector.GetInputManager.FlagForRemoval(this);
             mDirector.GetInputManager.RemoveMousePositionListener(this);
         }
     }

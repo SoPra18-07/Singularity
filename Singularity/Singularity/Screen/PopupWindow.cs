@@ -90,47 +90,47 @@ namespace Singularity.Screen
 
             // set the window rectangle
             mWindowRectangle = new Rectangle(
-                x: (int)(Position.X + 1),
-                y: (int)(Position.Y + 2),
-                width: (int)(mSize.X - 2),
-                height: (int)(mSize.Y - 2)
+                (int)(Position.X + 1),
+                (int)(Position.Y + 2),
+                (int)(mSize.X - 2),
+                (int)(mSize.Y - 2)
                 );
             mBorderRectangle = new Rectangle(
-                x: (int)Position.X,
-                y: (int)Position.Y,
-                width: (int)mSize.X,
-                height: (int)mSize.Y
+                (int)Position.X,
+                (int)Position.Y,
+                (int)mSize.X,
+                (int)mSize.Y
                 );
 
             // ScissorRectangle will cut everything drawn outside of this rectangle when set
             mScissorRectangle = new Rectangle(
-                x: (int)(Position.X + 10),
-                y: (int)(Position.Y + titleSizeY + 30),
-                width: mWindowRectangle.Width - 20,
-                height: (int)(mSize.Y - titleSizeY - 3 * 10 - buttonSize.Y)
+                (int)(Position.X + 10),
+                (int)(Position.Y + titleSizeY + 30),
+                mWindowRectangle.Width - 20,
+                (int)(mSize.Y - titleSizeY - 3 * 10 - buttonSize.Y)
                 );
 
             // set the rectangle of the title bar
             mTitleBarRectangle = new Rectangle(
-                x: (int)Position.X + 10,
-                y: (int)Position.Y + titleSizeY + 20,
-                width: (int)mSize.X - 40,
-                height: 1
+                (int)Position.X + 10,
+                (int)Position.Y + titleSizeY + 20,
+                (int)mSize.X - 40,
+                1
                 );
 
             // set the rectangle of the button
             mButtonBorderRectangle = new Rectangle(
-                x: (int)(Position.X + mSize.X / 2 - buttonSize.X / 2),
-                y: (int)(Position.Y + mSize.Y - buttonSize.Y + 1),
-                width: (int)buttonSize.X,
-                height: (int)buttonSize.Y - 2);
+                (int)(Position.X + mSize.X / 2 - buttonSize.X / 2),
+                (int)(Position.Y + mSize.Y - buttonSize.Y + 1),
+                (int)buttonSize.X,
+                (int)buttonSize.Y - 2);
 
             // set the rectangle for scrolling
             mScrollBarBorderRectangle = new Rectangle(
-                x: (int)(Position.X + mSize.X - 20),
-                y: mScissorRectangle.Y,
-                width: 20,
-                height: mScissorRectangle.Height
+                (int)(Position.X + mSize.X - 20),
+                mScissorRectangle.Y,
+                20,
+                mScissorRectangle.Height
             );
 
             // set button position
@@ -139,7 +139,7 @@ namespace Singularity.Screen
             // Initialize scissor window
             mRasterizerState = new RasterizerState { ScissorTestEnable = true };
 
-            inputManager.AddMouseWheelListener(this);
+            inputManager.FlagForAddition(this);
             inputManager.AddMousePositionListener(this);
         }
 

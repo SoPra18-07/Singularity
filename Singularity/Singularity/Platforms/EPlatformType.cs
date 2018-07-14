@@ -1,6 +1,6 @@
 ﻿namespace Singularity.Platforms
 {
-    public enum EPlatformType
+    public enum EStructureType
     {
         Barracks,
         Command,
@@ -14,6 +14,7 @@
         Quarry,
         Storage,
         Well,
-        Blank
+        Blank,
+        Road
     }
 }

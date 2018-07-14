@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map.Properties;
@@ -11,6 +9,7 @@ using Singularity.Property;
 using Singularity.Resources;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework.Content;
+using Singularity.Screen.ScreenClasses;
 
 namespace Singularity.Map
 {
@@ -23,8 +22,6 @@ namespace Singularity.Map
         private readonly StructureMap mStructureMap;
         [DataMember]
         private readonly ResourceMap mResourceMap;
-        private UnitMap mUnitMap;
-
         [DataMember]
         private readonly int mWidth;
         [DataMember]
@@ -79,18 +76,17 @@ namespace Singularity.Map
             mCollisionMap = new CollisionMap();
             mStructureMap = new StructureMap(fow, ref director);
             mResourceMap = new ResourceMap(initialResources);
-            mUnitMap = new UnitMap(width, height);
 
             director.GetStoryManager.StructureMap = mStructureMap;
         }
 
-        public void ReloadContent(Texture2D background, Camera camera, FogOfWar fow, ref Director dir, ContentManager content)
+        public void ReloadContent(Texture2D background, Camera camera, FogOfWar fow, ref Director dir, ContentManager content, UserInterfaceScreen ui)
         {
             mBackgroundTexture = background;
             mCamera = camera;
             mFow = fow;
             //ADD ALL THE THINGS TO THE CAMERA AND THE FOW
-            mStructureMap.ReloadContent(content, mFow, ref dir, mCamera, this);
+            mStructureMap.ReloadContent(content, mFow, ref dir, mCamera, this, ui);
             mCollisionMap.ReloadContent();
         }
 
@@ -139,7 +135,7 @@ namespace Singularity.Map
                         x = 0;
                     }
 
-                    var xpos = Math.Abs(value: row - column - (mWidth - 1));
+                    var xpos = Math.Abs(row - column - (mWidth - 1));
                     var ypos = column + row;
 
                     if (xpos < mYPosMin || xpos > mYPosMax || ypos < mXPosMin || ypos > mXPosMax)
@@ -147,15 +143,15 @@ namespace Singularity.Map
                         continue;
                     }
 
-                    spriteBatch.Draw(texture: mBackgroundTexture,
-                        position: new Vector2(x: xpos * 100, y: ypos * 50),
-                        sourceRectangle: new Rectangle(x: x * MapConstants.TileWidth, y: y * MapConstants.TileHeight, width: MapConstants.TileWidth, height: MapConstants.TileHeight),
-                        color: Color.White,
-                        rotation: 0f,
-                        origin: Vector2.Zero,
-                        scale: Vector2.One,
-                        effects: SpriteEffects.None,
-                        layerDepth: LayerConstants.MapLayer);
+                    spriteBatch.Draw(mBackgroundTexture,
+                        new Vector2(xpos * 100, ypos * 50),
+                        new Rectangle(x * MapConstants.TileWidth, y * MapConstants.TileHeight, MapConstants.TileWidth, MapConstants.TileHeight),
+                        Color.White,
+                        0f,
+                        Vector2.Zero,
+                        Vector2.One,
+                        SpriteEffects.None,
+                        LayerConstants.MapLayer);
                 }
             }
 
@@ -257,11 +253,6 @@ namespace Singularity.Map
         internal Vector2 GetMeasurements()
         {
             return new Vector2(mWidth, mHeight);
-        }
-
-        internal UnitMap GetUnitMap()
-        {
-            return mUnitMap;
         }
 
         /// <summary>

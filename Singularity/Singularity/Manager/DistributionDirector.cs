@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using Singularity.Exceptions;
 using Singularity.Platforms;
 using Singularity.Screen;
 using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.Manager
 {
@@ -22,7 +15,7 @@ namespace Singularity.Manager
         [DataMember]
         private Dictionary<int, DistributionManager> mDMs;
 
-        private readonly UserInterfaceController mUserInterfaceController;
+        private UserInterfaceController mUserInterfaceController;
 
         public DistributionDirector(Director director)
         {
@@ -127,10 +120,18 @@ namespace Singularity.Manager
             foreach (var platform in platforms)
             {
                 var platformcontainer = new List<PlatformBlank>();
-                //Also removes the tasks of this platform from the oldDistributionManager
-                olddist.Unregister(platformcontainer, platform.IsDefense(), false);
+                platformcontainer.Add(platform);
+                //Only remove the platform from the old distrmanager, when its in it. That is the case only when its a defending or producing platform.
+                if (platform.IsDefense() || platform.IsProduction())
+                {
+                    //Also removes the tasks of this platform from the oldDistributionManager
+                    olddist.Unregister(platformcontainer, platform.IsDefense(), false);
+
+                    //Only readd the platform when it was in the old distributionmanager. That is the case only when its a defending or producing platform.
+                    newdist.Register(platform, platform.IsDefense());
+                }
                 //TODO: Make somehow sure the IPlatformactions request their missing things anew, because currently they dont.
-                newdist.Register(platform, platform.IsDefense());
+
             }
 
             foreach (var unit in units)
@@ -150,8 +151,13 @@ namespace Singularity.Manager
 
         public void RemoveManager(int graphId, Dictionary<int, Graph.Graph> graphIdToGraph)
         {
-            mDMs[graphId] = null;
+            mDMs.Remove(graphId);
             mUserInterfaceController.CallingAllGraphs(graphIdToGraph);
+        }
+
+        public void ReloadContent(ref Director director)
+        {
+            mUserInterfaceController = director.GetUserInterfaceController;
         }
     }
 }

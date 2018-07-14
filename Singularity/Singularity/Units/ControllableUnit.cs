@@ -51,14 +51,14 @@ namespace Singularity.Units
         protected ControllableUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true)
             : base(position, camera, ref director, ref map, friendly)
         {
-            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
         }
 
         protected new void ReloadContent(ref Director director, Camera camera, ref Map.Map map)
         {
             base.ReloadContent(ref director, camera, ref map);
-            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
         }
 

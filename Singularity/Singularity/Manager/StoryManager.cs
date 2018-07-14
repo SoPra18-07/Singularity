@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Levels;
@@ -14,8 +13,6 @@ namespace Singularity.Manager
     [DataContract]
     public class StoryManager : IUpdate
     {
-        [DataMember]
-        public TimeSpan Time { get; set; }
 
         //The statistics
         [DataMember]
@@ -41,7 +38,6 @@ namespace Singularity.Manager
         public StoryManager(LevelType level = LevelType.None)
         {
             mLevelType = level;
-            Time = new TimeSpan(0, 0, 0, 0);
             LoadAchievements();
 
             Units = new Dictionary<string, int>
@@ -168,7 +164,6 @@ namespace Singularity.Manager
         /// <param name="time"></param>
         public void Update(GameTime time)
         {
-            Time = Time.Add(time.ElapsedGameTime);
             switch (mLevelType)
             {
                 case LevelType.None:
@@ -191,15 +186,6 @@ namespace Singularity.Manager
             //I thought about some state-system to help the handle method track at what point we are and what to trigger next.
             //Trigger Infoboxes.
             //Trigger Events for tutorial.
-        }
-
-        /// <summary>
-        /// Return the Ingame time.
-        /// </summary>
-        /// <returns>The ingame time as TimeSpan</returns>
-        public TimeSpan GetIngameTime()
-        {
-            return new TimeSpan(Time.Hours, Time.Minutes, Time.Seconds);
         }
     }
 }

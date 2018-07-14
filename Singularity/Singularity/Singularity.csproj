@@ -80,6 +80,8 @@
     <Compile Include="Map\UnitMap.cs" />
     <Compile Include="Map\UnitMapTile.cs" />
     <Compile Include="PlatformActions\MakeUnit.cs" />
+    <Compile Include="PlatformActions\APlatformAction.cs" />
+    <Compile Include="PlatformActions\BuildBluePrint.cs" />
     <Compile Include="PlatformActions\Shoot.cs" />
     <Compile Include="Platforms\Barracks.cs" />
     <Compile Include="Platforms\DefenseLaser.cs" />
@@ -210,6 +212,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Screen\UserInterfaceController.cs" />
     <Compile Include="Utils\State3.cs" />
+    <Compile Include="Utils\Clock.cs" />
     <Compile Include="Utils\Geometry.cs" />
     <Compile Include="Screen\IScreen.cs" />
     <Compile Include="Screen\IScreenManager.cs" />

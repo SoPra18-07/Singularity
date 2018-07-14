@@ -27,7 +27,7 @@ namespace Singularity.Screen
         private readonly Color mCenterColor;
 
         // mouse Position
-        private Vector2 mMouse;
+        protected Vector2 mMouse;
 
         // bool to enable or disable the rectangle around the infoBox
         private readonly bool mBoxed;
@@ -48,7 +48,14 @@ namespace Singularity.Screen
         /// <param name="director">the director</param>
         /// <param name="mousePosition"></param>
         /// <param name="location"></param>
-        public InfoBoxWindow(List<IWindowItem> itemList, Vector2 size, Color borderColor, Color centerColor, bool boxed, Director director, bool mousePosition = true, Vector2 location = default(Vector2))
+        public InfoBoxWindow(List<IWindowItem> itemList,
+            Vector2 size,
+            Color borderColor,
+            Color centerColor,
+            bool boxed,
+            Director director,
+            bool mousePosition = true,
+            Vector2 location = default(Vector2))
         {
             // set members
             mItemList = itemList;
@@ -118,7 +125,7 @@ namespace Singularity.Screen
 
                 // shifts the items from the top left corner to their position
                 var yShift = 2;
-
+                
                 // set starting values, maxWidth is the maximum width of all items added to the infoBox, maxHeight ~ same just with height
                 float maxWidth = 0;
                 float maxHeight = 0;

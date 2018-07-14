@@ -3,7 +3,6 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
@@ -72,10 +71,15 @@ namespace Singularity.Units
         /// </summary>
         [DataMember]
         protected Color mColor = Color.Gray;
+
+        /// <summary>
+        /// Used to make sure that it doesn't shoot too often.
+        /// </summary>
         [DataMember]
         private float mShootingTimer = -1f;
-        [DataMember]
-        private double mCurrentTime;
+
+
+
 
         public MilitaryUnit(Vector2 position,
             Camera camera,
@@ -110,16 +114,16 @@ namespace Singularity.Units
 
             // Draw military unit
             spriteBatch.Draw(
-                            mMilSheet,
-                            AbsolutePosition,
-                            new Rectangle(150 * mColumn, 75 * mRow, (int)(AbsoluteSize.X / Scale), (int)(AbsoluteSize.Y / Scale)),
-                            mSelected ? mSelectedColor : mColor,
-                            0f,
-                            Vector2.Zero,
-                            new Vector2(Scale),
-                            SpriteEffects.None,
-                            LayerConstants.MilitaryUnitLayer
-                            );
+                mMilSheet,
+                AbsolutePosition,
+                new Rectangle(150 * mColumn, 75 * mRow, (int)(AbsoluteSize.X / Scale), (int)(AbsoluteSize.Y / Scale)),
+                mSelected ? mSelectedColor : mColor,
+                0f,
+                Vector2.Zero,
+                new Vector2(Scale),
+                SpriteEffects.None,
+                LayerConstants.MilitaryUnitLayer
+            );
 
             // Draw the glow under it
             if (mSelected)
@@ -147,17 +151,15 @@ namespace Singularity.Units
                 }
             }
 
-            if (!mShoot)
+            if (mShoot)
             {
-                return;
-            }
-
-            if (mCurrentTime <= mShootingTimer + 200)
-            {
-                // draws a laser line a a slight glow around the line, then sets the shoot future off
-                spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2, .15f);
-                spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6, .15f);
-                mShoot = false;
+                if (mCurrentTime <= mShootingTimer + 200)
+                {
+                    // draws a laser line a a slight glow around the line, then sets the shoot future off
+                    spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2, .15f);
+                    spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6, .15f);
+                    mShoot = false;
+                }
             }
         }
 
@@ -184,7 +186,6 @@ namespace Singularity.Units
             // calculate path to target position
             else if (mIsMoving)
             {
-                Rotate(mPath.Peek());
                 if (!HasReachedWaypoint())
                 {
                     MoveToTarget(mPath.Peek(), mSpeed);
@@ -204,9 +205,12 @@ namespace Singularity.Units
             AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * Scale), (int) (AbsoluteSize.Y * Scale));
             Moved = mIsMoving;
 
-            //TODO this needs to be taken out once the military manager takes control of shooting
             if (!mIsMoving && mShoot)
             {
+                // Rotate to the center of the shooting target
+                Rotate(mShootingTarget.Center, true);
+
+                
                 if (mShootingTimer < 0.5f)
                 {
                     mShootingTimer = (float) gameTime.TotalGameTime.TotalMilliseconds;
@@ -220,6 +224,7 @@ namespace Singularity.Units
                     Shoot(mShootingTarget);
                 }
             }
+            
         }
 
         private void Shoot(ICollider target)

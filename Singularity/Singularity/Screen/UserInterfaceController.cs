@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Singularity.Manager;
 using Singularity.PlatformActions;
@@ -49,19 +48,19 @@ namespace Singularity.Screen
         /// <param name="type">the platform's type</param>
         /// <param name="resourceAmountList">resources on platform</param>
         /// <param name="unitAssignmentDict">units assigned to platform</param>
-        /// <param name="actionsArray">possible actions of platform</param>
+        /// <param name="actionsList">possible actions of platform</param>
         /// <param name="isActive">true, if the platform is active</param>
         internal void SetDataOfSelectedPlatform(
             int id,
             bool isActive,
             bool isManuallyDeactivated,
-            EPlatformType type,
+            EStructureType type,
             List<Resource> resourceAmountList,
             Dictionary<JobType, List<Pair<GeneralUnit, bool>>> unitAssignmentDict,
-            List<IPlatformAction> actionsArray)
+            List<IPlatformAction> actionsList)
         {
             // set/update data in UI
-            ControlledUserInterface.SetSelectedPlatformValues(id, isActive, isManuallyDeactivated, type, resourceAmountList, unitAssignmentDict, actionsArray);
+            ControlledUserInterface.SetSelectedPlatformValues(id, isActive, isManuallyDeactivated, type, resourceAmountList, unitAssignmentDict, actionsList);
         }
 
         /// <summary>
@@ -163,5 +162,16 @@ namespace Singularity.Screen
         {
             ControlledUserInterface?.SelectedPlatformSetsGraphId(graphId);
         }
+        public void BuildingProcessStarted(EStructureType structureType)
+        {
+            ControlledUserInterface.BuildingProcessStarted(structureType);
+        }
+
+        public void BuildingProcessFinished(EStructureType structureType)
+        {
+            ControlledUserInterface.BuildingProcessFinished(structureType);
+        }
+
+        // TODO : ADD EVENT LOG CONTROLLING
     }
 }

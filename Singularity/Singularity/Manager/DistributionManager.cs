@@ -10,6 +10,7 @@ using Singularity.Resources;
 using Singularity.Screen;
 using Singularity.Units;
 using Singularity.Utils;
+using System.Diagnostics;
 
 namespace Singularity.Manager
 {
@@ -125,28 +126,28 @@ namespace Singularity.Manager
             while (currentlevel.Count > 0)
             {
                 //Create the next level of BFS. While doing this, check if any platform has the resource you want. If yes return it.
-                foreach (PlatformBlank platform in currentlevel)
+                foreach (var platform in currentlevel)
                 {
 
                     foreach (var edge in platform.GetInwardsEdges())
                     {
                         var candidatePlatform = (PlatformBlank)edge.GetParent();
                         //If true, we have already visited this platform
-                        if (previouslevel.Contains(platform) || nextpreviouslevel.Contains(platform))
+                        if (previouslevel.Contains(candidatePlatform) || nextpreviouslevel.Contains(candidatePlatform))
                         {
                             continue;
                         }
                         //Check for the resource
-                        foreach (var resource in candidatePlatform.GetPlatformResources())
+                        if (candidatePlatform.GetPlatformResources()
+                            .Any(resource => resource.Type == res))
                         {
-                            if (resource.Type != res)
-                            {
-                                continue;
-                            }
                             return candidatePlatform;
                         }
-
-                        nextlevel.Add(candidatePlatform);
+                        //If true, this Platform has already been put in the next level
+                        if (!nextlevel.Contains(candidatePlatform))
+                        {
+                            nextlevel.Add(candidatePlatform);
+                        }
                     }
 
                     foreach (var edge in platform.GetOutwardsEdges())
@@ -158,15 +159,15 @@ namespace Singularity.Manager
                             continue;
                         }
                         //Check for the resource
-                        foreach (var resource in candidatePlatform.GetPlatformResources())
+                        if (candidatePlatform.GetPlatformResources().Any(resource => resource.Type == res))
                         {
-                            if (resource.Type != res)
-                            {
-                                continue;
-                            }
                             return candidatePlatform;
                         }
-                        nextlevel.Add(candidatePlatform);
+                        //If true, this Platform has already been put in the next level
+                        if (!nextlevel.Contains(candidatePlatform))
+                        {
+                            nextlevel.Add(candidatePlatform);
+                        }
                     }
                     //mark that you have visited this platform now
                     nextpreviouslevel.Add(platform);
@@ -435,9 +436,8 @@ namespace Singularity.Manager
                     }
                     task = mBuildingResources.Dequeue();
                     //This means that the Action is paused.
-                    if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()))
+                    if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()) && task.Job != JobType.Construction)
                     {
-                        mBuildingResources.Enqueue(task);
                         task = RequestNewTask(unit, job, assignedAction);
                     }
                     if (task.End.IsPresent() && task.GetResource != null)
@@ -453,7 +453,7 @@ namespace Singularity.Manager
                             //TODO: Talk with felix about how this could affect the killing thing
                             mBuildingResources.Enqueue(task);
                             //This means the unit will identify this task as "do nothing" and ask again.
-                            task.Begin = null;
+                            task.Begin = Optional<PlatformBlank>.Of(null);
                         }
                     }
                     else
@@ -476,7 +476,6 @@ namespace Singularity.Manager
                     //This means that the Action is paused.
                     if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()))
                     {
-                        mRefiningOrStoringResources.Enqueue(task);
                         task = RequestNewTask(unit, job, assignedAction);
                     }
                     if (task.End.IsPresent() && task.GetResource != null)
@@ -492,7 +491,7 @@ namespace Singularity.Manager
                             //TODO: Talk with felix about how this could affect the killing thing
                             mRefiningOrStoringResources.Enqueue(task);
                             //This means the unit will identify this task as "do nothing" and ask again.
-                            task.Begin = null;
+                            task.Begin = Optional<PlatformBlank>.Of(null);
                         }
                     }
                     else
@@ -584,7 +583,7 @@ namespace Singularity.Manager
                 }
                 else
                 {
-                    list = GetUnitsFairly(amount, mDefPlatforms, false);
+                    list = GetUnitsFairly(amount, mDefPlatforms, true);
                 }
 
                 //Now actually change their Jobs.
@@ -1041,6 +1040,7 @@ namespace Singularity.Manager
             mHandler = handler;
         }
 
+
         /// <summary>
         /// Is called by producing and defending Platforms when they are created or added to the distributionmanager.
         /// </summary>
@@ -1074,6 +1074,11 @@ namespace Singularity.Manager
                 //Make sure the new platform gets some units
                 NewlyDistribute(platform, false, alreadyonplatform);
             }
+        }
+
+        public void Register(IPlatformAction action)
+        {
+            mPlatformActions.Add(action);
         }
 
         /// <summary>
@@ -1168,7 +1173,8 @@ namespace Singularity.Manager
 
         public void PausePlatformAction(IPlatformAction action)
         {
-            throw new NotImplementedException();
+            Kill(action);
+            // TODO: throw new NotImplementedException(); // (currently commented out, since it'd break stuff)
             // Actions need a sleep method
             // No, they're just being removed from occurences in the DistributionManager. As soon as they unpause, they'll send requests for Resources and units again.
             // Ah ok I got that part

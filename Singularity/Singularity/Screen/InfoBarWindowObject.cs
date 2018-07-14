@@ -162,7 +162,7 @@ namespace Singularity.Screen
             mMinimapButton.ButtonReleased += TogglerMinimap;
 
             // add input manager to prevent other objects from behind the infoBar to get input through the infoBar
-            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
 
             // pause menu screen
             mGamePauseManagerScreen = new GamePauseManagerScreen(new Vector2(director.GetGraphicsDeviceManager.PreferredBackBufferWidth, director.GetGraphicsDeviceManager.PreferredBackBufferHeight), mScreenManager, mDirector);
@@ -192,7 +192,7 @@ namespace Singularity.Screen
                 spriteBatch.DrawString(mSpriteFont, DateTime.Now.ToShortTimeString(), new Vector2(Width - 30 - 80, 2.5f), new Color(0,0,0));
 
                 // draw the mission time
-                spriteBatch.DrawString(mSpriteFont, mDirector.GetStoryManager.Time.ToString(), new Vector2(Width - 30 - 300, 2.5f), new Color(1, 0, 0));
+                spriteBatch.DrawString(mSpriteFont, mDirector.GetClock.GetIngameTime().ToString(), new Vector2(Width - 30 - 300, 2.5f), new Color(1, 0, 0));
             }
         }
 
