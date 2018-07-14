@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using Singularity.Libraries;
+using Singularity.Utils;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -33,44 +35,34 @@ namespace Singularity.Screen.ScreenClasses
 
         // All strings are variables to allow for easy editing and localization
         private readonly string mWindowTitleString;
-        private readonly string mGameplayString;
-        private readonly string mGraphicsString;
-        private readonly string mAudioString;
-        private readonly string mSaveChangesString;
-        private readonly string mBackString;
+        private readonly string mResolutionString;
 
-        private readonly string mFullScreenString;
-        private readonly string mResolutionString; // used later .. apparently
-        private readonly string mAntialiasingString;
-
-        private readonly string mMuteString;
+        // The current resolution
+        private Pair<int, int> mResolutionChosen;
 
         // fonts
         private SpriteFont mLibSans36;
-        private SpriteFont mLibSans20;
+        private SpriteFont mLibSans16;
 
         // Button colors
         private readonly Color mTextColor;
 
         // tab buttons
         private readonly List<Button> mTabButtons;
-        private Button mGameplayButton;
-        private Button mGraphicsButton;
-        private Button mAudioButton;
-        private Button mSaveButton;
-        private Button mBackButton;
 
         // Graphics tab
         private readonly List<Button> mGraphicsButtons;
-        private Button mFullScreen; // todo replace with a toggle
-        private Button mResolution1; // todo replace with a better system
-        private Button mResolution2; // todo replace with a better system
-        private Button mAntialiasing; // todo replace with a toggle
+
+        // pre-apply state save basically
+        private int mWidth;
+        private int mHeight;
+        private bool mTruth;
+
 
         // Audio tab
         // todo add the following:
         private readonly List<Button> mAudioButtons;
-        private Button mMuteButton; // add slider once completed
+
         // Background volume and toggle
         // Sound effect volume and toggle
         // 3D sound effect toggle
@@ -98,6 +90,8 @@ namespace Singularity.Screen.ScreenClasses
             mBoxPosition = new Vector2(mScreenResolution.X / 2 - 306, mScreenResolution.Y / 4);
             mMenuBoxSize = new Vector2(612, 420);
 
+            mResolutionChosen = new Pair<int, int>((int) screenResolution.X, (int) screenResolution.Y);
+
             mTabPadding = mBoxPosition.X + 36;
             mContentPadding = mBoxPosition.X + 204;
             mTopContentPadding = mBoxPosition.Y + 84;
@@ -107,16 +101,8 @@ namespace Singularity.Screen.ScreenClasses
             mTextColor = new Color(new Vector3(.9137f, .9058f, .8314f));
 
             mWindowTitleString = "Options";
-            mGameplayString = "Gameplay";
-            mGraphicsString = "Graphics";
-            mAudioString = "Audio";
-            mSaveChangesString = "Apply";
-            mBackString = "Back";
-
-            mFullScreenString = "Full Screen";
             mResolutionString = "Resolution:";
-            mAntialiasingString = "Anti-Aliasing";
-            mMuteString = "Mute";
+            
 
             mTabButtons = new List<Button>(5);
             mGraphicsButtons = new List<Button>(4);
@@ -136,18 +122,36 @@ namespace Singularity.Screen.ScreenClasses
         public void LoadContent(ContentManager content)
         {
             mLibSans36 = content.Load<SpriteFont>("LibSans36");
-            mLibSans20 = content.Load<SpriteFont>("LibSans20");
+            mLibSans16 = content.Load<SpriteFont>("LibSans20");
+
+            #region Strings for easy editing and localization
+
+            // tabs
+            const string gameplayString = "Gameplay";
+            const string graphicsString = "Graphics";
+            const string audioString = "Audio";
+            const string saveChangesString = "Apply";
+            const string backString = "Back";
+
+            // Gameplay
+
+            // Graphics
+            const string fullScreenString = "Full Screen";
+
+            // Audio
+            const string muteString = "Mute";
+            #endregion
 
             // make the tab select buttons
-            mGameplayButton = new Button(mGameplayString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding), mTextColor);
-            mGraphicsButton = new Button(mGraphicsString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding + 40), mTextColor);
-            mAudioButton = new Button(mAudioString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding + 80), mTextColor);
-            mBackButton = new Button(mBackString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding + 160), mTextColor);
+            var gameplayButton = new Button(gameplayString, mLibSans16, new Vector2(mTabPadding, mTopContentPadding), mTextColor);
+            var graphicsButton = new Button(graphicsString, mLibSans16, new Vector2(mTabPadding, mTopContentPadding + 40), mTextColor);
+            var audioButton = new Button(audioString, mLibSans16, new Vector2(mTabPadding, mTopContentPadding + 80), mTextColor);
+            var backButton = new Button(backString, mLibSans16, new Vector2(mTabPadding, mTopContentPadding + 160), mTextColor);
 
-            mTabButtons.Add(mGameplayButton);
-            mTabButtons.Add(mGraphicsButton);
-            mTabButtons.Add(mAudioButton);
-            mTabButtons.Add(mBackButton);
+            mTabButtons.Add(gameplayButton);
+            mTabButtons.Add(graphicsButton);
+            mTabButtons.Add(audioButton);
+            mTabButtons.Add(backButton);
 
             foreach (Button tabButton in mTabButtons)
             {
@@ -158,37 +162,67 @@ namespace Singularity.Screen.ScreenClasses
             // TODO figure out what settings can be implemented in here
 
             // Graphics settings
-            mFullScreen = new Button(mFullScreenString, mLibSans20, new Vector2(mContentPadding, mTopContentPadding), mTextColor);
-            mResolution1 = new Button("800 x 600", mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 40), mTextColor);
-            mResolution2 = new Button("960 x 720", mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 80));
-            mSaveButton = new Button(mSaveChangesString, mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 120), mTextColor);
-
-            mGraphicsButtons.Add(mFullScreen);
-            mGraphicsButtons.Add(mResolution1);
-            mGraphicsButtons.Add(mResolution2);
-            mGraphicsButtons.Add(mSaveButton);
-
-            foreach (Button graphicsButton in mGraphicsButtons)
+            var fullScreen = new Checkbox(fullScreenString,
+                mLibSans16,
+                new Vector2(mContentPadding,
+                    mTopContentPadding),
+                new Vector2(mContentPadding +
+                            mLibSans16.MeasureString("Full Screen        ")
+                                .X,
+                    mTopContentPadding),
+                mTextColor)
             {
-                graphicsButton.Opacity = mMenuOpacity;
+                CheckboxState = mGame.mGraphics.IsFullScreen
+            };
+
+            // set the check box for the full screen toggle.
+
+            #region Selector for Screen Resolution
+
+            // This region is to make the selector button. The button is custom because it only happens once and I'm too lazy to
+            // make a completely new class that's modular with the right arguments etc.
+            var selectButtonTexture = content.Load<Texture2D>("SelectorButton");
+            var resolutionDown = new Button(1,
+                selectButtonTexture,
+                new Vector2(mContentPadding, mTopContentPadding + 80),
+                false);
+            var resolutionUp = new Button(1,
+                selectButtonTexture,
+                new Vector2(mContentPadding + mLibSans16.MeasureString("Full Screen        ").X, mTopContentPadding + 80),
+                false,
+                spriteEffects: SpriteEffects.FlipHorizontally);
+
+            #endregion
+                 
+            var saveButton = new Button(saveChangesString, mLibSans16, new Vector2(mContentPadding, mTopContentPadding + 160), mTextColor);
+
+            mGraphicsButtons.Add(fullScreen);
+            mGraphicsButtons.Add(saveButton);
+            mGraphicsButtons.Add(resolutionDown);
+            mGraphicsButtons.Add(resolutionUp);
+            
+            foreach (Button graphButton in mGraphicsButtons)
+            {
+                graphButton.Opacity = mMenuOpacity;
             }
 
             // Audio settings
-            mMuteButton = new Button(mMuteString, mLibSans20, new Vector2(mContentPadding, mTopContentPadding), mTextColor);
+            var muteButton = new Button(muteString, mLibSans16, new Vector2(mContentPadding, mTopContentPadding), mTextColor);
 
-            mAudioButtons.Add(mMuteButton);
+            mAudioButtons.Add(muteButton);
 
             // Button handler bindings
-            mGameplayButton.ButtonReleased += OnGameplayReleased;
-            mGraphicsButton.ButtonReleased += OnGraphicsReleased;
-            mAudioButton.ButtonReleased += OnAudioReleased;
-            mBackButton.ButtonReleased += MainMenuManagerScreen.OnBackButtonReleased;
+            gameplayButton.ButtonReleased += OnGameplayReleased;
+            graphicsButton.ButtonReleased += OnGraphicsReleased;
+            audioButton.ButtonReleased += OnAudioReleased;
+            backButton.ButtonReleased += MainMenuManagerScreen.OnBackButtonReleased;
 
-            mFullScreen.ButtonReleased += OnFullScreenReleased;
-            mResolution1.ButtonReleased += OnResoOneReleased;
-            mResolution2.ButtonReleased += OnResoTwoReleased;
+            fullScreen.ButtonReleased += OnFullScreenReleased;
+            resolutionDown.ButtonReleased += OnResoDownReleased;
+            resolutionUp.ButtonReleased += OnResoUpReleased;
+            saveButton.ButtonReleased += OnSaveReleased;
 
-            mMuteButton.ButtonReleased += OnMuteReleased;
+            muteButton.ButtonReleased += OnMuteReleased;
 
             Loaded = true;
         }
@@ -217,11 +251,23 @@ namespace Singularity.Screen.ScreenClasses
 
                     break;
                 case EOptionScreenState.Graphics:
-                    foreach (Button button in mGraphicsButtons)
+                    foreach (var button in mGraphicsButtons.GetRange(0, 2))
                     {
                         button.Update(gametime);
                         button.Opacity = mMenuOpacity;
                     }
+
+
+                    // makes it impossible to change resolution while full screened
+                    if (!mGame.mGraphics.IsFullScreen)
+                    {
+                        foreach (Button button in mGraphicsButtons.GetRange(2, 2))
+                        {
+                            button.Update(gametime);
+                            button.Opacity = mMenuOpacity;
+                        }
+                    }
+
                     break;
                 case EOptionScreenState.Audio:
                     foreach (Button button in mAudioButtons)
@@ -233,6 +279,7 @@ namespace Singularity.Screen.ScreenClasses
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+            Debug.WriteLine("Full screen active: " + mGame.mGraphics.IsFullScreen);
         }
 
         /// <summary>
@@ -274,13 +321,31 @@ namespace Singularity.Screen.ScreenClasses
             switch (mScreenState)
             {
                 case EOptionScreenState.Gameplay:
-                    spriteBatch.DrawString(mLibSans20, "Difficulty", new Vector2(mContentPadding, mTopContentPadding), Color.White * mMenuOpacity);
+                    spriteBatch.DrawString(mLibSans16, "Difficulty", new Vector2(mContentPadding, mTopContentPadding), mTextColor * mMenuOpacity);
                     break;
                 case EOptionScreenState.Graphics:
-                    foreach (Button button in mGraphicsButtons)
+                    // Don't allow resolution changes when full screen.
+                    foreach (var button in mGraphicsButtons.GetRange(0, 2))
                     {
                         button.Draw(spriteBatch);
                     }
+
+                    if (!mGame.mGraphics.IsFullScreen)
+                    {
+                        foreach (var button in mGraphicsButtons.GetRange(2, 2))
+                        {
+                            button.Draw(spriteBatch);
+                        }
+                        
+                        // Draw the resolution text string
+                        spriteBatch.DrawString(mLibSans16, mResolutionString, new Vector2(mContentPadding, mTopContentPadding + 40), mTextColor * mMenuOpacity);
+
+                        // Draw the box for the selector
+                        var selectorWidth = (int)mLibSans16.MeasureString("Full Screen        ").X + 32;
+                        spriteBatch.DrawRectangle(new Rectangle((int)mContentPadding, (int)mTopContentPadding + 80, selectorWidth, 32), mTextColor);
+                        
+                    }
+                    
                     break;
                 case EOptionScreenState.Audio:
                     foreach (var button in mAudioButtons)
@@ -395,52 +460,45 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="eventArgs"></param>
         private void OnFullScreenReleased(Object sender, EventArgs eventArgs)
         {
-            int width;
-            int height;
-            bool truth;
-
-
             if (mGame.mGraphics.IsFullScreen)
             {
-                truth = false;
+                mTruth = false;
                 // if it is already full screen, reset to a smaller screen size
-                width = 960;
-                height = 720;
+                mWidth = 960;
+                mHeight = 720;
             }
             else
             {
                 // otherwise, do set up the game for full screen
-                truth = true;
-                width = mGame.mGraphicsAdapter.CurrentDisplayMode.Width;
-                height = mGame.mGraphicsAdapter.CurrentDisplayMode.Height;
+                mTruth = true;
+                mWidth = mGame.mGraphicsAdapter.CurrentDisplayMode.Width;
+                mHeight = mGame.mGraphicsAdapter.CurrentDisplayMode.Height;
             }
 
-            mGame.mGraphics.PreferredBackBufferWidth = width;
-            mGame.mGraphics.PreferredBackBufferHeight = height;
-            mGame.mGraphics.IsFullScreen = truth;
-            mGame.mGraphics.ApplyChanges();
-            MainMenuManagerScreen.SetResolution(new Vector2(width, height));
+            mGame.mGraphics.PreferredBackBufferWidth = mWidth;
+            mGame.mGraphics.PreferredBackBufferHeight = mHeight;
+            mGame.mGraphics.IsFullScreen = mTruth;
+            
         }
 
-        private void OnResoOneReleased(Object sender, EventArgs eventArgs)
+        private void OnResoDownReleased(Object sender, EventArgs eventArgs)
         {
             mGame.mGraphics.PreferredBackBufferWidth = 800;
             mGame.mGraphics.PreferredBackBufferHeight = 600;
-            mGame.mGraphics.ApplyChanges();
             MainMenuManagerScreen.SetResolution(new Vector2(800, 600));
         }
 
-        private void OnResoTwoReleased(Object sender, EventArgs eventArgs)
+        private void OnResoUpReleased(Object sender, EventArgs eventArgs)
         {
             mGame.mGraphics.PreferredBackBufferWidth = 960;
             mGame.mGraphics.PreferredBackBufferHeight = 720;
-            mGame.mGraphics.ApplyChanges();
             MainMenuManagerScreen.SetResolution(new Vector2(960, 720));
         }
 
-        private void OnAntialiasingReleased(Object sender, EventArgs eventArgs)
+        private void OnSaveReleased(Object sender, EventArgs eventArgs)
         {
-            // potentially impossible
+            mGame.mGraphics.ApplyChanges();
+            MainMenuManagerScreen.SetResolution(new Vector2(mWidth, mHeight));
         }
 
         private void OnMuteReleased(Object sender, EventArgs eventArgs)

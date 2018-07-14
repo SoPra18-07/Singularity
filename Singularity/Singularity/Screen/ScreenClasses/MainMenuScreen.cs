@@ -199,7 +199,7 @@ namespace Singularity.Screen.ScreenClasses
                         mMenuBoxSize = new Vector2(600, 650);
                         mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - 300, mScreenResolution.Y / 2 - 325);
                     }
-
+                    // TODO change the achievements screen
                     var widthAch = (float)Animations.Easing(408,
                         600,
                         mTransitionStartTime,

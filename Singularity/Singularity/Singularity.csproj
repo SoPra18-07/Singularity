@@ -67,6 +67,7 @@
     <Compile Include="Levels\ILevel.cs" />
     <Compile Include="Manager\DistributionDirector.cs" />
     <Compile Include="Manager\DistributionManager.cs" />
+    <Compile Include="Screen\Checkbox.cs" />
     <Compile Include="Screen\ELogEventType.cs" />
     <Compile Include="Screen\EventLog.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />
