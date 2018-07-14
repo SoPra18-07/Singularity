@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using Singularity.Property;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
+using Singularity.Utils;
 
 namespace Singularity.Input
 {
@@ -34,6 +35,18 @@ namespace Singularity.Input
 
         private MouseState mPreviousMouseState;
 
+        private readonly List<IMouseClickListener> mClickListenerToRemove;
+
+        private readonly List<IMouseWheelListener> mWheelListenerToRemove;
+
+        private readonly List<IKeyListener> mKeyListenerToRemove;
+
+        private readonly List<Triple<IMouseClickListener, EClickType, EClickType>> mClickListenerToAdd;
+
+        private readonly List<IMouseWheelListener> mWheelListenerToAdd;
+
+        private readonly List<IKeyListener> mKeyListenerToAdd;
+
 
         private KeyboardState mCurrentKeyboardState;
 
@@ -48,6 +61,12 @@ namespace Singularity.Input
         {
             mScreensToCheck = new List<EScreen>();
 
+            mClickListenerToRemove = new List<IMouseClickListener>();
+            mWheelListenerToRemove = new List<IMouseWheelListener>();
+            mKeyListenerToRemove = new List<IKeyListener>();
+            mClickListenerToAdd = new List<Triple<IMouseClickListener, EClickType, EClickType>>();
+            mWheelListenerToAdd = new List<IMouseWheelListener>();
+            mKeyListenerToAdd = new List<IKeyListener>();
             mKeyListener = new Dictionary<EScreen, List<IKeyListener>>();
             mMousePositionListener = new List<IMousePositionListener>();
             mMouseClickListener = new Dictionary<EScreen, List<IMouseClickListener>>();
@@ -61,7 +80,37 @@ namespace Singularity.Input
             mPreviousKeyboardState = Keyboard.GetState();
         }
 
-        public void AddKeyListener(IKeyListener iKeyListener)
+        public void FlagForRemoval(IKeyListener keyListener)
+        {
+            mKeyListenerToRemove.Add(keyListener);
+        }
+
+        public void FlagForRemoval(IMouseClickListener mouseClickListener)
+        {
+            mClickListenerToRemove.Add(mouseClickListener);
+        }
+
+        public void FlagForRemoval(IMouseWheelListener mouseWheelListener)
+        {
+            mWheelListenerToRemove.Add(mouseWheelListener);
+        }
+
+        public void FlagForAddition(IKeyListener keylistener)
+        {
+            mKeyListenerToAdd.Add(keylistener);
+        }
+
+        public void FlagForAddition(IMouseClickListener clickListener, EClickType left, EClickType right)
+        {
+            mClickListenerToAdd.Add(new Triple<IMouseClickListener, EClickType, EClickType>(clickListener, left, right));
+        }
+
+        public void FlagForAddition(IMouseWheelListener mouseWheelListener)
+        {
+            mWheelListenerToAdd.Add(mouseWheelListener);
+        }
+
+        private void AddKeyListener(IKeyListener iKeyListener)
         {
             if (!mKeyListener.ContainsKey(iKeyListener.Screen))
             {
@@ -71,7 +120,7 @@ namespace Singularity.Input
             mKeyListener[iKeyListener.Screen].Add(iKeyListener);
         }
 
-        public bool RemoveKeyListener(IKeyListener iKeyListener)
+        private bool RemoveKeyListener(IKeyListener iKeyListener)
         {
             if (!mKeyListener.ContainsKey(iKeyListener.Screen))
             {
@@ -110,7 +159,7 @@ namespace Singularity.Input
         /// <param name="iMouseClickListener">The object which should receive events</param>
         /// <param name="leftClickType">The LeftClickType</param>
         /// <param name="rightClickType">The RightClickType</param>
-        public void AddMouseClickListener(IMouseClickListener iMouseClickListener, EClickType leftClickType, EClickType rightClickType)
+        private void AddMouseClickListener(IMouseClickListener iMouseClickListener, EClickType leftClickType, EClickType rightClickType)
         {
             if (!mMouseClickListener.ContainsKey(iMouseClickListener.Screen))
             {
@@ -124,7 +173,7 @@ namespace Singularity.Input
             mRightClickType.Add(iMouseClickListener, rightClickType);
         }
 
-        public bool RemoveMouseClickListener(IMouseClickListener iMouseClickListener)
+        private bool RemoveMouseClickListener(IMouseClickListener iMouseClickListener)
         {
             if (!mMouseClickListener.ContainsKey(iMouseClickListener.Screen))
             {
@@ -144,7 +193,7 @@ namespace Singularity.Input
             return true;
         }
 
-        public void AddMouseWheelListener(IMouseWheelListener iMouseWheelListener)
+        private void AddMouseWheelListener(IMouseWheelListener iMouseWheelListener)
         {
             if (!mMouseWheelListener.ContainsKey(iMouseWheelListener.Screen))
             {
@@ -154,7 +203,7 @@ namespace Singularity.Input
             mMouseWheelListener[iMouseWheelListener.Screen].Add(iMouseWheelListener);
         }
 
-        public bool RemoveMouseWheelListener(IMouseWheelListener iMouseWheelListener)
+        private bool RemoveMouseWheelListener(IMouseWheelListener iMouseWheelListener)
         {
             if (!mMouseWheelListener.ContainsKey(iMouseWheelListener.Screen))
             {
@@ -532,6 +581,44 @@ namespace Singularity.Input
             }
 
             CreateMousePositionEvents();
+
+            foreach(var clickListener in mClickListenerToRemove)
+            {
+                RemoveMouseClickListener(clickListener);
+            }
+
+            foreach(var wheelListener in mWheelListenerToRemove)
+            {
+                RemoveMouseWheelListener(wheelListener);
+            }
+
+            foreach(var keyListener in mKeyListenerToRemove)
+            {
+                RemoveKeyListener(keyListener);
+            }
+
+            mClickListenerToRemove.Clear();
+            mWheelListenerToRemove.Clear();
+            mKeyListenerToRemove.Clear();
+
+            foreach(var clickListener in mClickListenerToAdd)
+            {
+                AddMouseClickListener(clickListener.GetFirst(), clickListener.GetSecond(), clickListener.GetThird());
+            }
+
+            foreach(var wheelListener in mWheelListenerToAdd)
+            {
+                AddMouseWheelListener(wheelListener);
+            }
+
+            foreach(var keyListener in mKeyListenerToAdd)
+            {
+                AddKeyListener(keyListener);
+            }
+
+            mClickListenerToAdd.Clear();
+            mWheelListenerToAdd.Clear();
+            mKeyListenerToAdd.Clear();
 
 
             // update 'previous'-values

@@ -26,6 +26,15 @@ namespace Singularity.Levels
         [DataMember]
         Pair<int, bool> UnitsBuilt { get; set; }
 
+        public Achievements()
+        {
+            FirstBuilding = false;
+            TutorialFinished = false;
+            ReachedLvl5 = false;
+            TrashBurned = new Pair<int, bool>(0, false);
+            PlatformsBuilt = new Pair<int, bool>(0, false);
+            UnitsBuilt = new Pair<int, bool>(0, false);
+        }
 
         //The methods of the achievements. Call them every time you make progress in it.
         //They return true only in the moment their corresponding requirements are met, because only then an infobox should be triggered

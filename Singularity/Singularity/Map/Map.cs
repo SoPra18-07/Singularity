@@ -10,6 +10,7 @@ using Singularity.Property;
 using Singularity.Resources;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework.Content;
+using Singularity.Screen.ScreenClasses;
 
 namespace Singularity.Map
 {
@@ -80,13 +81,13 @@ namespace Singularity.Map
             director.GetStoryManager.StructureMap = mStructureMap;
         }
 
-        public void ReloadContent(Texture2D background, Camera camera, FogOfWar fow, ref Director dir, ContentManager content)
+        public void ReloadContent(Texture2D background, Camera camera, FogOfWar fow, ref Director dir, ContentManager content, UserInterfaceScreen ui)
         {
             mBackgroundTexture = background;
             mCamera = camera;
             mFow = fow;
             //ADD ALL THE THINGS TO THE CAMERA AND THE FOW
-            mStructureMap.ReloadContent(content, mFow, ref dir, mCamera, this);
+            mStructureMap.ReloadContent(content, mFow, ref dir, mCamera, this, ui);
             mCollisionMap.ReloadContent();
         }
 

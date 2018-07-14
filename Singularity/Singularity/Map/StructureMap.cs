@@ -9,6 +9,7 @@ using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Property;
+using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 using Singularity.Utils;
 
@@ -100,7 +101,7 @@ namespace Singularity.Map
         }
 
 
-        public void ReloadContent(ContentManager content, FogOfWar fow, ref Director dir, Camera camera, Map map)
+        public void ReloadContent(ContentManager content, FogOfWar fow, ref Director dir, Camera camera, Map map, UserInterfaceScreen ui)
         {
             mFow = fow;
             mDirector = dir;
@@ -113,6 +114,13 @@ namespace Singularity.Map
             foreach (var platform in mPlatforms)
             {
                 platform.ReloadContent(content, ref dir);
+            }
+            //Update uis graphid dictionary
+            ui.CallingAllGraphs(mGraphIdToGraph);
+
+            foreach(var roads in mRoads)
+            {
+                roads.ReloadContent(ref dir);
             }
         }
 
@@ -339,29 +347,25 @@ namespace Singularity.Map
 
             var newChildIndex = mGraphIdToGraph.Count;
 
+            var platforms = new List<PlatformBlank>();
+            var units = new List<GeneralUnit>();
+
             // update the values for the child nodes, the parent nodes reuse their values.
             foreach (var childNode in childReachableGraph.GetNodes())
             {
                 mPlatformToGraphId[(PlatformBlank)childNode] = newChildIndex;
                 ((PlatformBlank)childNode).SetGraphIndex(newChildIndex);
+                platforms.Add((PlatformBlank) childNode);
+                foreach (var unit in ((PlatformBlank)childNode).GetGeneralUnitsOnPlatform())
+                {
+                    units.Add(unit);
+                }
             }
 
             mGraphIdToGraph[newChildIndex] = childReachableGraph;
             mGraphIdToGraph[mPlatformToGraphId[(PlatformBlank) parent]] = parentReachableGraph;
 
             UpdateGenUnitsGraphIndex(mGraphIdToGraph[newChildIndex], newChildIndex);
-
-            var platforms = new List<PlatformBlank>();
-            var units = new List<GeneralUnit>();
-
-            foreach (var node in parentReachableGraph.GetNodes())
-            {
-                platforms.Add((PlatformBlank)node);
-                foreach (var unit in ((PlatformBlank) node).GetGeneralUnitsOnPlatform())
-                {
-                    units.Add(unit);
-                }
-            }
 
             mGraphIdToEnergyLevel[newChildIndex] = 0;
             mGraphIdToEnergyLevel[mPlatformToGraphId[(PlatformBlank) parent]] = 0;

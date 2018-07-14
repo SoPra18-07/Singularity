@@ -128,8 +128,8 @@ namespace Singularity.Map
             mBounds = new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight);
 
             mDirector = director;
-            director.GetInputManager.AddKeyListener(this);
-            director.GetInputManager.AddMouseWheelListener(this);
+            director.GetInputManager.FlagForAddition((IMouseWheelListener)this);
+            director.GetInputManager.FlagForAddition((IKeyListener)this);
             director.GetInputManager.AddMousePositionListener(this);
 
             mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(0, 0, 0);
@@ -142,8 +142,8 @@ namespace Singularity.Map
         {
             mGraphics = graphics.GraphicsDevice;
             mDirector = director;
-            director.GetInputManager.AddKeyListener(this);
-            director.GetInputManager.AddMouseWheelListener(this);
+            director.GetInputManager.FlagForAddition((IMouseWheelListener) this);
+            director.GetInputManager.FlagForAddition((IKeyListener) this);
             director.GetInputManager.AddMousePositionListener(this);
 
             mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(0, 0, 0);

@@ -6,6 +6,7 @@ using Singularity.Graph;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Property;
+using System.Diagnostics;
 
 namespace Singularity.Platforms
 {
@@ -46,7 +47,7 @@ namespace Singularity.Platforms
             }
         }
 
-        private readonly Director mDirector;
+        private Director mDirector;
 
         /// <summary>
         /// Road is simply an edge between two platforms.
@@ -127,6 +128,11 @@ namespace Singularity.Platforms
         {
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             return true;
+        }
+
+        public void ReloadContent(ref Director director)
+        {
+            mDirector = director;
         }
     }
 }

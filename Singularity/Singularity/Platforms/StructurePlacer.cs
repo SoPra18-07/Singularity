@@ -114,7 +114,7 @@ namespace Singularity.Platforms
             // need the structure map to make sure platforms arent placed on collidable objects
             mMap = map;
 
-            mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
+            mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
             mCurrentState = new State3(1);
 
@@ -471,7 +471,7 @@ namespace Singularity.Platforms
 
         private void UnregisterFromInputManager()
         {
-            mDirector.GetInputManager.RemoveMouseClickListener(this);
+            mDirector.GetInputManager.FlagForRemoval(this);
             mDirector.GetInputManager.RemoveMousePositionListener(this);
         }
     }
