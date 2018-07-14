@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -71,6 +72,14 @@ namespace Singularity.Units
 
         public virtual void Move()
         {
+            if (mGroup.Get().UnitCount() == 1)
+            {
+                Velocity = mGroup.Get().Velocity;
+                Debug.WriteLine("unit: " + AbsolutePosition + ", vel: " + Velocity);
+                AbsolutePosition += Velocity;
+                return;
+            }
+
             // calculate the forces:
             // - Alignment
             //     The Velocity of the FlockingGroup. This is part for the PathFinding.
@@ -78,11 +87,12 @@ namespace Singularity.Units
             //     Steering towards the Center of mass relative to other members of the FlockingGroup (has a Center/AbsolutePosition for that matter)
             // - Seperation
             //     The steering away from other members of the FlockingGroup. this is also precomputed there.
-            var align = mGroup.Get().Velocity;
-            var cohes = mGroup.Get().CohesionRaw - AbsolutePosition;
-            var seper = Vector2.Multiply(mGroup.Get().SeperationRaw - AbsolutePosition * mGroup.Get().UnitCount(), -1f);
+            var align = Vector2.Normalize(mGroup.Get().Velocity);
+            var cohes = Vector2.Normalize(mGroup.Get().CohesionRaw - AbsolutePosition);
+            var seper = Vector2.Normalize(mGroup.Get().SeperationRaw - AbsolutePosition * mGroup.Get().UnitCount()) * -1f;
 
             Velocity = Vector2.Normalize(align + cohes + seper) * mGroup.Get().ActualSpeed;
+            Debug.WriteLine("unit: " + AbsolutePosition + ", " + align + ", " + cohes + ", " + seper + ", vel: " + Velocity);
 
             AbsolutePosition += Velocity;
         }
@@ -103,6 +113,10 @@ namespace Singularity.Units
 
         public void AddGroup(FlockingGroup group)
         {
+            if (mGroup.IsPresent())
+            {
+                mGroup.Get().Kill(this);
+            }
             mGroup = Optional<FlockingGroup>.Of(group);
         }
     }

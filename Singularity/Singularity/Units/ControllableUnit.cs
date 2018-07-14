@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -53,6 +54,7 @@ namespace Singularity.Units
         {
             mDirector.GetInputManager.AddMouseClickListener(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
+            mGroup = Optional<FlockingGroup>.Of(null);
         }
 
         protected new void ReloadContent(ref Director director, Camera camera, ref Map.Map map)
@@ -80,9 +82,11 @@ namespace Singularity.Units
                                 (int)RelativeSize.Y),
                             mCamera))
                     {
-                        
-                        mGroup = Optional<FlockingGroup>.Of(mDirector.GetMilitaryManager.GetNewFlock());
-                        mGroup.Get().AssignUnit(this);
+                        if (!mGroup.IsPresent())
+                        {
+                            mGroup = Optional<FlockingGroup>.Of(mDirector.GetMilitaryManager.GetNewFlock());
+                            mGroup.Get().AssignUnit(this);
+                        }
 
                         var target = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
                             Matrix.Invert(mCamera.GetTransform()));
@@ -144,6 +148,7 @@ namespace Singularity.Units
             // check if selection box intersects with MUnit bounds
             if (selBox.Intersects(AbsBounds))
             {
+                Debug.WriteLine("Unit: " + Id + " got selected");
                 mSelected = true;
                 mDirector.GetMilitaryManager.AddSelected(this); // send to FlockingManager
             }

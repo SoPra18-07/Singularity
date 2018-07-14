@@ -51,12 +51,7 @@ namespace Singularity.Units
         #endregion
 
         #region Director/map/camera/library/fow Variables
-
-        /// <summary>
-        /// Stores a reference to the game director.
-        /// </summary>
-        protected Director mDirector;
-
+        
 
         /// <summary>
         /// Stores a reference to the game map.
@@ -103,11 +98,7 @@ namespace Singularity.Units
         public Vector2 Center { get; protected set; }
 
         public bool Moved { get; set; }
-
-        [DataMember]
-        public Vector2 AbsolutePosition { get; set; }
-        [DataMember]
-        public Vector2 AbsoluteSize { get; set; }
+        
 
         /// <summary>
         /// Value of the unit's rotation.
@@ -136,7 +127,6 @@ namespace Singularity.Units
         /// <param name="position">Where the unit should be spawned.</param>
         /// <param name="camera">Game camera being used.</param>
         /// <param name="director">Reference to the game director.</param>
-        /// <param name="map">Reference to the game map.</param>
         /// <remarks>
         /// FreeMovingUnit is an abstract class that can be implemented to allow free movement outside
         /// of the graphs that represent bases in the game. It provides implementations to allow for

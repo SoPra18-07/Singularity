@@ -31,7 +31,6 @@ namespace Singularity.Units
         /// <param name="position">Where the unit should be spawned.</param>
         /// <param name="camera">Game camera being used.</param>
         /// <param name="director">Reference to the game director.</param>
-        /// <param name="map">Reference to the game map.</param>
         /// <param name="gameScreen">Gamescreen of the game so that the settler can build platforms.</param>
         /// <param name="ui">UI of the game so the settler can edit the UI.</param>
         public Settler(Vector2 position, Camera camera, ref Director director, GameScreen gameScreen, UserInterfaceScreen ui)

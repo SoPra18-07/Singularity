@@ -532,8 +532,10 @@ namespace Singularity.Manager
             if (mSelected.Count > 0)
             {
                 mIsSelected = true;
+                Debug.WriteLine("Reset of selected");
                 mSelectedGroup.Reset();
                 mSelected.ForEach(u => mSelectedGroup.AssignUnit(u));
+                mGroups.Add(mSelectedGroup);
             } else if (mIsSelected)
             {
                 mIsSelected = false;
@@ -541,6 +543,8 @@ namespace Singularity.Manager
                 mSelectedGroup = new FlockingGroup(ref mDirector, ref mMap);
             }
             mSelected = new List<IFlocking>();
+
+            mGroups.RemoveAll(g => g.Die());
 
             mGroups.ForEach(g => g.Update(gametime));
 
@@ -555,6 +559,7 @@ namespace Singularity.Manager
         public void AddSelected(IFlocking unit)
         {
             mSelected.Add(unit);
+            Debug.WriteLine("unit got selected");
         }
 
         public FlockingGroup GetNewFlock()
@@ -562,6 +567,11 @@ namespace Singularity.Manager
             var group = new FlockingGroup(ref mDirector, ref mMap);
             mGroups.Add(group);
             return group;
+        }
+
+        public bool Kill(FlockingGroup group)
+        {
+            return mGroups.Remove(group);
         }
     }
 }

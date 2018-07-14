@@ -23,7 +23,7 @@ namespace Singularity.Units
         /// <summary>
         /// MilitaryPathfinders enables pathfinding using jump point search or line of sight.
         /// </summary>
-        protected FreeMovingPathfinder mPathfinder;
+        protected static FreeMovingPathfinder mPathfinder = new FreeMovingPathfinder();
 
         [DataMember]
         protected Vector2 mTargetPosition;
@@ -70,7 +70,8 @@ namespace Singularity.Units
             // mMap = mDirector.GetStoryManager.Level.Map;
             Debug.WriteLineIf(map == null, "Map is null for some reason.");
             Map = map;
-            mPathfinder = new FreeMovingPathfinder();
+
+            FlockingId = mDirector.GetIdGenerator.NextId();
 
             if (mGroup.IsPresent())
                 mSuperiorFlockingId = mGroup.Get().FlockingId;
@@ -81,7 +82,6 @@ namespace Singularity.Units
             base.ReloadContent(ref director);
             Map = mDirector.GetStoryManager.Level.Map;
             foreach (var u in mUnits) u.ReloadContent(ref director);
-            mPathfinder = new FreeMovingPathfinder();
         }
 
         public override void Move()
@@ -92,12 +92,11 @@ namespace Singularity.Units
             // (lookup at precomputed map velocities).
 
 
-
+            Debug.WriteLine("Possibly moving now ... " + FlockingId);
             // if we don't need to move, why bother recalculating all the values?
             if (!Moved) return;
+            Debug.WriteLine("Now actually moving! :)");
             
-
-            AbsolutePosition = Vector2.Zero;
             SeperationRaw = Vector2.Zero;
             
 
@@ -111,14 +110,9 @@ namespace Singularity.Units
             // ActualSpeed = mUnits.Any(u => u.Speed > ActualSpeed);
 
 
-            if (Geometry.Length(mTargetPosition - AbsolutePosition) < mUnits.Count * Speed * 0.2)
+            if (Geometry.Length(mTargetPosition - AbsolutePosition) < mUnits.Count * Speed)
             {
                 Moved = false;
-                if (mPath.Count > 0)
-                {
-                    Moved = true;
-                    mTargetPosition = mPath.Pop();
-                }
             }
 
             var diff = mTargetPosition - AbsolutePosition;
@@ -127,7 +121,14 @@ namespace Singularity.Units
             ActualSpeed = (dist > 100 ? 1 : dist / 100) * Speed;
 
             Velocity = Vector2.Normalize(diff) * ActualSpeed;
-            
+
+            if (dist < 50 && mPath.Count > 0)
+            {
+                mTargetPosition = mPath.Pop();
+            }
+
+
+            Debug.WriteLine("vel:" + Velocity + ", pos: " + AbsolutePosition + ", Coh: " + CohesionRaw + ", Sep: " + SeperationRaw);
 
             // setting variables used from the AFlocking parts
             mUnits.ForEach(u => u.Move());
@@ -147,10 +148,28 @@ namespace Singularity.Units
 
         internal void FindPath(Vector2 target)
         {
+
             if (target == mUltimateTarget) return;
+
+
+            SeperationRaw = Vector2.Zero;
+
+            if (mUnits.Count == 1)
+            {
+                AbsolutePosition = mUnits[0].AbsolutePosition;
+            }
+            else
+            {
+                foreach (var unit in mUnits)
+                {
+                    SeperationRaw += unit.AbsolutePosition;
+                }
+                AbsolutePosition = SeperationRaw / mUnits.Count;
+            }
+
             Moved = true;
             mUltimateTarget = target;
-            Debug.WriteLine("Starting path finding at: " + AbsolutePosition.X + ", " + AbsolutePosition.Y);
+            Debug.WriteLine("Starting path finding at: " + AbsolutePosition + " for " + FlockingId);
             Debug.WriteLine("Target: " + target.X + ", " + target.Y);
 
             var map = Map;
@@ -160,6 +179,8 @@ namespace Singularity.Units
                 ref map);
             
             mDebugPath = mPath.ToArray();
+
+            Debug.WriteLine("Path is " + mPath.Count + " long.");
 
             mTargetPosition = mPath.Pop(); // directly getting first goal-part.
         }
@@ -190,10 +211,20 @@ namespace Singularity.Units
             // mUnits.ForEach(u => u.Update(t));
         }
 
-        public void AssignUnit(IFlocking unit)
+        internal void AssignUnit(IFlocking unit)
         {
+            Debug.WriteLine("Unit got added to " + FlockingId);
             mUnits.Add(unit);
             unit.AddGroup(this);
+            if (Speed == 0)
+            {
+                Speed = unit.Speed;
+            }
+            else
+            {
+                if (unit.Speed >= Speed) return;
+                Speed = unit.Speed;
+            }
         }
 
         public bool RemoveUnit(IFlocking unit)
@@ -227,7 +258,7 @@ namespace Singularity.Units
         public bool Die()
         {
             // The FlockingGroup cannot die as a whole, and is not dead if there's still units left in it.
-            return mUnits.Count == 0;
+            return mUnits.Count == 0 && mDirector.GetMilitaryManager.Kill(this);
         }
 
 
@@ -255,6 +286,11 @@ namespace Singularity.Units
         public bool NearTarget()
         {
             return mPath.Count == 0 && !Moved;
+        }
+
+        public bool Kill(IFlocking unit)
+        {
+            return mUnits.Remove(unit);
         }
     }
 }
