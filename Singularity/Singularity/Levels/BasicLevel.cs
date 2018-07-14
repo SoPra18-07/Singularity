@@ -81,9 +81,12 @@ namespace Singularity.Levels
             Map = map;
             var milUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
             var milGlowSheet = content.Load<Texture2D>("UnitGlowSprite");
+            var genUnitSprite = content.Load<Texture2D>("GenUnit");
 
             MilitaryUnit.mMilSheet = milUnitSheet;
             MilitaryUnit.mGlowTexture = milGlowSheet;
+            GeneralUnit.mGenUnitTexture = genUnitSprite;
+
             mDirector.GetMilitaryManager.SetMap(ref map);
 
             //INITIALIZE SCREENS

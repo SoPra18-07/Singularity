@@ -34,6 +34,10 @@ namespace Singularity.Units
         [DataMember]
         private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
 
+        /// <summary>
+        /// The sprite used by the general unit. Drawing a sprite turns out to be more efficient than drawing a primitive.
+        /// </summary>
+        internal static Texture2D mGenUnitTexture;
 
         //These are the assigned task and a flag, wether the unit is done with it.
         [DataMember]
@@ -512,7 +516,18 @@ namespace Singularity.Units
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.StrokedCircle(AbsolutePosition, 10, Color.AntiqueWhite, Color.Black, LayerConstants.GeneralUnitLayer);
+            /*
+            spriteBatch.Draw(mGenUnitTexture,
+                AbsolutePosition,
+                null,
+                Color.White,
+                0f,
+                Vector2.Zero,
+                Vector2.Zero,
+                SpriteEffects.None,
+                LayerConstants.GeneralUnitLayer);
+            */
+
             if (Carrying.IsPresent())
             {
                 Carrying.Get().Draw(spriteBatch);
