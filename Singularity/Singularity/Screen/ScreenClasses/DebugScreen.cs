@@ -33,8 +33,6 @@ namespace Singularity.Screen.ScreenClasses
 
         private Camera mCamera;
 
-        private int mCurrentFps;
-
         private Map.Map mMap;
 
         private readonly Director mDirector;
@@ -66,13 +64,13 @@ namespace Singularity.Screen.ScreenClasses
             mMap = map;
             mDirector = director;
 
-            director.GetInputManager.AddKeyListener(this);
+            director.GetInputManager.FlagForAddition(this);
 
         }
 
         public void ReloadContent(ContentManager content, Camera camera, Map.Map map, StackScreenManager screenManager, ref Director director)
         {
-            director.GetInputManager.AddKeyListener(this);
+            director.GetInputManager.FlagForAddition(this);
             mFont = content.Load<SpriteFont>("LibSans14");
             mCamera = camera;
             mMap = map;

@@ -139,7 +139,7 @@ namespace Singularity.Screen
             // Initialize scissor window
             mRasterizerState = new RasterizerState { ScissorTestEnable = true };
 
-            inputManager.AddMouseWheelListener(this);
+            inputManager.FlagForAddition(this);
             inputManager.AddMousePositionListener(this);
         }
 

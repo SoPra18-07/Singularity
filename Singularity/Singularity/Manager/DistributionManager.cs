@@ -10,6 +10,7 @@ using Singularity.Resources;
 using Singularity.Screen;
 using Singularity.Units;
 using Singularity.Utils;
+using System.Diagnostics;
 
 namespace Singularity.Manager
 {

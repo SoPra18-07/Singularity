@@ -13,9 +13,9 @@ namespace Singularity.Platforms
     class Factory: PlatformBlank
     {
         [DataMember]
-        private new const int PlatformWidth = 144;
+        private const int PlatformWidth = 144;
         [DataMember]
-        private new const int PlatformHeight = 127;
+        private const int PlatformHeight = 127;
 
         public Factory(Vector2 position,
             Texture2D spritesheet,

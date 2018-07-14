@@ -117,6 +117,11 @@ namespace Singularity.Map
             }
             //Update uis graphid dictionary
             ui.CallingAllGraphs(mGraphIdToGraph);
+
+            foreach(var roads in mRoads)
+            {
+                roads.ReloadContent(ref dir);
+            }
         }
 
         /// <summary>
