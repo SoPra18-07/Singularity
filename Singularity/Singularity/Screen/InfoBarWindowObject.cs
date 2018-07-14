@@ -191,7 +191,7 @@ namespace Singularity.Screen
                 spriteBatch.DrawString(mSpriteFont, DateTime.Now.ToShortTimeString(), new Vector2(Width - 30 - 80, 2.5f), new Color(0,0,0));
 
                 // draw the mission time
-                spriteBatch.DrawString(mSpriteFont, mDirector.GetStoryManager.Time.ToString(), new Vector2(Width - 30 - 300, 2.5f), new Color(1, 0, 0));
+                spriteBatch.DrawString(mSpriteFont, mDirector.GetClock.GetIngameTime().ToString(), new Vector2(Width - 30 - 300, 2.5f), new Color(1, 0, 0));
             }
         }
 
