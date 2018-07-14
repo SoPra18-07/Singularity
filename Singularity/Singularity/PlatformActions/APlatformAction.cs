@@ -28,7 +28,7 @@ namespace Singularity.PlatformActions
         {
             mPlatform = platform;
             mDirector = director;
-            Id = director.GetIdGenerator.NextiD();
+            Id = director.IdGenerator.NextiD();
         }
 
         public void ReloadContent(ref Director dir)
@@ -90,7 +90,7 @@ namespace Singularity.PlatformActions
 
         public bool Die()
         {
-            mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Kill(this);
+            mDirector.DistributionDirector.GetManager(mPlatform.GetGraphIndex()).Kill(this);
             mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
             mPlatform.Kill(this);
             mPlatform = null;

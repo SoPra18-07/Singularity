@@ -54,8 +54,8 @@ namespace Singularity.Levels
 
         {
             mDirector = director;
-            mDirector.GetStoryManager.SetLevelType(LevelType.Skirmish, this);
-            mDirector.GetStoryManager.LoadAchievements();
+            mDirector.StoryManager.SetLevelType(LevelType.Skirmish, this);
+            mDirector.StoryManager.LoadAchievements();
             mGraphics = graphics;
             mScreenManager = screenmanager;
             mContent = content;
@@ -85,17 +85,17 @@ namespace Singularity.Levels
 
             MilitaryUnit.mMilSheet = milUnitSheet;
             MilitaryUnit.mGlowTexture = milGlowSheet;
-            mDirector.GetMilitaryManager.SetMap(ref map);
+            mDirector.MilitaryManager.SetMap(ref map);
 
             //INITIALIZE SCREENS
             GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
             Ui = new UserInterfaceScreen(ref mDirector, mGraphics, Map, Camera, mScreenManager);
-            mDirector.GetUserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
+            mDirector.UserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
 
             // the input manager keeps this from not getting collected by the GC
             mDebugscreen = new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
 
-            mDirector.GetInputManager.FlagForAddition(this);
+            mDirector.InputManager.FlagForAddition(this);
         }
 
         public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, ref Director director, IScreenManager screenmanager)
@@ -126,15 +126,15 @@ namespace Singularity.Levels
             //This has to be after ui creation, because the ui graphid dictionary is updated in the structuremap.reloadcontent method
             Map.ReloadContent(mapBackground, Camera, mFow, ref mDirector, content, Ui);
             GameScreen.ReloadContent(content, graphics, Map, mFow, Camera, ref mDirector, Ui);
-            mDirector.GetUserInterfaceController.ReloadContent(ref mDirector);
-            mDirector.GetUserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
+            mDirector.UserInterfaceController.ReloadContent(ref mDirector);
+            mDirector.UserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
 
             // Reload map for the military manager
             var map = Map;
-            director.GetMilitaryManager.ReloadSetMap(ref map);
+            director.MilitaryManager.ReloadSetMap(ref map);
             // the input manager keeps this from not getting collected by the GC
             mDebugscreen = new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
-            mDirector.GetInputManager.FlagForAddition(this);
+            mDirector.InputManager.FlagForAddition(this);
         }
 
         public abstract void LoadContent(ContentManager content);
@@ -149,7 +149,7 @@ namespace Singularity.Levels
                 // --> send out event that deletes settler and adds a command center
                 if (key == Keys.Q)
                 {
-                    mDirector.GetStoryManager.SaveAchievements();
+                    mDirector.StoryManager.SaveAchievements();
                     XSerializer.Save(this, "xXxSwaglordofYolonessxXx.xml", false);
                     return false;
                 }

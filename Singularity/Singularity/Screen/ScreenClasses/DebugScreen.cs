@@ -64,13 +64,13 @@ namespace Singularity.Screen.ScreenClasses
             mMap = map;
             mDirector = director;
 
-            director.GetInputManager.FlagForAddition(this);
+            director.InputManager.FlagForAddition(this);
 
         }
 
         public void ReloadContent(ContentManager content, Camera camera, Map.Map map, StackScreenManager screenManager, ref Director director)
         {
-            director.GetInputManager.FlagForAddition(this);
+            director.InputManager.FlagForAddition(this);
             mFont = content.Load<SpriteFont>("LibSans14");
             mCamera = camera;
             mMap = map;
@@ -101,7 +101,7 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.DrawString(mFont, "GameObjects", new Vector2(15, 200), Color.White);
             spriteBatch.DrawString(mFont, "PlatformCount: " + mMap.GetStructureMap().GetPlatformList().Count + ", " + mActivePlatforms + ", " + mDeactivePlatforms, new Vector2(30, 235), Color.White);
             spriteBatch.DrawString(mFont, "GraphCount: " + mMap.GetStructureMap().GetGraphCount(), new Vector2(30, 255), Color.White);
-            spriteBatch.DrawString(mFont, "MilitaryUnitCount: " + mDirector.GetMilitaryManager.TotalUnitCount, new Vector2(30, 275), Color.White);
+            spriteBatch.DrawString(mFont, "MilitaryUnitCount: " + mDirector.MilitaryManager.TotalUnitCount, new Vector2(30, 275), Color.White);
             spriteBatch.DrawString(mFont, "GeneralUnitCount: " + "TODO", new Vector2(30, 295), Color.White);
 
             spriteBatch.DrawLine(150, 209, 300, 209, Color.White);

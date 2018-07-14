@@ -140,15 +140,15 @@ namespace Singularity.Screen.ScreenClasses
         {
             if (shouldRegister)
             {
-                mDirector.GetInputManager.FlagForAddition((IMouseWheelListener) this);
-                mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
-                mDirector.GetInputManager.FlagForAddition((IKeyListener) this);
+                mDirector.InputManager.FlagForAddition((IMouseWheelListener) this);
+                mDirector.InputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
+                mDirector.InputManager.FlagForAddition((IKeyListener) this);
             }
             else
             {
-                mDirector.GetInputManager.FlagForRemoval((IKeyListener) this);
-                mDirector.GetInputManager.FlagForRemoval((IMouseClickListener) this);
-                mDirector.GetInputManager.FlagForRemoval((IMouseWheelListener) this);
+                mDirector.InputManager.FlagForRemoval((IKeyListener) this);
+                mDirector.InputManager.FlagForRemoval((IMouseClickListener) this);
+                mDirector.InputManager.FlagForRemoval((IMouseWheelListener) this);
             }
         }
 

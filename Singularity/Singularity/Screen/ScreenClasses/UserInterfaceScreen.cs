@@ -321,7 +321,7 @@ namespace Singularity.Screen.ScreenClasses
             mScreenManager = stackScreenManager;
 
             // initialize input manager
-            director.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.InputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
             Bounds = new Rectangle(0,0, mgraphics.PreferredBackBufferWidth, mgraphics.PreferredBackBufferHeight);
 
             // create the windowList
@@ -331,15 +331,15 @@ namespace Singularity.Screen.ScreenClasses
             mRasterizerState = new RasterizerState() { ScissorTestEnable = true };
 
             // subscribe to user interface controller
-            mUserInterfaceController = director.GetUserInterfaceController;
+            mUserInterfaceController = director.UserInterfaceController;
         }
 
         /// <inheritdoc />
         public void Update(GameTime gametime)
         {
             // update screen size
-            mCurrentScreenWidth = mDirector.GetGraphicsDeviceManager.PreferredBackBufferWidth;
-            mCurrentScreenHeight = mDirector.GetGraphicsDeviceManager.PreferredBackBufferHeight;
+            mCurrentScreenWidth = mDirector.GraphicsDeviceManager.PreferredBackBufferWidth;
+            mCurrentScreenHeight = mDirector.GraphicsDeviceManager.PreferredBackBufferHeight;
 
             // update sliders if the there was a change
             if (mGraphSwitcher != null && mCivilUnitsGraphId != mGraphSwitcher.GetCurrentId())
@@ -434,8 +434,8 @@ namespace Singularity.Screen.ScreenClasses
             mRoadIcon = content.Load<Texture2D>("BuildIcons/RoadIcon");
 
             // set resolution values
-            mCurrentScreenWidth = mDirector.GetGraphicsDeviceManager.PreferredBackBufferWidth;
-            mCurrentScreenHeight = mDirector.GetGraphicsDeviceManager.PreferredBackBufferHeight;
+            mCurrentScreenWidth = mDirector.GraphicsDeviceManager.PreferredBackBufferWidth;
+            mCurrentScreenHeight = mDirector.GraphicsDeviceManager.PreferredBackBufferHeight;
             mPrevScreenWidth = mCurrentScreenWidth;
             mPrevScreenHeight = mCurrentScreenHeight;
 

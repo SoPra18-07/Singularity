@@ -48,8 +48,6 @@ namespace Singularity.Units
         /// Indicates the position the closest enemy is at.
         /// </summary>
         [DataMember]
-        private Vector2 mEnemyPosition;
-        [DataMember]
         private ICollider mShootingTarget;
 
 
@@ -79,6 +77,10 @@ namespace Singularity.Units
         [DataMember]
         private float mShootingTimer = -1f;
 
+        /// <summary>
+        /// ID for the sound effect instance used by this class.
+        /// </summary>
+        protected int mSoundId;
 
 
 
@@ -98,6 +100,8 @@ namespace Singularity.Units
             Center = new Vector2((AbsolutePosition.X + AbsoluteSize.X) * 0.5f, (AbsolutePosition.Y + AbsoluteSize.Y) * 0.5f );
 
             Range = MilitaryUnitStats.StandardRange;
+
+            mSoundId = mDirector.SoundManager.CreateSoundInstance("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
         }
 
         public void ReloadContent(ContentManager content, ref Director director, Camera camera, ref Map.Map map)
@@ -230,7 +234,8 @@ namespace Singularity.Units
 
         private void Shoot(ICollider target)
         {
-            mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+            mDirector.SoundManager.SetSoundPosition(mSoundId, Center.X, Center.Y);
+            mDirector.SoundManager.PlaySound(mSoundId);
             target.MakeDamage(MilitaryUnitStats.mUnitStrength);
         }
 

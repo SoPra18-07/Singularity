@@ -26,7 +26,7 @@ namespace Singularity.Manager
 
         public DistributionDirector(Director director)
         {
-            mUserInterfaceController = director.GetUserInterfaceController;
+            mUserInterfaceController = director.UserInterfaceController;
             mDMs = new Dictionary<int, DistributionManager>();
         }
 
@@ -164,7 +164,7 @@ namespace Singularity.Manager
 
         public void ReloadContent(ref Director director)
         {
-            mUserInterfaceController = director.GetUserInterfaceController;
+            mUserInterfaceController = director.UserInterfaceController;
         }
     }
 }

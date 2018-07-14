@@ -45,7 +45,7 @@ namespace Singularity.Units
 
             RevelationRadius = (int)AbsoluteSize.X * 3;
 
-            mDirector.GetInputManager.FlagForAddition(this);
+            mDirector.InputManager.FlagForAddition(this);
 
             mNeverMoved = true;
 
@@ -83,7 +83,7 @@ namespace Singularity.Units
             ReloadContent(ref director, camera, ref map);
             mGameScreen = gamescreen;
             mUi = ui;
-            mDirector.GetInputManager.FlagForAddition(this);
+            mDirector.InputManager.FlagForAddition(this);
         }
 
         public override void Draw(SpriteBatch spriteBatch)

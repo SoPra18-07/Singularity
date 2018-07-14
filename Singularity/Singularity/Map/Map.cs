@@ -78,7 +78,7 @@ namespace Singularity.Map
             mStructureMap = new StructureMap(fow, ref director);
             mResourceMap = new ResourceMap(initialResources);
 
-            director.GetStoryManager.StructureMap = mStructureMap;
+            director.StoryManager.StructureMap = mStructureMap;
         }
 
         public void ReloadContent(Texture2D background, Camera camera, FogOfWar fow, ref Director dir, ContentManager content, UserInterfaceScreen ui)

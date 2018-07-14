@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -8,7 +9,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Singularity.Sound
 {
-    public class SoundManager
+    public sealed class SoundManager
     {
 
         // Sound listener for 3D audio.
@@ -153,8 +154,10 @@ namespace Singularity.Sound
         /// <param name="loop">Specifies whether the sound is supposed to loop.</param>
         /// <param name="soundClass">Specifies the SoundClass e.g. Effect.</param>
         /// <returns>The id of the instance if params are valid. -1 if the SoundClass is invalid. -2 if the effect doesn't exist.</returns>
-        public int PlaySound(string name, float x, float y, float volume, float pitch, bool isGlobal, bool loop, SoundClass soundClass)
+        public int CreateSoundInstance(string name, float x, float y, float volume, float pitch, bool isGlobal, bool loop, SoundClass soundClass)
         {
+            mAllInstanceId++;
+
             if (!mEffects.ContainsKey(name))
             {
                 return -2;
@@ -171,10 +174,9 @@ namespace Singularity.Sound
                     effectInstance.Apply3D(mListener, emitter);
                 }
                 mEffectInstances.Add(mEffectInstanceId, effectInstance);
-                mEffectInstances[mEffectInstanceId].Play();
                 mInstanceMap.Add(mAllInstanceId, new Tuple<SoundClass, int>(soundClass, mEffectInstanceId));
                 mEffectInstanceId++;
-                return mAllInstanceId++;
+                return mAllInstanceId;
             }
             if (soundClass == SoundClass.Ui)
             {
@@ -188,12 +190,38 @@ namespace Singularity.Sound
                     effectInstance.Apply3D(mListener, emitter);
                 }
                 mUiInstances.Add(mEffectInstanceId, effectInstance);
-                mUiInstances[mEffectInstanceId].Play();
                 mInstanceMap.Add(mAllInstanceId, new Tuple<SoundClass, int>(soundClass, mUiInstanceId));
                 mUiInstanceId++;
-                return mAllInstanceId++;
+                return mAllInstanceId;
             }
             return -1;
+        }
+
+        /// <summary>
+        /// Plays the sound without adding it to the instances list again.
+        /// </summary>
+        /// <param name="id"></param>
+        public void PlaySound(int id)
+        {
+            Debug.WriteLine("Listener Position: " + mListener.Position);
+            
+            switch (mInstanceMap[id].Item1)
+            {
+                case SoundClass.Effect:
+                    mEffectInstances[mInstanceMap[id].Item2].Play();
+                    break;
+
+                case SoundClass.Ui:
+                    mUiInstances[mInstanceMap[id].Item2].Play();;
+                    break;
+
+                case SoundClass.Music:
+                    // Not sure but music as a sound class is never used so yeah.
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         /// <summary>
@@ -223,7 +251,7 @@ namespace Singularity.Sound
         /// </summary>
         /// <param name="x">New x coordinate of the listener.</param>
         /// <param name="y">New y coordinate of the listener.</param>
-        public void SetListenerPosition(float x, float y)
+        internal void SetListenerPosition(float x, float y)
         {
             mListener.Position = new Vector3(x, y, mSoundPlaneDepth);
         }
@@ -244,6 +272,7 @@ namespace Singularity.Sound
                 {
                     AudioEmitter emitter = new AudioEmitter { Position = new Vector3(x, y, mSoundPlaneDepth) };
                     mEffectInstances[instanceId].Apply3D(mListener, emitter);
+                    Debug.WriteLine("Emitter position: " + emitter.Position);
                 }
                 else if (soundClass == SoundClass.Ui)
                 {

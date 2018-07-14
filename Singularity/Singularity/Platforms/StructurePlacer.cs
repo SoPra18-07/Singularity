@@ -114,11 +114,11 @@ namespace Singularity.Platforms
             // need the structure map to make sure platforms arent placed on collidable objects
             mMap = map;
 
-            mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
-            mDirector.GetInputManager.AddMousePositionListener(this);
+            mDirector.InputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
+            mDirector.InputManager.AddMousePositionListener(this);
             mCurrentState = new State3(1);
 
-            director.GetUserInterfaceController.BuildingProcessStarted(platformType);
+            director.UserInterfaceController.BuildingProcessStarted(platformType);
 
 
             // for further information as to why which states refer to the documentation for mCurrentState
@@ -208,7 +208,7 @@ namespace Singularity.Platforms
                         if (!mPlaySound)
                         {
                             // makes a sound once when platform is placed
-                            mDirector.GetSoundManager.PlaySound("PlatformCreate",
+                            mDirector.SoundManager.CreateSoundInstance("PlatformCreate",
                                 mPlatform.Center.X,
                                 mPlatform.Center.Y,
                                 .24f,
@@ -268,7 +268,7 @@ namespace Singularity.Platforms
                     }
                     mIsFinished = true;
                     mUnregister = true;
-                    mDirector.GetUserInterfaceController.BuildingProcessFinished(mPlatformType);
+                    mDirector.UserInterfaceController.BuildingProcessFinished(mPlatformType);
 
                     break;
 
@@ -371,7 +371,7 @@ namespace Singularity.Platforms
                 if (mCurrentState.GetState() == 1)
                 {
 
-                    mDirector.GetUserInterfaceController.BuildingProcessFinished(mPlatformType);
+                    mDirector.UserInterfaceController.BuildingProcessFinished(mPlatformType);
                     mCanceled = true;
                     mIsFinished = true;
                     giveThrough = false;
@@ -471,8 +471,8 @@ namespace Singularity.Platforms
 
         private void UnregisterFromInputManager()
         {
-            mDirector.GetInputManager.FlagForRemoval(this);
-            mDirector.GetInputManager.RemoveMousePositionListener(this);
+            mDirector.InputManager.FlagForRemoval(this);
+            mDirector.InputManager.RemoveMousePositionListener(this);
         }
     }
 }

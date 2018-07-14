@@ -39,7 +39,7 @@ namespace Singularity.Nature
 
         public Puddle(Vector2 position, ref Director director, bool bigPuddle = true)
         {
-            Id = director.GetIdGenerator.NextiD();
+            Id = director.IdGenerator.NextiD();
             AbsoluteSize = new Vector2(160, 130);
 
             mBigPuddle = bigPuddle;

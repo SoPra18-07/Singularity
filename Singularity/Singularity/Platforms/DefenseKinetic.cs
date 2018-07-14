@@ -47,7 +47,7 @@ namespace Singularity.Platforms
         {
             if (!mDefenseAction.CanShoot()) return;
             mShoot = true;
-            mDirector.GetSoundManager.PlaySound("KineticTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+            mDirector.SoundManager.CreateSoundInstance("KineticTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
         }
 
         public override void Update(GameTime t)
@@ -64,7 +64,7 @@ namespace Singularity.Platforms
 
             if (mDefenseAction.AmmoCount <= 30 && mAmmoRequested < 2)
             {
-                mDirector.GetDistributionDirector.GetManager(GetGraphIndex())
+                mDirector.DistributionDirector.GetManager(GetGraphIndex())
                     .RequestResource(this, EResourceType.Metal, null);
                 mAmmoRequested++;
             }

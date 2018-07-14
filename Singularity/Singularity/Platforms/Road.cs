@@ -126,7 +126,7 @@ namespace Singularity.Platforms
 
         public bool Die()
         {
-            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
+            mDirector.StoryManager.Level.GameScreen.RemoveObject(this);
             return true;
         }
 

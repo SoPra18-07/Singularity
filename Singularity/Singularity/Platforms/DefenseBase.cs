@@ -116,7 +116,7 @@ namespace Singularity.Platforms
         /// <returns></returns>
         private Vector2 MapCoordinates(Vector2 v)
         {
-            var camera = mDirector.GetStoryManager.Level.Camera;
+            var camera = mDirector.StoryManager.Level.Camera;
             return new Vector2(Vector2.Transform(new Vector2(v.X, v.Y),
                 Matrix.Invert(camera.GetTransform())).X, Vector2.Transform(new Vector2(v.X, v.Y),
                 Matrix.Invert(camera.GetTransform())).Y);

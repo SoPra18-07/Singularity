@@ -120,7 +120,7 @@ namespace Singularity.Screen
             //TODO: pass accurate coordinates, right now it goes to the top left texture point of the platform blank on the map
             // also note, since the validate position code is atm buggy, the map might disappear when the zoom level is too far out
             // im going to fix this definitely
-            mDirector.GetStoryManager.Level.Camera.CenterOn(asSpatial.GetAbsoluteCenter());
+            mDirector.StoryManager.Level.Camera.CenterOn(asSpatial.GetAbsoluteCenter());
         }
 
         /// <inheritdoc />

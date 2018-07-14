@@ -102,14 +102,14 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.DrawString(mLibSans14, PlatformsLostStr, new Vector2(Position.X + 60, Position.Y + 370), Color.Black);
             spriteBatch.DrawString(mLibSans14, PlatformsDestroyedStr, new Vector2(Position.X + 60, Position.Y + 330), Color.Black);
             // Draw the stats behind their names, live from the StoryManager.
-            spriteBatch.DrawString(mLibSans14, mDirector.GetClock.GetIngameTime().ToString(), new Vector2(Position.X + 110, Position.Y + 60), Color.Black);
-            spriteBatch.DrawString(mLibSans14, mDirector.GetStoryManager.Units["created"].ToString(), new Vector2(Position.X + 180, Position.Y + 110), Color.LawnGreen);
-            spriteBatch.DrawString(mLibSans14, mDirector.GetStoryManager.Units["lost"].ToString(), new Vector2(Position.X + 180, Position.Y + 150), Color.Red);
-            spriteBatch.DrawString(mLibSans14, mDirector.GetStoryManager.Units["killed"].ToString(), new Vector2(Position.X + 180, Position.Y + 190), Color.Black);
-            spriteBatch.DrawString(mLibSans14, mDirector.GetStoryManager.Resources.Sum(x => x.Value).ToString(), new Vector2(Position.X + 245, Position.Y + 240), Color.LawnGreen);
-            spriteBatch.DrawString(mLibSans14, mDirector.GetStoryManager.Platforms["created"].ToString(), new Vector2(Position.X + 240, Position.Y + 290), Color.LawnGreen);
-            spriteBatch.DrawString(mLibSans14, mDirector.GetStoryManager.Platforms["lost"].ToString(), new Vector2(Position.X + 240, Position.Y + 370), Color.Red);
-            spriteBatch.DrawString(mLibSans14, mDirector.GetStoryManager.Platforms["destroyed"].ToString(), new Vector2(Position.X + 240, Position.Y + 330), Color.Black);
+            spriteBatch.DrawString(mLibSans14, mDirector.Clock.GetIngameTime().ToString(), new Vector2(Position.X + 110, Position.Y + 60), Color.Black);
+            spriteBatch.DrawString(mLibSans14, mDirector.StoryManager.Units["created"].ToString(), new Vector2(Position.X + 180, Position.Y + 110), Color.LawnGreen);
+            spriteBatch.DrawString(mLibSans14, mDirector.StoryManager.Units["lost"].ToString(), new Vector2(Position.X + 180, Position.Y + 150), Color.Red);
+            spriteBatch.DrawString(mLibSans14, mDirector.StoryManager.Units["killed"].ToString(), new Vector2(Position.X + 180, Position.Y + 190), Color.Black);
+            spriteBatch.DrawString(mLibSans14, mDirector.StoryManager.Resources.Sum(x => x.Value).ToString(), new Vector2(Position.X + 245, Position.Y + 240), Color.LawnGreen);
+            spriteBatch.DrawString(mLibSans14, mDirector.StoryManager.Platforms["created"].ToString(), new Vector2(Position.X + 240, Position.Y + 290), Color.LawnGreen);
+            spriteBatch.DrawString(mLibSans14, mDirector.StoryManager.Platforms["lost"].ToString(), new Vector2(Position.X + 240, Position.Y + 370), Color.Red);
+            spriteBatch.DrawString(mLibSans14, mDirector.StoryManager.Platforms["destroyed"].ToString(), new Vector2(Position.X + 240, Position.Y + 330), Color.Black);
 
             spriteBatch.End();
         }

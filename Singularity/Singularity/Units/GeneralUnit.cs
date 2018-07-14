@@ -104,7 +104,7 @@ namespace Singularity.Units
         {
             Graphid = platform.GetGraphIndex();
             platform.AddGeneralUnit(this);
-            Id = director.GetIdGenerator.NextiD();
+            Id = director.IdGenerator.NextiD();
             mDestination = Optional<INode>.Of(null);
 
             CurrentNode = platform;
@@ -116,7 +116,7 @@ namespace Singularity.Units
 
             mIsMoving = false;
             mDirector = director;
-            mDirector.GetDistributionDirector.GetManager(Graphid).Register(this);
+            mDirector.DistributionDirector.GetManager(Graphid).Register(this);
             mDone = true;
             mFinishTask = false;
         }
@@ -155,14 +155,14 @@ namespace Singularity.Units
                     {
                         if (mTask.GetResource != null)
                         {
-                            mDirector.GetDistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get(), isbuilding);
+                            mDirector.DistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get(), isbuilding);
                         }
                     }
                     else
                     {
                         if (mTask.GetResource != null)
                         {
-                            mDirector.GetDistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null, isbuilding);
+                            mDirector.DistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null, isbuilding);
                         }
                     }
                 }
@@ -250,7 +250,7 @@ namespace Singularity.Units
                         {
                             mDone = false;
 
-                            mTask = mDirector.GetDistributionDirector.GetManager(Graphid)
+                            mTask = mDirector.DistributionDirector.GetManager(Graphid)
                                 .RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
                             //Check if the given destination is null (it shouldnt)
                             if (mTask.End.IsPresent())
@@ -328,7 +328,7 @@ namespace Singularity.Units
             {
                 mDone = false;
 
-                mTask = mDirector.GetDistributionDirector.GetManager(Graphid).RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
+                mTask = mDirector.DistributionDirector.GetManager(Graphid).RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
                 //First go to the location where you want to get your Resource from
                 //Check if the given destination is null (it shouldnt).
                 if (mTask.Begin.IsPresent())
@@ -363,14 +363,14 @@ namespace Singularity.Units
                             {
                                 if (mTask.GetResource != null)
                                 {
-                                    mDirector.GetDistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get());
+                                    mDirector.DistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get());
                                 }
                             }
                             else
                             {
                                 if (mTask.GetResource != null)
                                 {
-                                    mDirector.GetDistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null);
+                                    mDirector.DistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null);
                                 }
                             }
                         }
@@ -380,14 +380,14 @@ namespace Singularity.Units
                             {
                                 if (mTask.GetResource != null)
                                 {
-                                    mDirector.GetDistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get(), true);
+                                    mDirector.DistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get(), true);
                                 }
                             }
                             else
                             {
                                 if (mTask.GetResource != null)
                                 {
-                                    mDirector.GetDistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null, true);
+                                    mDirector.DistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null, true);
                                 }
                             }
                         }
@@ -459,7 +459,7 @@ namespace Singularity.Units
             {
                 ((PlatformBlank)CurrentNode).RemoveGeneralUnit(this);
 
-                mNodeQueue = mDirector.GetPathManager.GetPath(this, mDestination.Get(), ((PlatformBlank)mDestination.Get()).GetGraphIndex()).GetNodePath();
+                mNodeQueue = mDirector.PathManager.GetPath(this, mDestination.Get(), ((PlatformBlank)mDestination.Get()).GetGraphIndex()).GetNodePath();
 
                 CurrentNode = mNodeQueue.Dequeue();
 
@@ -528,9 +528,9 @@ namespace Singularity.Units
                 Carrying = Optional<Resource>.Of(null);
             }
 
-            mDirector.GetDistributionDirector.GetManager(Graphid).Kill(this);
+            mDirector.DistributionDirector.GetManager(Graphid).Kill(this);
             mAssignedAction?.Kill(this);
-            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
+            mDirector.StoryManager.Level.GameScreen.RemoveObject(this);
 
             return true;
         }
@@ -539,7 +539,7 @@ namespace Singularity.Units
         {
             if (mTask.Contains(id))
             {
-                mTask = mDirector.GetDistributionDirector.GetManager(Graphid).RequestNewTask(this, Job, null);
+                mTask = mDirector.DistributionDirector.GetManager(Graphid).RequestNewTask(this, Job, null);
                 // also the mAssignedTask-platformaction is included in this.
             }
         }

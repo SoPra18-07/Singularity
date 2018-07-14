@@ -90,8 +90,8 @@ namespace Singularity.Map
             mDownscaleFactor = MapConstants.MapWidth / MapConstants.MiniMapWidth;
             mTexture = minimapTexture;
 
-            director.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
-            director.GetInputManager.AddMousePositionListener(this);
+            director.InputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.InputManager.AddMousePositionListener(this);
 
             mRevealing = new LinkedList<IRevealing>();
             mPlatforms = new LinkedList<PlatformBlank>();
@@ -142,7 +142,7 @@ namespace Singularity.Map
             */
 
             // draw the cameras viewport on the minimap
-            spriteBatch.StrokedRectangle(new Vector2(Position.X + mDirector.GetStoryManager.Level.Camera.GetRelativePosition().X / mDownscaleFactor, Position.Y + 10 + mDirector.GetStoryManager.Level.Camera.GetRelativePosition().Y / mDownscaleFactor), mDirector.GetStoryManager.Level.Camera.GetSize() / mDownscaleFactor, Color.Red, Color.Transparent, 1f, 0f);
+            spriteBatch.StrokedRectangle(new Vector2(Position.X + mDirector.StoryManager.Level.Camera.GetRelativePosition().X / mDownscaleFactor, Position.Y + 10 + mDirector.StoryManager.Level.Camera.GetRelativePosition().Y / mDownscaleFactor), mDirector.StoryManager.Level.Camera.GetSize() / mDownscaleFactor, Color.Red, Color.Transparent, 1f, 0f);
         }
 
         public void Update(GameTime gametime)
@@ -159,9 +159,9 @@ namespace Singularity.Map
                 return;
             }
 
-            mPlatforms = mDirector.GetStoryManager.Level.Map.GetStructureMap().GetPlatformList();
-            mMapResources = mDirector.GetStoryManager.Level.Map.GetResourceMap().GetAllResources();
-            mRevealing = mDirector.GetStoryManager.Level.Map.GetFogOfWar().GetRevealingObjects();
+            mPlatforms = mDirector.StoryManager.Level.Map.GetStructureMap().GetPlatformList();
+            mMapResources = mDirector.StoryManager.Level.Map.GetResourceMap().GetAllResources();
+            mRevealing = mDirector.StoryManager.Level.Map.GetFogOfWar().GetRevealingObjects();
 
         }
 
@@ -183,7 +183,7 @@ namespace Singularity.Map
                 return true;
             }
 
-            mDirector.GetStoryManager.Level.Camera.CenterOn(new Vector2(mMouseX * mDownscaleFactor, mMouseY * mDownscaleFactor));
+            mDirector.StoryManager.Level.Camera.CenterOn(new Vector2(mMouseX * mDownscaleFactor, mMouseY * mDownscaleFactor));
             return false;
         }
 

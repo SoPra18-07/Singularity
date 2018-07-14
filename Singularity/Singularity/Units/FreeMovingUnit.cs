@@ -197,7 +197,7 @@ namespace Singularity.Units
         /// </remarks>
         protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true)
         {
-            Id = director.GetIdGenerator.NextiD(); // id for the specific unit.
+            Id = director.IdGenerator.NextiD(); // id for the specific unit.
 
             AbsolutePosition = position;
             mMap = map;
@@ -377,7 +377,7 @@ namespace Singularity.Units
         public bool Die()
         {
             mDead = true;
-            mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, Friendly ? "A Friendly" : "An enemy" + " unit was killed!", this);
+            mDirector.EventLog.AddEvent(ELogEventType.UnitAttacked, Friendly ? "A Friendly" : "An enemy" + " unit was killed!", this);
             return true;
         }
 

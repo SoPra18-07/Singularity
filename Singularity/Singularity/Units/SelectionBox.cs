@@ -41,8 +41,8 @@ namespace Singularity.Units
             mColor = color;
             mCamera = camera;
             mDirector = director;
-            director.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
-            director.GetInputManager.AddMousePositionListener(this);
+            director.InputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
+            director.InputManager.AddMousePositionListener(this);
             mBoxExists = false;
         }
 

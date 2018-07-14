@@ -26,10 +26,10 @@ namespace Singularity.PlatformActions
             // unsure why this is a static method since it just returns a military unit anyways
             // var unit = MilitaryUnit.CreateMilitaryUnit(mPlatform.Center + mOffset, ref mDirector);
 
-            var camera = mDirector.GetStoryManager.Level.Camera;
-            var map = mDirector.GetStoryManager.Level.Map;
+            var camera = mDirector.StoryManager.Level.Camera;
+            var map = mDirector.StoryManager.Level.Map;
             var unit = new MilitaryFast(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
-            mDirector.GetMilitaryManager.AddUnit(unit);
+            mDirector.MilitaryManager.AddUnit(unit);
         }
     }
 
@@ -43,10 +43,10 @@ namespace Singularity.PlatformActions
 
         protected override void CreateUnit()
         {
-            var camera = mDirector.GetStoryManager.Level.Camera;
-            var map = mDirector.GetStoryManager.Level.Map;
+            var camera = mDirector.StoryManager.Level.Camera;
+            var map = mDirector.StoryManager.Level.Map;
             var unit = new MilitaryHeavy(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
-            mDirector.GetMilitaryManager.AddUnit(unit);
+            mDirector.MilitaryManager.AddUnit(unit);
         }
     }
 
@@ -62,7 +62,7 @@ namespace Singularity.PlatformActions
         protected override void CreateUnit()
         {
 
-            mDirector.GetStoryManager.Level.GameScreen.AddObject(new GeneralUnit(mPlatform, ref mDirector));
+            mDirector.StoryManager.Level.GameScreen.AddObject(new GeneralUnit(mPlatform, ref mDirector));
         }
     }
 
@@ -77,10 +77,10 @@ namespace Singularity.PlatformActions
 
         protected override void CreateUnit()
         {
-            var camera = mDirector.GetStoryManager.Level.Camera;
-            var map = mDirector.GetStoryManager.Level.Map;
+            var camera = mDirector.StoryManager.Level.Camera;
+            var map = mDirector.StoryManager.Level.Map;
             var unit = new MilitaryUnit(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
-            mDirector.GetMilitaryManager.AddUnit(unit);
+            mDirector.MilitaryManager.AddUnit(unit);
         }
     }
     
@@ -130,7 +130,7 @@ namespace Singularity.PlatformActions
                 } else {
                     mToRequest[resource] = mToRequest[resource] - 1;
                 }
-                mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).RequestResource(mPlatform, resource, this, mIsBuilding);
+                mDirector.DistributionDirector.GetManager(mPlatform.GetGraphIndex()).RequestResource(mPlatform, resource, this, mIsBuilding);
                 Debug.WriteLine("Requested " + resource + " just now. Waiting. (" + mPlatform.Id + ")");
             }
 
@@ -176,12 +176,12 @@ namespace Singularity.PlatformActions
             switch (State)
             {
                 case PlatformActionState.Available:
-                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(this);
+                    mDirector.DistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(this);
                     UpdateResources();
                     State = PlatformActionState.Active;
                     break;
                 case PlatformActionState.Active:
-                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this);
+                    mDirector.DistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this);
                     State = PlatformActionState.Available;
                     break;
                 case PlatformActionState.Deactivated:

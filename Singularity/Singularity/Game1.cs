@@ -52,7 +52,7 @@ namespace Singularity
             mDirector = new Director(Content, mGraphics);
 
 
-            mScreenManager = new StackScreenManager(Content, mDirector.GetInputManager);
+            mScreenManager = new StackScreenManager(Content, mDirector.InputManager);
 
         }
 
@@ -119,6 +119,7 @@ namespace Singularity
         {
             mDirector.Update(gameTime, IsActive);
             mScreenManager.Update(gameTime);
+
             base.Update(gameTime);
         }
 

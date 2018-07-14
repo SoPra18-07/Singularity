@@ -208,7 +208,7 @@ namespace Singularity.Units
 
         protected virtual void Shoot(ICollider target)
         {
-            mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+            mDirector.SoundManager.CreateSoundInstance("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
             target.MakeDamage(MilitaryUnitStats.mUnitStrength);
         }
 

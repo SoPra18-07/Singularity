@@ -99,8 +99,8 @@ namespace Singularity.Screen.ScreenClasses
             mFow = fow;
             mCamera = camera;
             mDirector = director;
-            mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
-            mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
+            mDirector.SoundManager.SetLevelThemeMusic("Tutorial");
+            mDirector.SoundManager.SetSoundPhase(SoundPhase.Build);
             mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
             AddObject(mSelBox);
             //All collider items have to be readded to the ColliderMap
@@ -306,8 +306,8 @@ namespace Singularity.Screen.ScreenClasses
 
             // AddObjects(ResourceHelper.GetRandomlyDistributedResources(50));
 
-            mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
-            mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
+            mDirector.SoundManager.SetLevelThemeMusic("Tutorial");
+            mDirector.SoundManager.SetSoundPhase(SoundPhase.Build);
 
             // This is for the creation of the Command Centers from the settlers
             mBlankPlat = content.Load<Texture2D>("PlatformBasic");
@@ -351,7 +351,7 @@ namespace Singularity.Screen.ScreenClasses
                 //TODO: Remove this Register if Building is implemented
                 platform.Register();
                 mMap.AddPlatform(platform);
-                mDirector.GetMilitaryManager.AddPlatform(platform);
+                mDirector.MilitaryManager.AddPlatform(platform);
                 return true;
             }
 
@@ -366,12 +366,12 @@ namespace Singularity.Screen.ScreenClasses
             if (conUnit != null)
             {
                 mSelBox.SelectingBox += conUnit.BoxSelected;
-                mDirector.GetMilitaryManager.AddUnit(conUnit);
+                mDirector.MilitaryManager.AddUnit(conUnit);
             }
 
             if (enemyUnit != null)
             {
-                mDirector.GetMilitaryManager.AddUnit(enemyUnit);
+                mDirector.MilitaryManager.AddUnit(enemyUnit);
             }
 
             if (typeof(IRevealing).IsAssignableFrom(typeof(T)))

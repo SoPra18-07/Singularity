@@ -97,14 +97,14 @@ namespace Singularity.PlatformActions
             switch (State)
             {
                 case PlatformActionState.Active:
-                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this);
+                    mDirector.DistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this);
                     State = PlatformActionState.Available;
                     break;
                 case PlatformActionState.Available:
                     // TODO: You dont request Units anymore. Are there other things to be changed too then?
                     // mDirector.GetDistributionManager.RequestUnits(mPlatform, JobType.Production, this);
                     // does this work, then?
-                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(mPlatform, false);
+                    mDirector.DistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(mPlatform, false);
                     State = PlatformActionState.Active;
                     break;
                 case PlatformActionState.Deactivated:

@@ -496,7 +496,7 @@ namespace Singularity.Manager
             {
                 // tell the unit to die.
                 unit.Die();
-                mDirector.GetStoryManager.Level.GameScreen.RemoveObject(unit);
+                mDirector.StoryManager.Level.GameScreen.RemoveObject(unit);
                 mUnitMap.RemoveUnit(unit);
                 mMap.GetCollisionMap().RemoveCollider(unit);
                 mMap.GetFogOfWar().RemoveRevealingObject(unit);

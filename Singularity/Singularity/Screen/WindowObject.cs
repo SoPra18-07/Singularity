@@ -119,16 +119,16 @@ namespace Singularity.Screen
             mSpriteFont = spriteFont;
 
             // screen size - needed for input management
-            mCurrentScreenWidth = director.GetGraphicsDeviceManager.PreferredBackBufferWidth;
-            mCurrentScreenHeight = director.GetGraphicsDeviceManager.PreferredBackBufferHeight;
+            mCurrentScreenWidth = director.GraphicsDeviceManager.PreferredBackBufferWidth;
+            mCurrentScreenHeight = director.GraphicsDeviceManager.PreferredBackBufferHeight;
 
             Initialization();
 
             mBackgroundGiven = true;
 
-            director.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
-            director.GetInputManager.FlagForAddition(this);
-            director.GetInputManager.AddMousePositionListener(this);
+            director.InputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.InputManager.FlagForAddition(this);
+            director.InputManager.AddMousePositionListener(this);
         }
 
 
@@ -170,17 +170,17 @@ namespace Singularity.Screen
             mSpriteFont = spriteFont;
 
             // screen size - needed for input management
-            mCurrentScreenWidth = director.GetGraphicsDeviceManager.PreferredBackBufferWidth;
-            mCurrentScreenHeight = director.GetGraphicsDeviceManager.PreferredBackBufferHeight;
+            mCurrentScreenWidth = director.GraphicsDeviceManager.PreferredBackBufferWidth;
+            mCurrentScreenHeight = director.GraphicsDeviceManager.PreferredBackBufferHeight;
 
             Initialization();
 
             // set start values
             mBackgroundGiven = true;
 
-            director.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
-            director.GetInputManager.FlagForAddition(this);
-            director.GetInputManager.AddMousePositionListener(this);
+            director.InputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.InputManager.FlagForAddition(this);
+            director.InputManager.AddMousePositionListener(this);
         }
 
 
@@ -220,17 +220,17 @@ namespace Singularity.Screen
             mSpriteFont = spriteFont;
 
             // screen size - needed for input management
-            mCurrentScreenWidth = director.GetGraphicsDeviceManager.PreferredBackBufferWidth;
-            mCurrentScreenHeight = director.GetGraphicsDeviceManager.PreferredBackBufferHeight;
+            mCurrentScreenWidth = director.GraphicsDeviceManager.PreferredBackBufferWidth;
+            mCurrentScreenHeight = director.GraphicsDeviceManager.PreferredBackBufferHeight;
 
             Initialization();
 
             // set start values
             mBackgroundGiven = false;
 
-            director.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
-            director.GetInputManager.FlagForAddition(this);
-            director.GetInputManager.AddMousePositionListener(this);
+            director.InputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.InputManager.FlagForAddition(this);
+            director.InputManager.AddMousePositionListener(this);
         }
 
         #endregion

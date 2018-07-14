@@ -123,7 +123,7 @@ namespace Singularity.Screen
 
             // set starting values
             Screen = EScreen.UserInterfaceScreen;
-            Width = director.GetGraphicsDeviceManager.PreferredBackBufferWidth;
+            Width = director.GraphicsDeviceManager.PreferredBackBufferWidth;
             Active = true;
 
             // the entire infoBar
@@ -161,10 +161,10 @@ namespace Singularity.Screen
             mMinimapButton.ButtonReleased += TogglerMinimap;
 
             // add input manager to prevent other objects from behind the infoBar to get input through the infoBar
-            director.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.InputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
 
             // pause menu screen
-            mGamePauseScreen = new GamePauseScreen(new Vector2(director.GetGraphicsDeviceManager.PreferredBackBufferWidth, director.GetGraphicsDeviceManager.PreferredBackBufferHeight), mScreenManager, mDirector);
+            mGamePauseScreen = new GamePauseScreen(new Vector2(director.GraphicsDeviceManager.PreferredBackBufferWidth, director.GraphicsDeviceManager.PreferredBackBufferHeight), mScreenManager, mDirector);
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace Singularity.Screen
                 spriteBatch.DrawString(mSpriteFont, DateTime.Now.ToShortTimeString(), new Vector2(Width - 30 - 80, 2.5f), new Color(0,0,0));
 
                 // draw the mission time
-                spriteBatch.DrawString(mSpriteFont, mDirector.GetClock.GetIngameTime().ToString(), new Vector2(Width - 30 - 300, 2.5f), new Color(1, 0, 0));
+                spriteBatch.DrawString(mSpriteFont, mDirector.Clock.GetIngameTime().ToString(), new Vector2(Width - 30 - 300, 2.5f), new Color(1, 0, 0));
             }
         }
 

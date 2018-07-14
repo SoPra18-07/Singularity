@@ -85,7 +85,7 @@ namespace Singularity.Map
         /// </summary>
         public StructureMap(FogOfWar fow, ref Director director)
         {
-            director.GetInputManager.AddMousePositionListener(this);
+            director.InputManager.AddMousePositionListener(this);
 
             mFow = fow;
 
@@ -105,7 +105,7 @@ namespace Singularity.Map
         {
             mFow = fow;
             mDirector = dir;
-            dir.GetInputManager.AddMousePositionListener(this);
+            dir.InputManager.AddMousePositionListener(this);
             foreach (var placement in mStructuresToPlace)
             {
                 placement.ReloadContent(camera, ref dir, map);
@@ -176,8 +176,8 @@ namespace Singularity.Map
             
             UpdateGenUnitsGraphIndex(mGraphIdToGraph[index], index);
 
-            mDirector.GetDistributionDirector.AddManager(index);
-            mDirector.GetPathManager.AddGraph(index, graph);
+            mDirector.DistributionDirector.AddManager(index);
+            mDirector.PathManager.AddGraph(index, graph);
         }
 
         /// <summary>
@@ -193,8 +193,8 @@ namespace Singularity.Map
 
             mGraphIdToGraph[index] = null;
 
-            mDirector.GetDistributionDirector.RemoveManager(index, mGraphIdToGraph);
-            mDirector.GetPathManager.RemoveGraph(index);
+            mDirector.DistributionDirector.RemoveManager(index, mGraphIdToGraph);
+            mDirector.PathManager.RemoveGraph(index);
         }
 
         /// <summary>
@@ -248,9 +248,9 @@ namespace Singularity.Map
                     mGraphIdToEnergyLevel[parentIndex] + mGraphIdToEnergyLevel[childIndex];
                 mGraphIdToEnergyLevel[childIndex] = 0;
 
-                mDirector.GetDistributionDirector.MergeManagers(childIndex, parentIndex, parentIndex);
-                mDirector.GetPathManager.RemoveGraph(childIndex);
-                mDirector.GetPathManager.AddGraph(parentIndex, graph);
+                mDirector.DistributionDirector.MergeManagers(childIndex, parentIndex, parentIndex);
+                mDirector.PathManager.RemoveGraph(childIndex);
+                mDirector.PathManager.AddGraph(parentIndex, graph);
                 return;
             }
             // the road was in the same graph, thus just add it to the graph
@@ -357,9 +357,9 @@ namespace Singularity.Map
             UpdateEnergyLevel(newChildIndex);
             UpdateEnergyLevel(mPlatformToGraphId[(PlatformBlank)parent]);
 
-            mDirector.GetDistributionDirector.SplitManagers(mPlatformToGraphId[(PlatformBlank)parent], newChildIndex, platforms, units, mGraphIdToGraph);
-            mDirector.GetPathManager.AddGraph(newChildIndex, childReachableGraph);
-            mDirector.GetPathManager.AddGraph(mPlatformToGraphId[(PlatformBlank)parent], parentReachableGraph);
+            mDirector.DistributionDirector.SplitManagers(mPlatformToGraphId[(PlatformBlank)parent], newChildIndex, platforms, units, mGraphIdToGraph);
+            mDirector.PathManager.AddGraph(newChildIndex, childReachableGraph);
+            mDirector.PathManager.AddGraph(mPlatformToGraphId[(PlatformBlank)parent], parentReachableGraph);
         }
 
         /// <summary>

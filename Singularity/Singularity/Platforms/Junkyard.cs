@@ -47,7 +47,7 @@ namespace Singularity.Platforms
                 if (resource.Type == EResourceType.Trash)
                 {
                     mResources.Remove(resource);
-                    mDirector.GetStoryManager.Trash();
+                    mDirector.StoryManager.Trash();
                 }
             }
         }
@@ -60,14 +60,14 @@ namespace Singularity.Platforms
                 return;
             }
             //Destroy the trash in the same rythm as other platforms would produce
-            if (!(mDirector.GetClock.GetProduceTicker().Seconds > 4))
+            if (!(mDirector.Clock.GetProduceTicker().Seconds > 4))
             {
                 return;
             }
             BurnTrash();
             //Ask for Trash two times;
-            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).RequestResource(this, EResourceType.Trash, null, false);
-            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).RequestResource(this, EResourceType.Trash, null, false);
+            mDirector.DistributionDirector.GetManager(GetGraphIndex()).RequestResource(this, EResourceType.Trash, null, false);
+            mDirector.DistributionDirector.GetManager(GetGraphIndex()).RequestResource(this, EResourceType.Trash, null, false);
         }
     }
 }

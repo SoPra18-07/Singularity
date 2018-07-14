@@ -12,7 +12,7 @@ using Singularity.Serialization;
 namespace Singularity.Manager
 {
     [DataContract]
-    public class StoryManager : IUpdate
+    public sealed class StoryManager : IUpdate
     {
 
         //The statistics
@@ -32,12 +32,14 @@ namespace Singularity.Manager
         //Do not serialize this, BUT also do not forget to load the achievements again after deserialization!
         private Achievements mAchievements;
 
+        private Director mDirector;
 
         [DataMember]
         private LevelType mLevelType;
 
         public StoryManager(LevelType level = LevelType.None)
         {
+
             mLevelType = level;
             LoadAchievements();
 
