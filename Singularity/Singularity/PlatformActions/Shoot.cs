@@ -19,8 +19,12 @@ namespace Singularity.PlatformActions
         /// <summary>
         /// Stores the amount of ammunition the platform currently has. Max is 50.
         /// </summary>
+        [DataMember]
         public int AmmoCount { get; private set; }
-        
+
+        [DataMember]
+        public override List<JobType> UnitsRequired { get; set; } = new List<JobType> { JobType.Defense };
+
         [DataMember]
         private new DefenseBase mPlatform;
 
@@ -82,7 +86,6 @@ namespace Singularity.PlatformActions
             return new Dictionary<EResourceType, int>();
         }
         
-        public override List<JobType> UnitsRequired { get; set; } = new List<JobType> {JobType.Defense};
 
         public override void Update(GameTime t)
         {

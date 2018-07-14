@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
+using Singularity.PlatformActions;
 using Singularity.Platforms;
 using Singularity.Resources;
+using Singularity.Units;
 
 namespace Singularity.KI
 {
@@ -37,6 +39,15 @@ namespace Singularity.KI
 
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
+        }
+
+        public override void Update(GameTime time)
+        {
+            var shootaction = GetIPlatformActions().Find(x => (Shoot)x != null);
+            if (mDirector.GetClock.GetShootingLaserTime().Seconds > 1 && Friendly)
+            {
+                shootaction.Execute();
+            }
         }
     }
 }
