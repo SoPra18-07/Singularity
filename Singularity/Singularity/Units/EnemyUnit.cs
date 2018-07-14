@@ -86,6 +86,10 @@ namespace Singularity.Units
             Range = MilitaryUnitStats.StandardRange;
         }
 
+        public new void ReloadContent(ref Director director, Camera camera, ref Map.Map map)
+        {
+            base.ReloadContent(ref director, camera, ref map);
+        }
         public override void Draw(SpriteBatch spriteBatch)
         {
             // makes sure that the textures are loaded

@@ -114,7 +114,7 @@ namespace Singularity.Levels
 
             PlatformFactory.Init(platformConeTexture, platformCylTexture, platformDomeTexture, platformBlankTexture, libSans12);
             PlatformBlank.mLibSans12 = libSans12;
-            director.ReloadContent(mDirector, Map.GetMeasurements());
+            director.ReloadContent(mDirector, Map.GetMeasurements(), content);
             mDirector = director;
 
             //Map related stuff
