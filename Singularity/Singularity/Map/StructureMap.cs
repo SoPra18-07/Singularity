@@ -11,7 +11,6 @@ using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.Map
 {
@@ -192,6 +191,7 @@ namespace Singularity.Map
             var index = mPlatformToGraphId[platform];
 
             mGraphIdToGraph[index] = null;
+            mPlatformToGraphId.Remove(platform);
 
             mDirector.GetDistributionDirector.RemoveManager(index, mGraphIdToGraph);
             mDirector.GetPathManager.RemoveGraph(index);

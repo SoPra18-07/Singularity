@@ -81,6 +81,7 @@ namespace Singularity.Manager
             {
                 buildingtasks.Enqueue(task);
             }
+
             var productiontasks = new Queue<Task>(dist2.GetTasks(false));
             foreach (var task in dist2.GetTasks(false))
             {
@@ -119,7 +120,11 @@ namespace Singularity.Manager
         /// <param name="platforms">The platforms of the new split-off DistributionManager</param>
         /// <param name="units">The units of the new split-off DistributionManager</param>
         /// <param name="graphIdToGraph">the structuremap's graphIdToGraph-dictionary</param>
-        public void SplitManagers(int oldgraphid, int newgraphid, List<PlatformBlank> platforms, List<GeneralUnit> units, Dictionary<int, Graph.Graph> graphIdToGraph)
+        public void SplitManagers(int oldgraphid,
+            int newgraphid,
+            List<PlatformBlank> platforms,
+            List<GeneralUnit> units,
+            Dictionary<int, Graph.Graph> graphIdToGraph)
         {
             var olddist = mDMs[oldgraphid];
             mDMs[newgraphid] = new DistributionManager(newgraphid);
@@ -162,9 +167,9 @@ namespace Singularity.Manager
             mUserInterfaceController.CallingAllGraphs(graphIdToGraph);
         }
 
-        public void ReloadContent(ref Director director)
+        public void ReloadContent(UserInterfaceController uic)
         {
-            mUserInterfaceController = director.GetUserInterfaceController;
+            mUserInterfaceController = uic;
         }
     }
 }
