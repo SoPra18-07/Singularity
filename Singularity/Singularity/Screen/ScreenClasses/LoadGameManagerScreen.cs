@@ -110,7 +110,13 @@ namespace Singularity.Screen.ScreenClasses
                 case "None":
                     return;
                 case "Skirmish":
-                    mLevel = new Skirmish(mGraphics, ref mDirector, mContent, mScreenManager);
+                    mLevel = new TechDemo(mGraphics, ref mDirector, mContent, mScreenManager);
+                    mGameScreen = mLevel.GameScreen;
+                    mUi = mLevel.Ui;
+                    mNewGame = true;
+                    break;
+                case "TechDemo":
+                    mLevel = new TechDemo(mGraphics, ref mDirector, mContent, mScreenManager);
                     mGameScreen = mLevel.GameScreen;
                     mUi = mLevel.Ui;
                     mNewGame = true;
@@ -297,6 +303,11 @@ namespace Singularity.Screen.ScreenClasses
             // TODO: implement start game with story
             throw new NotImplementedException("No story yet unfortunately");
 
+        }
+
+        public static void OnTechDemoButtonReleased(Object sender, EventArgs eventArgs)
+        {
+            sPressed = "TechDemo";
         }
         #endregion
 

@@ -8,6 +8,7 @@ using Singularity.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Map.Properties;
 using Singularity.Property;
 
 namespace Singularity.Screen.ScreenClasses
@@ -126,8 +127,14 @@ namespace Singularity.Screen.ScreenClasses
         {
             mFont = content.Load<SpriteFont>("LibSans14");
 
+            var text = DisableText;
 
-            mFowButton = new Button(DisableText, mFont, new Vector2(130, 450), Color.Red, true) {Opacity = 1f};
+            if (!GlobalVariables.mFowEnabled)
+            {
+                text = EnableText;
+            }
+
+            mFowButton = new Button(text, mFont, new Vector2(130, 450), Color.Red, true) {Opacity = 1f};
 
             mFowButton.ButtonClicked += FowButtonClicked;
             mFowButton.ButtonReleased += FowButtonReleased;

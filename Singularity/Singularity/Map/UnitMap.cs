@@ -27,7 +27,7 @@ namespace Singularity.Map
         internal UnitMap(int mapSizeX, int mapSizeY)
         {
             mLookupTable = new Dictionary<int, Vector2>();
-            mUnitGrid = new UnitMapTile[mapSizeX / 2, mapSizeY / 2];
+            mUnitGrid = new UnitMapTile[(int) Math.Ceiling(mapSizeX / 2f) + 1, (int) Math.Ceiling(mapSizeY / 2f) + 1];
 
             for (var i = 0; i < mUnitGrid.GetLength(0); i++)
             {

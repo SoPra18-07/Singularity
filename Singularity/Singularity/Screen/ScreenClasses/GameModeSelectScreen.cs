@@ -184,6 +184,8 @@ namespace Singularity.Screen.ScreenClasses
 
             mMStoryButton.ButtonReleased += LoadGameManagerScreen.OnStoryButtonReleased;
             mMFreePlayButton.ButtonReleased += LoadGameManagerScreen.OnSkirmishReleased;
+            //TODO: bind the released event of the techdemo button to LoadGameManagerScreen.OnTechDemoButtonReleased
+
             mMBackButton.ButtonReleased += MainMenuManagerScreen.OnBackButtonReleased;
 
             mMStoryButton.ButtonHovering += OnStoryHover;

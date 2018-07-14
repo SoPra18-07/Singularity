@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Levels\PlatformDestructionTestLevel.cs" />
     <Compile Include="Events\SpatialPositionEventArgs.cs" />
+    <Compile Include="Levels\TechDemo.cs" />
     <Compile Include="Nature\Rock.cs" />
     <Compile Include="Levels\BasicLevel.cs" />
     <Compile Include="Levels\ILevel.cs" />
