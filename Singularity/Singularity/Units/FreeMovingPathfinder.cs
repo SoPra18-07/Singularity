@@ -174,4 +174,9 @@ namespace Singularity.Units
             return true;
         }
     }
+
+    // some further ideas:
+    // - Flocking ( https://gamedevelopment.tutsplus.com/tutorials/3-simple-rules-of-flocking-behaviors-alignment-cohesion-and-separation--gamedev-3444 )
+    // - Steering ( http://www.simoncoenen.com/downloads/ai_paper.pdf )
+    // - Nav Mesh ( http://theory.stanford.edu/~amitp/GameProgramming/MapRepresentations.html )
 }

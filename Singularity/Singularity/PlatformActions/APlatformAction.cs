@@ -1,12 +1,10 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.PlatformActions
 {

@@ -6,7 +6,6 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Manager;
 using Singularity.Platforms;
-using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
 

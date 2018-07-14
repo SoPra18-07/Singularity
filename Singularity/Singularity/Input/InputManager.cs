@@ -1,11 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Property;
 using Singularity.Screen;
-using Singularity.Screen.ScreenClasses;
 using Singularity.Utils;
 
 namespace Singularity.Input

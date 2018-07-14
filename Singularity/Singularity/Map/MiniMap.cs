@@ -2,17 +2,14 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Exceptions;
+using Singularity.Input;
 using Singularity.Libraries;
+using Singularity.Manager;
 using Singularity.Map.Properties;
 using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Screen;
-using Singularity.Units;
-using Singularity.Input;
-using System;
-using Singularity.Manager;
-using System.Diagnostics;
 
 namespace Singularity.Map
 {

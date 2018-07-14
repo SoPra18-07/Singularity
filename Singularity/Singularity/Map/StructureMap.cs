@@ -12,7 +12,6 @@ using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.Map
 {

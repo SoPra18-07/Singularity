@@ -1,21 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Singularity.Manager;
-using Singularity.Nature;
 using Singularity.Platforms;
-using Singularity.Resources;
 using Singularity.Screen;
 using Singularity.Units;
 
 namespace Singularity.Levels
 {
-    class PlatformDestructionTestLevel : BasicLevel
+    sealed class PlatformDestructionTestLevel : BasicLevel
     {
         public PlatformDestructionTestLevel(GraphicsDeviceManager graphics, ref Director director, ContentManager content, IScreenManager screenmanager) : base(graphics, ref director, content, screenmanager)
         {
