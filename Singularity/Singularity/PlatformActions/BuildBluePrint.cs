@@ -29,7 +29,7 @@ namespace Singularity.PlatformActions
         {
             mBuildingCost = new Dictionary<EResourceType, int>(toBeBuilt.GetResourcesRequired());
             mBuilding = toBeBuilt;
-            
+
             UpdateResources();
             mIsBuilding = true;
         }

@@ -65,8 +65,8 @@ namespace Singularity.Units
         /// </summary>
         [DataMember]
         protected double mShootingTimer;
-        
-        
+
+
 
         /// <summary>
         /// Enemy units controlled by AI and opposed to the player.
@@ -138,11 +138,11 @@ namespace Singularity.Units
             {
                 spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
             }
-                    
-            
-            
+
+
+
         }
-        
+
         public override void Update(GameTime gameTime)
         {
             /*

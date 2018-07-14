@@ -15,7 +15,7 @@ namespace Singularity.Units
             mTarget = true;
         }
 
-        
+
         public override void Update(GameTime gameTime)
         {
             // do nothing

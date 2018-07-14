@@ -16,7 +16,7 @@ namespace Singularity.Platforms
     [DataContract]
     internal sealed class DefenseKinetic : DefenseBase
     {
-        
+
         /// <summary>
         /// Stores how many times materials have been requested between states
         /// </summary>

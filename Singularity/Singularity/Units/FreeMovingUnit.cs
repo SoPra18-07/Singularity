@@ -318,8 +318,8 @@ namespace Singularity.Units
                 x = target.X - (RelativePosition.X + RelativeSize.X / 2);
                 y = target.Y - (RelativePosition.Y + RelativeSize.Y / 2);
             }
-            
-            
+
+
             var hypot = Math.Sqrt(x * x + y * y);
 
             // calculate degree between formed triangle

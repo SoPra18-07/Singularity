@@ -19,7 +19,7 @@ namespace Singularity.Platforms
         /// </summary>
         [DataMember]
         protected bool mShoot;
-        
+
         /// <summary>
         /// For defense platforms, indicates where there target is
         /// </summary>

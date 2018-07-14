@@ -83,7 +83,7 @@ namespace Singularity.Platforms
         #endregion
 
         #region protected
-            
+
         [DataMember]
         public bool Friendly { get; set; }
 
@@ -152,7 +152,7 @@ namespace Singularity.Platforms
 
         [DataMember]
         private bool mIsManuallyDeactivated;
-        
+
         [DataMember]
         public Vector2 Center { get; protected set; }
 
@@ -275,7 +275,7 @@ namespace Singularity.Platforms
 
             Moved = false;
             UpdateValues();
-            
+
             Friendly = friendly;
             var str = GetResourceString();
             mInfoBox = new PlatformInfoBox(
@@ -664,7 +664,7 @@ namespace Singularity.Platforms
         {
             // take care of the Resources on top not colliding. todo: fixme. @fkarg
         }
-        
+
         public EStructureType GetMyType()
         {
             return mType;
@@ -730,7 +730,7 @@ namespace Singularity.Platforms
             }
             return mType == b.GetMyType();
         }
-        
+
         public override int GetHashCode()
         {
             return base.GetHashCode() + Id.GetHashCode();

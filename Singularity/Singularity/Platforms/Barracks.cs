@@ -36,9 +36,9 @@ namespace Singularity.Platforms
 
             // Todo: add cost if you have it.
             // mCost = new Dictionary<EResourceType, int>();
-            
+
         }
-        
+
         public override List<IPlatformAction> GetIPlatformActions()
         {
             var list = new List<IPlatformAction>(ProducableUnits);
