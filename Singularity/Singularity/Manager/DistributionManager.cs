@@ -125,7 +125,7 @@ namespace Singularity.Manager
             while (currentlevel.Count > 0)
             {
                 //Create the next level of BFS. While doing this, check if any platform has the resource you want. If yes return it.
-                foreach (PlatformBlank platform in currentlevel)
+                foreach (var platform in currentlevel)
                 {
 
                     foreach (var edge in platform.GetInwardsEdges())
@@ -137,12 +137,16 @@ namespace Singularity.Manager
                             continue;
                         }
                         //Check for the resource
-                        if (candidatePlatform.GetPlatformResources().Any(resource => resource.Type == res))
+                        if (candidatePlatform.GetPlatformResources()
+                            .Any(resource => resource.Type == res))
                         {
                             return candidatePlatform;
                         }
-
-                        nextlevel.Add(candidatePlatform);
+                        //If true, this Platform has already been put in the next level
+                        if (nextlevel.Contains(candidatePlatform))
+                        {
+                            nextlevel.Add(candidatePlatform);
+                        }
                     }
 
                     foreach (var edge in platform.GetOutwardsEdges())
@@ -158,7 +162,11 @@ namespace Singularity.Manager
                         {
                             return candidatePlatform;
                         }
-                        nextlevel.Add(candidatePlatform);
+                        //If true, this Platform has already been put in the next level
+                        if (nextlevel.Contains(candidatePlatform))
+                        {
+                            nextlevel.Add(candidatePlatform);
+                        }
                     }
                     //mark that you have visited this platform now
                     nextpreviouslevel.Add(platform);
@@ -444,7 +452,7 @@ namespace Singularity.Manager
                             //TODO: Talk with felix about how this could affect the killing thing
                             mBuildingResources.Enqueue(task);
                             //This means the unit will identify this task as "do nothing" and ask again.
-                            task.Begin = null;
+                            task.Begin = Optional<PlatformBlank>.Of(null);
                         }
                     }
                     else
@@ -482,7 +490,7 @@ namespace Singularity.Manager
                             //TODO: Talk with felix about how this could affect the killing thing
                             mRefiningOrStoringResources.Enqueue(task);
                             //This means the unit will identify this task as "do nothing" and ask again.
-                            task.Begin = null;
+                            task.Begin = Optional<PlatformBlank>.Of(null);
                         }
                     }
                     else
