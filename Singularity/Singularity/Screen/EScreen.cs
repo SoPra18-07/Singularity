@@ -4,6 +4,7 @@
     {
         AchievementsScreen,
         GameModeSelectScreen,
+        GamePauseManagerScreen,
         GamePauseScreen,
         GameScreen,
         LoadingScreen,
