@@ -574,7 +574,7 @@ namespace Singularity.Manager
                 }
                 else
                 {
-                    list = GetUnitsFairly(amount, mDefPlatforms, false);
+                    list = GetUnitsFairly(amount, mDefPlatforms, true);
                 }
 
                 //Now actually change their Jobs.
