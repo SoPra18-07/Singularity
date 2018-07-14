@@ -14,7 +14,7 @@ using Singularity.Utils;
 namespace Singularity.Units
 {
     [DataContract]
-    public sealed class GeneralUnit : ISpatial
+    public sealed class GeneralUnit : ISpatial, IDie
     {
         [DataMember]
         public int Id { get; private set; }
@@ -22,6 +22,7 @@ namespace Singularity.Units
         private int mPositionId;
         [DataMember]
         public Optional<Resource> Carrying { get; set; }
+
 
         [DataMember]
         private bool mFinishTask;
@@ -404,15 +405,12 @@ namespace Singularity.Units
 
             //This means we arrived at the point we want to leave the Resource and consider our work done
             if (mTask.End.IsPresent() && CurrentNode.Equals(mTask.End.Get()) &&
-                ReachedTarget(mTask.End.Get().Center))
+                ReachedTarget(mTask.End.Get().Center) && Carrying.IsPresent())
             {
-                if (Carrying.IsPresent())
-                {
-                    var res = Carrying.Get();
-                    res.UnFollow();
-                    ((PlatformBlank)CurrentNode).StoreResource(res);
-                    Carrying = Optional<Resource>.Of(null);
-                }
+                var res = Carrying.Get();
+                res.UnFollow();
+                ((PlatformBlank)CurrentNode).StoreResource(res);
+                Carrying = Optional<Resource>.Of(null);
 
                 mDone = true;
             }
@@ -531,7 +529,8 @@ namespace Singularity.Units
             }
 
             mDirector.GetDistributionDirector.GetManager(Graphid).Kill(this);
-            mAssignedAction.Kill(this);
+            mAssignedAction?.Kill(this);
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
 
             return true;
         }

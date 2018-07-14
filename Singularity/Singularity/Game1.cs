@@ -23,7 +23,6 @@ namespace Singularity
 
 
         // Screens
-        private ILevel mLevel;
         private LoadGameManagerScreen mLoadGameManager;
         private MainMenuManagerScreen mMainMenuManager;
 

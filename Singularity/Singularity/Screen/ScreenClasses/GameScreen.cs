@@ -186,6 +186,7 @@ namespace Singularity.Screen.ScreenClasses
                 //This should also affect enemy units, since they are military units
                 possibleMilitaryUnit?.ReloadContent(content, ref mDirector, camera, ref map);
                 possibleSettler?.ReloadContent(ref mDirector, mCamera, ref map, this, ui);
+
                 if (possibleSettler != null)
                 {
                     possibleSettler.BuildCommandCenter += SettlerBuild;

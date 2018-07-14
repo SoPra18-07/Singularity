@@ -90,7 +90,7 @@ namespace Singularity.Map
             mDownscaleFactor = MapConstants.MapWidth / MapConstants.MiniMapWidth;
             mTexture = minimapTexture;
 
-            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
             director.GetInputManager.AddMousePositionListener(this);
 
             mRevealing = new LinkedList<IRevealing>();
@@ -173,18 +173,18 @@ namespace Singularity.Map
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
-            if(mouseAction != EMouseAction.LeftClick)
+            return true;
+        }
+
+        public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
+        {
+            if (mouseAction != EMouseAction.LeftClick)
             {
                 return true;
             }
 
             mDirector.GetStoryManager.Level.Camera.CenterOn(new Vector2(mMouseX * mDownscaleFactor, mMouseY * mDownscaleFactor));
             return false;
-        }
-
-        public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
-        {
-            return true;
         }
 
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)

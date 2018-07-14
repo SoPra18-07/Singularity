@@ -17,6 +17,7 @@ namespace Singularity.Manager
 
         public Director(ContentManager content, GraphicsDeviceManager graphics)
         {
+            GetClock = new Clock();
             GetIdGenerator = new IdGenerator();
             GetInputManager = new InputManager();
             GetStoryManager = new StoryManager();
@@ -24,7 +25,7 @@ namespace Singularity.Manager
             GetSoundManager = new SoundManager();
             GetUserInterfaceController = new UserInterfaceController(this);
             GetDistributionDirector = new DistributionDirector(this);
-            GetMilitaryManager = new MilitaryManager(); // TODO: Update this code if the MilitaryManager is not getting everything from the StructureMap or sth ...
+            GetMilitaryManager = new MilitaryManager(this); // TODO: Update this code if the MilitaryManager is not getting everything from the StructureMap or sth ...
                                                         // (like units telling it they exist and the like)
             GetEventLog = new EventLog(GetUserInterfaceController, this, content);
             GetGraphicsDeviceManager = graphics;
@@ -36,6 +37,7 @@ namespace Singularity.Manager
 
         internal void ReloadContent(Director dir, Vector2 mapmeasurements)
         {
+            GetClock = dir.GetClock;
             GetIdGenerator = dir.GetIdGenerator;
             GetStoryManager = dir.GetStoryManager;
             GetMilitaryManager = dir.GetMilitaryManager;
@@ -43,10 +45,11 @@ namespace Singularity.Manager
             GetUserInterfaceController = dir.GetUserInterfaceController;
             GetDistributionDirector = dir.GetDistributionDirector;
             GetStoryManager.LoadAchievements();
-            GetMilitaryManager.ReloadContent(mapmeasurements);
-            GetDistributionDirector.ReloadContent(ref dir);
+            GetMilitaryManager.ReloadContent(mapmeasurements, this);
         }
 
+        [DataMember]
+        public Clock GetClock { get; private set; }
         [DataMember]
         public IdGenerator GetIdGenerator { get; private set; }
 
@@ -82,6 +85,7 @@ namespace Singularity.Manager
             }
             GetStoryManager.Update(gametime);
             GetMilitaryManager.Update(gametime);
+            GetClock.Update(gametime);
         }
     }
 }

@@ -10,6 +10,7 @@ using Singularity.Property;
 using Singularity.Resources;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework.Content;
+using Singularity.Screen.ScreenClasses;
 
 namespace Singularity.Map
 {
@@ -22,8 +23,6 @@ namespace Singularity.Map
         private readonly StructureMap mStructureMap;
         [DataMember]
         private readonly ResourceMap mResourceMap;
-        private UnitMap mUnitMap;
-
         [DataMember]
         private readonly int mWidth;
         [DataMember]
@@ -78,18 +77,17 @@ namespace Singularity.Map
             mCollisionMap = new CollisionMap();
             mStructureMap = new StructureMap(fow, ref director);
             mResourceMap = new ResourceMap(initialResources);
-            mUnitMap = new UnitMap(width, height);
 
             director.GetStoryManager.StructureMap = mStructureMap;
         }
 
-        public void ReloadContent(Texture2D background, Camera camera, FogOfWar fow, ref Director dir, ContentManager content)
+        public void ReloadContent(Texture2D background, Camera camera, FogOfWar fow, ref Director dir, ContentManager content, UserInterfaceScreen ui)
         {
             mBackgroundTexture = background;
             mCamera = camera;
             mFow = fow;
             //ADD ALL THE THINGS TO THE CAMERA AND THE FOW
-            mStructureMap.ReloadContent(content, mFow, ref dir, mCamera, this);
+            mStructureMap.ReloadContent(content, mFow, ref dir, mCamera, this, ui);
             mCollisionMap.ReloadContent();
         }
 
@@ -256,11 +254,6 @@ namespace Singularity.Map
         internal Vector2 GetMeasurements()
         {
             return new Vector2(mWidth, mHeight);
-        }
-
-        internal UnitMap GetUnitMap()
-        {
-            return mUnitMap;
         }
 
         /// <summary>

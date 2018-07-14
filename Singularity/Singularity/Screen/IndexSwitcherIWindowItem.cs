@@ -285,6 +285,7 @@ namespace Singularity.Screen
                 if (!mIdToIndexDict.Keys.Contains(id))
                 {
                     AddElement(id);
+                    sliderHandler.SetGraphId(id, -1);
                     sliderHandler.Refresh();
                     sliderHandler.ForceSliderPages();
                 }

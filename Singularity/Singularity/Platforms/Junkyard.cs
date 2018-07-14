@@ -11,9 +11,9 @@ namespace Singularity.Platforms
     class Junkyard : PlatformBlank
     {
         [DataMember]
-        private new const int PlatformWidth = 144;
+        private const int PlatformWidth = 144;
         [DataMember]
-        private new const int PlatformHeight = 127;
+        private const int PlatformHeight = 127;
 
         public Junkyard(Vector2 position,
             Texture2D platformSpriteSheet,
@@ -38,9 +38,11 @@ namespace Singularity.Platforms
             SetPlatfromParameters();
         }
 
-        public void BurnTrash()
+        private void BurnTrash()
         {
-            foreach (var resource in mResources)
+            var resourcecopy = new List<Resource>();
+            resourcecopy.AddRange(mResources);
+            foreach (var resource in resourcecopy)
             {
                 if (resource.Type == EResourceType.Trash)
                 {
@@ -48,6 +50,24 @@ namespace Singularity.Platforms
                     mDirector.GetStoryManager.Trash();
                 }
             }
+        }
+
+        public override void Update(GameTime gametime)
+        {
+            base.Update(gametime);
+            if (mIsBlueprint)
+            {
+                return;
+            }
+            //Destroy the trash in the same rythm as other platforms would produce
+            if (!(mDirector.GetClock.GetProduceTicker().Seconds > 4))
+            {
+                return;
+            }
+            BurnTrash();
+            //Ask for Trash two times;
+            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).RequestResource(this, EResourceType.Trash, null, false);
+            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).RequestResource(this, EResourceType.Trash, null, false);
         }
     }
 }
