@@ -37,8 +37,30 @@ namespace Singularity.Screen.ScreenClasses
         private readonly string mWindowTitleString;
         private readonly string mResolutionString;
 
-        // The current resolution
-        private Pair<int, int> mResolutionChosen;
+        // The choosable resolutions. This works by having a list of possible resolutions and choosing by getting the index of the current wanted resolution.
+        private readonly List<Pair<int, int>> mResolutionList = new List<Pair<int, int>>
+        {
+            new Pair<int, int>(960, 720),
+            new Pair<int, int>(1024, 576),
+            new Pair<int, int>(1024, 768),
+            new Pair<int, int>(1024, 800),
+            new Pair<int, int>(1152, 648),
+            new Pair<int, int>(1280, 720),
+            new Pair<int, int>(1280, 800),
+            new Pair<int, int>(1280, 960),
+            new Pair<int, int>(1280, 1024),
+            new Pair<int, int>(1366, 768),
+            new Pair<int, int>(1440, 900),
+            new Pair<int, int>(1600, 900),
+            new Pair<int, int>(1680, 1050),
+            new Pair<int, int>(1920, 1080),
+            new Pair<int, int>(1920, 1200),
+            new Pair<int, int>(2560, 1440),
+            new Pair<int, int>(2560, 1600),
+            new Pair<int, int>(3840, 2160)
+        };
+
+        private int mResolutionChosen;
 
         // fonts
         private SpriteFont mLibSans36;
@@ -90,8 +112,14 @@ namespace Singularity.Screen.ScreenClasses
             mBoxPosition = new Vector2(mScreenResolution.X / 2 - 306, mScreenResolution.Y / 4);
             mMenuBoxSize = new Vector2(612, 420);
 
-            mResolutionChosen = new Pair<int, int>((int) screenResolution.X, (int) screenResolution.Y);
+            mResolutionChosen =
+                mResolutionList.IndexOf(new Pair<int, int>((int) screenResolution.X, (int) screenResolution.Y));
 
+            if (mResolutionChosen == -1)
+            {
+                mResolutionChosen = 0;
+            }
+            
             mTabPadding = mBoxPosition.X + 36;
             mContentPadding = mBoxPosition.X + 204;
             mTopContentPadding = mBoxPosition.Y + 84;
@@ -266,6 +294,16 @@ namespace Singularity.Screen.ScreenClasses
                             button.Update(gametime);
                             button.Opacity = mMenuOpacity;
                         }
+
+                        if (mResolutionChosen > mResolutionList.Capacity - 1)
+                        {
+                            mResolutionChosen = 0;
+                        }
+
+                        if (mResolutionChosen < 0)
+                        {
+                            mResolutionChosen = mResolutionList.Capacity - 1;
+                        }
                     }
 
                     break;
@@ -279,7 +317,6 @@ namespace Singularity.Screen.ScreenClasses
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            Debug.WriteLine("Full screen active: " + mGame.mGraphics.IsFullScreen);
         }
 
         /// <summary>
@@ -340,9 +377,21 @@ namespace Singularity.Screen.ScreenClasses
                         // Draw the resolution text string
                         spriteBatch.DrawString(mLibSans16, mResolutionString, new Vector2(mContentPadding, mTopContentPadding + 40), mTextColor * mMenuOpacity);
 
-                        // Draw the box for the selector
-                        var selectorWidth = (int)mLibSans16.MeasureString("Full Screen        ").X + 32;
-                        spriteBatch.DrawRectangle(new Rectangle((int)mContentPadding, (int)mTopContentPadding + 80, selectorWidth, 32), mTextColor);
+                        // Draw the resolution selector
+                        var spacingWidth = (int) mLibSans16.MeasureString("Full Screen        ").X;
+                        var currentResoString = mResolutionList[mResolutionChosen].GetFirst() + " x "
+                                                + mResolutionList[mResolutionChosen].GetSecond();
+
+                        // figure out centering for the text
+                        var resoStringSize = mLibSans16.MeasureString(currentResoString);
+                        var resoStringPosition =
+                            new Vector2(mContentPadding + 16+ spacingWidth * 0.5f - resoStringSize.X * 0.5f,
+                                mTopContentPadding + 96 - resoStringSize.Y * 0.5f);
+
+                        spriteBatch.DrawString(mLibSans16, currentResoString, resoStringPosition, mTextColor);
+                        
+
+                        spriteBatch.DrawRectangle(new Rectangle((int)mContentPadding, (int)mTopContentPadding + 80, spacingWidth + 32, 32), mTextColor);
                         
                     }
                     
@@ -460,43 +509,36 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="eventArgs"></param>
         private void OnFullScreenReleased(Object sender, EventArgs eventArgs)
         {
-            if (mGame.mGraphics.IsFullScreen)
-            {
-                mTruth = false;
-                // if it is already full screen, reset to a smaller screen size
-                mWidth = 960;
-                mHeight = 720;
-            }
-            else
-            {
-                // otherwise, do set up the game for full screen
-                mTruth = true;
-                mWidth = mGame.mGraphicsAdapter.CurrentDisplayMode.Width;
-                mHeight = mGame.mGraphicsAdapter.CurrentDisplayMode.Height;
-            }
-
-            mGame.mGraphics.PreferredBackBufferWidth = mWidth;
-            mGame.mGraphics.PreferredBackBufferHeight = mHeight;
+            mTruth = !mGame.mGraphics.IsFullScreen;
             mGame.mGraphics.IsFullScreen = mTruth;
             
         }
 
         private void OnResoDownReleased(Object sender, EventArgs eventArgs)
         {
-            mGame.mGraphics.PreferredBackBufferWidth = 800;
-            mGame.mGraphics.PreferredBackBufferHeight = 600;
-            MainMenuManagerScreen.SetResolution(new Vector2(800, 600));
+            mResolutionChosen--;
         }
 
         private void OnResoUpReleased(Object sender, EventArgs eventArgs)
         {
-            mGame.mGraphics.PreferredBackBufferWidth = 960;
-            mGame.mGraphics.PreferredBackBufferHeight = 720;
-            MainMenuManagerScreen.SetResolution(new Vector2(960, 720));
+            mResolutionChosen++;
         }
 
         private void OnSaveReleased(Object sender, EventArgs eventArgs)
         {
+            if (mTruth)
+            {
+                mWidth = mGame.mGraphicsAdapter.CurrentDisplayMode.Width;
+                mHeight = mGame.mGraphicsAdapter.CurrentDisplayMode.Height;
+            }
+            else
+            {
+                mWidth = mResolutionList[mResolutionChosen].GetFirst();
+                mHeight = mResolutionList[mResolutionChosen].GetSecond();
+            }
+
+            mGame.mGraphics.PreferredBackBufferWidth = mWidth;
+            mGame.mGraphics.PreferredBackBufferHeight = mHeight;
             mGame.mGraphics.ApplyChanges();
             MainMenuManagerScreen.SetResolution(new Vector2(mWidth, mHeight));
         }
