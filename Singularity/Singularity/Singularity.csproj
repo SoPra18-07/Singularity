@@ -61,6 +61,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="KI\KI.cs" />
+    <Compile Include="KI\Sentinel.cs" />
     <Compile Include="KI\Spawner.cs" />
     <Compile Include="Levels\PlatformDestructionTestLevel.cs" />
     <Compile Include="Events\SpatialPositionEventArgs.cs" />
