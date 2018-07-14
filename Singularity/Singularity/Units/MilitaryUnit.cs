@@ -78,7 +78,7 @@ namespace Singularity.Units
         [DataMember]
         private float mShootingTimer = -1f;
 
-
+        private double mCurrentTime;
 
 
         public MilitaryUnit(Vector2 position,
@@ -87,7 +87,7 @@ namespace Singularity.Units
             ref Map.Map map)
             : base(position, camera, ref director, ref map)
         {
-            mSpeed = MilitaryUnitStats.StandardSpeed;
+            Speed = MilitaryUnitStats.StandardSpeed;
             Health = MilitaryUnitStats.StandardHealth;
 
             AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
@@ -203,31 +203,25 @@ namespace Singularity.Units
 
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
             AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * Scale), (int) (AbsoluteSize.Y * Scale));
-            Moved = mIsMoving;
 
-            if (!mIsMoving && mShoot)
-            {
-                // Rotate to the center of the shooting target
-                Rotate(mShootingTarget.Center, true);
+            if (Moved || !mShoot) return;
+            // Rotate to the center of the shooting target
+            Rotate(mShootingTarget.Center);
 
                 
-                if (mShootingTimer < 0.5f)
-                {
-                    mShootingTimer = (float) gameTime.TotalGameTime.TotalMilliseconds;
-                    Shoot(mShootingTarget);
-                }
-
-                mCurrentTime = gameTime.TotalGameTime.TotalMilliseconds;
-                if (mShootingTimer + 750 <= gameTime.TotalGameTime.TotalMilliseconds)
-                {
-                    mShootingTimer = (float)gameTime.TotalGameTime.TotalMilliseconds;
-                    Shoot(mShootingTarget);
-                }
+            if (mShootingTimer < 0.5f)
+            {
+                mShootingTimer = (float) gameTime.TotalGameTime.TotalMilliseconds;
+                Shoot(mShootingTarget);
             }
-            
+
+            mCurrentTime = gameTime.TotalGameTime.TotalMilliseconds;
+            if (!(mShootingTimer + 750 <= gameTime.TotalGameTime.TotalMilliseconds)) return;
+            mShootingTimer = (float)gameTime.TotalGameTime.TotalMilliseconds;
+            Shoot(mShootingTarget);
         }
 
-        private void Shoot(ICollider target)
+        private void Shoot(IDamageable target)
         {
             mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
             target.MakeDamage(MilitaryUnitStats.mUnitStrength);

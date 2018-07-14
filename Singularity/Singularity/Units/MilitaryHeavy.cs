@@ -12,7 +12,7 @@ namespace Singularity.Units
             ref Map.Map map)
             : base(position, camera, ref director, ref map)
         {
-            mSpeed = MilitaryUnitStats.HeavySpeed;
+            Speed = MilitaryUnitStats.HeavySpeed;
             Health = MilitaryUnitStats.HeavyHealth;
             Range = MilitaryUnitStats.HeavyRange;
 

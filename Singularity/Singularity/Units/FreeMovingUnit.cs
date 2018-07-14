@@ -14,8 +14,9 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="ICollider"/>
     /// <inheritdoc cref="IRevealing"/>
+    /// <inheritdoc cref="AFlocking"/>
     [DataContract]
-    internal abstract class FreeMovingUnit : ICollider, IRevealing
+    internal abstract class FreeMovingUnit : AFlocking, ICollider, IRevealing
     {
         /// <summary>
         /// The unique ID of the unit.
@@ -51,11 +52,6 @@ namespace Singularity.Units
         [DataMember]
         protected Vector2[] mDebugPath;
         
-        /// <summary>
-        /// This is simply the velocity the current unit has.
-        /// </summary>
-        [DataMember]
-        protected Vector2 mVeloctiyVector;
         
         /// <summary>
         /// Normalized vector to indicate direction of movement.
@@ -63,9 +59,6 @@ namespace Singularity.Units
         [DataMember]
         protected Vector2 mMovementVector;
         
-        [DataMember]
-        protected float mSpeed;
-
         #endregion
 
         #region Director/map/camera/library/fow Variables
@@ -75,10 +68,6 @@ namespace Singularity.Units
         /// </summary>
         protected Director mDirector;
 
-        /// <summary>
-        /// MilitaryPathfinders enables pathfinding using jump point search or line of sight.
-        /// </summary>
-        protected FreeMovingPathfinder mPathfinder;
 
         /// <summary>
         /// Stores a reference to the game map.
@@ -99,8 +88,8 @@ namespace Singularity.Units
         /// <summary>
         /// Used by the camera to figure out where it is.
         /// </summary>
-        [DataMember]
-        protected double mZoomSnapshot;
+        // [DataMember]
+        // protected double mZoomSnapshot;
         [DataMember]
         public Rectangle AbsBounds { get; protected set; }
         //TODO: Make clear whether we need to reload that
@@ -166,61 +155,29 @@ namespace Singularity.Units
         /// map, and implements pathfinding for objects on the map. It also allows subclasses to have
         /// health and to be damaged.
         /// </remarks>
-        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true)
+        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true) : base(ref director, null)
         {
-            Id = director.GetIdGenerator.NextiD(); // id for the specific unit.
+            Id = director.GetIdGenerator.NextId(); // id for the specific unit.
 
             AbsolutePosition = position;
-            mMap = map;
 
             Moved = false;
-            mIsMoving = false;
 
             mDirector = director;
             mCamera = camera;
-            mPathfinder = new FreeMovingPathfinder();
 
             Friendly = friendly;
         }
 
         protected void ReloadContent(ref Director director, Camera camera, ref Map.Map map)
         {
-            mPathfinder = new FreeMovingPathfinder();
-            mDirector = director;
+            base.ReloadContent(ref director);
             mCamera = camera;
             mMap = map;
         }
 
         #region Pathfinding Methods
 
-        /// <summary>
-        /// Calculates the direction the unit should be moving and moves it into that direction.
-        /// </summary>
-        /// <param name="target">The target to which to move.</param>
-        protected void MoveToTarget(Vector2 target)
-        {
-            mVeloctiyVector = new Vector2(target.X - Center.X, target.Y - Center.Y);
-        }
-
-        protected void FindPath()
-        {
-
-            Moved = true;
-            Debug.WriteLine("Starting path finding at: " + Center.X + ", " + Center.Y);
-            Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
-
-            mPath = new Stack<Vector2>();
-            mPath = mPathfinder.FindPath(Center,
-                mTargetPosition,
-                ref mMap);
-
-            if (GlobalVariables.DebugState)
-            {
-                mDebugPath = mPath.ToArray();
-            }
-            
-            mZoomSnapshot = mCamera.GetZoom();
-        }
 
 
         /// <summary>
@@ -263,41 +220,14 @@ namespace Singularity.Units
 
         #endregion
 
-        #region Abstract Methods
+        #region Overridden Methods
 
-        public virtual void Update(GameTime gametime)
+        public override void Update(GameTime gametime)
         {
 
-
-
-            if (HasReachedTarget())
-            {
-                mIsMoving = false;
-            }
-            // calculate path to target position
-            else if (mIsMoving)
-            {
-                if (!HasReachedWaypoint())
-                {
-                    MoveToTarget(mPath.Peek());
-                }
-
-                else
-                {
-                    mPath.Pop();
-                    MoveToTarget(mPath.Peek());
-                }
-            }
-
-
-
-
-
-
             // now actually moving the unit
-
-            AbsolutePosition += mVeloctiyVector;
-
+            base.Update(gametime);
+            
 
             // ============ now update all the values, since the position changed ===========
 
@@ -314,9 +244,7 @@ namespace Singularity.Units
                 (int)AbsoluteSize.X,
                 (int)AbsoluteSize.Y);
         }
-
-        public abstract void Draw(SpriteBatch spriteBatch);
-
+        
         #endregion
 
         #region Health, damage methods

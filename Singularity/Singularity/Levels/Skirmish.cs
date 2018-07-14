@@ -64,9 +64,13 @@ namespace Singularity.Levels
             GameScreen.AddObject(road5);
 
             // Enemy Unit
-            var enemyUnit = new Target(new Vector2(3000, 2950), Camera, ref mDirector, ref map);
-            // var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
-            
+            // var enemyUnit = new Target(new Vector2(3000, 2950), Camera, ref mDirector, ref map);
+            var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
+            var milUnit2 = new MilitaryUnit(new Vector2(3100, 2900), Camera, ref mDirector, ref map);
+            var milUnit3 = new MilitaryUnit(new Vector2(3000, 3000), Camera, ref mDirector, ref map);
+            var milUnit4 = new MilitaryUnit(new Vector2(3100, 3000), Camera, ref mDirector, ref map);
+            var milUnit5 = new MilitaryUnit(new Vector2(2900, 2900), Camera, ref mDirector, ref map);
+
             var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, Ui);
 
             var rock1 = new Rock(new Vector2(3500, 2800), ref mDirector);
@@ -99,8 +103,12 @@ namespace Singularity.Levels
             platform4.StoreResource(res7);
 
             GameScreen.AddObjects(genUnit);
-            GameScreen.AddObject(enemyUnit);
-            // GameScreen.AddObject(milUnit);
+            // GameScreen.AddObject(enemyUnit);
+            GameScreen.AddObject(milUnit);
+            GameScreen.AddObject(milUnit2);
+            GameScreen.AddObject(milUnit3);
+            GameScreen.AddObject(milUnit4);
+            GameScreen.AddObject(milUnit5);
             GameScreen.AddObject(settler);
 
             // add a puddle

@@ -48,7 +48,7 @@ namespace Singularity.Nature
 
         public Rock(Vector2 position, ref Director director)
         {
-            Id = director.GetIdGenerator.NextiD();
+            Id = director.GetIdGenerator.NextId();
             AbsoluteSize = new Vector2(160, 130);
             mDrawSize = new Vector2(80,40);
             AbsolutePosition = position;

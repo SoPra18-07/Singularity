@@ -22,8 +22,8 @@ namespace Singularity.Manager
             GetSoundManager = new SoundManager();
             GetUserInterfaceController = new UserInterfaceController(this);
             GetDistributionDirector = new DistributionDirector(this);
-            GetMilitaryManager = new MilitaryManager(this); // TODO: Update this code if the MilitaryManager is not getting everything from the StructureMap or sth ...
-                                                        // (like units telling it they exist and the like)
+            GetMilitaryManager = new MilitaryManager(this);
+            GetFlockingManager = new FlockingManager(this);
             GetEventLog = new EventLog(GetUserInterfaceController, this, content);
             GetGraphicsDeviceManager = graphics;
 
@@ -59,6 +59,9 @@ namespace Singularity.Manager
 
         [DataMember]
         public MilitaryManager GetMilitaryManager { get; private set; }
+
+        [DataMember]
+        public FlockingManager GetFlockingManager { get; private set; }
 
         [DataMember]
         public DistributionDirector GetDistributionDirector { get; private set; }

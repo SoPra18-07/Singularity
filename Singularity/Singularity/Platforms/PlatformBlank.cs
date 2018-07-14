@@ -215,7 +215,7 @@ namespace Singularity.Platforms
 
             mPrevPlatformActions = new List<IPlatformAction>();
 
-            Id = director.GetIdGenerator.NextiD();
+            Id = director.GetIdGenerator.NextId();
 
             mDirector = director;
 

@@ -37,7 +37,7 @@ namespace Singularity.Units
         public Settler(Vector2 position, Camera camera, ref Director director, ref Map.Map map, GameScreen gameScreen, UserInterfaceScreen ui)
             : base(position, camera, ref director, ref map)
         {
-            mSpeed = 4;
+            Speed = 4;
             Health = 10;
 
             AbsoluteSize = new Vector2(20, 20);

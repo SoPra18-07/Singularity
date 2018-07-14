@@ -80,7 +80,7 @@ namespace Singularity.Units
             AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
             RevelationRadius = 400;
 
-            mSpeed = MilitaryUnitStats.StandardSpeed;
+            Speed = MilitaryUnitStats.StandardSpeed;
             Health = MilitaryUnitStats.StandardHealth;
             Range = MilitaryUnitStats.StandardRange;
         }

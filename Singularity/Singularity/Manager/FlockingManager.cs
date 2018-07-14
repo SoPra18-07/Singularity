@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Singularity.Units;
 
 namespace Singularity.Manager
 {
-    class FlockingManager
+    public class FlockingManager
     {
+        protected Dictionary<int, FlockingGroup> mGroups;
+
+
     }
 }

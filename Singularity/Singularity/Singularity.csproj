@@ -104,6 +104,7 @@
     <Compile Include="Screen\IndexSwitcherIWindowItem.cs" />
     <Compile Include="Screen\PlatformInfoBox.cs" />
     <Compile Include="Screen\SliderHandler.cs" />
+    <Compile Include="Units\AFlocking.cs" />
     <Compile Include="Units\ControllableUnit.cs" />
     <Compile Include="Screen\TextAndAmountIWindowItem.cs" />
     <Compile Include="Units\EnemyUnit.cs" />

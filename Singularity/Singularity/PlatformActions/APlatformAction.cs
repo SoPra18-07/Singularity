@@ -26,7 +26,7 @@ namespace Singularity.PlatformActions
         {
             mPlatform = platform;
             mDirector = director;
-            Id = director.GetIdGenerator.NextiD();
+            Id = director.GetIdGenerator.NextId();
         }
 
         public void ReloadContent(ref Director dir)

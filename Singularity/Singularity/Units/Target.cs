@@ -11,7 +11,7 @@ namespace Singularity.Units
     {
         public Target(Vector2 position, Camera camera, ref Director director, ref Map.Map map) : base(position, camera, ref director, ref map)
         {
-            mSpeed = 0;
+            Speed = 0;
             mTarget = true;
         }
     }
