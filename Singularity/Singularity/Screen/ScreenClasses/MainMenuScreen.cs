@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -177,7 +176,7 @@ namespace Singularity.Screen.ScreenClasses
                     mTransitionDuration = 350d;
                     mMenuOpacity = 0f;
                     mMenuBoxSize = new Vector2(408, 420);
-                    mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - 204, mScreenResolution.Y / 2 - 210);
+                    mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - 204, mScreenResolution.Y / 4);
                     mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter);
                     break;
                 case EScreen.OptionsScreen:
@@ -214,9 +213,7 @@ namespace Singularity.Screen.ScreenClasses
                         gameTime);
 
                     mMenuBoxSize = new Vector2(widthAch, heightAch);
-                    mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - (int)Math.Floor(widthAch / 2), mScreenResolution.Y / 2 - (int)Math.Floor(heightAch / 2));
-
-                    mMenuOpacity = (float)Animations.Easing(1f, 0f, mTransitionStartTime, mTransitionDuration, gameTime);
+                    mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - (int)Math.Floor(widthAch / 2), mScreenResolution.Y / 4 - (int)Math.Floor(heightAch));
                     break;
                 case EScreen.GameModeSelectScreen:
                     if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
@@ -271,7 +268,7 @@ namespace Singularity.Screen.ScreenClasses
                         TransitionRunning = false;
                         mMenuOpacity = 0f;
                         mMenuBoxSize = new Vector2(612, 420);
-                        mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - 306, mScreenResolution.Y / 2 - 210);
+                        mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - 306, mScreenResolution.Y / 4);
                     }
 
                     var width = (float)Animations.Easing(408,
@@ -280,7 +277,7 @@ namespace Singularity.Screen.ScreenClasses
                         mTransitionDuration,
                         gameTime);
 
-                    mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - (int)Math.Floor(width / 2), mScreenResolution.Y / 2 - 210);
+                    mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - (int)Math.Floor(width / 2), mScreenResolution.Y / 4);
                     mMenuBoxSize = new Vector2(width, 420);
 
                     mMenuOpacity = (float)Animations.Easing(1f, 0f, mTransitionStartTime, mTransitionDuration, gameTime);
@@ -302,31 +299,31 @@ namespace Singularity.Screen.ScreenClasses
 
             foreach (Button button in mButtonList)
             {
-                button.Draw(spriteBatch);
+                button.Draw(spriteBatch: spriteBatch);
             }
 
             // draw selector triangle
-            spriteBatch.Draw(mSelectorTriangle,
-                mSelectorPosition,
-                null,
-                Color.White * mMenuOpacity,
-                0f,
-                new Vector2(0, 11),
-                1f,
-                SpriteEffects.None,
-                0f);
+            spriteBatch.Draw(texture: mSelectorTriangle,
+                position: mSelectorPosition,
+                sourceRectangle: null,
+                color: Color.White * mMenuOpacity,
+                rotation: 0f,
+                origin: new Vector2(x: 0, y: 11),
+                scale: 1f,
+                effects: SpriteEffects.None,
+                layerDepth: 0f);
 
             // Draw menu window
-            spriteBatch.StrokedRectangle(mMenuBoxPosition,
-                mMenuBoxSize,
-                Color.White * mWindowOpacity,
-                Color.White * mWindowOpacity,
-                .5f,
-                .20f);
-            spriteBatch.DrawString(mLibSans36,
-                mTitle,
-                new Vector2(mMenuBoxPosition.X + 20, mMenuBoxPosition.Y + 10),
-                new Color(new Vector3(.9137f, .9058f, .8314f)) * mMenuOpacity);
+            spriteBatch.StrokedRectangle(location: mMenuBoxPosition,
+                size: mMenuBoxSize,
+                colorBorder: Color.White * mWindowOpacity,
+                colorCenter: Color.White * mWindowOpacity,
+                opacityBorder: .5f,
+                opacityCenter: .20f);
+            spriteBatch.DrawString(spriteFont: mLibSans36,
+                text: mTitle,
+                position: new Vector2(x: mMenuBoxPosition.X + 20, y: mMenuBoxPosition.Y + 10),
+                color: new Color(color: new Vector3(x: .9137f, y: .9058f, z: .8314f)) * mMenuOpacity);
 
             spriteBatch.End();
         }

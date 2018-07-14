@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Singularity.Levels;
 using Singularity.Manager;
 using Singularity.Screen;
@@ -65,9 +66,11 @@ namespace Singularity
         {
             IsMouseVisible = true;
             mGraphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
-            mGraphics.PreferredBackBufferWidth = 1080;
-            mGraphics.PreferredBackBufferHeight = 720;
+
+            mGraphics.PreferredBackBufferWidth = 1280;
+            mGraphics.PreferredBackBufferHeight = 1024;
             mGraphics.IsFullScreen = false;
+            
             mGraphics.ApplyChanges();
 
             base.Initialize();
@@ -79,7 +82,7 @@ namespace Singularity
         /// </summary>
         protected override void LoadContent()
         {
-
+            
             var viewportResolution = new Vector2(GraphicsDevice.Viewport.Width,
                 GraphicsDevice.Viewport.Height);
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -91,7 +94,7 @@ namespace Singularity
             //ATTENTION: THE INGAME SCREENS ARE HANDLED IN THE LEVELS NOW!
             mScreenManager.AddScreen(mLoadGameManager);
             mScreenManager.AddScreen(mMainMenuManager);
-
+            
             // TODO: load and play Soundtrack as background music
             // director.GetSoundManager.LoadContent(Content);
             //_mSoundManager.PlaySoundTrack();
@@ -104,7 +107,7 @@ namespace Singularity
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            // Not used/
         }
 
         /// <summary>

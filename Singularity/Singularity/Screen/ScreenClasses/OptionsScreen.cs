@@ -95,7 +95,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             // scaling of all positions according to viewport size
             mScreenResolution = screenResolution;
-            mBoxPosition = new Vector2(mScreenResolution.X / 2 - 306, mScreenResolution.Y / 2 - 210);
+            mBoxPosition = new Vector2(mScreenResolution.X / 2 - 306, mScreenResolution.Y / 4);
             mMenuBoxSize = new Vector2(612, 420);
 
             mTabPadding = mBoxPosition.X + 36;
@@ -260,9 +260,9 @@ namespace Singularity.Screen.ScreenClasses
 
             // window title
             spriteBatch.DrawString(mLibSans36,
-                mWindowTitleString,
-                mWindowTitlePosition,
-                mTextColor * mMenuOpacity);
+                text: mWindowTitleString,
+                position: mWindowTitlePosition,
+                color: mTextColor * mMenuOpacity);
 
             // tab buttons
             foreach (Button button in mTabButtons)
@@ -308,7 +308,7 @@ namespace Singularity.Screen.ScreenClasses
                         TransitionRunning = false;
                         mMenuOpacity = 0f;
                         mMenuBoxSize = new Vector2(408, 420);
-                        mBoxPosition = new Vector2(mScreenResolution.X / 2 - 204, mScreenResolution.Y / 2 - 210);
+                        mBoxPosition = new Vector2(mScreenResolution.X / 2 - 204, mScreenResolution.Y / 4);
                     }
 
                     var width = (float)Animations.Easing(612,
@@ -420,7 +420,6 @@ namespace Singularity.Screen.ScreenClasses
             mGame.mGraphics.IsFullScreen = truth;
             mGame.mGraphics.ApplyChanges();
             MainMenuManagerScreen.SetResolution(new Vector2(width, height));
-            LoadGameManagerScreen.SetResolution(new Vector2(width, height));
         }
 
         private void OnResoOneReleased(Object sender, EventArgs eventArgs)
@@ -429,7 +428,6 @@ namespace Singularity.Screen.ScreenClasses
             mGame.mGraphics.PreferredBackBufferHeight = 600;
             mGame.mGraphics.ApplyChanges();
             MainMenuManagerScreen.SetResolution(new Vector2(800, 600));
-            LoadGameManagerScreen.SetResolution(new Vector2(800, 600));
         }
 
         private void OnResoTwoReleased(Object sender, EventArgs eventArgs)
@@ -438,7 +436,11 @@ namespace Singularity.Screen.ScreenClasses
             mGame.mGraphics.PreferredBackBufferHeight = 720;
             mGame.mGraphics.ApplyChanges();
             MainMenuManagerScreen.SetResolution(new Vector2(960, 720));
-            LoadGameManagerScreen.SetResolution(new Vector2(960, 720));
+        }
+
+        private void OnAntialiasingReleased(Object sender, EventArgs eventArgs)
+        {
+            // potentially impossible
         }
 
         private void OnMuteReleased(Object sender, EventArgs eventArgs)
@@ -454,7 +456,7 @@ namespace Singularity.Screen.ScreenClasses
             {
                 mMenuOpacity = 0f;
             }
-            mBoxPosition = new Vector2(mScreenResolution.X / 2 - 306, mScreenResolution.Y / 2 - 210);
+            mBoxPosition = new Vector2(mScreenResolution.X / 2 - 306, mScreenResolution.Y / 4);
             mMenuBoxSize = new Vector2(612, 420);
             mTargetScreen = targetScreen;
             mTransitionDuration = 350f;
