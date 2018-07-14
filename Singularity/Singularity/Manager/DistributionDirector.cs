@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using Singularity.Exceptions;
 using Singularity.Platforms;
 using Singularity.Screen;
 using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.Manager
 {
