@@ -80,6 +80,12 @@ namespace Singularity.Units
                 return;
             }
 
+
+            var diff = mGroup.Get().mTargetPosition - AbsolutePosition;
+            var dist = (float)Geometry.Length(diff);
+            var actualSpeed = (dist > 100 ? 1 : dist / 100) * Speed;
+
+
             // calculate the forces:
             // - Alignment
             //     The Velocity of the FlockingGroup. This is part for the PathFinding.
@@ -89,10 +95,23 @@ namespace Singularity.Units
             //     The steering away from other members of the FlockingGroup. this is also precomputed there.
             var align = Vector2.Normalize(mGroup.Get().Velocity);
             var cohes = Vector2.Normalize(mGroup.Get().CohesionRaw - AbsolutePosition);
-            var seper = Vector2.Normalize(mGroup.Get().SeperationRaw - AbsolutePosition * mGroup.Get().UnitCount()) * -1f;
+            // var seper = Vector2.Normalize(mGroup.Get().SeperationRaw - AbsolutePosition * mGroup.Get().UnitCount()) * -1;
+            // var seper = Vector2.Normalize(new Vector2(
+                // mGroup.Get().GetUnits().Sum(u => u.AbsolutePosition.X - AbsolutePosition.X),
+                // mGroup.Get().GetUnits().Sum(u => u.AbsolutePosition.Y - AbsolutePosition.Y))) * -1;
+            var close = mGroup.Get()
+                .GetUnits()
+                .FindAll(u => Geometry.Length(u.AbsolutePosition - AbsolutePosition) < 90 && !u.Equals(this))
+                .Select(f => f.AbsolutePosition).ToList();
+                // .Aggregate((a, b) => a + b);
+            var seper = close.Count > 0 ? Vector2.Normalize(close.Aggregate((a, b) => a + b) - AbsolutePosition * close.Count) * -1 : Vector2.Zero;
+            
+            var goal = Vector2.Normalize(diff);
 
-            Velocity = Vector2.Normalize(align + cohes + seper) * mGroup.Get().ActualSpeed;
-            Debug.WriteLine("unit: " + AbsolutePosition + ", " + align + ", " + cohes + ", " + seper + ", vel: " + Velocity);
+            Velocity = Vector2.Normalize(align + cohes * 0.75f + seper * 1.2f) * actualSpeed;
+
+            Debug.WriteLine("unit: " + goal + ", " + align + ", " + cohes + ", " + seper + ", " + Velocity);
+
 
             AbsolutePosition += Velocity;
         }
@@ -115,7 +134,7 @@ namespace Singularity.Units
         {
             if (mGroup.IsPresent())
             {
-                mGroup.Get().Kill(this);
+                mGroup.Get().RemoveUnit(this);
             }
             mGroup = Optional<FlockingGroup>.Of(group);
         }

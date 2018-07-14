@@ -84,8 +84,10 @@ namespace Singularity.Units
                     {
                         if (!mGroup.IsPresent())
                         {
-                            mGroup = Optional<FlockingGroup>.Of(mDirector.GetMilitaryManager.GetNewFlock());
-                            mGroup.Get().AssignUnit(this);
+                            var group = Optional<FlockingGroup>.Of(mDirector.GetMilitaryManager.GetNewFlock());
+                            group.Get().AssignUnit(this);
+                            mGroup = group;
+                            // do the fuck not change these lines here. Costs you at least 3h for debugging.
                         }
 
                         var target = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
@@ -95,6 +97,7 @@ namespace Singularity.Units
                             (int)target.X / MapConstants.GridWidth,
                             (int)target.Y / MapConstants.GridHeight))
                         {
+                            Debug.WriteLine("pos: " + AbsolutePosition);
                             mGroup.Get().FindPath(target);
                         }
                     }

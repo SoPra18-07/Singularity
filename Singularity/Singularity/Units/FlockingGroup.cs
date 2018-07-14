@@ -26,7 +26,7 @@ namespace Singularity.Units
         protected static FreeMovingPathfinder mPathfinder = new FreeMovingPathfinder();
 
         [DataMember]
-        protected Vector2 mTargetPosition;
+        public Vector2 mTargetPosition;
 
         [DataMember]
         protected Vector2 mUltimateTarget;
@@ -90,12 +90,9 @@ namespace Singularity.Units
             // todo: now get a velocity to the current target.
             // also: todo: actively let units avoid obstacles. (in progress)
             // (lookup at precomputed map velocities).
-
-
-            Debug.WriteLine("Possibly moving now ... " + FlockingId);
+            
             // if we don't need to move, why bother recalculating all the values?
             if (!Moved) return;
-            Debug.WriteLine("Now actually moving! :)");
             
             SeperationRaw = Vector2.Zero;
             
@@ -157,6 +154,7 @@ namespace Singularity.Units
             if (mUnits.Count == 1)
             {
                 AbsolutePosition = mUnits[0].AbsolutePosition;
+                Debug.WriteLine("pos2: " + mUnits[0].AbsolutePosition);
             }
             else
             {
@@ -165,6 +163,7 @@ namespace Singularity.Units
                     SeperationRaw += unit.AbsolutePosition;
                 }
                 AbsolutePosition = SeperationRaw / mUnits.Count;
+                Debug.WriteLine("pos2: " + AbsolutePosition + ", count: " + mUnits.Count);
             }
 
             Moved = true;
