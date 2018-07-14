@@ -23,6 +23,7 @@ namespace Singularity.Units
         [DataMember]
         public Optional<Resource> Carrying { get; set; }
 
+
         [DataMember]
         private bool mFinishTask;
         [DataMember]
@@ -404,15 +405,12 @@ namespace Singularity.Units
 
             //This means we arrived at the point we want to leave the Resource and consider our work done
             if (mTask.End.IsPresent() && CurrentNode.Equals(mTask.End.Get()) &&
-                ReachedTarget(mTask.End.Get().Center))
+                ReachedTarget(mTask.End.Get().Center) && Carrying.IsPresent())
             {
-                if (Carrying.IsPresent())
-                {
-                    var res = Carrying.Get();
-                    res.UnFollow();
-                    ((PlatformBlank)CurrentNode).StoreResource(res);
-                    Carrying = Optional<Resource>.Of(null);
-                }
+                var res = Carrying.Get();
+                res.UnFollow();
+                ((PlatformBlank)CurrentNode).StoreResource(res);
+                Carrying = Optional<Resource>.Of(null);
 
                 mDone = true;
             }

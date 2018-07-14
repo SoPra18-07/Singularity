@@ -88,15 +88,6 @@ namespace Singularity.Screen
             mConstructionSlider.MaxIncrement = mConstructionSlider.GetCurrentPage() + free;
             mLogisticsSlider.MaxIncrement = mLogisticsSlider.GetCurrentPage() + free;
 
-
-        }
-
-        /// <summary>
-        /// This changes the Graph this SliderHandler displays.
-        /// </summary>
-        public void ChangeGraph(object sender, EventArgs eventArgs)
-        {
-            //What to listen to??
         }
 
         /// <summary>

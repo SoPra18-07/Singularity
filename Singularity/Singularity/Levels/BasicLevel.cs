@@ -119,10 +119,11 @@ namespace Singularity.Levels
             //Map related stuff
             Camera.ReloadContent(mGraphics, ref mDirector);
             mFow.ReloadContent(mGraphics, Camera);
-            Map.ReloadContent(mapBackground, Camera, mFow, ref mDirector, content);
             Ui = new UserInterfaceScreen(ref mDirector, mGraphics, Map, Camera, mScreenManager);
             Ui.LoadContent(content);
             Ui.Loaded = true;
+            //This has to be after ui creation, because the ui graphid dictionary is updated in the structuremap.reloadcontent method
+            Map.ReloadContent(mapBackground, Camera, mFow, ref mDirector, content, Ui);
             GameScreen.ReloadContent(content, graphics, Map, mFow, Camera, ref mDirector, Ui);
             mDirector.GetUserInterfaceController.ReloadContent(ref mDirector);
             mDirector.GetUserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller

@@ -193,6 +193,7 @@ namespace Singularity.Screen.ScreenClasses
                     mSave4 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     mSave5 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     Saves = 1;
+                    mSave1.ButtonReleased += LoadGameManagerScreen.OnSave1Released;
                     break;
                 case 2:
                     mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
@@ -201,6 +202,8 @@ namespace Singularity.Screen.ScreenClasses
                     mSave4 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     mSave5 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     Saves = 2;
+                    mSave1.ButtonReleased += LoadGameManagerScreen.OnSave1Released;
+                    mSave2.ButtonReleased += LoadGameManagerScreen.OnSave2Released;
                     break;
                 case 3:
                     mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
@@ -209,6 +212,9 @@ namespace Singularity.Screen.ScreenClasses
                     mSave4 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     mSave5 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     Saves = 3;
+                    mSave1.ButtonReleased += LoadGameManagerScreen.OnSave1Released;
+                    mSave2.ButtonReleased += LoadGameManagerScreen.OnSave2Released;
+                    mSave3.ButtonReleased += LoadGameManagerScreen.OnSave3Released;
                     break;
                 case 4:
                     mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
@@ -217,6 +223,10 @@ namespace Singularity.Screen.ScreenClasses
                     mSave4 = new Button(mGameSaveStrings[3].Remove(mGameSaveStrings[3].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     mSave5 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     Saves = 4;
+                    mSave1.ButtonReleased += LoadGameManagerScreen.OnSave1Released;
+                    mSave2.ButtonReleased += LoadGameManagerScreen.OnSave2Released;
+                    mSave3.ButtonReleased += LoadGameManagerScreen.OnSave3Released;
+                    mSave4.ButtonReleased += LoadGameManagerScreen.OnSave4Released;
                     break;
                 case 5:
                     mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
@@ -225,6 +235,11 @@ namespace Singularity.Screen.ScreenClasses
                     mSave4 = new Button(mGameSaveStrings[3].Remove(mGameSaveStrings[3].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     mSave5 = new Button(mGameSaveStrings[4].Remove(mGameSaveStrings[4].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     Saves = 5;
+                    mSave1.ButtonReleased += LoadGameManagerScreen.OnSave1Released;
+                    mSave2.ButtonReleased += LoadGameManagerScreen.OnSave2Released;
+                    mSave3.ButtonReleased += LoadGameManagerScreen.OnSave3Released;
+                    mSave4.ButtonReleased += LoadGameManagerScreen.OnSave4Released;
+                    mSave5.ButtonReleased += LoadGameManagerScreen.OnSave5Released;
                     break;
                 default:
                     //Just load 5 saves, if by any chance there are more than 5 saves. It means that the player has added more saves and knows what he does...I hope...
@@ -246,11 +261,6 @@ namespace Singularity.Screen.ScreenClasses
             mMButtonList.Add(mSave5);
 
             mMBackButton.ButtonReleased += MainMenuManagerScreen.OnBackButtonReleased;
-            mSave1.ButtonReleased += LoadGameManagerScreen.OnSave1Released;
-            mSave2.ButtonReleased += LoadGameManagerScreen.OnSave2Released;
-            mSave3.ButtonReleased += LoadGameManagerScreen.OnSave3Released;
-            mSave4.ButtonReleased += LoadGameManagerScreen.OnSave4Released;
-            mSave5.ButtonReleased += LoadGameManagerScreen.OnSave5Released;
 
             mMBackButton.ButtonHovering += OnBackHover;
             mSave1.ButtonHovering += OnSave1;

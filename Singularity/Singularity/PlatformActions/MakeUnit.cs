@@ -49,6 +49,7 @@ namespace Singularity.PlatformActions
         }
     }
 
+    [DataContract]
     internal sealed class MakeGeneralUnit : AMakeUnit
     {
         public MakeGeneralUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
@@ -82,7 +83,7 @@ namespace Singularity.PlatformActions
         }
     }
     
-
+    [DataContract]
     public abstract class AMakeUnit : APlatformAction
     {
         [DataMember]
@@ -93,7 +94,10 @@ namespace Singularity.PlatformActions
         protected Dictionary<EResourceType, int> mToRequest;
         [DataMember]
         protected Vector2 mOffset = new Vector2(200f);
+        [DataMember]
         protected bool mIsBuilding = false;
+        [DataMember]
+        public override List<JobType> UnitsRequired { get; set; } = new List<JobType> { JobType.Logistics };
 
         protected AMakeUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
@@ -110,8 +114,6 @@ namespace Singularity.PlatformActions
         {
             // theres nothing a unit should be able to do, except bringing Resources.
         }
-        [DataMember]
-        public override List<JobType> UnitsRequired { get; set; } = new List<JobType>{ JobType.Logistics };
 
         public override void Update(GameTime t)
         {
