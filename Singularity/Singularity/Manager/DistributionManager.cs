@@ -132,7 +132,7 @@ namespace Singularity.Manager
                     {
                         var candidatePlatform = (PlatformBlank)edge.GetParent();
                         //If true, we have already visited this platform
-                        if (previouslevel.Contains(platform) || nextpreviouslevel.Contains(platform))
+                        if (previouslevel.Contains(candidatePlatform) || nextpreviouslevel.Contains(candidatePlatform))
                         {
                             continue;
                         }
@@ -143,7 +143,7 @@ namespace Singularity.Manager
                             return candidatePlatform;
                         }
                         //If true, this Platform has already been put in the next level
-                        if (nextlevel.Contains(candidatePlatform))
+                        if (!nextlevel.Contains(candidatePlatform))
                         {
                             nextlevel.Add(candidatePlatform);
                         }
@@ -163,7 +163,7 @@ namespace Singularity.Manager
                             return candidatePlatform;
                         }
                         //If true, this Platform has already been put in the next level
-                        if (nextlevel.Contains(candidatePlatform))
+                        if (!nextlevel.Contains(candidatePlatform))
                         {
                             nextlevel.Add(candidatePlatform);
                         }

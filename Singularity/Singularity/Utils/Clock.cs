@@ -26,6 +26,7 @@ namespace Singularity.Utils
         public void Update(GameTime time)
         {
             mIngametime = mIngametime.Add(time.ElapsedGameTime);
+            //The ticker goes only above 4 to give everyone the chance to produce and resets then
             if (mProduceTicker.Seconds > 4)
             {
                 mProduceTicker = new TimeSpan(0, 0, 0);
