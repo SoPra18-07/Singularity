@@ -752,7 +752,7 @@ namespace Singularity.Libraries
         public static void StrokedRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color colorBorder, Color colorCenter, float opacityBorder, float opacityCenter, float layer)
         {
             FillRectangle(spriteBatch, new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y), colorCenter * opacityCenter, 0f, layer);
-            DrawRectangle(spriteBatch, new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y), colorBorder*opacityBorder, 2, layer);
+            DrawRectangle(spriteBatch, new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y), colorBorder * opacityBorder, 2, layer);
         }
 
         /// <summary>

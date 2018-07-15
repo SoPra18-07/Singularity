@@ -31,14 +31,12 @@ namespace Singularity.Resources
         [DataMember]
         private Optional<GeneralUnit> mFollowing;
 
-        public Resource(EResourceType type, Vector2 position, ref Director director)
+        public Resource(EResourceType type, Vector2 position)
         {
             Type = type;
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(10, 10);
 
-            // Track the creation of a resource in the statistics.
-            director.GetStoryManager.UpdateResources(type);
         }
 
         public void Follow(GeneralUnit unit)

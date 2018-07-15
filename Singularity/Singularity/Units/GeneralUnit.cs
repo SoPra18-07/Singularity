@@ -14,7 +14,7 @@ using Singularity.Utils;
 namespace Singularity.Units
 {
     [DataContract]
-    public sealed class GeneralUnit : ISpatial, IDie
+    public sealed class GeneralUnit : ISpatial
     {
         [DataMember]
         public int Id { get; private set; }
@@ -275,14 +275,13 @@ namespace Singularity.Units
 
                     case JobType.Production:
                         //You arrived at your destination and you now want to work.
-                        if (!mIsMoving && !mDone && CurrentNode.Equals(mTask.End.Get()))
+                        if (!mIsMoving && !mDone && CurrentNode.Equals(mTask.End.Get()) && !mAssigned)
                         {
-                            if (!mAssigned)
-                            {
-                                mTask.End.Get().ShowedUp(this, Job);
-                                mAssigned = true;
-                            }
+                            mTask.End.Get().ShowedUp(this, Job);
+                            mAssigned = true;
                         }
+                        if (mAssigned)
+                            mTask.End.Get().Produce();
                         RegulateMovement();
                         break;
 
@@ -556,22 +555,19 @@ namespace Singularity.Units
         /// <param name="id"></param>
         public void Kill(int id)
         {
-            if (mTask.Contains(id))
+            if (!mTask.Contains(id)) return;
+            switch (Job)
             {
-                if (Job == JobType.Defense)
-                {
+                case JobType.Defense:
                     mDirector.GetDistributionDirector.GetManager(Graphid).NewProductionHall(this, true);
-                }
-                else if (Job == JobType.Production)
-                {
+                    break;
+                case JobType.Production:
                     mDirector.GetDistributionDirector.GetManager(Graphid).NewProductionHall(this, false);
-                }
-                else
-                {
-                    // also the mAssignedTask-platformaction is included in this.
+                    break;
+                default:
                     mDirector.GetDistributionDirector.GetManager(Graphid)
                         .RequestNewTask(this, Job, Optional<IPlatformAction>.Of(null));
-                }
+                    break;
             }
         }
     }
