@@ -283,7 +283,9 @@ namespace Singularity.Screen.ScreenClasses
                 updateable.Update(gametime);
             }
 
-            foreach (var spatial in mSpatialObjects.Concat(mMap.GetStructureMap().GetPlatformList()))
+            IEnumerable<ISpatial> copyList = mSpatialObjects.Concat(mMap.GetStructureMap().GetPlatformList());
+
+            foreach (var spatial in copyList)
             {
                 var collidingObject = spatial as ICollider;
 
