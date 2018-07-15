@@ -4,8 +4,11 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Map.Properties;
 using Singularity.Property;
 using Singularity.Screen;
 using EventLog = Singularity.Screen.EventLog;
@@ -13,10 +16,9 @@ using EventLog = Singularity.Screen.EventLog;
 namespace Singularity.Units
 {
     /// <inheritdoc cref="ICollider"/>
-
+    /// <inheritdoc cref="IRevealing"/>
     [DataContract]
-    public abstract class FreeMovingUnit : ICollider
-
+    internal abstract class FreeMovingUnit : ICollider, IRevealing, IMouseClickListener, IMousePositionListener
     {
         /// <summary>
         /// The unique ID of the unit.
@@ -132,7 +134,9 @@ namespace Singularity.Units
         public Rectangle AbsBounds { get; protected set; }
         //TODO: Make clear whether we need to reload that
         public bool[,] ColliderGrid { get; protected set; }
-
+        [DataMember]
+        public int RevelationRadius { get; protected set; }
+        [DataMember]
         public Vector2 RelativePosition { get; set; }
         [DataMember]
         public Vector2 RelativeSize { get; set; }
@@ -180,6 +184,28 @@ namespace Singularity.Units
 
         #endregion
 
+        #region Mouse Listener Fields
+
+        /// <summary>
+        /// Indicates if the unit is currently selected.
+        /// </summary>
+        [DataMember]
+        internal bool mSelected;
+
+        /// <summary>
+        /// Stores the current x position of the mouse
+        /// </summary>
+        [DataMember]
+        internal float mMouseX;
+
+        /// <summary>
+        /// Stores the current y position of the mouse
+        /// </summary>
+        [DataMember]
+        internal float mMouseY;
+
+        #endregion
+
         /// <summary>
         /// Base abstract class for units that are not restricted to the graph.
         /// </summary>
@@ -187,6 +213,7 @@ namespace Singularity.Units
         /// <param name="camera">Game camera being used.</param>
         /// <param name="director">Reference to the game director.</param>
         /// <param name="map">Reference to the game map.</param>
+        /// <param name="friendly">The allegiance of the unit. True if the unit is player controlled.</param>
         /// <remarks>
         /// FreeMovingUnit is an abstract class that can be implemented to allow free movement outside
         /// of the graphs that represent bases in the game. It provides implementations to allow for
@@ -209,6 +236,12 @@ namespace Singularity.Units
             mPathfinder = new FreeMovingPathfinder();
 
             Friendly = friendly;
+
+            if (friendly)
+            {
+                mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
+                mDirector.GetInputManager.AddMousePositionListener(this);
+            }
         }
 
         protected void ReloadContent(ref Director director, Camera camera, ref Map.Map map)
@@ -381,17 +414,89 @@ namespace Singularity.Units
         }
 
         #endregion
+        
+        #region Mouse Handlers
+        public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
+        {
+            var giveThrough = true;
+
+            switch (mouseAction)
+            {
+                case EMouseAction.LeftClick:
+                    // check for if the unit is selected, not moving, the click is not within the bounds of the unit, and the click was on the map.
+                    if (mSelected
+                        && !mIsMoving
+                        && !withinBounds
+                        && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f),
+                                (int)(mMouseY - RelativeSize.Y / 2f),
+                                (int)RelativeSize.X,
+                                (int)RelativeSize.Y),
+                            mCamera))
+                    {
+                        mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
+                            Matrix.Invert(mCamera.GetTransform()));
+
+                        if (mMap.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
+                            (int)mTargetPosition.X / MapConstants.GridWidth,
+                            (int)mTargetPosition.Y / MapConstants.GridWidth))
+                        {
+                            FindPath(Center, mTargetPosition);
+                        }
+                    }
+
+
+                    if (withinBounds)
+                    {
+                        mSelected = true;
+                        giveThrough = false;
+                    }
+
+                    break;
+
+                case EMouseAction.RightClick:
+                    mSelected = false;
+                    break;
+            }
+
+            return giveThrough;
+        }
+
+        public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
+        {
+            return true;
+        }
+
+        public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
+        {
+            return true;
+        }
+
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
+        {
+            mMouseX = screenX;
+            mMouseY = screenY;
+        }
 
         /// <summary>
-        /// Used to find the coordinates of the given Vector2 based on the overall map
-        /// instead of just the camera shot, returns Vector2 of absolute position
+        /// This is called up every time a selection box is created
+        /// if MUnit bounds intersects with the selection box then it become selected
         /// </summary>
-        /// <returns></returns>
-        protected Vector2 MapCoordinates(Vector2 v)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <param name="position"> top left corner of the selection box</param>
+        /// <param name="size"> size of selection box</param>
+        public void BoxSelected(object sender, EventArgs e, Vector2 position, Vector2 size)
         {
-            return new Vector2(Vector2.Transform(new Vector2(v.X, v.Y),
-                Matrix.Invert(mCamera.GetTransform())).X, Vector2.Transform(new Vector2(v.X, v.Y),
-                Matrix.Invert(mCamera.GetTransform())).Y);
+            // create a rectangle from given parameters
+            Rectangle selBox = new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y);
+
+            // check if selection box intersects with MUnit bounds
+            if (selBox.Intersects(AbsBounds))
+            {
+                mSelected = true;
+            }
         }
+
+        #endregion
     }
 }

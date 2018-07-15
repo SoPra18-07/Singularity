@@ -14,7 +14,7 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="ControllableUnit"/>
     [DataContract]
-    internal sealed class Settler: ControllableUnit, IKeyListener
+    internal sealed class Settler: FreeMovingUnit, IKeyListener
     {
         #region Declarations
         private GameScreen mGameScreen;

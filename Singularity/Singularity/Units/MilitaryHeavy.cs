@@ -4,13 +4,14 @@ using Singularity.Map;
 
 namespace Singularity.Units
 {
-    internal sealed class MilitaryHeavy : MilitaryUnit
+    internal class MilitaryHeavy : MilitaryUnit
     {
         public MilitaryHeavy(Vector2 position,
             Camera camera,
             ref Director director,
-            ref Map.Map map)
-            : base(position, camera, ref director, ref map)
+            ref Map.Map map,
+            bool friendly = true)
+            : base(position, camera, ref director, ref map, friendly)
         {
             mSpeed = MilitaryUnitStats.HeavySpeed;
             Health = MilitaryUnitStats.HeavyHealth;
