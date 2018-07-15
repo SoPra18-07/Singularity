@@ -65,9 +65,7 @@ namespace Singularity.Manager
         /// <summary>
         /// The total number of military units on the map.
         /// </summary>
-        [DataMember]
-        internal int TotalUnitCount { get; private set; }
-
+        internal int TotalUnitCount => mFriendlyMilitary.Count + mHostileMilitary.Count;
 
 
         internal MilitaryManager(Director director)
@@ -164,7 +162,6 @@ namespace Singularity.Manager
             }
 
             mUnitMap.AddUnit(unit);
-            TotalUnitCount++;
         }
 
         #endregion
@@ -214,7 +211,6 @@ namespace Singularity.Manager
             }
 
             mUnitMap.RemoveUnit(unit);
-            TotalUnitCount--;
         }
 
         #endregion
