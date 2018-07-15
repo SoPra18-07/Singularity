@@ -1048,6 +1048,10 @@ namespace Singularity.Platforms
             mIPlatformActions.RemoveAll(a => a.Die());
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
+            if (!Friendly)
+            {
+                mDirector.GetStoryManager.Level.Ai.Kill(this);
+            }
             mDirector.GetInputManager.FlagForRemoval(this);
             mDirector.GetInputManager.RemoveMousePositionListener(mInfoBox);
             mInfoBox = null;

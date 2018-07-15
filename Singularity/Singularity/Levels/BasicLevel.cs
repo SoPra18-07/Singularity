@@ -45,7 +45,7 @@ namespace Singularity.Levels
         protected Director mDirector;
 
         [DataMember]
-        protected IArtificalIntelligence mAi;
+        public IArtificalIntelligence Ai { get; set; }
 
         protected IScreenManager mScreenManager;
 
@@ -107,8 +107,8 @@ namespace Singularity.Levels
             mDirector.GetInputManager.FlagForAddition(this);
 
             // KI STUFF
-            mAi = new BasicAi(EaiDifficulty.Easy, ref mDirector);
-            GameScreen.AddObject(mAi);
+            Ai = new BasicAi(EaiDifficulty.Easy, ref mDirector);
+            GameScreen.AddObject(Ai);
         }
 
         public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, ref Director director, IScreenManager screenmanager)
@@ -150,7 +150,7 @@ namespace Singularity.Levels
             mDirector.GetInputManager.FlagForAddition(this);
 
             //AI Stuff
-            mAi.ReloadContent(ref mDirector);
+            Ai.ReloadContent(ref mDirector);
             StructureLayoutHolder.Initialize(ref mDirector);
         }
 

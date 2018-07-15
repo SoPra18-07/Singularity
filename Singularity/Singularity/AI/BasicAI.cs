@@ -74,5 +74,9 @@ namespace Singularity.AI
             return tempList;
         }
 
+        public void Kill(PlatformBlank platform)
+        {
+            mStructure.GetSecond().Remove(platform);
+        }
     }
 }
