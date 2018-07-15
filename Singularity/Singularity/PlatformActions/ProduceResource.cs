@@ -42,7 +42,7 @@ namespace Singularity.PlatformActions
 
         protected override void CreateResource()
         {
-            var res = mResourceMap.GetQuarryResource(mPlatform.AbsolutePosition);
+            var res = mResourceMap.GetQuarryResource(mPlatform.Center);
             if (res.IsPresent())
             {
                 mPlatform.StoreResource(res.Get());
@@ -63,7 +63,7 @@ namespace Singularity.PlatformActions
 
         protected override void CreateResource()
         {
-            var res = mResourceMap.GetMineResource(mPlatform.AbsolutePosition);
+            var res = mResourceMap.GetMineResource(mPlatform.Center);
             if (res.IsPresent())
             {
                 mPlatform.StoreResource(res.Get());
