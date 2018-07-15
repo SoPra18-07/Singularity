@@ -7,7 +7,7 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="MilitaryUnit"/>
     [DataContract]
-    internal class EnemyUnit : MilitaryUnit
+    internal class EnemyHeavy : MilitaryHeavy
     {
         /// <summary>
         /// Enemy units controlled by AI and opposed to the player; standard type.
@@ -16,7 +16,7 @@ namespace Singularity.Units
         /// <param name="camera">Game camera being used.</param>
         /// <param name="director">Reference to the game director.</param>
         /// <param name="map">Reference to the game map.</param>
-        public EnemyUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
+        public EnemyHeavy(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
             : base(position, camera, ref director, ref map, false)
         {
             mColor = Color.Maroon;

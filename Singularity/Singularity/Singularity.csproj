@@ -103,8 +103,9 @@
     <Compile Include="Screen\IndexSwitcherIWindowItem.cs" />
     <Compile Include="Screen\PlatformInfoBox.cs" />
     <Compile Include="Screen\SliderHandler.cs" />
-    <Compile Include="Units\ControllableUnit.cs" />
     <Compile Include="Screen\TextAndAmountIWindowItem.cs" />
+    <Compile Include="Units\EnemyHeavy.cs" />
+    <Compile Include="Units\EnemyFast.cs" />
     <Compile Include="Units\EnemyUnit.cs" />
     <Compile Include="Units\EUnitType.cs" />
     <Compile Include="Units\FreeMovingUnit.cs" />

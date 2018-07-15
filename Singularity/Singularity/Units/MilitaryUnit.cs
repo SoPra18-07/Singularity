@@ -13,19 +13,19 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="ControllableUnit"/>
     [DataContract]
-    internal class MilitaryUnit : ControllableUnit, IShooting
+    internal class MilitaryUnit : FreeMovingUnit, IShooting
     {
         /// <summary>
         /// Default width of a unit before scaling.
         /// </summary>
         [DataMember]
-        private const int DefaultWidth = 150;
+        protected const int DefaultWidth = 150;
 
         /// <summary>
         /// Default height of a unit before scaling.
         /// </summary>
         [DataMember]
-        private const int DefaultHeight = 75;
+        protected const int DefaultHeight = 75;
 
         /// <summary>
         /// Sprite sheet for military units.
@@ -44,10 +44,8 @@ namespace Singularity.Units
         protected const float Scale = 0.4f;
 
         /// <summary>
-        /// Indicates the position the closest enemy is at.
+        /// Used to set the enemy target that should be shot at.
         /// </summary>
-        [DataMember]
-        private Vector2 mEnemyPosition;
         [DataMember]
         private ICollider mShootingTarget;
 
@@ -84,8 +82,9 @@ namespace Singularity.Units
         public MilitaryUnit(Vector2 position,
             Camera camera,
             ref Director director,
-            ref Map.Map map)
-            : base(position, camera, ref director, ref map)
+            ref Map.Map map,
+            bool friendly)
+            : base(position, camera, ref director, ref map, friendly)
         {
             mSpeed = MilitaryUnitStats.StandardSpeed;
             Health = MilitaryUnitStats.StandardHealth;
@@ -227,7 +226,7 @@ namespace Singularity.Units
             
         }
 
-        private void Shoot(ICollider target)
+        private void Shoot(IDamageable target)
         {
             mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
             target.MakeDamage(MilitaryUnitStats.mUnitStrength);
