@@ -114,7 +114,7 @@ namespace Singularity.Levels
 
             GameScreen.AddObjects(genUnit);
             //GameScreen.AddObject(enemyUnit);
-            GameScreen.AddObject(milUnit);
+            //GameScreen.AddObject(milUnit);
             GameScreen.AddObject(settler);
 
             // add a puddle

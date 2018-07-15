@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Map.Properties;
 using Singularity.Property;
 using Singularity.Sound;
 
