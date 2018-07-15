@@ -75,7 +75,7 @@ namespace Singularity.AI.Behavior
 
         public void Spawn(GameTime gametime)
         {
-
+            return;
             if ((int) gametime.TotalGameTime.TotalMilliseconds % SpawnIntervalMillis != 0)
             {
                 return;
