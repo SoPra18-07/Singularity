@@ -283,7 +283,7 @@ namespace Singularity.Screen.ScreenClasses
                 updateable.Update(gametime);
             }
 
-            IEnumerable<ISpatial> copyList = mSpatialObjects.Concat(mMap.GetStructureMap().GetPlatformList());
+            List<ISpatial> copyList = (mSpatialObjects.Concat(mMap.GetStructureMap().GetPlatformList()).ToList());
 
             foreach (var spatial in copyList)
             {
