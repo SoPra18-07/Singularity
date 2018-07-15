@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -173,9 +174,12 @@ namespace Singularity.Screen.ScreenClasses
 
         // graph ID
         private int mCivilUnitsGraphId;
+        private int mCivilUnitsGraphIdToCompare;
+
+        public Dictionary<int, Graph.Graph> GraphIdToGraphStructureDict { get; set; }
 
         // an indexSwitcher to go through all graphs (graphList is set through UIController)
-        private IndexSwitcherIWindowItem mGraphSwitcher;
+        //private IndexSwitcherIWindowItem mGraphSwitcher; // TODO : DELETE IF GRAPHSWITCHER REMOVED
 
         // sliders for distribution
         private Slider mDefSlider;
@@ -377,10 +381,11 @@ namespace Singularity.Screen.ScreenClasses
             mCurrentScreenHeight = mDirector.GetGraphicsDeviceManager.PreferredBackBufferHeight;
 
             // update sliders if there was a change
-            if (mGraphSwitcher != null && mCivilUnitsGraphId != mGraphSwitcher.GetCurrentId())
+            if (mCivilUnitsGraphId != mCivilUnitsGraphIdToCompare)
             {
-                mCivilUnitsGraphId = mGraphSwitcher.GetCurrentId();
-                mCivilUnitsSliderHandler.SetGraphId(mCivilUnitsGraphId, -1);
+                mCivilUnitsGraphIdToCompare = mCivilUnitsGraphId;
+
+                mCivilUnitsSliderHandler.SetGraphId(mCivilUnitsGraphId);
 
                 mCivilUnitsSliderHandler.Refresh();
                 mCivilUnitsSliderHandler.ForceSliderPages();
@@ -419,12 +424,6 @@ namespace Singularity.Screen.ScreenClasses
                 mCanBuildPlatform = true;
             }
 
-            // update the idle units amount of the current graph (of civilUnitsWindow)
-            if (mGraphSwitcher != null)
-            {
-                mIdleUnitsTextAndAmount.Amount = mUserInterfaceController.GetIdleUnits(mGraphSwitcher.GetCurrentId());
-            }
-
             // update resource window every X seconds to get the "production in the last 10 seconds amount"
             if (mResourceWindowTicker + mResourceWindowXSeconds < mDirector.GetClock.GetIngameTime().Seconds)
             {
@@ -449,6 +448,12 @@ namespace Singularity.Screen.ScreenClasses
 
                 mResourceWindowResourceAmountLastTick = mDirector.GetStoryManager.Resources;
             }
+
+/*            // update idle amount
+            if (mStructureMap.GetDictionaryGraphIdToGraph().Keys.Contains(mCivilUnitsGraphId))
+            {
+                mIdleUnitsTextAndAmount.Amount = mUserInterfaceController.GetIdleUnits(mCivilUnitsGraphId);
+            }*/
         }
 
         /// <inheritdoc />
@@ -682,8 +687,6 @@ namespace Singularity.Screen.ScreenClasses
 
             // create items
 
-            mGraphSwitcher = new IndexSwitcherIWindowItem("Graph: ", civilUnitsWidth - 40, mLibSans12);
-
             mDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
             mDefSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true);
             mBuildTextField = new TextField("Build", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
@@ -696,10 +699,9 @@ namespace Singularity.Screen.ScreenClasses
             mIdleUnitsTextAndAmount = new TextAndAmountIWindowItem("Idle", 0, Vector2.Zero, new Vector2(civilUnitsWidth, 0), mLibSans12, Color.White);
 
             //This instance will handle the comunication between Sliders and DistributionManager.
-            mCivilUnitsSliderHandler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mBuildSlider, mLogisticsSlider);
+            mCivilUnitsSliderHandler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mBuildSlider, mLogisticsSlider, mIdleUnitsTextAndAmount);
 
             // adding all items
-            mCivilUnitsWindow.AddItem(mGraphSwitcher);
             mCivilUnitsWindow.AddItem(mIdleUnitsTextAndAmount);
             mCivilUnitsWindow.AddItem(mDefTextField);
             mCivilUnitsWindow.AddItem(mDefSlider);
@@ -711,6 +713,9 @@ namespace Singularity.Screen.ScreenClasses
             mCivilUnitsWindow.AddItem(mProductionSlider);
 
             mWindowList.Add(mCivilUnitsWindow);
+
+            mCivilUnitsGraphId = mStructureMap.GetDictionaryGraphIdToGraph().Keys.Min();
+            mCivilUnitsGraphIdToCompare = -1;
 
             #endregion
 
@@ -1781,19 +1786,7 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         /// <summary>
-        /// Add a new graph to the graphSwitcher list
-        /// </summary>
-        /// <param name="graphId"></param>
-        public void AddGraph(int graphId)
-        {
-            if (!mActiveUserInterface) { return; }
-
-            mGraphSwitcher?.AddElement(graphId);
-        }
-
-        /// <summary>
-        /// Merge two graphs of the graphSwitcher list by removing the two old ones and adding the new one
-        /// There is no replacement, so we keep the list sorted (way more intuitive)
+        /// Updates the currently shown graph in civilUnitsWindow in case it was one of the merged ones.
         /// </summary>
         /// <param name="newGraphId">merged graph ID</param>
         /// <param name="oldGraphId1">old graph ID 1</param>
@@ -1802,17 +1795,30 @@ namespace Singularity.Screen.ScreenClasses
         {
             if (!mActiveUserInterface) { return; }
 
-            mGraphSwitcher?.MergeElements(newGraphId, oldGraphId1, oldGraphId2);
+            if (mCivilUnitsGraphId == oldGraphId1 || mCivilUnitsGraphId == oldGraphId2)
+            {
+                mCivilUnitsSliderHandler.SetGraphId(newGraphId);
+
+                mCivilUnitsSliderHandler.Refresh();
+                mCivilUnitsSliderHandler.ForceSliderPages();
+
+                mCivilUnitsGraphId = newGraphId;
+            }
         }
 
         /// <summary>
-        /// Sends an info to the graphSwitcher to update its dictionaries
+        /// Gets called when a graph was split. Updates the civilUnitsWindow in case the window was showing the splittedGraph
         /// </summary>
-        public void CallingAllGraphs(Dictionary<int, Graph.Graph> graphIdToGraph)
+        /// <param name="splittedId"></param>
+        public void SplitGraph(int splittedId)
         {
             if (!mActiveUserInterface) { return; }
 
-            mGraphSwitcher?.CallingAllGraphs(graphIdToGraph, mCivilUnitsSliderHandler);
+            if (mCivilUnitsGraphId == splittedId)
+            {
+                mCivilUnitsSliderHandler.Refresh();
+                mCivilUnitsSliderHandler.ForceSliderPages();
+            }
         }
 
         /// <summary>
@@ -1823,16 +1829,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             if (!mActiveUserInterface) { return; }
 
-            // update graph sliders
-            if (mGraphSwitcher != null)
-            {
-                mGraphSwitcher.UpdateCurrentIndex(graphId);
-
-                mCivilUnitsSliderHandler.SetGraphId(graphId, mCivilUnitsGraphId);
-
-                mCivilUnitsSliderHandler.Refresh();
-                mCivilUnitsSliderHandler.ForceSliderPages();
-            }
+            mCivilUnitsGraphId = graphId;
         }
 
         /// <summary>
@@ -1841,13 +1838,6 @@ namespace Singularity.Screen.ScreenClasses
         private void Deactivate()
         {
             mActiveUserInterface = false;
-
-/*            foreach (var window in mWindowList)
-            {
-                window.Active = false;
-            }
-            //Treat our special snowflake
-            mInfoBar.Active = false;*/
         }
 
         /// <summary>
@@ -1856,13 +1846,6 @@ namespace Singularity.Screen.ScreenClasses
         public void Activate()
         {
             mActiveUserInterface = true;
-
-/*            foreach (var window in mWindowList)
-            {
-                window.Active = true;
-            }
-            mInfoBar.Active = true;
-            mCivilUnitsSliderHandler.Initialize();*/
         }
 
         private Button mCurrentlyBuildButton;

@@ -126,32 +126,23 @@ namespace Singularity.Screen
         }
 
         /// <summary>
-        /// Add a graph id to the graphswitcher in the UI
-        /// </summary>
-        /// <param name="graphId"></param>
-        internal void AddGraph(int graphId)
-        {
-            ControlledUserInterface?.AddGraph(graphId);
-        }
-
-        /// <summary>
         /// Merge two graphs of the graphswitcher in the UI
         /// </summary>
-        /// <param name="newGraphId"></param>
-        /// <param name="oldGraphId1"></param>
-        /// <param name="oldGraphId2"></param>
+        /// <param name="newGraphId">the new, merged graph id</param>
+        /// <param name="oldGraphId1">first merged graph</param>
+        /// <param name="oldGraphId2">second merged graph</param>
         internal void MergeGraph(int newGraphId, int oldGraphId1, int oldGraphId2)
         {
             ControlledUserInterface?.MergeGraph(newGraphId, oldGraphId1, oldGraphId2);
         }
 
         /// <summary>
-        /// This will send an info to the UI, which, in return, will send an info to the graphSwitcher,
-        /// which will call all graphIDs from the structure map and use them to update it's dictionaries.
+        /// TODO 
         /// </summary>
-        public void CallingAllGraphs(Dictionary<int, Graph.Graph> graphIdToGraph)
+        /// <param name="splittedGraphId"></param>
+        internal void SplitGraph(int splittedGraphId)
         {
-            ControlledUserInterface?.CallingAllGraphs(graphIdToGraph);
+            ControlledUserInterface?.SplitGraph(splittedGraphId);
         }
 
         /// <summary>
