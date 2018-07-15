@@ -12,13 +12,13 @@ using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Units;
 
-namespace Singularity.KI
+namespace Singularity.AI.Structures
 {
     /// <summary>
     /// The enemys defenseplatform.
     /// </summary>
     [DataContract]
-    class Sentinel: DefenseLaser
+    public sealed class Sentinel: DefenseLaser
     {
         [DataMember]
         private const int DrainingEnergy = 0;

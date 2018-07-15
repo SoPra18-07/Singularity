@@ -12,7 +12,7 @@ using Singularity.Units;
 namespace Singularity.Platforms
 {
     [DataContract]
-    internal abstract class DefenseBase : PlatformBlank, IShooting
+    public abstract class DefenseBase : PlatformBlank, IShooting
     {
         /// <summary>
         /// For defense platforms, indicates if they are shooting.
@@ -92,7 +92,7 @@ namespace Singularity.Platforms
                 SpriteEffects.None,
                 LayerConstants.PlatformLayer);
 
-            if (!mShoot)
+            if (!mShoot || mShootingTarget == null)
             {
                 return;
             }

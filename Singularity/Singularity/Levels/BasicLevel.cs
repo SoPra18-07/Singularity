@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Singularity.AI;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
@@ -74,6 +75,7 @@ namespace Singularity.Levels
             var libSans12 = content.Load<SpriteFont>("LibSans12");
 
             PlatformFactory.Init(platformConeTexture, platformCylTexture, platformDomeTexture, platformBlankTexture, libSans12);
+            StructureLayoutHolder.Initialize(ref mDirector);
 
             //Map related stuff
             Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 2800, 2800);

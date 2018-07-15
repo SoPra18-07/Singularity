@@ -3,7 +3,8 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.KI;
+using Singularity.AI;
+using Singularity.AI.Properties;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Nature;
@@ -99,26 +100,6 @@ namespace Singularity.Levels
             var res11 = new Resource(EResourceType.Trash, platform1.Center);
             var res12 = new Resource(EResourceType.Trash, platform2.Center);
 
-            var spawner = new Spawner(new Vector2(3500, 3000),
-                content.Load<Texture2D>("Cylinders"),
-                content.Load<Texture2D>("PlatformBasic"),
-                ref mDirector);
-            var sentinel = new Sentinel(new Vector2(4000, 3000), content.Load<Texture2D>("Cones"),
-                content.Load<Texture2D>("PlatformBasic"),
-                content.Load<SpriteFont>("LibSans12"),
-                ref mDirector);
-
-            GameScreen.AddObject(sentinel);
-
-            var road6 = new Road(spawner, sentinel, ref mDirector);
-            GameScreen.AddObject(road6);
-
-
-
-
-
-
-
             platform2.StoreResource(res);
             platform3.StoreResource(res2);
             platform4.StoreResource(res3);
@@ -133,20 +114,20 @@ namespace Singularity.Levels
             platform2.StoreResource(res12);
 
             GameScreen.AddObjects(genUnit);
-            GameScreen.AddObject(enemyUnit);
+            //GameScreen.AddObject(enemyUnit);
             GameScreen.AddObject(milUnit);
             GameScreen.AddObject(settler);
-
-            // TODO : adds spawner
-            GameScreen.AddObject(spawner);
 
             // add a puddle
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2500), ref mDirector));
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2700), ref mDirector, false));
 
+            // KI STUFF
+            IArtificalIntelligence ai = new BasicAi(EAIDifficulty.Easy, ref mDirector);
+            GameScreen.AddObject(ai);
+
             //TESTMETHODS HERE ====================================
             mDirector.GetDistributionDirector.GetManager(0).RequestResource(platform2, EResourceType.Oil, null);
-            spawner.SpawnEnemy(Camera, map, GameScreen);
         }
 
         public GameScreen GetGameScreen()

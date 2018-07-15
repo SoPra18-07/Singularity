@@ -14,7 +14,7 @@ using Singularity.Units;
 namespace Singularity.PlatformActions
 {
     [DataContract]
-    internal sealed class Shoot : APlatformAction
+    public sealed class Shoot : APlatformAction
     {
         /// <summary>
         /// Stores the amount of ammunition the platform currently has. Max is 50.

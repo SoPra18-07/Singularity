@@ -2,6 +2,7 @@
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
@@ -13,7 +14,7 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="MilitaryUnit"/>
     [DataContract]
-    internal class EnemyUnit : FreeMovingUnit, IShooting
+    public class EnemyUnit : FreeMovingUnit, IShooting
     {
         /// <summary>
         /// Decides if a unit is a practice target or not (for debug purposes)
@@ -142,29 +143,27 @@ namespace Singularity.Units
 
         }
 
-        public override void Update(GameTime gameTime)
+        public bool Move(Vector2 target)
         {
-            /*
-            // Generate random positions for the enemy unit to move to.
-            mElapsedTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (mElapsedTime > 4)
-            { //Get a new random direction every 4 seconds
-                mElapsedTime -= 4; //Subtract the 4 seconds we've already checked
-                var dirX = (float)mRand.NextDouble() * MapConstants.MapWidth; //Set the position to a random value within the screen
-                var dirY = (float)mRand.NextDouble() * MapConstants.MapHeight;
+            mTargetPosition = target;
 
-                // Check if the target position is on the map.
-                if (!mIsMoving && Map.Map.IsOnTop(new Rectangle((int)(dirX - RelativeSize.X / 2f), (int)(dirY - RelativeSize.Y / 2f), (int)RelativeSize.X, (int)RelativeSize.Y), mCamera))
+            if (!mIsMoving && Map.Map.IsOnTop(target))
+            {
+
+                if (mMap.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
+                    (int)mTargetPosition.X / MapConstants.GridWidth,
+                    (int)mTargetPosition.Y / MapConstants.GridWidth))
                 {
-                    Rotate(new Vector2(dirX, dirY));
-                    mIsMoving = true;
-                    mTargetPosition = new Vector2(dirX, dirY);
-                    mBoundsSnapshot = Bounds;
-                    mZoomSnapshot = mCamera.GetZoom();
+                    FindPath(Center, mTargetPosition);
+                    return true;
                 }
             }
-            */
+            return false;
 
+        }
+
+        public override void Update(GameTime gameTime)
+        {
             //make sure to update the relative bounds rectangle enclosing this unit.
             Bounds = new Rectangle(
                 (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
@@ -175,9 +174,17 @@ namespace Singularity.Units
             }
 
             // calculate path to target position
-            if (mIsMoving && !HasReachedTarget())
+            else if (mIsMoving)
             {
-                MoveToTarget(mTargetPosition, mSpeed);
+                if (!HasReachedWaypoint())
+                {
+                    MoveToTarget(mPath.Peek(), mSpeed);
+                }
+                else
+                {
+                    mPath.Pop();
+                    MoveToTarget(mPath.Peek(), mSpeed);
+                }
             }
 
             // these are values needed to properly get the current sprite out of the spritesheet.

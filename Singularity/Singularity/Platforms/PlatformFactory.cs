@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.AI.Structures;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Screen;
@@ -74,7 +75,7 @@ namespace Singularity.Platforms
                     return new PlatformBlank(position, sBlankSheet, sBlankSheet, sLibSans12, ref director, friendly: friendly);
 
                 case EStructureType.Command:
-                    return new CommandCenter(position, sCylinderSheet, sBlankSheet, sLibSans12, ref director, friendly);
+                    return new CommandCenter(position, sCylinderSheet, sBlankSheet, sLibSans12, ref director, true, friendly);
 
                 case EStructureType.Energy:
                     return new EnergyFacility(position, sDomeSheet, sBlankSheet, sLibSans12, ref director, friendly);
@@ -106,6 +107,12 @@ namespace Singularity.Platforms
 
                 case EStructureType.Laser:
                     return new DefenseLaser(position, sConeSheet, sBlankSheet, sLibSans12, ref director, friendly);
+
+                case EStructureType.Sentinel:
+                    return new Sentinel(position, sConeSheet, sBlankSheet, sLibSans12, ref director);
+
+                case EStructureType.Spawner:
+                    return new Spawner(position, sCylinderSheet, sBlankSheet, ref director);
 
                 default:
                     break;

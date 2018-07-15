@@ -12,7 +12,7 @@ using Singularity.Platforms;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 
-namespace Singularity.KI
+namespace Singularity.AI.Structures
 {
     /// <summary>
     /// This class is the enemey platform responsible for spawning enemy units in the game
@@ -20,7 +20,7 @@ namespace Singularity.KI
     /// in order to produce military units
     /// </summary>
     [DataContract]
-    class Spawner : PlatformBlank
+    public class Spawner : PlatformBlank
     {
         [DataMember]
         private readonly Vector2 mPosition;
@@ -36,6 +36,7 @@ namespace Singularity.KI
         // method that produces enemy military units when called up by the Ki
         internal EnemyUnit SpawnEnemy(Camera camera, Map.Map map, GameScreen gameScreen)
         {
+            UpdateValues();
             var enemyUnit = new EnemyUnit(new Vector2(Center.X + 100, Center.Y), camera, ref mDirector, ref map);
             gameScreen.AddObject(enemyUnit);
             return enemyUnit;

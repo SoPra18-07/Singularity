@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -17,7 +18,7 @@ namespace Singularity.Platforms
 {
     /// <inheritdoc cref="DefenseBase"/>
     [DataContract]
-    internal class DefenseLaser : DefenseBase
+    public class DefenseLaser : DefenseBase
     {
         [DataMember]
         private const int DrainingEnergy = 40;
@@ -55,7 +56,9 @@ namespace Singularity.Platforms
                     mShoot = true;
                     mDirector.GetSoundManager.PlaySound("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
                 }
+
                 target.MakeDamage(MilitaryUnitStats.mTurretStrength);
+
             }
         }
 

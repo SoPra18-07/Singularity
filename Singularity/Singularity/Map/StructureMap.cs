@@ -144,10 +144,12 @@ namespace Singularity.Map
             mPlatforms.AddLast(platform);
 
             // TODO: quick implementation to prevent enemy platforms from being discoverable through FOW
-            if (platform.Friendly)
+            if (!platform.Friendly)
             {
-                mFow.AddRevealingObject(platform);
+                return;
             }
+
+            mFow.AddRevealingObject(platform);
 
             // first of all get the "connection graph" of the platform to add. The connection graph
             // describes the graph (nodes and edges) reachable from this platform
@@ -217,7 +219,7 @@ namespace Singularity.Map
             // first check if two graphs got connected.
             // because we need to differ between road connected two graphs, or road was added to one graph only
 
-            if (((PlatformBlank) road.GetChild()).Friendly || ((PlatformBlank) road.GetParent()).Friendly)
+            if (((PlatformBlank) road.GetChild()).Friendly && ((PlatformBlank) road.GetParent()).Friendly)
             {
 
                 if (mPlatformToGraphId[(PlatformBlank) road.GetChild()] !=

@@ -15,7 +15,7 @@ namespace Singularity.Units
     /// <inheritdoc cref="ICollider"/>
 
     [DataContract]
-    internal abstract class FreeMovingUnit : ICollider
+    public abstract class FreeMovingUnit : ICollider
 
     {
         /// <summary>

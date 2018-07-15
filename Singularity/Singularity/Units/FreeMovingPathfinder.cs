@@ -10,7 +10,7 @@ namespace Singularity.Units
     /// <summary>
     /// A Jump Point Search pathfinder implementation for military units
     /// </summary>
-    internal sealed class FreeMovingPathfinder
+    public sealed class FreeMovingPathfinder
     {
         private JumpPointParam mJpParam;
 
