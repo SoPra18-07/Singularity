@@ -233,6 +233,7 @@ namespace Singularity.Screen.ScreenClasses
                     mTransformMatrix);
 
                 mMap.GetStructureMap().Draw(spriteBatch);
+                mMap.GetResourceMap().Draw(spriteBatch);
 
                 foreach (var spatial in mSpatialObjects)
                 {
