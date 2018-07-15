@@ -33,6 +33,6 @@
             set { sUiVolume = value; }
         }
 
-        internal bool MonoSound { get; set; }
+        internal static bool MonoSound { get; set; }
     }
 }
