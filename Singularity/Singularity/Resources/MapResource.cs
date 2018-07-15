@@ -63,20 +63,18 @@ namespace Singularity.Resources
 
         public Optional<Resource> Get(Vector2 location)
         {
-            if (Amount > 0)
-            {
-                Amount -= 1;
+            if (Amount <= 0) return Optional<Resource>.Of(null);
+            Amount -= 1;
 
-                // Track the creation of a resource in the statistics.
-                mDirector.GetStoryManager.UpdateResources(Type);
-                return Optional<Resource>.Of(new Resource(Type, location));
-            }
-            return Optional<Resource>.Of(null);
+            // Track the creation of a resource in the statistics.
+            mDirector.GetStoryManager.UpdateResources(Type);
+            return Optional<Resource>.Of(new Resource(Type, location));
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.DrawEllipse(new Rectangle((int)AbsolutePosition.X, (int)AbsolutePosition.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y), mColor, Amount / 2f, LayerConstants.MapResourceLayer);
+            // for some reason this is not below the FOW.
         }
 
         public void Update(GameTime gametime)

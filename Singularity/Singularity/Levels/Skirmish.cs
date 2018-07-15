@@ -89,11 +89,11 @@ namespace Singularity.Levels
             var res7 = new Resource(EResourceType.Metal, platform4.Center);
             var res2 = new Resource(EResourceType.Chip, platform3.Center);
             var res3 = new Resource(EResourceType.Oil, platform4.Center);
-            var res8 = new Resource(EResourceType.Trash, platform1.Center);
-            var res9 = new Resource(EResourceType.Trash, platform1.Center);
-            var res10 = new Resource(EResourceType.Trash, platform1.Center);
-            var res11 = new Resource(EResourceType.Trash, platform1.Center);
-            var res12 = new Resource(EResourceType.Trash, platform2.Center);
+            var res8 = new Resource(EResourceType.Metal, platform1.Center);
+            var res9 = new Resource(EResourceType.Metal, platform1.Center);
+            var res10 = new Resource(EResourceType.Oil, platform1.Center);
+            var res11 = new Resource(EResourceType.Oil, platform1.Center);
+            var res12 = new Resource(EResourceType.Oil, platform2.Center);
 
             platform2.StoreResource(res);
             platform3.StoreResource(res2);

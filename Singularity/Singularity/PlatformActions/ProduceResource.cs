@@ -13,13 +13,8 @@ namespace Singularity.PlatformActions
     [DataContract]
     public sealed class ProduceWellResource : APlatformResourceAction
     {
-        // The ResourceMap is needed for actually 'producing' the resources.
-        [DataMember]
-        private readonly ResourceMap mResourceMap;
-
-        public ProduceWellResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, ref director)
+        public ProduceWellResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, resourceMap, ref director)
         {
-            mResourceMap = resourceMap;
         }
 
         [DataMember]
@@ -27,7 +22,7 @@ namespace Singularity.PlatformActions
 
         protected override void CreateResource()
         {
-            var res = mResourceMap.GetWellResource(mPlatform.AbsolutePosition);
+            var res = mResourceMap.GetWellResource(mPlatform.Center);
             if (res.IsPresent())
             {
                 mPlatform.StoreResource(res.Get());
@@ -38,13 +33,8 @@ namespace Singularity.PlatformActions
     [DataContract]
     public sealed class ProduceQuarryResource : APlatformResourceAction
     {
-        // The ResourceMap is needed for actually 'producing' the resources.
-        [DataMember]
-        private ResourceMap mResourceMap;
-
-        public ProduceQuarryResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, ref director)
+        public ProduceQuarryResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, resourceMap, ref director)
         {
-            mResourceMap = resourceMap;
         }
 
         [DataMember]
@@ -63,13 +53,9 @@ namespace Singularity.PlatformActions
     [DataContract]
     public sealed class ProduceMineResource : APlatformResourceAction
     {
-        // The ResourceMap is needed for actually 'producing' the resources.
-        [DataMember]
-        private ResourceMap mResourceMap;
 
-        public ProduceMineResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, ref director)
+        public ProduceMineResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, resourceMap, ref director)
         {
-            mResourceMap = resourceMap;
         }
 
         [DataMember]
@@ -88,10 +74,16 @@ namespace Singularity.PlatformActions
     [DataContract]
     public abstract class APlatformResourceAction : APlatformAction
     {
+        [DataMember]
         private int mCounter;
 
-        protected APlatformResourceAction(PlatformBlank platform, ref Director director) : base(platform, ref director)
+        // The ResourceMap is needed for actually 'producing' the resources.
+        [DataMember]
+        protected ResourceMap mResourceMap;
+
+        protected APlatformResourceAction(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, ref director)
         {
+            mResourceMap = resourceMap;
         }
 
         public override void UiToggleState()

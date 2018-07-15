@@ -1099,7 +1099,7 @@ namespace Singularity.Platforms
         {
             if (mResources.Count == 0)
             {
-                return "";
+                return "None";
             }
             var resString = "";
             var cType = (EResourceType) 0;

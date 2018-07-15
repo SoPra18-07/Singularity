@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,7 +13,6 @@ namespace Singularity.Platforms
     [DataContract]
     internal sealed class Well: PlatformBlank
     {
-
         public Well(Vector2 position,
             Texture2D platformSpriteSheet,
             Texture2D baseSprite,
@@ -29,9 +27,8 @@ namespace Singularity.Platforms
                 ref director,
                 EStructureType.Well,
                 -50,
-                friendly: friendly)
+                friendly)
         {
-            //Add possible Actions in this array
             mIPlatformActions.Add(new ProduceWellResource(this, resource, ref mDirector));
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.

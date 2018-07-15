@@ -13,7 +13,6 @@ namespace Singularity.Platforms
     [DataContract]
     internal sealed class Mine : PlatformBlank
     {
-
         public Mine(Vector2 position,
             Texture2D spritesheet,
             Texture2D basesprite,
@@ -40,7 +39,7 @@ namespace Singularity.Platforms
             SetPlatfromParameters();
             mPlatformWidth = 144;
             mPlatformHeight = 187;
-    }
+        }
 
         public override void Produce()
         {
