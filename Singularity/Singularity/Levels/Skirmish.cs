@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.AI;
 using Singularity.AI.Properties;
 using Singularity.Manager;
-using Singularity.Map;
 using Singularity.Nature;
 using Singularity.Platforms;
 using Singularity.Resources;
@@ -69,7 +68,7 @@ namespace Singularity.Levels
 
             // Enemy Unit
             var enemyUnit = new Target(new Vector2(3000, 2950), Camera, ref mDirector, ref map);
-            var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
+            // var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
 
             var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, Ui);
 

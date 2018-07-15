@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Property;
-using Singularity.Utils;
 
 namespace Singularity.Nature
 {
