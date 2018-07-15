@@ -199,6 +199,16 @@ namespace Singularity.Manager
             return total;
         }
 
+        public List<IPlatformAction> GetPlatformActions()
+        {
+            return mPlatformActions;
+        }
+
+        public void SetPlatformActions(List<IPlatformAction> actions)
+        {
+            mPlatformActions = actions;
+        }
+
         /// <summary>
         /// Gets the Lists of unit in that Job.
         /// </summary>
@@ -438,7 +448,7 @@ namespace Singularity.Manager
                     //This means that the Action is paused.
                     if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()) && task.Job != JobType.Construction)
                     {
-                        task = RequestNewTask(unit, job, assignedAction);
+                        return RequestNewTask(unit, job, assignedAction);
                     }
                     if (task.End.IsPresent() && task.GetResource != null)
                     {
@@ -476,7 +486,7 @@ namespace Singularity.Manager
                     //This means that the Action is paused.
                     if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()))
                     {
-                        task = RequestNewTask(unit, job, assignedAction);
+                        return RequestNewTask(unit, job, assignedAction);
                     }
                     if (task.End.IsPresent() && task.GetResource != null)
                     {
@@ -1140,9 +1150,6 @@ namespace Singularity.Manager
         {
             Kill(action);
             // TODO: throw new NotImplementedException(); // (currently commented out, since it'd break stuff)
-            // Actions need a sleep method
-            // No, they're just being removed from occurences in the DistributionManager. As soon as they unpause, they'll send requests for Resources and units again.
-            // Ah ok I got that part
         }
 
 

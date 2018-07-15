@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Singularity.PlatformActions;
 using Singularity.Platforms;
 using Singularity.Screen;
 using Singularity.Units;
@@ -81,6 +82,10 @@ namespace Singularity.Manager
                 productiontasks.Enqueue(task);
             }
 
+            //Merge the PlatformActions
+            var actions = new List<IPlatformAction>(dist1.GetPlatformActions());
+            actions.AddRange(dist2.GetPlatformActions());
+
             //Set up the new DistributionManager
             dist3.SetJobUnits(idle, JobType.Idle);
             dist3.SetJobUnits(prod, JobType.Production);
@@ -95,6 +100,7 @@ namespace Singularity.Manager
             dist3.SetTasks(buildingtasks, true);
             dist3.SetTasks(productiontasks, false);
 
+            dist3.SetPlatformActions(actions);
             //Remove the two old DMs and add the new DM to the Dictionary
             mDMs.Remove(graphid1);
             mDMs.Remove(graphid2);

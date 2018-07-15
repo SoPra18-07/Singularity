@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Singularity.Manager;
@@ -12,11 +13,17 @@ using Singularity.Utils;
 
 namespace Singularity.PlatformActions
 {
+    [DataContract]
     class RefineResourceAction : AMakeUnit
     {
+        [DataMember]
         private EResourceType mRefiningTo;
+        [DataMember]
         private bool mReady;
+        [DataMember]
         private int mCounter;
+        [DataMember]
+        public override List<JobType> UnitsRequired { get; set; } = new List<JobType> { JobType.Production };
 
         public RefineResourceAction(PlatformBlank platform, ref Director director, Dictionary<EResourceType, int> from, EResourceType to) : base(platform, ref director)
         {
@@ -26,8 +33,6 @@ namespace Singularity.PlatformActions
 
             // now, you actually might want to have the mRequestedResoucres higher than the cost of one building ... todo: another time.
         }
-
-        public override List<JobType> UnitsRequired { get; set; } = new List<JobType> { JobType.Production };
         protected override void CreateUnit()
         {
             mReady = true;
@@ -58,7 +63,7 @@ namespace Singularity.PlatformActions
             {
                 case PlatformActionState.Available:
                     mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(this);
-                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(mPlatform);
+                    //mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(mPlatform);
                     UpdateResources();
                     State = PlatformActionState.Active;
                     break;
