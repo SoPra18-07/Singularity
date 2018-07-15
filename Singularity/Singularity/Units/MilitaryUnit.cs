@@ -258,6 +258,7 @@ namespace Singularity.Units
                 if (test != null && test.HasDieded)
                 {
                     mShootingTarget = null;
+                    mShootingTimer = -1;
                     mShoot = false;
                 }
             }
