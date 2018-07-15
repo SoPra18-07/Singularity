@@ -28,7 +28,9 @@ namespace Singularity.Map
         internal UnitMap(int mapSizeX, int mapSizeY)
         {
             mLookupTable = new Dictionary<int, Vector2>();
-            mUnitGrid = new UnitMapTile[mapSizeX / 2, mapSizeY / 2];
+            // + 1 Because the Unit grid is an array and it can happen that there is an Indexoutofboundsexception
+            // when a unit is moving at the corner
+            mUnitGrid = new UnitMapTile[mapSizeX / 2 + 1, mapSizeY / 2 + 1];
 
             for (var i = 0; i < mUnitGrid.GetLength(0); i++)
             {

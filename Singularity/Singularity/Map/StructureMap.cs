@@ -278,6 +278,12 @@ namespace Singularity.Map
         /// <param name="road">The road to be added to the game</param>
         public void RemoveRoad(Road road)
         {
+            if (!((PlatformBlank) road.GetChild()).Friendly || !((PlatformBlank) road.GetParent()).Friendly)
+            {
+                //TODO: THIS CAUSES THE ROAD TO HANG iN THE AIR
+                return;
+            }
+
             mRoads.Remove(road);
 
             var child = road.GetChild();

@@ -230,9 +230,12 @@ namespace Singularity.Units
 
         private void Shoot(IDamageable target)
         {
-            //TODO: currently enemy units CAN shot themselves, I don't know how hard this is to fix, but I don't see a solution at first glance
-            mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
-            target.MakeDamage(MilitaryUnitStats.mUnitStrength);
+            if (target != null)
+            {
+                //TODO: currently enemy units CAN shot themselves, I don't know how hard this is to fix, but I don't see a solution at first glance
+                mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+                target.MakeDamage(MilitaryUnitStats.mUnitStrength);
+            }
         }
 
         public void SetShootingTarget(ICollider target)

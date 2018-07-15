@@ -152,11 +152,14 @@ namespace Singularity.Manager
         /// <param name="unit">The unit to be added to the manager.</param>
         internal void AddUnit(FreeMovingUnit unit)
         {
+            //I dont know who made the inheritance but it fucked everything up. The Enemy unit is now a Military unit too
+            //And that means the enemy unit is also added to the friendlymilitarylist lol.
+            //Hotfix: I just ask for both casts to be not null.
             var friendlyMilitary = unit as MilitaryUnit;
             var friendlySettler = unit as Settler;
             var hostileMilitary = unit as EnemyUnit;
 
-            if (friendlyMilitary != null)
+            if (friendlyMilitary != null && hostileMilitary == null)
             {
                 mFriendlyMilitary.Add(friendlyMilitary);
             }

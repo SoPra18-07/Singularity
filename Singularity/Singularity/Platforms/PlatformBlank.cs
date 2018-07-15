@@ -368,10 +368,11 @@ namespace Singularity.Platforms
 
         public void Register()
         {
-            if (IsProduction())
+            //For now only register yourself at a DistributionManager when you are friendly. Maybe change that later
+            if (IsProduction() && Friendly)
             {
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, false);
-            } else if (IsDefense())
+            } else if (IsDefense() && Friendly)
             {
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, true);
             }
