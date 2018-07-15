@@ -198,8 +198,15 @@ namespace Singularity.Units
                 }
                 else
                 {
-                    mPath.Pop();
-                    MoveToTarget(mPath.Peek(), mSpeed);
+                    //TODO This is a hotfix. Basically the same as the other two TODO hotfixes. Search for them for more information?
+                    if (mPath.Count != 0)
+                    {
+                        mPath.Pop();
+                        if (mPath.Count != 0)
+                        {
+                            MoveToTarget(mPath.Peek(), mSpeed);
+                        }
+                    }
                 }
             }
 

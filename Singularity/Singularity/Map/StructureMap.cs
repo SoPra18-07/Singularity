@@ -278,11 +278,6 @@ namespace Singularity.Map
         /// <param name="road">The road to be added to the game</param>
         public void RemoveRoad(Road road)
         {
-            if (!((PlatformBlank) road.GetChild()).Friendly || !((PlatformBlank) road.GetParent()).Friendly)
-            {
-                //TODO: THIS CAUSES THE ROAD TO HANG iN THE AIR
-                return;
-            }
 
             mRoads.Remove(road);
 
@@ -291,6 +286,12 @@ namespace Singularity.Map
 
             ((PlatformBlank)child)?.RemoveEdge(road);
             ((PlatformBlank)parent)?.RemoveEdge(road);
+
+            if (!((PlatformBlank)road.GetChild()).Friendly || !((PlatformBlank)road.GetParent()).Friendly)
+            {
+                //Skip the Whole Graphid part since the enemy roads are not registered in a graph with graphid
+                return;
+            }
 
             // more accurately: we have two cases:
             // 1. road gets destroyed -> two new seperate graphs get created

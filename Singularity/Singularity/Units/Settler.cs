@@ -135,7 +135,11 @@ namespace Singularity.Units
                 else
                 {
                     mPath.Pop();
-                    MoveToTarget(mPath.Peek(), mSpeed);
+                    //TODO: THis is a hotfix, the same as in HasREachedWaypoint. I dont know if this could create strange behaviour
+                    if (mPath.Count != 0)
+                    {
+                        MoveToTarget(mPath.Peek(), mSpeed);
+                    }
                 }
             }
 
