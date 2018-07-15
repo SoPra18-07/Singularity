@@ -45,7 +45,7 @@ namespace Singularity.AI.Behavior
 
             foreach(var enemyUnit in mEnemyUnits)
             {
-                
+                enemyUnit.SetMovementTarget(GetRandomPositionOnMap());
             }
         }
 

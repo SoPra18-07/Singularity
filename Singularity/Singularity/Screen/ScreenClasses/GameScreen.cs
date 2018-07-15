@@ -131,7 +131,6 @@ namespace Singularity.Screen.ScreenClasses
                     mSelBox.SelectingBox += conUnit.BoxSelected;
                 }
 
-                possibleEnemy?.ReloadContent(ref mDirector, camera, ref mMap);
                 possiblepuddle?.ReloadContent();
                 possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
@@ -159,7 +158,6 @@ namespace Singularity.Screen.ScreenClasses
                 {
                     mSelBox.SelectingBox += freeMovingUnit.BoxSelected;
                 }
-                possibleEnemy?.ReloadContent(ref mDirector, camera, ref mMap);
                 possiblepuddle?.ReloadContent();
                 possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
@@ -186,7 +184,6 @@ namespace Singularity.Screen.ScreenClasses
                 {
                     mSelBox.SelectingBox += freeMovingUnit.BoxSelected;
                 }
-                possibleEnemy?.ReloadContent(ref mDirector, camera, ref mMap);
                 possiblepuddle?.ReloadContent();
                 possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
