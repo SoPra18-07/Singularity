@@ -294,7 +294,11 @@ namespace Singularity.Platforms
                 },
                 size: mLibSans12.MeasureString(str),
                 platform: this, director: mDirector);
-                // mInfoBox = new PlatformInfoBox(new List<IWindowItem> { new TextField("PlattformInfo", AbsolutePosition, AbsoluteSize, mLibSans12, Color.White) }, AbsoluteSize, new Color(0.86f, 0.86f, 0.86f), new Color(1f, 1, 1), true, this, mDirector);
+
+            // Track the creation of a platform in the statistics.
+            director.GetStoryManager.UpdatePlatforms("created");
+
+            // mInfoBox = new PlatformInfoBox(new List<IWindowItem> { new TextField("PlattformInfo", AbsolutePosition, AbsoluteSize, mLibSans12, Color.White) }, AbsoluteSize, new Color(0.86f, 0.86f, 0.86f), new Color(1f, 1, 1), true, this, mDirector);
 
             /*
             var infoBuildBlank = new TextField("Blank Platform",
@@ -972,8 +976,8 @@ namespace Singularity.Platforms
 
 
             mResources.RemoveAll(r => r.Die());
-            mResources = new List<Resource> {new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center),
-                new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center)};
+            mResources = new List<Resource> {new Resource(EResourceType.Trash, Center, ref mDirector), new Resource(EResourceType.Trash, Center, ref mDirector),
+                new Resource(EResourceType.Trash, Center, ref mDirector), new Resource(EResourceType.Trash, Center, ref mDirector), new Resource(EResourceType.Trash, Center, ref mDirector)};
 
             mRequested = new Dictionary<EResourceType, int>();
 
