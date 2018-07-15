@@ -120,6 +120,7 @@ namespace Singularity.Screen.ScreenClasses
             {
                 //TODO: Add terrain when its in master
                 var possibleMilitaryUnit = drawable as MilitaryUnit;
+                var possibleEnemy = drawable as EnemyUnit;
                 var possibleSettler = drawable as Settler;
                 var possiblegenunit = drawable as GeneralUnit;
                 var possiblerock = drawable as Rock;
@@ -129,6 +130,8 @@ namespace Singularity.Screen.ScreenClasses
                 {
                     mSelBox.SelectingBox += conUnit.BoxSelected;
                 }
+
+                possibleEnemy?.ReloadContent(ref mDirector, camera, ref mMap);
                 possiblepuddle?.ReloadContent();
                 possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
@@ -151,10 +154,12 @@ namespace Singularity.Screen.ScreenClasses
                 var possiblerock = updateable as Rock;
                 var possiblepuddle = updateable as Puddle;
                 var conUnit = updateable as ControllableUnit;
+                var possibleEnemy = updateable as EnemyUnit;
                 if (conUnit != null)
                 {
                     mSelBox.SelectingBox += conUnit.BoxSelected;
                 }
+                possibleEnemy?.ReloadContent(ref mDirector, camera, ref mMap);
                 possiblepuddle?.ReloadContent();
                 possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
@@ -177,10 +182,12 @@ namespace Singularity.Screen.ScreenClasses
                 var possiblerock = spatial as Rock;
                 var possiblepuddle = spatial as Puddle;
                 var conUnit = spatial as ControllableUnit;
+                var possibleEnemy = spatial as EnemyUnit;
                 if (conUnit != null)
                 {
                     mSelBox.SelectingBox += conUnit.BoxSelected;
                 }
+                possibleEnemy?.ReloadContent(ref mDirector, camera, ref mMap);
                 possiblepuddle?.ReloadContent();
                 possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
