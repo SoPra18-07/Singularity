@@ -1125,16 +1125,16 @@ namespace Singularity.Platforms
                     SoundClass.Effect);
                 mIsManuallyDeactivated = false;
             }
-            mIsActive = true;
             ResetColor();
             //Only reregister the platforms if they are defense or production platforms
-            if (IsDefense())
+            if (IsDefense() && !mIsActive)
             {
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, true);
-            }else if (IsProduction())
+            }else if (IsProduction() && !mIsActive)
             {
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, false);
             }
+            mIsActive = true;
         }
 
         /// <summary>
