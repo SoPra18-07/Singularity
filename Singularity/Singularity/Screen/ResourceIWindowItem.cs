@@ -73,8 +73,6 @@ namespace Singularity.Screen
                 mColorPosition = new Vector2(Position.X, Position.Y + Size.Y / 4);
                 mTextPosition = new Vector2(Position.X + Size.Y, Position.Y);
                 mAmountPosition = new Vector2(Position.X + Size.X - mSpriteFont.MeasureString(Amount.ToString()).X, Position.Y);
-
-                // TODO : ? UPDATE FOR THE UI RESOURCE WINDOW ?
             }
         }
 
