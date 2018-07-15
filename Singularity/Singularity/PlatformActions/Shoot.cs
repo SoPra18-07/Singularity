@@ -29,6 +29,7 @@ namespace Singularity.PlatformActions
         public Shoot(DefenseBase platform, ref Director director) : base(platform, ref director)
         {
             AmmoCount = 10;
+            mPlatform = platform;
         }
 
         public override void Execute()

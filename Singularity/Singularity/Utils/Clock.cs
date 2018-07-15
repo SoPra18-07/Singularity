@@ -24,7 +24,7 @@ namespace Singularity.Utils
         {
             mIngametime = new TimeSpan(0, 0, 0, 0);
             mProduceTicker = new TimeSpan(0, 0, 0);
-            mShootLaserTicker = new TimeSpan(0, 0, 0);
+            mShootLaserTicker = new TimeSpan(0, 0, 0, 0);
         }
 
         public void Update(GameTime time)
@@ -36,9 +36,9 @@ namespace Singularity.Utils
                 mProduceTicker = new TimeSpan(0, 0, 0);
             }
             //THIS determines the attackspeed of a laser tower.
-            if (mShootLaserTicker.Seconds > 1)
+            if (mShootLaserTicker.TotalMilliseconds > 1000)
             {
-                mShootLaserTicker = new TimeSpan(0, 0, 0);
+                mShootLaserTicker = new TimeSpan(0, 0, 0, 0);
             }
 
             mShootLaserTicker = mShootLaserTicker.Add(time.ElapsedGameTime);

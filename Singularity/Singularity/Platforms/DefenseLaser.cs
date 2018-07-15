@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -63,15 +64,14 @@ namespace Singularity.Platforms
         {
             //IF YOU CHANGE THIS THRESHOLD CHANGE IT IN THE CLOCK, TOO. THIS DETERMINES THE ATTACKSPEED.
             //Ask for friendly here because the sentinel handles the shooting on its own!
-            if (mDirector.GetClock.GetShootingLaserTime().Seconds > 1 && Friendly)
+            if (mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds > 1000)
             {
                 //Shoot for every unit thats present
-                var shootaction = GetIPlatformActions().Find(x => (Shoot)x != null);
                 foreach (var unitbool in mAssignedUnits[JobType.Defense])
                 {
                     if (unitbool.GetSecond())
                     {
-                        shootaction.Execute();
+                        mDefenseAction.Execute();
                     }
                 }
             }
