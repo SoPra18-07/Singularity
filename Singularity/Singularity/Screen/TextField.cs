@@ -68,6 +68,11 @@ namespace Singularity.Screen
             }
         }
 
+        public void Draw(SpriteBatch spriteBatch, bool isHighest)
+        {
+            spriteBatch.DrawString(mSpriteFont, mSplittedText, Position, mColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
+        }
+
         /// <summary>
         /// split a text to fit size-width
         /// </summary>
