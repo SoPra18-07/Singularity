@@ -19,6 +19,8 @@ namespace Singularity.Units
         public Native(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
             : base(position, camera, ref director, ref map, false)
         {
+            mSpeed = 10;
+            Health = 6;
             mColor = Color.OrangeRed;
             mScale = 0.25f;
         }
