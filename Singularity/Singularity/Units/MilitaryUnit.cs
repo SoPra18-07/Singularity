@@ -96,6 +96,9 @@ namespace Singularity.Units
             Center = new Vector2((AbsolutePosition.X + AbsoluteSize.X) * 0.5f, (AbsolutePosition.Y + AbsoluteSize.Y) * 0.5f );
 
             Range = MilitaryUnitStats.StandardRange;
+
+            // Track the creation of a military unit in the statistics.
+            director.GetStoryManager.UpdateUnits("created");
         }
 
         public void ReloadContent(ContentManager content, ref Director director, Camera camera, ref Map.Map map)
