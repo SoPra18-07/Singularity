@@ -6,10 +6,18 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Media;
+using Singularity.Property;
 using Singularity.Utils;
 
 namespace Singularity.Sound
 {
+    /// <remarks>
+    /// The sound manager is capable of managing 3D sound for the game environment and is very robust.
+    /// To create a sound, first make sure that the audio data has already been loaded. This is done in the AudioData
+    /// region of the sound manager class.
+    /// An instance of the sound should then be created by the object that wants to play the sound and its instance id saved.
+    /// To play a sound, simply call the PlaySound() method with the sound ID as the argument.
+    /// </remarks>
     public sealed class SoundManager
     {
 
@@ -41,30 +49,6 @@ namespace Singularity.Sound
         /// </summary>
         private static Song sSSoundtrack;
 
-        #endregion
-
-        #region Initialization Methods
-
-        /// <summary>
-        /// Constructs the manager for audio playback of all sound effects.
-        /// </summary>
-        public SoundManager()
-        {
-            MediaPlayer.IsRepeating = true;
-            SoundEffect.DistanceScale = (float)0.5;
-            mListener = new AudioListener();
-            mAllSongs = new Dictionary<string, Song[]>();
-            mEffects = new Dictionary<string, SoundEffect>();
-            mUiSounds = new Dictionary<string, SoundEffect>();
-            mEffectInstances = new Dictionary<int, SoundEffectInstance>();
-            mUiInstances = new Dictionary<int, SoundEffectInstance>();
-            mLevel = String.Empty;
-            mEffectInstanceId = 0;
-            mUiInstanceId = 0;
-            mAllInstanceId = 0;
-            mInstanceMap = new Dictionary<int, Tuple<SoundClass, int>>();
-        }
-
         public void LoadContent(ContentManager contentManager)
         {
             // Load all sound files from the directory.
@@ -87,17 +71,17 @@ namespace Singularity.Sound
 
                 if (phase == "Menu")
                 {
-                    mAllSongs[levelName][(int) SoundPhase.Menu] = song;
+                    mAllSongs[levelName][(int)SoundPhase.Menu] = song;
                 }
 
                 if (phase == "Build")
                 {
-                    mAllSongs[levelName][(int) SoundPhase.Build] = song;
+                    mAllSongs[levelName][(int)SoundPhase.Build] = song;
                 }
 
                 if (phase == "Battle")
                 {
-                    mAllSongs[levelName][(int) SoundPhase.Battle] = song;
+                    mAllSongs[levelName][(int)SoundPhase.Battle] = song;
                 }
             }
 
@@ -124,9 +108,35 @@ namespace Singularity.Sound
             }
 
             //sSoundtrack = contentManager.Load<Song>("BGmusic");
-            sSSoundtrack = mAllSongs["Tutorial"][(int) SoundPhase.Build];
+            sSSoundtrack = mAllSongs["Tutorial"][(int)SoundPhase.Build];
         }
 
+
+        #endregion
+
+        #region Initialization Methods
+
+        /// <summary>
+        /// Constructs the manager for audio playback of all sound effects.
+        /// </summary>
+        public SoundManager()
+        {
+            MediaPlayer.IsRepeating = true;
+            SoundEffect.DistanceScale = (float)0.5;
+            mListener = new AudioListener();
+            mAllSongs = new Dictionary<string, Song[]>();
+            mEffects = new Dictionary<string, SoundEffect>();
+            mUiSounds = new Dictionary<string, SoundEffect>();
+            mEffectInstances = new Dictionary<int, SoundEffectInstance>();
+            mUiInstances = new Dictionary<int, SoundEffectInstance>();
+            mLevel = String.Empty;
+            mEffectInstanceId = 0;
+            mUiInstanceId = 0;
+            mAllInstanceId = 0;
+            mInstanceMap = new Dictionary<int, Tuple<SoundClass, int>>();
+        }
+
+        
         #endregion
 
         public void PlaySoundTrack()
@@ -136,6 +146,7 @@ namespace Singularity.Sound
                 return;
             }
 
+            MediaPlayer.Volume = GlobalVariables.MasterVolume;
             MediaPlayer.Play(sSSoundtrack);
         }
 
@@ -163,7 +174,7 @@ namespace Singularity.Sound
             if (soundClass == SoundClass.Effect)
             {
                 SoundEffectInstance effectInstance = mEffects[name].CreateInstance();
-                effectInstance.Volume = volume;
+                effectInstance.Volume = GlobalVariables.EffectsVolume * GlobalVariables.MasterVolume;
                 effectInstance.Pitch = pitch;
                 effectInstance.IsLooped = loop;
                 if (!isGlobal)
@@ -179,7 +190,7 @@ namespace Singularity.Sound
             if (soundClass == SoundClass.Ui)
             {
                 SoundEffectInstance effectInstance = mUiSounds[name].CreateInstance();
-                effectInstance.Volume = volume;
+                effectInstance.Volume = GlobalVariables.UiVolume * GlobalVariables.MasterVolume;
                 effectInstance.Pitch = pitch;
                 effectInstance.IsLooped = loop;
                 if (!isGlobal)
@@ -200,16 +211,18 @@ namespace Singularity.Sound
         /// </summary>
         /// <param name="id"></param>
         public void PlaySound(int id)
-        {
-            Debug.WriteLine("Listener Position: " + mListener.Position);
-            
+        {            
             switch (mInstanceMap[id].Item1)
             {
                 case SoundClass.Effect:
+                    mEffectInstances[mInstanceMap[id].Item2].Volume =
+                        GlobalVariables.EffectsVolume * GlobalVariables.MasterVolume;
                     mEffectInstances[mInstanceMap[id].Item2].Play();
                     break;
 
                 case SoundClass.Ui:
+                    mUiInstances[mInstanceMap[id].Item2].Volume =
+                        GlobalVariables.UiVolume * GlobalVariables.MasterVolume;
                     mUiInstances[mInstanceMap[id].Item2].Play();;
                     break;
 
@@ -274,7 +287,6 @@ namespace Singularity.Sound
                 {
                     AudioEmitter emitter = new AudioEmitter { Position = new Vector3(newX, newY, 0) };
                     mEffectInstances[instanceId].Apply3D(mListener, emitter);
-                    Debug.WriteLine("Emitter position: " + emitter.Position);
                 }
                 else if (soundClass == SoundClass.Ui)
                 {

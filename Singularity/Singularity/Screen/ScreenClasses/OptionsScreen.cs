@@ -102,10 +102,11 @@ namespace Singularity.Screen.ScreenClasses
         /// <summary>
         /// Creates an instance of the Options screen.
         /// </summary>
-        /// <param name="screenResolution">Screen resolution used for scaling</param>
-        /// <param name="screenResolutionChanged"></param>
-        /// <param name="game">Game1 class passed on to options to allow changing of options</param>
-        public OptionsScreen(Vector2 screenResolution, bool screenResolutionChanged, Game1 game)
+        /// <param name="screenResolution">Screen resolution used for scaling.</param>
+        /// <param name="screenResolutionChanged">True if the screen resolution has changed.</param>
+        /// <param name="game">Game1 class passed on to options to allow changing of options.</param>
+        /// <param name="screenState">The state that the screen should be initialized to.</param>
+        public OptionsScreen(Vector2 screenResolution, bool screenResolutionChanged, Game1 game, EOptionScreenState screenState = EOptionScreenState.Gameplay)
         {
             // scaling of all positions according to viewport size
             mScreenResolution = screenResolution;
@@ -170,7 +171,8 @@ namespace Singularity.Screen.ScreenClasses
             const string muteString = "Mute";
             #endregion
 
-            // make the tab select buttons
+            #region Tab Buttons
+
             var gameplayButton = new Button(gameplayString, mLibSans16, new Vector2(mTabPadding, mTopContentPadding), mTextColor);
             var graphicsButton = new Button(graphicsString, mLibSans16, new Vector2(mTabPadding, mTopContentPadding + 40), mTextColor);
             var audioButton = new Button(audioString, mLibSans16, new Vector2(mTabPadding, mTopContentPadding + 80), mTextColor);
@@ -186,10 +188,18 @@ namespace Singularity.Screen.ScreenClasses
                 tabButton.Opacity = mMenuOpacity;
             }
 
-            // Gameplay settings
+
+            #endregion
+
+            #region Gameplay Settings
+
             // TODO figure out what settings can be implemented in here
 
-            // Graphics settings
+            #endregion
+
+            #region Graphics Settings
+
+
             var fullScreen = new Checkbox(fullScreenString,
                 mLibSans16,
                 new Vector2(mContentPadding,
@@ -221,25 +231,36 @@ namespace Singularity.Screen.ScreenClasses
                 spriteEffects: SpriteEffects.FlipHorizontally);
 
             #endregion
-                 
+
             var saveButton = new Button(saveChangesString, mLibSans16, new Vector2(mContentPadding, mTopContentPadding + 160), mTextColor);
 
             mGraphicsButtons.Add(fullScreen);
             mGraphicsButtons.Add(saveButton);
             mGraphicsButtons.Add(resolutionDown);
             mGraphicsButtons.Add(resolutionUp);
-            
+
             foreach (Button graphButton in mGraphicsButtons)
             {
                 graphButton.Opacity = mMenuOpacity;
             }
 
-            // Audio settings
+
+            #endregion
+
+            #region Audio Settings
+
             var muteButton = new Button(muteString, mLibSans16, new Vector2(mContentPadding, mTopContentPadding), mTextColor);
+
+            // Background volume and toggle
+            // Sound effect volume and toggle
+            // 3D sound effect toggle
 
             mAudioButtons.Add(muteButton);
 
-            // Button handler bindings
+            #endregion
+
+            #region Button Handler Subscriptions
+            
             gameplayButton.ButtonReleased += OnGameplayReleased;
             graphicsButton.ButtonReleased += OnGraphicsReleased;
             audioButton.ButtonReleased += OnAudioReleased;
@@ -251,6 +272,8 @@ namespace Singularity.Screen.ScreenClasses
             saveButton.ButtonReleased += OnSaveReleased;
 
             muteButton.ButtonReleased += OnMuteReleased;
+
+            #endregion
 
             Loaded = true;
         }
