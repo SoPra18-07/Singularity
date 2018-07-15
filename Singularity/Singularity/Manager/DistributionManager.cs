@@ -10,7 +10,6 @@ using Singularity.Resources;
 using Singularity.Screen;
 using Singularity.Units;
 using Singularity.Utils;
-using System.Diagnostics;
 
 namespace Singularity.Manager
 {
@@ -521,6 +520,31 @@ namespace Singularity.Manager
         #region Unit Distribution and Assigning Units to Jobs
 
         /// <summary>
+        /// This is a method to find a new home for genunits with destroyed workstations.
+        /// </summary>
+        /// <param name="unit">The poor unit</param>
+        /// <param name="isDefense">True if its a defending unit, false if it is producing</param>
+        public void NewProductionHall(GeneralUnit unit, bool isDefense)
+        {
+            if (isDefense)
+            {
+                mDefense.Remove(unit);
+                unit.ChangeJob(JobType.Idle);
+                var units = new List<GeneralUnit>();
+                units.Add(unit);
+                AssignUnitsFairly(new List<GeneralUnit>(units), true);
+            }
+            else
+            {
+                mProduction.Remove(unit);
+                unit.ChangeJob(JobType.Idle);
+                var units = new List<GeneralUnit>();
+                units.Add(unit);
+                AssignUnitsFairly(new List<GeneralUnit>(units), false);
+            }
+        }
+
+        /// <summary>
         /// This is called by the player, when he wants to distribute the units to certain jobs.
         /// </summary>
         /// <param name="oldj">The old job of the units</param>
@@ -528,49 +552,8 @@ namespace Singularity.Manager
         /// <param name="amount">The amount of units to be transferred</param>
         public void DistributeJobs(JobType oldj, JobType newj, int amount)
         {
-            List<GeneralUnit> oldlist;
-            switch (oldj)
-            {
-                case JobType.Construction:
-                    oldlist = mConstruction;
-                    break;
-                case JobType.Logistics:
-                    oldlist = mLogistics;
-                    break;
-                case JobType.Idle:
-                    oldlist = mIdle;
-                    break;
-                case JobType.Production:
-                    oldlist = mProduction;
-                    break;
-                case JobType.Defense:
-                    oldlist = mDefense;
-                    break;
-                default:
-                    throw new InvalidGenericArgumentException("You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
-
-            }
-            List<GeneralUnit> newlist;
-            switch (newj)
-            {
-                case JobType.Construction:
-                    newlist = mConstruction;
-                    break;
-                case JobType.Idle:
-                    newlist = mIdle;
-                    break;
-                case JobType.Logistics:
-                    newlist = mLogistics;
-                    break;
-                case JobType.Production:
-                    newlist = mProduction;
-                    break;
-                case JobType.Defense:
-                    newlist = mDefense;
-                    break;
-                default:
-                    throw new InvalidGenericArgumentException("You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
-            }
+            var oldlist = GetJobUnits(oldj);
+            var newlist = GetJobUnits(newj);
 
             //Production and Defense have to be distributed differently than the other jobs because we want to assure fairness
             if (oldj == JobType.Production || oldj == JobType.Defense)
@@ -921,27 +904,7 @@ namespace Singularity.Manager
         /// <param name="job">The Job the units had/are supposed to have.</param>
         public void ManualAssign(int amount, IPlatformAction action, JobType job)
         {
-            List<GeneralUnit> oldlist;
-            switch (job)
-            {
-                case JobType.Construction:
-                    oldlist = mConstruction;
-                    break;
-                case JobType.Idle:
-                    oldlist = mIdle;
-                    break;
-                case JobType.Production:
-                    oldlist = mProduction;
-                    break;
-                case JobType.Defense:
-                    oldlist = mDefense;
-                    break;
-                case JobType.Logistics:
-                    oldlist = mLogistics;
-                    break;
-                default:
-                    throw new InvalidGenericArgumentException("You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
-            }
+            var oldlist = GetJobUnits(job);
 
             //COLLECT THE UNITS
             List<GeneralUnit> list;
@@ -1188,7 +1151,16 @@ namespace Singularity.Manager
             mProdPlatforms.Remove(mProdPlatforms.Find(p => p.GetFirst().Equals(platform)));
             mDefPlatforms.Remove(mDefPlatforms.Find(p => p.GetFirst().Equals(platform)));
             var lists = new List<List<GeneralUnit>> { mIdle, mLogistics, mConstruction, mProduction, mDefense, mManual };
-            lists.ForEach(l => l.ForEach(u => u.Kill(platform.Id)));
+            foreach (var list in lists)
+            {
+                //We need this because the list is changed by the call of unit.Kill
+                var copy = new List<GeneralUnit>();
+                copy.AddRange(list);
+                foreach (var unit in copy)
+                {
+                    unit.Kill(platform.Id);
+                }
+            }
             // the first in the pair is the id, the second is the TTL
             mKilled.Add(new Pair<int, int>(platform.Id, Math.Max(mBuildingResources.Count, mRefiningOrStoringResources.Count)));
         }

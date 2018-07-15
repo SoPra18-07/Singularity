@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using Singularity.Exceptions;
 using Singularity.Platforms;
 using Singularity.Screen;
 using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.Manager
 {
@@ -82,7 +75,7 @@ namespace Singularity.Manager
                 buildingtasks.Enqueue(task);
             }
 
-            var productiontasks = new Queue<Task>(dist2.GetTasks(false));
+            var productiontasks = new Queue<Task>(dist1.GetTasks(false));
             foreach (var task in dist2.GetTasks(false))
             {
                 productiontasks.Enqueue(task);
@@ -94,7 +87,7 @@ namespace Singularity.Manager
             dist3.SetJobUnits(construction, JobType.Construction);
             dist3.SetJobUnits(defense, JobType.Defense);
             dist3.SetJobUnits(logistics, JobType.Logistics);
-            dist3.SetJobUnits(idle, JobType.Manual);
+            dist3.SetJobUnits(manual, JobType.Manual);
 
             dist3.SetPlatforms(defplatforms, true);
             dist3.SetPlatforms(prodplatforms, false);

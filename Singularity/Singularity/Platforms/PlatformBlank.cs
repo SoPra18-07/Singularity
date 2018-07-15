@@ -228,6 +228,17 @@ namespace Singularity.Platforms
             mLayer = LayerConstants.PlatformLayer;
 
             mType = type;
+            if (IsDefense())
+            {
+                Property = JobType.Defense;
+            }else if (IsProduction())
+            {
+                Property = JobType.Production;
+            }
+            else
+            {
+                Property = JobType.Idle;
+            }
 
             mColorBase = friendly ? Color.White : Color.Red;
 
@@ -938,6 +949,7 @@ namespace Singularity.Platforms
         {
 
             mDirector.GetInputManager.FlagForRemoval(this);
+            //Already tells the unit that it is no longer employed
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
             mDirector.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
 
@@ -968,6 +980,7 @@ namespace Singularity.Platforms
             mRequested = new Dictionary<EResourceType, int>();
 
             Moved = false;
+
             UpdateValues();
         }
 
@@ -995,7 +1008,6 @@ namespace Singularity.Platforms
             foreach (var unit in GetGeneralUnitsOnPlatform())
             {
                 unit.Die();
-                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(unit);
             }
 
             foreach (var road in mInwardsEdges)
