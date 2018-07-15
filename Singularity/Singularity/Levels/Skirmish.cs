@@ -65,9 +65,8 @@ namespace Singularity.Levels
 
             // Enemy Unit
             var enemyUnit = new Target(new Vector2(3000, 2950), Camera, ref mDirector, ref map);
-
             var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
-
+            
             var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, Ui);
 
             var rock1 = new Rock(new Vector2(3500, 2800), ref mDirector);
