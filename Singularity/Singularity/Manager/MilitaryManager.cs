@@ -295,7 +295,7 @@ namespace Singularity.Manager
                 {
                     unit.SetShootingTarget(null);
                 }
-                Debug.WriteLineIf(closestAdjacent != null, closestAdjacent);
+                //Debug.WriteLineIf(closestAdjacent != null, closestAdjacent);
             }
 
             #endregion

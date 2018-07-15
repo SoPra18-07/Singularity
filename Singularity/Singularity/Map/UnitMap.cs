@@ -105,9 +105,6 @@ namespace Singularity.Map
         /// <param name="unitPos">Precalculated tile position for optimization.</param>
         internal void RemoveUnit(ICollider unit, Vector2 unitPos)
         {
-            Debug.WriteLine("goes in");
-            Debug.Write("The unit is in the unit grid position: ");
-            Debug.WriteLine(mUnitGrid[(int)unitPos.X, (int)unitPos.Y].UnitList.Contains(unit));
             mUnitGrid[(int) unitPos.X, (int) unitPos.Y].UnitList.Remove(unit);
             mLookupTable.Remove(unit.Id);
         }

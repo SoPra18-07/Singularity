@@ -12,6 +12,10 @@ using Singularity.Utils;
 
 namespace Singularity.AI
 {
+    /// <summary>
+    /// This class provides set structures for the AI to get, such that the AI always has a number of different
+    /// structures at its disposal for different difficulties
+    /// </summary>
     public static class StructureLayoutHolder
     {
         // adjust these accordingly when adding new structures to the AI
@@ -27,6 +31,7 @@ namespace Singularity.AI
 
             var structure = sAllStructures[difficulty][rnd.Next(sAllStructures[difficulty].Length - 1)];
 
+            // everything thats happening below here is to adjust the position of the taken structure to its new center.
             structure.GetFirst().AbsolutePosition += new Vector2(x, y);
             structure.GetFirst().UpdateValues();
 
@@ -41,7 +46,6 @@ namespace Singularity.AI
                 road.ResetCenterValues();
             }
 
-            // return a random structure for the given difficulty
             return structure;
         }
 
@@ -50,6 +54,10 @@ namespace Singularity.AI
             return GetRandomStructureAtCenter(center.X, center.Y, difficulty);
         }
 
+        /// <summary>
+        /// Initializes this StructureLayoutHolder object, which sets up all the structures the AI has at its disposal.
+        /// </summary>
+        /// <param name="director"></param>
         public static void Initialize(ref Director director)
         {
             sAllStructures = new Dictionary<EAIDifficulty, Triple<CommandCenter, List<PlatformBlank>, List<Road>>[]>();

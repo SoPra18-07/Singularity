@@ -14,17 +14,29 @@ using Singularity.Utils;
 
 namespace Singularity.AI.Behavior
 {
+    /// <summary>
+    /// A simple implementation of an AI behavior. Simply spawns units at set intervals and
+    /// moves them all at once to random locations at set intervals.
+    /// </summary>
     public sealed class SimpleAIBehavior : IAIBehavior
     {
+        private const int MoveIntervalMillis = 10000;
+
+        private const int SpawnIntervalMillis = 1000;
+
+        /// <summary>
+        /// The AI this behavior operates on
+        /// </summary>
         private readonly IArtificalIntelligence mAi;
 
         private readonly Director mDirector;
 
+        /// <summary>
+        /// A list of all the enemy units currently spawned by the AI
+        /// </summary>
         private readonly List<EnemyUnit> mEnemyUnits;
 
         private readonly Random mRandom;
-
-        private int mMoveCounter;
 
         public SimpleAIBehavior(IArtificalIntelligence ai, ref Director director)
         {
@@ -38,7 +50,7 @@ namespace Singularity.AI.Behavior
 
         public void Move(GameTime gametime)
         {
-            if ((int) gametime.TotalGameTime.TotalMilliseconds % 10000 != 0)
+            if ((int) gametime.TotalGameTime.TotalMilliseconds % MoveIntervalMillis != 0)
             {
                 return;
             }
@@ -52,12 +64,11 @@ namespace Singularity.AI.Behavior
         public void Spawn(GameTime gametime)
         {
 
-            if ((int) gametime.TotalGameTime.TotalMilliseconds % 10000 != 0)
+            if ((int) gametime.TotalGameTime.TotalMilliseconds % SpawnIntervalMillis != 0)
             {
                 return;
             }
 
-            // spawn a new enemy unit every 30 seconds on every spawner
             foreach (var spawner in mAi.GetSpawners())
             {
                 var enemyUnit = spawner.SpawnEnemy(mDirector.GetStoryManager.Level.Camera,
@@ -68,6 +79,10 @@ namespace Singularity.AI.Behavior
             }
         }
 
+        /// <summary>
+        /// Gets a valid random position on the current map
+        /// </summary>
+        /// <returns></returns>
         private Vector2 GetRandomPositionOnMap()
         {
             var isOnMap = false;

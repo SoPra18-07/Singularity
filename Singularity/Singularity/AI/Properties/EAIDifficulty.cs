@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Singularity.AI.Properties
 {
+    /// <summary>
+    /// The difficulties the AI can take in the game.
+    /// </summary>
     public enum EAIDifficulty
     {
         Easy,

@@ -19,6 +19,10 @@ using Singularity.Utils;
 
 namespace Singularity.AI
 {
+    /// <summary>
+    /// A basic AI implementation which simply chooses a random structure to play the game and
+    /// calles Move() and Spawn() of its behavior object
+    /// </summary>
     public sealed class BasicAi : IArtificalIntelligence
     {
         public EAIDifficulty Difficulty { get; private set; }
@@ -27,6 +31,7 @@ namespace Singularity.AI
 
         private readonly IAIBehavior mBehavior;
 
+        // this is a representation of the structure this AI operates on.
         private readonly Triple<CommandCenter, List<PlatformBlank>, List<Road>> mStructure;
 
         public BasicAi(EAIDifficulty difficulty, ref Director director)
@@ -46,7 +51,6 @@ namespace Singularity.AI
 
         public void Update(GameTime gametime)
         {
-
             mBehavior.Spawn(gametime);
 
             mBehavior.Move(gametime);
