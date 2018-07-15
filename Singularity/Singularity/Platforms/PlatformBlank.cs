@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -376,11 +377,13 @@ namespace Singularity.Platforms
         {
             if (IsProduction())
             {
-                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, false);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this);
             } else if (IsDefense())
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this);
             {
-                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, true);
+
             }
+            
         }
 
         /// <summary>
@@ -431,7 +434,8 @@ namespace Singularity.Platforms
 
         public virtual void Produce()
         {
-            throw new NotImplementedException();
+            Debug.WriteLine("There's producing Units at a PlatformBlank!!!");
+            // throw new NotImplementedException();
         }
         /// <summary>
         /// Get the special IPlatformActions you can perform on this platform.
@@ -1151,7 +1155,7 @@ namespace Singularity.Platforms
             //Only reregister the platforms if they are defense or production platforms
             if (!mIsActive)
             {
-                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, IsDefense());
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this);
             }
             mIsActive = true;
         }
@@ -1202,14 +1206,12 @@ namespace Singularity.Platforms
             //Only unregister if this platform is a defense or production platform
             if (IsDefense())
             {
-                var selflist = new List<PlatformBlank>();
-                selflist.Add(this);
+                var selflist = new List<PlatformBlank> {this};
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, true, true);
             }
             else if (IsProduction())
             {
-                var selflist = new List<PlatformBlank>();
-                selflist.Add(this);
+                var selflist = new List<PlatformBlank> {this};
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, false, true);
             }
         }

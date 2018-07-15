@@ -1693,7 +1693,7 @@ namespace Singularity.Screen.ScreenClasses
                         mSelectedPlatformWindow.AddItem(mBuildBluePrintAction);
                         mSelectedPlatformActionList.Add(mBuildBluePrintAction);
                     }
-                } else if (action is ARefineResourceAction)
+                } else if (action is RefineResourceAction)
                 {
                     mRefineResourceAction = new PlatformActionIWindowItem(action,
                         mLibSans10,

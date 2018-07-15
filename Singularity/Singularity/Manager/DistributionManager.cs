@@ -1010,8 +1010,9 @@ namespace Singularity.Manager
         /// </summary>
         /// <param name="platform">The platform itself</param>
         /// <param name="isDef">Is true, when the platform is a defending platform, false otherwise (only producing platforms should register themselves besides defending ones)</param>
-        public void Register(PlatformBlank platform, bool isDef)
+        public void Register(PlatformBlank platform)
         {
+            var isDef = platform.IsDefense();
             var job = isDef ? JobType.Defense : JobType.Production;
             var joblist = isDef ? mDefense : mProduction;
             var alreadyonplatform = 0;
@@ -1042,7 +1043,6 @@ namespace Singularity.Manager
 
         public void Register(IPlatformAction action)
         {
-            Debug.WriteLine("Registering " + action.Id + " at Graph: " + mGraphId);
             mPlatformActions.Add(action);
         }
 

@@ -12,53 +12,71 @@ using Singularity.Utils;
 
 namespace Singularity.PlatformActions
 {
-    class ARefineResourceAction : APlatformResourceAction
+    class RefineResourceAction : AMakeUnit
     {
-        private List<Pair<EResourceType, int>> mRequested;
+        private EResourceType mRefiningTo;
+        private bool mReady;
+        private int mCounter;
 
-        public ARefineResourceAction(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, resourceMap, ref director)
+        public RefineResourceAction(PlatformBlank platform, ref Director director, Dictionary<EResourceType, int> from, EResourceType to) : base(platform, ref director)
         {
-            mDirector.GetDistributionDirector.GetManager(platform.GetGraphIndex()).Register(this);
+            State = PlatformActionState.Available;
+            mBuildingCost = from;
+            mRefiningTo = to;
+
+            // now, you actually might want to have the mRequestedResoucres higher than the cost of one building ... todo: another time.
         }
 
         public override List<JobType> UnitsRequired { get; set; } = new List<JobType> { JobType.Production };
-
-        protected override void CreateResource()
+        protected override void CreateUnit()
         {
-            var res = mPlatform.GetResource(EResourceType.Metal);
-            if (res.IsPresent())
+            mReady = true;
+            State = PlatformActionState.Active;
+            UpdateResources();
+        }
+
+        public override void Execute()
+        {
+            if (State != PlatformActionState.Active || !mReady) return;
+            mCounter++;
+            if (mCounter % 240 != 0) return;
+            mCounter = 0;
+            CreateResource();
+        }
+
+        private void CreateResource()
+        {
+            var nRes = new Resource(mRefiningTo, mPlatform.Center);
+            mPlatform.StoreResource(nRes);
+            mReady = false;
+        }
+
+
+        public override void UiToggleState()
+        {
+            switch (State)
             {
-                var nRes = new Resource(EResourceType.Steel, mPlatform.Center);
-                mPlatform.StoreResource(nRes);
+                case PlatformActionState.Available:
+                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(this);
+                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(mPlatform);
+                    UpdateResources();
+                    State = PlatformActionState.Active;
+                    break;
+                case PlatformActionState.Active:
+                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this);
+                    State = PlatformActionState.Available;
+                    break;
+                case PlatformActionState.Deactivated:
+                case PlatformActionState.Disabled:
+                    break;
+                default:
+                    throw new AccessViolationException("Someone/Something acccessed the state!!");
             }
+        }
 
-            mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex())
-                .RequestResource(mPlatform, EResourceType.Metal, this);
-
-            return;
-
-            if (mRequested.Count == 0)
-            {
-                for (int a = 3; a > 0; a--)
-                {
-                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex())
-                        .RequestResource(mPlatform, EResourceType.Metal, this);
-                    mRequested.Add(new Pair<EResourceType, int>(EResourceType.Metal, 5));
-                }
-            }
-            else
-            {
-                mRequested = mRequested.Select(p => new Pair<EResourceType, int>(p.GetFirst(), p.GetSecond() - 1)).ToList();
-                var a = mRequested.RemoveAll(p => p.GetSecond() < 0);
-                for (; a > 0; a--)
-                {
-                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex())
-                        .RequestResource(mPlatform, EResourceType.Metal, this);
-                    mRequested.Add(new Pair<EResourceType, int>(EResourceType.Metal, 5));
-                }
-
-            }
-
+        public void UiToggleAll()
+        {
+            ((Factory)mPlatform).UiToggleAll();
         }
     }
 }

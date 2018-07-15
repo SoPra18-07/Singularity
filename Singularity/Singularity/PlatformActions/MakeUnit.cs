@@ -150,8 +150,8 @@ namespace Singularity.PlatformActions
             foreach (var r in mPlatform.GetPlatformResources().ToList()) GetResource(r.Type);
 
             if (mMissingResources.Count > 0) return;
-            CreateUnit();
             State = PlatformActionState.Available;
+            CreateUnit();
         }
 
         #region private function
@@ -176,7 +176,18 @@ namespace Singularity.PlatformActions
             {
                 mMissingResources = new Dictionary<EResourceType, int>(mBuildingCost);
             }
-            mToRequest = new Dictionary<EResourceType, int>(mMissingResources);
+            foreach (var resources in mMissingResources)
+            {
+                var inside = 0;
+                if (mToRequest.TryGetValue(resources.Key, out inside))
+                {
+                    mToRequest[resources.Key] = inside + resources.Value;
+                }
+                else
+                {
+                    mToRequest.Add(resources.Key, inside + resources.Value);
+                }
+            }
         }
 
         public override Dictionary<EResourceType, int> GetRequiredResources()

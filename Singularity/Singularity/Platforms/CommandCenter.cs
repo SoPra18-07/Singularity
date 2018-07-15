@@ -59,8 +59,7 @@ namespace Singularity.Platforms
 
         public override void Produce()
         {
-            throw new NotImplementedException();
-            //mIPlatformActions[0].Execute();
+            mIPlatformActions[0].Execute();
         }
     }
 }

@@ -133,7 +133,7 @@ namespace Singularity.Manager
                     olddist.Unregister(platformcontainer, platform.IsDefense(), false);
 
                     //Only readd the platform when it was in the old distributionmanager. That is the case only when its a defending or producing platform.
-                    newdist.Register(platform, platform.IsDefense());
+                    newdist.Register(platform);
                 }
                 //TODO: Make somehow sure the IPlatformactions request their missing things anew, because currently they dont.
 
