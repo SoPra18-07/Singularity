@@ -695,7 +695,7 @@ namespace Singularity.Platforms
 
         public bool PlatformHasSpace()
         {
-            return mResources.Count < 10;
+            return mResources.Count < 30;
         }
 
         public void AddEdge(IEdge edge, EEdgeFacing facing)
