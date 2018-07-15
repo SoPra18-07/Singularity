@@ -77,7 +77,6 @@ namespace Singularity.Screen
             mSize = new Vector2(maxWidth + 10, size.Y + 10);
 
             // window only active if mouse on Bound Rectangle
-            director.GetInputManager.AddMousePositionListener(this);
             if (mousePosition)
             {
                 // window only active if mouse on Bound Rectangle

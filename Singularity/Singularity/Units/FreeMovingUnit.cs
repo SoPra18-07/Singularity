@@ -379,6 +379,18 @@ namespace Singularity.Units
             mRotation = (mRotation + 42) % 360;
         }
 
+        internal void SetMovementTarget(Vector2 target)
+        {
+            mTargetPosition = target;
+
+            if (mMap.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
+                (int)mTargetPosition.X / MapConstants.GridWidth,
+                (int)mTargetPosition.Y / MapConstants.GridWidth))
+            {
+                FindPath(Center, mTargetPosition);
+            }
+        }
+
         #endregion
 
         #region Abstract Methods
@@ -433,15 +445,8 @@ namespace Singularity.Units
                                 (int)RelativeSize.Y),
                             mCamera))
                     {
-                        mTargetPosition = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                            Matrix.Invert(mCamera.GetTransform()));
-
-                        if (mMap.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
-                            (int)mTargetPosition.X / MapConstants.GridWidth,
-                            (int)mTargetPosition.Y / MapConstants.GridWidth))
-                        {
-                            FindPath(Center, mTargetPosition);
-                        }
+                        SetMovementTarget(Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
+                            Matrix.Invert(mCamera.GetTransform())));
                     }
 
 

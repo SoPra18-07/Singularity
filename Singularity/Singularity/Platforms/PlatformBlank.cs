@@ -226,6 +226,17 @@ namespace Singularity.Platforms
             mLayer = LayerConstants.PlatformLayer;
 
             mType = type;
+            if (IsDefense())
+            {
+                Property = JobType.Defense;
+            }else if (IsProduction())
+            {
+                Property = JobType.Production;
+            }
+            else
+            {
+                Property = JobType.Idle;
+            }
 
             mColorBase = friendly ? Color.White : Color.Red;
 
@@ -941,8 +952,8 @@ namespace Singularity.Platforms
         {
 
             mDirector.GetInputManager.FlagForRemoval(this);
+            //Already tells the unit that it is no longer employed
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
-            mType = EStructureType.Blank;
             mDirector.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
 
             // create the event in eventLog that the specialised part has been destroyed
@@ -972,6 +983,7 @@ namespace Singularity.Platforms
             mRequested = new Dictionary<EResourceType, int>();
 
             Moved = false;
+
             UpdateValues();
         }
 
@@ -981,7 +993,9 @@ namespace Singularity.Platforms
         public bool Die()
         {
 
-            DieBlank();
+            mIPlatformActions.RemoveAll(a => a.Die());
+
+            mResources.RemoveAll(r => r.Die());
 
             // create event in eventLog that the platform has been destroyed
             mDirector.GetEventLog.AddEvent(ELogEventType.PlatformDestroyed, mType + " has been destroyed", this);
@@ -997,7 +1011,6 @@ namespace Singularity.Platforms
             foreach (var unit in GetGeneralUnitsOnPlatform())
             {
                 unit.Die();
-                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(unit);
             }
 
             foreach (var road in mInwardsEdges)
@@ -1015,6 +1028,7 @@ namespace Singularity.Platforms
                 ((Road)road).Die();
             }
 
+
             toKill.Clear();
             mInwardsEdges.Clear();
             mOutwardsEdges.Clear();
@@ -1024,8 +1038,10 @@ namespace Singularity.Platforms
             mIPlatformActions.ForEach(a => a.Platform = null);
             mIPlatformActions.RemoveAll(a => a.Die());
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
-            mDirector.GetStoryManager.StructureMap.RemovePlatform(this);
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
+            mDirector.GetInputManager.FlagForRemoval(this);
+            mDirector.GetInputManager.RemoveMousePositionListener(mInfoBox);
+            mInfoBox = null;
             return true;
         }
 
@@ -1114,16 +1130,16 @@ namespace Singularity.Platforms
                     SoundClass.Effect);
                 mIsManuallyDeactivated = false;
             }
-            mIsActive = true;
             ResetColor();
             //Only reregister the platforms if they are defense or production platforms
-            if (IsDefense())
+            if (IsDefense() && !mIsActive)
             {
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, true);
-            }else if (IsProduction())
+            }else if (IsProduction() && !mIsActive)
             {
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, false);
             }
+            mIsActive = true;
         }
 
         /// <summary>

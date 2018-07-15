@@ -183,7 +183,8 @@ namespace Singularity.Input
                 return false;
             }
 
-            mMouseClickListener[iMouseClickListener.Screen].Remove(iMouseClickListener);
+            mMouseClickListener[iMouseClickListener.Screen]
+                .Remove(iMouseClickListener);
 
 
             mLeftClickType.Remove(iMouseClickListener);

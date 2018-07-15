@@ -36,7 +36,7 @@ namespace Singularity.Manager
             // Dd}{_:
         }
 
-        internal void ReloadContent(Director dir, Vector2 mapmeasurements)
+        internal void ReloadContent(Director dir, Vector2 mapmeasurements, ContentManager content)
         {
             GetClock = dir.GetClock;
             GetIdGenerator = dir.GetIdGenerator;
@@ -45,8 +45,10 @@ namespace Singularity.Manager
             GetPathManager = dir.GetPathManager;
             GetUserInterfaceController = dir.GetUserInterfaceController;
             GetDistributionDirector = dir.GetDistributionDirector;
+            GetDistributionDirector.ReloadContent(GetUserInterfaceController);
             GetStoryManager.LoadAchievements();
             GetMilitaryManager.ReloadContent(mapmeasurements, this);
+            GetEventLog = new EventLog(GetUserInterfaceController, this, content);
         }
 
         [DataMember]
@@ -75,7 +77,7 @@ namespace Singularity.Manager
 
         public GraphicsDeviceManager GetGraphicsDeviceManager { get; }
 
-        public EventLog GetEventLog { get; }
+        public EventLog GetEventLog { get; private set; }
 
         public void Update(GameTime gametime, bool isActive)
         {
