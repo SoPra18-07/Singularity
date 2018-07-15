@@ -1161,6 +1161,8 @@ namespace Singularity.Manager
                     unit.Kill(platform.Id);
                 }
             }
+            //Update the handler afterwards
+            mHandler?.ForceSliderPages();
             // the first in the pair is the id, the second is the TTL
             mKilled.Add(new Pair<int, int>(platform.Id, Math.Max(mBuildingResources.Count, mRefiningOrStoringResources.Count)));
         }
