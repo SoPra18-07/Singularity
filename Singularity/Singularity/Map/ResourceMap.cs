@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Singularity.Manager;
 using Singularity.Resources;
 using Singularity.Utils;
 
@@ -11,14 +13,21 @@ namespace Singularity.Map
     /// We removed the whole Dictionary stuff, since felix mentioned we could just use the Resource
     /// itself. So we literally obtain all our desired information from the resource directly.
     /// </summary>
+    [DataContract]
     public sealed class ResourceMap
     {
+        /// <summary>
+        /// The director for the game
+        /// </summary>
+        private Director mDirector;
 
+        [DataMember]
         private readonly Dictionary<Vector2, List<MapResource>> mLocationCache;
 
         /// <summary>
         /// The internal resource map used to store said resources.
         /// </summary>
+        [DataMember]
         private readonly List<MapResource> mResourceMap;
 
         /// <summary>
@@ -48,7 +57,7 @@ namespace Singularity.Map
         }
 
         public Optional<Resource> GetQuarryResource(Vector2 location) {
-            return Optional<Resource>.Of(new Resource(EResourceType.Stone, location));
+            return Optional<Resource>.Of(new Resource(EResourceType.Stone, location, ref mDirector));
             // this is reference-based and totally fine, since there'll be only references then ... we don't care about that, and as soon as the references are all gone, the GC will take care of it. :)
             // (but yes, actually this could break, since we rely heavily on how c# handles references and stuff.)
         }

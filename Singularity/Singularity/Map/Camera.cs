@@ -1,12 +1,11 @@
-﻿using System;
-using System.Diagnostics;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+﻿using System;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map.Properties;
-using Singularity.Property;
 using Singularity.Screen;
 
 namespace Singularity.Map
@@ -15,8 +14,10 @@ namespace Singularity.Map
     /// <remarks>
     /// The camera object is used to move and zoom the map and all its components.
     /// </remarks>
+    [DataContract]
     public sealed class Camera : IKeyListener, IMouseWheelListener, IMousePositionListener
     {
+        [DataMember]
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
 
         private const float MaxZoom = 1.5f;
@@ -24,15 +25,18 @@ namespace Singularity.Map
         /// <summary>
         /// The speed at which the camera moves in pixels per update.
         /// </summary>
+        [DataMember]
         private const int CameraMovementSpeed = 10;
 
         /// <summary>
         /// The viewport of the window, e.g. the current size of it.
         /// </summary>
-        private readonly GraphicsDevice mGraphics;
+        private GraphicsDevice mGraphics;
 
+        [DataMember]
         private Vector2 mPosition;
 
+        [DataMember]
         private Vector2 Position
         {
             get { return mPosition; }
@@ -40,47 +44,56 @@ namespace Singularity.Map
             set
             {
                 mPosition = value;
-                ValidatePosition();
+                if(mDirector != null)
+                {
+                    ValidatePosition();
+                }
             }
         }
 
+        [DataMember]
         private float mMouseX;
-
+        [DataMember]
         private float mMouseY;
 
         /// <summary>
         /// The current zoom value of the camera.
         /// </summary>
+        [DataMember]
         private float mZoom;
-
+        [DataMember]
         private float Zoom
         {
             get { return mZoom; }
             set
             {
                 mZoom = value;
-                ValidateZoom();
-                ValidatePosition();
-
+                if (mDirector != null)
+                {
+                    ValidateZoom();
+                    ValidatePosition();
+                }               
             }
         }
 
         /// <summary>
         /// The matrix used to transform every position to the actual camera view.
         /// </summary>
+        [DataMember]
         private Matrix mTransform;
 
         /// <summary>
         /// The bounding box of the map used, so the camera cannot move out of bounds.
         /// </summary>
+        [DataMember]
         private readonly Rectangle mBounds;
-
+        [DataMember]
         private readonly bool mNeo;
 
-        private readonly InputManager mInputManager;
+        private Director mDirector;
 
-        private readonly Vector2 mOrigin;
-
+        [DataMember]
+        private readonly Vector2 mOrigin; 
 
         /// <summary>
         /// Creates a new Camera object which provides a transform matrix to adjust
@@ -112,14 +125,31 @@ namespace Singularity.Map
             mNeo = neo;
             mGraphics = graphics;
             mBounds = new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight);
-            mInputManager = director.GetInputManager;
 
-            director.GetInputManager.AddKeyListener(this);
-            director.GetInputManager.AddMouseWheelListener(this);
+            mDirector = director;
+            director.GetInputManager.FlagForAddition((IMouseWheelListener)this);
+            director.GetInputManager.FlagForAddition((IKeyListener)this);
             director.GetInputManager.AddMousePositionListener(this);
+
+            mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(0, 0, 0);
+
+            mDirector.GetInputManager.CameraMoved(mTransform);
+
+        }
+
+        internal void ReloadContent(GraphicsDeviceManager graphics, ref Director director)
+        {
+            mGraphics = graphics.GraphicsDevice;
+            mDirector = director;
+            director.GetInputManager.FlagForAddition((IMouseWheelListener) this);
+            director.GetInputManager.FlagForAddition((IKeyListener) this);
+            director.GetInputManager.AddMousePositionListener(this);
+
+            mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(0, 0, 0);
 
             UpdateTransformMatrix();
 
+            director.GetInputManager.CameraMoved(mTransform);
         }
 
         /// <summary>
@@ -148,7 +178,6 @@ namespace Singularity.Map
         /// </summary>
         private void ValidatePosition()
         {
-
             UpdateTransformMatrix();
 
             /*
@@ -175,6 +204,7 @@ namespace Singularity.Map
 
             UpdateTransformMatrix();
         }
+
 
         /// <summary>
         /// Zooms to the given zoomTarget by the amount specified
@@ -247,7 +277,7 @@ namespace Singularity.Map
                          * Matrix.CreateTranslation(new Vector3(-mOrigin, 0f))
                          * Matrix.CreateScale(mZoom, mZoom, 1f)
                          * Matrix.CreateTranslation(new Vector3(mOrigin, 0f));
-            mInputManager.CameraMoved(mTransform);
+            mDirector.GetInputManager.CameraMoved(mTransform);
         }
 
         public bool KeyTyped(KeyEvent keyEvent)

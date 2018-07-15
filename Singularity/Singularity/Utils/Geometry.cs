@@ -69,14 +69,16 @@ namespace Singularity.Utils
         /// <param name="y">The second float to be compared.</param>
         /// <param name="epsilon">The acceptable margin of error.</param>
         /// <returns></returns>
-        public static bool FloatAlmostEqual(float x, float y, float epsilon)
+        public static bool FloatAlmostEqual(float x, float y, float epsilon=0.00000000001f)
         {
-            if (x - y < epsilon)
+            double dx = x;
+            double dy = y;
+            if (dx - dy < epsilon)
             {
                 return true;
             }
 
-            return y - x < epsilon;
+            return dy - dx < epsilon;
         }
 
 
@@ -88,7 +90,7 @@ namespace Singularity.Utils
         /// <see cref="http://blog.wouldbetheologian.com/2011/11/fast-approximate-sqrt-method-in-c.html"/>
         public static float FastSqrt(float z)
         {
-            if (z == 0)
+            if (Math.Abs(z) < 0.15e-10)
             {
                 return 0;
             }

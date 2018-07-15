@@ -14,7 +14,7 @@ namespace Singularity.Screen.ScreenClasses
 
         /// <inheritdoc cref="IScreen"/>
         /// <summary>
-        /// Manages the main menu. This is the screen that is first loaded into the stack screen manager
+        /// Manages the main menu. This is the screen that is second loaded into the stack screen manager
         /// and loads all the other main menu screens. Also handles button events which involve switching
         /// between menu screens.
         /// </summary>
@@ -28,7 +28,6 @@ namespace Singularity.Screen.ScreenClasses
         private ITransitionableMenu mOptionsScreen;
         private ITransitionableMenu mSplashScreen;
         private ITransitionableMenu mMainMenuScreen;
-        private ITransitionableMenu mLoadingScreen;
 
         // Background
         private MenuBackgroundScreen mMenuBackgroundScreen;
@@ -43,7 +42,6 @@ namespace Singularity.Screen.ScreenClasses
         // viewport resolution changes
         private static Vector2 sViewportResolution;
         private static bool sResolutionChanged;
-        private ContentManager mContent;
 
         /// <summary>
         /// Creates an instance of the MainMenuManagerScreen class
@@ -74,7 +72,6 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="content">Content Manager that should handle the content loading</param>
         public void LoadContent(ContentManager content)
         {
-            mContent = content;
 
             // Add screen to screen manager
             mScreenManager.AddScreen(mMenuBackgroundScreen);
@@ -122,14 +119,6 @@ namespace Singularity.Screen.ScreenClasses
                     }
                     break;
                 case EScreen.GameModeSelectScreen:
-                    if (sPressed == "Free Play")
-                    {
-                        mScreenManager.RemoveScreen();
-                        mScreenManager.RemoveScreen();
-                        mScreenManager.AddScreen(mLoadingScreen);
-                        mScreenState = EScreen.LoadingScreen;
-                    }
-
                     if (sPressed == "Back")
                     {
                         SwitchScreen(EScreen.MainMenuScreen, mGameModeSelectScreen, mMainMenuScreen, gametime);
@@ -138,10 +127,14 @@ namespace Singularity.Screen.ScreenClasses
                 case EScreen.GameScreen:
                     break;
                 case EScreen.LoadSelectScreen:
-                    break;
-                case EScreen.LoadingScreen:
-                    mScreenManager.RemoveScreen();
-                    mScreenState = EScreen.GameScreen;
+                    if (sPressed == "Load1")
+                    {
+                        break;
+                    }
+                    if (sPressed == "Back")
+                    {
+                        SwitchScreen(EScreen.MainMenuScreen, mLoadSelectScreen, mMainMenuScreen, gametime);
+                    }
                     break;
                 case EScreen.MainMenuScreen:
                     if (sPressed == "Play")
@@ -300,8 +293,8 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>Bool. If true, then the screen below this will be updated.</returns>
         public bool UpdateLower()
         {
-            // below this screen is the game so it shouldn't update the game
-            return mScreenState == EScreen.LoadingScreen || mScreenState == EScreen.GameScreen;
+            // below this screen is the LoadGameManagerScreen so update!
+            return true;
         }
 
         /// <summary>
@@ -310,7 +303,8 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>Bool. If true, then the screen below this will be drawn.</returns>
         public bool DrawLower()
         {
-            return mScreenState == EScreen.LoadingScreen || mScreenState == EScreen.GameScreen;
+            //The loadgamemanagerscreen doesnt have to be drawn.
+            return false;
         }
 
         public static void SetResolution(Vector2 viewportResolution)
@@ -328,13 +322,13 @@ namespace Singularity.Screen.ScreenClasses
         private void Initialize(Vector2 screenResolution, bool screenResolutionChanged, Game1 game)
         {
             mGameModeSelectScreen = new GameModeSelectScreen(screenResolution);
-            mLoadSelectScreen = new LoadSelectScreen();
+            mLoadSelectScreen = new LoadSelectScreen(screenResolution);
             mAchievementsScreen = new AchievementsScreen(screenResolution);
+
             mOptionsScreen = new OptionsScreen(screenResolution, screenResolutionChanged, game);
             mMenuBackgroundScreen = new MenuBackgroundScreen(screenResolution);
             mSplashScreen = new SplashScreen(screenResolution);
             mMainMenuScreen = new MainMenuScreen(screenResolution);
-            mLoadingScreen = new LoadingScreen(screenResolution);
         }
 
         /*
@@ -413,28 +407,6 @@ namespace Singularity.Screen.ScreenClasses
         public static void OnQuitButtonReleased(Object sender, EventArgs eventArgs)
         {
             sPressed = "Quit";
-        }
-
-        /// <summary>
-        /// Used to create a new story mode game.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
-        public static void OnStoryButtonReleased(Object sender, EventArgs eventArgs)
-        {
-            // TODO: implement start game with story
-            throw new NotImplementedException("No story yet unfortunately");
-
-        }
-
-        /// <summary>
-        /// Used to create a new skirmish game.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
-        public static void OnFreePlayButtonReleased(Object sender, EventArgs eventArgs)
-        {
-            sPressed = "Free Play";
         }
 
         /// <summary>

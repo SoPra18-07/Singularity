@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using Singularity.Exceptions;
 using Singularity.Platforms;
+using Singularity.Screen;
 using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.Manager
 {
@@ -20,8 +15,11 @@ namespace Singularity.Manager
         [DataMember]
         private Dictionary<int, DistributionManager> mDMs;
 
-        public DistributionDirector()
+        private UserInterfaceController mUserInterfaceController;
+
+        public DistributionDirector(Director director)
         {
+            mUserInterfaceController = director.GetUserInterfaceController;
             mDMs = new Dictionary<int, DistributionManager>();
         }
 
@@ -32,6 +30,9 @@ namespace Singularity.Manager
         public void AddManager(int graphid)
         {
             mDMs[graphid] = new DistributionManager(graphid);
+
+            // update UI
+            mUserInterfaceController.AddGraph(graphid);
         }
 
         /// <summary>
@@ -73,7 +74,8 @@ namespace Singularity.Manager
             {
                 buildingtasks.Enqueue(task);
             }
-            var productiontasks = new Queue<Task>(dist2.GetTasks(false));
+
+            var productiontasks = new Queue<Task>(dist1.GetTasks(false));
             foreach (var task in dist2.GetTasks(false))
             {
                 productiontasks.Enqueue(task);
@@ -85,7 +87,7 @@ namespace Singularity.Manager
             dist3.SetJobUnits(construction, JobType.Construction);
             dist3.SetJobUnits(defense, JobType.Defense);
             dist3.SetJobUnits(logistics, JobType.Logistics);
-            dist3.SetJobUnits(idle, JobType.Manual);
+            dist3.SetJobUnits(manual, JobType.Manual);
 
             dist3.SetPlatforms(defplatforms, true);
             dist3.SetPlatforms(prodplatforms, false);
@@ -97,6 +99,9 @@ namespace Singularity.Manager
             mDMs.Remove(graphid1);
             mDMs.Remove(graphid2);
             mDMs[newgraphid] = dist3;
+
+            // update UI
+            mUserInterfaceController.MergeGraph(newgraphid, graphid1, graphid2);
         }
 
         /// <summary>
@@ -107,7 +112,12 @@ namespace Singularity.Manager
         /// <param name="newgraphid">The graphid of the split-off DistributionManager</param>
         /// <param name="platforms">The platforms of the new split-off DistributionManager</param>
         /// <param name="units">The units of the new split-off DistributionManager</param>
-        public void SplitManagers(int oldgraphid, int newgraphid, List<PlatformBlank> platforms, List<GeneralUnit> units)
+        /// <param name="graphIdToGraph">the structuremap's graphIdToGraph-dictionary</param>
+        public void SplitManagers(int oldgraphid,
+            int newgraphid,
+            List<PlatformBlank> platforms,
+            List<GeneralUnit> units,
+            Dictionary<int, Graph.Graph> graphIdToGraph)
         {
             var olddist = mDMs[oldgraphid];
             mDMs[newgraphid] = new DistributionManager(newgraphid);
@@ -115,17 +125,32 @@ namespace Singularity.Manager
             foreach (var platform in platforms)
             {
                 var platformcontainer = new List<PlatformBlank>();
-                //Also removes the tasks of this platform from the oldDistributionManager
-                olddist.Unregister(platformcontainer, platform.IsDefense(), false);
+                platformcontainer.Add(platform);
+                //Only remove the platform from the old distrmanager, when its in it. That is the case only when its a defending or producing platform.
+                if (platform.IsDefense() || platform.IsProduction())
+                {
+                    //Also removes the tasks of this platform from the oldDistributionManager
+                    olddist.Unregister(platformcontainer, platform.IsDefense(), false);
+
+                    //Only readd the platform when it was in the old distributionmanager. That is the case only when its a defending or producing platform.
+                    newdist.Register(platform, platform.IsDefense());
+                }
                 //TODO: Make somehow sure the IPlatformactions request their missing things anew, because currently they dont.
-                newdist.Register(platform, platform.IsDefense());
+
             }
 
             foreach (var unit in units)
             {
                 olddist.Kill(unit);
-                newdist.Register(unit, unit.Job);
+                //These were already added before in the register sttuff
+                if (unit.Job != JobType.Defense && unit.Job != JobType.Production)
+                {
+                    newdist.Register(unit, unit.Job);
+                }
             }
+
+            // update UI by "calling all graphs" - see description in UIController
+            mUserInterfaceController.CallingAllGraphs(graphIdToGraph);
         }
 
         public DistributionManager GetManager(int graphid)
@@ -133,9 +158,15 @@ namespace Singularity.Manager
             return mDMs[graphid];
         }
 
-        public void RemoveManager(int graphId)
+        public void RemoveManager(int graphId, Dictionary<int, Graph.Graph> graphIdToGraph)
         {
-            mDMs[graphId] = null;
+            mDMs.Remove(graphId);
+            mUserInterfaceController.CallingAllGraphs(graphIdToGraph);
+        }
+
+        public void ReloadContent(UserInterfaceController uic)
+        {
+            mUserInterfaceController = uic;
         }
     }
 }

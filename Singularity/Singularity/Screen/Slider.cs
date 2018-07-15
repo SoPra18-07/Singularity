@@ -94,8 +94,8 @@ namespace Singularity.Screen
             Pages = pages;
             mLastPagesCount = Pages;
             mDirector = director;
-            mDirector.GetInputManager.AddMouseClickListener(iMouseClickListener: this, leftClickType: EClickType.Both, rightClickType: EClickType.Both);
-            mDirector.GetInputManager.AddMousePositionListener(iMouseListener: this);
+            mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
+            mDirector.GetInputManager.AddMousePositionListener(this);
 
             // if value box requested, initiate string value to 0
             if (mWithValue)

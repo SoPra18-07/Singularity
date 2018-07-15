@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Nature;
 using Singularity.Platforms;
 using Singularity.Property;
-using Singularity.Resources;
 using Singularity.Sound;
 using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -20,41 +20,50 @@ namespace Singularity.Screen.ScreenClasses
     /// Handles everything thats going on explicitly in the game.
     /// E.g. game objects, the map, camera. etc.
     /// </summary>
+    [DataContract]
     public sealed class GameScreen : IScreen
     {
+        [DataMember]
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
+        [DataMember]
         public bool Loaded { get; set; }
 
         // map and fog of war
-        private readonly Map.Map mMap;
-        private readonly FogOfWar mFow;
+        private Map.Map mMap;
+        private FogOfWar mFow;
 
         // director for Managing all the Managers
         private Director mDirector;
-        private readonly GraphicsDevice mGraphicsDevice;
+        private GraphicsDevice mGraphicsDevice;
 
         /// <summary>
         /// This list contains all the drawable objects currently in the game.
         /// </summary>
+        [DataMember]
         private readonly LinkedList<IDraw> mDrawables;
 
         /// <summary>
         /// This list contains all the updateable objects currently in the game.
         /// </summary>
+        [DataMember]
         private readonly LinkedList<IUpdate> mUpdateables;
 
         /// <summary>
         /// The idea is that all spatial objects are affected by the fog of war, so we save them seperately to have a seperation
         /// in our game screen. This way we can apply masks and all that stuff more easily.
         /// </summary>
+        [DataMember]
         private readonly LinkedList<ISpatial> mSpatialObjects;
-
+        [DataMember]
         private Matrix mTransformMatrix;
+
+        [DataMember]
+        private bool mUistarted;
 
         /// <summary>
         /// The camera object which holds transformation values.
         /// </summary>
-        private readonly Camera mCamera;
+        private Camera mCamera;
 
         private SelectionBox mSelBox;
 
@@ -72,11 +81,129 @@ namespace Singularity.Screen.ScreenClasses
             mCamera = camera;
             mFow = fow;
 
+            mUistarted = false;
             mDirector = director;
 
             mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
             AddObject(mSelBox);
         }
+
+        public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, Map.Map map, FogOfWar fow , Camera camera, ref Director director, UserInterfaceScreen ui)
+        {
+            mGraphicsDevice = graphics.GraphicsDevice;
+            mMap = map;
+            mFow = fow;
+            mCamera = camera;
+            mDirector = director;
+            mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
+            mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
+            mSelBox = new SelectionBox(Color.White, mCamera, ref mDirector);
+            AddObject(mSelBox);
+            //All collider items have to be readded to the ColliderMap
+            var colliderlist = new List<ICollider>();
+            foreach (var spatial in mSpatialObjects)
+            {
+                var collider = spatial as ICollider;
+                if (collider != null && !colliderlist.Contains(collider))
+                {
+                    mMap.UpdateCollider(collider);
+                    colliderlist.Add(collider);
+                }
+            }
+
+            //Reload the content for all ingame objects like Platforms etc.
+            foreach (var drawable in mDrawables)
+            {
+                //TODO: Add terrain when its in master
+                var possibleMilitaryUnit = drawable as MilitaryUnit;
+                var possibleEnemy = drawable as EnemyUnit;
+                var possibleSettler = drawable as Settler;
+                var possiblegenunit = drawable as GeneralUnit;
+                var possiblerock = drawable as Rock;
+                var possiblepuddle = drawable as Puddle;
+                var conUnit = drawable as FreeMovingUnit;
+                if (conUnit != null)
+                {
+                    mSelBox.SelectingBox += conUnit.BoxSelected;
+                }
+
+                possibleEnemy?.ReloadContent(content, ref mDirector, camera, ref mMap);
+                possiblepuddle?.ReloadContent();
+                possiblerock?.ReloadContent();
+                //This should also affect enemy units, since they are military units
+                possibleMilitaryUnit?.ReloadContent(content, ref mDirector, camera, ref map);
+                possibleSettler?.ReloadContent(ref mDirector, mCamera, ref map, this, ui);
+                if (possibleSettler != null)
+                {
+                    possibleSettler.BuildCommandCenter += SettlerBuild;
+                }
+                possiblegenunit?.ReloadContent(ref mDirector);
+            }
+
+            //Reload the content for all ingame objects like Platforms etc.
+            foreach (var updateable in mUpdateables)
+            {
+                //TODO: Add terrain when its in master
+                var possibleMilitaryUnit = updateable as MilitaryUnit;
+                var possibleEnemy = updateable as EnemyUnit;
+                var possibleSettler = updateable as Settler;
+                var possiblegenunit = updateable as GeneralUnit;
+                var possiblerock = updateable as Rock;
+                var possiblepuddle = updateable as Puddle;
+
+                var freeMovingUnit = updateable as FreeMovingUnit;
+                if (freeMovingUnit != null && freeMovingUnit.Friendly)
+                {
+                    mSelBox.SelectingBox += freeMovingUnit.BoxSelected;
+                }
+                possibleEnemy?.ReloadContent(content, ref mDirector, camera, ref mMap);
+                possiblepuddle?.ReloadContent();
+                possiblerock?.ReloadContent();
+                //This should also affect enemy units, since they are military units
+                possibleMilitaryUnit?.ReloadContent(content, ref mDirector, camera, ref map);
+                possibleSettler?.ReloadContent(ref mDirector, mCamera, ref map, this, ui);
+                if (possibleSettler != null)
+                {
+                    possibleSettler.BuildCommandCenter += SettlerBuild;
+                }
+                possiblegenunit?.ReloadContent(ref mDirector);
+            }
+
+            //Reload the content for all ingame objects like Platforms etc.
+            foreach (var spatial in mSpatialObjects)
+            {
+                //TODO: Add terrain when its in master
+                var possibleMilitaryUnit = spatial as MilitaryUnit;
+                var possibleEnemy = spatial as EnemyUnit;
+                var possibleSettler = spatial as Settler;
+                var possiblegenunit = spatial as GeneralUnit;
+                var possiblerock = spatial as Rock;
+                var possiblepuddle = spatial as Puddle;
+                var freeMovingUnit = spatial as FreeMovingUnit;
+                if (freeMovingUnit != null && freeMovingUnit.Friendly)
+                {
+                    mSelBox.SelectingBox += freeMovingUnit.BoxSelected;
+                }
+                possibleEnemy?.ReloadContent(content, ref mDirector, camera, ref mMap);
+                possiblepuddle?.ReloadContent();
+                possiblerock?.ReloadContent();
+                //This should also affect enemy units, since they are military units
+                possibleMilitaryUnit?.ReloadContent(content, ref mDirector, camera, ref map);
+                possibleSettler?.ReloadContent(ref mDirector, mCamera, ref map, this, ui);
+
+                if (possibleSettler != null)
+                {
+                    possibleSettler.BuildCommandCenter += SettlerBuild;
+                }
+                possiblegenunit?.ReloadContent(ref mDirector);
+            }
+
+            if (mUistarted)
+            {
+                ui.Activate();
+            }
+        }
+
 
         public void Draw(SpriteBatch spriteBatch)
         {
@@ -145,7 +272,7 @@ namespace Singularity.Screen.ScreenClasses
 
         public bool DrawLower()
         {
-            return true;
+            return false;
         }
 
         public void Update(GameTime gametime)
@@ -183,7 +310,6 @@ namespace Singularity.Screen.ScreenClasses
 
             mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
             mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
-            
         }
 
         public bool UpdateLower()
@@ -203,8 +329,7 @@ namespace Singularity.Screen.ScreenClasses
             var road = toAdd as Road;
             var platform = toAdd as PlatformBlank;
             var settler = toAdd as Settler;
-            var conUnit = toAdd as ControllableUnit;
-            var enemyUnit = toAdd as EnemyUnit; // currently unnecessary
+            var freeMovingUnit = toAdd as FreeMovingUnit;
 
             if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
@@ -234,15 +359,14 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             // subscribe every military unit to the selection box
-            if (conUnit != null)
+            if (freeMovingUnit != null)
             {
-                mSelBox.SelectingBox += conUnit.BoxSelected;
-                mDirector.GetMilitaryManager.AddUnit(conUnit);
-            }
+                if (freeMovingUnit.Friendly)
+                {
+                    mSelBox.SelectingBox += freeMovingUnit.BoxSelected;
+                }
 
-            if (enemyUnit != null)
-            {
-                mDirector.GetMilitaryManager.AddUnit(enemyUnit);
+                mDirector.GetMilitaryManager.AddUnit(freeMovingUnit);
             }
 
             if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
@@ -298,7 +422,7 @@ namespace Singularity.Screen.ScreenClasses
             var road = toRemove as Road;
             var platform = toRemove as PlatformBlank;
             var settler = toRemove as Settler;
-            var controllableUnit = toRemove as ControllableUnit;
+            var freeMovingUnit = toRemove as FreeMovingUnit;
 
             if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
@@ -307,7 +431,7 @@ namespace Singularity.Screen.ScreenClasses
 
             if (typeof(ICollider).IsAssignableFrom(typeof(T)))
             {
-                //TODO: remove from collision map
+                mMap.GetCollisionMap().RemoveCollider((ICollider)toRemove);
             }
 
             if (road != null)
@@ -326,9 +450,9 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             // unsubscribe from this military unit when deleted
-            if (controllableUnit != null)
+            if (freeMovingUnit != null && freeMovingUnit.Friendly)
             {
-                //mSelBox.SelectingBox -= milUnit.BoxSelected;
+                mSelBox.SelectingBox -= freeMovingUnit.BoxSelected;
             }
 
             if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
@@ -381,15 +505,17 @@ namespace Singularity.Screen.ScreenClasses
             
             var cCenter = PlatformFactory.Get(EPlatformType.Command, ref mDirector, v.X - 55, v.Y - 100, commandBlueprint: false);
             AddObject(cCenter);
+            
 
-            var genUnit = new GeneralUnit(cCenter, ref mDirector, cCenter.GetGraphIndex());
+            var genUnit = new GeneralUnit(cCenter, ref mDirector);
             AddObject(genUnit);
 
-            var genUnit2 = new GeneralUnit(cCenter, ref mDirector, cCenter.GetGraphIndex());
+            var genUnit2 = new GeneralUnit(cCenter, ref mDirector);
             AddObject(genUnit2);
 
             // removes the settler from the GameScreen
             RemoveObject(s);
+            mUistarted = true;
         }
 
 

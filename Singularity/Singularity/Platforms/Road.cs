@@ -1,32 +1,35 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Property;
+using System.Diagnostics;
 
 namespace Singularity.Platforms
 {
+    [DataContract]
     public sealed class Road : ISpatial, IEdge
     {
+        [DataMember]
         public Vector2 Source { get; set; }
-
+        [DataMember]
         public Vector2 Destination { get; set; }
-
+        [DataMember]
         public INode SourceAsNode { get; set; }
-
+        [DataMember]
         public INode DestinationAsNode { get; set; }
-
+        [DataMember]
         private bool mBlueprint;
-
+        [DataMember]
         public Vector2 AbsolutePosition { get; set; }
-
+        [DataMember]
         public Vector2 AbsoluteSize { get; set; }
-
+        [DataMember]
         public Vector2 RelativePosition { get; set; }
-
+        [DataMember]
         public Vector2 RelativeSize { get; set; }
 
         /// <summary>
@@ -44,7 +47,7 @@ namespace Singularity.Platforms
             }
         }
 
-        private readonly Director mDirector;
+        private Director mDirector;
 
         /// <summary>
         /// Road is simply an edge between two platforms.
@@ -125,6 +128,11 @@ namespace Singularity.Platforms
         {
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             return true;
+        }
+
+        public void ReloadContent(ref Director director)
+        {
+            mDirector = director;
         }
     }
 }

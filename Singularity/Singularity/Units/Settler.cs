@@ -14,12 +14,11 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="ControllableUnit"/>
     [DataContract]
-    internal sealed class Settler: ControllableUnit, IKeyListener
+    internal sealed class Settler: FreeMovingUnit, IKeyListener
     {
         #region Declarations
-        [DataMember]
         private GameScreen mGameScreen;
-        [DataMember]
+
         private UserInterfaceScreen mUi;
 
         [DataMember]
@@ -45,7 +44,7 @@ namespace Singularity.Units
 
             RevelationRadius = (int)AbsoluteSize.X * 3;
 
-            mDirector.GetInputManager.AddKeyListener(this);
+            mDirector.GetInputManager.FlagForAddition(this);
 
             mNeverMoved = true;
 
@@ -73,9 +72,18 @@ namespace Singularity.Units
                 //to true, that has been true already.
                 mUi.Activate();
             }
+            // debug.
+            mUi.Activate();
         }
         #endregion
 
+        public void ReloadContent(ref Director director, Camera camera, ref Map.Map map, GameScreen gamescreen, UserInterfaceScreen ui)
+        {
+            ReloadContent(ref director, camera, ref map);
+            mGameScreen = gamescreen;
+            mUi = ui;
+            mDirector.GetInputManager.FlagForAddition(this);
+        }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -143,7 +151,6 @@ namespace Singularity.Units
             {
                 mNeverMoved = false;
             }
-
         }
 
         public bool KeyTyped(KeyEvent keyEvent)

@@ -1,28 +1,31 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
 using Singularity.Sound;
-using Singularity.Utils;
 
 namespace Singularity.Units
 {
     /// <inheritdoc cref="ControllableUnit"/>
-    internal class MilitaryUnit : ControllableUnit, IShooting
+    [DataContract]
+    internal class MilitaryUnit : FreeMovingUnit, IShooting
     {
         /// <summary>
         /// Default width of a unit before scaling.
         /// </summary>
-        private const int DefaultWidth = 150;
+        [DataMember]
+        protected const int DefaultWidth = 150;
 
         /// <summary>
         /// Default height of a unit before scaling.
         /// </summary>
-        private const int DefaultHeight = 75;
+        [DataMember]
+        protected const int DefaultHeight = 75;
 
         /// <summary>
         /// Sprite sheet for military units.
@@ -37,49 +40,70 @@ namespace Singularity.Units
         /// <summary>
         /// Scalar for the unit size.
         /// </summary>
-        private const float Scale = 0.4f;
+        [DataMember]
+        protected float mScale = 0.4f;
 
         /// <summary>
-        /// Indicates the position the closest enemy is at.
+        /// Used to set the enemy target that should be shot at.
         /// </summary>
+        [DataMember]
         private ICollider mShootingTarget;
+
 
         /// <summary>
         /// Indicates if the unit is currently shooting.
         /// </summary>
+        [DataMember]
         private bool mShoot;
-
+        [DataMember]
         public int Range { get; protected set; }
 
         /// <summary>
         /// Color of the unit while selected.
         /// </summary>
+        [DataMember]
         protected Color mSelectedColor = Color.DarkGray;
 
         /// <summary>
         /// Color of the unit while not selected
         /// </summary>
+        [DataMember]
         protected Color mColor = Color.Gray;
 
+        /// <summary>
+        /// Used to make sure that it doesn't shoot too often.
+        /// </summary>
+        [DataMember]
         private float mShootingTimer = -1f;
-        private double mCurrentTime;
+
+
+
 
         public MilitaryUnit(Vector2 position,
             Camera camera,
             ref Director director,
-            ref Map.Map map)
-            : base(position, camera, ref director, ref map)
+            ref Map.Map map,
+            bool friendly = true)
+            : base(position, camera, ref director, ref map, friendly)
         {
             mSpeed = MilitaryUnitStats.StandardSpeed;
             Health = MilitaryUnitStats.StandardHealth;
 
-            AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
+            AbsoluteSize = new Vector2(DefaultWidth * mScale, DefaultHeight * mScale);
 
             RevelationRadius = 400;
 
             Center = new Vector2((AbsolutePosition.X + AbsoluteSize.X) * 0.5f, (AbsolutePosition.Y + AbsoluteSize.Y) * 0.5f );
 
             Range = MilitaryUnitStats.StandardRange;
+
+            // Track the creation of a military unit in the statistics.
+            director.GetStoryManager.UpdateUnits("created");
+        }
+
+        public void ReloadContent(ContentManager content, ref Director director, Camera camera, ref Map.Map map)
+        {
+            ReloadContent(ref director, camera, ref map);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -92,16 +116,16 @@ namespace Singularity.Units
 
             // Draw military unit
             spriteBatch.Draw(
-                            mMilSheet,
-                            AbsolutePosition,
-                            new Rectangle(150 * mColumn, 75 * mRow, (int)(AbsoluteSize.X / Scale), (int)(AbsoluteSize.Y / Scale)),
-                            mSelected ? mSelectedColor : mColor,
-                            0f,
-                            Vector2.Zero,
-                            new Vector2(Scale),
-                            SpriteEffects.None,
-                            LayerConstants.MilitaryUnitLayer
-                            );
+                mMilSheet,
+                AbsolutePosition,
+                new Rectangle(150 * mColumn, 75 * mRow, (int)(AbsoluteSize.X / mScale), (int)(AbsoluteSize.Y / mScale)),
+                mSelected ? mSelectedColor : mColor,
+                0f,
+                Vector2.Zero,
+                new Vector2(mScale),
+                SpriteEffects.None,
+                LayerConstants.MilitaryUnitLayer
+            );
 
             // Draw the glow under it
             if (mSelected)
@@ -113,7 +137,7 @@ namespace Singularity.Units
                     Color.White,
                     0f,
                     Vector2.Zero,
-                    new Vector2(Scale),
+                    new Vector2(mScale),
                     SpriteEffects.None,
                     LayerConstants.MilitaryUnitLayer - 0.01f);
             }
@@ -129,17 +153,15 @@ namespace Singularity.Units
                 }
             }
 
-            if (!mShoot)
+            if (mShoot)
             {
-                return;
-            }
-
-            if (mCurrentTime <= mShootingTimer + 200)
-            {
-                // draws a laser line a a slight glow around the line, then sets the shoot future off
-                spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2, .15f);
-                spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6, .15f);
-                mShoot = false;
+                if (mCurrentTime <= mShootingTimer + 200)
+                {
+                    // draws a laser line a a slight glow around the line, then sets the shoot future off
+                    spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2, .15f);
+                    spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6, .15f);
+                    mShoot = false;
+                }
             }
         }
 
@@ -166,7 +188,6 @@ namespace Singularity.Units
             // calculate path to target position
             else if (mIsMoving)
             {
-                Rotate(mPath.Peek());
                 if (!HasReachedWaypoint())
                 {
                     MoveToTarget(mPath.Peek(), mSpeed);
@@ -183,12 +204,15 @@ namespace Singularity.Units
             mColumn = (mRotation - mRow * 18) / 3;
 
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
-            AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * Scale), (int) (AbsoluteSize.Y * Scale));
+            AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * mScale), (int) (AbsoluteSize.Y * mScale));
             Moved = mIsMoving;
 
-            //TODO this needs to be taken out once the military manager takes control of shooting
             if (!mIsMoving && mShoot)
             {
+                // Rotate to the center of the shooting target
+                Rotate(mShootingTarget.Center, true);
+
+                
                 if (mShootingTimer < 0.5f)
                 {
                     mShootingTimer = (float) gameTime.TotalGameTime.TotalMilliseconds;
@@ -202,9 +226,10 @@ namespace Singularity.Units
                     Shoot(mShootingTarget);
                 }
             }
+            
         }
 
-        public void Shoot(ICollider target)
+        private void Shoot(IDamageable target)
         {
             mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
             target.MakeDamage(MilitaryUnitStats.mUnitStrength);

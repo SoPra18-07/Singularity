@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Singularity.Manager;
 using Singularity.Map.Properties;
 
 namespace Singularity.Resources
@@ -71,7 +72,7 @@ namespace Singularity.Resources
         /// </summary>
         /// <param name="amount">The amount of resources to distribute onto the map</param>
         /// <returns>A list of the new created resources</returns>
-        public static List<MapResource> GetRandomlyDistributedResources(int amount)
+        public static List<MapResource> GetRandomlyDistributedResources(int amount, ref Director director)
         {
             if (amount < 0)
             {
@@ -98,7 +99,7 @@ namespace Singularity.Resources
                     amount++;
                     continue;
                 }
-                resources.Add(new MapResource(basicResources[rnd.Next(basicResources.Length - 1)], new Vector2(xPos, yPos), defaultWidth));
+                resources.Add(new MapResource(basicResources[rnd.Next(basicResources.Length - 1)], new Vector2(xPos, yPos), defaultWidth, ref director));
 
             }
             return resources;

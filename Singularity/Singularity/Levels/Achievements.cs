@@ -26,6 +26,15 @@ namespace Singularity.Levels
         [DataMember]
         Pair<int, bool> UnitsBuilt { get; set; }
 
+        public Achievements()
+        {
+            FirstBuilding = false;
+            TutorialFinished = false;
+            ReachedLvl5 = false;
+            TrashBurned = new Pair<int, bool>(0, false);
+            PlatformsBuilt = new Pair<int, bool>(0, false);
+            UnitsBuilt = new Pair<int, bool>(0, false);
+        }
 
         //The methods of the achievements. Call them every time you make progress in it.
         //They return true only in the moment their corresponding requirements are met, because only then an infobox should be triggered
@@ -64,7 +73,12 @@ namespace Singularity.Levels
 
         public bool Skynet()
         {
-            if (PlatformsBuilt.GetFirst() + 1 == 1000)
+            // Initialize container, if it doesn't exist, yet.
+            if (PlatformsBuilt == null)
+            {
+                PlatformsBuilt = new Pair<int, bool>(0, false);
+            }
+            else if (PlatformsBuilt.GetFirst() + 1 == 1000)
             {
                 PlatformsBuilt = new Pair<int, bool>(PlatformsBuilt.GetFirst() + 1, true);
             }
@@ -87,7 +101,11 @@ namespace Singularity.Levels
 
         public bool Replicant()
         {
-            if (UnitsBuilt.GetFirst() + 1 == 1000)
+            if (UnitsBuilt == null)
+            {
+                UnitsBuilt = new Pair<int, bool>(0, false);
+            }
+            else if (UnitsBuilt.GetFirst() + 1 == 1000)
             {
                 UnitsBuilt = new Pair<int, bool>(UnitsBuilt.GetFirst() + 1, true);
             }

@@ -1,16 +1,17 @@
-﻿using System.CodeDom.Compiler;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Property;
+using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.Map
 {
@@ -18,56 +19,65 @@ namespace Singularity.Map
     /// A Structure map holds all the structures currently in the game. Additionally the structure map holds a graph
     /// representation of all the platforms and roads in the game. These graphes are used by pathfinding algorithms etc.
     /// </summary>
+    [DataContract]
     public sealed class StructureMap : IDraw, IUpdate, IMousePositionListener
     {
         /// <summary>
         /// A list of all the platforms currently in the game
         /// </summary>
+        [DataMember]
         private readonly LinkedList<PlatformBlank> mPlatforms;
 
         /// <summary>
         /// A list of all the roads in the game, identified by a source and destination platform.
         /// </summary>
+        [DataMember]
         private readonly LinkedList<Road> mRoads;
 
         /// <summary>
         /// A list of all the platformPlacements in the game (the platforms following the mouse when building).
         /// </summary>
+        [DataMember]
         private readonly LinkedList<StructurePlacer> mStructuresToPlace;
 
         /// <summary>
         /// The director for the game
         /// </summary>
-        private readonly Director mDirector;
+        private Director mDirector;
 
         /// <summary>
         /// A dictionary mapping platforms to the ID of the graph they are currently on
         /// </summary>
+        [DataMember]
         private readonly Dictionary<PlatformBlank, int> mPlatformToGraphId;
 
         /// <summary>
         /// A dictionary mapping graph IDs to the graph object they belong to
         /// </summary>
+        [DataMember]
         private readonly Dictionary<int, Graph.Graph> mGraphIdToGraph;
 
         /// <summary>
         /// A dictioanry mapping graph IDs to the energy level of the graph
         /// </summary>
+        [DataMember]
         private readonly Dictionary<int, int> mGraphIdToEnergyLevel;
 
         /// <summary>
         /// The Fog of war of the current game
         /// </summary>
-        private readonly FogOfWar mFow;
+        private FogOfWar mFow;
 
         /// <summary>
         /// The x coordinate of the mouse in world space
         /// </summary>
+        [DataMember]
         private float mMouseX;
 
         /// <summary>
         /// The y coordinate of the mouse in world space
         /// </summary>
+        [DataMember]
         private float mMouseY;
 
         /// <summary>
@@ -90,6 +100,30 @@ namespace Singularity.Map
             mRoads = new LinkedList<Road>();
         }
 
+
+        public void ReloadContent(ContentManager content, FogOfWar fow, ref Director dir, Camera camera, Map map, UserInterfaceScreen ui)
+        {
+            mFow = fow;
+            mDirector = dir;
+            dir.GetInputManager.AddMousePositionListener(this);
+            foreach (var placement in mStructuresToPlace)
+            {
+                placement.ReloadContent(camera, ref dir, map);
+            }
+
+            foreach (var platform in mPlatforms)
+            {
+                platform.ReloadContent(content, ref dir);
+            }
+            //Update uis graphid dictionary
+            ui.CallingAllGraphs(mGraphIdToGraph);
+
+            foreach(var roads in mRoads)
+            {
+                roads.ReloadContent(ref dir);
+            }
+        }
+
         /// <summary>
         /// A method existing so the DistributionManager has access to all platforms.
         /// </summary>
@@ -106,6 +140,7 @@ namespace Singularity.Map
         /// <param name="platform">The platform to be added</param>
         public void AddPlatform(PlatformBlank platform)
         {
+
             mPlatforms.AddLast(platform);
             mFow.AddRevealingObject(platform);
 
@@ -138,6 +173,7 @@ namespace Singularity.Map
             mGraphIdToGraph[index] = graph;
             mPlatformToGraphId[platform] = index;
             platform.SetGraphIndex(index);
+            
             UpdateGenUnitsGraphIndex(mGraphIdToGraph[index], index);
 
             mDirector.GetDistributionDirector.AddManager(index);
@@ -156,11 +192,10 @@ namespace Singularity.Map
             var index = mPlatformToGraphId[platform];
 
             mGraphIdToGraph[index] = null;
+            mPlatformToGraphId.Remove(platform);
 
-            mDirector.GetDistributionDirector.RemoveManager(index);
+            mDirector.GetDistributionDirector.RemoveManager(index, mGraphIdToGraph);
             mDirector.GetPathManager.RemoveGraph(index);
-
-
         }
 
         /// <summary>
@@ -209,9 +244,6 @@ namespace Singularity.Map
                 mGraphIdToGraph[parentIndex] = graph;
 
                 UpdateGenUnitsGraphIndex(mGraphIdToGraph[parentIndex], parentIndex);
-
-                mGraphIdToEnergyLevel[parentIndex] =
-                    mGraphIdToEnergyLevel[parentIndex] + mGraphIdToEnergyLevel[childIndex];
                 mGraphIdToEnergyLevel[childIndex] = 0;
 
                 mDirector.GetDistributionDirector.MergeManagers(childIndex, parentIndex, parentIndex);
@@ -298,11 +330,19 @@ namespace Singularity.Map
 
             var newChildIndex = mGraphIdToGraph.Count;
 
+            var platforms = new List<PlatformBlank>();
+            var units = new List<GeneralUnit>();
+
             // update the values for the child nodes, the parent nodes reuse their values.
             foreach (var childNode in childReachableGraph.GetNodes())
             {
                 mPlatformToGraphId[(PlatformBlank)childNode] = newChildIndex;
                 ((PlatformBlank)childNode).SetGraphIndex(newChildIndex);
+                platforms.Add((PlatformBlank) childNode);
+                foreach (var unit in ((PlatformBlank)childNode).GetGeneralUnitsOnPlatform())
+                {
+                    units.Add(unit);
+                }
             }
 
             mGraphIdToGraph[newChildIndex] = childReachableGraph;
@@ -310,24 +350,12 @@ namespace Singularity.Map
 
             UpdateGenUnitsGraphIndex(mGraphIdToGraph[newChildIndex], newChildIndex);
 
-            var platforms = new List<PlatformBlank>();
-            var units = new List<GeneralUnit>();
-
-            foreach (var node in parentReachableGraph.GetNodes())
-            {
-                platforms.Add((PlatformBlank)node);
-                foreach (var unit in ((PlatformBlank) node).GetGeneralUnitsOnPlatform())
-                {
-                    units.Add(unit);
-                }
-            }
-
             mGraphIdToEnergyLevel[newChildIndex] = 0;
             mGraphIdToEnergyLevel[mPlatformToGraphId[(PlatformBlank) parent]] = 0;
             UpdateEnergyLevel(newChildIndex);
             UpdateEnergyLevel(mPlatformToGraphId[(PlatformBlank)parent]);
 
-            mDirector.GetDistributionDirector.SplitManagers(mPlatformToGraphId[(PlatformBlank)parent], newChildIndex, platforms, units);
+            mDirector.GetDistributionDirector.SplitManagers(mPlatformToGraphId[(PlatformBlank)parent], newChildIndex, platforms, units, mGraphIdToGraph);
             mDirector.GetPathManager.AddGraph(newChildIndex, childReachableGraph);
             mDirector.GetPathManager.AddGraph(mPlatformToGraphId[(PlatformBlank)parent], parentReachableGraph);
         }
@@ -538,7 +566,7 @@ namespace Singularity.Map
                 mGraphIdToEnergyLevel[graphId] = mGraphIdToEnergyLevel[graphId] - ((PlatformBlank) node).GetDrainingEnergy();
             }
 
-            CheckEnergyLevel(graphId, wasNegative);
+            CheckEnergyLevel(graphId);
         }
 
         /// <summary>
@@ -572,21 +600,14 @@ namespace Singularity.Map
             mMouseY = worldY;
         }
 
-        private void CheckEnergyLevel(int graphId, bool wasNegative)
+        private void CheckEnergyLevel(int graphId)
         {
             // energy level was positive and still is
-            if (!wasNegative && mGraphIdToEnergyLevel[graphId] >= 0)
-            {
-                return;
-            }
-
-            // energy level was negative and is positive considering all the platforms that weren't manually deactivated
-            // -> reactivate all the platforms which weren't manually deactivated
-            if (wasNegative && mGraphIdToEnergyLevel[graphId] >= 0)
+            if (mGraphIdToEnergyLevel[graphId] >= 0)
             {
                 foreach (var node in mGraphIdToGraph[graphId].GetNodes())
                 {
-                    if (((PlatformBlank) node).IsManuallyDeactivated())
+                    if (((PlatformBlank)node).IsManuallyDeactivated())
                     {
                         continue;
                     }

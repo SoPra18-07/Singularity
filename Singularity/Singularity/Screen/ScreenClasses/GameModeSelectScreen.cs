@@ -138,14 +138,14 @@ namespace Singularity.Screen.ScreenClasses
 
             // Draw selector triangle
             spriteBatch.Draw(mMSelectorTriangle,
-                position: mMSelectorPosition,
-                sourceRectangle: null,
-                color: Color.White * mMMenuOpacity,
-                rotation: 0f,
-                origin: new Vector2(0, 11),
-                scale: 1f,
-                effects: SpriteEffects.None,
-                layerDepth: 0f);
+                mMSelectorPosition,
+                null,
+                Color.White * mMMenuOpacity,
+                0f,
+                new Vector2(0, 11),
+                1f,
+                SpriteEffects.None,
+                0f);
 
             // Draw menu window
             spriteBatch.StrokedRectangle(mMMenuBoxPosition,
@@ -182,12 +182,12 @@ namespace Singularity.Screen.ScreenClasses
             mMButtonList.Add(mMFreePlayButton);
             mMButtonList.Add(mMBackButton);
 
-            mMStoryButton.ButtonReleased += MainMenuManagerScreen.OnStoryButtonReleased;
-            mMFreePlayButton.ButtonReleased += MainMenuManagerScreen.OnFreePlayButtonReleased;
+            mMStoryButton.ButtonReleased += LoadGameManagerScreen.OnStoryButtonReleased;
+            mMFreePlayButton.ButtonReleased += LoadGameManagerScreen.OnSkirmishReleased;
             mMBackButton.ButtonReleased += MainMenuManagerScreen.OnBackButtonReleased;
 
             mMStoryButton.ButtonHovering += OnStoryHover;
-            mMFreePlayButton.ButtonHovering += OnFreePlayHover;
+            mMFreePlayButton.ButtonHovering += OnSkirmishHover;
             mMBackButton.ButtonHovering += OnBackHover;
 
             Loaded = true;
@@ -226,7 +226,7 @@ namespace Singularity.Screen.ScreenClasses
             mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter);
         }
 
-        private void OnFreePlayHover(Object sender, EventArgs eventArgs)
+        private void OnSkirmishHover(Object sender, EventArgs eventArgs)
         {
             mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter + 50);
         }

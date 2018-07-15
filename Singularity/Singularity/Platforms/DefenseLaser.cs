@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
@@ -12,8 +9,10 @@ using Singularity.Resources;
 namespace Singularity.Platforms
 {
     /// <inheritdoc cref="DefenseBase"/>
+    [DataContract]
     internal sealed class DefenseLaser : DefenseBase
     {
+        [DataMember]
         private const int DrainingEnergy = 40;
 
         /// <summary>
@@ -30,7 +29,7 @@ namespace Singularity.Platforms
             baseSprite,
             libSans12,
             ref director,
-            EPlatformType.Laser,
+            EStructureType.Laser,
             friendly: friendly)
         {
             mDrainingEnergy = DrainingEnergy;

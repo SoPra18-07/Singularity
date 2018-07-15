@@ -6,6 +6,7 @@
         GameModeSelectScreen,
         GamePauseScreen,
         GameScreen,
+        GamePauseManagerScreen,
         LoadingScreen,
         LoadSelectScreen,
         MainMenuScreen,
@@ -16,6 +17,7 @@
         StatisticsScreen,
         MainMenuManagerScreen,
         UserInterfaceScreen,
+        LoadGameManagerScreen,
         DebugScreen
     }
 }

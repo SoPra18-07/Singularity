@@ -9,24 +9,24 @@ namespace Singularity.Screen
     /// A class to handle the communication between sliders and DistributionManager.
     /// </summary>
     [DataContract]
-    public class SliderHandler
+    public sealed class SliderHandler
     {
-        [DataMember]
-        private Slider mDefSlider;
-        [DataMember]
-        private Slider mProductionSlider;
-        [DataMember]
-        private Slider mConstructionSlider;
-        [DataMember]
-        private Slider mLogisticsSlider;
-        [DataMember]
-        private Director mDirector;
+
+        private readonly Slider mDefSlider;
+
+        private readonly Slider mProductionSlider;
+
+        private readonly Slider mConstructionSlider;
+
+        private readonly Slider mLogisticsSlider;
+
+        private readonly Director mDirector;
 
         //This is an Array of length 4. The entrys will be (with rising index): Defense, Construction, Logistics, Production
-        [DataMember]
+
         private int[] mCurrentPages;
 
-        [DataMember]
+
         private int mCurrentGraphid;
 
         public SliderHandler(ref Director director, Slider def, Slider prod, Slider constr, Slider logi)
@@ -36,15 +36,12 @@ namespace Singularity.Screen
             mProductionSlider = prod;
             mConstructionSlider = constr;
             mLogisticsSlider = logi;
-            //TODO: CURRENTLY HARDCODED Change when implementing graphswitch
-            mDirector.GetDistributionDirector.GetManager(0).Register(this);
             mCurrentPages = new int[4];
 
             mDefSlider.PageMoving += DefListen;
             mConstructionSlider.PageMoving += ConstrListen;
             mLogisticsSlider.PageMoving += LogiListen;
             mProductionSlider.PageMoving += ProdListen;
-            Refresh();
 
             //TODO: this won't work, since it is not guaranteed that theres always a graph at 0
             mCurrentGraphid = 0;
@@ -91,15 +88,6 @@ namespace Singularity.Screen
             mConstructionSlider.MaxIncrement = mConstructionSlider.GetCurrentPage() + free;
             mLogisticsSlider.MaxIncrement = mLogisticsSlider.GetCurrentPage() + free;
 
-
-        }
-
-        /// <summary>
-        /// This changes the Graph this SliderHandler displays.
-        /// </summary>
-        public void ChangeGraph(object sender, EventArgs eventArgs)
-        {
-            //What to listen to??
         }
 
         /// <summary>
@@ -111,6 +99,12 @@ namespace Singularity.Screen
             mProductionSlider.SetCurrentPage(mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).GetJobCount(JobType.Production));
             mConstructionSlider.SetCurrentPage(mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).GetJobCount(JobType.Construction));
             mLogisticsSlider.SetCurrentPage(mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).GetJobCount(JobType.Logistics));
+        }
+
+        public void Initialize()
+        {
+            mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).Register(this);
+            Refresh();
         }
 
         public void DefListen(object sender, EventArgs eventArgs, int page)
@@ -173,10 +167,23 @@ namespace Singularity.Screen
             Refresh();
         }
 
-        //TODO: this is only used for temporarily not crashing the game and keeping the graphID up to date
-        public void SetGraphId(int id)
+        /// <summary>
+        /// Update the graph id that is handled by the sliderhandler
+        /// </summary>
+        /// <param name="id">the new id to handle</param>
+        /// <param name="oldId">the old id</param>
+        public void SetGraphId(int id, int oldId)
         {
+            if (oldId != -1)
+            {
+                mDirector.GetDistributionDirector.GetManager(oldId)?.Unregister(this);
+            }
+
             mCurrentGraphid = id;
+            mDirector.GetDistributionDirector.GetManager(id).Register(this);
+
+            Refresh();
+            ForceSliderPages();
         }
     }
 }

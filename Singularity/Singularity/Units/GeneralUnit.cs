@@ -14,14 +14,15 @@ using Singularity.Utils;
 namespace Singularity.Units
 {
     [DataContract]
-    public sealed class GeneralUnit : ISpatial
+    public sealed class GeneralUnit : ISpatial, IDie
     {
-
-        public int Id { get; }
+        [DataMember]
+        public int Id { get; private set; }
         [DataMember]
         private int mPositionId;
         [DataMember]
         public Optional<Resource> Carrying { get; set; }
+
 
         [DataMember]
         private bool mFinishTask;
@@ -33,6 +34,10 @@ namespace Singularity.Units
         [DataMember]
         private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
 
+        /// <summary>
+        /// The sprite used by the general unit. Drawing a sprite turns out to be more efficient than drawing a primitive.
+        /// </summary>
+        internal static Texture2D mGenUnitTexture;
 
         //These are the assigned task and a flag, wether the unit is done with it.
         [DataMember]
@@ -63,8 +68,8 @@ namespace Singularity.Units
         public Vector2 RelativePosition { get; set; }
         [DataMember]
         public Vector2 RelativeSize { get; set; }
-        [DataMember]
-        private readonly Director mDirector;
+
+        private Director mDirector;
 
         /// <summary>
         /// whether the unit is moving or currently standing still,
@@ -99,11 +104,11 @@ namespace Singularity.Units
         [DataMember]
         public bool Active { get; set; }
 
-        public GeneralUnit(PlatformBlank platform, ref Director director, int graphid)
+        public GeneralUnit(PlatformBlank platform, ref Director director)
         {
+            Graphid = platform.GetGraphIndex();
             platform.AddGeneralUnit(this);
-            Graphid = graphid;
-            Id = IdGenerator.NextiD();
+            Id = director.GetIdGenerator.NextiD();
             mDestination = Optional<INode>.Of(null);
 
             CurrentNode = platform;
@@ -118,6 +123,11 @@ namespace Singularity.Units
             mDirector.GetDistributionDirector.GetManager(Graphid).Register(this);
             mDone = true;
             mFinishTask = false;
+        }
+
+        internal void ReloadContent(ref Director director)
+        {
+            mDirector = director;
         }
 
         /// <summary>
@@ -231,7 +241,6 @@ namespace Singularity.Units
                     ((PlatformBlank)CurrentNode).StoreResource(res);
                     Carrying = Optional<Resource>.Of(null);
                 }
-
                 mDone = true;
                 //We can now do the job we were assigned to.
                 mFinishTask = false;
@@ -245,7 +254,8 @@ namespace Singularity.Units
                         {
                             mDone = false;
 
-                            mTask = mDirector.GetDistributionDirector.GetManager(Graphid).RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
+                            mTask = mDirector.GetDistributionDirector.GetManager(Graphid)
+                                .RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
                             //Check if the given destination is null (it shouldnt)
                             if (mTask.End.IsPresent())
                             {
@@ -399,15 +409,12 @@ namespace Singularity.Units
 
             //This means we arrived at the point we want to leave the Resource and consider our work done
             if (mTask.End.IsPresent() && CurrentNode.Equals(mTask.End.Get()) &&
-                ReachedTarget(mTask.End.Get().Center))
+                ReachedTarget(mTask.End.Get().Center) && Carrying.IsPresent())
             {
-                if (Carrying.IsPresent())
-                {
-                    var res = Carrying.Get();
-                    res.UnFollow();
-                    ((PlatformBlank)CurrentNode).StoreResource(res);
-                    Carrying = Optional<Resource>.Of(null);
-                }
+                var res = Carrying.Get();
+                res.UnFollow();
+                ((PlatformBlank)CurrentNode).StoreResource(res);
+                Carrying = Optional<Resource>.Of(null);
 
                 mDone = true;
             }
@@ -509,7 +516,17 @@ namespace Singularity.Units
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.StrokedCircle(AbsolutePosition, 10, Color.AntiqueWhite, Color.Black, LayerConstants.GeneralUnitLayer);
+            
+            spriteBatch.Draw(mGenUnitTexture,
+                AbsolutePosition,
+                null,
+                Color.White,
+                0f,
+                new Vector2(10), 
+                Vector2.One,
+                SpriteEffects.None,
+                LayerConstants.GeneralUnitLayer);
+
             if (Carrying.IsPresent())
             {
                 Carrying.Get().Draw(spriteBatch);
@@ -526,17 +543,35 @@ namespace Singularity.Units
             }
 
             mDirector.GetDistributionDirector.GetManager(Graphid).Kill(this);
-            mAssignedAction.Kill(this);
+            mAssignedAction?.Kill(this);
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
 
             return true;
         }
 
+        /// <summary>
+        /// Basically tell the Unit that its platform just died and it needs to get a new job.
+        /// But only if the id is found in its current task.
+        /// </summary>
+        /// <param name="id"></param>
         public void Kill(int id)
         {
             if (mTask.Contains(id))
             {
-                mTask = mDirector.GetDistributionDirector.GetManager(Graphid).RequestNewTask(this, Job, null);
-                // also the mAssignedTask-platformaction is included in this.
+                if (Job == JobType.Defense)
+                {
+                    mDirector.GetDistributionDirector.GetManager(Graphid).NewProductionHall(this, true);
+                }
+                else if (Job == JobType.Production)
+                {
+                    mDirector.GetDistributionDirector.GetManager(Graphid).NewProductionHall(this, false);
+                }
+                else
+                {
+                    // also the mAssignedTask-platformaction is included in this.
+                    mDirector.GetDistributionDirector.GetManager(Graphid)
+                        .RequestNewTask(this, Job, Optional<IPlatformAction>.Of(null));
+                }
             }
         }
     }

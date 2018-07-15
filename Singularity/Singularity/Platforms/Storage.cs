@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
-using Singularity.Resources;
 
 namespace Singularity.Platforms
 {
@@ -12,9 +10,9 @@ namespace Singularity.Platforms
     class Storage: PlatformBlank
     {
         [DataMember]
-        private new const int PlatformWidth = 144;
+        private const int PlatformWidth = 144;
         [DataMember]
-        private new const int PlatformHeight = 127;
+        private const int PlatformHeight = 127;
 
         public Storage(Vector2 position,
             Texture2D spritesheet,
@@ -27,14 +25,13 @@ namespace Singularity.Platforms
                 basesprite,
                 libSans12,
                 ref director,
-                EPlatformType.Storage,
+                EStructureType.Storage,
                 -50,
                 friendly: friendly)
         {
-            //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
-            //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<EResourceType, int>();
-            mType = EPlatformType.Storage;
+            // Todo: Add Costs of the platform here if you got them.
+            // mCost = new Dictionary<EResourceType, int>();
+            mType = EStructureType.Storage;
             mSpritename = "Dome";
             SetPlatfromParameters();
         }

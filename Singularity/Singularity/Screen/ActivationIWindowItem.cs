@@ -1,8 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
-using Singularity.Utils;
 
 namespace Singularity.Screen
 {
@@ -35,6 +33,8 @@ namespace Singularity.Screen
             ActiveInWindow = true;
 
         }
+
+        /// <inheritdoc />
         public void Update(GameTime gametime)
         {
             if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
@@ -46,6 +46,7 @@ namespace Singularity.Screen
             }
         }
 
+        /// <inheritdoc />
         public void Draw(SpriteBatch spriteBatch)
         {
             if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
@@ -55,10 +56,15 @@ namespace Singularity.Screen
             }
         }
 
+        /// <inheritdoc />
         public Vector2 Position { get; set; }
+        /// <inheritdoc />
         public Vector2 Size { get; }
+        /// <inheritdoc />
         public bool ActiveInWindow { get; set; }
+        /// <inheritdoc />
         public bool InactiveInSelectedPlatformWindow { get; set; }
+        /// <inheritdoc />
         public bool OutOfScissorRectangle { get; set; }
     }
 }

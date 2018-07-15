@@ -22,5 +22,10 @@ namespace Singularity.Screen
         /// Removes the "top" screen from the screen manager.
         /// </summary>
         void RemoveScreen();
+
+        /// <summary>
+        /// Returns the Count of screens currently registered at the manager.
+        /// </summary>
+        int GetScreenCount();
     }
 }

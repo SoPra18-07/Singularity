@@ -16,8 +16,10 @@ namespace Singularity.Screen
     /// </summary>
     sealed class InfoBarWindowObject : IDraw, IUpdate, IMouseClickListener
     {
+        #region member variables
+
         // list of items in info bar
-        private readonly List<IWindowItem> mInfoBarItemList;
+        private readonly List<IWindowItem> mInfoBarItemList = new List<IWindowItem>();
 
         // pause button of info bar
         private readonly Button mPauseButton;
@@ -68,7 +70,9 @@ namespace Singularity.Screen
         private readonly IScreenManager mScreenManager;
 
         // pause menu screen
-        private readonly GamePauseScreen mGamePauseScreen;
+        private readonly GamePauseManagerScreen mGamePauseManagerScreen;
+
+        #endregion
 
         /// <summary>
         /// The infoBar is part of the UI. It is placed on the top of the screen
@@ -111,12 +115,11 @@ namespace Singularity.Screen
             mSelectedPlatformWindow = selectedPlatformWindow;
             mMinimapWindow = minimapWindow;
 
-            mInfoBarItemList = new List<IWindowItem>();
-
             // set to zero to force the update 'change-in-res'-call once (because width and backup are different from the beginning)
             mWidthBackup = 0;
 
-            mWidthPadding = Width / 10;
+            // divide the width to get a padding between the buttons
+            mWidthPadding = Width / 25;
 
             // set starting values
             Screen = EScreen.UserInterfaceScreen;
@@ -125,7 +128,6 @@ namespace Singularity.Screen
 
             // the entire infoBar
             Bounds = new Rectangle(0, 0, Width, 25);
-
 
             // NOTICE : all buttons can start with position (0,0) since they will be positioned at the first update-call
             // pause button
@@ -158,12 +160,11 @@ namespace Singularity.Screen
             mInfoBarItemList.Add(mMinimapButton);
             mMinimapButton.ButtonReleased += TogglerMinimap;
 
-
             // add input manager to prevent other objects from behind the infoBar to get input through the infoBar
-            director.GetInputManager.AddMouseClickListener(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
 
             // pause menu screen
-            mGamePauseScreen = new GamePauseScreen(new Vector2(director.GetGraphicsDeviceManager.PreferredBackBufferWidth, director.GetGraphicsDeviceManager.PreferredBackBufferHeight), mScreenManager, mDirector);
+            mGamePauseManagerScreen = new GamePauseManagerScreen(new Vector2(director.GetGraphicsDeviceManager.PreferredBackBufferWidth, director.GetGraphicsDeviceManager.PreferredBackBufferHeight), mScreenManager, mDirector);
         }
 
         /// <summary>
@@ -190,7 +191,7 @@ namespace Singularity.Screen
                 spriteBatch.DrawString(mSpriteFont, DateTime.Now.ToShortTimeString(), new Vector2(Width - 30 - 80, 2.5f), new Color(0,0,0));
 
                 // draw the mission time
-                spriteBatch.DrawString(mSpriteFont, mDirector.GetStoryManager.Time.ToString(), new Vector2(Width - 30 - 300, 2.5f), new Color(1, 0, 0));
+                spriteBatch.DrawString(mSpriteFont, mDirector.GetClock.GetIngameTime().ToString(), new Vector2(Width - 30 - 300, 2.5f), new Color(1, 0, 0));
             }
         }
 
@@ -251,7 +252,7 @@ namespace Singularity.Screen
         // the pause button opens the pause menu screen
         private void PauseButtonReleased(object sender, EventArgs eventArgs)
         {
-            mScreenManager.AddScreen(mGamePauseScreen);
+            mScreenManager.AddScreen(mGamePauseManagerScreen);
         }
 
         // toggles the civilUnits window opened/closed

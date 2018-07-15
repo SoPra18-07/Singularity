@@ -1,20 +1,21 @@
-﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Map;
 using Singularity.Platforms;
 using Singularity.Property;
-using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 using Singularity.Utils;
 
 namespace Singularity.Manager
 {
+
     /// <remarks>
     /// The way the MilitaryManager works is that it stores which 2x2 map tile a unit is currently located on. This way,
     /// the MilitaryManager only has to check for all units which are in the same or adjacent 2x2 map tiles for detection.
     /// As such, it won't need to check if 2 units on opposite ends of the map are near enough to each other that it can attack them.
     /// </remarks>
+    [DataContract]
     public sealed class MilitaryManager : IUpdate
     {
         /// <summary>
@@ -22,16 +23,23 @@ namespace Singularity.Manager
         /// </summary>
         private UnitMap mUnitMap;
 
+        /// <summary>
+        /// Required because it holds a reference to the unit.
+        /// </summary>
+        private Map.Map mMap;
+
         #region Friendly unit lists
 
         /// <summary>
         /// A list of friendly military (i.e. capable of shooting) units.
         /// </summary>
+        [DataMember]
         private readonly List<MilitaryUnit> mFriendlyMilitary = new List<MilitaryUnit>();
 
         /// <summary>
         /// A list of friendly defense platforms.
         /// </summary>
+        [DataMember]
         private readonly List<DefenseBase> mFriendlyDefensePlatforms = new List<DefenseBase>();
 
         #endregion
@@ -41,16 +49,29 @@ namespace Singularity.Manager
         /// <summary>
         /// A list of hostile military (i.e. capable of shooting) units.
         /// </summary>
+        [DataMember]
         private readonly List<EnemyUnit> mHostileMilitary = new List<EnemyUnit>();
 
         /// <summary>
         /// A list of hsotile defense platforms.
         /// </summary>
+        [DataMember]
         private readonly List<DefenseBase> mHostileDefensePlatforms = new List<DefenseBase>();
 
         #endregion
 
-        internal int TotalUnitCount { get; private set; } = 0;
+        private Director mDirector;
+
+        /// <summary>
+        /// The total number of military units on the map.
+        /// </summary>
+        internal int TotalUnitCount => mFriendlyMilitary.Count + mHostileMilitary.Count;
+
+
+        internal MilitaryManager(Director director)
+        {
+            mDirector = director;
+        }
 
         /// <summary>
         /// Sets the unit map for referencing later on. This is required because the map is created
@@ -58,7 +79,39 @@ namespace Singularity.Manager
         /// </summary>
         internal void SetMap(ref Map.Map map)
         {
-            mUnitMap = map.GetUnitMap();
+            mUnitMap = new UnitMap((int)map.GetMeasurements().X, (int)map.GetMeasurements().Y);
+            mMap = map;
+        }
+
+        public void ReloadContent(Vector2 mapmeasurements, Director director)
+        {
+            mDirector = director;
+        }
+
+        public void ReloadSetMap(ref Map.Map map)
+        {
+            mMap = map;
+            mUnitMap = new UnitMap((int) map.GetMeasurements().X, (int) map.GetMeasurements().Y);
+            foreach (var funit in mFriendlyMilitary)
+            {
+                mUnitMap.AddUnit(funit);
+            }
+
+            foreach (var fplatform in mFriendlyDefensePlatforms)
+            {
+
+                mUnitMap.AddUnit(fplatform);
+            }
+
+            foreach (var hunit in mHostileMilitary)
+            {
+                mUnitMap.AddUnit(hunit);
+            }
+
+            foreach (var hplatform in mHostileDefensePlatforms)
+            {
+                mUnitMap.AddUnit(hplatform);
+            }
         }
 
         #region Methods to add objects to the manager
@@ -109,7 +162,6 @@ namespace Singularity.Manager
             }
 
             mUnitMap.AddUnit(unit);
-            TotalUnitCount++;
         }
 
         #endregion
@@ -159,7 +211,6 @@ namespace Singularity.Manager
             }
 
             mUnitMap.RemoveUnit(unit);
-            TotalUnitCount--;
         }
 
         #endregion
@@ -167,7 +218,6 @@ namespace Singularity.Manager
 
         public void Update(GameTime gametime)
         {
-            // get a list of things to kill so the actual lists don't get modified during the run
             var unitsToKill = new List<FreeMovingUnit>();
             var platformsToKill = new List<PlatformBlank>();
 
@@ -325,8 +375,8 @@ namespace Singularity.Manager
                 // iterate through all adjacent units to find the closest adjacent unit.
                 foreach (var adjacentUnit in adjacentUnits)
                 {
-                    // only calculate the distance to the adjacent unit if the unit is not friendly.
-                    if (!adjacentUnit.Friendly)
+                    // only calculate the distance to the adjacent unit if the unit is friendly.
+                    if (adjacentUnit.Friendly)
                     {
                         // calculate the distance
                         var dist = Geometry.GetQuickDistance(unit.AbsolutePosition, adjacentUnit.AbsolutePosition);
@@ -387,8 +437,8 @@ namespace Singularity.Manager
                 // iterate through all adjacent units to find the closest adjacent unit.
                 foreach (var adjacentUnit in adjacentUnits)
                 {
-                    // only calculate the distance to the adjacent unit if the unit is not friendly.
-                    if (!adjacentUnit.Friendly)
+                    // only calculate the distance to the adjacent unit if the unit is friendly.
+                    if (adjacentUnit.Friendly)
                     {
                         // calculate the distance
                         var dist = Geometry.GetQuickDistance(turret.AbsolutePosition, adjacentUnit.AbsolutePosition);
@@ -436,19 +486,21 @@ namespace Singularity.Manager
 
             #region Kill them
 
+            var newUnitKillList = new List<FreeMovingUnit>();
             foreach (var unit in unitsToKill)
             {
-                RemoveUnit(unit);
-
-                // in any case, kill the unit.
+                // tell the unit to die.
                 unit.Die();
+                mDirector.GetStoryManager.Level.GameScreen.RemoveObject(unit);
+                mUnitMap.RemoveUnit(unit);
+                mMap.GetCollisionMap().RemoveCollider(unit);
+                mMap.GetFogOfWar().RemoveRevealingObject(unit);
             }
 
             foreach (var platform in platformsToKill)
             {
                 RemovePlatform(platform);
 
-                // in any case, kill it.
                 platform.Die();
             }
             #endregion
