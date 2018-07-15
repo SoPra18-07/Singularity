@@ -359,6 +359,7 @@ namespace Singularity.Screen.ScreenClasses
                 platform.Register();
                 mMap.AddPlatform(platform);
                 mDirector.GetMilitaryManager.AddPlatform(platform);
+                // mUpdateables.AddLast(platform); // otherwise Platforms won't produce as of now.
                 return true;
             }
 

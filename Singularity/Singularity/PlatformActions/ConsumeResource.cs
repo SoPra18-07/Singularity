@@ -19,6 +19,12 @@ namespace Singularity.PlatformActions
 
         public override List<JobType> UnitsRequired { get; set; } = new List<JobType> { JobType.Defense };
 
+        protected override void CreateResource()
+        {
+            // since you overwrote Execute, this has supposedly no way to get called.
+            throw new NotImplementedException();
+        }
+
         public override void Execute()
         {
             var res = mResourceMap.GetAmmoResource(mPlatform.AbsolutePosition);
@@ -40,7 +46,12 @@ namespace Singularity.PlatformActions
         // TODO: Implement an energy system
         public override void Execute()
         {
-            // currently unimplementable
+            // currently unimplementable .... well shit.
+            throw new NotImplementedException();
+        }
+        protected override void CreateResource()
+        {
+            // since you overwrote Execute, this has supposedly no way to get called.
             throw new NotImplementedException();
         }
 

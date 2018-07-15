@@ -57,7 +57,7 @@ namespace Singularity.Map
         }
 
         public Optional<Resource> GetQuarryResource(Vector2 location) {
-            return Optional<Resource>.Of(new Resource(EResourceType.Stone, location, ref mDirector));
+            return Optional<Resource>.Of(new Resource(EResourceType.Stone, location));
             // this is reference-based and totally fine, since there'll be only references then ... we don't care about that, and as soon as the references are all gone, the GC will take care of it. :)
             // (but yes, actually this could break, since we rely heavily on how c# handles references and stuff.)
         }
@@ -92,7 +92,7 @@ namespace Singularity.Map
             // note, the location cache is probably reason number 1 if bugs occur with resources being there even though they shouldn't be,
             // we need to take care, that the resources are getting properly removed.
 
-            if (mLocationCache[location] != null)
+            if (mLocationCache.ContainsKey(location))
             {
                 return mLocationCache[location];
             }

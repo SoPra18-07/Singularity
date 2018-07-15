@@ -25,7 +25,7 @@ namespace Singularity.PlatformActions
         [DataMember]
         public override List<JobType> UnitsRequired { get; set; } = new List<JobType> {JobType.Production};
 
-        public override void Execute()
+        protected override void CreateResource()
         {
             var res = mResourceMap.GetWellResource(mPlatform.AbsolutePosition);
             if (res.IsPresent())
@@ -50,7 +50,7 @@ namespace Singularity.PlatformActions
         [DataMember]
         public override List<JobType> UnitsRequired { get; set; } = new List<JobType> {JobType.Production};
 
-        public override void Execute()
+        protected override void CreateResource()
         {
             var res = mResourceMap.GetQuarryResource(mPlatform.AbsolutePosition);
             if (res.IsPresent())
@@ -75,7 +75,7 @@ namespace Singularity.PlatformActions
         [DataMember]
         public override List<JobType> UnitsRequired { get; set; } = new List<JobType> {JobType.Production};
 
-        public override void Execute()
+        protected override void CreateResource()
         {
             var res = mResourceMap.GetMineResource(mPlatform.AbsolutePosition);
             if (res.IsPresent())
@@ -88,6 +88,8 @@ namespace Singularity.PlatformActions
     [DataContract]
     public abstract class APlatformResourceAction : APlatformAction
     {
+        private int mCounter;
+
         protected APlatformResourceAction(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
         }
@@ -123,6 +125,16 @@ namespace Singularity.PlatformActions
         public override void Update(GameTime t)
         {
             // do nothing
+        }
+
+        protected abstract void CreateResource();
+
+        public override void Execute()
+        {
+            mCounter++;
+            if (mCounter % 80 != 0) return;
+            mCounter = 0;
+            CreateResource();
         }
     }
 }

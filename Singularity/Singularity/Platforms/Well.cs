@@ -14,10 +14,6 @@ namespace Singularity.Platforms
     [DataContract]
     internal sealed class Well: PlatformBlank
     {
-        [DataMember]
-        private new const int PlatformWidth = 144;
-        [DataMember]
-        private new const int PlatformHeight = 127;
 
         public Well(Vector2 position,
             Texture2D platformSpriteSheet,
@@ -44,29 +40,13 @@ namespace Singularity.Platforms
             mSpritename = "Dome";
             Property = JobType.Production;
             SetPlatfromParameters();
+            mPlatformWidth = 144;
+            mPlatformHeight = 127;
         }
 
         public override void Produce()
         {
-            foreach (var pair in mAssignedUnits[JobType.Production])
-            {
-                //That means the unit is not at work yet.
-                if (!pair.GetSecond())
-                {
-                    continue;
-                }
-                mIPlatformActions[1].Execute();
-            }
-        }
-
-        public new void Update(GameTime time)
-        {
-            base.Update(time);
-            if (time.TotalGameTime.TotalSeconds % 5 <= 0.5)
-            {
-                Console.Out.WriteLine("PRODUCE!!!!");
-                Produce();
-            }
+            mIPlatformActions[0].Execute();
         }
     }
 }

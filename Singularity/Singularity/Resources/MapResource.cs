@@ -66,7 +66,10 @@ namespace Singularity.Resources
             if (Amount > 0)
             {
                 Amount -= 1;
-                return Optional<Resource>.Of(new Resource(Type, location, ref mDirector));
+
+                // Track the creation of a resource in the statistics.
+                mDirector.GetStoryManager.UpdateResources(Type);
+                return Optional<Resource>.Of(new Resource(Type, location));
             }
             return Optional<Resource>.Of(null);
         }

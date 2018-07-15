@@ -659,19 +659,25 @@ namespace Singularity.Platforms
 
             // manage updating of values in the UI
             if (!IsSelected || mDataSent) return;
-                // update previous values
-                mPrevResources = GetPlatformResources();
-                mPrevUnitAssignments = GetAssignedUnits();
-                mPrevPlatformActions = GetIPlatformActions();
-                mPreviousIsManuallyDeactivatedState = IsManuallyDeactivated();
-                mPreviousIsActiveState = IsActive();
+            // update previous values
+            mPrevResources = GetPlatformResources();
+            mPrevUnitAssignments = GetAssignedUnits();
+            mPrevPlatformActions = GetIPlatformActions();
+            mPreviousIsManuallyDeactivatedState = IsManuallyDeactivated();
+            mPreviousIsActiveState = IsActive();
 
-                // send data to UIController
-                mDirector.GetUserInterfaceController.SetDataOfSelectedPlatform(Id, mIsActive, mIsManuallyDeactivated, mType, GetPlatformResources(), GetAssignedUnits(), GetIPlatformActions());
+            // send data to UIController
+            mDirector.GetUserInterfaceController.SetDataOfSelectedPlatform(Id,
+                mIsActive,
+                mIsManuallyDeactivated,
+                mType,
+                GetPlatformResources(),
+                GetAssignedUnits(),
+                GetIPlatformActions());
 
-                // set the bool for sent-data to true, since the data has just been sent
-                mDataSent = true;
-            }
+            // set the bool for sent-data to true, since the data has just been sent
+            mDataSent = true;
+        }
 
         private void Uncollide()
         {
@@ -976,8 +982,8 @@ namespace Singularity.Platforms
 
 
             mResources.RemoveAll(r => r.Die());
-            mResources = new List<Resource> {new Resource(EResourceType.Trash, Center, ref mDirector), new Resource(EResourceType.Trash, Center, ref mDirector),
-                new Resource(EResourceType.Trash, Center, ref mDirector), new Resource(EResourceType.Trash, Center, ref mDirector), new Resource(EResourceType.Trash, Center, ref mDirector)};
+            mResources = new List<Resource> {new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center),
+                new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center)};
 
             mRequested = new Dictionary<EResourceType, int>();
 
