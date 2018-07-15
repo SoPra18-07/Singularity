@@ -142,7 +142,11 @@ namespace Singularity.Manager
             foreach (var unit in units)
             {
                 olddist.Kill(unit);
-                newdist.Register(unit, unit.Job);
+                //These were already added before in the register sttuff
+                if (unit.Job != JobType.Defense && unit.Job != JobType.Production)
+                {
+                    newdist.Register(unit, unit.Job);
+                }
             }
 
             // update UI by "calling all graphs" - see description in UIController
