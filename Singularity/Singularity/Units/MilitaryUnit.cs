@@ -77,6 +77,9 @@ namespace Singularity.Units
         [DataMember]
         private float mShootingTimer = -1f;
 
+        [DataMember]
+        protected Color mShootColor = Color.White;
+
 
 
 
@@ -97,6 +100,9 @@ namespace Singularity.Units
             Center = new Vector2((AbsolutePosition.X + AbsoluteSize.X) * 0.5f, (AbsolutePosition.Y + AbsoluteSize.Y) * 0.5f );
 
             Range = MilitaryUnitStats.StandardRange;
+
+            // Track the creation of a military unit in the statistics.
+            director.GetStoryManager.UpdateUnits("created");
         }
 
         public void ReloadContent(ContentManager content, ref Director director, Camera camera, ref Map.Map map)
@@ -156,8 +162,8 @@ namespace Singularity.Units
                 if (mCurrentTime <= mShootingTimer + 200)
                 {
                     // draws a laser line a a slight glow around the line, then sets the shoot future off
-                    spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2, .15f);
-                    spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6, .15f);
+                    spriteBatch.DrawLine(Center, mShootingTarget.Center, mShootColor, 2, .15f);
+                    spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, mShootColor * .2f, 6, .15f);
                     mShoot = false;
                 }
             }
@@ -232,7 +238,6 @@ namespace Singularity.Units
         {
             if (target != null)
             {
-                //TODO: currently enemy units CAN shot themselves, I don't know how hard this is to fix, but I don't see a solution at first glance
                 mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
                 target.MakeDamage(MilitaryUnitStats.mUnitStrength);
             }
@@ -247,6 +252,8 @@ namespace Singularity.Units
             }
             else
             {
+                mTargetPosition = AbsolutePosition;
+                mPath.Clear();
                 mShoot = true;
             }
 

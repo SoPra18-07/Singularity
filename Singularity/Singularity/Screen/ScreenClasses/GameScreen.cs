@@ -67,10 +67,6 @@ namespace Singularity.Screen.ScreenClasses
 
         private SelectionBox mSelBox;
 
-        private Texture2D mBlankPlat;
-        private Texture2D mCylPlat;
-        private SpriteFont mLibSans12;
-
 
 
         public GameScreen(GraphicsDevice graphicsDevice, ref Director director, Map.Map map, Camera camera, FogOfWar fow)
@@ -312,15 +308,8 @@ namespace Singularity.Screen.ScreenClasses
         {
             AddObject(mMap);
 
-            // AddObjects(ResourceHelper.GetRandomlyDistributedResources(50));
-
             mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
             mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
-
-            // This is for the creation of the Command Centers from the settlers
-            mBlankPlat = content.Load<Texture2D>("PlatformBasic");
-            mCylPlat = content.Load<Texture2D>("Cylinders");
-            mLibSans12 = content.Load<SpriteFont>("LibSans12");
         }
 
         public bool UpdateLower()
@@ -513,11 +502,10 @@ namespace Singularity.Screen.ScreenClasses
         {
             // TODO eventually the EPlacementType should be instance but currently that
             // TODO requires a road to be place and therefore throws an exception !!!!!
-            
-            // CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, ref mDirector, false);
-            
+
             // adds the command center to the GameScreen, as well as two general units
-            var cCenter = PlatformFactory.Get(EStructureType.Command, ref mDirector, v.X - 55, v.Y - 100);
+            
+            var cCenter = PlatformFactory.Get(EStructureType.Command, ref mDirector, v.X - 55, v.Y - 100, commandBlueprint: false);
             AddObject(cCenter);
             
 
