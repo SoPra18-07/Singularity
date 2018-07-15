@@ -81,7 +81,7 @@ namespace Singularity.Platforms
         #endregion
 
         #region protected
-            
+
         [DataMember]
         public bool Friendly { get; set; }
 
@@ -150,7 +150,7 @@ namespace Singularity.Platforms
 
         [DataMember]
         private bool mIsManuallyDeactivated;
-        
+
         [DataMember]
         public Vector2 Center { get; protected set; }
 
@@ -207,6 +207,8 @@ namespace Singularity.Platforms
         public static SpriteFont mLibSans12;
 
         public bool[,] ColliderGrid { get; internal set; }
+
+        private List<IPlatformAction> mToKill = new List<IPlatformAction>();
 
         //This is for registering the platform at the DistrManager.
         [DataMember]
@@ -284,7 +286,7 @@ namespace Singularity.Platforms
 
             Moved = false;
             UpdateValues();
-            
+
             Friendly = friendly;
             var str = GetResourceString();
             mInfoBox = new PlatformInfoBox(
@@ -631,6 +633,8 @@ namespace Singularity.Platforms
             {
                 iPlatformAction.Update(t);
             }
+            mToKill.RemoveAll(a => mIPlatformActions.Remove(a));
+
             Uncollide();
 
             Bounds = new Rectangle((int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
@@ -683,7 +687,7 @@ namespace Singularity.Platforms
         {
             // take care of the Resources on top not colliding. todo: fixme. @fkarg
         }
-        
+
         public EStructureType GetMyType()
         {
             return mType;
@@ -749,7 +753,7 @@ namespace Singularity.Platforms
             }
             return mType == b.GetMyType();
         }
-        
+
         public override int GetHashCode()
         {
             return base.GetHashCode() + Id.GetHashCode();
@@ -1060,7 +1064,7 @@ namespace Singularity.Platforms
 
         public void Kill(IPlatformAction action)
         {
-            mIPlatformActions.Remove(action);
+            mToKill.Add(action);
         }
 
         #endregion
