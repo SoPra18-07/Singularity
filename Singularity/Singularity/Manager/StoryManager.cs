@@ -114,7 +114,7 @@ namespace Singularity.Manager
         {
             int a;
             Units.TryGetValue(action, out a);
-            Units.Add(action, a + 1);
+            Units[action] += 1;
             if (mAchievements.Replicant())
             {
                 //trigger Achievement-popup;
@@ -129,7 +129,7 @@ namespace Singularity.Manager
         {
             int a;
             Platforms.TryGetValue(action, out a);
-            Platforms.Add(action, a + 1);
+            Platforms[action] += 1;
             if (mAchievements.Skynet())
             {
                 //trigger Achievement-popup;
@@ -144,7 +144,7 @@ namespace Singularity.Manager
         {
             int a;
             Resources.TryGetValue(resource, out a);
-            Resources.Add(resource, a + 1);
+            Resources[resource] += 1;
         }
 
         /// <summary>

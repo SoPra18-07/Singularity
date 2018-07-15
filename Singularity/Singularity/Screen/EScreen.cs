@@ -6,6 +6,7 @@
         GameModeSelectScreen,
         GamePauseScreen,
         GameScreen,
+        GamePauseManagerScreen,
         LoadingScreen,
         LoadSelectScreen,
         MainMenuScreen,

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
+using Singularity.Manager;
 using Singularity.Property;
 using Singularity.Utils;
 
@@ -16,6 +17,7 @@ namespace Singularity.Resources
     [DataContract]
     public sealed class MapResource : ISpatial
     {
+        private Director mDirector;
 
         /// <summary>
         /// The color of this resource.
@@ -42,7 +44,8 @@ namespace Singularity.Resources
         /// <param name="type">The resource type of this resource. Specifies what kind of resource this will represent in the game</param>
         /// <param name="position">The inital position for this resource</param>
         /// <param name="width">The width of the resource on screen</param>
-        public MapResource(EResourceType type, Vector2 position, int width)
+        /// /// <param name="director">Director of the game.</param>
+        public MapResource(EResourceType type, Vector2 position, int width, ref Director director)
         {
             Type = type;
             AbsolutePosition = position;
@@ -55,6 +58,7 @@ namespace Singularity.Resources
             mColor = new Color(Vector3.Multiply(ResourceHelper.GetColor(type).ToVector3(), 0.75f));
             // mColor = ResourceHelper.GetColor(type);
 
+            mDirector = director;
         }
 
         public Optional<Resource> Get(Vector2 location)
@@ -62,7 +66,7 @@ namespace Singularity.Resources
             if (Amount > 0)
             {
                 Amount -= 1;
-                return Optional<Resource>.Of(new Resource(Type, location));
+                return Optional<Resource>.Of(new Resource(Type, location, ref mDirector));
             }
             return Optional<Resource>.Of(null);
         }
