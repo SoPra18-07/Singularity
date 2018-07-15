@@ -124,7 +124,6 @@ namespace Singularity.Screen
 
         public void ProdListen(object sender, EventArgs eventArgs, int page)
         {
-            Console.WriteLine(GetHashCode());
             var amount = mCurrentPages[3] - page;
             //A negative value means there will be more units assigned to this job and vice versa.
             if (amount < 0)

@@ -120,6 +120,7 @@ namespace Singularity.Screen.ScreenClasses
             {
                 //TODO: Add terrain when its in master
                 var possibleMilitaryUnit = drawable as MilitaryUnit;
+                var possibleEnemy = drawable as EnemyUnit;
                 var possibleSettler = drawable as Settler;
                 var possiblegenunit = drawable as GeneralUnit;
                 var possiblerock = drawable as Rock;
@@ -129,6 +130,8 @@ namespace Singularity.Screen.ScreenClasses
                 {
                     mSelBox.SelectingBox += conUnit.BoxSelected;
                 }
+
+                possibleEnemy?.ReloadContent(ref mDirector, camera, ref mMap);
                 possiblepuddle?.ReloadContent();
                 possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
@@ -150,11 +153,13 @@ namespace Singularity.Screen.ScreenClasses
                 var possiblegenunit = updateable as GeneralUnit;
                 var possiblerock = updateable as Rock;
                 var possiblepuddle = updateable as Puddle;
+
                 var freeMovingUnit = updateable as FreeMovingUnit;
                 if (freeMovingUnit != null && freeMovingUnit.Friendly)
                 {
                     mSelBox.SelectingBox += freeMovingUnit.BoxSelected;
                 }
+                possibleEnemy?.ReloadContent(ref mDirector, camera, ref mMap);
                 possiblepuddle?.ReloadContent();
                 possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
@@ -181,6 +186,7 @@ namespace Singularity.Screen.ScreenClasses
                 {
                     mSelBox.SelectingBox += freeMovingUnit.BoxSelected;
                 }
+                possibleEnemy?.ReloadContent(ref mDirector, camera, ref mMap);
                 possiblepuddle?.ReloadContent();
                 possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
