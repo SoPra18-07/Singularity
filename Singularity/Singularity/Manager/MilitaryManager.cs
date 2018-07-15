@@ -508,8 +508,6 @@ namespace Singularity.Manager
             foreach (var platform in platformsToKill)
             {
                 RemovePlatform(platform);
-
-                platform.Die();
             }
             #endregion
         }

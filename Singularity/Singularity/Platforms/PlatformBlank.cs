@@ -197,8 +197,10 @@ namespace Singularity.Platforms
 
         protected PlatformInfoBox mInfoBox;
 
+        [DataMember]
         protected Vector2 mBaseOffset;
 
+        public bool HasDieded { get; private set; }
         #endregion
 
         [DataMember]
@@ -218,6 +220,8 @@ namespace Singularity.Platforms
         {
 
             mPrevPlatformActions = new List<IPlatformAction>();
+
+            HasDieded = false;
 
             Id = director.GetIdGenerator.NextiD();
 
@@ -483,7 +487,7 @@ namespace Singularity.Platforms
         public void MakeDamage(int damage)
         {
             Health -= damage;
-            if (Health <= 0)
+            if (Health <= 0 && !HasDieded)
             {
                 if (mType == EStructureType.Blank)
                 {
@@ -1001,7 +1005,6 @@ namespace Singularity.Platforms
         /// </summary>
         public bool Die()
         {
-
             mIPlatformActions.RemoveAll(a => a.Die());
 
             mResources.RemoveAll(r => r.Die());
@@ -1055,6 +1058,8 @@ namespace Singularity.Platforms
             mDirector.GetInputManager.FlagForRemoval(this);
             mDirector.GetInputManager.RemoveMousePositionListener(mInfoBox);
             mInfoBox = null;
+            //This is needed so this code is not called multiple times
+            HasDieded = true;
             return true;
         }
 

@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Sound;
 
@@ -249,6 +250,16 @@ namespace Singularity.Units
             {
                 mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
                 target.MakeDamage(MilitaryUnitStats.mUnitStrength);
+
+                //This should prevent the units to hold the reference to the target platform
+                //and further shooting at it despite it already being dead (they shoot in the
+                //air then)
+                var test = target as PlatformBlank;
+                if (test != null && test.HasDieded)
+                {
+                    mShootingTarget = null;
+                    mShoot = false;
+                }
             }
         }
 
@@ -266,7 +277,8 @@ namespace Singularity.Units
                 {
                     mTargetPosition = AbsolutePosition;
                     mIsMoving = false;
-                    mPath.Clear();
+                    //TODO: THis is a hotfix. Threw an error for the path being null...
+                    mPath?.Clear();
                     mShoot = true;
                 }
 
