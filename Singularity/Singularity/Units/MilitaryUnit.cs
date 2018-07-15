@@ -210,7 +210,7 @@ namespace Singularity.Units
                 // Rotate to the center of the shooting target
                 Rotate(mShootingTarget.Center, true);
 
-                
+
                 if (mShootingTimer < 0.5f)
                 {
                     mShootingTimer = (float) gameTime.TotalGameTime.TotalMilliseconds;
@@ -224,7 +224,7 @@ namespace Singularity.Units
                     Shoot(mShootingTarget);
                 }
             }
-            
+
         }
 
         private void Shoot(ICollider target)

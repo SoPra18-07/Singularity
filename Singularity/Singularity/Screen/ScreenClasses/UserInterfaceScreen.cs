@@ -680,7 +680,7 @@ namespace Singularity.Screen.ScreenClasses
 
             #region button definitions
 
-            #region open lists 
+            #region open lists
 
             // Open MainBuildingsList button
             mMainBuildingsListButton = new Button(1, mBaseIcon, Vector2.Zero, false);
@@ -858,7 +858,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoResourceProcessing = new TextField("Resource Processing Buildings",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Resource Processing Buildings"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoResourceProcessingList = new InfoBoxWindow(
@@ -875,7 +875,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoMilitaryList = new TextField("Military Buildings",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Military Buildings"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoMilitaryList = new InfoBoxWindow(
@@ -993,7 +993,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoQuarry = new TextField("Quarry",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Quarry"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             var infoBuildQuarryStone = new ResourceIWindowItem(
@@ -1022,7 +1022,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoMine = new TextField("Mine",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Mine"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             var infoBuildMineStone = new ResourceIWindowItem(
@@ -1051,7 +1051,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoWell = new TextField("Well",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Well"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             var infoBuildWellStone = new ResourceIWindowItem(
@@ -1189,7 +1189,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoStorage = new TextField("Storage",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Storage"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             var infoBuildStorageConcrete = new ResourceIWindowItem(
@@ -1218,7 +1218,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoPackaging = new TextField("Packaging",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Packaging"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             mInfoBuildPackaging = new InfoBoxWindow(
@@ -1239,7 +1239,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoKineticTower = new TextField("Kinetic Tower",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Kinetic Tower"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             var infoBuildKineticTowerConcrete = new ResourceIWindowItem(
@@ -1268,7 +1268,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoLaserTower = new TextField("Laser Tower",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Laser Tower"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             var infoBuildLaserTowerConcrete = new ResourceIWindowItem(
@@ -1297,7 +1297,7 @@ namespace Singularity.Screen.ScreenClasses
             var infoBarracks = new TextField("Barracks",
                 Vector2.Zero,
                 mLibSans10.MeasureString("Barracks"),
-                mLibSans10, 
+                mLibSans10,
                 Color.White);
 
             var infoBuildBarracksSteel = new ResourceIWindowItem(
@@ -1838,7 +1838,7 @@ namespace Singularity.Screen.ScreenClasses
 
                 case EStructureType.Laser:
                     return mLaserTowerPlatformButton;
-                    
+
                 case EStructureType.Mine:
                     return mMinePlatformButton;
 
@@ -2286,7 +2286,7 @@ namespace Singularity.Screen.ScreenClasses
 
         #endregion
 
-        #region mainBuildings 
+        #region mainBuildings
 
         private void OnButtonmBlankPlatformHovering(object sender, EventArgs eventArgs)
         {

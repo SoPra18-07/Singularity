@@ -72,7 +72,7 @@ namespace Singularity.Map
                 {
                     ValidateZoom();
                     ValidatePosition();
-                }               
+                }
             }
         }
 
@@ -93,7 +93,7 @@ namespace Singularity.Map
         private Director mDirector;
 
         [DataMember]
-        private readonly Vector2 mOrigin; 
+        private readonly Vector2 mOrigin;
 
         /// <summary>
         /// Creates a new Camera object which provides a transform matrix to adjust
