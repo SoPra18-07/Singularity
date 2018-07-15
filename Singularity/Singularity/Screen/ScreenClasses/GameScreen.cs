@@ -131,6 +131,7 @@ namespace Singularity.Screen.ScreenClasses
                     mSelBox.SelectingBox += conUnit.BoxSelected;
                 }
 
+                possibleEnemy?.ReloadContent(content, ref mDirector, camera, ref mMap);
                 possiblepuddle?.ReloadContent();
                 possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
@@ -148,6 +149,7 @@ namespace Singularity.Screen.ScreenClasses
             {
                 //TODO: Add terrain when its in master
                 var possibleMilitaryUnit = updateable as MilitaryUnit;
+                var possibleEnemy = updateable as EnemyUnit;
                 var possibleSettler = updateable as Settler;
                 var possiblegenunit = updateable as GeneralUnit;
                 var possiblerock = updateable as Rock;
@@ -158,6 +160,7 @@ namespace Singularity.Screen.ScreenClasses
                 {
                     mSelBox.SelectingBox += freeMovingUnit.BoxSelected;
                 }
+                possibleEnemy?.ReloadContent(content, ref mDirector, camera, ref mMap);
                 possiblepuddle?.ReloadContent();
                 possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
@@ -175,6 +178,7 @@ namespace Singularity.Screen.ScreenClasses
             {
                 //TODO: Add terrain when its in master
                 var possibleMilitaryUnit = spatial as MilitaryUnit;
+                var possibleEnemy = spatial as EnemyUnit;
                 var possibleSettler = spatial as Settler;
                 var possiblegenunit = spatial as GeneralUnit;
                 var possiblerock = spatial as Rock;
@@ -184,6 +188,7 @@ namespace Singularity.Screen.ScreenClasses
                 {
                     mSelBox.SelectingBox += freeMovingUnit.BoxSelected;
                 }
+                possibleEnemy?.ReloadContent(content, ref mDirector, camera, ref mMap);
                 possiblepuddle?.ReloadContent();
                 possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
