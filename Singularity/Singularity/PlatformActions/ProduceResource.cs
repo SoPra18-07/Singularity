@@ -125,7 +125,7 @@ namespace Singularity.PlatformActions
         {
             if (!mPlatform.PlatformHasSpace()) return;
             mCounter++;
-            if (mCounter % 80 != 0) return;
+            if (mCounter % 240 != 0) return;
             mCounter = 0;
             CreateResource();
         }
