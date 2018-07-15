@@ -208,6 +208,8 @@ namespace Singularity.Platforms
 
         public bool[,] ColliderGrid { get; internal set; }
 
+        private List<IPlatformAction> mToKill = new List<IPlatformAction>();
+
         //This is for registering the platform at the DistrManager.
         [DataMember]
         public JobType Property { get; set; }
@@ -631,6 +633,8 @@ namespace Singularity.Platforms
             {
                 iPlatformAction.Update(t);
             }
+            mToKill.RemoveAll(a => mIPlatformActions.Remove(a));
+
             Uncollide();
 
             Bounds = new Rectangle((int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
@@ -1054,7 +1058,7 @@ namespace Singularity.Platforms
 
         public void Kill(IPlatformAction action)
         {
-            mIPlatformActions.Remove(action);
+            mToKill.Add(action);
         }
 
         #endregion

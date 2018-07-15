@@ -30,18 +30,19 @@ namespace Singularity.PlatformActions
             
             UpdateResources();
             mIsBuilding = true;
+            mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(this);
+            State = PlatformActionState.Active;
         }
 
         protected override void CreateUnit()
         {
             mBuilding.Built();
             Debug.WriteLine("Platform built!");
+            Die();
         }
 
         public override void Execute()
         {
-            if (!mBuildable) return;
-            Die();
         }
     }
 }
