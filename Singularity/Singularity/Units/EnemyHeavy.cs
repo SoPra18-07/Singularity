@@ -10,7 +10,7 @@ namespace Singularity.Units
     internal class EnemyHeavy : MilitaryHeavy
     {
         /// <summary>
-        /// Enemy units controlled by AI and opposed to the player; standard type.
+        /// Enemy units controlled by AI and opposed to the player; Heavy type.
         /// </summary>
         /// <param name="position">Where the unit should be spawned.</param>
         /// <param name="camera">Game camera being used.</param>

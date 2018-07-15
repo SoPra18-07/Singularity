@@ -112,6 +112,7 @@
     <Compile Include="Units\MilitaryFast.cs" />
     <Compile Include="Units\MilitaryHeavy.cs" />
     <Compile Include="Units\MilitaryUnitStats.cs" />
+    <Compile Include="Units\Native.cs" />
     <Compile Include="Units\SelectionBox.cs" />
     <Compile Include="Units\Settler.cs" />
     <Compile Include="Units\Target.cs" />

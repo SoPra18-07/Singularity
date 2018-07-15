@@ -41,7 +41,7 @@ namespace Singularity.Units
         /// Scalar for the unit size.
         /// </summary>
         [DataMember]
-        protected const float Scale = 0.4f;
+        protected float mScale = 0.4f;
 
         /// <summary>
         /// Used to set the enemy target that should be shot at.
@@ -89,7 +89,7 @@ namespace Singularity.Units
             mSpeed = MilitaryUnitStats.StandardSpeed;
             Health = MilitaryUnitStats.StandardHealth;
 
-            AbsoluteSize = new Vector2(DefaultWidth * Scale, DefaultHeight * Scale);
+            AbsoluteSize = new Vector2(DefaultWidth * mScale, DefaultHeight * mScale);
 
             RevelationRadius = 400;
 
@@ -115,11 +115,11 @@ namespace Singularity.Units
             spriteBatch.Draw(
                 mMilSheet,
                 AbsolutePosition,
-                new Rectangle(150 * mColumn, 75 * mRow, (int)(AbsoluteSize.X / Scale), (int)(AbsoluteSize.Y / Scale)),
+                new Rectangle(150 * mColumn, 75 * mRow, (int)(AbsoluteSize.X / mScale), (int)(AbsoluteSize.Y / mScale)),
                 mSelected ? mSelectedColor : mColor,
                 0f,
                 Vector2.Zero,
-                new Vector2(Scale),
+                new Vector2(mScale),
                 SpriteEffects.None,
                 LayerConstants.MilitaryUnitLayer
             );
@@ -134,7 +134,7 @@ namespace Singularity.Units
                     Color.White,
                     0f,
                     Vector2.Zero,
-                    new Vector2(Scale),
+                    new Vector2(mScale),
                     SpriteEffects.None,
                     LayerConstants.MilitaryUnitLayer - 0.01f);
             }
@@ -201,7 +201,7 @@ namespace Singularity.Units
             mColumn = (mRotation - mRow * 18) / 3;
 
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
-            AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * Scale), (int) (AbsoluteSize.Y * Scale));
+            AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * mScale), (int) (AbsoluteSize.Y * mScale));
             Moved = mIsMoving;
 
             if (!mIsMoving && mShoot)
