@@ -208,11 +208,8 @@ namespace Singularity.Platforms
 
         public bool[,] ColliderGrid { get; internal set; }
 
-<<<<<<< HEAD
         private List<IPlatformAction> mToKill = new List<IPlatformAction>();
 
-=======
->>>>>>> master
         //This is for registering the platform at the DistrManager.
         [DataMember]
         public JobType Property { get; set; }
