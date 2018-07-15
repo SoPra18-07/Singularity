@@ -5,10 +5,12 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.Property;
 using Singularity.Resources;
+using Singularity.Sound;
 
 namespace Singularity.Platforms
 {
@@ -40,6 +42,7 @@ namespace Singularity.Platforms
 
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
+            mSoundId = mDirector.SoundManager.CreateSoundInstance("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
         }
 
         public override void Shoot(ICollider target)
@@ -49,9 +52,15 @@ namespace Singularity.Platforms
                 // Consume Energy
                 mShoot = true;
                 mEnemyPosition = target;
-                mDirector.GetSoundManager.PlaySound("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+                mDirector.GetSoundManager.PlaySound(mSoundId);
             }
             */
+        }
+
+        public override void ReloadContent(ContentManager content, ref Director dir)
+        {
+            mSoundId = mDirector.SoundManager.CreateSoundInstance("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+            base.ReloadContent(content, ref dir);
         }
     }
 }

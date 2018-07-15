@@ -295,14 +295,14 @@ namespace Singularity.Screen.ScreenClasses
                             button.Opacity = mMenuOpacity;
                         }
 
-                        if (mResolutionChosen > mResolutionList.Capacity - 1)
+                        if (mResolutionChosen > mResolutionList.Count - 1)
                         {
                             mResolutionChosen = 0;
                         }
 
                         if (mResolutionChosen < 0)
                         {
-                            mResolutionChosen = mResolutionList.Capacity - 1;
+                            mResolutionChosen = mResolutionList.Count - 1;
                         }
                     }
 

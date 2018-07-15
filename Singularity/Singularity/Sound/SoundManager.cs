@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Media;
+using Singularity.Utils;
 
 namespace Singularity.Sound
 {
@@ -14,8 +15,6 @@ namespace Singularity.Sound
 
         // Sound listener for 3D audio.
         private readonly AudioListener mListener;
-        // The z coordinate for 3D audio.
-        private float mSoundPlaneDepth;
         // Dictionary containing all the songs assigned to the level names and paired with phase of the game.
         private readonly Dictionary<string, Song[]> mAllSongs;
         // Dictionary containing all the sound FX assigned to their individual name.
@@ -54,7 +53,6 @@ namespace Singularity.Sound
             MediaPlayer.IsRepeating = true;
             SoundEffect.DistanceScale = (float)0.5;
             mListener = new AudioListener();
-            mSoundPlaneDepth = 0;
             mAllSongs = new Dictionary<string, Song[]>();
             mEffects = new Dictionary<string, SoundEffect>();
             mUiSounds = new Dictionary<string, SoundEffect>();
@@ -170,7 +168,7 @@ namespace Singularity.Sound
                 effectInstance.IsLooped = loop;
                 if (!isGlobal)
                 {
-                    AudioEmitter emitter = new AudioEmitter { Position = new Vector3(x, y, mSoundPlaneDepth) };
+                    AudioEmitter emitter = new AudioEmitter { Position = new Vector3(x, y, 0), DopplerScale = 0f};
                     effectInstance.Apply3D(mListener, emitter);
                 }
                 mEffectInstances.Add(mEffectInstanceId, effectInstance);
@@ -186,7 +184,7 @@ namespace Singularity.Sound
                 effectInstance.IsLooped = loop;
                 if (!isGlobal)
                 {
-                    AudioEmitter emitter = new AudioEmitter { Position = new Vector3(x, y, mSoundPlaneDepth) };
+                    AudioEmitter emitter = new AudioEmitter { Position = new Vector3(x, y, 0), DopplerScale = 0f };
                     effectInstance.Apply3D(mListener, emitter);
                 }
                 mUiInstances.Add(mEffectInstanceId, effectInstance);
@@ -251,9 +249,10 @@ namespace Singularity.Sound
         /// </summary>
         /// <param name="x">New x coordinate of the listener.</param>
         /// <param name="y">New y coordinate of the listener.</param>
-        internal void SetListenerPosition(float x, float y)
+        /// <param name="z">New Z coordinate of the listener. The sound effects themselves are at z = 0.</param>
+        internal void SetListenerPosition(float x, float y, float z)
         {
-            mListener.Position = new Vector3(x, y, mSoundPlaneDepth);
+            mListener.Position = new Vector3(x / 120, y / 120, z);
         }
 
         /// <summary>
@@ -262,21 +261,24 @@ namespace Singularity.Sound
         /// <param name="id">The gloabl id of the sound effect instance.</param>
         /// <param name="x">The new x coordinate.</param>
         /// <param name="y">The new y coordinate.</param>
-        public void SetSoundPosition(int id, float x, float y)
+        internal void SetSoundPosition(int id, float x, float y)
         {
+            var newX = x / 120;
+            var newY = y / 120;
+            
             if (mInstanceMap.ContainsKey(id))
             {
                 SoundClass soundClass = mInstanceMap[id].Item1;
                 int instanceId = mInstanceMap[id].Item2;
                 if (soundClass == SoundClass.Effect)
                 {
-                    AudioEmitter emitter = new AudioEmitter { Position = new Vector3(x, y, mSoundPlaneDepth) };
+                    AudioEmitter emitter = new AudioEmitter { Position = new Vector3(newX, newY, 0) };
                     mEffectInstances[instanceId].Apply3D(mListener, emitter);
                     Debug.WriteLine("Emitter position: " + emitter.Position);
                 }
                 else if (soundClass == SoundClass.Ui)
                 {
-                    AudioEmitter emitter = new AudioEmitter { Position = new Vector3(x, y, mSoundPlaneDepth) };
+                    AudioEmitter emitter = new AudioEmitter { Position = new Vector3(newX, newY, 0) };
                     mUiInstances[instanceId].Apply3D(mListener, emitter);
                 }
             }
@@ -489,16 +491,6 @@ namespace Singularity.Sound
             mAllInstanceId = 0;
             mEffectInstanceId = 0;
             mUiInstanceId = 0;
-        }
-
-
-        /// <summary>
-        /// Set the z coordinate for all 3D sounds (effectivly the distance of the sound plane from the listener).
-        /// </summary>
-        /// <param name="z">The desired z coordinate.</param>
-        public void SetSoundPlaneDepth(float z)
-        {
-            mSoundPlaneDepth = z;
         }
     } /* end class SoundManager */
 

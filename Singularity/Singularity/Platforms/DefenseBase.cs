@@ -2,6 +2,7 @@
 using System.Linq;
 ﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Manager;
@@ -33,6 +34,8 @@ namespace Singularity.Platforms
         [DataMember]
         protected Shoot mDefenseAction;
 
+        protected int mSoundId;
+
         /// <summary>
         /// Represents an abstract class for all defense platforms. Implements their draw methods.
         /// </summary>
@@ -54,7 +57,11 @@ namespace Singularity.Platforms
             mDefenseAction = new Shoot(this, ref mDirector);
             mSpritename = "Cone";
             Property = JobType.Defense;
+
+            
             SetPlatfromParameters();
+
+
 
             RevelationRadius = 500;
         }

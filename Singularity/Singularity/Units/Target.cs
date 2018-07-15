@@ -13,6 +13,7 @@ namespace Singularity.Units
         {
             mSpeed = 0;
             mTarget = true;
+            Health = 100;
         }
 
         

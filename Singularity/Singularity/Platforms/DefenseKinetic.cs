@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.PlatformActions;
@@ -41,13 +42,18 @@ namespace Singularity.Platforms
         {
             // Todo: Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int> {{EResourceType.Metal, 1}};
+            mSoundId = mDirector.SoundManager.CreateSoundInstance("KineticTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
         }
 
         public override void Shoot(ICollider target)
         {
-            if (!mDefenseAction.CanShoot()) return;
+            if (!mDefenseAction.CanShoot())
+            {
+                return;
+            }
+
             mShoot = true;
-            mDirector.SoundManager.CreateSoundInstance("KineticTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+            mDirector.SoundManager.PlaySound(mSoundId);
         }
 
         public override void Update(GameTime t)
@@ -68,6 +74,12 @@ namespace Singularity.Platforms
                     .RequestResource(this, EResourceType.Metal, null);
                 mAmmoRequested++;
             }
+        }
+
+        public override void ReloadContent(ContentManager content, ref Director dir)
+        {
+            mSoundId = mDirector.SoundManager.CreateSoundInstance("KineticTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+            base.ReloadContent(content, ref dir);
         }
     }
 }

@@ -214,9 +214,15 @@ namespace Singularity.Platforms
         [DataMember]
         public JobType Property { get; set; }
 
+        protected int mDestroyPlatSoundId;
+
+        protected int mPowerOnSoundId;
+
+        protected int mPowerDownSoundId;
+
         public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libsans12, ref Director director, EStructureType type = EStructureType.Blank, float centerOffsetY = -36, bool friendly = true)
         {
-
+            
             mPrevPlatformActions = new List<IPlatformAction>();
 
             Id = director.IdGenerator.NextiD();
@@ -238,6 +244,25 @@ namespace Singularity.Platforms
 
             SetPlatfromParameters(); // this changes the draw parameters based on the platform type but
             // also sets the AbsoluteSize and collider grids
+
+            // Sound Effects
+            mDestroyPlatSoundId = mDirector.SoundManager.CreateSoundInstance("DestroyPlat", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+            mPowerOnSoundId = mDirector.SoundManager.CreateSoundInstance("PowerOff",
+                Center.X,
+                Center.Y,
+                .1f,
+                .01f,
+                true,
+                false,
+                SoundClass.Effect);
+            mPowerDownSoundId = mDirector.SoundManager.CreateSoundInstance("PowerDown",
+                Center.X,
+                Center.Y,
+                .1f,
+                .01f,
+                true,
+                false,
+                SoundClass.Effect);
 
             //default?
             Health = 100;
@@ -314,7 +339,7 @@ namespace Singularity.Platforms
             mIPlatformActions.Add(buildBluePrint);
         }
 
-        internal void ReloadContent(ContentManager content, ref Director dir)
+        public virtual void ReloadContent(ContentManager content, ref Director dir)
         {
             mPlatformSpriteSheet = content.Load<Texture2D>(mSpritename);
             mPlatformBaseTexture = content.Load<Texture2D>("PlatformBasic");
@@ -338,7 +363,27 @@ namespace Singularity.Platforms
                 },
                 size: mLibSans12.MeasureString(str),
                 platform: this, director: mDirector);
+
             SetPlatfromParameters();
+
+            // Sound Effects
+            mDestroyPlatSoundId = mDirector.SoundManager.CreateSoundInstance("DestroyPlat", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+            mPowerOnSoundId = mDirector.SoundManager.CreateSoundInstance("PowerOff",
+                Center.X,
+                Center.Y,
+                .1f,
+                .01f,
+                true,
+                false,
+                SoundClass.Effect);
+            mPowerDownSoundId = mDirector.SoundManager.CreateSoundInstance("PowerDown",
+                Center.X,
+                Center.Y,
+                .1f,
+                .01f,
+                true,
+                false,
+                SoundClass.Effect);
         }
 
         public void SetColor(Color color)
@@ -476,7 +521,7 @@ namespace Singularity.Platforms
                 else
                 {
                     // makes destruction sound
-                    mDirector.SoundManager.CreateSoundInstance("DestroyPlat", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+                    mDirector.SoundManager.PlaySound(mDestroyPlatSoundId);
                     DieBlank();
                 }
             }
@@ -972,9 +1017,6 @@ namespace Singularity.Platforms
             UpdateValues();
         }
 
-        /// <summary>
-        /// This will kill the platform for good.
-        /// </summary>
         public bool Die()
         {
 
@@ -1101,15 +1143,7 @@ namespace Singularity.Platforms
             if (manually)
             {
                 // TODO find a power on sound
-                mDirector.SoundManager.CreateSoundInstance("PowerOff",
-                    Center.X,
-                    Center.Y,
-                    .1f,
-                    .01f,
-                    true,
-                    false,
-                    SoundClass.Effect);
-                mIsManuallyDeactivated = false;
+                mDirector.SoundManager.PlaySound(mPowerOnSoundId);
             }
             mIsActive = true;
             ResetColor();
@@ -1155,14 +1189,7 @@ namespace Singularity.Platforms
             if (manually)
             {
                 // TODO maybe need to regulate sound a little when put to action
-                mDirector.SoundManager.CreateSoundInstance("PowerDown",
-                    Center.X,
-                    Center.Y,
-                    .1f,
-                    .01f,
-                    true,
-                    false,
-                    SoundClass.Effect);
+                mDirector.SoundManager.PlaySound(mPowerDownSoundId);
 
                 mIsManuallyDeactivated = true;
             }

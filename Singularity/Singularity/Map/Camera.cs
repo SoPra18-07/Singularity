@@ -48,7 +48,7 @@ namespace Singularity.Map
                 if(mDirector != null)
                 {
                     ValidatePosition();
-                    mDirector.SoundManager.SetListenerPosition(value.X, value.Y);
+                    mDirector.SoundManager.SetListenerPosition(value.X + mOrigin.X, value.Y + mOrigin.Y, -13 * mZoom + 20);
                 }
             }
         }
@@ -124,7 +124,7 @@ namespace Singularity.Map
             mZoom = 1.0f;
             mPosition = new Vector2(x, y);
 
-            director.SoundManager.SetListenerPosition(x, y);
+            director.SoundManager.SetListenerPosition(x, y, -13 * mZoom + 20);
 
             mNeo = neo;
             mGraphics = graphics;
