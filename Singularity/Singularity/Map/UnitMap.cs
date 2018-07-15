@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Property;
 
