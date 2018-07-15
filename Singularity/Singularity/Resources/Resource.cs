@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
+using Singularity.Manager;
 using Singularity.Property;
 using Singularity.Units;
 using Singularity.Utils;
@@ -30,11 +31,14 @@ namespace Singularity.Resources
         [DataMember]
         private Optional<GeneralUnit> mFollowing;
 
-        public Resource(EResourceType type, Vector2 position)
+        public Resource(EResourceType type, Vector2 position, ref Director director)
         {
             Type = type;
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(10, 10);
+
+            // Track the creation of a resource in the statistics.
+            director.GetStoryManager.UpdateResources(type);
         }
 
         public void Follow(GeneralUnit unit)
