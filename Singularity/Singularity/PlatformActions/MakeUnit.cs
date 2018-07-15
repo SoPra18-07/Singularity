@@ -60,8 +60,22 @@ namespace Singularity.PlatformActions
 
         protected override void CreateUnit()
         {
-
             mDirector.GetStoryManager.Level.GameScreen.AddObject(new GeneralUnit(mPlatform, ref mDirector));
+        }
+    }
+
+    internal sealed class MakeSettlerUnit : AMakeUnit
+    {
+        public MakeSettlerUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
+        {
+            // Todo: update prices
+            mBuildingCost = new Dictionary<EResourceType, int> { {EResourceType.Chip, 3} };
+        }
+
+        protected override void CreateUnit()
+        {
+            var settler = Settler.Create(mPlatform.Center + mOffset, ref mDirector);
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(settler);
         }
     }
 

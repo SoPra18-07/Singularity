@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using Singularity.Exceptions;
@@ -1041,6 +1042,7 @@ namespace Singularity.Manager
 
         public void Register(IPlatformAction action)
         {
+            Debug.WriteLine("Registering " + action.Id + " at Graph: " + mGraphId);
             mPlatformActions.Add(action);
         }
 

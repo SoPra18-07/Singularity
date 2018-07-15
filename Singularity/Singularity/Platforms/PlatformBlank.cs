@@ -655,7 +655,7 @@ namespace Singularity.Platforms
                 mPrevUnitAssignments != GetAssignedUnits() ||
                 mPrevPlatformActions != GetIPlatformActions() ||
                 mPreviousIsActiveState != IsActive() ||
-                mPreviousIsManuallyDeactivatedState != IsManuallyDeactivated() ||
+                mPreviousIsManuallyDeactivatedState != mIsManuallyDeactivated ||
                 !IsSelected)
             {
                 mDataSent = false;
@@ -667,7 +667,7 @@ namespace Singularity.Platforms
             mPrevResources = GetPlatformResources();
             mPrevUnitAssignments = GetAssignedUnits();
             mPrevPlatformActions = GetIPlatformActions();
-            mPreviousIsManuallyDeactivatedState = IsManuallyDeactivated();
+            mPreviousIsManuallyDeactivatedState = mIsManuallyDeactivated;
             mPreviousIsActiveState = IsActive();
 
             // send data to UIController
@@ -1149,12 +1149,9 @@ namespace Singularity.Platforms
             }
             ResetColor();
             //Only reregister the platforms if they are defense or production platforms
-            if (IsDefense() && !mIsActive)
+            if (!mIsActive)
             {
-                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, true);
-            }else if (IsProduction() && !mIsActive)
-            {
-                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, false);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, IsDefense());
             }
             mIsActive = true;
         }
@@ -1165,13 +1162,8 @@ namespace Singularity.Platforms
         /// <returns>True if thats the case, false otherwise</returns>
         public bool IsDefense()
         {
-            if (mType == EStructureType.Kinetic
-                || mType == EStructureType.Laser)
-            {
-                return true;
-            }
-
-            return false;
+            return mType == EStructureType.Kinetic
+                   || mType == EStructureType.Laser;
         }
 
         /// <summary>

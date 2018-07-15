@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
+using Singularity.PlatformActions;
 using Singularity.Resources;
 
 namespace Singularity.Platforms
@@ -38,12 +39,14 @@ namespace Singularity.Platforms
             mType = EStructureType.Factory;
             mSpritename = "Dome";
             SetPlatfromParameters();
+
+            mIPlatformActions.Add(new ARefineResourceAction(this, null, ref mDirector));
         }
 
         public override void Produce()
         {
-            throw new NotImplementedException();
-            //mIPlatformActions[0].Execute();
+            // throw new NotImplementedException();
+            mIPlatformActions[0].Execute();
         }
     }
 }

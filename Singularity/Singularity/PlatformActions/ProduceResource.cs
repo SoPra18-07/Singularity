@@ -123,7 +123,7 @@ namespace Singularity.PlatformActions
 
         public override void Execute()
         {
-            if (!mPlatform.PlatformHasSpace()) return;
+            if ((mPlatform.mType != EStructureType.Factory && !mPlatform.PlatformHasSpace()) || State != PlatformActionState.Active) return;
             mCounter++;
             if (mCounter % 240 != 0) return;
             mCounter = 0;

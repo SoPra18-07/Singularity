@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
+using Singularity.PlatformActions;
 using Singularity.Resources;
 using Singularity.Units;
 
@@ -51,6 +52,9 @@ namespace Singularity.Platforms
             mIsBlueprint = blueprintState;
             mPlatformWidth = 200;
             mPlatformHeight = 233;
+
+            mIPlatformActions.Add(new MakeGeneralUnit(this, ref mDirector));
+            mIPlatformActions.Add(new MakeSettlerUnit(this, ref mDirector));
         }
 
         public override void Produce()
