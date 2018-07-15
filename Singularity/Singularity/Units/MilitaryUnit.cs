@@ -83,7 +83,7 @@ namespace Singularity.Units
             Camera camera,
             ref Director director,
             ref Map.Map map,
-            bool friendly)
+            bool friendly = true)
             : base(position, camera, ref director, ref map, friendly)
         {
             mSpeed = MilitaryUnitStats.StandardSpeed;
