@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.AI;
+using Singularity.AI.Properties;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
@@ -42,6 +43,9 @@ namespace Singularity.Levels
 
         [DataMember]
         protected Director mDirector;
+
+        [DataMember]
+        protected IArtificalIntelligence mAi;
 
         protected IScreenManager mScreenManager;
 
@@ -101,6 +105,10 @@ namespace Singularity.Levels
             mDebugscreen = new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
 
             mDirector.GetInputManager.FlagForAddition(this);
+
+            // KI STUFF
+            mAi = new BasicAi(EaiDifficulty.Easy, ref mDirector);
+            GameScreen.AddObject(mAi);
         }
 
         public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, ref Director director, IScreenManager screenmanager)
@@ -140,6 +148,10 @@ namespace Singularity.Levels
             // the input manager keeps this from not getting collected by the GC
             mDebugscreen = new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
             mDirector.GetInputManager.FlagForAddition(this);
+
+            //AI Stuff
+            mAi.ReloadContent(ref mDirector);
+            StructureLayoutHolder.Initialize(ref mDirector);
         }
 
         public abstract void LoadContent(ContentManager content);

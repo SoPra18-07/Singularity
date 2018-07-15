@@ -121,10 +121,6 @@ namespace Singularity.Levels
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2500), ref mDirector));
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2700), ref mDirector, false));
 
-            // KI STUFF
-            IArtificalIntelligence ai = new BasicAi(EAIDifficulty.Easy, ref mDirector);
-            GameScreen.AddObject(ai);
-
             //TESTMETHODS HERE ====================================
             mDirector.GetDistributionDirector.GetManager(0).RequestResource(platform2, EResourceType.Oil, null);
         }

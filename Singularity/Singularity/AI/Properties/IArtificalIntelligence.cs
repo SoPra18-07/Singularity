@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Singularity.AI.Structures;
@@ -26,6 +27,12 @@ namespace Singularity.AI.Properties
         /// <summary>
         /// Gets the difficulty of the AI
         /// </summary>
-        EAIDifficulty Difficulty { get; }
+        [DataMember]
+        EaiDifficulty Difficulty { get; }
+
+        /// <summary>
+        /// This is needed to reload the Ai propertys/fields after deserializing
+        /// </summary>
+        void ReloadContent(ref Director dir);
     }
 }

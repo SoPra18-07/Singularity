@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Mail;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -18,24 +19,29 @@ namespace Singularity.AI.Behavior
     /// A simple implementation of an AI behavior. Simply spawns units at set intervals and
     /// moves them all at once to random locations at set intervals.
     /// </summary>
-    public sealed class SimpleAIBehavior : IAIBehavior
+    [DataContract]
+    public sealed class SimpleAIBehavior : IAiBehavior
     {
+        [DataMember]
         private const int MoveIntervalMillis = 10000;
-
+        [DataMember]
         private const int SpawnIntervalMillis = 1000;
 
         /// <summary>
         /// The AI this behavior operates on
         /// </summary>
+        [DataMember]
         private readonly IArtificalIntelligence mAi;
 
-        private readonly Director mDirector;
+        private Director mDirector;
 
         /// <summary>
         /// A list of all the enemy units currently spawned by the AI
         /// </summary>
+        [DataMember]
         private readonly List<EnemyUnit> mEnemyUnits;
 
+        [DataMember]
         private readonly Random mRandom;
 
         public SimpleAIBehavior(IArtificalIntelligence ai, ref Director director)
@@ -45,6 +51,12 @@ namespace Singularity.AI.Behavior
 
             mRandom = new Random();
             mEnemyUnits = new List<EnemyUnit>();
+
+        }
+
+        public void ReloadContent(ref Director dir)
+        {
+            mDirector = dir;
 
         }
 

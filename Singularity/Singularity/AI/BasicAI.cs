@@ -1,40 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Singularity.AI.Behavior;
 using Singularity.AI.Properties;
 using Singularity.AI.Structures;
 using Singularity.Manager;
-using Singularity.Map;
 using Singularity.Platforms;
-using Singularity.Property;
-using Singularity.Screen.ScreenClasses;
-using Singularity.Units;
 using Singularity.Utils;
 
 namespace Singularity.AI
 {
     /// <summary>
     /// A basic AI implementation which simply chooses a random structure to play the game and
-    /// calles Move() and Spawn() of its behavior object
+    /// calls Move() and Spawn() of its behavior object
     /// </summary>
+    [DataContract]
     public sealed class BasicAi : IArtificalIntelligence
     {
-        public EAIDifficulty Difficulty { get; private set; }
+        [DataMember]
+        public EaiDifficulty Difficulty { get; private set; }
 
-        private readonly Director mDirector;
-
-        private readonly IAIBehavior mBehavior;
+        private Director mDirector;
+        [DataMember]
+        private readonly IAiBehavior mBehavior;
 
         // this is a representation of the structure this AI operates on.
+        [DataMember]
         private readonly Triple<CommandCenter, List<PlatformBlank>, List<Road>> mStructure;
 
-        public BasicAi(EAIDifficulty difficulty, ref Director director)
+        public BasicAi(EaiDifficulty difficulty, ref Director director)
         {
             Difficulty = difficulty;
             mDirector = director;
@@ -47,6 +41,12 @@ namespace Singularity.AI
             director.GetStoryManager.Level.GameScreen.AddObject(mStructure.GetFirst());
             director.GetStoryManager.Level.GameScreen.AddObjects(mStructure.GetSecond());
             director.GetStoryManager.Level.GameScreen.AddObjects(mStructure.GetThird());
+        }
+
+        public void ReloadContent(ref Director dir)
+        {
+            mDirector = dir;
+            mBehavior.ReloadContent(ref mDirector);
         }
 
         public void Update(GameTime gametime)
