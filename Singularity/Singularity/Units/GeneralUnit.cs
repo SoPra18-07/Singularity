@@ -549,12 +549,29 @@ namespace Singularity.Units
             return true;
         }
 
+        /// <summary>
+        /// Basically tell the Unit that its platform just died and it needs to get a new job.
+        /// But only if the id is found in its current task.
+        /// </summary>
+        /// <param name="id"></param>
         public void Kill(int id)
         {
             if (mTask.Contains(id))
             {
-                mTask = mDirector.GetDistributionDirector.GetManager(Graphid).RequestNewTask(this, Job, null);
-                // also the mAssignedTask-platformaction is included in this.
+                if (Job == JobType.Defense)
+                {
+                    mDirector.GetDistributionDirector.GetManager(Graphid).NewProductionHall(this, true);
+                }
+                else if (Job == JobType.Production)
+                {
+                    mDirector.GetDistributionDirector.GetManager(Graphid).NewProductionHall(this, false);
+                }
+                else
+                {
+                    // also the mAssignedTask-platformaction is included in this.
+                    mDirector.GetDistributionDirector.GetManager(Graphid)
+                        .RequestNewTask(this, Job, Optional<IPlatformAction>.Of(null));
+                }
             }
         }
     }
