@@ -80,6 +80,8 @@ namespace Singularity.Units
         [DataMember]
         protected Color mShootColor = Color.White;
 
+        [DataMember]
+        protected bool mTargetWasNull;
 
 
 
@@ -256,12 +258,24 @@ namespace Singularity.Units
             {
                 mShoot = false;
                 mShootingTimer = -1;
+                mTargetWasNull = true;
             }
             else
             {
-                mTargetPosition = AbsolutePosition;
-                mPath.Clear();
-                mShoot = true;
+                if (mTargetWasNull)
+                {
+                    mTargetPosition = AbsolutePosition;
+                    mIsMoving = false;
+                    mPath.Clear();
+                    mShoot = true;
+                }
+
+                else
+                {
+                    mShoot = true;
+                }
+
+                mTargetWasNull = false;
             }
 
             mShootingTarget = target;
