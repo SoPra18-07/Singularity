@@ -503,7 +503,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // adds the command center to the GameScreen, as well as two general units
             
-            var cCenter = PlatformFactory.Get(EPlatformType.Command, ref mDirector, v.X - 55, v.Y - 100, commandBlueprint: false);
+            var cCenter = PlatformFactory.Get(EStructureType.Command, ref mDirector, v.X - 55, v.Y - 100, commandBlueprint: false);
             AddObject(cCenter);
             
 

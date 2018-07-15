@@ -75,7 +75,7 @@ namespace Singularity.Platforms
                 case EStructureType.Blank:
                     return new PlatformBlank(position, sBlankSheet, sBlankSheet, sLibSans12, ref director, friendly: friendly);
 
-                case EPlatformType.Command:
+                case EStructureType.Command:
                     return new CommandCenter(position, sCylinderSheet, sBlankSheet, sLibSans12, ref director, commandBlueprint);
 
                 case EStructureType.Energy:
