@@ -212,7 +212,7 @@ namespace Singularity.Manager
             var friendlyMilitary = unit as MilitaryUnit;
             var hostileMilitary = unit as EnemyUnit;
 
-            if (friendlyMilitary != null)
+            if (friendlyMilitary != null && hostileMilitary == null)
             {
                 mFriendlyMilitary.Remove(friendlyMilitary);
             }

@@ -304,6 +304,7 @@ namespace Singularity.Units
             {
                 return false;
             }
+
             mToAdd = Vector2.Zero;
             return true;
         }
