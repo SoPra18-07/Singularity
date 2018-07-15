@@ -40,6 +40,7 @@
     <DefineConstants>DEBUG;TRACE;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -97,20 +98,23 @@
     <Compile Include="Property\GlobalVariables.cs" />
     <Compile Include="Screen\ResourceIWindowItem.cs" />
     <Compile Include="Screen\InfoBarWindowObject.cs" />
+    <Compile Include="Screen\ScreenClasses\GamePauseManagerScreen.cs" />
     <Compile Include="Screen\ScreenClasses\LoadGameManagerScreen.cs" />
     <Compile Include="Screen\ScreenClasses\DebugScreen.cs" />
     <Compile Include="Screen\ActivationIWindowItem.cs" />
     <Compile Include="Screen\IndexSwitcherIWindowItem.cs" />
     <Compile Include="Screen\PlatformInfoBox.cs" />
     <Compile Include="Screen\SliderHandler.cs" />
-    <Compile Include="Units\ControllableUnit.cs" />
     <Compile Include="Screen\TextAndAmountIWindowItem.cs" />
+    <Compile Include="Units\EnemyHeavy.cs" />
+    <Compile Include="Units\EnemyFast.cs" />
     <Compile Include="Units\EnemyUnit.cs" />
     <Compile Include="Units\EUnitType.cs" />
     <Compile Include="Units\FreeMovingUnit.cs" />
     <Compile Include="Units\MilitaryFast.cs" />
     <Compile Include="Units\MilitaryHeavy.cs" />
     <Compile Include="Units\MilitaryUnitStats.cs" />
+    <Compile Include="Units\Native.cs" />
     <Compile Include="Units\SelectionBox.cs" />
     <Compile Include="Units\Settler.cs" />
     <Compile Include="Units\Target.cs" />

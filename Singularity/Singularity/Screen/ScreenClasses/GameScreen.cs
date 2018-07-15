@@ -67,10 +67,6 @@ namespace Singularity.Screen.ScreenClasses
 
         private SelectionBox mSelBox;
 
-        private Texture2D mBlankPlat;
-        private Texture2D mCylPlat;
-        private SpriteFont mLibSans12;
-
 
 
         public GameScreen(GraphicsDevice graphicsDevice, ref Director director, Map.Map map, Camera camera, FogOfWar fow)
@@ -125,13 +121,13 @@ namespace Singularity.Screen.ScreenClasses
                 var possiblegenunit = drawable as GeneralUnit;
                 var possiblerock = drawable as Rock;
                 var possiblepuddle = drawable as Puddle;
-                var conUnit = drawable as ControllableUnit;
+                var conUnit = drawable as FreeMovingUnit;
                 if (conUnit != null)
                 {
                     mSelBox.SelectingBox += conUnit.BoxSelected;
                 }
 
-                possibleEnemy?.ReloadContent(ref mDirector, camera, ref mMap);
+                possibleEnemy?.ReloadContent(content, ref mDirector, camera, ref mMap);
                 possiblepuddle?.ReloadContent();
                 possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
@@ -149,17 +145,18 @@ namespace Singularity.Screen.ScreenClasses
             {
                 //TODO: Add terrain when its in master
                 var possibleMilitaryUnit = updateable as MilitaryUnit;
+                var possibleEnemy = updateable as EnemyUnit;
                 var possibleSettler = updateable as Settler;
                 var possiblegenunit = updateable as GeneralUnit;
                 var possiblerock = updateable as Rock;
                 var possiblepuddle = updateable as Puddle;
-                var conUnit = updateable as ControllableUnit;
-                var possibleEnemy = updateable as EnemyUnit;
-                if (conUnit != null)
+
+                var freeMovingUnit = updateable as FreeMovingUnit;
+                if (freeMovingUnit != null && freeMovingUnit.Friendly)
                 {
-                    mSelBox.SelectingBox += conUnit.BoxSelected;
+                    mSelBox.SelectingBox += freeMovingUnit.BoxSelected;
                 }
-                possibleEnemy?.ReloadContent(ref mDirector, camera, ref mMap);
+                possibleEnemy?.ReloadContent(content, ref mDirector, camera, ref mMap);
                 possiblepuddle?.ReloadContent();
                 possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
@@ -177,17 +174,17 @@ namespace Singularity.Screen.ScreenClasses
             {
                 //TODO: Add terrain when its in master
                 var possibleMilitaryUnit = spatial as MilitaryUnit;
+                var possibleEnemy = spatial as EnemyUnit;
                 var possibleSettler = spatial as Settler;
                 var possiblegenunit = spatial as GeneralUnit;
                 var possiblerock = spatial as Rock;
                 var possiblepuddle = spatial as Puddle;
-                var conUnit = spatial as ControllableUnit;
-                var possibleEnemy = spatial as EnemyUnit;
-                if (conUnit != null)
+                var freeMovingUnit = spatial as FreeMovingUnit;
+                if (freeMovingUnit != null && freeMovingUnit.Friendly)
                 {
-                    mSelBox.SelectingBox += conUnit.BoxSelected;
+                    mSelBox.SelectingBox += freeMovingUnit.BoxSelected;
                 }
-                possibleEnemy?.ReloadContent(ref mDirector, camera, ref mMap);
+                possibleEnemy?.ReloadContent(content, ref mDirector, camera, ref mMap);
                 possiblepuddle?.ReloadContent();
                 possiblerock?.ReloadContent();
                 //This should also affect enemy units, since they are military units
@@ -236,6 +233,7 @@ namespace Singularity.Screen.ScreenClasses
                     mTransformMatrix);
 
                 mMap.GetStructureMap().Draw(spriteBatch);
+                mMap.GetResourceMap().Draw(spriteBatch);
 
                 foreach (var spatial in mSpatialObjects)
                 {
@@ -257,6 +255,7 @@ namespace Singularity.Screen.ScreenClasses
                     mTransformMatrix);
 
                 mMap.GetStructureMap().Draw(spriteBatch);
+                mMap.GetResourceMap().Draw(spriteBatch);
 
                 foreach (var spatial in mSpatialObjects)
                 {
@@ -311,15 +310,8 @@ namespace Singularity.Screen.ScreenClasses
         {
             AddObject(mMap);
 
-            // AddObjects(ResourceHelper.GetRandomlyDistributedResources(50));
-
             mDirector.GetSoundManager.SetLevelThemeMusic("Tutorial");
             mDirector.GetSoundManager.SetSoundPhase(SoundPhase.Build);
-
-            // This is for the creation of the Command Centers from the settlers
-            mBlankPlat = content.Load<Texture2D>("PlatformBasic");
-            mCylPlat = content.Load<Texture2D>("Cylinders");
-            mLibSans12 = content.Load<SpriteFont>("LibSans12");
         }
 
         public bool UpdateLower()
@@ -339,8 +331,7 @@ namespace Singularity.Screen.ScreenClasses
             var road = toAdd as Road;
             var platform = toAdd as PlatformBlank;
             var settler = toAdd as Settler;
-            var conUnit = toAdd as ControllableUnit;
-            var enemyUnit = toAdd as EnemyUnit; // currently unnecessary
+            var freeMovingUnit = toAdd as FreeMovingUnit;
 
             if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
@@ -359,6 +350,7 @@ namespace Singularity.Screen.ScreenClasses
                 platform.Register();
                 mMap.AddPlatform(platform);
                 mDirector.GetMilitaryManager.AddPlatform(platform);
+                // mUpdateables.AddLast(platform); // otherwise Platforms won't produce as of now.
                 return true;
             }
 
@@ -370,15 +362,14 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             // subscribe every military unit to the selection box
-            if (conUnit != null)
+            if (freeMovingUnit != null)
             {
-                mSelBox.SelectingBox += conUnit.BoxSelected;
-                mDirector.GetMilitaryManager.AddUnit(conUnit);
-            }
+                if (freeMovingUnit.Friendly)
+                {
+                    mSelBox.SelectingBox += freeMovingUnit.BoxSelected;
+                }
 
-            if (enemyUnit != null)
-            {
-                mDirector.GetMilitaryManager.AddUnit(enemyUnit);
+                mDirector.GetMilitaryManager.AddUnit(freeMovingUnit);
             }
 
             if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
@@ -434,7 +425,7 @@ namespace Singularity.Screen.ScreenClasses
             var road = toRemove as Road;
             var platform = toRemove as PlatformBlank;
             var settler = toRemove as Settler;
-            var controllableUnit = toRemove as ControllableUnit;
+            var freeMovingUnit = toRemove as FreeMovingUnit;
 
             if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
             {
@@ -462,9 +453,9 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             // unsubscribe from this military unit when deleted
-            if (controllableUnit != null)
+            if (freeMovingUnit != null && freeMovingUnit.Friendly)
             {
-                mSelBox.SelectingBox -= controllableUnit.BoxSelected;
+                mSelBox.SelectingBox -= freeMovingUnit.BoxSelected;
             }
 
             if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
@@ -512,11 +503,10 @@ namespace Singularity.Screen.ScreenClasses
         {
             // TODO eventually the EPlacementType should be instance but currently that
             // TODO requires a road to be place and therefore throws an exception !!!!!
-            
-            // CommandCenter cCenter = new CommandCenter(new Vector2(v.X-55, v.Y-100), mCylPlat, mBlankPlat, ref mDirector, false);
-            
+
             // adds the command center to the GameScreen, as well as two general units
-            var cCenter = PlatformFactory.Get(EStructureType.Command, ref mDirector, v.X - 55, v.Y - 100);
+            
+            var cCenter = PlatformFactory.Get(EStructureType.Command, ref mDirector, v.X - 55, v.Y - 100, commandBlueprint: false);
             AddObject(cCenter);
             
 

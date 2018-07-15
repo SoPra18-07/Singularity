@@ -13,21 +13,16 @@ namespace Singularity.PlatformActions
     [DataContract]
     public sealed class ProduceWellResource : APlatformResourceAction
     {
-        // The ResourceMap is needed for actually 'producing' the resources.
-        [DataMember]
-        private readonly ResourceMap mResourceMap;
-
-        public ProduceWellResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, ref director)
+        public ProduceWellResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, resourceMap, ref director)
         {
-            mResourceMap = resourceMap;
         }
 
         [DataMember]
         public override List<JobType> UnitsRequired { get; set; } = new List<JobType> {JobType.Production};
 
-        public override void Execute()
+        protected override void CreateResource()
         {
-            var res = mResourceMap.GetWellResource(mPlatform.AbsolutePosition);
+            var res = mResourceMap.GetWellResource(mPlatform.Center);
             if (res.IsPresent())
             {
                 mPlatform.StoreResource(res.Get());
@@ -38,21 +33,16 @@ namespace Singularity.PlatformActions
     [DataContract]
     public sealed class ProduceQuarryResource : APlatformResourceAction
     {
-        // The ResourceMap is needed for actually 'producing' the resources.
-        [DataMember]
-        private ResourceMap mResourceMap;
-
-        public ProduceQuarryResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, ref director)
+        public ProduceQuarryResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, resourceMap, ref director)
         {
-            mResourceMap = resourceMap;
         }
 
         [DataMember]
         public override List<JobType> UnitsRequired { get; set; } = new List<JobType> {JobType.Production};
 
-        public override void Execute()
+        protected override void CreateResource()
         {
-            var res = mResourceMap.GetQuarryResource(mPlatform.AbsolutePosition);
+            var res = mResourceMap.GetQuarryResource(mPlatform.Center);
             if (res.IsPresent())
             {
                 mPlatform.StoreResource(res.Get());
@@ -63,21 +53,17 @@ namespace Singularity.PlatformActions
     [DataContract]
     public sealed class ProduceMineResource : APlatformResourceAction
     {
-        // The ResourceMap is needed for actually 'producing' the resources.
-        [DataMember]
-        private ResourceMap mResourceMap;
 
-        public ProduceMineResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, ref director)
+        public ProduceMineResource(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, resourceMap, ref director)
         {
-            mResourceMap = resourceMap;
         }
 
         [DataMember]
         public override List<JobType> UnitsRequired { get; set; } = new List<JobType> {JobType.Production};
 
-        public override void Execute()
+        protected override void CreateResource()
         {
-            var res = mResourceMap.GetMineResource(mPlatform.AbsolutePosition);
+            var res = mResourceMap.GetMineResource(mPlatform.Center);
             if (res.IsPresent())
             {
                 mPlatform.StoreResource(res.Get());
@@ -88,8 +74,16 @@ namespace Singularity.PlatformActions
     [DataContract]
     public abstract class APlatformResourceAction : APlatformAction
     {
-        protected APlatformResourceAction(PlatformBlank platform, ref Director director) : base(platform, ref director)
+        [DataMember]
+        private int mCounter;
+
+        // The ResourceMap is needed for actually 'producing' the resources.
+        [DataMember]
+        protected ResourceMap mResourceMap;
+
+        protected APlatformResourceAction(PlatformBlank platform, ResourceMap resourceMap, ref Director director) : base(platform, ref director)
         {
+            mResourceMap = resourceMap;
         }
 
         public override void UiToggleState()
@@ -123,6 +117,17 @@ namespace Singularity.PlatformActions
         public override void Update(GameTime t)
         {
             // do nothing
+        }
+
+        protected abstract void CreateResource();
+
+        public override void Execute()
+        {
+            if (!mPlatform.PlatformHasSpace()) return;
+            mCounter++;
+            if (mCounter % 240 != 0) return;
+            mCounter = 0;
+            CreateResource();
         }
     }
 }
