@@ -11,6 +11,7 @@ using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
+using Singularity.Utils;
 
 namespace Singularity.AI.Properties
 {
@@ -23,7 +24,7 @@ namespace Singularity.AI.Properties
         /// Gets all the spawner platforms the AI currently has at its disposal
         /// </summary>
         /// <returns></returns>
-        IEnumerable<Spawner> GetSpawners();
+        Dictionary<int, List<Spawner>> GetSpawners();
 
         /// <summary>
         /// Gets the difficulty of the AI
@@ -41,5 +42,7 @@ namespace Singularity.AI.Properties
         /// </summary>
         /// <param name="platform"></param>
         void Kill(PlatformBlank platform);
+
+        void AddStructureToGame(Triple<CommandCenter, List<PlatformBlank>, List<Road>> structure);
     }
 }

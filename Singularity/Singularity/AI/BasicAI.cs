@@ -24,9 +24,9 @@ namespace Singularity.AI
         [DataMember]
         private readonly IAiBehavior mBehavior;
 
-        // this is a representation of the structure this AI operates on.
+        // this is a representation of the structure this AI operates on, this is a list since the AI might possibly have multiple bases
         [DataMember]
-        private readonly Triple<CommandCenter, List<PlatformBlank>, List<Road>> mStructure;
+        private readonly List<Triple<CommandCenter, List<PlatformBlank>, List<Road>>> mStructure;
 
         public BasicAi(EaiDifficulty difficulty, ref Director director)
         {
@@ -36,11 +36,8 @@ namespace Singularity.AI
             //TODO: change the behavior with the difficulty
             mBehavior = new SimpleAIBehavior(this, ref director);
 
-            mStructure = StructureLayoutHolder.GetRandomStructureAtCenter(9000, 3000, difficulty);
-
-            director.GetStoryManager.Level.GameScreen.AddObject(mStructure.GetFirst());
-            director.GetStoryManager.Level.GameScreen.AddObjects(mStructure.GetSecond());
-            director.GetStoryManager.Level.GameScreen.AddObjects(mStructure.GetThird());
+            mStructure = new List<Triple<CommandCenter, List<PlatformBlank>, List<Road>>>();
+            AddStructureToGame(StructureLayoutHolder.GetRandomStructureAtCenter(9000, 3000, difficulty, ref director).GetFirst());
         }
 
         public void ReloadContent(ref Director dir)
@@ -51,24 +48,35 @@ namespace Singularity.AI
 
         public void Update(GameTime gametime)
         {
+            mBehavior.CreateNewBase(gametime);
+
             mBehavior.Spawn(gametime);
 
             mBehavior.Move(gametime);
         }
 
-        public IEnumerable<Spawner> GetSpawners()
+        public Dictionary<int, List<Spawner>> GetSpawners()
         {
-            var tempList = new List<Spawner>();
+            var tempList = new Dictionary<int, List<Spawner>>();
 
-            foreach (var platform in mStructure.GetSecond())
+            var index = 0;
+
+            foreach (var structure in mStructure)
             {
-                var spawner = platform as Spawner;
+                tempList[index] = new List<Spawner>();
 
-                if (spawner == null)
+                foreach (var platform in structure.GetSecond())
                 {
-                    continue;
+                    var spawner = platform as Spawner;
+
+                    if (spawner == null)
+                    {
+                        continue;
+                    }
+                    tempList[0].Add(spawner);
                 }
-                tempList.Add(spawner);
+
+                index++;
             }
 
             return tempList;
@@ -76,7 +84,24 @@ namespace Singularity.AI
 
         public void Kill(PlatformBlank platform)
         {
-            mStructure.GetSecond().Remove(platform);
+            foreach (var structure in mStructure)
+            {
+                if (!structure.GetSecond().Contains(platform))
+                {
+                    continue;
+                }
+                structure.GetSecond().Remove(platform);
+                return;
+            }
+        }
+
+        public void AddStructureToGame(Triple<CommandCenter, List<PlatformBlank>, List<Road>> structure)
+        {
+            mStructure.Add(structure);
+
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(structure.GetFirst());
+            mDirector.GetStoryManager.Level.GameScreen.AddObjects(structure.GetSecond());
+            mDirector.GetStoryManager.Level.GameScreen.AddObjects(structure.GetThird());
         }
     }
 }

@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework;
 using Singularity.AI.Properties;
 using Singularity.Manager;
 using Singularity.Map.Properties;
+using Singularity.Platforms;
 using Singularity.Units;
 using Singularity.Utils;
 
@@ -25,7 +26,7 @@ namespace Singularity.AI.Behavior
         [DataMember]
         private const int MoveIntervalMillis = 10000;
         [DataMember]
-        private const int SpawnIntervalMillis = 1000;
+        private const int SpawnIntervalMillis = 10000;
 
         /// <summary>
         /// The AI this behavior operates on
@@ -69,47 +70,40 @@ namespace Singularity.AI.Behavior
 
             foreach(var enemyUnit in mEnemyUnits)
             {
-                enemyUnit.SetMovementTarget(GetRandomPositionOnMap());
+                enemyUnit.SetMovementTarget(Map.Map.GetRandomPositionOnMap());
             }
         }
 
         public void Spawn(GameTime gametime)
         {
+
             if ((int) gametime.TotalGameTime.TotalMilliseconds % SpawnIntervalMillis != 0)
             {
                 return;
             }
 
-            foreach (var spawner in mAi.GetSpawners())
+            foreach (var spawner in mAi.GetSpawners().Values)
             {
-                var enemyUnit = spawner.SpawnEnemy(mDirector.GetStoryManager.Level.Camera,
-                    mDirector.GetStoryManager.Level.Map,
-                    mDirector.GetStoryManager.Level.GameScreen);
+                foreach (var actualSpawner in spawner)
+                {
+                    Debug.WriteLine("spawning");
 
-                mEnemyUnits.Add(enemyUnit);
+                    var enemyUnit = actualSpawner.SpawnEnemy(mDirector.GetStoryManager.Level.Camera,
+                        mDirector.GetStoryManager.Level.Map,
+                        mDirector.GetStoryManager.Level.GameScreen);
+
+                    mEnemyUnits.Add(enemyUnit);
+                }
             }
         }
 
-        /// <summary>
-        /// Gets a valid random position on the current map
-        /// </summary>
-        /// <returns></returns>
-        private Vector2 GetRandomPositionOnMap()
+        public void CreateNewBase(GameTime gametime)
         {
-            var isOnMap = false;
-            var pos = Vector2.Zero;
-
-            while (!isOnMap)
+            if ((int)gametime.TotalGameTime.TotalMilliseconds % 10000 != 0)
             {
-                pos = new Vector2(mRandom.Next(MapConstants.MapWidth), mRandom.Next(MapConstants.MapHeight));
-                if (Map.Map.IsOnTop(pos))
-                {
-                    isOnMap = true;
-                }
-
+                return;
             }
-            return pos;
-
+            mAi.AddStructureToGame(StructureLayoutHolder.GetStructureOnMap(mAi.Difficulty, ref mDirector));
         }
     }
 }
