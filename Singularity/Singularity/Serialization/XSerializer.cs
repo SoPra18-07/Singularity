@@ -114,7 +114,6 @@ namespace Singularity.Serialization
             }
 
             path = Environment.ExpandEnvironmentVariables(path);
-
             if (!Directory.Exists(path))
             {
                 return Optional<object>.Of(null);

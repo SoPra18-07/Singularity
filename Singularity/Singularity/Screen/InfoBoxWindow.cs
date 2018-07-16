@@ -28,7 +28,7 @@ namespace Singularity.Screen
         protected readonly Color mCenterColor;
 
         // mouse Position
-        protected Vector2 mMouse;
+        private Vector2 mMouse;
 
         // bool to enable or disable the rectangle around the infoBox
         private readonly bool mBoxed;
@@ -98,7 +98,7 @@ namespace Singularity.Screen
         /// <param name="spriteBatch"></param>
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            if (!Active || mCounter <= 10) return;
+            if (!Active || mCounter <= 10) { return; }
             if (mBoxed)
             {
                 // infoBox Rectangle

@@ -31,9 +31,6 @@ namespace Singularity.Manager
         public void AddManager(int graphid)
         {
             mDMs[graphid] = new DistributionManager(graphid);
-
-            // update UI
-            mUserInterfaceController.AddGraph(graphid);
         }
 
         /// <summary>
@@ -118,12 +115,10 @@ namespace Singularity.Manager
         /// <param name="newgraphid">The graphid of the split-off DistributionManager</param>
         /// <param name="platforms">The platforms of the new split-off DistributionManager</param>
         /// <param name="units">The units of the new split-off DistributionManager</param>
-        /// <param name="graphIdToGraph">the structuremap's graphIdToGraph-dictionary</param>
         public void SplitManagers(int oldgraphid,
             int newgraphid,
             List<PlatformBlank> platforms,
-            List<GeneralUnit> units,
-            Dictionary<int, Graph.Graph> graphIdToGraph)
+            List<GeneralUnit> units)
         {
             var olddist = mDMs[oldgraphid];
             mDMs[newgraphid] = new DistributionManager(newgraphid);
@@ -157,7 +152,7 @@ namespace Singularity.Manager
             }
 
             // update UI by "calling all graphs" - see description in UIController
-            mUserInterfaceController.CallingAllGraphs(graphIdToGraph);
+            mUserInterfaceController.SplitGraph(oldgraphid);
         }
 
         public DistributionManager GetManager(int graphid)
@@ -168,7 +163,6 @@ namespace Singularity.Manager
         public void RemoveManager(int graphId, Dictionary<int, Graph.Graph> graphIdToGraph)
         {
             mDMs.Remove(graphId);
-            mUserInterfaceController.CallingAllGraphs(graphIdToGraph);
         }
 
         public void ReloadContent(UserInterfaceController uic)

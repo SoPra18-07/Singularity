@@ -27,6 +27,12 @@ namespace Singularity.AI.Behavior
         void Spawn(GameTime gametime);
 
         /// <summary>
+        /// Creates a new base in a specific way specified by the implementation
+        /// </summary>
+        /// <param name="gametime">A snapshot of timing values</param>
+        void CreateNewBase(GameTime gametime);
+
+        /// <summary>
         /// Needed for reloading the references etc. after deserializing
         /// </summary>
         /// <param name="dir"></param>

@@ -26,7 +26,7 @@ namespace Singularity.Platforms
     /// <inheritdoc cref="ICollider"/>
     /// <inheritdoc cref="IDamageable"/>
     [DataContract]
-    public class PlatformBlank : IRevealing, INode, ICollider, IMouseClickListener
+    public class PlatformBlank : ADie, IRevealing, INode, ICollider, IMouseClickListener
     {
         #region private
 
@@ -202,6 +202,7 @@ namespace Singularity.Platforms
         [DataMember]
         protected Vector2 mBaseOffset;
 
+        [DataMember]
         public bool HasDieded { get; private set; }
         #endregion
 
@@ -212,6 +213,7 @@ namespace Singularity.Platforms
 
         public bool[,] ColliderGrid { get; internal set; }
 
+        [DataMember]
         private List<IPlatformAction> mToKill = new List<IPlatformAction>();
 
         //This is for registering the platform at the DistrManager.
@@ -224,7 +226,7 @@ namespace Singularity.Platforms
 
         protected int mPowerDownSoundId;
 
-        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libsans12, ref Director director, EStructureType type = EStructureType.Blank, float centerOffsetY = -36, bool friendly = true)
+        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libsans12, ref Director director, EStructureType type = EStructureType.Blank, float centerOffsetY = -36, bool friendly = true) : base(ref director)
         {
 
             mPrevPlatformActions = new List<IPlatformAction>();
@@ -330,6 +332,11 @@ namespace Singularity.Platforms
 
             // Track the creation of a platform in the statistics.
             director.GetStoryManager.UpdatePlatforms("created");
+
+            if (!friendly)
+            {
+                mAddedToInputManager = true;
+            }
 
             // mInfoBox = new PlatformInfoBox(new List<IWindowItem> { new TextField("PlattformInfo", AbsolutePosition, AbsoluteSize, mLibSans12, Color.White) }, AbsoluteSize, new Color(0.86f, 0.86f, 0.86f), new Color(1f, 1, 1), true, this, mDirector);
 
@@ -543,7 +550,7 @@ namespace Singularity.Platforms
             {
                 if (mType == EStructureType.Blank)
                 {
-                    Die();
+                    FlagForDeath();
                 }
                 else
                 {
@@ -624,6 +631,26 @@ namespace Singularity.Platforms
                         SpriteEffects.None,
                         LayerConstants.BasePlatformLayer);
                     break;
+                case 1:
+                    spritebatch.Draw(mPlatformBaseTexture,
+                        AbsolutePosition,
+                        null,
+                        mColorBase * transparency,
+                        0f,
+                        Vector2.Zero,
+                        1f,
+                        SpriteEffects.None,
+                        LayerConstants.BasePlatformLayer);
+                    spritebatch.Draw(mPlatformSpriteSheet,
+                        AbsolutePosition,
+                        new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 148),
+                        mColor * transparency,
+                        0f,
+                        Vector2.Zero,
+                        1f,
+                        SpriteEffects.None,
+                        LayerConstants.PlatformLayer);
+                    break;
                 case 2:
                     // Cylinder (Unit Platforms
                     // Draw the basic platform first
@@ -700,7 +727,6 @@ namespace Singularity.Platforms
 
             Bounds = new Rectangle((int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
 
-            // TODO: if the platform is an enemy it should not be subscribed to the input manager
             // TODO: if the platform is an enemy it should not be subscribed to the input manager
             if (!mAddedToInputManager)
             {
@@ -1033,11 +1059,15 @@ namespace Singularity.Platforms
             // stats tracking for a platform death
             mDirector.GetStoryManager.UpdatePlatforms(Friendly ? "lost" : "destroyed");
 
-            mDirector.GetInputManager.FlagForRemoval(this);
-            //Already tells the unit that it is no longer employed
-            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
-            mDirector.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            if (Friendly)
+            {
+                mDirector.GetInputManager.FlagForRemoval(this);
+                //Already tells the unit that it is no longer employed
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
+                mDirector.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            }
 
+            mDirector.GetMilitaryManager.RemovePlatform(this);
             // create the event in eventLog that the specialised part has been destroyed
             mDirector.GetEventLog.AddEvent(ELogEventType.PlatformDestroyed, mType + " has been destroyed", this);
             // if platform was an enemy keep red base
@@ -1070,11 +1100,10 @@ namespace Singularity.Platforms
             mDrainingEnergy = 0;
 
             UpdateValues();
-            mDirector.GetMilitaryManager.RemovePlatform(this);
             mDirector.GetMilitaryManager.AddUnit(this);
         }
 
-        public bool Die()
+        public override bool Die()
         {
             // stats tracking for a platform death
             mDirector.GetStoryManager.UpdatePlatforms(Friendly ? "lost" : "destroyed");
@@ -1125,16 +1154,27 @@ namespace Singularity.Platforms
 
             mIPlatformActions.ForEach(a => a.Platform = null);
             mIPlatformActions.RemoveAll(a => a.Die());
-            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
+            if (Friendly)
+            {
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
+            }
+
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             if (!Friendly)
             {
                 mDirector.GetStoryManager.Level.Ai.Kill(this);
             }
-            mDirector.GetInputManager.FlagForRemoval(this);
-            mDirector.GetInputManager.RemoveMousePositionListener(mInfoBox);
+
+            if (Friendly)
+            {
+                mDirector.GetInputManager.FlagForRemoval(this);
+                mDirector.GetInputManager.RemoveMousePositionListener(mInfoBox);
+            }
+
+            mDirector.GetMilitaryManager.RemovePlatform(this);
             mInfoBox = null;
             //This is needed so this code is not called multiple times
+            mAllGenUnits = null;
             HasDieded = true;
             return true;
         }

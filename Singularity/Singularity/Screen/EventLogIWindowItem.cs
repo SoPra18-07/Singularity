@@ -63,7 +63,7 @@ namespace Singularity.Screen
         /// <inheritdoc />
         public void Update(GameTime gametime)
         {
-            if (!ActiveInWindow || OutOfScissorRectangle) return;
+            if (!ActiveInWindow || OutOfScissorRectangle) {  return; }
             // update position of all components
             mPositionButton.Position = Position;
             mText.Position = new Vector2(mPositionButton.Position.X + mShiftValue, Position.Y + mPositionButton.Size.Y);
@@ -77,7 +77,7 @@ namespace Singularity.Screen
         /// <inheritdoc />
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (!ActiveInWindow || OutOfScissorRectangle) return;
+            if (!ActiveInWindow || OutOfScissorRectangle) {  return; }
             // draw all components
             mPositionButton.Draw(spriteBatch);
             mText.Draw(spriteBatch);
@@ -113,9 +113,6 @@ namespace Singularity.Screen
         {
             var asSpatial = (SpatialPositionEventArgs) eventArgs;
 
-            //TODO: pass accurate coordinates, right now it goes to the top left texture point of the platform blank on the map
-            // also note, since the validate position code is atm buggy, the map might disappear when the zoom level is too far out
-            // im going to fix this definitely
             mDirector.GetStoryManager.Level.Camera.CenterOn(asSpatial.GetAbsoluteCenter());
         }
 

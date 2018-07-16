@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -27,6 +28,7 @@ namespace Singularity.AI.Structures
 
         public Spawner(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, ref Director director, EStructureType type = EStructureType.Barracks, float centerOffsetY = -36, bool friendly = false) : base(position, platformSpriteSheet, baseSprite, mLibSans12, ref director, type, centerOffsetY, friendly)
         {
+            mType = EStructureType.Spawner;
             mSpritename = "Cylinders";
             mIsBlueprint = false;
         }
