@@ -1056,15 +1056,17 @@ namespace Singularity.Platforms
         /// </summary>
         public void DieBlank()
         {
-
-
             // stats tracking for a platform death
             mDirector.GetStoryManager.UpdatePlatforms(Friendly ? "lost" : "destroyed");
 
-            mDirector.GetInputManager.FlagForRemoval(this);
-            //Already tells the unit that it is no longer employed
-            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
-            mDirector.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            if (Friendly)
+            {
+                mDirector.GetInputManager.FlagForRemoval(this);
+                //Already tells the unit that it is no longer employed
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
+                mDirector.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            }
+
             mDirector.GetMilitaryManager.RemovePlatform(this);
             // create the event in eventLog that the specialised part has been destroyed
             mDirector.GetEventLog.AddEvent(ELogEventType.PlatformDestroyed, mType + " has been destroyed", this);
@@ -1152,14 +1154,23 @@ namespace Singularity.Platforms
 
             mIPlatformActions.ForEach(a => a.Platform = null);
             mIPlatformActions.RemoveAll(a => a.Die());
-            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
+            if (Friendly)
+            {
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
+            }
+
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             if (!Friendly)
             {
                 mDirector.GetStoryManager.Level.Ai.Kill(this);
             }
-            mDirector.GetInputManager.FlagForRemoval(this);
-            mDirector.GetInputManager.RemoveMousePositionListener(mInfoBox);
+
+            if (Friendly)
+            {
+                mDirector.GetInputManager.FlagForRemoval(this);
+                mDirector.GetInputManager.RemoveMousePositionListener(mInfoBox);
+            }
+
             mDirector.GetMilitaryManager.RemovePlatform(this);
             mInfoBox = null;
             //This is needed so this code is not called multiple times
