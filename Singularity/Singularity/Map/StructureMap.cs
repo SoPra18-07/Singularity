@@ -116,7 +116,7 @@ namespace Singularity.Map
                 platform.ReloadContent(content, ref dir);
             }
             //Update uis graphid dictionary
-            ui.CallingAllGraphs(mGraphIdToGraph);
+            ui.GraphIdToGraphStructureDict = mGraphIdToGraph;
 
             foreach(var roads in mRoads)
             {
@@ -378,7 +378,7 @@ namespace Singularity.Map
             UpdateEnergyLevel(newChildIndex);
             UpdateEnergyLevel(mPlatformToGraphId[(PlatformBlank)parent]);
 
-            mDirector.GetDistributionDirector.SplitManagers(mPlatformToGraphId[(PlatformBlank)parent], newChildIndex, platforms, units, mGraphIdToGraph);
+            mDirector.GetDistributionDirector.SplitManagers(mPlatformToGraphId[(PlatformBlank)parent], newChildIndex, platforms, units);
             mDirector.GetPathManager.AddGraph(newChildIndex, childReachableGraph);
             mDirector.GetPathManager.AddGraph(mPlatformToGraphId[(PlatformBlank)parent], parentReachableGraph);
         }
@@ -672,6 +672,11 @@ namespace Singularity.Map
             {
                 genUnit.Graphid = newId;
             }
+        }
+
+        public Dictionary<int, Graph.Graph> GetDictionaryGraphIdToGraph()
+        {
+            return mGraphIdToGraph;
         }
     }
 }

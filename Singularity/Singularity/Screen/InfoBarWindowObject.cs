@@ -239,7 +239,7 @@ namespace Singularity.Screen
         public int Width { private get; set; }
 
         // true, if the infoBar should be updated and drawn
-        public bool Active { private get; set; }
+        private bool Active { get; set; }
 
         // set screentype
         public EScreen Screen { get; }
