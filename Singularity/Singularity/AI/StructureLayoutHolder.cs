@@ -68,8 +68,8 @@ namespace Singularity.AI
             var struct1CommandCenter = (CommandCenter) PlatformFactory.Get(EStructureType.Command, ref director, 0f, 0f, null, false);
 
             var struct1Platforms = new List<PlatformBlank>();
-            var struct1Plat1 = PlatformFactory.Get(EStructureType.Spawner, ref director, -200);
-            var struct1Plat2 = PlatformFactory.Get(EStructureType.Sentinel, ref director, 200);
+            var struct1Plat1 = PlatformFactory.Get(EStructureType.Spawner, ref director, -200, commandBlueprint:false);
+            var struct1Plat2 = PlatformFactory.Get(EStructureType.Sentinel, ref director, 200, commandBlueprint:false);
 
             struct1Platforms.Add(struct1Plat1);
             struct1Platforms.Add(struct1Plat2);
@@ -82,6 +82,12 @@ namespace Singularity.AI
             var struct1 = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>(struct1CommandCenter, struct1Platforms, struct1Roads);
 
             sAllStructures[EaiDifficulty.Easy][0] = struct1;
+
+            #endregion
+
+            #region 2. Easy Structure
+
+            var struct2CommandCenter = (CommandCenter)PlatformFactory.Get(EStructureType.Command, ref director, 0f, 0f, null, false);
 
             #endregion
         }

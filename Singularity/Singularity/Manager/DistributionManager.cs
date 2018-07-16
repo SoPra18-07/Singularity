@@ -1020,7 +1020,6 @@ namespace Singularity.Manager
         /// Is called by producing and defending Platforms when they are created or added to the distributionmanager.
         /// </summary>
         /// <param name="platform">The platform itself</param>
-        /// <param name="isDef">Is true, when the platform is a defending platform, false otherwise (only producing platforms should register themselves besides defending ones)</param>
         public void Register(PlatformBlank platform)
         {
             var isDef = platform.IsDefense();
