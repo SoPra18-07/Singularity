@@ -2,6 +2,8 @@
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using Singularity.AI.Structures;
 using Singularity.Manager;
 using Singularity.Nature;
 using Singularity.Platforms;
@@ -32,6 +34,13 @@ namespace Singularity.Levels
 
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
+            var sentinel = new Sentinel(new Vector2(4000, 4000),
+                content.Load<Texture2D>("Cones"),
+                content.Load<Texture2D>("PlatformBasic"),
+                content.Load<SpriteFont>("LibSans12"),
+                ref mDirector,
+                false);;
+            GameScreen.AddObject(sentinel);
             var platform1 = PlatformFactory.Get(EStructureType.Blank, ref mDirector, 3000, 3000, Map.GetResourceMap());
 
             GameScreen.AddObject(platform1);
@@ -64,15 +73,16 @@ namespace Singularity.Levels
             GameScreen.AddObject(road5);
 
             // Enemy Unit
-            var enemyUnit = new Target(new Vector2(3000, 2950), Camera, ref mDirector, ref map);
+            //var enemyUnit = new Target(new Vector2(3000, 2950), Camera, ref mDirector, ref map);
             var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
-            
+
             var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, Ui);
 
             var rock1 = new Rock(new Vector2(3500, 2800), ref mDirector);
-            var rock2 = new Rock(new Vector2(3500, 3000), ref mDirector);
+            //var rock2 = new Rock(new Vector2(3500, 3000));
+
             GameScreen.AddObject(rock1);
-            GameScreen.AddObject(rock2);
+            //GameScreen.AddObject(rock2);
 
             // GenUnits
             var genUnit = new List<GeneralUnit>(5);
@@ -109,7 +119,7 @@ namespace Singularity.Levels
             platform2.StoreResource(res12);
 
             GameScreen.AddObjects(genUnit);
-            GameScreen.AddObject(enemyUnit);
+            //GameScreen.AddObject(enemyUnit);
             GameScreen.AddObject(milUnit);
             GameScreen.AddObject(settler);
 
