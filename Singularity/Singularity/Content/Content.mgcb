@@ -420,6 +420,7 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:WindowGlowEdge.png
+
 #begin GenUnit.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -431,3 +432,4 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:GenUnit.png
+
