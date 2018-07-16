@@ -31,8 +31,7 @@ namespace Singularity.AI
         {
             var rnd = new Random();
 
-            //var index = rnd.Next(sAllStructures[difficulty].Length - 1);
-            var index = 1;
+            var index = rnd.Next(sAllStructures[difficulty].Length);
 
             var structure = sAllStructures[difficulty][index];
 

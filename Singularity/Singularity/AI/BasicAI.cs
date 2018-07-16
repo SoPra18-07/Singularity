@@ -127,7 +127,7 @@ namespace Singularity.AI
 
             foreach (var rectangle in mBoundsToDraw)
             {
-                spriteBatch.DrawRectangle(rectangle, Color.Red, 4f, 0.2f);
+                spriteBatch.DrawRectangle(rectangle, Color.Red, 4f, LayerConstants.PlatformLayer);
             }
         }
     }
