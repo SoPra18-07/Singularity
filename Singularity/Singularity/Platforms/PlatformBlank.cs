@@ -1019,6 +1019,9 @@ namespace Singularity.Platforms
 
             Moved = false;
 
+            mProvidingEnergy = 0;
+            mDrainingEnergy = 0;
+
             UpdateValues();
         }
 
