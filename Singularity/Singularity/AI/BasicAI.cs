@@ -64,9 +64,9 @@ namespace Singularity.AI
 
             mBehavior.CreateNewBase(gametime);
 
-            //mBehavior.Spawn(gametime);
+            mBehavior.Spawn(gametime);
 
-            //mBehavior.Move(gametime);
+            mBehavior.Move(gametime);
         }
 
         public Dictionary<int, List<Spawner>> GetSpawners()

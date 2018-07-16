@@ -1087,7 +1087,9 @@ namespace Singularity.Manager
                 //In this case look if every assigned unit is on the same graph as the platform and handle it
                 else
                 {
-                    foreach (var unitbool in units)
+                    var unitbools = new List<Pair<GeneralUnit, bool>>();
+                    unitbools.AddRange(units);
+                    foreach (var unitbool in unitbools)
                     {
                         //In this case they are on the platform
                         if (unitbool.GetSecond())
