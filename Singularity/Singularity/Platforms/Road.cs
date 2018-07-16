@@ -109,6 +109,12 @@ namespace Singularity.Platforms
 
         }
 
+        public void ResetCenterValues()
+        {
+            Source = ((PlatformBlank)SourceAsNode).Center;
+            Destination = ((PlatformBlank) DestinationAsNode).Center;
+        }
+
         public INode GetParent()
         {
             return SourceAsNode;

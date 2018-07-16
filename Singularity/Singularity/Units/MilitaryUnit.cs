@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -6,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Sound;
 
@@ -76,6 +78,11 @@ namespace Singularity.Units
         [DataMember]
         private float mShootingTimer = -1f;
 
+        [DataMember]
+        protected Color mShootColor = Color.White;
+
+        [DataMember]
+        protected bool mTargetWasNull;
 
 
 
@@ -158,8 +165,8 @@ namespace Singularity.Units
                 if (mCurrentTime <= mShootingTimer + 200)
                 {
                     // draws a laser line a a slight glow around the line, then sets the shoot future off
-                    spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2, .15f);
-                    spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6, .15f);
+                    spriteBatch.DrawLine(Center, mShootingTarget.Center, mShootColor, 2, .15f);
+                    spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, mShootColor * .2f, 6, .15f);
                     mShoot = false;
                 }
             }
@@ -194,8 +201,15 @@ namespace Singularity.Units
                 }
                 else
                 {
-                    mPath.Pop();
-                    MoveToTarget(mPath.Peek(), mSpeed);
+                    //TODO This is a hotfix. Basically the same as the other two TODO hotfixes. Search for them for more information?
+                    if (mPath.Count != 0)
+                    {
+                        mPath.Pop();
+                        if (mPath.Count != 0)
+                        {
+                            MoveToTarget(mPath.Peek(), mSpeed);
+                        }
+                    }
                 }
             }
 
@@ -227,12 +241,27 @@ namespace Singularity.Units
                 }
             }
             
+            
         }
 
         private void Shoot(IDamageable target)
         {
-            mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
-            target.MakeDamage(MilitaryUnitStats.mUnitStrength);
+            if (target != null)
+            {
+                mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+                target.MakeDamage(MilitaryUnitStats.mUnitStrength);
+
+                //This should prevent the units to hold the reference to the target platform
+                //and further shooting at it despite it already being dead (they shoot in the
+                //air then)
+                var test = target as PlatformBlank;
+                if (test != null && test.HasDieded)
+                {
+                    mShootingTarget = null;
+                    mShootingTimer = -1;
+                    mShoot = false;
+                }
+            }
         }
 
         public void SetShootingTarget(ICollider target)
@@ -241,10 +270,25 @@ namespace Singularity.Units
             {
                 mShoot = false;
                 mShootingTimer = -1;
+                mTargetWasNull = true;
             }
             else
             {
-                mShoot = true;
+                if (mTargetWasNull)
+                {
+                    mTargetPosition = AbsolutePosition;
+                    mIsMoving = false;
+                    //TODO: THis is a hotfix. Threw an error for the path being null...
+                    mPath?.Clear();
+                    mShoot = true;
+                }
+
+                else
+                {
+                    mShoot = true;
+                }
+
+                mTargetWasNull = false;
             }
 
             mShootingTarget = target;
