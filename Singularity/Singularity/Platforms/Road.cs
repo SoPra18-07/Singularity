@@ -36,6 +36,7 @@ namespace Singularity.Platforms
         /// If it is a blueprint, then set this value to true. Once the road changes from a blueprint to a real road,
         /// this should automatically also add the road to the graph
         /// </summary>
+        [DataMember]
         public bool Blueprint
         {
             get { return mBlueprint; }

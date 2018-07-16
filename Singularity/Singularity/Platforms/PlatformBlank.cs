@@ -166,7 +166,6 @@ namespace Singularity.Platforms
         [DataMember]
         public int Id { get; private set; }
 
-        [DataMember]
         protected Director mDirector;
 
         ///<summary>
@@ -219,11 +218,11 @@ namespace Singularity.Platforms
         //This is for registering the platform at the DistrManager.
         [DataMember]
         public JobType Property { get; set; }
-
+        [DataMember]
         protected int mDestroyPlatSoundId;
-
+        [DataMember]
         protected int mPowerOnSoundId;
-
+        [DataMember]
         protected int mPowerDownSoundId;
 
         public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libsans12, ref Director director, EStructureType type = EStructureType.Blank, float centerOffsetY = -36, bool friendly = true) : base(ref director)
@@ -369,6 +368,10 @@ namespace Singularity.Platforms
 
         public virtual void ReloadContent(ContentManager content, ref Director dir)
         {
+            foreach (var resource in mResources)
+            {
+                resource.ReloadContent(ref dir);
+            }
             mPlatformSpriteSheet = content.Load<Texture2D>(mSpritename);
             mPlatformBaseTexture = content.Load<Texture2D>("PlatformBasic");
             mDirector = dir;
@@ -953,6 +956,24 @@ namespace Singularity.Platforms
                     break;
                 case EStructureType.Command:
                     mSheet = 2;
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        mPlatformWidth,
+                        170);
+                    break;
+                case EStructureType.Sentinel:
+                    //Same as in Laser
+                    mSheet = 1;
+                    mSheetPosition = 1;
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        mPlatformWidth,
+                        165);
+                    break;
+                case EStructureType.Spawner:
+                    //Same as in Barracks
+                    mSheet = 2;
+                    mSheetPosition = 1;
                     AbsBounds = new Rectangle((int)AbsolutePosition.X,
                         (int)AbsolutePosition.Y,
                         mPlatformWidth,

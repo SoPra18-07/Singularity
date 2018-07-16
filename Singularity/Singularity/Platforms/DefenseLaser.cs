@@ -91,8 +91,8 @@ namespace Singularity.Platforms
 
         public override void ReloadContent(ContentManager content, ref Director dir)
         {
-            mSoundId = mDirector.GetSoundManager.CreateSoundInstance("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
             base.ReloadContent(content, ref dir);
+            mSoundId = mDirector.GetSoundManager.CreateSoundInstance("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
         }
     }
 }

@@ -90,6 +90,7 @@ namespace Singularity.Map
             //ADD ALL THE THINGS TO THE CAMERA AND THE FOW
             mStructureMap.ReloadContent(content, mFow, ref dir, mCamera, this, ui);
             mCollisionMap.ReloadContent();
+            mResourceMap.ReloadContent(ref dir);
         }
 
         /// <see cref="CollisionMap.UpdateCollider(ICollider)"/>

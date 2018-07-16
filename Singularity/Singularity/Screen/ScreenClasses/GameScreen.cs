@@ -129,8 +129,8 @@ namespace Singularity.Screen.ScreenClasses
                 }
 
                 possibleEnemy?.ReloadContent(content, ref mDirector, camera, ref mMap);
-                possiblepuddle?.ReloadContent();
-                possiblerock?.ReloadContent();
+                possiblepuddle?.ReloadContent(ref mDirector);
+                possiblerock?.ReloadContent(ref mDirector);
                 //This should also affect enemy units, since they are military units
                 possibleMilitaryUnit?.ReloadContent(content, ref mDirector, camera, ref map);
                 possibleSettler?.ReloadContent(ref mDirector, mCamera, ref map, this, ui);
@@ -158,8 +158,8 @@ namespace Singularity.Screen.ScreenClasses
                     mSelBox.SelectingBox += freeMovingUnit.BoxSelected;
                 }
                 possibleEnemy?.ReloadContent(content, ref mDirector, camera, ref mMap);
-                possiblepuddle?.ReloadContent();
-                possiblerock?.ReloadContent();
+                possiblepuddle?.ReloadContent(ref mDirector);
+                possiblerock?.ReloadContent(ref mDirector);
                 //This should also affect enemy units, since they are military units
                 possibleMilitaryUnit?.ReloadContent(content, ref mDirector, camera, ref map);
                 possibleSettler?.ReloadContent(ref mDirector, mCamera, ref map, this, ui);
@@ -186,8 +186,8 @@ namespace Singularity.Screen.ScreenClasses
                     mSelBox.SelectingBox += freeMovingUnit.BoxSelected;
                 }
                 possibleEnemy?.ReloadContent(content, ref mDirector, camera, ref mMap);
-                possiblepuddle?.ReloadContent();
-                possiblerock?.ReloadContent();
+                possiblepuddle?.ReloadContent(ref mDirector);
+                possiblerock?.ReloadContent(ref mDirector);
                 //This should also affect enemy units, since they are military units
                 possibleMilitaryUnit?.ReloadContent(content, ref mDirector, camera, ref map);
                 possibleSettler?.ReloadContent(ref mDirector, mCamera, ref map, this, ui);

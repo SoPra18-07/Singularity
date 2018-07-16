@@ -127,6 +127,10 @@ namespace Singularity.Units
 
         internal void ReloadContent(ref Director director, ContentManager content)
         {
+            if (Carrying.IsPresent())
+            {
+                Carrying.Get().ReloadContent(ref director);
+            }
             mDirector = director;
             mGenUnitTexture = content.Load<Texture2D>("GenUnit");
         }

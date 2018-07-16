@@ -61,6 +61,11 @@ namespace Singularity.Resources
             mDirector = director;
         }
 
+        public new void ReloadContent(ref Director dir)
+        {
+            mDirector = dir;
+        }
+
         public Optional<Resource> Get(Vector2 location)
         {
             if (Amount <= 0) return Optional<Resource>.Of(null);

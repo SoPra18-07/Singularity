@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Singularity.Property;
 using Singularity.Utils;
 
 namespace Singularity.Manager
 {
+    [DataContract]
     public sealed class DeathManager
     {
+        [DataMember]
         private readonly SortedList<int, List<IDie>> mToKill;
 
         public DeathManager()
