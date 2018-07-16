@@ -100,7 +100,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <summary>
         /// Updates the contents of the screen.
         /// </summary>
-        /// <param name="gametime">Current gametime. Used for actions 
+        /// <param name="gametime">Current gametime. Used for actions
         /// that take place over time </param>
         public void Update(GameTime gametime)
         {
