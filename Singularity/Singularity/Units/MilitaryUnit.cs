@@ -245,7 +245,10 @@ namespace Singularity.Units
                 if (mShootingTimer + 750 <= gameTime.TotalGameTime.TotalMilliseconds)
                 {
                     mShootingTimer = (float)gameTime.TotalGameTime.TotalMilliseconds;
-                    Shoot(mShootingTarget);
+                    if (mShootingTarget != null)
+                    {
+                        Shoot(mShootingTarget);
+                    }
                 }
             }
 
@@ -260,7 +263,7 @@ namespace Singularity.Units
             
             if (target != null)
             {
-                mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+                mDirector.GetSoundManager.PlaySound(mSoundId);
                 target.MakeDamage(MilitaryUnitStats.mUnitStrength);
 
                 //This should prevent the units to hold the reference to the target platform

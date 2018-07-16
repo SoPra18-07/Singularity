@@ -263,8 +263,8 @@ namespace Singularity.Platforms
             // also sets the AbsoluteSize and collider grids
 
             // Sound Effects
-            mDestroyPlatSoundId = mDirector.SoundManager.CreateSoundInstance("DestroyPlat", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
-            mPowerOnSoundId = mDirector.SoundManager.CreateSoundInstance("PowerOff",
+            mDestroyPlatSoundId = mDirector.GetSoundManager.CreateSoundInstance("DestroyPlat", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+            mPowerOnSoundId = mDirector.GetSoundManager.CreateSoundInstance("PowerOff",
                 Center.X,
                 Center.Y,
                 .1f,
@@ -272,7 +272,7 @@ namespace Singularity.Platforms
                 true,
                 false,
                 SoundClass.Effect);
-            mPowerDownSoundId = mDirector.SoundManager.CreateSoundInstance("PowerDown",
+            mPowerDownSoundId = mDirector.GetSoundManager.CreateSoundInstance("PowerDown",
                 Center.X,
                 Center.Y,
                 .1f,
@@ -709,7 +709,7 @@ namespace Singularity.Platforms
                     .FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
                 mAddedToInputManager = true;
 
-                mDirector.EventLog.AddEvent(ELogEventType.PlatformBuilt, mType + " has been built", this);
+                mDirector.GetEventLog.AddEvent(ELogEventType.PlatformBuilt, mType + " has been built", this);
             }
 
             // set the mDataSent bool to false if there was a change in platform infos since the data was sent last time
@@ -1030,21 +1030,13 @@ namespace Singularity.Platforms
         /// </summary>
         public void DieBlank()
         {
-
-<<<<<<< HEAD
-            mDirector.InputManager.FlagForRemoval(this);
-            mDirector.DistributionDirector.GetManager(GetGraphIndex()).Kill(this);
-            mType = EStructureType.Blank;
-            mDirector.InputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
-=======
             mDirector.GetInputManager.FlagForRemoval(this);
             //Already tells the unit that it is no longer employed
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
             mDirector.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
->>>>>>> master
 
             // create the event in eventLog that the specialised part has been destroyed
-            mDirector.EventLog.AddEvent(ELogEventType.PlatformDestroyed, mType + " has been destroyed", this);
+            mDirector.GetEventLog.AddEvent(ELogEventType.PlatformDestroyed, mType + " has been destroyed", this);
             // if platform was an enemy keep red base
             mColor = Friendly ? Color.White : Color.Red;
 
@@ -1084,7 +1076,7 @@ namespace Singularity.Platforms
             mResources.RemoveAll(r => r.Die());
 
             // create event in eventLog that the platform has been destroyed
-            mDirector.EventLog.AddEvent(ELogEventType.PlatformDestroyed, mType + " has been destroyed", this);
+            mDirector.GetEventLog.AddEvent(ELogEventType.PlatformDestroyed, mType + " has been destroyed", this);
 
             // TODO: REMOVE from everywhere.
             // see https://github.com/SoPra18-07/Singularity/issues/215
@@ -1097,10 +1089,7 @@ namespace Singularity.Platforms
             foreach (var unit in GetGeneralUnitsOnPlatform())
             {
                 unit.Die();
-<<<<<<< HEAD
-                mDirector.DistributionDirector.GetManager(GetGraphIndex()).Kill(unit);
-=======
->>>>>>> master
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(unit);
             }
 
             foreach (var road in mInwardsEdges)
@@ -1127,11 +1116,6 @@ namespace Singularity.Platforms
 
             mIPlatformActions.ForEach(a => a.Platform = null);
             mIPlatformActions.RemoveAll(a => a.Die());
-<<<<<<< HEAD
-            mDirector.DistributionDirector.GetManager(GetGraphIndex()).Kill(this);
-            mDirector.StoryManager.StructureMap.RemovePlatform(this);
-            mDirector.StoryManager.Level.GameScreen.RemoveObject(this);
-=======
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             if (!Friendly)
@@ -1143,7 +1127,6 @@ namespace Singularity.Platforms
             mInfoBox = null;
             //This is needed so this code is not called multiple times
             HasDieded = true;
->>>>>>> master
             return true;
         }
 
@@ -1151,8 +1134,8 @@ namespace Singularity.Platforms
         {
             mInwardsEdges.Remove(road);
             mOutwardsEdges.Remove(road);
-            mDirector.StoryManager.StructureMap.RemoveRoad((Road) road);
-            mDirector.StoryManager.Level.GameScreen.RemoveObject(road);
+            mDirector.GetStoryManager.StructureMap.RemoveRoad((Road) road);
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(road);
         }
 
         public void Kill(IPlatformAction action)
@@ -1222,20 +1205,13 @@ namespace Singularity.Platforms
             if (manually)
             {
                 // TODO find a power on sound
-                mDirector.SoundManager.PlaySound(mPowerOnSoundId);
+                mDirector.GetSoundManager.PlaySound(mPowerOnSoundId);
             }
             ResetColor();
             //Only reregister the platforms if they are defense or production platforms
             if (!mIsActive)
             {
-<<<<<<< HEAD
-                mDirector.DistributionDirector.GetManager(GetGraphIndex()).Register(this, true);
-            }else if (IsProduction())
-            {
-                mDirector.DistributionDirector.GetManager(GetGraphIndex()).Register(this, false);
-=======
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this);
->>>>>>> master
             }
             mIsActive = true;
         }
@@ -1267,7 +1243,7 @@ namespace Singularity.Platforms
             if (manually)
             {
                 // TODO maybe need to regulate sound a little when put to action
-                mDirector.SoundManager.PlaySound(mPowerDownSoundId);
+                mDirector.GetSoundManager.PlaySound(mPowerDownSoundId);
 
                 mIsManuallyDeactivated = true;
             }
@@ -1279,17 +1255,6 @@ namespace Singularity.Platforms
             //Only unregister if this platform is a defense or production platform
             if (IsDefense())
             {
-<<<<<<< HEAD
-                var selflist = new List<PlatformBlank>();
-                selflist.Add(this);
-                mDirector.DistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, true, true);
-            }
-            else if (IsProduction())
-            {
-                var selflist = new List<PlatformBlank>();
-                selflist.Add(this);
-                mDirector.DistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, false, true);
-=======
                 var selflist = new List<PlatformBlank> {this};
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, true, true);
             }
@@ -1297,7 +1262,6 @@ namespace Singularity.Platforms
             {
                 var selflist = new List<PlatformBlank> {this};
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, false, true);
->>>>>>> master
             }
             mIsActive = false;
         }
@@ -1349,10 +1313,6 @@ namespace Singularity.Platforms
                 MakeDamage(Health);
                 return false;
             }
-<<<<<<< HEAD
-            mDirector.UserInterfaceController.ActivateMe(this);
-            mDirector.UserInterfaceController.SelectedPlatformSetsGraphId(mGraphIndex);
-=======
             //Do not react to clicks when you are the enemy
             if (!Friendly)
             {
@@ -1360,7 +1320,6 @@ namespace Singularity.Platforms
             }
             mDirector.GetUserInterfaceController.ActivateMe(this);
             mDirector.GetUserInterfaceController.SelectedPlatformSetsGraphId(mGraphIndex);
->>>>>>> master
             return false;
         }
 

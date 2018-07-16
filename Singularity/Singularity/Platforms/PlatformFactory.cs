@@ -99,7 +99,7 @@ namespace Singularity.Platforms
 
                     var mine = new Mine(position, sDomeSheet, sBlankSheet, sLibSans12, resourceMap, ref director);
 
-                    director.EventLog.AddEvent(ELogEventType.Debugging, "Packacking facilities have not yet been implemented. \n HERE, HAVE A MINE INSTEAD", mine);
+                    director.GetEventLog.AddEvent(ELogEventType.Debugging, "Packacking facilities have not yet been implemented. \n HERE, HAVE A MINE INSTEAD", mine);
                     return mine;
 
                 case EStructureType.Storage:

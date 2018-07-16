@@ -54,7 +54,7 @@ namespace Singularity.Platforms
                 if (IsActive())
                 {
                     mShoot = true;
-                    mDirector.GetSoundManager.PlaySound("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+                    mDirector.GetSoundManager.PlaySound(mSoundId);
                 }
 
                 target.MakeDamage(MilitaryUnitStats.mTurretStrength);

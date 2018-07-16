@@ -115,7 +115,7 @@ namespace Singularity.Screen
         }
 
         /// <summary>
-        /// Updates the eventLog by passing the newest event and the oldest event from the EventLog
+        /// Updates the eventLog by passing the newest event and the oldest event from the GetEventLog
         /// </summary>
         /// <param name="newEvent">event to add to eventLog</param>
         /// <param name="oldEvent">oldest event to eventually delete</param>

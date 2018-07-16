@@ -11,7 +11,6 @@ using Singularity.Map;
 using Singularity.Map.Properties;
 using Singularity.Property;
 using Singularity.Screen;
-using EventLog = Singularity.Screen.EventLog;
 
 namespace Singularity.Units
 {
@@ -428,7 +427,7 @@ namespace Singularity.Units
         {
             Console.Out.Write("I died and my friendly value is: " + Friendly);
             mDead = true;
-            mDirector.EventLog.AddEvent(ELogEventType.UnitAttacked, Friendly ? "A Friendly" : "An enemy" + " unit was killed!", this);
+            mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, Friendly ? "A Friendly" : "An enemy" + " unit was killed!", this);
             return true;
         }
 

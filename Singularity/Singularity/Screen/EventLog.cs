@@ -8,9 +8,9 @@ using Singularity.Property;
 namespace Singularity.Screen
 {
     /// <summary>
-    /// An EventLog consisting of a queue of events added.
+    /// An GetEventLog consisting of a queue of events added.
     /// An event is added giving eventType, string (message) and the position of the object that created the event.
-    /// The EventLog creates items for the given events and gives them to the UIController.
+    /// The GetEventLog creates items for the given events and gives them to the UIController.
     /// </summary>
     public sealed class EventLog : IUpdate
     {
@@ -58,7 +58,7 @@ namespace Singularity.Screen
         }
 
         /// <summary>
-        /// Add a new Event go the EventLog
+        /// Add a new Event go the GetEventLog
         /// </summary>
         /// <param name="eventType">the event's type</param>
         /// <param name="text">the text to show</param>

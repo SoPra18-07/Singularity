@@ -272,27 +272,7 @@ namespace Singularity.Screen.ScreenClasses
 
         private void OnMainMenuHovering(Object sender, EventArgs eventArgs)
         {
-<<<<<<< HEAD
-            RegisterOrUnregisterFromInputManager(false);
-        }
-
-        private void RegisterOrUnregisterFromInputManager(bool shouldRegister)
-        {
-            if (shouldRegister)
-            {
-                mDirector.InputManager.FlagForAddition((IMouseWheelListener) this);
-                mDirector.InputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
-                mDirector.InputManager.FlagForAddition((IKeyListener) this);
-            }
-            else
-            {
-                mDirector.InputManager.FlagForRemoval((IKeyListener) this);
-                mDirector.InputManager.FlagForRemoval((IMouseClickListener) this);
-                mDirector.InputManager.FlagForRemoval((IMouseWheelListener) this);
-            }
-=======
             mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 200);
->>>>>>> master
         }
 
         #endregion

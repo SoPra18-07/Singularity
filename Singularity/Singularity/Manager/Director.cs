@@ -41,9 +41,7 @@ namespace Singularity.Manager
 
         public GraphicsDeviceManager GetGraphicsDeviceManager { get; }
 
-        public EventLog EventLog { get; }
-
-        public EventLog GetEventLog { get; private set; }
+        public EventLog GetEventLog { get; }
 
         public Director(ContentManager content, GraphicsDeviceManager graphics)
         {
@@ -57,7 +55,7 @@ namespace Singularity.Manager
             GetDistributionDirector = new DistributionDirector(this);
             GetMilitaryManager = new MilitaryManager(this); // TODO: Update this code if the MilitaryManager is not getting everything from the StructureMap or sth ...
                                                         // (like units telling it they exist and the like)
-            EventLog = new EventLog(GetUserInterfaceController, this, content);
+            GetEventLog = new EventLog(GetUserInterfaceController, this, content);
             GetGraphicsDeviceManager = graphics;
 
             GetSoundManager.LoadContent(content);
@@ -65,7 +63,7 @@ namespace Singularity.Manager
             // Dd}{_:
         }
 
-        internal void ReloadContent(Director dir, Vector2 mapmeasurements)
+        internal void ReloadContent(Director dir, Vector2 mapmeasurements, ContentManager content)
         {
             GetClock = dir.GetClock;
             GetIdGenerator = dir.GetIdGenerator;
@@ -83,7 +81,7 @@ namespace Singularity.Manager
             if (isActive)
             {
                 GetInputManager.Update(gametime);
-                EventLog.Update(gametime);
+                GetEventLog.Update(gametime);
             }
             GetStoryManager.Update(gametime);
             GetMilitaryManager.Update(gametime);

@@ -351,12 +351,8 @@ namespace Singularity.Screen.ScreenClasses
                 //TODO: Remove this Register if Building is implemented
                 platform.Register();
                 mMap.AddPlatform(platform);
-<<<<<<< HEAD
-                mDirector.GetMilitaryManager.AddPlatform(platform);
-=======
                 mDirector.GetMilitaryManager.AddPlatform(platform);
                 // mUpdateables.AddLast(platform); // otherwise Platforms won't produce as of now.
->>>>>>> master
                 return true;
             }
 
@@ -370,22 +366,12 @@ namespace Singularity.Screen.ScreenClasses
             // subscribe every military unit to the selection box
             if (freeMovingUnit != null)
             {
-<<<<<<< HEAD
-                mSelBox.SelectingBox += conUnit.BoxSelected;
-                mDirector.GetMilitaryManager.AddUnit(conUnit);
-            }
-
-            if (enemyUnit != null)
-            {
-                mDirector.GetMilitaryManager.AddUnit(enemyUnit);
-=======
                 if (freeMovingUnit.Friendly)
                 {
                     mSelBox.SelectingBox += freeMovingUnit.BoxSelected;
                 }
 
                 mDirector.GetMilitaryManager.AddUnit(freeMovingUnit);
->>>>>>> master
             }
 
             if (typeof(IRevealing).IsAssignableFrom(typeof(T)))
