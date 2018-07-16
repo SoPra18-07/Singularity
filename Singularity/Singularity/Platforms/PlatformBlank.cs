@@ -1032,6 +1032,8 @@ namespace Singularity.Platforms
         /// </summary>
         public void DieBlank()
         {
+
+
             // stats tracking for a platform death
             mDirector.GetStoryManager.UpdatePlatforms(Friendly ? "lost" : "destroyed");
 

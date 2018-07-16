@@ -24,9 +24,9 @@ namespace Singularity.AI.Behavior
     public sealed class SimpleAIBehavior : IAiBehavior
     {
         [DataMember]
-        private int MoveIntervalMillis = 0;
+        private int mMoveIntervalMillis = 0;
         [DataMember]
-        private int SpawnIntervalMillis = 0;
+        private int mSpawnIntervalMillis = 0;
 
         /// <summary>
         /// The AI this behavior operates on
@@ -63,12 +63,12 @@ namespace Singularity.AI.Behavior
 
         public void Move(GameTime gametime)
         {
-            if (MoveIntervalMillis <= 0)
+            if (mMoveIntervalMillis <= 0)
             {
-                MoveIntervalMillis = mRandom.Next(500, 1000);
+                mMoveIntervalMillis = mRandom.Next(500, 1000);
             }
 
-            if ((int) gametime.TotalGameTime.TotalMilliseconds % MoveIntervalMillis != 0)
+            if ((int) gametime.TotalGameTime.TotalMilliseconds % mMoveIntervalMillis != 0)
             {
                 return;
             }
@@ -80,18 +80,18 @@ namespace Singularity.AI.Behavior
 
             mEnemyUnits[mRandom.Next(mEnemyUnits.Count)].SetMovementTarget(Map.Map.GetRandomPositionOnMap());
 
-            MoveIntervalMillis = 0;
+            mMoveIntervalMillis = 0;
         }
 
         public void Spawn(GameTime gametime)
         {
 
-            if (SpawnIntervalMillis <= 0)
+            if (mSpawnIntervalMillis <= 0)
             {
-                SpawnIntervalMillis = mRandom.Next(1000, 10000);
+                mSpawnIntervalMillis = mRandom.Next(1000, 10000);
             }
 
-            if ((int) gametime.TotalGameTime.TotalMilliseconds % SpawnIntervalMillis != 0)
+            if ((int) gametime.TotalGameTime.TotalMilliseconds % mSpawnIntervalMillis != 0)
             {
                 return;
             }
@@ -107,7 +107,7 @@ namespace Singularity.AI.Behavior
                 mEnemyUnits.Add(enemyUnit);
             }
 
-            SpawnIntervalMillis = 0;
+            mSpawnIntervalMillis = 0;
 
         }
 
