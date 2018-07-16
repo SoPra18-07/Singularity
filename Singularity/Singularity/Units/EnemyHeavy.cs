@@ -17,7 +17,7 @@ namespace Singularity.Units
         /// <param name="director">Reference to the game director.</param>
         /// <param name="map">Reference to the game map.</param>
         public EnemyHeavy(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
-            : base(position, camera, ref director, ref map, false)
+            : base(position, camera, ref director, ref map)
         {
             mSpeed = MilitaryUnitStats.HeavySpeed;
             Health = MilitaryUnitStats.HeavyHealth;
