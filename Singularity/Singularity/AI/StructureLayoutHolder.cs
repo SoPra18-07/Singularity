@@ -17,7 +17,7 @@ namespace Singularity.AI
     {
         // adjust these accordingly when adding new structures to the AI
         private const int EasyStructureCount = 2;
-        private const int MediumStructureCount = 0;
+        private const int MediumStructureCount = 1;
         private const int HardStructureCount = 0;
 
         private static Dictionary<EaiDifficulty, Triple<CommandCenter, List<PlatformBlank>, List<Road>>[]> sAllStructures;
@@ -25,9 +25,8 @@ namespace Singularity.AI
         public static Triple<CommandCenter, List<PlatformBlank>, List<Road>> GetRandomStructureAtCenter(float x, float y, EaiDifficulty difficulty)
         {
             var rnd = new Random();
-            //sAllStructures[difficulty].Length - 1
-            var structure = sAllStructures[difficulty][1];
-
+            var structure = sAllStructures[difficulty][sAllStructures[difficulty].Length - 1];
+            // 
             // everything thats happening below here is to adjust the position of the taken structure to its new center.
 
             structure.GetFirst().AbsolutePosition += new Vector2(x, y);
@@ -65,6 +64,7 @@ namespace Singularity.AI
             sAllStructures[EaiDifficulty.Hard] = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>[HardStructureCount];
 
             #region 1. Easy Structure
+            //One Spawner then one Command Center then one Defense Laser Tower in a line
 
             var struct1CommandCenter = (CommandCenter) PlatformFactory.Get(EStructureType.Command, ref director, 0f, 0f, null, false, false);
 
@@ -87,6 +87,7 @@ namespace Singularity.AI
             #endregion
 
             #region 2. Easy Structure
+            // a Command Center surrounded by four defense towers
 
             var struct2CommandCenter = (CommandCenter)PlatformFactory.Get(EStructureType.Command, ref director, 0f, 0f, null, false, false);
 
@@ -114,6 +115,47 @@ namespace Singularity.AI
             sAllStructures[EaiDifficulty.Easy][1] = struct2;
 
             #endregion
+
+            #region 1. Medium Structure
+            // a Spawner and Command Center in the Middle with 6 Defence Laser Towers Surrounding it
+
+            var struct1MCommandCenter = (CommandCenter)PlatformFactory.Get(EStructureType.Command, ref director, 0f, 0f, null, false, false);
+
+            var struct1MPlatforms = new List<PlatformBlank>();
+            var struct1MPlat1 = PlatformFactory.Get(EStructureType.Spawner, ref director, -200);
+            var struct1MPlat2 = PlatformFactory.Get(EStructureType.Sentinel, ref director, -100, -200);
+            var struct1MPlat3 = PlatformFactory.Get(EStructureType.Sentinel, ref director, -100, 200);
+            var struct1MPlat4 = PlatformFactory.Get(EStructureType.Sentinel, ref director, -400, -100);
+            var struct1MPlat5 = PlatformFactory.Get(EStructureType.Sentinel, ref director, -400, 100);
+            var struct1MPlat6 = PlatformFactory.Get(EStructureType.Sentinel, ref director, 200, -100);
+            var struct1MPlat7 = PlatformFactory.Get(EStructureType.Sentinel, ref director, 200, 100);
+
+            struct1MPlatforms.Add(struct1MPlat1);
+            struct1MPlatforms.Add(struct1MPlat2);
+            struct1MPlatforms.Add(struct1MPlat3);
+            struct1MPlatforms.Add(struct1MPlat4);
+            struct1MPlatforms.Add(struct1MPlat5);
+            struct1MPlatforms.Add(struct1MPlat6);
+            struct1MPlatforms.Add(struct1MPlat7);
+
+            var struct1MRoads = new List<Road>();
+            struct1MRoads.Add(new Road(struct1MCommandCenter, struct1MPlat1, ref director));
+            struct1MRoads.Add(new Road(struct1MCommandCenter, struct1MPlat2, ref director));
+            struct1MRoads.Add(new Road(struct1MCommandCenter, struct1MPlat3, ref director));
+            struct1MRoads.Add(new Road(struct1MCommandCenter, struct1MPlat6, ref director));
+            struct1MRoads.Add(new Road(struct1MCommandCenter, struct1MPlat7, ref director));
+
+            struct1MRoads.Add(new Road(struct1MPlat1, struct1MPlat2, ref director));
+            struct1MRoads.Add(new Road(struct1MPlat1, struct1MPlat3, ref director));
+            struct1MRoads.Add(new Road(struct1MPlat1, struct1MPlat4, ref director));
+            struct1MRoads.Add(new Road(struct1MPlat1, struct1MPlat5, ref director));
+
+            var struct1M = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>(struct1MCommandCenter, struct1MPlatforms, struct1MRoads);
+
+            sAllStructures[EaiDifficulty.Medium][0] = struct1M;
+
+
+            #endregion 
         }
     }
 }

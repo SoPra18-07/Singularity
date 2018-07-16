@@ -428,7 +428,7 @@ namespace Singularity.Units
         {
             Console.Out.Write("I died and my friendly value is: " + Friendly);
             mDead = true;
-            mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, Friendly ? "A Friendly" : "An enemy" + " unit was killed!", this);
+            mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, (Friendly ? "A Friendly" : "An enemy") + " unit was killed!", this);
             return true;
         }
 
