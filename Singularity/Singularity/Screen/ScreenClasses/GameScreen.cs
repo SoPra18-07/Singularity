@@ -10,6 +10,7 @@ using Singularity.Map;
 using Singularity.Nature;
 using Singularity.Platforms;
 using Singularity.Property;
+using Singularity.Resources;
 using Singularity.Sound;
 using Singularity.Units;
 
@@ -519,6 +520,14 @@ namespace Singularity.Screen.ScreenClasses
 
             var genUnit2 = new GeneralUnit(cCenter, ref mDirector);
             AddObject(genUnit2);
+
+            cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center));
+            cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center));
+            cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center));
+            cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center));
+            cCenter.StoreResource(new Resource(EResourceType.Metal, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Metal, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Metal, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Metal, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Metal, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Metal, cCenter.Center));
+            cCenter.StoreResource(new Resource(EResourceType.Chip, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Chip, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Chip, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Chip, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Chip, cCenter.Center));
+            cCenter.StoreResource(new Resource(EResourceType.Fuel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Fuel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Fuel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Fuel, cCenter.Center)); cCenter.StoreResource(new Resource(EResourceType.Fuel, cCenter.Center));
 
             // removes the settler from the GameScreen
             RemoveObject(s);

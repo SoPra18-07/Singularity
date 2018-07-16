@@ -61,6 +61,7 @@ namespace Singularity.PlatformActions
         protected override void CreateUnit()
         {
             mDirector.GetStoryManager.Level.GameScreen.AddObject(new GeneralUnit(mPlatform, ref mDirector));
+            mDirector.GetUserInterfaceController.SelectedPlatformSetsGraphId(mPlatform.GetGraphIndex());
         }
     }
 

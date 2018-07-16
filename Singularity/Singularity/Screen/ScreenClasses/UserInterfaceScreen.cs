@@ -201,6 +201,9 @@ namespace Singularity.Screen.ScreenClasses
         // resource window
         private WindowObject mResourceWindow;
 
+        // text to inform the player about how often the resourceWindow is updated
+        private TextField mResourceInfoText;
+
         // resourceItems
         private ResourceIWindowItem mResourceItemChip;
         private ResourceIWindowItem mResourceItemConcrete;
@@ -445,7 +448,7 @@ namespace Singularity.Screen.ScreenClasses
 
                 mResourceWindowTicker = mDirector.GetClock.GetIngameTime().Seconds;
 
-                mResourceWindowResourceAmountLastTick = mDirector.GetStoryManager.Resources;
+                mResourceWindowResourceAmountLastTick = new Dictionary<EResourceType, int>(mDirector.GetStoryManager.Resources);
             }
         }
 
@@ -707,6 +710,8 @@ namespace Singularity.Screen.ScreenClasses
             mResourceWindow = new WindowObject("// RESOURCES", new Vector2(0, 0), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mDirector);
 
             // create all items (these are simple starting values which will be updated automatically by the UI controller)
+            mResourceInfoText = new TextField("             /" + mResourceWindowTicker + "sec", Vector2.Zero, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10, Color.White);
+
             mResourceItemChip = new ResourceIWindowItem(EResourceType.Chip, 0, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
             mResourceItemConcrete = new ResourceIWindowItem(EResourceType.Concrete, 0, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
             mResourceItemCopper = new ResourceIWindowItem(EResourceType.Copper, 0, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
@@ -722,6 +727,7 @@ namespace Singularity.Screen.ScreenClasses
             mResourceItemTrash = new ResourceIWindowItem(EResourceType.Trash, 0, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
 
             // add all items to window
+            mResourceWindow.AddItem(mResourceInfoText);
             mResourceWindow.AddItem(mResourceItemWater);
             mResourceWindow.AddItem(mResourceItemSand);
             mResourceWindow.AddItem(mResourceItemOil);
@@ -1498,7 +1504,6 @@ namespace Singularity.Screen.ScreenClasses
             Dictionary<JobType, List<Pair<GeneralUnit, bool>>> unitAssignmentList,
             IEnumerable<IPlatformAction> actionsList)
         {
-            Console.Out.WriteLine("update selected");
             if (!mActiveUserInterface) { return; }
             // set window type
             mSelectedPlatformWindow.WindowName = type.ToString();
@@ -1821,6 +1826,11 @@ namespace Singularity.Screen.ScreenClasses
             if (!mActiveUserInterface) { return; }
 
             mCivilUnitsGraphId = graphId;
+        }
+
+        public void UpdateSLiderHandler()
+        {
+
         }
 
         /// <summary>
