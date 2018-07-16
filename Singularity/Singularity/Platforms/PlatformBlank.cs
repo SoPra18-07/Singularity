@@ -990,7 +990,7 @@ namespace Singularity.Platforms
             //Already tells the unit that it is no longer employed
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
             mDirector.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
-
+            mDirector.GetMilitaryManager.RemovePlatform(this);
             // create the event in eventLog that the specialised part has been destroyed
             mDirector.GetEventLog.AddEvent(ELogEventType.PlatformDestroyed, mType + " has been destroyed", this);
             // if platform was an enemy keep red base
@@ -1019,8 +1019,10 @@ namespace Singularity.Platforms
 
             Moved = false;
 
+            mProvidingEnergy = 0;
+            mDrainingEnergy = 0;
+
             UpdateValues();
-            mDirector.GetMilitaryManager.RemovePlatform(this);
             mDirector.GetMilitaryManager.AddUnit(this);
         }
 
@@ -1082,8 +1084,10 @@ namespace Singularity.Platforms
             }
             mDirector.GetInputManager.FlagForRemoval(this);
             mDirector.GetInputManager.RemoveMousePositionListener(mInfoBox);
+            mDirector.GetMilitaryManager.RemovePlatform(this);
             mInfoBox = null;
             //This is needed so this code is not called multiple times
+            mAllGenUnits = null;
             HasDieded = true;
             return true;
         }

@@ -74,7 +74,7 @@ namespace Singularity.Platforms
             // Cone (Defense Platforms)
             // Draw the basic platform first
             spriteBatch.Draw(mPlatformBaseTexture,
-                Vector2.Add(AbsolutePosition, new Vector2(0, 78)),
+                Vector2.Add(AbsolutePosition, new Vector2(0, mType == EStructureType.Blank ? 0 : 78)),
                 null,
                 mColorBase * transparency,
                 0f,
@@ -82,6 +82,7 @@ namespace Singularity.Platforms
                 1f,
                 SpriteEffects.None,
                 LayerConstants.BasePlatformLayer);
+            if (mType == EStructureType.Blank) return;
             // then draw what's on top of that
             spriteBatch.Draw(mPlatformSpriteSheet,
                 AbsolutePosition,

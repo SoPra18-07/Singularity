@@ -19,9 +19,6 @@ namespace Singularity.Units
 
             mColor = new Color(0.45703125f, 0.296875f, 0.140625f); // Brown
 			mSelectedColor = new Color(0.546875f, 0.3828125f, 0.22265625f); // Lighter brown
-
-            // Track the creation of a military unit in the statistics.
-            director.GetStoryManager.UpdateUnits("created");
         }
     }
 }

@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
+using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Units;
 
 namespace Singularity.Map
 {
-    internal sealed class UnitMap
+    internal sealed class UnitMap : IUpdate
     {
         /// <summary>
         /// Stores which units are in which grid position on the map.
@@ -112,7 +113,7 @@ namespace Singularity.Map
             {
                 for (var y = 0; y < 31; y++)
                 {
-                    if (mUnitGrid[x, y].UnitList.Contains(unit) && unit is Settler)
+                    if (mUnitGrid[x, y].UnitList.Contains(unit) && unit is Quarry)
                     {
                         Console.Out.WriteLine(x + " " + y);
                     }
@@ -206,6 +207,26 @@ namespace Singularity.Map
 
             return new Vector2(column, row);
 
+        }
+
+        public void Update(GameTime gametime)
+        {
+            var movedUnitList = new List<ICollider>();
+            foreach (var unitMapTile in mUnitGrid)
+            {
+                foreach (var unit in unitMapTile.UnitList)
+                {
+                    if (unit.Moved)
+                    {
+                        movedUnitList.Add(unit);
+                    }
+                }
+            }
+
+            foreach (var unit in movedUnitList)
+            {
+                MoveUnit(unit);
+            }
         }
     }
 }
