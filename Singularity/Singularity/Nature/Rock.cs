@@ -9,7 +9,7 @@ using Singularity.Property;
 namespace Singularity.Nature
 {
     [DataContract]
-    public class Rock : ICollider
+    public class Rock : ADie, ICollider
     {
         public bool[,] ColliderGrid { get; internal set; }
 
@@ -46,7 +46,7 @@ namespace Singularity.Nature
         [DataMember]
         public Vector2 Center { get; private set; }
 
-        public Rock(Vector2 position, ref Director director)
+        public Rock(Vector2 position, ref Director director) : base(ref director)
         {
             Id = director.GetIdGenerator.NextiD();
             AbsoluteSize = new Vector2(160, 130);
@@ -258,7 +258,7 @@ namespace Singularity.Nature
             // do nothing
         }
 
-        public bool Die()
+        public override bool Die()
         {
             throw new NotImplementedException();
         }

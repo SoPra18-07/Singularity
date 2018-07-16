@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
+using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Units;
 
@@ -112,7 +113,7 @@ namespace Singularity.Map
             {
                 for (var y = 0; y < 31; y++)
                 {
-                    if (mUnitGrid[x, y].UnitList.Contains(unit) && unit is Settler)
+                    if (mUnitGrid[x, y].UnitList.Contains(unit) && unit is Quarry)
                     {
                         Console.Out.WriteLine(x + " " + y);
                     }

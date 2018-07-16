@@ -14,7 +14,7 @@ namespace Singularity.Screen
         #region member variables
 
         // list holding the collection of IWindowItems
-        public List<IWindowItem> mItemList;
+        public readonly List<IWindowItem> mItemList;
 
         // padding between the IWindowItems in collection s.t. the items fit the size (if possible) while maximizing the padding between them
         private readonly float mPadding;
@@ -84,8 +84,8 @@ namespace Singularity.Screen
         /// <inheritdoc />
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (!ActiveInWindow || !ActiveHorizontalCollection || InactiveInSelectedPlatformWindow ||
-                OutOfScissorRectangle) return;
+            if (!ActiveInWindow || !ActiveHorizontalCollection || InactiveInSelectedPlatformWindow || OutOfScissorRectangle) { return; }
+
             foreach (var item in mItemList)
             {
                 item.Draw(spriteBatch);

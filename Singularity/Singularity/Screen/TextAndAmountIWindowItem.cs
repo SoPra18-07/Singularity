@@ -6,7 +6,7 @@ namespace Singularity.Screen
     /// <summary>
     /// IWindowItem which will place a text on the left side and an amount on the right side
     /// </summary>
-    internal sealed class TextAndAmountIWindowItem : IWindowItem
+    public sealed class TextAndAmountIWindowItem : IWindowItem
     {
         #region member variables
 
@@ -14,7 +14,7 @@ namespace Singularity.Screen
         private readonly string mText;
 
         // the amount - will be placed on the right side in the item
-        public int Amount { private get; set; }
+        public int Amount { get; set; }
 
         // the spritefont used for the text
         private readonly SpriteFont mSpriteFont;

@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework;
 using Singularity.AI.Properties;
 using Singularity.Manager;
 using Singularity.Map.Properties;
+using Singularity.Platforms;
 using Singularity.Units;
 using Singularity.Utils;
 
@@ -23,9 +24,9 @@ namespace Singularity.AI.Behavior
     public sealed class SimpleAIBehavior : IAiBehavior
     {
         [DataMember]
-        private const int MoveIntervalMillis = 10000;
+        private int mMoveIntervalMillis = 0;
         [DataMember]
-        private const int SpawnIntervalMillis = 1000;
+        private int mSpawnIntervalMillis = 0;
 
         /// <summary>
         /// The AI this behavior operates on
@@ -62,25 +63,42 @@ namespace Singularity.AI.Behavior
 
         public void Move(GameTime gametime)
         {
-            if ((int) gametime.TotalGameTime.TotalMilliseconds % MoveIntervalMillis != 0)
+            if (mMoveIntervalMillis <= 0)
+            {
+                mMoveIntervalMillis = mRandom.Next(500, 1000);
+            }
+
+            if ((int) gametime.TotalGameTime.TotalMilliseconds % mMoveIntervalMillis != 0)
             {
                 return;
             }
 
-            foreach(var enemyUnit in mEnemyUnits)
+            if (mEnemyUnits.Count <= 0)
             {
-                enemyUnit.SetMovementTarget(GetRandomPositionOnMap());
+                return;
             }
+
+            mEnemyUnits[mRandom.Next(mEnemyUnits.Count)].SetMovementTarget(Map.Map.GetRandomPositionOnMap());
+
+            mMoveIntervalMillis = 0;
         }
 
         public void Spawn(GameTime gametime)
         {
-            if ((int) gametime.TotalGameTime.TotalMilliseconds % SpawnIntervalMillis != 0)
+
+            if (mSpawnIntervalMillis <= 0)
+            {
+                mSpawnIntervalMillis = mRandom.Next(1000, 10000);
+            }
+
+            if ((int) gametime.TotalGameTime.TotalMilliseconds % mSpawnIntervalMillis != 0)
             {
                 return;
             }
 
-            foreach (var spawner in mAi.GetSpawners())
+            var index = mRandom.Next(mAi.GetSpawners().Count);
+
+            foreach (var spawner in mAi.GetSpawners()[index])
             {
                 var enemyUnit = spawner.SpawnEnemy(mDirector.GetStoryManager.Level.Camera,
                     mDirector.GetStoryManager.Level.Map,
@@ -88,28 +106,23 @@ namespace Singularity.AI.Behavior
 
                 mEnemyUnits.Add(enemyUnit);
             }
+
+            mSpawnIntervalMillis = 0;
+
         }
 
-        /// <summary>
-        /// Gets a valid random position on the current map
-        /// </summary>
-        /// <returns></returns>
-        private Vector2 GetRandomPositionOnMap()
+        public void CreateNewBase(GameTime gametime)
         {
-            var isOnMap = false;
-            var pos = Vector2.Zero;
+            // don't do this right now since its super annoying for people actually trying to do other stuff
+            return;
 
-            while (!isOnMap)
+            if ((int)gametime.TotalGameTime.TotalMilliseconds % 10000 != 0)
             {
-                pos = new Vector2(mRandom.Next(MapConstants.MapWidth), mRandom.Next(MapConstants.MapHeight));
-                if (Map.Map.IsOnTop(pos))
-                {
-                    isOnMap = true;
-                }
-
+                return;
             }
-            return pos;
 
+            var structure = StructureLayoutHolder.GetStructureOnMap(mAi.Difficulty, ref mDirector);
+            mAi.AddStructureToGame(structure.GetFirst(), structure.GetSecond());
         }
     }
 }
