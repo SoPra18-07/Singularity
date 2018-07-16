@@ -101,7 +101,6 @@ namespace Singularity.Resources
                     continue;
                 }
                 resources.Add(new MapResource(basicResources[rnd.Next(basicResources.Length)], new Vector2(xPos, yPos), defaultWidth, ref director));
-                Debug.WriteLine("Resources " + basicResources[rnd.Next(basicResources.Length)] + " can be found at " + xPos + ", " + yPos);
             }
             return resources;
 

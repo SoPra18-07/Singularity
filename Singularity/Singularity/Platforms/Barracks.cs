@@ -30,7 +30,7 @@ namespace Singularity.Platforms
         {
             ProducableUnits.Add(new MakeFastMilitaryUnit(this, ref director));
             ProducableUnits.Add(new MakeHeavyMilitaryUnit(this, ref director));
-            ProducableUnits.Add(new MakeStandardMilitaryUnit(this, ref director));
+            // ProducableUnits.Add(new MakeStandardMilitaryUnit(this, ref director));
 
             // Todo: add cost if you have it.
             // mCost = new Dictionary<EResourceType, int>();

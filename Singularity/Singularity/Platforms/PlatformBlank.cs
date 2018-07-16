@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -382,11 +383,15 @@ namespace Singularity.Platforms
             //For now only register yourself at a DistributionManager when you are friendly. Maybe change that later
             if (IsProduction() && Friendly)
             {
-                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, false);
-            } else if (IsDefense() && Friendly)
-            {
-                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, true);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this);
             }
+
+            else if (IsDefense() && Friendly)
+            { 
+
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this);
+            }
+            
         }
 
         /// <summary>
@@ -437,7 +442,8 @@ namespace Singularity.Platforms
 
         public virtual void Produce()
         {
-            throw new NotImplementedException();
+            Debug.WriteLine("There's producing Units at a PlatformBlank!!! (" + mType + ")");
+            // throw new NotImplementedException();
         }
         /// <summary>
         /// Get the special IPlatformActions you can perform on this platform.
@@ -667,7 +673,7 @@ namespace Singularity.Platforms
                 mPrevUnitAssignments != GetAssignedUnits() ||
                 mPrevPlatformActions != GetIPlatformActions() ||
                 mPreviousIsActiveState != IsActive() ||
-                mPreviousIsManuallyDeactivatedState != IsManuallyDeactivated() ||
+                mPreviousIsManuallyDeactivatedState != mIsManuallyDeactivated ||
                 !IsSelected)
             {
                 mDataSent = false;
@@ -679,7 +685,7 @@ namespace Singularity.Platforms
             mPrevResources = GetPlatformResources();
             mPrevUnitAssignments = GetAssignedUnits();
             mPrevPlatformActions = GetIPlatformActions();
-            mPreviousIsManuallyDeactivatedState = IsManuallyDeactivated();
+            mPreviousIsManuallyDeactivatedState = mIsManuallyDeactivated;
             mPreviousIsActiveState = IsActive();
 
             // send data to UIController
@@ -1166,12 +1172,9 @@ namespace Singularity.Platforms
             }
             ResetColor();
             //Only reregister the platforms if they are defense or production platforms
-            if (IsDefense() && !mIsActive)
+            if (!mIsActive)
             {
-                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, true);
-            }else if (IsProduction() && !mIsActive)
-            {
-                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this, false);
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this);
             }
             mIsActive = true;
         }
@@ -1182,13 +1185,8 @@ namespace Singularity.Platforms
         /// <returns>True if thats the case, false otherwise</returns>
         public bool IsDefense()
         {
-            if (mType == EStructureType.Kinetic
-                || mType == EStructureType.Laser)
-            {
-                return true;
-            }
-
-            return false;
+            return mType == EStructureType.Kinetic
+                   || mType == EStructureType.Laser;
         }
 
         /// <summary>
@@ -1219,24 +1217,23 @@ namespace Singularity.Platforms
 
                 mIsManuallyDeactivated = true;
             }
-
-            mIsActive = false;
+            
             // TODO: remove this or change it to something more appropriately, this is used by @Ativelox for
             // TODO: debugging purposes to easily see which platforms are currently deactivated
             mColor = Color.Green;
+            if (!mIsActive) return;
             //Only unregister if this platform is a defense or production platform
             if (IsDefense())
             {
-                var selflist = new List<PlatformBlank>();
-                selflist.Add(this);
+                var selflist = new List<PlatformBlank> {this};
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, true, true);
             }
             else if (IsProduction())
             {
-                var selflist = new List<PlatformBlank>();
-                selflist.Add(this);
+                var selflist = new List<PlatformBlank> {this};
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, false, true);
             }
+            mIsActive = false;
         }
 
         public List<GeneralUnit> GetGeneralUnitsOnPlatform()

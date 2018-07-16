@@ -96,9 +96,8 @@ namespace Singularity.PlatformActions
                     break;
                 case PlatformActionState.Available:
                     // TODO: You dont request Units anymore. Are there other things to be changed too then?
-                    // mDirector.GetDistributionManager.RequestUnits(mPlatform, JobType.Production, this);
                     // does this work, then?
-                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(mPlatform, false);
+                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(this);
                     State = PlatformActionState.Active;
                     break;
                 case PlatformActionState.Deactivated:
@@ -123,7 +122,7 @@ namespace Singularity.PlatformActions
 
         public override void Execute()
         {
-            if (!mPlatform.PlatformHasSpace()) return;
+            if (!mPlatform.PlatformHasSpace() || State != PlatformActionState.Active) return;
             mCounter++;
             if (mCounter % 240 != 0) return;
             mCounter = 0;
