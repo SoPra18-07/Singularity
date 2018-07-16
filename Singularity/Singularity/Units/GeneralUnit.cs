@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
-using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.PlatformActions;
 using Singularity.Platforms;
@@ -125,9 +125,10 @@ namespace Singularity.Units
             mFinishTask = false;
         }
 
-        internal void ReloadContent(ref Director director)
+        internal void ReloadContent(ref Director director, ContentManager content)
         {
             mDirector = director;
+            mGenUnitTexture = content.Load<Texture2D>("GenUnit");
         }
 
         /// <summary>

@@ -202,6 +202,7 @@ namespace Singularity.Platforms
         [DataMember]
         protected Vector2 mBaseOffset;
 
+        [DataMember]
         public bool HasDieded { get; private set; }
         #endregion
 
@@ -212,6 +213,7 @@ namespace Singularity.Platforms
 
         public bool[,] ColliderGrid { get; internal set; }
 
+        [DataMember]
         private List<IPlatformAction> mToKill = new List<IPlatformAction>();
 
         //This is for registering the platform at the DistrManager.

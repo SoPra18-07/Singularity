@@ -137,7 +137,7 @@ namespace Singularity.Screen.ScreenClasses
                 {
                     possibleSettler.BuildCommandCenter += SettlerBuild;
                 }
-                possiblegenunit?.ReloadContent(ref mDirector);
+                possiblegenunit?.ReloadContent(ref mDirector, content);
             }
 
             //Reload the content for all ingame objects like Platforms etc.
@@ -166,7 +166,7 @@ namespace Singularity.Screen.ScreenClasses
                 {
                     possibleSettler.BuildCommandCenter += SettlerBuild;
                 }
-                possiblegenunit?.ReloadContent(ref mDirector);
+                possiblegenunit?.ReloadContent(ref mDirector, content);
             }
 
             //Reload the content for all ingame objects like Platforms etc.
@@ -195,7 +195,7 @@ namespace Singularity.Screen.ScreenClasses
                 {
                     possibleSettler.BuildCommandCenter += SettlerBuild;
                 }
-                possiblegenunit?.ReloadContent(ref mDirector);
+                possiblegenunit?.ReloadContent(ref mDirector, content);
             }
 
             if (mUistarted)
