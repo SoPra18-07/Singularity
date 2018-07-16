@@ -626,6 +626,26 @@ namespace Singularity.Platforms
                         SpriteEffects.None,
                         LayerConstants.BasePlatformLayer);
                     break;
+                case 1:
+                    spritebatch.Draw(mPlatformBaseTexture,
+                        AbsolutePosition,
+                        null,
+                        mColorBase * transparency,
+                        0f,
+                        Vector2.Zero,
+                        1f,
+                        SpriteEffects.None,
+                        LayerConstants.BasePlatformLayer);
+                    spritebatch.Draw(mPlatformSpriteSheet,
+                        AbsolutePosition,
+                        new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 148),
+                        mColor * transparency,
+                        0f,
+                        Vector2.Zero,
+                        1f,
+                        SpriteEffects.None,
+                        LayerConstants.PlatformLayer);
+                    break;
                 case 2:
                     // Cylinder (Unit Platforms
                     // Draw the basic platform first
@@ -702,7 +722,6 @@ namespace Singularity.Platforms
 
             Bounds = new Rectangle((int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
 
-            // TODO: if the platform is an enemy it should not be subscribed to the input manager
             // TODO: if the platform is an enemy it should not be subscribed to the input manager
             if (!mAddedToInputManager)
             {

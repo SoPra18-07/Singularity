@@ -64,6 +64,8 @@ namespace Singularity.Platforms
 
         public override void Update(GameTime time)
         {
+            base.Update(time);
+
             //IF YOU CHANGE THIS THRESHOLD CHANGE IT IN THE CLOCK, TOO. THIS DETERMINES THE ATTACKSPEED.
             //Ask for friendly here because the sentinel handles the shooting on its own!
             if (mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds > 1000)
