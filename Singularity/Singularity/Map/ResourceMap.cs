@@ -38,7 +38,7 @@ namespace Singularity.Map
         /// Creates a new resource map with the given initial resources.
         /// </summary>
         /// <param name="initialResources">A list holding intial resource values. If left empty it will be null</param>
-        internal ResourceMap(IEnumerable<MapResource> initialResources)
+        internal ResourceMap(IEnumerable<MapResource> initialResources, Director director)
         {
             mLocationCache = new Dictionary<Vector2, List<MapResource>>();
             if (initialResources == null)
@@ -47,6 +47,8 @@ namespace Singularity.Map
             }
 
             mResourceMap = new List<MapResource>(initialResources);
+
+            mDirector = director;
         }
 
 
@@ -59,7 +61,7 @@ namespace Singularity.Map
         public Optional<Resource> GetQuarryResource(Vector2 location)
         {
             var rnd = new Random();
-            return Optional<Resource>.Of(rnd.Next(2) == 0 ? new Resource(EResourceType.Stone, location) : new Resource(EResourceType.Sand, location));
+            return Optional<Resource>.Of(rnd.Next(2) == 0 ? new Resource(EResourceType.Stone, location, mDirector) : new Resource(EResourceType.Sand, location, mDirector));
             // this is reference-based and totally fine, since there'll be only references then ... we don't care about that, and as soon as the references are all gone, the GC will take care of it. :)
             // (but yes, actually this could break, since we rely heavily on how c# handles references and stuff.)
         }

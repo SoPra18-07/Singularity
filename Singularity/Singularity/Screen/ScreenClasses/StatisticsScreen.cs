@@ -29,7 +29,6 @@ namespace Singularity.Screen.ScreenClasses
         // All strings are variables to allow for easy editing and localization
         private const string WindowTitleStr = "Statistics";
         private const string BackStr = "Back";
-        private const string StatisticsStr = "Statistics";
         private const string TimeStr = "Time:";
         private const string UnitsCreatedStr = "Units created:";
         private const string UnitsLostStr = "Units lost:";
@@ -42,7 +41,7 @@ namespace Singularity.Screen.ScreenClasses
         // Layout.
         private Vector2 mMenuBoxPosition;
         private readonly Vector2 mWindowTitlePosition;
-        private readonly float mBottomPadding = 10;
+        private const float BottomPadding = 10;
         private readonly Vector2 mScreenResolution;
 
         // Buttons
@@ -86,19 +85,16 @@ namespace Singularity.Screen.ScreenClasses
             // First make a dummy version of BackButton to determine it's dimensions for centering purposes.
             mBackButton = new Button(BackStr, mLibSans20, new Vector2(0, 0), mTextColor);
             var backButtonPosX = mMenuBoxPosition.X + (mMenuBoxSize.X / 2) - (mBackButton.Size.X / 2);
-            var backButtonPosY = mMenuBoxPosition.Y + mMenuBoxSize.Y - mBackButton.Size.Y - mBottomPadding;
+            var backButtonPosY = mMenuBoxPosition.Y + mMenuBoxSize.Y - mBackButton.Size.Y - BottomPadding;
             mBackButton = new Button(BackStr,
                 mLibSans20,
                 new Vector2(backButtonPosX, backButtonPosY),
                 new Color(new Vector3(.9137f, .9058f, .8314f)))
             { Opacity = mMenuOpacity };
 
-
             mBackButton.ButtonReleased += GamePauseManagerScreen.OnBackButtonReleased;
 
             Loaded = true;
-
-            // mCloseButton.ButtonReleased += CloseButtonReleased;
         }
 
         /// <summary>
@@ -199,12 +195,11 @@ namespace Singularity.Screen.ScreenClasses
 
             // window title
             spriteBatch.DrawString(mLibSans20,
-                text: WindowTitleStr,
-                position: mWindowTitlePosition,
-                color: mTextColor);
+                WindowTitleStr,
+                mWindowTitlePosition,
+                mTextColor);
 
             // Draw the stats names.
-            // spriteBatch.DrawString(mLibSans20, StatisticsStr, new Vector2(mMenuBoxPosition.X + 145, mMenuBoxPosition.Y + 10), Color.Black);
             spriteBatch.DrawString(mLibSans14, TimeStr, new Vector2(mMenuBoxPosition.X + 60, mMenuBoxPosition.Y + 60), mTextColor);
             spriteBatch.DrawString(mLibSans14, UnitsCreatedStr, new Vector2(mMenuBoxPosition.X + 60, mMenuBoxPosition.Y + 110), mTextColor);
             spriteBatch.DrawString(mLibSans14, UnitsLostStr, new Vector2(mMenuBoxPosition.X + 60, mMenuBoxPosition.Y + 150), mTextColor);
