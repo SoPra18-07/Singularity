@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
 using Singularity.PlatformActions;
@@ -42,6 +43,7 @@ namespace Singularity.Platforms
 
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
+            mSoundId = mDirector.GetSoundManager.CreateSoundInstance("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
         }
 
 
@@ -52,7 +54,7 @@ namespace Singularity.Platforms
                 if (IsActive())
                 {
                     mShoot = true;
-                    mDirector.GetSoundManager.PlaySound("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+                    mDirector.GetSoundManager.PlaySound(mSoundId);
                 }
 
                 target.MakeDamage(MilitaryUnitStats.mTurretStrength);
@@ -75,6 +77,12 @@ namespace Singularity.Platforms
                     }
                 }
             }
+        }
+
+        public override void ReloadContent(ContentManager content, ref Director dir)
+        {
+            mSoundId = mDirector.GetSoundManager.CreateSoundInstance("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+            base.ReloadContent(content, ref dir);
         }
     }
 }

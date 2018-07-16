@@ -516,13 +516,13 @@ namespace Singularity.Units
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            
+
             spriteBatch.Draw(mGenUnitTexture,
                 AbsolutePosition,
                 null,
                 Color.White,
                 0f,
-                new Vector2(10), 
+                new Vector2(10),
                 Vector2.One,
                 SpriteEffects.None,
                 LayerConstants.GeneralUnitLayer);
