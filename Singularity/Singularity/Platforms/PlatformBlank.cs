@@ -1030,6 +1030,9 @@ namespace Singularity.Platforms
         /// </summary>
         public void DieBlank()
         {
+            // stats tracking for a platform death
+            mDirector.GetStoryManager.UpdatePlatforms(Friendly ? "lost" : "destroyed");
+
             mDirector.GetInputManager.FlagForRemoval(this);
             //Already tells the unit that it is no longer employed
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
@@ -1056,8 +1059,8 @@ namespace Singularity.Platforms
 
 
             mResources.RemoveAll(r => r.Die());
-            mResources = new List<Resource> {new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center),
-                new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center)};
+            mResources = new List<Resource> {new Resource(EResourceType.Trash, Center, mDirector), new Resource(EResourceType.Trash, Center, mDirector),
+                new Resource(EResourceType.Trash, Center, mDirector), new Resource(EResourceType.Trash, Center, mDirector), new Resource(EResourceType.Trash, Center, mDirector)};
 
             mRequested = new Dictionary<EResourceType, int>();
 
@@ -1067,10 +1070,15 @@ namespace Singularity.Platforms
             mDrainingEnergy = 0;
 
             UpdateValues();
+            mDirector.GetMilitaryManager.RemovePlatform(this);
+            mDirector.GetMilitaryManager.AddUnit(this);
         }
 
         public bool Die()
         {
+            // stats tracking for a platform death
+            mDirector.GetStoryManager.UpdatePlatforms(Friendly ? "lost" : "destroyed");
+
             mIPlatformActions.RemoveAll(a => a.Die());
 
             mResources.RemoveAll(r => r.Die());
@@ -1080,6 +1088,7 @@ namespace Singularity.Platforms
 
             // TODO: REMOVE from everywhere.
             // see https://github.com/SoPra18-07/Singularity/issues/215
+
 
             // removing the PlatformActions first
 

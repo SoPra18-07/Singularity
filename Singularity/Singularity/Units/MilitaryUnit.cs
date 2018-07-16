@@ -270,7 +270,15 @@ namespace Singularity.Units
                 //and further shooting at it despite it already being dead (they shoot in the
                 //air then)
                 var test = target as PlatformBlank;
+                var test2 = target as FreeMovingUnit;
                 if (test != null && test.HasDieded)
+                {
+                    mShootingTarget = null;
+                    mShootingTimer = -1;
+                    mShoot = false;
+                }
+
+                if (test2 != null && test2.HasDieded)
                 {
                     mShootingTarget = null;
                     mShootingTimer = -1;
