@@ -73,7 +73,7 @@ namespace Singularity.Levels
             GameScreen.AddObject(road5);
 
             // Enemy Unit
-            //var enemyUnit = new Target(new Vector2(3000, 2950), Camera, ref mDirector, ref map);
+            var enemyUnit = new EnemyUnit(new Vector2(3300, 3200), Camera, ref mDirector, ref map);
             var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
 
             var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, Ui);
@@ -119,7 +119,7 @@ namespace Singularity.Levels
             platform2.StoreResource(res12);
 
             GameScreen.AddObjects(genUnit);
-            //GameScreen.AddObject(enemyUnit);
+            GameScreen.AddObject(enemyUnit);
             GameScreen.AddObject(milUnit);
             GameScreen.AddObject(settler);
 
