@@ -24,9 +24,9 @@ namespace Singularity.AI.Behavior
     public sealed class SimpleAIBehavior : IAiBehavior
     {
         [DataMember]
-        private const int MoveIntervalMillis = 10000;
+        private int MoveIntervalMillis = 0;
         [DataMember]
-        private const int SpawnIntervalMillis = 10000;
+        private int SpawnIntervalMillis = 0;
 
         /// <summary>
         /// The AI this behavior operates on
@@ -63,38 +63,52 @@ namespace Singularity.AI.Behavior
 
         public void Move(GameTime gametime)
         {
+            if (MoveIntervalMillis <= 0)
+            {
+                MoveIntervalMillis = mRandom.Next(500, 1000);
+            }
+
             if ((int) gametime.TotalGameTime.TotalMilliseconds % MoveIntervalMillis != 0)
             {
                 return;
             }
 
-            foreach(var enemyUnit in mEnemyUnits)
+            if (mEnemyUnits.Count <= 0)
             {
-                enemyUnit.SetMovementTarget(Map.Map.GetRandomPositionOnMap());
+                return;
             }
+
+            mEnemyUnits[mRandom.Next(mEnemyUnits.Count)].SetMovementTarget(Map.Map.GetRandomPositionOnMap());
+
+            MoveIntervalMillis = 0;
         }
 
         public void Spawn(GameTime gametime)
         {
+
+            if (SpawnIntervalMillis <= 0)
+            {
+                SpawnIntervalMillis = mRandom.Next(1000, 10000);
+            }
 
             if ((int) gametime.TotalGameTime.TotalMilliseconds % SpawnIntervalMillis != 0)
             {
                 return;
             }
 
-            foreach (var spawner in mAi.GetSpawners().Values)
+            var index = mRandom.Next(mAi.GetSpawners().Count);
+
+            foreach (var spawner in mAi.GetSpawners()[index])
             {
-                foreach (var actualSpawner in spawner)
-                {
-                    Debug.WriteLine("spawning");
+                var enemyUnit = spawner.SpawnEnemy(mDirector.GetStoryManager.Level.Camera,
+                    mDirector.GetStoryManager.Level.Map,
+                    mDirector.GetStoryManager.Level.GameScreen);
 
-                    var enemyUnit = actualSpawner.SpawnEnemy(mDirector.GetStoryManager.Level.Camera,
-                        mDirector.GetStoryManager.Level.Map,
-                        mDirector.GetStoryManager.Level.GameScreen);
-
-                    mEnemyUnits.Add(enemyUnit);
-                }
+                mEnemyUnits.Add(enemyUnit);
             }
+
+            SpawnIntervalMillis = 0;
+
         }
 
         public void CreateNewBase(GameTime gametime)

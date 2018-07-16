@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.AI.Properties;
+using Singularity.AI.Structures;
 using Singularity.Graph;
 using Singularity.Manager;
 using Singularity.Map.Properties;
@@ -143,8 +144,8 @@ namespace Singularity.AI
             var struct1CommandCenter = (CommandCenter) PlatformFactory.Get(EStructureType.Command, ref director, 0f, 0f, null, false, false);
 
             var struct1Platforms = new List<PlatformBlank>();
-            var struct1Plat1 = PlatformFactory.Get(EStructureType.Spawner, ref director, -200);
-            var struct1Plat2 = PlatformFactory.Get(EStructureType.Sentinel, ref director, 200);
+            var struct1Plat1 = (Spawner) PlatformFactory.Get(EStructureType.Spawner, ref director, -200);
+            var struct1Plat2 = (Sentinel) PlatformFactory.Get(EStructureType.Sentinel, ref director, 200);
 
             struct1Platforms.Add(struct1Plat1);
             struct1Platforms.Add(struct1Plat2);
