@@ -97,7 +97,7 @@ namespace Singularity.PlatformActions
             mDirector.GetMilitaryManager.AddUnit(unit);
         }
     }
-    
+
     [DataContract]
     public abstract class AMakeUnit : APlatformAction
     {
@@ -195,7 +195,7 @@ namespace Singularity.PlatformActions
         {
             return mMissingResources;
         }
-        
+
         public override void UiToggleState()
         {
             switch (State)
