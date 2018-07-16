@@ -134,11 +134,12 @@ namespace Singularity.Screen.ScreenClasses
 
         // actions of selectedPlatformWindow
         private PlatformActionIWindowItem mMakeFastMilitaryAction;
-        private PlatformActionIWindowItem mMakeStrongMilitaryAction;
+        private PlatformActionIWindowItem mMakeHeavyMilitaryAction;
         private PlatformActionIWindowItem mProduceWellResourceAction;
         private PlatformActionIWindowItem mProduceQuarryResourceAction;
         private PlatformActionIWindowItem mProduceMineResourceAction;
         private PlatformActionIWindowItem mBuildBluePrintAction;
+        private PlatformActionIWindowItem mRefineResourceAction;
 
         // bools if the platformactions have already been added to the selectedplatformwindow
         private bool mFastMilitaryAdded;
@@ -147,6 +148,7 @@ namespace Singularity.Screen.ScreenClasses
         private bool mProduceQuarryResourceAdded;
         private bool mProduceMineResourceAdded;
         private bool mBuildBluePrintActionAdded;
+        private bool mRefineResourceActionAdded;
 
         // save id to reset the scroll-value if the id changes
         private int mSelectedPlatformId;
@@ -1593,9 +1595,9 @@ namespace Singularity.Screen.ScreenClasses
             {
                 mMakeFastMilitaryAction.ActiveInWindow = false;
             }
-            if (mMakeStrongMilitaryAction != null)
+            if (mMakeHeavyMilitaryAction != null)
             {
-                mMakeStrongMilitaryAction.ActiveInWindow = false;
+                mMakeHeavyMilitaryAction.ActiveInWindow = false;
             }
             if (mProduceMineResourceAction != null)
             {
@@ -1633,16 +1635,18 @@ namespace Singularity.Screen.ScreenClasses
                     mMakeFastMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
                     if (mFastMilitaryAdded) continue;
+                    mFastMilitaryAdded = true;
                     mSelectedPlatformWindow.AddItem(mMakeFastMilitaryAction);
                     mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
                 }
                 else if (action is MakeHeavyMilitaryUnit)
                 {
-                    mMakeStrongMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
+                    mMakeHeavyMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
                     if (mStronggMilitaryAdded) continue;
-                    mSelectedPlatformWindow.AddItem(mMakeStrongMilitaryAction);
-                    mSelectedPlatformActionList.Add(mMakeStrongMilitaryAction);
+                    mStronggMilitaryAdded = true;
+                    mSelectedPlatformWindow.AddItem(mMakeHeavyMilitaryAction);
+                    mSelectedPlatformActionList.Add(mMakeHeavyMilitaryAction);
                 }
                 else if (action is ProduceMineResource)
                 {
@@ -1650,6 +1654,7 @@ namespace Singularity.Screen.ScreenClasses
 
                     if (!mProduceMineResourceAdded)
                     {
+                        mProduceMineResourceAdded = true;
                         mSelectedPlatformWindow.AddItem(mProduceMineResourceAction);
                         mSelectedPlatformActionList.Add(mProduceMineResourceAction);
                     }
@@ -1660,6 +1665,7 @@ namespace Singularity.Screen.ScreenClasses
 
                     if (!mProduceQuarryResourceAdded)
                     {
+                        mProduceQuarryResourceAdded = true;
                         mSelectedPlatformWindow.AddItem(mProduceQuarryResourceAction);
                         mSelectedPlatformActionList.Add(mProduceQuarryResourceAction);
                     }
@@ -1670,6 +1676,7 @@ namespace Singularity.Screen.ScreenClasses
 
                     if (!mProduceWellResourceAdded)
                     {
+                        mProduceWellResourceAdded = true;
                         mSelectedPlatformWindow.AddItem(mProduceWellResourceAction);
                         mSelectedPlatformActionList.Add(mProduceWellResourceAction);
                     }
@@ -1682,9 +1689,24 @@ namespace Singularity.Screen.ScreenClasses
                         mDirector);
                     if (!mBuildBluePrintActionAdded)
                     {
+                        mBuildBluePrintActionAdded = true;
                         mSelectedPlatformWindow.AddItem(mBuildBluePrintAction);
                         mSelectedPlatformActionList.Add(mBuildBluePrintAction);
                     }
+                } else if (action is RefineResourceAction)
+                {
+                    mRefineResourceAction = new PlatformActionIWindowItem(action,
+                        mLibSans10,
+                        Vector2.Zero,
+                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y),
+                        mDirector);
+                    if (!mRefineResourceActionAdded)
+                    {
+                        mRefineResourceActionAdded = true;
+                        mSelectedPlatformWindow.AddItem(mRefineResourceAction);
+                        mSelectedPlatformActionList.Add(mRefineResourceAction);
+                    }
+
                 }
                 // */
             }

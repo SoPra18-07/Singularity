@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using Singularity.Exceptions;
@@ -124,6 +125,7 @@ namespace Singularity.Manager
 
             while (currentlevel.Count > 0)
             {
+                Debug.WriteLine("Looking for: " + res + ", currentL: " + currentlevel.Count);
                 //Create the next level of BFS. While doing this, check if any platform has the resource you want. If yes return it.
                 foreach (var platform in currentlevel)
                 {
@@ -173,9 +175,9 @@ namespace Singularity.Manager
                 }
 
                 //Update levels
-                previouslevel = nextpreviouslevel;
+                previouslevel.AddRange(nextpreviouslevel);
                 nextpreviouslevel = new List<PlatformBlank>();
-                currentlevel = nextlevel;
+                currentlevel.AddRange(nextlevel);
                 nextlevel = new List<PlatformBlank>();
             }
             return null;
@@ -196,6 +198,16 @@ namespace Singularity.Manager
             total += mDefense.Count;
             total += mLogistics.Count;
             return total;
+        }
+
+        public List<IPlatformAction> GetPlatformActions()
+        {
+            return mPlatformActions;
+        }
+
+        public void SetPlatformActions(List<IPlatformAction> actions)
+        {
+            mPlatformActions = actions;
         }
 
         /// <summary>
@@ -437,7 +449,7 @@ namespace Singularity.Manager
                     //This means that the Action is paused.
                     if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()) && task.Job != JobType.Construction)
                     {
-                        task = RequestNewTask(unit, job, assignedAction);
+                        return RequestNewTask(unit, job, assignedAction);
                     }
                     if (task.End.IsPresent() && task.GetResource != null)
                     {
@@ -475,7 +487,7 @@ namespace Singularity.Manager
                     //This means that the Action is paused.
                     if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()))
                     {
-                        task = RequestNewTask(unit, job, assignedAction);
+                        return RequestNewTask(unit, job, assignedAction);
                     }
                     if (task.End.IsPresent() && task.GetResource != null)
                     {
@@ -1009,8 +1021,9 @@ namespace Singularity.Manager
         /// </summary>
         /// <param name="platform">The platform itself</param>
         /// <param name="isDef">Is true, when the platform is a defending platform, false otherwise (only producing platforms should register themselves besides defending ones)</param>
-        public void Register(PlatformBlank platform, bool isDef)
+        public void Register(PlatformBlank platform)
         {
+            var isDef = platform.IsDefense();
             var job = isDef ? JobType.Defense : JobType.Production;
             var joblist = isDef ? mDefense : mProduction;
             var alreadyonplatform = 0;
@@ -1138,9 +1151,6 @@ namespace Singularity.Manager
         {
             Kill(action);
             // TODO: throw new NotImplementedException(); // (currently commented out, since it'd break stuff)
-            // Actions need a sleep method
-            // No, they're just being removed from occurences in the DistributionManager. As soon as they unpause, they'll send requests for Resources and units again.
-            // Ah ok I got that part
         }
 
 

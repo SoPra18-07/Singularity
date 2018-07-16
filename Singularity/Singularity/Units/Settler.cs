@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using System.Security.Policy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -50,6 +51,12 @@ namespace Singularity.Units
 
             mGameScreen = gameScreen;
             mUi = ui;
+        }
+
+        public static Settler Create(Vector2 position, ref Director director)
+        {
+            var map = director.GetStoryManager.Level.Map;
+            return new Settler(position, director.GetStoryManager.Level.Camera, ref director, ref map, director.GetStoryManager.Level.GameScreen, director.GetUserInterfaceController.ControlledUserInterface);
         }
 
         #region BuildCommanCenterEvent
