@@ -409,7 +409,6 @@ namespace Singularity.Screen.ScreenClasses
             sPressed = "Quit";
         }
 
-
         /// <summary>
         /// Used to go back to the main main menu screen.
         /// </summary>

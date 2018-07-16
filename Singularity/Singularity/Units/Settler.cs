@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using System.Security.Policy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -14,7 +15,7 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="ControllableUnit"/>
     [DataContract]
-    internal sealed class Settler: ControllableUnit, IKeyListener
+    internal sealed class Settler: FreeMovingUnit, IKeyListener
     {
         #region Declarations
         private GameScreen mGameScreen;
@@ -42,7 +43,7 @@ namespace Singularity.Units
 
             AbsoluteSize = new Vector2(20, 20);
 
-            RevelationRadius = (int)AbsoluteSize.X * 3;
+            RevelationRadius = (int)AbsoluteSize.X * 6;
 
             mDirector.GetInputManager.FlagForAddition(this);
 
@@ -50,6 +51,12 @@ namespace Singularity.Units
 
             mGameScreen = gameScreen;
             mUi = ui;
+        }
+
+        public static Settler Create(Vector2 position, ref Director director)
+        {
+            var map = director.GetStoryManager.Level.Map;
+            return new Settler(position, director.GetStoryManager.Level.Camera, ref director, ref map, director.GetStoryManager.Level.GameScreen, director.GetUserInterfaceController.ControlledUserInterface);
         }
 
         #region BuildCommanCenterEvent
@@ -135,7 +142,11 @@ namespace Singularity.Units
                 else
                 {
                     mPath.Pop();
-                    MoveToTarget(mPath.Peek(), mSpeed);
+                    //TODO: THis is a hotfix, the same as in HasREachedWaypoint. I dont know if this could create strange behaviour
+                    if (mPath.Count != 0)
+                    {
+                        MoveToTarget(mPath.Peek(), mSpeed);
+                    }
                 }
             }
 

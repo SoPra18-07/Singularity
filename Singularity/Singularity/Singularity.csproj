@@ -40,6 +40,7 @@
     <DefineConstants>DEBUG;TRACE;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -60,6 +61,14 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AI\BasicAI.cs" />
+    <Compile Include="AI\Behavior\IAIBehavior.cs" />
+    <Compile Include="AI\Properties\EAIDifficulty.cs" />
+    <Compile Include="AI\Properties\IArtificalIntelligence.cs" />
+    <Compile Include="AI\StructureLayoutHolder.cs" />
+    <Compile Include="AI\Structures\Sentinel.cs" />
+    <Compile Include="AI\Behavior\SimpleAIBehavior.cs" />
+    <Compile Include="AI\Structures\Spawner.cs" />
     <Compile Include="Levels\PlatformDestructionTestLevel.cs" />
     <Compile Include="Events\SpatialPositionEventArgs.cs" />
     <Compile Include="Levels\TechDemo.cs" />
@@ -68,6 +77,7 @@
     <Compile Include="Levels\ILevel.cs" />
     <Compile Include="Manager\DistributionDirector.cs" />
     <Compile Include="Manager\DistributionManager.cs" />
+    <Compile Include="PlatformActions\RefineResourceAction.cs" />
     <Compile Include="Screen\ELogEventType.cs" />
     <Compile Include="Screen\EventLog.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />
@@ -98,20 +108,23 @@
     <Compile Include="Property\GlobalVariables.cs" />
     <Compile Include="Screen\ResourceIWindowItem.cs" />
     <Compile Include="Screen\InfoBarWindowObject.cs" />
+    <Compile Include="Screen\ScreenClasses\GamePauseManagerScreen.cs" />
     <Compile Include="Screen\ScreenClasses\LoadGameManagerScreen.cs" />
     <Compile Include="Screen\ScreenClasses\DebugScreen.cs" />
     <Compile Include="Screen\ActivationIWindowItem.cs" />
     <Compile Include="Screen\IndexSwitcherIWindowItem.cs" />
     <Compile Include="Screen\PlatformInfoBox.cs" />
     <Compile Include="Screen\SliderHandler.cs" />
-    <Compile Include="Units\ControllableUnit.cs" />
     <Compile Include="Screen\TextAndAmountIWindowItem.cs" />
+    <Compile Include="Units\EnemyHeavy.cs" />
+    <Compile Include="Units\EnemyFast.cs" />
     <Compile Include="Units\EnemyUnit.cs" />
     <Compile Include="Units\EUnitType.cs" />
     <Compile Include="Units\FreeMovingUnit.cs" />
     <Compile Include="Units\MilitaryFast.cs" />
     <Compile Include="Units\MilitaryHeavy.cs" />
     <Compile Include="Units\MilitaryUnitStats.cs" />
+    <Compile Include="Units\Native.cs" />
     <Compile Include="Units\SelectionBox.cs" />
     <Compile Include="Units\Settler.cs" />
     <Compile Include="Units\Target.cs" />
@@ -155,7 +168,7 @@
     <Compile Include="Input\MouseAction.cs" />
     <Compile Include="Platforms\CommandCenter.cs" />
     <Compile Include="Platforms\EnergyFacility.cs" />
-    <Compile Include="Platforms\EPlatformType.cs" />
+    <Compile Include="Platforms\EStructureType.cs" />
     <Compile Include="Platforms\Factory.cs" />
     <Compile Include="Platforms\Junkyard.cs" />
     <Compile Include="Platforms\Mine.cs" />

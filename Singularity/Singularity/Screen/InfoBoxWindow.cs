@@ -23,8 +23,9 @@ namespace Singularity.Screen
         protected Vector2 mSize;
 
         // colors for the info box rectangle
-        private readonly Color mBorderColor;
-        private readonly Color mCenterColor;
+        protected readonly Color mBorderColor;
+
+        protected readonly Color mCenterColor;
 
         // mouse Position
         protected Vector2 mMouse;
@@ -77,7 +78,6 @@ namespace Singularity.Screen
             mSize = new Vector2(maxWidth + 10, size.Y + 10);
 
             // window only active if mouse on Bound Rectangle
-            director.GetInputManager.AddMousePositionListener(this);
             if (mousePosition)
             {
                 // window only active if mouse on Bound Rectangle
@@ -96,7 +96,7 @@ namespace Singularity.Screen
         /// standard draw method
         /// </summary>
         /// <param name="spriteBatch"></param>
-        public void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
             if (!Active || mCounter <= 10) return;
             if (mBoxed)

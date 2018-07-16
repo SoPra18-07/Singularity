@@ -4,8 +4,11 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Map.Properties;
 using Singularity.Property;
 using Singularity.Screen;
 using EventLog = Singularity.Screen.EventLog;
@@ -15,7 +18,7 @@ namespace Singularity.Units
     /// <inheritdoc cref="ICollider"/>
     /// <inheritdoc cref="IRevealing"/>
     [DataContract]
-    internal abstract class FreeMovingUnit : ICollider, IRevealing
+    internal abstract class FreeMovingUnit : ICollider, IRevealing, IMouseClickListener, IMousePositionListener
     {
         /// <summary>
         /// The unique ID of the unit.
@@ -181,6 +184,28 @@ namespace Singularity.Units
 
         #endregion
 
+        #region Mouse Listener Fields
+
+        /// <summary>
+        /// Indicates if the unit is currently selected.
+        /// </summary>
+        [DataMember]
+        internal bool mSelected;
+
+        /// <summary>
+        /// Stores the current x position of the mouse
+        /// </summary>
+        [DataMember]
+        internal float mMouseX;
+
+        /// <summary>
+        /// Stores the current y position of the mouse
+        /// </summary>
+        [DataMember]
+        internal float mMouseY;
+
+        #endregion
+
         /// <summary>
         /// Base abstract class for units that are not restricted to the graph.
         /// </summary>
@@ -188,6 +213,7 @@ namespace Singularity.Units
         /// <param name="camera">Game camera being used.</param>
         /// <param name="director">Reference to the game director.</param>
         /// <param name="map">Reference to the game map.</param>
+        /// <param name="friendly">The allegiance of the unit. True if the unit is player controlled.</param>
         /// <remarks>
         /// FreeMovingUnit is an abstract class that can be implemented to allow free movement outside
         /// of the graphs that represent bases in the game. It provides implementations to allow for
@@ -210,6 +236,12 @@ namespace Singularity.Units
             mPathfinder = new FreeMovingPathfinder();
 
             Friendly = friendly;
+
+            if (friendly)
+            {
+                mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
+                mDirector.GetInputManager.AddMousePositionListener(this);
+            }
         }
 
         protected void ReloadContent(ref Director director, Camera camera, ref Map.Map map)
@@ -272,6 +304,7 @@ namespace Singularity.Units
             {
                 return false;
             }
+
             mToAdd = Vector2.Zero;
             return true;
         }
@@ -282,6 +315,11 @@ namespace Singularity.Units
         /// <returns></returns>
         protected bool HasReachedWaypoint()
         {
+            //TODO: This is a hotfix for mPath being empty but peek being called. I dont know if this could cause additional errors.
+            if (mPath.Count == 0)
+            {
+                return true;
+            }
             if (Math.Abs(Center.X + mToAdd.X - mPath.Peek().X) < 8
                 && Math.Abs(Center.Y + mToAdd.Y - mPath.Peek().Y) < 8)
             {
@@ -347,6 +385,18 @@ namespace Singularity.Units
             mRotation = (mRotation + 42) % 360;
         }
 
+        internal void SetMovementTarget(Vector2 target)
+        {
+            mTargetPosition = target;
+
+            if (mMap.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
+                (int)mTargetPosition.X / MapConstants.GridWidth,
+                (int)mTargetPosition.Y / MapConstants.GridWidth))
+            {
+                FindPath(Center, mTargetPosition);
+            }
+        }
+
         #endregion
 
         #region Abstract Methods
@@ -376,23 +426,89 @@ namespace Singularity.Units
 
         public bool Die()
         {
+            Console.Out.Write("I died and my friendly value is: " + Friendly);
             mDead = true;
             mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, Friendly ? "A Friendly" : "An enemy" + " unit was killed!", this);
             return true;
         }
 
         #endregion
+        
+        #region Mouse Handlers
+        public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
+        {
+            var giveThrough = true;
+
+            switch (mouseAction)
+            {
+                case EMouseAction.LeftClick:
+                    // check for if the unit is selected, not moving, the click is not within the bounds of the unit, and the click was on the map.
+                    if (mSelected
+                        && !mIsMoving
+                        && !withinBounds
+                        && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f),
+                                (int)(mMouseY - RelativeSize.Y / 2f),
+                                (int)RelativeSize.X,
+                                (int)RelativeSize.Y),
+                            mCamera))
+                    {
+                        SetMovementTarget(Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
+                            Matrix.Invert(mCamera.GetTransform())));
+                    }
+
+
+                    if (withinBounds)
+                    {
+                        mSelected = true;
+                        giveThrough = false;
+                    }
+
+                    break;
+
+                case EMouseAction.RightClick:
+                    mSelected = false;
+                    break;
+            }
+
+            return giveThrough;
+        }
+
+        public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
+        {
+            return true;
+        }
+
+        public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
+        {
+            return true;
+        }
+
+        public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
+        {
+            mMouseX = screenX;
+            mMouseY = screenY;
+        }
 
         /// <summary>
-        /// Used to find the coordinates of the given Vector2 based on the overall map
-        /// instead of just the camera shot, returns Vector2 of absolute position
+        /// This is called up every time a selection box is created
+        /// if MUnit bounds intersects with the selection box then it become selected
         /// </summary>
-        /// <returns></returns>
-        protected Vector2 MapCoordinates(Vector2 v)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <param name="position"> top left corner of the selection box</param>
+        /// <param name="size"> size of selection box</param>
+        public void BoxSelected(object sender, EventArgs e, Vector2 position, Vector2 size)
         {
-            return new Vector2(Vector2.Transform(new Vector2(v.X, v.Y),
-                Matrix.Invert(mCamera.GetTransform())).X, Vector2.Transform(new Vector2(v.X, v.Y),
-                Matrix.Invert(mCamera.GetTransform())).Y);
+            // create a rectangle from given parameters
+            Rectangle selBox = new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y);
+
+            // check if selection box intersects with MUnit bounds
+            if (selBox.Intersects(AbsBounds))
+            {
+                mSelected = true;
+            }
         }
+
+        #endregion
     }
 }

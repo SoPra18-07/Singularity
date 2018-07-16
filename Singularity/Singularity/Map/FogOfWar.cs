@@ -198,6 +198,11 @@ namespace Singularity.Map
         /// <param name="revealingObject">The object which can reveal the fog of war.</param>
         public void AddRevealingObject(IRevealing revealingObject)
         {
+            if (!revealingObject.Friendly)
+            {
+                return;
+            }
+
             mRevealingObjects.AddLast(revealingObject);
         }
 

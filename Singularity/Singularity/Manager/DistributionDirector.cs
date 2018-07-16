@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Singularity.PlatformActions;
 using Singularity.Platforms;
 using Singularity.Screen;
 using Singularity.Units;
@@ -74,11 +75,16 @@ namespace Singularity.Manager
             {
                 buildingtasks.Enqueue(task);
             }
-            var productiontasks = new Queue<Task>(dist2.GetTasks(false));
+
+            var productiontasks = new Queue<Task>(dist1.GetTasks(false));
             foreach (var task in dist2.GetTasks(false))
             {
                 productiontasks.Enqueue(task);
             }
+
+            //Merge the PlatformActions
+            var actions = new List<IPlatformAction>(dist1.GetPlatformActions());
+            actions.AddRange(dist2.GetPlatformActions());
 
             //Set up the new DistributionManager
             dist3.SetJobUnits(idle, JobType.Idle);
@@ -86,7 +92,7 @@ namespace Singularity.Manager
             dist3.SetJobUnits(construction, JobType.Construction);
             dist3.SetJobUnits(defense, JobType.Defense);
             dist3.SetJobUnits(logistics, JobType.Logistics);
-            dist3.SetJobUnits(idle, JobType.Manual);
+            dist3.SetJobUnits(manual, JobType.Manual);
 
             dist3.SetPlatforms(defplatforms, true);
             dist3.SetPlatforms(prodplatforms, false);
@@ -94,6 +100,7 @@ namespace Singularity.Manager
             dist3.SetTasks(buildingtasks, true);
             dist3.SetTasks(productiontasks, false);
 
+            dist3.SetPlatformActions(actions);
             //Remove the two old DMs and add the new DM to the Dictionary
             mDMs.Remove(graphid1);
             mDMs.Remove(graphid2);
@@ -112,7 +119,11 @@ namespace Singularity.Manager
         /// <param name="platforms">The platforms of the new split-off DistributionManager</param>
         /// <param name="units">The units of the new split-off DistributionManager</param>
         /// <param name="graphIdToGraph">the structuremap's graphIdToGraph-dictionary</param>
-        public void SplitManagers(int oldgraphid, int newgraphid, List<PlatformBlank> platforms, List<GeneralUnit> units, Dictionary<int, Graph.Graph> graphIdToGraph)
+        public void SplitManagers(int oldgraphid,
+            int newgraphid,
+            List<PlatformBlank> platforms,
+            List<GeneralUnit> units,
+            Dictionary<int, Graph.Graph> graphIdToGraph)
         {
             var olddist = mDMs[oldgraphid];
             mDMs[newgraphid] = new DistributionManager(newgraphid);
@@ -128,7 +139,7 @@ namespace Singularity.Manager
                     olddist.Unregister(platformcontainer, platform.IsDefense(), false);
 
                     //Only readd the platform when it was in the old distributionmanager. That is the case only when its a defending or producing platform.
-                    newdist.Register(platform, platform.IsDefense());
+                    newdist.Register(platform);
                 }
                 //TODO: Make somehow sure the IPlatformactions request their missing things anew, because currently they dont.
 
@@ -137,7 +148,11 @@ namespace Singularity.Manager
             foreach (var unit in units)
             {
                 olddist.Kill(unit);
-                newdist.Register(unit, unit.Job);
+                //These were already added before in the register sttuff
+                if (unit.Job != JobType.Defense && unit.Job != JobType.Production)
+                {
+                    newdist.Register(unit, unit.Job);
+                }
             }
 
             // update UI by "calling all graphs" - see description in UIController
@@ -146,7 +161,7 @@ namespace Singularity.Manager
 
         public DistributionManager GetManager(int graphid)
         {
-            return mDMs[graphid];
+             return mDMs[graphid];
         }
 
         public void RemoveManager(int graphId, Dictionary<int, Graph.Graph> graphIdToGraph)
@@ -155,9 +170,9 @@ namespace Singularity.Manager
             mUserInterfaceController.CallingAllGraphs(graphIdToGraph);
         }
 
-        public void ReloadContent(ref Director director)
+        public void ReloadContent(UserInterfaceController uic)
         {
-            mUserInterfaceController = director.GetUserInterfaceController;
+            mUserInterfaceController = uic;
         }
     }
 }

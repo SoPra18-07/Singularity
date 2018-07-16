@@ -14,7 +14,7 @@ using Singularity.Utils;
 namespace Singularity.Units
 {
     [DataContract]
-    public sealed class GeneralUnit : ISpatial, IDie
+    public sealed class GeneralUnit : ISpatial
     {
         [DataMember]
         public int Id { get; private set; }
@@ -34,6 +34,10 @@ namespace Singularity.Units
         [DataMember]
         private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
 
+        /// <summary>
+        /// The sprite used by the general unit. Drawing a sprite turns out to be more efficient than drawing a primitive.
+        /// </summary>
+        internal static Texture2D mGenUnitTexture;
 
         //These are the assigned task and a flag, wether the unit is done with it.
         [DataMember]
@@ -271,14 +275,13 @@ namespace Singularity.Units
 
                     case JobType.Production:
                         //You arrived at your destination and you now want to work.
-                        if (!mIsMoving && !mDone && CurrentNode.Equals(mTask.End.Get()))
+                        if (!mIsMoving && !mDone && CurrentNode.Equals(mTask.End.Get()) && !mAssigned)
                         {
-                            if (!mAssigned)
-                            {
-                                mTask.End.Get().ShowedUp(this, Job);
-                                mAssigned = true;
-                            }
+                            mTask.End.Get().ShowedUp(this, Job);
+                            mAssigned = true;
                         }
+                        if (mAssigned)
+                            mTask.End.Get().Produce();
                         RegulateMovement();
                         break;
 
@@ -512,7 +515,17 @@ namespace Singularity.Units
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.StrokedCircle(AbsolutePosition, 10, Color.AntiqueWhite, Color.Black, LayerConstants.GeneralUnitLayer);
+            
+            spriteBatch.Draw(mGenUnitTexture,
+                AbsolutePosition,
+                null,
+                Color.White,
+                0f,
+                new Vector2(10), 
+                Vector2.One,
+                SpriteEffects.None,
+                LayerConstants.GeneralUnitLayer);
+
             if (Carrying.IsPresent())
             {
                 Carrying.Get().Draw(spriteBatch);
@@ -535,12 +548,26 @@ namespace Singularity.Units
             return true;
         }
 
+        /// <summary>
+        /// Basically tell the Unit that its platform just died and it needs to get a new job.
+        /// But only if the id is found in its current task.
+        /// </summary>
+        /// <param name="id"></param>
         public void Kill(int id)
         {
-            if (mTask.Contains(id))
+            if (!mTask.Contains(id)) return;
+            switch (Job)
             {
-                mTask = mDirector.GetDistributionDirector.GetManager(Graphid).RequestNewTask(this, Job, null);
-                // also the mAssignedTask-platformaction is included in this.
+                case JobType.Defense:
+                    mDirector.GetDistributionDirector.GetManager(Graphid).NewProductionHall(this, true);
+                    break;
+                case JobType.Production:
+                    mDirector.GetDistributionDirector.GetManager(Graphid).NewProductionHall(this, false);
+                    break;
+                default:
+                    mDirector.GetDistributionDirector.GetManager(Graphid)
+                        .RequestNewTask(this, Job, Optional<IPlatformAction>.Of(null));
+                    break;
             }
         }
     }
