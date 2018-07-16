@@ -36,9 +36,6 @@ namespace Singularity.Screen
 
         // button has been clicked on - to prevent the button from keeping firing
         private bool mClicked;
-
-        // bool to determine if the action is of type refineRes, because refineRes actions need to add the resource-to-be-produced
-        private bool mRefineRes;
         
         #endregion
 
@@ -57,7 +54,6 @@ namespace Singularity.Screen
             Position = position;
 
             mPlatformAction = platformAction;
-            mRefineRes = refineRes;
 
             ActiveInWindow = true;
 

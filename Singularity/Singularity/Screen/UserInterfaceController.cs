@@ -35,6 +35,10 @@ namespace Singularity.Screen
             mDirector = director;
         }
 
+        /// <summary>
+        /// Called during load-game
+        /// </summary>
+        /// <param name="dir"></param>
         public void ReloadContent(ref Director dir)
         {
             mDirector = dir;
@@ -61,15 +65,6 @@ namespace Singularity.Screen
         {
             // set/update data in UI
             ControlledUserInterface.SetSelectedPlatformValues(id, isActive, isManuallyDeactivated, type, resourceAmountList, unitAssignmentDict, actionsList);
-        }
-
-        /// <summary>
-        /// Returns the idle-units amount
-        /// </summary>
-        /// <returns>amount of idle units</returns>
-        public int GetIdleUnits(int graphid)
-        {
-            return mDirector.GetDistributionDirector.GetManager(graphid).GetJobCount(JobType.Idle);
         }
 
         /// <summary>
@@ -137,14 +132,17 @@ namespace Singularity.Screen
         }
 
         /// <summary>
-        /// TODO 
-        /// </summary>
+        /// A Graph is split -> just forward the information to the UI
+        /// /// </summary>
         /// <param name="splittedGraphId"></param>
         internal void SplitGraph(int splittedGraphId)
         {
             ControlledUserInterface?.SplitGraph(splittedGraphId);
         }
 
+        /// <summary>
+        /// A SliderUpdate was requested -> just forward the information to the UI
+        /// /// </summary>
         public void UpdateSLiderHandler()
         {
             ControlledUserInterface.UpdateSLiderHandler();
@@ -158,6 +156,7 @@ namespace Singularity.Screen
         {
             ControlledUserInterface?.SelectedPlatformSetsGraphId(graphId);
         }
+
         public void BuildingProcessStarted(EStructureType structureType)
         {
             ControlledUserInterface.BuildingProcessStarted(structureType);
@@ -167,7 +166,5 @@ namespace Singularity.Screen
         {
             ControlledUserInterface.BuildingProcessFinished(structureType);
         }
-
-        // TODO : ADD EVENT LOG CONTROLLING
     }
 }

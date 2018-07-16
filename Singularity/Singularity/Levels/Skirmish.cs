@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.AI.Structures;
 using Singularity.Manager;
 using Singularity.Nature;
-using Singularity.Platforms;
-using Singularity.Resources;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
@@ -38,8 +35,7 @@ namespace Singularity.Levels
                 content.Load<Texture2D>("Cones"),
                 content.Load<Texture2D>("PlatformBasic"),
                 content.Load<SpriteFont>("LibSans12"),
-                ref mDirector,
-                false);;
+                ref mDirector);
             GameScreen.AddObject(sentinel);
 
             var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, Ui);

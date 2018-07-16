@@ -68,8 +68,8 @@ namespace Singularity.Screen.ScreenClasses
         private readonly RasterizerState mRasterizerState;
 
         // colors
-        private Color mWindowColor;
-        private Color mBorderColor;
+        private readonly Color mWindowColor;
+        private readonly Color mBorderColor;
 
         #endregion
 
@@ -79,7 +79,6 @@ namespace Singularity.Screen.ScreenClasses
 
         private readonly ResourceMap mResourceMap;
 
-        // TODO : changed this form readonly so that it can be passed on in constructor
         private Map.Map mMap;
 
         private readonly Camera mCamera;
@@ -178,7 +177,7 @@ namespace Singularity.Screen.ScreenClasses
         private int mCivilUnitsGraphId;
         private int mCivilUnitsGraphIdToCompare;
 
-        public Dictionary<int, Graph.Graph> GraphIdToGraphStructureDict { private get; set; }
+        internal Dictionary<int, Graph.Graph> GraphIdToGraphStructureDict { get; set; }
 
         // sliders for distribution
         private Slider mDefSlider;
@@ -226,7 +225,7 @@ namespace Singularity.Screen.ScreenClasses
         private Dictionary<EResourceType, int> mResourceWindowResourceAmountLastTick;
 
         // X seconds to wait until next update (production/X seconds)
-        private int mResourceWindowXSeconds;
+        private readonly int mResourceWindowXSeconds;
 
         #endregion
 
@@ -294,7 +293,6 @@ namespace Singularity.Screen.ScreenClasses
         private InfoBoxWindow mInfoBuildJunkyard;
         private InfoBoxWindow mInfoBuildFactory;
         private InfoBoxWindow mInfoBuildStorage;
-        private InfoBoxWindow mInfoBuildPackaging;
 
         private InfoBoxWindow mInfoBuildKineticTower;
         private InfoBoxWindow mInfoBuildLaserTower;
@@ -327,11 +325,10 @@ namespace Singularity.Screen.ScreenClasses
         /// Creates a UserInterface with it's windows
         /// </summary>
         /// <param name="director"></param>
-        /// <param name="mgraphics"></param>
         /// <param name="map"></param>
         /// /// <param name="camera"></param>
         /// <param name="stackScreenManager"></param>
-        public UserInterfaceScreen(ref Director director, GraphicsDeviceManager mgraphics, Map.Map map, Camera camera, IScreenManager stackScreenManager)
+        public UserInterfaceScreen(ref Director director, Map.Map map, Camera camera, IScreenManager stackScreenManager)
         {
             mMap = map;
             mStructureMap = mMap.GetStructureMap();
