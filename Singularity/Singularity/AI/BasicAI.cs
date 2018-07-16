@@ -1,11 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Singularity.AI.Behavior;
 using Singularity.AI.Properties;
 using Singularity.AI.Structures;
+using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Platforms;
+using Singularity.Property;
 using Singularity.Utils;
 
 namespace Singularity.AI
@@ -28,16 +34,22 @@ namespace Singularity.AI
         [DataMember]
         private readonly List<Triple<CommandCenter, List<PlatformBlank>, List<Road>>> mStructure;
 
+        private readonly List<Rectangle> mBoundsToDraw;
+
         public BasicAi(EaiDifficulty difficulty, ref Director director)
         {
             Difficulty = difficulty;
             mDirector = director;
 
+            mBoundsToDraw = new List<Rectangle>();
+
             //TODO: change the behavior with the difficulty
             mBehavior = new SimpleAIBehavior(this, ref director);
 
             mStructure = new List<Triple<CommandCenter, List<PlatformBlank>, List<Road>>>();
-            AddStructureToGame(StructureLayoutHolder.GetRandomStructureAtCenter(9000, 3000, difficulty, ref director).GetFirst());
+            var structure = StructureLayoutHolder.GetRandomStructureAtCenter(9000, 3000, difficulty, ref director);
+
+            AddStructureToGame(structure.GetFirst(), structure.GetSecond());
         }
 
         public void ReloadContent(ref Director dir)
@@ -95,13 +107,28 @@ namespace Singularity.AI
             }
         }
 
-        public void AddStructureToGame(Triple<CommandCenter, List<PlatformBlank>, List<Road>> structure)
+        public void AddStructureToGame(Triple<CommandCenter, List<PlatformBlank>, List<Road>> structure, Rectangle bounds)
         {
             mStructure.Add(structure);
+
+            mBoundsToDraw.Add(bounds);
 
             mDirector.GetStoryManager.Level.GameScreen.AddObject(structure.GetFirst());
             mDirector.GetStoryManager.Level.GameScreen.AddObjects(structure.GetSecond());
             mDirector.GetStoryManager.Level.GameScreen.AddObjects(structure.GetThird());
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            if (!GlobalVariables.DebugState)
+            {
+                return;
+            }
+
+            foreach (var rectangle in mBoundsToDraw)
+            {
+                spriteBatch.DrawRectangle(rectangle, Color.Red, 4f, 0.2f);
+            }
         }
     }
 }

@@ -103,7 +103,9 @@ namespace Singularity.AI.Behavior
             {
                 return;
             }
-            mAi.AddStructureToGame(StructureLayoutHolder.GetStructureOnMap(mAi.Difficulty, ref mDirector));
+
+            var structure = StructureLayoutHolder.GetStructureOnMap(mAi.Difficulty, ref mDirector);
+            mAi.AddStructureToGame(structure.GetFirst(), structure.GetSecond());
         }
     }
 }

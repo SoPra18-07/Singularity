@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 using Singularity.AI.Structures;
 using Singularity.Manager;
 using Singularity.Map;
@@ -18,7 +19,7 @@ namespace Singularity.AI.Properties
     /// <summary>
     /// An interface for all AI implementations.
     /// </summary>
-    public interface IArtificalIntelligence : IUpdate
+    public interface IArtificalIntelligence : IUpdate, IDraw
     {
         /// <summary>
         /// Gets all the spawner platforms the AI currently has at its disposal
@@ -43,6 +44,6 @@ namespace Singularity.AI.Properties
         /// <param name="platform"></param>
         void Kill(PlatformBlank platform);
 
-        void AddStructureToGame(Triple<CommandCenter, List<PlatformBlank>, List<Road>> structure);
+        void AddStructureToGame(Triple<CommandCenter, List<PlatformBlank>, List<Road>> structure, Rectangle bounds);
     }
 }

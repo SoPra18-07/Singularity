@@ -31,7 +31,8 @@ namespace Singularity.AI
         {
             var rnd = new Random();
 
-            var index = rnd.Next(sAllStructures[difficulty].Length - 1);
+            //var index = rnd.Next(sAllStructures[difficulty].Length - 1);
+            var index = 1;
 
             var structure = sAllStructures[difficulty][index];
 
@@ -60,7 +61,7 @@ namespace Singularity.AI
                     platform.AbsolutePosition.Y + y, null, false);
                 platformToAdd.Built();
 
-                UpdateRectangle(boundingRectangle, platformToAdd);
+                boundingRectangle = UpdateRectangle(boundingRectangle, platformToAdd);
 
                 tempOldPlatNewPlatMapping[platform] = platformToAdd;
 
@@ -81,29 +82,35 @@ namespace Singularity.AI
             return new Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle>(new Triple<CommandCenter, List<PlatformBlank>, List<Road>>(commandCenter, platformList, roadList), boundingRectangle);
         }
 
-        private static void UpdateRectangle(Rectangle oldRect, ICollider platform)
+        private static Rectangle UpdateRectangle(Rectangle oldRect, ICollider platform)
         {
-            if (platform.AbsBounds.X > oldRect.X)
+            var tempRect = new Rectangle(oldRect.X, oldRect.Y, oldRect.Width, oldRect.Height);
+
+            if (platform.AbsBounds.X + platform.AbsBounds.Width > oldRect.X + oldRect.Width)
             {
-                oldRect.Width = oldRect.X + (platform.AbsBounds.X - oldRect.X) + platform.AbsBounds.Width;
+                tempRect.Width = (platform.AbsBounds.X - oldRect.X) + platform.AbsBounds.Width;
             }
 
-            if (platform.AbsBounds.X < oldRect.X)
+            if (platform.AbsBounds.X  < oldRect.X)
             {
-                oldRect.X = platform.AbsBounds.X;
+                tempRect.X = platform.AbsBounds.X;
+                tempRect.Width = oldRect.Width + oldRect.X - platform.AbsBounds.X;
             }
 
-            if (platform.AbsBounds.Y > oldRect.Y)
+            if (platform.AbsBounds.Y + platform.AbsBounds.Height > oldRect.Y + oldRect.Height)
             {
-                oldRect.Y = oldRect.Y + (platform.AbsBounds.Y - oldRect.Y) + platform.AbsBounds.Height;
+                tempRect.Height = (platform.AbsBounds.Y - oldRect.Y) + platform.AbsBounds.Height;
             }
 
             if (platform.AbsBounds.Y < oldRect.Y)
             {
-                oldRect.Y = platform.AbsBounds.Y;
+                tempRect.Y = platform.AbsBounds.Y;
+                tempRect.Height = oldRect.Height + oldRect.Y - platform.AbsBounds.Y;
             }
+
+            return tempRect;
         }
-        public static Triple<CommandCenter, List<PlatformBlank>, List<Road>> GetStructureOnMap(EaiDifficulty difficulty, ref Director director)
+        public static Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle> GetStructureOnMap(EaiDifficulty difficulty, ref Director director)
         {
             while (true)
             {
@@ -114,7 +121,7 @@ namespace Singularity.AI
                 if (Map.Map.IsOnTop(possibleStructure.GetSecond()) &&
                     !director.GetStoryManager.Level.Map.IsInVision(possibleStructure.GetSecond()))
                 {
-                    return possibleStructure.GetFirst();
+                    return possibleStructure;
                 }
             }
         }
