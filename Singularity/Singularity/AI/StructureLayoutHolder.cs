@@ -16,7 +16,7 @@ namespace Singularity.AI
     public static class StructureLayoutHolder
     {
         // adjust these accordingly when adding new structures to the AI
-        private const int EasyStructureCount = 1;
+        private const int EasyStructureCount = 2;
         private const int MediumStructureCount = 0;
         private const int HardStructureCount = 0;
 
@@ -25,10 +25,11 @@ namespace Singularity.AI
         public static Triple<CommandCenter, List<PlatformBlank>, List<Road>> GetRandomStructureAtCenter(float x, float y, EaiDifficulty difficulty)
         {
             var rnd = new Random();
-
-            var structure = sAllStructures[difficulty][rnd.Next(sAllStructures[difficulty].Length - 1)];
+            //sAllStructures[difficulty].Length - 1
+            var structure = sAllStructures[difficulty][1];
 
             // everything thats happening below here is to adjust the position of the taken structure to its new center.
+
             structure.GetFirst().AbsolutePosition += new Vector2(x, y);
             structure.GetFirst().UpdateValues();
 
@@ -65,7 +66,7 @@ namespace Singularity.AI
 
             #region 1. Easy Structure
 
-            var struct1CommandCenter = (CommandCenter) PlatformFactory.Get(EStructureType.Command, ref director, 0f, 0f, null, false);
+            var struct1CommandCenter = (CommandCenter) PlatformFactory.Get(EStructureType.Command, ref director, 0f, 0f, null, false, false);
 
             var struct1Platforms = new List<PlatformBlank>();
             var struct1Plat1 = PlatformFactory.Get(EStructureType.Spawner, ref director, -200);
@@ -82,6 +83,35 @@ namespace Singularity.AI
             var struct1 = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>(struct1CommandCenter, struct1Platforms, struct1Roads);
 
             sAllStructures[EaiDifficulty.Easy][0] = struct1;
+
+            #endregion
+
+            #region 2. Easy Structure
+
+            var struct2CommandCenter = (CommandCenter)PlatformFactory.Get(EStructureType.Command, ref director, 0f, 0f, null, false, false);
+
+            var struct2Platforms = new List<PlatformBlank>();
+            var struct2Plat1 = PlatformFactory.Get(EStructureType.Sentinel, ref director, -200);
+            var struct2Plat2 = PlatformFactory.Get(EStructureType.Sentinel, ref director, 200);
+            var struct2Plat3 = PlatformFactory.Get(EStructureType.Sentinel, ref director, y: 200);
+            var struct2Plat4 = PlatformFactory.Get(EStructureType.Sentinel, ref director, y:-200);
+
+
+            struct2Platforms.Add(struct2Plat1);
+            struct2Platforms.Add(struct2Plat2);
+            struct2Platforms.Add(struct2Plat3);
+            struct2Platforms.Add(struct2Plat4);
+
+
+            var struct2Roads = new List<Road>();
+            struct2Roads.Add(new Road(struct2CommandCenter, struct2Plat1, ref director));
+            struct2Roads.Add(new Road(struct2CommandCenter, struct2Plat2, ref director));
+            struct2Roads.Add(new Road(struct2CommandCenter, struct2Plat3, ref director));
+            struct2Roads.Add(new Road(struct2CommandCenter, struct2Plat4, ref director));
+
+            var struct2 = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>(struct2CommandCenter, struct2Platforms, struct2Roads);
+
+            sAllStructures[EaiDifficulty.Easy][1] = struct2;
 
             #endregion
         }

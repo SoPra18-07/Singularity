@@ -62,8 +62,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AI\BasicAI.cs" />
-    <Compile Include="AI\Behavior\IAiBehavior.cs" />
-    <Compile Include="AI\Properties\EaiDifficulty.cs" />
+    <Compile Include="AI\Behavior\IAIBehavior.cs" />
+    <Compile Include="AI\Properties\EAIDifficulty.cs" />
     <Compile Include="AI\Properties\IArtificalIntelligence.cs" />
     <Compile Include="AI\StructureLayoutHolder.cs" />
     <Compile Include="AI\Structures\Sentinel.cs" />
@@ -76,6 +76,7 @@
     <Compile Include="Levels\ILevel.cs" />
     <Compile Include="Manager\DistributionDirector.cs" />
     <Compile Include="Manager\DistributionManager.cs" />
+    <Compile Include="PlatformActions\RefineResourceAction.cs" />
     <Compile Include="Screen\ELogEventType.cs" />
     <Compile Include="Screen\EventLog.cs" />
     <Compile Include="Manager\MilitaryManager.cs" />

@@ -38,8 +38,8 @@ namespace Singularity.Levels
                 content.Load<Texture2D>("Cones"),
                 content.Load<Texture2D>("PlatformBasic"),
                 content.Load<SpriteFont>("LibSans12"),
-                ref mDirector,
-                false);;
+                ref mDirector);;
+
             GameScreen.AddObject(sentinel);
             var platform1 = PlatformFactory.Get(EStructureType.Blank, ref mDirector, 3000, 3000, Map.GetResourceMap());
 
@@ -130,7 +130,7 @@ namespace Singularity.Levels
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2700), ref mDirector, false));
 
             //TESTMETHODS HERE ====================================
-            mDirector.GetDistributionDirector.GetManager(0).RequestResource(platform2, EResourceType.Oil, null);
+            mDirector.GetDistributionDirector.GetManager(platform2.GetGraphIndex()).RequestResource(platform2, EResourceType.Oil, null);
         }
 
         public GameScreen GetGameScreen()

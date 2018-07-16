@@ -820,7 +820,8 @@ namespace Singularity.Screen
 
             mClickOnTitleBar = false;
 
-            return false;
+            // still return true so that the selection box can end
+            return true;
         }
         /// <inheritdoc />
         /// <summary>

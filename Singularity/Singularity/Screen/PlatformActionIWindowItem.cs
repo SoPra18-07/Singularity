@@ -216,7 +216,16 @@ namespace Singularity.Screen
         private void ToggleButton(object sender, EventArgs eventArgs)
         {
             if (!mClicked) return;
-            mPlatformAction.UiToggleState();
+            var test = mPlatformAction as RefineResourceAction;
+            if (test != null)
+            {
+                test.UiToggleAll();
+            }
+            else
+            {
+                mPlatformAction.UiToggleState();
+            }
+            // mPlatformAction.UiToggleState();
             ((TextField) mCollection.mItemList[0]).UpdateText(mPlatformAction.State.ToString());
         }
 
