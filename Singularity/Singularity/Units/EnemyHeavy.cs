@@ -7,7 +7,7 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="MilitaryUnit"/>
     [DataContract]
-    internal class EnemyHeavy : MilitaryHeavy
+    internal class EnemyHeavy : EnemyUnit
     {
         /// <summary>
         /// Enemy units controlled by AI and opposed to the player; Heavy type.
@@ -17,9 +17,12 @@ namespace Singularity.Units
         /// <param name="director">Reference to the game director.</param>
         /// <param name="map">Reference to the game map.</param>
         public EnemyHeavy(Vector2 position, Camera camera, ref Director director)
-            : base(position, camera, ref director, false)
+            : base(position, camera, ref director)
         {
-            mColor = Color.Maroon;
+            Speed = MilitaryUnitStats.HeavySpeed;
+            Health = MilitaryUnitStats.HeavyHealth;
+            Range = MilitaryUnitStats.HeavyRange;
+            mColor = new Color(new Vector3(0.75682f, .247058f, 0.054902f));
         }
     }
 }

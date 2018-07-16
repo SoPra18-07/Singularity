@@ -75,7 +75,7 @@ namespace Singularity.Map
 
             mCollisionMap = new CollisionMap();
             mStructureMap = new StructureMap(fow, ref director);
-            mResourceMap = new ResourceMap(initialResources);
+            mResourceMap = new ResourceMap(initialResources, director);
 
             director.GetStoryManager.StructureMap = mStructureMap;
         }

@@ -9,7 +9,7 @@ using Singularity.Property;
 namespace Singularity.Screen
 {
     /// <summary>
-    /// EventLog IWindowItems are created by the eventLog when receiving a new event
+    /// GetEventLog IWindowItems are created by the eventLog when receiving a new event
     /// </summary>
     public sealed class EventLogIWindowItem : IWindowItem
     {

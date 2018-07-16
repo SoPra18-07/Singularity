@@ -19,9 +19,6 @@ namespace Singularity.Units
 
             mColor = new Color(new Vector3(0f, 0.34375f, 0.1484375f)); // Green
             mSelectedColor = new Color(new Vector3(0, 0.4453125f, 0.2109375f)); // Lighter Green
-
-            // Track the creation of a military unit in the statistics.
-            director.GetStoryManager.UpdateUnits("created");
         }
     }
 }

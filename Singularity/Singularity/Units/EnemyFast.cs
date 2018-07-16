@@ -7,7 +7,7 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="MilitaryUnit"/>
     [DataContract]
-    internal class EnemyFast : MilitaryFast
+    internal class EnemyFast : EnemyUnit
     {
         /// <summary>
         /// Enemy units controlled by AI and opposed to the player; Fast type.
@@ -17,9 +17,12 @@ namespace Singularity.Units
         /// <param name="director">Reference to the game director.</param>
         /// <param name="map">Reference to the game map.</param>
         public EnemyFast(Vector2 position, Camera camera, ref Director director)
-            : base(position, camera, ref director, false)
+            : base(position, camera, ref director)
         {
-            mColor = Color.Maroon;
+            Speed = MilitaryUnitStats.FastSpeed;
+            Health = MilitaryUnitStats.FastHealth;
+            Range = MilitaryUnitStats.FastRange;
+            mColor = new Color(new Vector3(0.80784f, 0.588235f, 0.176471f));
         }
     }
 }

@@ -77,7 +77,13 @@ namespace Singularity.Units
         /// </summary>
         [DataMember]
         private float mShootingTimer = -1f;
-        
+
+
+        /// <summary>
+        /// ID for the sound effect instance used by this class.
+        /// </summary>
+        protected int mSoundId;
+
         [DataMember]
         protected Color mShootColor = Color.White;
 
@@ -103,6 +109,8 @@ namespace Singularity.Units
             Center = new Vector2((AbsolutePosition.X + AbsoluteSize.X) * 0.5f, (AbsolutePosition.Y + AbsoluteSize.Y) * 0.5f );
 
             Range = MilitaryUnitStats.StandardRange;
+
+            mSoundId = mDirector.GetSoundManager.CreateSoundInstance("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
 
             // Track the creation of a military unit in the statistics.
             director.GetStoryManager.UpdateUnits("created");
@@ -190,27 +198,50 @@ namespace Singularity.Units
             if (Moved || !mShoot) return;
             // Rotate to the center of the shooting target
             Rotate(mShootingTarget.Center);
+            
 
-                
-            if (mShootingTimer < 0.5f)
-            {
-                mShootingTimer = (float) gameTime.TotalGameTime.TotalMilliseconds;
-                Shoot(mShootingTarget);
-            }
+                if (mShootingTimer < 0.5f)
+                {
+                    mShootingTimer = (float) gameTime.TotalGameTime.TotalMilliseconds;
+                    Shoot(mShootingTarget);
+                }
+
+                mCurrentTime = gameTime.TotalGameTime.TotalMilliseconds;
+                if (mShootingTimer + 750 <= gameTime.TotalGameTime.TotalMilliseconds)
+                {
+                    mShootingTimer = (float)gameTime.TotalGameTime.TotalMilliseconds;
+                    if (mShootingTarget != null)
+                    {
+                        Shoot(mShootingTarget);
+                    }
+                }
+        
         }
 
         private void Shoot(IDamageable target)
         {
+            mDirector.GetSoundManager.SetSoundPosition(mSoundId, Center.X, Center.Y);
+            mDirector.GetSoundManager.PlaySound(mSoundId);
+            target.MakeDamage(MilitaryUnitStats.mUnitStrength);
+            
             if (target != null)
             {
-                mDirector.GetSoundManager.PlaySound("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+                mDirector.GetSoundManager.PlaySound(mSoundId);
                 target.MakeDamage(MilitaryUnitStats.mUnitStrength);
 
                 //This should prevent the units to hold the reference to the target platform
                 //and further shooting at it despite it already being dead (they shoot in the
                 //air then)
                 var test = target as PlatformBlank;
+                var test2 = target as FreeMovingUnit;
                 if (test != null && test.HasDieded)
+                {
+                    mShootingTarget = null;
+                    mShootingTimer = -1;
+                    mShoot = false;
+                }
+
+                if (test2 != null && test2.HasDieded)
                 {
                     mShootingTarget = null;
                     mShootingTimer = -1;

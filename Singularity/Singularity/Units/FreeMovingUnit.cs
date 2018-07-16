@@ -11,7 +11,6 @@ using Singularity.Map;
 using Singularity.Map.Properties;
 using Singularity.Property;
 using Singularity.Screen;
-using Singularity.Utils;
 
 namespace Singularity.Units
 {
@@ -28,7 +27,27 @@ namespace Singularity.Units
         public int Id { get; private set; }
         [DataMember]
         public bool Friendly { get; protected set; }
+        
+        /// <summary>
+        /// The state of the unit in terms of living or dead. False when alive.
+        /// </summary>
+        [DataMember]
+        public bool HasDieded { get; private set; }
 
+        /// <summary>
+        /// The time of death of the unit, used to calculate when to fade away.
+        /// </summary>
+        [DataMember]
+        protected double mTimeOfDeath;
+
+        /// <summary>
+        /// The current time used for moving time information between methods not called by update.
+        /// </summary>
+        [DataMember]
+        protected double mCurrentTime;
+
+        [DataMember]
+        public bool KillMe { get; protected set; }
         #region Movement Variables
 
         /// <summary>
@@ -188,7 +207,7 @@ namespace Singularity.Units
             base.ReloadContent(ref director);
             mCamera = camera;
         }
-        
+
         /// <summary>
         /// Rotates unit when selected in order to face
         /// user mouse and eventually target destination.
@@ -269,13 +288,25 @@ namespace Singularity.Units
         public void MakeDamage(int damage)
         {
             Health -= damage;
+            if (Health <= 0 && !HasDieded)
+            {
+                Die();
+            }
         }
 
-        public bool Die()
+        public virtual bool Die()
         {
-            Console.Out.Write("I died and my friendly value is: " + Friendly);
-            mDead = true;
-            mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, Friendly ? "A Friendly" : "An enemy" + " unit was killed!", this);
+            HasDieded = true;
+            // stats tracking for the death of any free moving unit
+            mDirector.GetStoryManager.UpdateUnits(Friendly ? "lost" : "killed");
+            
+            mDirector.GetInputManager.FlagForRemoval(this);
+            mDirector.GetInputManager.RemoveMousePositionListener(this);
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
+            mDirector.GetMilitaryManager.RemoveUnit(this);
+            Moved = false;
+            mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, (Friendly ? "A friendly" : "An enemy") + " unit was killed!", this);
+
             return true;
         }
 

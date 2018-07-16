@@ -29,9 +29,10 @@ namespace Singularity.Screen
         private readonly Texture2D mButtonTexture;
         private string mButtonText;
         private readonly SpriteFont mFont;
+        private readonly SpriteEffects mSpriteEffects;
 
         // distinguish between mouse over hover or not
-        private Color mColor;
+        protected Color mColor;
 
         private Rectangle mBounds;
         private bool mClicked;
@@ -63,12 +64,13 @@ namespace Singularity.Screen
         /// <summary>
         /// Creates a button using a Texture2D
         /// </summary>
-        /// todo: @N @yvan write comments ... everywhere, at least some.
-        /// <param name="scale"> scale of the texture</param>
-        /// <param name="buttonTexture"></param>
-        /// <param name="position"></param>
-        /// <param name="withBorder"></param>
-        public Button(float scale, Texture2D buttonTexture, Vector2 position, bool withBorder, EventArgs eventArgs = default(EventArgs))
+        ///  <param name="scale"> Scale of the texture</param>
+        /// <param name="buttonTexture">Texture to be used as the button.</param>
+        /// <param name="position">Position of the button.</param>
+        /// <param name="withBorder">Whether the texture should have a border or not.</param>
+        /// <param name="eventArgs">Any custom event args that may be used.</param>
+        /// <param name="spriteEffects">The Sprite Effects to be used on the texture. Defaults to none.</param>
+        public Button(float scale, Texture2D buttonTexture, Vector2 position, bool withBorder, EventArgs eventArgs = default(EventArgs), SpriteEffects spriteEffects = SpriteEffects.None)
         {
             mIsText = false;
             mScale = scale;
@@ -81,6 +83,7 @@ namespace Singularity.Screen
             ActiveInWindow = true;
             mWithBorder = withBorder;
             mEventArgs = eventArgs;
+            mSpriteEffects = spriteEffects;
         }
 
 
@@ -92,7 +95,7 @@ namespace Singularity.Screen
         /// <param name="sourceRectangle">crop the buttonTexture</param>
         /// <param name="position"></param>
         /// <param name="withBorder"></param>
-        public Button(float scale, Texture2D buttonTexture, Rectangle sourceRectangle, Vector2 position, bool withBorder, EventArgs eventArgs = default(EventArgs))
+        public Button(float scale, Texture2D buttonTexture, Rectangle sourceRectangle, Vector2 position, bool withBorder, EventArgs eventArgs = default(EventArgs), SpriteEffects spriteEffects = SpriteEffects.None)
         {
             mIsText = false;
             mCrop = true;
@@ -204,7 +207,7 @@ namespace Singularity.Screen
         /// the button.
         /// </summary>
         /// <param name="spriteBatch"></param>
-        public void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
             if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
             {
@@ -228,7 +231,7 @@ namespace Singularity.Screen
                             0f,
                             new Vector2(0, 0),
                             mScale,
-                            SpriteEffects.None,
+                            mSpriteEffects,
                             0f);
                     }
                     // draw for buttons which do not need to crop the texture
@@ -241,7 +244,7 @@ namespace Singularity.Screen
                             0f,
                             new Vector2(0, 0),
                             mScale,
-                            SpriteEffects.None,
+                            mSpriteEffects,
                             0f);
                     }
 
@@ -269,7 +272,7 @@ namespace Singularity.Screen
         /// as well as sending out button events through user interactions.
         /// </summary>
         /// <param name="gametime"></param>
-        public void Update(GameTime gametime)
+        public virtual void Update(GameTime gametime)
         {
             if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
             {
@@ -353,7 +356,7 @@ namespace Singularity.Screen
         public Vector2 Position { get; set; }
 
         // Size of the button
-        public Vector2 Size { get; private set; }
+        public Vector2 Size { get; protected set; }
 
         // active button <-> inactive button
         public bool ActiveInWindow { get; set; }

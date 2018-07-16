@@ -180,7 +180,7 @@ namespace Singularity.Map
             mGraphIdToGraph[index] = graph;
             mPlatformToGraphId[platform] = index;
             platform.SetGraphIndex(index);
-            
+
             UpdateGenUnitsGraphIndex(mGraphIdToGraph[index], index);
 
             mDirector.GetDistributionDirector.AddManager(index);
@@ -194,7 +194,7 @@ namespace Singularity.Map
         public void RemovePlatform(PlatformBlank platform)
         {
             mPlatforms.Remove(platform);
-            
+
 
             // TODO : made this only for friendly platforms since right now enemy platforms should not be added to Graph ID
             if (platform.Friendly)

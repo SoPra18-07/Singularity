@@ -189,6 +189,16 @@ namespace Singularity.Manager
 
         }
 
+        /// <summary>
+        /// Call this if you dont want to add the unit to the mHostile /mFriendly lists but to the unitmap.
+        /// ONLY DO THIS IF YOU KNOW WHAT YOU DO.
+        /// </summary>
+        /// <param name="unit"></param>
+        internal void AddUnit(ICollider unit)
+        {
+            mUnitMap.AddUnit(unit);
+        }
+
         #endregion
 
         #region Methods to remove from the manager
@@ -246,16 +256,13 @@ namespace Singularity.Manager
             var unitsToKill = new List<FreeMovingUnit>();
             var platformsToKill = new List<PlatformBlank>();
 
+            mUnitMap?.Update(gametime);
+
             #region Check targets for friendly units
 
             foreach (var unit in mFriendlyMilitary)
             {
                 // iterate through each friendly unit, if there's a target nearby, shoot the closest one.
-                if (unit.Moved)
-                {
-                    mUnitMap.MoveUnit(unit);
-                }
-
                 // get all the adjacent units
                 var adjacentUnits = mUnitMap.GetAdjacentUnits(unit.AbsolutePosition);
 
@@ -385,12 +392,6 @@ namespace Singularity.Manager
             foreach (var unit in mHostileMilitary)
             {
                 // iterate through each hostile unit, if there's a target nearby, shoot it.
-                // iterate through each friendly unit, if there's a target nearby, shoot the closest one.
-                if (unit.Moved)
-                {
-                    mUnitMap.MoveUnit(unit);
-                }
-
                 // get all the adjacent units
                 var adjacentUnits = mUnitMap.GetAdjacentUnits(unit.AbsolutePosition);
 
@@ -512,7 +513,8 @@ namespace Singularity.Manager
             #endregion
 
             #region Kill them
-            
+
+            /*var newUnitKillList = new List<FreeMovingUnit>();
             foreach (var unit in unitsToKill)
             {
                 // tell the unit to die.
@@ -525,9 +527,10 @@ namespace Singularity.Manager
             foreach (var platform in platformsToKill)
             {
                 RemovePlatform(platform);
+                mUnitMap.RemoveUnit(platform);
                 mMap.GetCollisionMap().RemoveCollider(platform);
+            } */
 
-            }
             #endregion
 
             #region Flocking stuff

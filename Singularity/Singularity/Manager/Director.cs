@@ -13,17 +13,44 @@ using Singularity.Utils;
 namespace Singularity.Manager
 {
     [DataContract]
-    public class Director
+    public sealed class Director
     {
+        [DataMember]
+        public Clock GetClock { get; private set; }
+        [DataMember]
+        public IdGenerator GetIdGenerator { get; private set; }
+
+        public InputManager GetInputManager { get; private set; }
+
+        [DataMember]
+        public StoryManager GetStoryManager { get; private set; }
+
+        [DataMember]
+        public PathManager GetPathManager { get; private set; }
+
+        public SoundManager GetSoundManager { get; }
+
+        [DataMember]
+        public MilitaryManager GetMilitaryManager { get; private set; }
+
+        [DataMember]
+        public DistributionDirector GetDistributionDirector { get; private set; }
+
+        [DataMember]
+        public UserInterfaceController GetUserInterfaceController { get; private set; }
+
+        public GraphicsDeviceManager GetGraphicsDeviceManager { get; }
+
+        public EventLog GetEventLog { get; }
 
         public Director(ContentManager content, GraphicsDeviceManager graphics)
         {
             GetClock = new Clock();
             GetIdGenerator = new IdGenerator();
+            GetSoundManager = new SoundManager();
             GetInputManager = new InputManager();
             GetStoryManager = new StoryManager();
             GetPathManager = new PathManager();
-            GetSoundManager = new SoundManager();
             GetUserInterfaceController = new UserInterfaceController(this);
             GetDistributionDirector = new DistributionDirector(this);
             GetMilitaryManager = new MilitaryManager(this);
@@ -45,43 +72,10 @@ namespace Singularity.Manager
             GetPathManager = dir.GetPathManager;
             GetUserInterfaceController = dir.GetUserInterfaceController;
             GetDistributionDirector = dir.GetDistributionDirector;
-            GetDistributionDirector.ReloadContent(GetUserInterfaceController);
             GetStoryManager.LoadAchievements();
             GetMilitaryManager.ReloadContent(mapmeasurements, this);
-            GetEventLog = new EventLog(GetUserInterfaceController, this, content);
         }
-
-        [DataMember]
-        public Clock GetClock { get; private set; }
-        [DataMember]
-        public IdGenerator GetIdGenerator { get; private set; }
-
-        public InputManager GetInputManager { get; private set; }
-
-        [DataMember]
-        public StoryManager GetStoryManager { get; private set; }
-
-        [DataMember]
-        public PathManager GetPathManager { get; private set; }
-
-        public SoundManager GetSoundManager { get; }
-
-        [DataMember]
-        public MilitaryManager GetMilitaryManager { get; private set; }
-
-        [DataMember]
-        public FlockingManager GetFlockingManager { get; private set; }
-
-        [DataMember]
-        public DistributionDirector GetDistributionDirector { get; private set; }
-
-        [DataMember]
-        public UserInterfaceController GetUserInterfaceController { get; private set; }
-
-        public GraphicsDeviceManager GetGraphicsDeviceManager { get; }
-
-        public EventLog GetEventLog { get; private set; }
-
+        
         public void Update(GameTime gametime, bool isActive)
         {
             if (isActive)

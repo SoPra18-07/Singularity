@@ -29,6 +29,7 @@ namespace Singularity.PlatformActions
             var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryFast(mPlatform.Center + mOffset, camera, ref mDirector);
             mDirector.GetMilitaryManager.AddUnit(unit);
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(unit);
         }
     }
 
@@ -46,6 +47,7 @@ namespace Singularity.PlatformActions
             var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryHeavy(mPlatform.Center + mOffset, camera, ref mDirector);
             mDirector.GetMilitaryManager.AddUnit(unit);
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(unit);
         }
     }
 
@@ -60,7 +62,9 @@ namespace Singularity.PlatformActions
 
         protected override void CreateUnit()
         {
-            mDirector.GetStoryManager.Level.GameScreen.AddObject(new GeneralUnit(mPlatform, ref mDirector));
+            var unit = new GeneralUnit(mPlatform, ref mDirector);
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(unit);
+
         }
     }
 
@@ -95,9 +99,10 @@ namespace Singularity.PlatformActions
             var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryUnit(mPlatform.Center + mOffset, camera, ref mDirector);
             mDirector.GetMilitaryManager.AddUnit(unit);
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(unit);
         }
     }
-    
+
     [DataContract]
     public abstract class AMakeUnit : APlatformAction
     {
@@ -195,7 +200,7 @@ namespace Singularity.PlatformActions
         {
             return mMissingResources;
         }
-        
+
         public override void UiToggleState()
         {
             switch (State)

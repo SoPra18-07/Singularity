@@ -104,6 +104,21 @@ namespace Singularity.Utils
             return u.f;
         }
 
+        /// <summary>
+        /// Divides quickly by 2^divideBy.
+        /// </summary>
+        /// <param name="z">The numerator.</param>
+        /// <param name="divideBy">The exponent of the denominator 2^divideBy.</param>
+        /// <returns>The float divided by 2^divideBy.</returns>
+        public static float BitShiftFloat(float z, int divideBy)
+        {
+            FloatIntUnion u;
+            u.tmp = 0;
+            u.f = z;
+            u.tmp >>= divideBy;
+            return u.f;
+        }
+
         [StructLayout(LayoutKind.Explicit)]
         private struct FloatIntUnion
         {
