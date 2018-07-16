@@ -41,80 +41,7 @@ namespace Singularity.Levels
                 ref mDirector,
                 false);;
             GameScreen.AddObject(sentinel);
-                        var platform1 = PlatformFactory.Get(EStructureType.Energy, ref mDirector, 3000, 3000, Map.GetResourceMap());
 
-                        GameScreen.AddObject(platform1);
-
-                        var platform2 = PlatformFactory.Get(EStructureType.Well, ref mDirector, 2800, 3000, Map.GetResourceMap());
-                        GameScreen.AddObject(platform2);
-
-                        var road1 = new Road(platform1, platform2, ref mDirector);
-                        GameScreen.AddObject(road1);
-
-                        var platform3 = PlatformFactory.Get(EStructureType.Laser, ref mDirector, 3200, 3200, Map.GetResourceMap());
-
-                        GameScreen.AddObject(platform3);
-                        var road2 = new Road(platform2, platform3, ref mDirector);
-                        GameScreen.AddObject(road2);
-                        var road3 = new Road(platform3, platform1, ref mDirector);
-                        GameScreen.AddObject(road3);
-
-
-
-                        var platform4 = PlatformFactory.Get(EStructureType.Energy, ref mDirector, 3000, 2800, Map.GetResourceMap());
-
-                        GameScreen.AddObject(platform4);
-                        var road4 = new Road(platform1, platform4, ref mDirector);
-                        GameScreen.AddObject(road4);
-
-
-
-                        var road5 = new Road(platform4, platform3, ref mDirector);
-                        GameScreen.AddObject(road5);
-
-                        // Enemy Unit
-                        var enemyUnit = new EnemyUnit(new Vector2(3300, 3200), Camera, ref mDirector, ref map);
-                       // var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
-
-                        //var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, Ui);<
-
-                        var rock1 = new Rock(new Vector2(3500, 2800), ref mDirector);
-                        //var rock2 = new Rock(new Vector2(3500, 3000));
-
-                        GameScreen.AddObject(rock1);
-                        //GameScreen.AddObject(rock2);
-
-                        // GenUnits
-                        var genUnit = new List<GeneralUnit>(5);
-                        for (var i = 0; i < 5; i++)
-                        {
-                            genUnit.Add(new GeneralUnit(platform1, ref mDirector));
-                        }
-
-                        // Resources
-                        var res = new Resource(EResourceType.Metal, platform2.Center, mDirector);
-                        var res4 = new Resource(EResourceType.Metal, platform2.Center, mDirector);
-                        var res5 = new Resource(EResourceType.Metal, platform2.Center, mDirector);
-                        var res8 = new Resource(EResourceType.Metal, platform1.Center, mDirector);
-                        var res9 = new Resource(EResourceType.Metal, platform1.Center, mDirector);
-                        var res10 = new Resource(EResourceType.Oil, platform1.Center, mDirector);
-                        var res11 = new Resource(EResourceType.Oil, platform1.Center, mDirector);
-                        var res12 = new Resource(EResourceType.Oil, platform2.Center, mDirector);
-
-                        platform2.StoreResource(res);
-                        platform2.StoreResource(res4);
-                        platform2.StoreResource(res5);
-                        platform1.StoreResource(res8);
-                        platform1.StoreResource(res9);
-                        platform1.StoreResource(res10);
-                        platform1.StoreResource(res11);
-                        platform2.StoreResource(res12);
-
-                        GameScreen.AddObjects(genUnit);
-                        //GameScreen.AddObject(enemyUnit);
-                        //GameScreen.AddObject(milUnit);
-            var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
-            GameScreen.AddObject(milUnit);
             var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, Ui);
             GameScreen.AddObject(settler);
 
@@ -123,7 +50,6 @@ namespace Singularity.Levels
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2700), ref mDirector, false));
 
             //TESTMETHODS HERE ====================================
-            //mDirector.GetDistributionDirector.GetManager(platform2.GetGraphIndex()).RequestResource(platform2, EResourceType.Oil, null);
         }
 
         public GameScreen GetGameScreen()

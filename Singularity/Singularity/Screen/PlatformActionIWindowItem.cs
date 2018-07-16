@@ -89,8 +89,20 @@ namespace Singularity.Screen
                 spriteFont: spriteFont,
                 color: Color.White);
 
-            // button that (de)activates the platformAction
-            mStateToggleButton = new Button("(de)activate", spriteFont, Vector2.Zero) {Opacity = 1f};
+            if (mPlatformAction is MakeFastMilitaryUnit ||
+                mPlatformAction is MakeHeavyMilitaryUnit ||
+                mPlatformAction is MakeStandardMilitaryUnit ||
+                mPlatformAction is MakeGeneralUnit ||
+                mPlatformAction is MakeSettlerUnit)
+            {
+                // don't use the standard text for the button since the action is different (just creat button - will toggle back when created)
+                mStateToggleButton = new Button("create", spriteFont, Vector2.Zero) { Opacity = 1f };
+            }
+            else
+            {
+                // button that (de)activates the platformAction
+                mStateToggleButton = new Button("(de)activate", spriteFont, Vector2.Zero) { Opacity = 1f };
+            }
 
             // a textfiel that is just added to shift the button in the horizontal collection
             var emptyToShift = new TextField(
@@ -229,16 +241,8 @@ namespace Singularity.Screen
         private void ToggleButton(object sender, EventArgs eventArgs)
         {
             if (!mClicked) { return; }
-            var test = mPlatformAction as RefineResourceAction;
-            if (test != null)
-            {
-                test.UiToggleAll();
-            }
-            else
-            {
-                mPlatformAction.UiToggleState();
-            }
-            // mPlatformAction.UiToggleState();
+
+            mPlatformAction.UiToggleState();
             ((TextField) mCollection.mItemList[0]).UpdateText(mPlatformAction.State.ToString());
         }
 

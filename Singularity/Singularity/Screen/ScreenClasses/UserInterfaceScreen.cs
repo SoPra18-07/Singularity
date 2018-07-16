@@ -710,7 +710,7 @@ namespace Singularity.Screen.ScreenClasses
             mResourceWindow = new WindowObject("// RESOURCES", new Vector2(0, 0), new Vector2(resourceWidth, resourceHeight), true, mLibSans14, mDirector);
 
             // create all items (these are simple starting values which will be updated automatically by the UI controller)
-            mResourceInfoText = new TextField("             /" + mResourceWindowTicker + "sec", Vector2.Zero, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10, Color.White);
+            mResourceInfoText = new TextField("         production per " + mResourceWindowXSeconds + " sec", Vector2.Zero, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10, Color.White);
 
             mResourceItemChip = new ResourceIWindowItem(EResourceType.Chip, 0, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
             mResourceItemConcrete = new ResourceIWindowItem(EResourceType.Concrete, 0, new Vector2(mResourceWindow.Size.X - 40, mResourceWindow.Size.Y), mLibSans10);
