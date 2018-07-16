@@ -10,7 +10,7 @@ using Singularity.Utils;
 namespace Singularity.Resources
 {
     [DataContract]
-    public class Resource : ISpatial
+    public class Resource : ADie, ISpatial
     {
         // TODO: fkarg implement
         [DataMember]
@@ -31,7 +31,7 @@ namespace Singularity.Resources
         [DataMember]
         private Optional<GeneralUnit> mFollowing;
 
-        public Resource(EResourceType type, Vector2 position, Director director)
+        public Resource(EResourceType type, Vector2 position, Director director) : base(ref director)
         {
             Type = type;
             AbsolutePosition = position;
@@ -95,7 +95,7 @@ namespace Singularity.Resources
             mVelocity = Vector2.Multiply(mVelocity, 0.8f);
         }
 
-        public bool Die()
+        public override bool Die()
         {
             UnFollow();
             return true;

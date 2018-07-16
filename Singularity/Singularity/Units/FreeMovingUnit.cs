@@ -17,7 +17,7 @@ namespace Singularity.Units
     /// <inheritdoc cref="ICollider"/>
     /// <inheritdoc cref="IRevealing"/>
     [DataContract]
-    internal abstract class FreeMovingUnit : ICollider, IRevealing, IMouseClickListener, IMousePositionListener
+    internal abstract class FreeMovingUnit : ADie, ICollider, IRevealing, IMouseClickListener, IMousePositionListener
     {
         /// <summary>
         /// The unique ID of the unit.
@@ -220,7 +220,7 @@ namespace Singularity.Units
         /// map, and implements pathfinding for objects on the map. It also allows subclasses to have
         /// health and to be damaged.
         /// </remarks>
-        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true)
+        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true) : base(ref director)
         {
             Id = director.GetIdGenerator.NextiD(); // id for the specific unit.
 
@@ -423,11 +423,11 @@ namespace Singularity.Units
             Health -= damage;
             if (Health <= 0 && !HasDieded)
             {
-                Die();
+                FlagForDeath();
             }
         }
 
-        public virtual bool Die()
+        public override bool Die()
         {
             HasDieded = true;
             // stats tracking for the death of any free moving unit

@@ -9,7 +9,7 @@ using Singularity.Property;
 namespace Singularity.Nature
 {
     [DataContract]
-    public class Puddle : ICollider
+    public class Puddle : ADie, ICollider
     {
         public bool[,] ColliderGrid { get; internal set; }
 
@@ -36,7 +36,7 @@ namespace Singularity.Nature
         [DataMember]
         public bool Friendly { get; private set; }
 
-        public Puddle(Vector2 position, ref Director director, bool bigPuddle = true)
+        public Puddle(Vector2 position, ref Director director, bool bigPuddle = true) : base(ref director)
         {
             Id = director.GetIdGenerator.NextiD();
             AbsoluteSize = new Vector2(160, 130);
@@ -158,7 +158,7 @@ namespace Singularity.Nature
             // do nothing
         }
 
-        public bool Die()
+        public override bool Die()
         {
             throw new NotImplementedException();
         }

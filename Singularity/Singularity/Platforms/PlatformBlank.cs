@@ -26,7 +26,7 @@ namespace Singularity.Platforms
     /// <inheritdoc cref="ICollider"/>
     /// <inheritdoc cref="IDamageable"/>
     [DataContract]
-    public class PlatformBlank : IRevealing, INode, ICollider, IMouseClickListener
+    public class PlatformBlank : ADie, IRevealing, INode, ICollider, IMouseClickListener
     {
         #region private
 
@@ -224,7 +224,7 @@ namespace Singularity.Platforms
 
         protected int mPowerDownSoundId;
 
-        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libsans12, ref Director director, EStructureType type = EStructureType.Blank, float centerOffsetY = -36, bool friendly = true)
+        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libsans12, ref Director director, EStructureType type = EStructureType.Blank, float centerOffsetY = -36, bool friendly = true) : base(ref director)
         {
 
             mPrevPlatformActions = new List<IPlatformAction>();
@@ -543,7 +543,7 @@ namespace Singularity.Platforms
             {
                 if (mType == EStructureType.Blank)
                 {
-                    Die();
+                    FlagForDeath();
                 }
                 else
                 {
@@ -1074,7 +1074,7 @@ namespace Singularity.Platforms
             mDirector.GetMilitaryManager.AddUnit(this);
         }
 
-        public bool Die()
+        public override bool Die()
         {
             // stats tracking for a platform death
             mDirector.GetStoryManager.UpdatePlatforms(Friendly ? "lost" : "destroyed");
