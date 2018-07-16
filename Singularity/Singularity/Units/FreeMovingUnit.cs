@@ -428,6 +428,8 @@ namespace Singularity.Units
         {
             mDead = true;
             mDirector.GetInputManager.FlagForRemoval(this);
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
+            mDirector.GetMilitaryManager.RemoveUnit(this);
             mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, Friendly ? "A Friendly" : "An enemy" + " unit was killed!", this);
             return true;
         }

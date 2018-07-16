@@ -494,7 +494,7 @@ namespace Singularity.Manager
 
             #region Kill them
 
-            var newUnitKillList = new List<FreeMovingUnit>();
+            /*var newUnitKillList = new List<FreeMovingUnit>();
             foreach (var unit in unitsToKill)
             {
                 // tell the unit to die.
@@ -502,14 +502,14 @@ namespace Singularity.Manager
                 mDirector.GetStoryManager.Level.GameScreen.RemoveObject(unit);
                 mUnitMap.RemoveUnit(unit);
                 RemoveUnit(unit);
-                mMap.GetCollisionMap().RemoveCollider(unit);
             }
 
             foreach (var platform in platformsToKill)
             {
                 RemovePlatform(platform);
                 mUnitMap.RemoveUnit(platform);
-            }
+                mMap.GetCollisionMap().RemoveCollider(platform);
+            }*/
             #endregion
         }
     }

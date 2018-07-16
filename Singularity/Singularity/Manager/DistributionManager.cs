@@ -869,7 +869,7 @@ namespace Singularity.Manager
                         //We have to re-add the units to the job list because GetUnitsFairly did unassign them
                         mProduction.Add(unit);
                         //Also unassigns the unit.
-                        unit.AssignTask(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
+                        unit.AssignTask(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(platform.GetIPlatformActions()[0])));
                     }
 
                     mProdPlatforms.Add(new Pair<PlatformBlank, int>(platform, list.Count));

@@ -449,6 +449,7 @@ namespace Singularity.Map
             {
                 road.Draw(spriteBatch);
             }
+            // todo: draw MapResources here
         }
 
         public void Update(GameTime gametime)

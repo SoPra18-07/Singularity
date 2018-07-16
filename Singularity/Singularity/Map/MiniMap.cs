@@ -54,7 +54,7 @@ namespace Singularity.Map
         /// <summary>
         /// A list of all the resources in the game
         /// </summary>
-        private List<MapResource> mMapResources;
+        // private List<MapResource> mMapResources;
 
         public Vector2 Position { get; set; }
 
@@ -92,7 +92,7 @@ namespace Singularity.Map
 
             mRevealing = new LinkedList<IRevealing>();
             mPlatforms = new LinkedList<PlatformBlank>();
-            mMapResources = new List<MapResource>();
+            // mMapResources = new List<MapResource>();
 
             Size = new Vector2(MapConstants.MiniMapWidth, MapConstants.MiniMapHeight);
             Position = new Vector2(0, 0);
@@ -162,7 +162,7 @@ namespace Singularity.Map
             }
 
             mPlatforms = mDirector.GetStoryManager.Level.Map.GetStructureMap().GetPlatformList();
-            mMapResources = mDirector.GetStoryManager.Level.Map.GetResourceMap().GetAllResources();
+            // mMapResources = mDirector.GetStoryManager.Level.Map.GetResourceMap().GetAllResources();
             mRevealing = mDirector.GetStoryManager.Level.Map.GetFogOfWar().GetRevealingObjects();
 
         }

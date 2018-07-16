@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
+using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Utils;
 
@@ -14,7 +18,7 @@ namespace Singularity.Map
     /// itself. So we literally obtain all our desired information from the resource directly.
     /// </summary>
     [DataContract]
-    public sealed class ResourceMap
+    public sealed class ResourceMap : IDraw
     {
         /// <summary>
         /// The director for the game
@@ -36,49 +40,42 @@ namespace Singularity.Map
         /// <param name="initialResources">A list holding intial resource values. If left empty it will be null</param>
         internal ResourceMap(IEnumerable<MapResource> initialResources)
         {
+            mLocationCache = new Dictionary<Vector2, List<MapResource>>();
             if (initialResources == null)
             {
                 return;
             }
 
-            mLocationCache = new Dictionary<Vector2, List<MapResource>>();
             mResourceMap = new List<MapResource>(initialResources);
         }
 
 
         public Optional<Resource> GetWellResource(Vector2 location)
         {
+            Debug.WriteLine("Looking for Well-Resource at " + location);
             var resourcesWell = GetResources(location).Where(r => r.Type == EResourceType.Water || r.Type == EResourceType.Oil).ToList();
-            if (resourcesWell.Count() <= 0)
-            {
-                return Optional<Resource>.Of(null);
-            }
-            return resourcesWell[0].Get(location);
+            Debug.WriteLine("There is: " + resourcesWell.Count);
+            return !resourcesWell.Any() ? Optional<Resource>.Of(null) : resourcesWell[0].Get(location);
         }
 
-        public Optional<Resource> GetQuarryResource(Vector2 location) {
-            return Optional<Resource>.Of(new Resource(EResourceType.Stone, location, ref mDirector));
+        public Optional<Resource> GetQuarryResource(Vector2 location)
+        {
+            var rnd = new Random();
+            return Optional<Resource>.Of(rnd.Next(2) == 0 ? new Resource(EResourceType.Stone, location) : new Resource(EResourceType.Sand, location));
             // this is reference-based and totally fine, since there'll be only references then ... we don't care about that, and as soon as the references are all gone, the GC will take care of it. :)
             // (but yes, actually this could break, since we rely heavily on how c# handles references and stuff.)
         }
 
         public Optional<Resource> GetMineResource(Vector2 location) {
             var resourcesMine = GetResources(location).Where(r => r.Type == EResourceType.Metal).ToList();
-            if (resourcesMine.Count() <= 0) {
-                return Optional<Resource>.Of(null);
-            }
-            return resourcesMine[0].Get(location);
+            return !resourcesMine.Any() ? Optional<Resource>.Of(null) : resourcesMine[0].Get(location);
         }
 
         // TODO
         public Optional<Resource> GetAmmoResource(Vector2 location)
         {
             var resourceAmmo = GetResources(location).Where(r => r.Type == EResourceType.Metal).ToList();
-            if (!resourceAmmo.Any())
-            {
-                return Optional<Resource>.Of(null);
-            }
-            return resourceAmmo[0].Get(location);
+            return !resourceAmmo.Any() ? Optional<Resource>.Of(null) : resourceAmmo[0].Get(location);
         }
 
 
@@ -91,24 +88,17 @@ namespace Singularity.Map
         {
             // note, the location cache is probably reason number 1 if bugs occur with resources being there even though they shouldn't be,
             // we need to take care, that the resources are getting properly removed.
-
-            if (mLocationCache[location] != null)
+            
+            if (mLocationCache.ContainsKey(location))
             {
                 return mLocationCache[location];
             }
-
-            var foundResources = new List<MapResource>();
-
-            foreach (var resource in mResourceMap)
-            {
-                if (new Rectangle((int) resource.RelativePosition.X,
-                    (int)resource.RelativePosition.Y,
-                    (int)resource.RelativeSize.X,
-                    (int)resource.RelativeSize.Y).Intersects(new Rectangle((int)location.X, (int)location.Y, 1, 1)))
-                {
-                    foundResources.Add(resource);
-                }
-            }
+            
+            var foundResources = mResourceMap.Where(resource => new Rectangle((int) resource.AbsolutePosition.X,
+                    (int) resource.AbsolutePosition.Y,
+                    (int) resource.AbsoluteSize.X,
+                    (int) resource.AbsoluteSize.Y).Intersects(new Rectangle((int) location.X, (int) location.Y, 1, 1)))
+                .ToList();
 
             mLocationCache[location] = foundResources;
 
@@ -132,6 +122,11 @@ namespace Singularity.Map
         {
             mResourceMap.Remove(toRemove);
             mLocationCache.Clear();
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            mResourceMap.ForEach(r => r.Draw(spriteBatch));
         }
     }
 }
