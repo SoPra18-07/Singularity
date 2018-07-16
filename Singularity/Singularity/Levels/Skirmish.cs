@@ -41,7 +41,7 @@ namespace Singularity.Levels
                 ref mDirector,
                 false);;
             GameScreen.AddObject(sentinel);
-            /*            var platform1 = PlatformFactory.Get(EStructureType.Blank, ref mDirector, 3000, 3000, Map.GetResourceMap());
+                        var platform1 = PlatformFactory.Get(EStructureType.Energy, ref mDirector, 3000, 3000, Map.GetResourceMap());
 
                         GameScreen.AddObject(platform1);
 
@@ -51,7 +51,7 @@ namespace Singularity.Levels
                         var road1 = new Road(platform1, platform2, ref mDirector);
                         GameScreen.AddObject(road1);
 
-                        var platform3 = PlatformFactory.Get(EStructureType.Quarry, ref mDirector, 3200, 3200, Map.GetResourceMap());
+                        var platform3 = PlatformFactory.Get(EStructureType.Laser, ref mDirector, 3200, 3200, Map.GetResourceMap());
 
                         GameScreen.AddObject(platform3);
                         var road2 = new Road(platform2, platform3, ref mDirector);
@@ -74,9 +74,9 @@ namespace Singularity.Levels
 
                         // Enemy Unit
                         var enemyUnit = new EnemyUnit(new Vector2(3300, 3200), Camera, ref mDirector, ref map);
-                        var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
+                       // var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
 
-                        var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, Ui);<
+                        //var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, Ui);<
 
                         var rock1 = new Rock(new Vector2(3500, 2800), ref mDirector);
                         //var rock2 = new Rock(new Vector2(3500, 3000));
@@ -92,26 +92,18 @@ namespace Singularity.Levels
                         }
 
                         // Resources
-                        var res = new Resource(EResourceType.Metal, platform2.Center);
-                        var res4 = new Resource(EResourceType.Metal, platform2.Center);
-                        var res5 = new Resource(EResourceType.Metal, platform2.Center);
-                        var res6 = new Resource(EResourceType.Metal, platform3.Center);
-                        var res7 = new Resource(EResourceType.Metal, platform4.Center);
-                        var res2 = new Resource(EResourceType.Chip, platform3.Center);
-                        var res3 = new Resource(EResourceType.Oil, platform4.Center);
-                        var res8 = new Resource(EResourceType.Metal, platform1.Center);
-                        var res9 = new Resource(EResourceType.Metal, platform1.Center);
-                        var res10 = new Resource(EResourceType.Oil, platform1.Center);
-                        var res11 = new Resource(EResourceType.Oil, platform1.Center);
-                        var res12 = new Resource(EResourceType.Oil, platform2.Center);
+                        var res = new Resource(EResourceType.Metal, platform2.Center, mDirector);
+                        var res4 = new Resource(EResourceType.Metal, platform2.Center, mDirector);
+                        var res5 = new Resource(EResourceType.Metal, platform2.Center, mDirector);
+                        var res8 = new Resource(EResourceType.Metal, platform1.Center, mDirector);
+                        var res9 = new Resource(EResourceType.Metal, platform1.Center, mDirector);
+                        var res10 = new Resource(EResourceType.Oil, platform1.Center, mDirector);
+                        var res11 = new Resource(EResourceType.Oil, platform1.Center, mDirector);
+                        var res12 = new Resource(EResourceType.Oil, platform2.Center, mDirector);
 
                         platform2.StoreResource(res);
-                        platform3.StoreResource(res2);
-                        platform4.StoreResource(res3);
                         platform2.StoreResource(res4);
                         platform2.StoreResource(res5);
-                        platform3.StoreResource(res6);
-                        platform4.StoreResource(res7);
                         platform1.StoreResource(res8);
                         platform1.StoreResource(res9);
                         platform1.StoreResource(res10);
@@ -119,8 +111,10 @@ namespace Singularity.Levels
                         platform2.StoreResource(res12);
 
                         GameScreen.AddObjects(genUnit);
-                        GameScreen.AddObject(enemyUnit);
-                        GameScreen.AddObject(milUnit);*/
+                        //GameScreen.AddObject(enemyUnit);
+                        //GameScreen.AddObject(milUnit);
+            var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
+            GameScreen.AddObject(milUnit);
             var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, Ui);
             GameScreen.AddObject(settler);
 

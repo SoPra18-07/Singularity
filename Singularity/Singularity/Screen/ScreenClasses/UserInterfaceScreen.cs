@@ -1830,7 +1830,8 @@ namespace Singularity.Screen.ScreenClasses
 
         public void UpdateSLiderHandler()
         {
-
+            mCivilUnitsSliderHandler?.Refresh();
+            mCivilUnitsSliderHandler?.ForceSliderPages();
         }
 
         /// <summary>

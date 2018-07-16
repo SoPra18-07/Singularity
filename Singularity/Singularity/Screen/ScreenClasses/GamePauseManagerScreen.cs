@@ -24,7 +24,7 @@ namespace Singularity.Screen.ScreenClasses
 
         // All connecting screens
         private GamePauseScreen mGamePauseScreen;
-        // private ITransitionableMenu mSaveGameScreen;
+        private SaveGameScreen mSaveGameScreen;
         private StatisticsScreen mStatisticsScreen;
 
         // Screen transition variables
@@ -61,6 +61,7 @@ namespace Singularity.Screen.ScreenClasses
         private void Initialize(Vector2 screenResolution, Director director)
         {
             mGamePauseScreen = new GamePauseScreen(screenResolution);
+            mSaveGameScreen = new SaveGameScreen(screenResolution);
             mStatisticsScreen = new StatisticsScreen(screenResolution, director);
         }
 
@@ -105,6 +106,10 @@ namespace Singularity.Screen.ScreenClasses
                         sPressed = "None";
                         sPausedAgain = true;
                     }
+                    if (sPressed == "Save Game")
+                    {
+                        SwitchScreen(EScreen.SaveGameScreen, mGamePauseScreen, mSaveGameScreen, gametime);
+                    }
                     if (sPressed == "Statistics")
                     {
                         SwitchScreen(EScreen.StatisticsScreen, mGamePauseScreen, mStatisticsScreen, gametime);
@@ -112,6 +117,12 @@ namespace Singularity.Screen.ScreenClasses
                     if (sPressed == "Main Menu") // TODO: Implement a way to get back to the Main Menu from Pause Menu.
                     {
                         throw new NotImplementedException();
+                    }
+                    break;
+                case EScreen.SaveGameScreen:
+                    if (sPressed == "Back")
+                    {
+                        SwitchScreen(EScreen.GamePauseScreen, mSaveGameScreen, mGamePauseScreen, gametime);
                     }
                     break;
                 case EScreen.StatisticsScreen:
@@ -123,7 +134,6 @@ namespace Singularity.Screen.ScreenClasses
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
         }
 
         /// <summary>
@@ -205,12 +215,6 @@ namespace Singularity.Screen.ScreenClasses
             return true;
         }
 
-        /* public static void SetResolution(Vector2 viewportResolution)
-        {
-            sResolutionChanged = true;
-            sViewportResolution = viewportResolution;
-        } */
-
         #region GamePauseScreen Button Handlers
 
         /// <summary>
@@ -222,6 +226,17 @@ namespace Singularity.Screen.ScreenClasses
         public static void OnResumeButtonReleased(Object sender, EventArgs eventArg)
         {
             sPressed = "Resume";
+        }
+
+        /// <summary>
+        /// Receives Statistics button released event and changes sPressed
+        /// to result in screen change within Update method.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        public static void OnSaveGameButtonReleased(Object sender, EventArgs eventArgs)
+        {
+            sPressed = "Save Game";
         }
 
         /// <summary>

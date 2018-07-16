@@ -54,7 +54,7 @@ namespace Singularity.PlatformActions
 
         private void CreateResource()
         {
-            var nRes = new Resource(mRefiningTo, mPlatform.Center);
+            var nRes = new Resource(mRefiningTo, mPlatform.Center, mDirector);
             mPlatform.StoreResource(nRes);
             mReady = false;
         }

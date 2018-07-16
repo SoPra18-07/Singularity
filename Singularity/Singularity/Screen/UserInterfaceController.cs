@@ -11,7 +11,7 @@ using Singularity.Utils;
 namespace Singularity.Screen
 {
     /// <summary>
-    /// The UserInterfaceController manages the exchange between anything and the UI
+    /// The GetUserInterfaceController manages the exchange between anything and the UI
     /// </summary>
     [DataContract]
     public sealed class UserInterfaceController
@@ -27,7 +27,7 @@ namespace Singularity.Screen
         internal UserInterfaceScreen ControlledUserInterface { get; set; }
 
         /// <summary>
-        /// Creates an UserInterfaceController which manages the exchange between classes and the UI
+        /// Creates an GetUserInterfaceController which manages the exchange between classes and the UI
         /// </summary>
         /// <param name="director">the director</param>
         internal UserInterfaceController(Director director)
@@ -115,7 +115,7 @@ namespace Singularity.Screen
         }
 
         /// <summary>
-        /// Updates the eventLog by passing the newest event and the oldest event from the EventLog
+        /// Updates the eventLog by passing the newest event and the oldest event from the GetEventLog
         /// </summary>
         /// <param name="newEvent">event to add to eventLog</param>
         /// <param name="oldEvent">oldest event to eventually delete</param>
@@ -143,6 +143,11 @@ namespace Singularity.Screen
         internal void SplitGraph(int splittedGraphId)
         {
             ControlledUserInterface?.SplitGraph(splittedGraphId);
+        }
+
+        public void UpdateSLiderHandler()
+        {
+            ControlledUserInterface.UpdateSLiderHandler();
         }
 
         /// <summary>

@@ -101,6 +101,8 @@ namespace Singularity.Platforms
         [DataMember]
         private EStructureType mPlatformType;
 
+        private int mPlatformCreateSoundId;
+
         public StructurePlacer(EStructureType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, ref Map.Map map, float x = 0, float y = 0, ResourceMap resourceMap = null)
         {
             mUnregister = false;
@@ -142,6 +144,16 @@ namespace Singularity.Platforms
             mPlatform = PlatformFactory.Get(platformType, ref director, x, y, resourceMap);
             mPlatform.SetLayer(LayerConstants.PlatformAboveFowLayer);
             UpdateBounds();
+
+            // makes a sound once when platform is placed
+            mPlatformCreateSoundId = mDirector.GetSoundManager.CreateSoundInstance("PlatformCreate",
+                mPlatform.Center.X,
+                mPlatform.Center.Y,
+                .24f,
+                .01f,
+                true,
+                false,
+                SoundClass.Effect);
 
         }
 
@@ -209,14 +221,8 @@ namespace Singularity.Platforms
                         if (!mPlaySound)
                         {
                             // makes a sound once when platform is placed
-                            mDirector.GetSoundManager.PlaySound("PlatformCreate",
-                                mPlatform.Center.X,
-                                mPlatform.Center.Y,
-                                .24f,
-                                .01f,
-                                true,
-                                false,
-                                SoundClass.Effect);
+                            mDirector.GetSoundManager.SetSoundPosition(mPlatformCreateSoundId, mMouseX, mMouseY);
+                            mDirector.GetSoundManager.PlaySound(mPlatformCreateSoundId);
                             mPlaySound = true;
                         }
 

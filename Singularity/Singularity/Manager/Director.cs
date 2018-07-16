@@ -13,44 +13,8 @@ using Singularity.Utils;
 namespace Singularity.Manager
 {
     [DataContract]
-    public class Director
+    public sealed class Director
     {
-
-        public Director(ContentManager content, GraphicsDeviceManager graphics)
-        {
-            GetClock = new Clock();
-            GetIdGenerator = new IdGenerator();
-            GetInputManager = new InputManager();
-            GetStoryManager = new StoryManager();
-            GetPathManager = new PathManager();
-            GetSoundManager = new SoundManager();
-            GetUserInterfaceController = new UserInterfaceController(this);
-            GetDistributionDirector = new DistributionDirector(this);
-            GetMilitaryManager = new MilitaryManager(this); // TODO: Update this code if the MilitaryManager is not getting everything from the StructureMap or sth ...
-                                                        // (like units telling it they exist and the like)
-            GetEventLog = new EventLog(GetUserInterfaceController, this, content);
-            GetGraphicsDeviceManager = graphics;
-
-            GetSoundManager.LoadContent(content);
-            GetSoundManager.PlaySoundTrack();
-            // Dd}{_:
-        }
-
-        internal void ReloadContent(Director dir, Vector2 mapmeasurements, ContentManager content)
-        {
-            GetClock = dir.GetClock;
-            GetIdGenerator = dir.GetIdGenerator;
-            GetStoryManager = dir.GetStoryManager;
-            GetMilitaryManager = dir.GetMilitaryManager;
-            GetPathManager = dir.GetPathManager;
-            GetUserInterfaceController = dir.GetUserInterfaceController;
-            GetDistributionDirector = dir.GetDistributionDirector;
-            GetDistributionDirector.ReloadContent(GetUserInterfaceController);
-            GetStoryManager.LoadAchievements();
-            GetMilitaryManager.ReloadContent(mapmeasurements, this);
-            GetEventLog = new EventLog(GetUserInterfaceController, this, content);
-        }
-
         [DataMember]
         public Clock GetClock { get; private set; }
         [DataMember]
@@ -77,7 +41,40 @@ namespace Singularity.Manager
 
         public GraphicsDeviceManager GetGraphicsDeviceManager { get; }
 
-        public EventLog GetEventLog { get; private set; }
+        public EventLog GetEventLog { get; }
+
+        public Director(ContentManager content, GraphicsDeviceManager graphics)
+        {
+            GetClock = new Clock();
+            GetIdGenerator = new IdGenerator();
+            GetSoundManager = new SoundManager();
+            GetInputManager = new InputManager();
+            GetStoryManager = new StoryManager();
+            GetPathManager = new PathManager();
+            GetUserInterfaceController = new UserInterfaceController(this);
+            GetDistributionDirector = new DistributionDirector(this);
+            GetMilitaryManager = new MilitaryManager(this); // TODO: Update this code if the MilitaryManager is not getting everything from the StructureMap or sth ...
+                                                        // (like units telling it they exist and the like)
+            GetEventLog = new EventLog(GetUserInterfaceController, this, content);
+            GetGraphicsDeviceManager = graphics;
+
+            GetSoundManager.LoadContent(content);
+            GetSoundManager.PlaySoundTrack();
+            // Dd}{_:
+        }
+
+        internal void ReloadContent(Director dir, Vector2 mapmeasurements, ContentManager content)
+        {
+            GetClock = dir.GetClock;
+            GetIdGenerator = dir.GetIdGenerator;
+            GetStoryManager = dir.GetStoryManager;
+            GetMilitaryManager = dir.GetMilitaryManager;
+            GetPathManager = dir.GetPathManager;
+            GetUserInterfaceController = dir.GetUserInterfaceController;
+            GetDistributionDirector = dir.GetDistributionDirector;
+            GetStoryManager.LoadAchievements();
+            GetMilitaryManager.ReloadContent(mapmeasurements, this);
+        }
 
         public void Update(GameTime gametime, bool isActive)
         {

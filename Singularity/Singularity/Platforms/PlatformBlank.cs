@@ -218,6 +218,12 @@ namespace Singularity.Platforms
         [DataMember]
         public JobType Property { get; set; }
 
+        protected int mDestroyPlatSoundId;
+
+        protected int mPowerOnSoundId;
+
+        protected int mPowerDownSoundId;
+
         public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libsans12, ref Director director, EStructureType type = EStructureType.Blank, float centerOffsetY = -36, bool friendly = true)
         {
 
@@ -255,6 +261,25 @@ namespace Singularity.Platforms
 
             SetPlatfromParameters(); // this changes the draw parameters based on the platform type but
             // also sets the AbsoluteSize and collider grids
+
+            // Sound Effects
+            mDestroyPlatSoundId = mDirector.GetSoundManager.CreateSoundInstance("DestroyPlat", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+            mPowerOnSoundId = mDirector.GetSoundManager.CreateSoundInstance("PowerOff",
+                Center.X,
+                Center.Y,
+                .1f,
+                .01f,
+                true,
+                false,
+                SoundClass.Effect);
+            mPowerDownSoundId = mDirector.GetSoundManager.CreateSoundInstance("PowerDown",
+                Center.X,
+                Center.Y,
+                .1f,
+                .01f,
+                true,
+                false,
+                SoundClass.Effect);
 
             //default?
             Health = 10;
@@ -335,7 +360,7 @@ namespace Singularity.Platforms
             mIPlatformActions.Add(buildBluePrint);
         }
 
-        internal void ReloadContent(ContentManager content, ref Director dir)
+        public virtual void ReloadContent(ContentManager content, ref Director dir)
         {
             mPlatformSpriteSheet = content.Load<Texture2D>(mSpritename);
             mPlatformBaseTexture = content.Load<Texture2D>("PlatformBasic");
@@ -359,7 +384,27 @@ namespace Singularity.Platforms
                 },
                 size: mLibSans12.MeasureString(str),
                 platform: this, director: mDirector);
+
             SetPlatfromParameters();
+
+            // Sound Effects
+            mDestroyPlatSoundId = mDirector.GetSoundManager.CreateSoundInstance("DestroyPlat", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+            mPowerOnSoundId = mDirector.GetSoundManager.CreateSoundInstance("PowerOff",
+                Center.X,
+                Center.Y,
+                .1f,
+                .01f,
+                true,
+                false,
+                SoundClass.Effect);
+            mPowerDownSoundId = mDirector.GetSoundManager.CreateSoundInstance("PowerDown",
+                Center.X,
+                Center.Y,
+                .1f,
+                .01f,
+                true,
+                false,
+                SoundClass.Effect);
         }
 
         public void SetColor(Color color)
@@ -387,11 +432,11 @@ namespace Singularity.Platforms
             }
 
             else if (IsDefense() && Friendly)
-            { 
+            {
 
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this);
             }
-            
+
         }
 
         /// <summary>
@@ -503,7 +548,7 @@ namespace Singularity.Platforms
                 else
                 {
                     // makes destruction sound
-                    mDirector.GetSoundManager.PlaySound("DestroyPlat", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+                    mDirector.GetSoundManager.PlaySound(mDestroyPlatSoundId);
                     DieBlank();
                 }
             }
@@ -985,6 +1030,8 @@ namespace Singularity.Platforms
         /// </summary>
         public void DieBlank()
         {
+            // stats tracking for a platform death
+            mDirector.GetStoryManager.UpdatePlatforms(Friendly ? "lost" : "destroyed");
 
             mDirector.GetInputManager.FlagForRemoval(this);
             //Already tells the unit that it is no longer employed
@@ -1012,8 +1059,8 @@ namespace Singularity.Platforms
 
 
             mResources.RemoveAll(r => r.Die());
-            mResources = new List<Resource> {new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center),
-                new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center)};
+            mResources = new List<Resource> {new Resource(EResourceType.Trash, Center, mDirector), new Resource(EResourceType.Trash, Center, mDirector),
+                new Resource(EResourceType.Trash, Center, mDirector), new Resource(EResourceType.Trash, Center, mDirector), new Resource(EResourceType.Trash, Center, mDirector)};
 
             mRequested = new Dictionary<EResourceType, int>();
 
@@ -1023,13 +1070,15 @@ namespace Singularity.Platforms
             mDrainingEnergy = 0;
 
             UpdateValues();
+            mDirector.GetMilitaryManager.RemovePlatform(this);
+            mDirector.GetMilitaryManager.AddUnit(this);
         }
 
-        /// <summary>
-        /// This will kill the platform for good.
-        /// </summary>
         public bool Die()
         {
+            // stats tracking for a platform death
+            mDirector.GetStoryManager.UpdatePlatforms(Friendly ? "lost" : "destroyed");
+
             mIPlatformActions.RemoveAll(a => a.Die());
 
             mResources.RemoveAll(r => r.Die());
@@ -1040,6 +1089,7 @@ namespace Singularity.Platforms
             // TODO: REMOVE from everywhere.
             // see https://github.com/SoPra18-07/Singularity/issues/215
 
+
             // removing the PlatformActions first
 
             var toKill = new List<IEdge>();
@@ -1048,6 +1098,7 @@ namespace Singularity.Platforms
             foreach (var unit in GetGeneralUnitsOnPlatform())
             {
                 unit.Die();
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(unit);
             }
 
             foreach (var road in mInwardsEdges)
@@ -1163,15 +1214,7 @@ namespace Singularity.Platforms
             if (manually)
             {
                 // TODO find a power on sound
-                mDirector.GetSoundManager.PlaySound("PowerOff",
-                    Center.X,
-                    Center.Y,
-                    .1f,
-                    .01f,
-                    true,
-                    false,
-                    SoundClass.Effect);
-                mIsManuallyDeactivated = false;
+                mDirector.GetSoundManager.PlaySound(mPowerOnSoundId);
             }
             ResetColor();
             //Only reregister the platforms if they are defense or production platforms
@@ -1209,18 +1252,11 @@ namespace Singularity.Platforms
             if (manually)
             {
                 // TODO maybe need to regulate sound a little when put to action
-                mDirector.GetSoundManager.PlaySound("PowerDown",
-                    Center.X,
-                    Center.Y,
-                    .1f,
-                    .01f,
-                    true,
-                    false,
-                    SoundClass.Effect);
+                mDirector.GetSoundManager.PlaySound(mPowerDownSoundId);
 
                 mIsManuallyDeactivated = true;
             }
-            
+
             // TODO: remove this or change it to something more appropriately, this is used by @Ativelox for
             // TODO: debugging purposes to easily see which platforms are currently deactivated
             mColor = Color.Green;
