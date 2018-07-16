@@ -11,7 +11,6 @@ using Singularity.Map;
 using Singularity.Map.Properties;
 using Singularity.Property;
 using Singularity.Screen;
-using EventLog = Singularity.Screen.EventLog;
 
 namespace Singularity.Units
 {
