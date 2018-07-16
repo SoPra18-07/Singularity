@@ -156,7 +156,7 @@ namespace Singularity.Manager
 
         public DistributionManager GetManager(int graphid)
         {
-            return mDMs[graphid];
+             return mDMs[graphid];
         }
 
         public void RemoveManager(int graphId, Dictionary<int, Graph.Graph> graphIdToGraph)

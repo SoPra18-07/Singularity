@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Map;
@@ -149,10 +150,14 @@ namespace Singularity.Manager
         /// <param name="unit">The unit to be added to the manager.</param>
         internal void AddUnit(FreeMovingUnit unit)
         {
+            //I dont know who made the inheritance but it fucked everything up. The Enemy unit is now a Military unit too
+            //And that means the enemy unit is also added to the friendlymilitarylist lol.
+            //Hotfix: I just ask for both casts to be not null.
             var friendlyMilitary = unit as MilitaryUnit;
+            var friendlySettler = unit as Settler;
             var hostileMilitary = unit as EnemyUnit;
 
-            if (friendlyMilitary != null)
+            if (friendlyMilitary != null && hostileMilitary == null)
             {
                 mFriendlyMilitary.Add(friendlyMilitary);
             }
@@ -162,6 +167,7 @@ namespace Singularity.Manager
             }
 
             mUnitMap.AddUnit(unit);
+
         }
 
         #endregion
@@ -201,7 +207,7 @@ namespace Singularity.Manager
             var friendlyMilitary = unit as MilitaryUnit;
             var hostileMilitary = unit as EnemyUnit;
 
-            if (friendlyMilitary != null)
+            if (friendlyMilitary != null && hostileMilitary == null)
             {
                 mFriendlyMilitary.Remove(friendlyMilitary);
             }
@@ -221,16 +227,13 @@ namespace Singularity.Manager
             var unitsToKill = new List<FreeMovingUnit>();
             var platformsToKill = new List<PlatformBlank>();
 
+            mUnitMap?.Update(gametime);
+
             #region Check targets for friendly units
 
             foreach (var unit in mFriendlyMilitary)
             {
                 // iterate through each friendly unit, if there's a target nearby, shoot the closest one.
-                if (unit.Moved)
-                {
-                    mUnitMap.MoveUnit(unit);
-                }
-
                 // get all the adjacent units
                 var adjacentUnits = mUnitMap.GetAdjacentUnits(unit.AbsolutePosition);
 
@@ -281,10 +284,12 @@ namespace Singularity.Manager
                         }
                     }
                 }
+                
                 else
                 {
                     unit.SetShootingTarget(null);
                 }
+                //Debug.WriteLineIf(closestAdjacent != null, closestAdjacent);
             }
 
             #endregion
@@ -358,12 +363,6 @@ namespace Singularity.Manager
             foreach (var unit in mHostileMilitary)
             {
                 // iterate through each hostile unit, if there's a target nearby, shoot it.
-                // iterate through each friendly unit, if there's a target nearby, shoot the closest one.
-                if (unit.Moved)
-                {
-                    mUnitMap.MoveUnit(unit);
-                }
-
                 // get all the adjacent units
                 var adjacentUnits = mUnitMap.GetAdjacentUnits(unit.AbsolutePosition);
 
@@ -493,15 +492,14 @@ namespace Singularity.Manager
                 unit.Die();
                 mDirector.GetStoryManager.Level.GameScreen.RemoveObject(unit);
                 mUnitMap.RemoveUnit(unit);
-                mMap.GetCollisionMap().RemoveCollider(unit);
-                mMap.GetFogOfWar().RemoveRevealingObject(unit);
+                RemoveUnit(unit);
             }
 
             foreach (var platform in platformsToKill)
             {
                 RemovePlatform(platform);
+                mMap.GetCollisionMap().RemoveCollider(platform);
 
-                platform.Die();
             }
             #endregion
         }

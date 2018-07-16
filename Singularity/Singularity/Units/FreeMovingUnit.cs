@@ -304,6 +304,7 @@ namespace Singularity.Units
             {
                 return false;
             }
+
             mToAdd = Vector2.Zero;
             return true;
         }
@@ -314,6 +315,11 @@ namespace Singularity.Units
         /// <returns></returns>
         protected bool HasReachedWaypoint()
         {
+            //TODO: This is a hotfix for mPath being empty but peek being called. I dont know if this could cause additional errors.
+            if (mPath.Count == 0)
+            {
+                return true;
+            }
             if (Math.Abs(Center.X + mToAdd.X - mPath.Peek().X) < 8
                 && Math.Abs(Center.Y + mToAdd.Y - mPath.Peek().Y) < 8)
             {
@@ -420,6 +426,7 @@ namespace Singularity.Units
 
         public bool Die()
         {
+            Console.Out.Write("I died and my friendly value is: " + Friendly);
             mDead = true;
             mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, Friendly ? "A Friendly" : "An enemy" + " unit was killed!", this);
             return true;

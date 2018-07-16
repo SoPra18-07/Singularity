@@ -44,7 +44,7 @@ namespace Singularity.Screen
                 mCenterColor,
                 1f,
                 0.8f,
-                1f);
+                .6f);
 
             // draw all items of infoBox
             ((TextField) mItemList[0]).Draw(spriteBatch, true);

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Singularity.Property;
 
 namespace Singularity.Map
 {
-    internal sealed class UnitMap
+    internal sealed class UnitMap : IUpdate
     {
         /// <summary>
         /// Stores which units are in which grid position on the map.
@@ -27,7 +28,9 @@ namespace Singularity.Map
         internal UnitMap(int mapSizeX, int mapSizeY)
         {
             mLookupTable = new Dictionary<int, Vector2>();
-            mUnitGrid = new UnitMapTile[mapSizeX / 2, mapSizeY / 2];
+            // + 1 Because the Unit grid is an array and it can happen that there is an Indexoutofboundsexception
+            // when a unit is moving at the corner
+            mUnitGrid = new UnitMapTile[mapSizeX / 2 + 1, mapSizeY / 2 + 1];
 
             for (var i = 0; i < mUnitGrid.GetLength(0); i++)
             {
@@ -192,6 +195,26 @@ namespace Singularity.Map
 
             return new Vector2(column, row);
 
+        }
+
+        public void Update(GameTime gametime)
+        {
+            var movedUnitList = new List<ICollider>();
+            foreach (var unitMapTile in mUnitGrid)
+            {
+                foreach (var unit in unitMapTile.UnitList)
+                {
+                    if (unit.Moved)
+                    {
+                        movedUnitList.Add(unit);
+                    }
+                }
+            }
+
+            foreach (var unit in movedUnitList)
+            {
+                MoveUnit(unit);
+            }
         }
     }
 }

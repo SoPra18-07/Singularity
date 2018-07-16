@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Singularity.Exceptions;
 using Singularity.Graph;
 using Singularity.Input;
@@ -198,8 +199,10 @@ namespace Singularity.Platforms
 
         protected PlatformInfoBox mInfoBox;
 
+        [DataMember]
         protected Vector2 mBaseOffset;
 
+        public bool HasDieded { get; private set; }
         #endregion
 
         [DataMember]
@@ -219,6 +222,8 @@ namespace Singularity.Platforms
         {
 
             mPrevPlatformActions = new List<IPlatformAction>();
+
+            HasDieded = false;
 
             Id = director.GetIdGenerator.NextiD();
 
@@ -252,7 +257,7 @@ namespace Singularity.Platforms
             // also sets the AbsoluteSize and collider grids
 
             //default?
-            Health = 100;
+            Health = 10;
 
             //I dont think this class has to register in the DistributionManager
             //Add possible Actions in this array
@@ -375,13 +380,16 @@ namespace Singularity.Platforms
 
         public void Register()
         {
-            if (IsProduction())
+            //For now only register yourself at a DistributionManager when you are friendly. Maybe change that later
+            if (IsProduction() && Friendly)
             {
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this);
-            } else if (IsDefense())
-                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this);
-            {
+            }
 
+            else if (IsDefense() && Friendly)
+            { 
+
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this);
             }
             
         }
@@ -486,7 +494,7 @@ namespace Singularity.Platforms
         public void MakeDamage(int damage)
         {
             Health -= damage;
-            if (Health <= 0)
+            if (Health <= 0 && !HasDieded)
             {
                 if (mType == EStructureType.Blank)
                 {
@@ -618,8 +626,12 @@ namespace Singularity.Platforms
                     break;
             }
 
-            mInfoBox.UpdateString(GetResourceString());
-            mInfoBox.Draw(spritebatch);
+            // only if the platform is friendly and the mouse is hovering over it is the info box shown
+            if (Friendly && Bounds.Contains(new Vector2(Mouse.GetState().X, Mouse.GetState().Y)))
+            {
+                mInfoBox.UpdateString(GetResourceString());
+                mInfoBox.Draw(spritebatch);
+            }
 
             // also draw the resources on top
             /*
@@ -643,6 +655,8 @@ namespace Singularity.Platforms
 
             Bounds = new Rectangle((int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
 
+            // TODO: if the platform is an enemy it should not be subscribed to the input manager
+            // TODO: if the platform is an enemy it should not be subscribed to the input manager
             if (!mAddedToInputManager)
             {
                 // add this platform to inputManager once
@@ -992,7 +1006,7 @@ namespace Singularity.Platforms
             AbsolutePosition = new Vector2(AbsolutePosition.X, AbsolutePosition.Y);
 
             //default?
-            Health = 100;
+            Health = 10;
 
             mIPlatformActions.RemoveAll(a => a.Die());
 
@@ -1005,6 +1019,9 @@ namespace Singularity.Platforms
 
             Moved = false;
 
+            mProvidingEnergy = 0;
+            mDrainingEnergy = 0;
+
             UpdateValues();
         }
 
@@ -1013,7 +1030,6 @@ namespace Singularity.Platforms
         /// </summary>
         public bool Die()
         {
-
             mIPlatformActions.RemoveAll(a => a.Die());
 
             mResources.RemoveAll(r => r.Die());
@@ -1060,9 +1076,15 @@ namespace Singularity.Platforms
             mIPlatformActions.RemoveAll(a => a.Die());
             mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
+            if (!Friendly)
+            {
+                mDirector.GetStoryManager.Level.Ai.Kill(this);
+            }
             mDirector.GetInputManager.FlagForRemoval(this);
             mDirector.GetInputManager.RemoveMousePositionListener(mInfoBox);
             mInfoBox = null;
+            //This is needed so this code is not called multiple times
+            HasDieded = true;
             return true;
         }
 
@@ -1264,6 +1286,11 @@ namespace Singularity.Platforms
                 MakeDamage(Health);
                 return false;
             }
+            //Do not react to clicks when you are the enemy
+            if (!Friendly)
+            {
+                return true;
+            }
             mDirector.GetUserInterfaceController.ActivateMe(this);
             mDirector.GetUserInterfaceController.SelectedPlatformSetsGraphId(mGraphIndex);
             return false;
@@ -1271,7 +1298,7 @@ namespace Singularity.Platforms
 
         public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {
-            return !withinBounds;
+            return true;
         }
 
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)

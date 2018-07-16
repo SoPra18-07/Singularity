@@ -195,6 +195,7 @@ namespace Singularity.Platforms
 
                         mPlatform.SetColor(Color.Red);
                         mPlaySound = false;
+
                     }
 
                     break;
@@ -232,7 +233,7 @@ namespace Singularity.Platforms
 
                         // we only color the platform red if the distance to the platform hovered is too great
                         if (Vector2.Distance(mHoveringPlatform.Center, mPlatform.Center) >
-                            mPlatform.RevelationRadius + mHoveringPlatform.RevelationRadius)
+                            mPlatform.RevelationRadius + mHoveringPlatform.RevelationRadius || !mHoveringPlatform.Friendly)
                         {
                             mPlatform.SetColor(Color.Red);
                         }
@@ -330,10 +331,9 @@ namespace Singularity.Platforms
                         if (!mIsRoadPlacement)
                         {
 
-                            if (mHoveringPlatform == null)
+                            if (mHoveringPlatform == null || !mHoveringPlatform.Friendly)
                             {
                                 break;
-
                             }
 
                             // this limits two platforms to only be connectable by a road if the road isn't in the fog of war this was requested by felix
@@ -347,7 +347,7 @@ namespace Singularity.Platforms
                         }
                         else
                         {
-                            if (mHoveringPlatform == null || mHoveringPlatform.Equals(mOldHovering))
+                            if (mHoveringPlatform == null || mHoveringPlatform.Equals(mOldHovering) || !mHoveringPlatform.Friendly)
                             {
                                 break;
                             }
