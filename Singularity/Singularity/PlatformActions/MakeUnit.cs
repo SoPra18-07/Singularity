@@ -195,7 +195,12 @@ namespace Singularity.PlatformActions
         {
             return mMissingResources;
         }
-        
+
+        public Dictionary<EResourceType, int> GetBuildingCost()
+        {
+            return mBuildingCost;
+        }
+
         public override void UiToggleState()
         {
             switch (State)

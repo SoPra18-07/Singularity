@@ -1498,6 +1498,7 @@ namespace Singularity.Screen.ScreenClasses
             Dictionary<JobType, List<Pair<GeneralUnit, bool>>> unitAssignmentList,
             IEnumerable<IPlatformAction> actionsList)
         {
+            Console.Out.WriteLine("update selected");
             if (!mActiveUserInterface) { return; }
             // set window type
             mSelectedPlatformWindow.WindowName = type.ToString();
@@ -1633,120 +1634,116 @@ namespace Singularity.Screen.ScreenClasses
 
             #region actions
 
-/*
-            switch (type)
+            // remove all elements from window + list
+            foreach (var lastActionItem in mSelectedPlatformActionList)
             {
-                mMakeFastMilitaryAction.ActiveInWindow = false;
+                mSelectedPlatformWindow.DeleteItem(lastActionItem);
             }
-            if (mMakeHeavyMilitaryAction != null)
-            {
-                mMakeHeavyMilitaryAction.ActiveInWindow = false;
-            }
-            if (mProduceMineResourceAction != null)
-            {
-                mProduceMineResourceAction.ActiveInWindow = false;
-            }
-            if (mProduceQuarryResourceAction != null)
-            {
-                mProduceQuarryResourceAction.ActiveInWindow = false;
-            }
-            if (mProduceWellResourceAction != null)
-            {
-                mProduceWellResourceAction.ActiveInWindow = false;
-            }
-*/
+            mSelectedPlatformActionList = new List<PlatformActionIWindowItem>();
 
-            // activate all actions possible on this platform + add them to the window if they haven't been added yet
+            // activate all actions possible on this platform + add them to the window
             foreach (var action in actionsList)
             {
-                if (action is MakeFastMilitaryUnit)
+                if (action is MakeStandardMilitaryUnit)
                 {
-                    mMakeFastMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
+                    var makeStandardMilitaryUnitAction = new PlatformActionIWindowItem(action,
+                        mLibSans10,
+                        Vector2.Zero,
+                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y),
+                        mDirector);
+
+                    mSelectedPlatformWindow.AddItem(makeStandardMilitaryUnitAction);
+                    mSelectedPlatformActionList.Add(makeStandardMilitaryUnitAction);
+                }
+                else if (action is MakeFastMilitaryUnit)
+                {
+                    var makeFastMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
                         new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
-                    if (mFastMilitaryAdded) continue;
-                    mFastMilitaryAdded = true;
-                    mSelectedPlatformWindow.AddItem(mMakeFastMilitaryAction);
-                    mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
-                    mFastMilitaryAdded = true;
+                    mSelectedPlatformWindow.AddItem(makeFastMilitaryAction);
+                    mSelectedPlatformActionList.Add(makeFastMilitaryAction);
                 }
                 else if (action is MakeHeavyMilitaryUnit)
                 {
-                    mMakeHeavyMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
+                    var makeHeavyMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
-                    if (mStronggMilitaryAdded) continue;
-                    mStronggMilitaryAdded = true;
-                    mSelectedPlatformWindow.AddItem(mMakeHeavyMilitaryAction);
-                    mSelectedPlatformActionList.Add(mMakeHeavyMilitaryAction);
+                    mSelectedPlatformWindow.AddItem(makeHeavyMilitaryAction);
+                    mSelectedPlatformActionList.Add(makeHeavyMilitaryAction);
                 }
                 else if (action is ProduceMineResource)
                 {
-                    mProduceMineResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
+                    var produceMineResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
                         new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
-                    if (!mProduceMineResourceAdded)
-                    {
-                        mProduceMineResourceAdded = true;
-                        mSelectedPlatformWindow.AddItem(mProduceMineResourceAction);
-                        mSelectedPlatformActionList.Add(mProduceMineResourceAction);
-                    }
+                    mSelectedPlatformWindow.AddItem(produceMineResourceAction);
+                    mSelectedPlatformActionList.Add(produceMineResourceAction);
                 }
                 else if (action is ProduceQuarryResource)
                 {
-                    mProduceQuarryResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
+                    var produceQuarryResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
                         new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
-                    if (!mProduceQuarryResourceAdded)
-                    {
-                        mProduceQuarryResourceAdded = true;
-                        mSelectedPlatformWindow.AddItem(mProduceQuarryResourceAction);
-                        mSelectedPlatformActionList.Add(mProduceQuarryResourceAction);
-                    }
+                    mSelectedPlatformWindow.AddItem(produceQuarryResourceAction);
+                    mSelectedPlatformActionList.Add(produceQuarryResourceAction);
                 }
                 else if (action is ProduceWellResource)
                 {
-                    mProduceWellResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
+                    var produceWellResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
                         new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
-                    if (!mProduceWellResourceAdded)
-                    {
-                        mProduceWellResourceAdded = true;
-                        mSelectedPlatformWindow.AddItem(mProduceWellResourceAction);
-                        mSelectedPlatformActionList.Add(mProduceWellResourceAction);
-                    }
-                } else if (action is BuildBluePrint)
+                    mSelectedPlatformWindow.AddItem(produceWellResourceAction);
+                    mSelectedPlatformActionList.Add(produceWellResourceAction);
+                }
+                else if (action is BuildBluePrint)
                 {
-                    mBuildBluePrintAction = new PlatformActionIWindowItem(action,
+                    var buildBluePrintAction = new PlatformActionIWindowItem(action,
                         mLibSans10,
                         Vector2.Zero,
                         new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y),
                         mDirector);
-                    if (!mBuildBluePrintActionAdded)
-                    {
-                        mBuildBluePrintActionAdded = true;
-                        mSelectedPlatformWindow.AddItem(mBuildBluePrintAction);
-                        mSelectedPlatformActionList.Add(mBuildBluePrintAction);
-                    }
-                } else if (action is RefineResourceAction)
-                {
-                    mRefineResourceAction = new PlatformActionIWindowItem(action,
-                        mLibSans10,
-                        Vector2.Zero,
-                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y),
-                        mDirector);
-                    if (!mRefineResourceActionAdded)
-                    {
-                        mRefineResourceActionAdded = true;
-                        mSelectedPlatformWindow.AddItem(mRefineResourceAction);
-                        mSelectedPlatformActionList.Add(mRefineResourceAction);
-                    }
 
+                    mSelectedPlatformWindow.AddItem(buildBluePrintAction);
+                    mSelectedPlatformActionList.Add(buildBluePrintAction);
+                }
+                else if (action is RefineResourceAction)
+                {
+                    var refineResourceAction = new PlatformActionIWindowItem(action,
+                        mLibSans10,
+                        Vector2.Zero,
+                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y),
+                        mDirector,
+                        true);
+
+                    mSelectedPlatformWindow.AddItem(refineResourceAction);
+                    mSelectedPlatformActionList.Add(refineResourceAction);
+                }
+                else if (action is MakeGeneralUnit)
+                {
+                    var makeGeneralUnitAction = new PlatformActionIWindowItem(action,
+                        mLibSans10,
+                        Vector2.Zero,
+                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y),
+                        mDirector);
+
+                    mSelectedPlatformWindow.AddItem(makeGeneralUnitAction);
+                    mSelectedPlatformActionList.Add(makeGeneralUnitAction);
+                }
+                else if (action is MakeSettlerUnit)
+                {
+                    var makeSettlerUnitAction = new PlatformActionIWindowItem(action,
+                        mLibSans10,
+                        Vector2.Zero,
+                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y),
+                        mDirector);
+
+                    mSelectedPlatformWindow.AddItem(makeSettlerUnitAction);
+                    mSelectedPlatformActionList.Add(makeSettlerUnitAction);
                 }
             }
 
             #endregion
 
-            // reset the window's scroll value + open all lists in selectedPlatformWindow if the id changes
+            // reset the window's scroll value
             if (mSelectedPlatformId != id)
             {
                 mSelectedPlatformWindow.ResetScrollValue();

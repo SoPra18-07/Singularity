@@ -28,14 +28,17 @@ namespace Singularity.Screen
         // infoBox for required resources / units
         private readonly InfoBoxWindow mInfoBoxRequirements;
 
-        // barItem under the action to increase visibility between the actions
-        private readonly BarIWindowItem mBottomBar;
+/*        // barItem under the action to increase visibility between the actions
+        private readonly BarIWindowItem mBottomBar;*/
 
         // The PlatformAction to take care of
-        private IPlatformAction mPlatformAction;
+        private readonly IPlatformAction mPlatformAction;
 
         // button has been clicked on - to prevent the button from keeping firing
         private bool mClicked;
+
+        // bool to determine if the action is of type refineRes, because refineRes actions need to add the resource-to-be-produced
+        private bool mRefineRes;
         
         #endregion
 
@@ -47,13 +50,14 @@ namespace Singularity.Screen
         /// <param name="position">position of the IWindowItem (Vector.Zero if added to window)</param>
         /// <param name="size">size to fit the item in (width is important)</param>
         /// <param name="director">director</param>
-        public PlatformActionIWindowItem(IPlatformAction platformAction, SpriteFont spriteFont, Vector2 position, Vector2 size, Director director)
+        /// <param name="refineRes">the action is of type refineRes</param>
+        public PlatformActionIWindowItem(IPlatformAction platformAction, SpriteFont spriteFont, Vector2 position, Vector2 size, Director director, bool refineRes = false)
         {
-            mPlatformAction = platformAction;
             Size = new Vector2(size.X, spriteFont.MeasureString("A").Y * 2 + 5);
             Position = position;
 
             mPlatformAction = platformAction;
+            mRefineRes = refineRes;
 
             ActiveInWindow = true;
 
@@ -62,6 +66,12 @@ namespace Singularity.Screen
 
             // get action description
             var name = platformAction.ToString().Split('.')[2];
+
+            if (refineRes)
+            {
+                // since the action is of type refine resource
+                name = "refining to " + ((RefineResourceAction)platformAction).GetRefiningTo();
+            }
 
             // the platformAction's name
             mNameTextField = new TextField(
@@ -99,9 +109,9 @@ namespace Singularity.Screen
             // create a horizontal collection of the state and the button
             mCollection = new HorizontalCollection(new List<IWindowItem> {stateTextField, mStateToggleButton, emptyToShift}, new Vector2(size.X, spriteFont.MeasureString("A").Y + 5), Position);
 
-            mBottomBar = new BarIWindowItem(size.X - 50, Color.White);
+            //mBottomBar = new BarIWindowItem(size.X - 50, Color.White);
 
-            #region manage the requirement
+            #region manage the requirements
 
             // set up
             var productionUnits = 0;
@@ -163,8 +173,11 @@ namespace Singularity.Screen
                     Color.White));
             }
 
-            // add required resources + count to infoBox
-            infoBoxItemsList.AddRange(platformAction.GetRequiredResources().Select(resource => new ResourceIWindowItem(resource.Key, resource.Value, Vector2.Zero, spriteFont)));
+            // add required resources infoBox
+            if (mPlatformAction is AMakeUnit)
+            {
+                infoBoxItemsList.AddRange(((AMakeUnit)platformAction).GetBuildingCost().Select(resource => new ResourceIWindowItem(resource.Key, resource.Value, Vector2.Zero, spriteFont)));
+            }
             
             // create a infoBox containing all requirements to activate the platformAction
             mInfoBoxRequirements = new InfoBoxWindow(infoBoxItemsList, Vector2.Zero, Color.White, Color.Black, true, director);
@@ -175,11 +188,11 @@ namespace Singularity.Screen
         /// <inheritdoc />
         public void Update(GameTime gametime)
         {
-            if (!ActiveInWindow || InactiveInSelectedPlatformWindow || OutOfScissorRectangle) return;
+            if (!ActiveInWindow || InactiveInSelectedPlatformWindow || OutOfScissorRectangle) { return; }
             // update all positions
             mNameTextField.Position = Position;
             mCollection.Position = new Vector2(Position.X, Position.Y + mNameTextField.Size.Y + 5);
-            mBottomBar.Position = new Vector2(Position.X, mCollection.Position.Y + mCollection.Size.Y + 5 + 5);
+            //mBottomBar.Position = new Vector2(Position.X, mCollection.Position.Y + mCollection.Size.Y + 5 + 5);
 
             // update all components
             mInfoBoxRequirements.Update(gametime);
@@ -190,11 +203,11 @@ namespace Singularity.Screen
         /// <inheritdoc />
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (!ActiveInWindow || InactiveInSelectedPlatformWindow || OutOfScissorRectangle) return;
+            if (!ActiveInWindow || InactiveInSelectedPlatformWindow || OutOfScissorRectangle) { return; }
             //draw all components
             mCollection.Draw(spriteBatch);
             mNameTextField.Draw(spriteBatch);
-            mBottomBar.Draw(spriteBatch);
+            //mBottomBar.Draw(spriteBatch);
             mInfoBoxRequirements.Draw(spriteBatch);
         }
 
@@ -215,7 +228,7 @@ namespace Singularity.Screen
         /// <param name="eventArgs"></param>
         private void ToggleButton(object sender, EventArgs eventArgs)
         {
-            if (!mClicked) return;
+            if (!mClicked) { return; }
             var test = mPlatformAction as RefineResourceAction;
             if (test != null)
             {

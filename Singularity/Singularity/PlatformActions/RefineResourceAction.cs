@@ -59,6 +59,10 @@ namespace Singularity.PlatformActions
             mReady = false;
         }
 
+        public EResourceType GetRefiningTo()
+        {
+            return mRefiningTo;
+        }
 
         public override void UiToggleState()
         {

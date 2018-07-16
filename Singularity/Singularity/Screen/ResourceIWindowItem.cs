@@ -55,8 +55,8 @@ namespace Singularity.Screen
             // set to Vector.Zero, since the window will manage this item's position
             Position = Vector2.Zero;
 
-            var minItemWidth = size.Y / 2 + mSpriteFont.MeasureString(Amount.ToString()).X +
-                               mSpriteFont.MeasureString(mResourceText).X + 10;
+            var minItemWidth = mSpriteFont.MeasureString("Y").Y / 2 + mSpriteFont.MeasureString(Amount.ToString()).X +
+                               mSpriteFont.MeasureString(mResourceText).X + 30;
 
             // set size to automatically fit the text height + width
             Size = size.X < minItemWidth ? new Vector2(minItemWidth, mSpriteFont.MeasureString(mResourceText).Y) : new Vector2(size.X, mSpriteFont.MeasureString(mResourceText).Y);
