@@ -14,7 +14,7 @@ using Singularity.Utils;
 namespace Singularity.Units
 {
     [DataContract]
-    public sealed class GeneralUnit : ISpatial
+    public sealed class GeneralUnit : ADie, ISpatial
     {
         [DataMember]
         public int Id { get; private set; }
@@ -104,7 +104,7 @@ namespace Singularity.Units
         [DataMember]
         public bool Active { get; set; }
 
-        public GeneralUnit(PlatformBlank platform, ref Director director)
+        public GeneralUnit(PlatformBlank platform, ref Director director) : base(ref director)
         {
             Graphid = platform.GetGraphIndex();
             platform.AddGeneralUnit(this);
@@ -532,7 +532,7 @@ namespace Singularity.Units
             }
         }
 
-        public bool Die()
+        public override bool Die()
         {
             // stats tracking for the death of a general unit
             mDirector.GetStoryManager.UpdateUnits("lost");
