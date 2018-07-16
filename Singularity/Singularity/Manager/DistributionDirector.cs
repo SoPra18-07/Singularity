@@ -136,6 +136,7 @@ namespace Singularity.Manager
                 if (platform.IsDefense() || platform.IsProduction())
                 {
                     //Also removes the tasks of this platform from the oldDistributionManager
+                    //?mUserInterfaceController.CallingAllGraphs(graphIdToGraph);
                     olddist.Unregister(platformcontainer, platform.IsDefense(), false);
 
                     //Only readd the platform when it was in the old distributionmanager. That is the case only when its a defending or producing platform.

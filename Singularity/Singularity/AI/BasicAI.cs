@@ -51,9 +51,9 @@ namespace Singularity.AI
 
         public void Update(GameTime gametime)
         {
-            mBehavior.Spawn(gametime);
+            //mBehavior.Spawn(gametime);
 
-            mBehavior.Move(gametime);
+            //mBehavior.Move(gametime);
         }
 
         public IEnumerable<Spawner> GetSpawners()

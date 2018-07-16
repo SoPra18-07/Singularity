@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Runtime.Serialization;
 using Singularity.Manager;
 using Singularity.Units;
