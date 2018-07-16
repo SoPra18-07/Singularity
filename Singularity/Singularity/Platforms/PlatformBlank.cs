@@ -333,6 +333,11 @@ namespace Singularity.Platforms
             // Track the creation of a platform in the statistics.
             director.GetStoryManager.UpdatePlatforms("created");
 
+            if (!friendly)
+            {
+                mAddedToInputManager = true;
+            }
+
             // mInfoBox = new PlatformInfoBox(new List<IWindowItem> { new TextField("PlattformInfo", AbsolutePosition, AbsoluteSize, mLibSans12, Color.White) }, AbsoluteSize, new Color(0.86f, 0.86f, 0.86f), new Color(1f, 1, 1), true, this, mDirector);
 
             /*
