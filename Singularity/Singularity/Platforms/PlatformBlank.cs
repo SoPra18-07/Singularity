@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Singularity.Exceptions;
 using Singularity.Graph;
 using Singularity.Input;
@@ -619,7 +620,8 @@ namespace Singularity.Platforms
                     break;
             }
 
-            if (Friendly)
+            // only if the platform is friendly and the mouse is hovering over it is the info box shown
+            if (Friendly && Bounds.Contains(new Vector2(Mouse.GetState().X, Mouse.GetState().Y)))
             {
                 mInfoBox.UpdateString(GetResourceString());
                 mInfoBox.Draw(spritebatch);
