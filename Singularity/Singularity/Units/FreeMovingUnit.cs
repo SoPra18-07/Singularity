@@ -436,7 +436,7 @@ namespace Singularity.Units
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             mDirector.GetMilitaryManager.RemoveUnit(this);
             mIsMoving = false;
-            mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, Friendly ? "A Friendly" : "An enemy" + " unit was killed!", this);
+            mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, (Friendly ? "A friendly" : "An enemy") + " unit was killed!", this);
             return true;
         }
 

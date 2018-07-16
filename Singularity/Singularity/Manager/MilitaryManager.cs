@@ -170,6 +170,16 @@ namespace Singularity.Manager
 
         }
 
+        /// <summary>
+        /// Call this if you dont want to add the unit to the mHostile /mFriendly lists but to the unitmap.
+        /// ONLY DO THIS IF YOU KNOW WHAT YOU DO.
+        /// </summary>
+        /// <param name="unit"></param>
+        internal void AddUnit(ICollider unit)
+        {
+            mUnitMap.AddUnit(unit);
+        }
+
         #endregion
 
         #region Methods to remove from the manager
