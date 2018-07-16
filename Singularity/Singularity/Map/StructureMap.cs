@@ -544,14 +544,14 @@ namespace Singularity.Map
                 toRemove.AddLast(structureToAdd);
                 if (structureToAdd.GetPlatform() != null)
                 {
-                    AddPlatform(structureToAdd.GetPlatform());
+                    mDirector.GetStoryManager.Level.GameScreen.AddObject(structureToAdd.GetPlatform());
                     structureToAdd.GetPlatform().Register();
                     structureToAdd.GetConnectionRoad().Place(structureToAdd.GetPlatform(), hovering);
-                    AddRoad(structureToAdd.GetConnectionRoad());
+                    mDirector.GetStoryManager.Level.GameScreen.AddObject(structureToAdd.GetConnectionRoad());
                 }
                 else
                 {
-                    AddRoad(structureToAdd.GetRoad());
+                    mDirector.GetStoryManager.Level.GameScreen.AddObject(structureToAdd.GetRoad());
                 }
 
             }

@@ -348,8 +348,6 @@ namespace Singularity.Screen.ScreenClasses
 
             if (platform != null)
             {
-                //TODO: Remove this Register if Building is implemented
-                platform.Register();
                 mMap.AddPlatform(platform);
                 mDirector.GetMilitaryManager.AddPlatform(platform);
                 // mUpdateables.AddLast(platform); // otherwise Platforms won't produce as of now.
