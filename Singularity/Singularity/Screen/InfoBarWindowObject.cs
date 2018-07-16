@@ -70,7 +70,7 @@ namespace Singularity.Screen
         private readonly IScreenManager mScreenManager;
 
         // pause menu screen
-        private readonly GamePauseScreen mGamePauseScreen;
+        private readonly GamePauseManagerScreen mGamePauseManagerScreen;
 
         #endregion
 
@@ -164,7 +164,7 @@ namespace Singularity.Screen
             director.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
 
             // pause menu screen
-            mGamePauseScreen = new GamePauseScreen(new Vector2(director.GetGraphicsDeviceManager.PreferredBackBufferWidth, director.GetGraphicsDeviceManager.PreferredBackBufferHeight), mScreenManager, mDirector);
+            mGamePauseManagerScreen = new GamePauseManagerScreen(new Vector2(director.GetGraphicsDeviceManager.PreferredBackBufferWidth, director.GetGraphicsDeviceManager.PreferredBackBufferHeight), mScreenManager, mDirector);
         }
 
         /// <summary>
@@ -252,7 +252,7 @@ namespace Singularity.Screen
         // the pause button opens the pause menu screen
         private void PauseButtonReleased(object sender, EventArgs eventArgs)
         {
-            mScreenManager.AddScreen(mGamePauseScreen);
+            mScreenManager.AddScreen(mGamePauseManagerScreen);
         }
 
         // toggles the civilUnits window opened/closed

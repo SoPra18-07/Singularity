@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Platforms;
 
@@ -29,6 +31,23 @@ namespace Singularity.Screen
         {
             mItemList[0] = new TextField(resourceString, Position, PlatformBlank.mLibSans12.MeasureString(resourceString), PlatformBlank.mLibSans12, Color.Black);
             mSize = PlatformBlank.mLibSans12.MeasureString(resourceString);
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+
+            // infoBox Rectangle
+
+            spriteBatch.StrokedRectangle(new Vector2(Position.X, Position.Y),
+                new Vector2(mSize.X, mSize.Y),
+                mBorderColor,
+                mCenterColor,
+                1f,
+                0.8f,
+                .6f);
+
+            // draw all items of infoBox
+            ((TextField) mItemList[0]).Draw(spriteBatch, true);
         }
     }
 }

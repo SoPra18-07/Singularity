@@ -4,12 +4,13 @@ using Singularity.Map;
 
 namespace Singularity.Units
 {
-    internal sealed class MilitaryHeavy : MilitaryUnit
+    internal class MilitaryHeavy : MilitaryUnit
     {
         public MilitaryHeavy(Vector2 position,
             Camera camera,
-            ref Director director)
-            : base(position, camera, ref director)
+            ref Director director,
+            bool friendly = true)
+            : base(position, camera, ref director, friendly)
         {
             Speed = MilitaryUnitStats.HeavySpeed;
             Health = MilitaryUnitStats.HeavyHealth;
@@ -17,6 +18,9 @@ namespace Singularity.Units
 
             mColor = new Color(0.45703125f, 0.296875f, 0.140625f); // Brown
 			mSelectedColor = new Color(0.546875f, 0.3828125f, 0.22265625f); // Lighter brown
+
+            // Track the creation of a military unit in the statistics.
+            director.GetStoryManager.UpdateUnits("created");
         }
     }
 }

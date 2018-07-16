@@ -73,7 +73,12 @@ namespace Singularity.Levels
 
         public bool Skynet()
         {
-            if (PlatformsBuilt.GetFirst() + 1 == 1000)
+            // Initialize container, if it doesn't exist, yet.
+            if (PlatformsBuilt == null)
+            {
+                PlatformsBuilt = new Pair<int, bool>(0, false);
+            }
+            else if (PlatformsBuilt.GetFirst() + 1 == 1000)
             {
                 PlatformsBuilt = new Pair<int, bool>(PlatformsBuilt.GetFirst() + 1, true);
             }
@@ -96,7 +101,11 @@ namespace Singularity.Levels
 
         public bool Replicant()
         {
-            if (UnitsBuilt.GetFirst() + 1 == 1000)
+            if (UnitsBuilt == null)
+            {
+                UnitsBuilt = new Pair<int, bool>(0, false);
+            }
+            else if (UnitsBuilt.GetFirst() + 1 == 1000)
             {
                 UnitsBuilt = new Pair<int, bool>(UnitsBuilt.GetFirst() + 1, true);
             }

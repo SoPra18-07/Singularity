@@ -13,12 +13,6 @@ namespace Singularity.Platforms
     [DataContract]
     internal sealed class Mine : PlatformBlank
     {
-        [DataMember]
-        private new const int PlatformWidth = 144;
-        [DataMember]
-        private new const int PlatformHeight = 187;
-
-
         public Mine(Vector2 position,
             Texture2D spritesheet,
             Texture2D basesprite,
@@ -43,28 +37,13 @@ namespace Singularity.Platforms
             mSpritename = "Dome";
             Property = JobType.Production;
             SetPlatfromParameters();
+            mPlatformWidth = 144;
+            mPlatformHeight = 187;
         }
 
         public override void Produce()
         {
-            foreach (var pair in mAssignedUnits[JobType.Production])
-            {
-                //That means the unit is not at work yet.
-                if (!pair.GetSecond())
-                {
-                    continue;
-                }
-                mIPlatformActions[1].Execute();
-            }
-        }
-
-        public new void Update(GameTime time)
-        {
-            base.Update(time);
-            if (time.TotalGameTime.TotalSeconds % 5 <= 0.5)
-            {
-                Produce();
-            }
+            mIPlatformActions[0].Execute();
         }
     }
 }
