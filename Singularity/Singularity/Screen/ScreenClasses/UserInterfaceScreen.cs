@@ -1659,8 +1659,6 @@ namespace Singularity.Screen.ScreenClasses
 
                     mMakeFastMilitaryAction.ActiveInWindow = true;
 
-                    Console.Out.WriteLine("makefastmilitary");
-
                     if (mFastMilitaryAdded) { continue; }
 
                     mSelectedPlatformWindow.AddItem(mMakeFastMilitaryAction);
@@ -1673,8 +1671,6 @@ namespace Singularity.Screen.ScreenClasses
                         new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
                     mMakeStrongMilitaryAction.ActiveInWindow = true;
-
-                    Console.Out.WriteLine("makestrongmilitary");
 
                     if (mStronggMilitaryAdded) { continue; }
 
@@ -1689,8 +1685,6 @@ namespace Singularity.Screen.ScreenClasses
 
                     mProduceMineResourceAction.ActiveInWindow = true;
 
-                    Console.Out.WriteLine("produceMineRes");
-
                     if (mProduceMineResourceAdded) { continue; }
 
                     mSelectedPlatformWindow.AddItem(mProduceMineResourceAction);
@@ -1703,8 +1697,6 @@ namespace Singularity.Screen.ScreenClasses
                         new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
                     mProduceQuarryResourceAction.ActiveInWindow = true;
-
-                    Console.Out.WriteLine("produceQuarryRes");
 
                     if (mProduceQuarryResourceAdded) { continue; }
 
@@ -1719,8 +1711,6 @@ namespace Singularity.Screen.ScreenClasses
 
                     mProduceWellResourceAction.ActiveInWindow = true;
 
-                    Console.Out.WriteLine("produceWellRes");
-
                     if (mProduceWellResourceAdded) { continue; }
 
                     mSelectedPlatformWindow.AddItem(mProduceWellResourceAction);
@@ -1733,8 +1723,6 @@ namespace Singularity.Screen.ScreenClasses
                         new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
                     mBuildBluePrintAction.ActiveInWindow = true;
-
-                    Console.Out.WriteLine("build blueprint");
 
                     if (mBuildBluePrintActionAdded) { continue; }
 
