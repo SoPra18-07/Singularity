@@ -426,8 +426,8 @@ namespace Singularity.Units
 
         public bool Die()
         {
-            Console.Out.Write("I died and my friendly value is: " + Friendly);
             mDead = true;
+            mDirector.GetInputManager.FlagForRemoval(this);
             mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, Friendly ? "A Friendly" : "An enemy" + " unit was killed!", this);
             return true;
         }
