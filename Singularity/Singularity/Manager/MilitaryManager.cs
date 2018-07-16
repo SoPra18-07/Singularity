@@ -62,11 +62,29 @@ namespace Singularity.Manager
 
         private Director mDirector;
 
+        #region Counters
+        
+        /// <summary>
+        /// The total number of player military units on the map
+        /// </summary>
+        internal int PlayerUnitCount => mFriendlyMilitary.Count;
+
+        /// <summary>
+        /// The total number of player defense platforms on the map.
+        /// </summary>
+        internal int PlayerDefensePlatformCount => mFriendlyDefensePlatforms.Count;
+
+        /// <summary>
+        /// The total number of player platforms on the map.
+        /// </summary>
+        internal int PlayerPlatformCount => mUnitMap.PlayerPlatformCount;
+        
         /// <summary>
         /// The total number of military units on the map.
         /// </summary>
         internal int TotalUnitCount => mFriendlyMilitary.Count + mHostileMilitary.Count;
 
+        #endregion
 
         internal MilitaryManager(Director director)
         {
