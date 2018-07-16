@@ -502,12 +502,13 @@ namespace Singularity.Manager
                 mDirector.GetStoryManager.Level.GameScreen.RemoveObject(unit);
                 mUnitMap.RemoveUnit(unit);
                 RemoveUnit(unit);
-                mMap.GetCollisionMap().RemoveCollider(unit);
             }
 
             foreach (var platform in platformsToKill)
             {
                 RemovePlatform(platform);
+                mMap.GetCollisionMap().RemoveCollider(platform);
+
             }
             #endregion
         }
