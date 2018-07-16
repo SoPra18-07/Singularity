@@ -205,6 +205,7 @@ namespace Singularity.Map
 
                 mDirector.GetDistributionDirector.RemoveManager(index, mGraphIdToGraph);
                 mDirector.GetPathManager.RemoveGraph(index);
+                mPlatformToGraphId.Remove(platform);
             }
         }
 
