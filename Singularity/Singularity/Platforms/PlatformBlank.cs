@@ -985,6 +985,8 @@ namespace Singularity.Platforms
         /// </summary>
         public void DieBlank()
         {
+            // stats tracking for a platform death
+            mDirector.GetStoryManager.UpdatePlatforms(Friendly ? "lost" : "destroyed");
 
             mDirector.GetInputManager.FlagForRemoval(this);
             //Already tells the unit that it is no longer employed
@@ -1012,8 +1014,8 @@ namespace Singularity.Platforms
 
 
             mResources.RemoveAll(r => r.Die());
-            mResources = new List<Resource> {new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center),
-                new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center), new Resource(EResourceType.Trash, Center)};
+            mResources = new List<Resource> {new Resource(EResourceType.Trash, Center, mDirector), new Resource(EResourceType.Trash, Center, mDirector),
+                new Resource(EResourceType.Trash, Center, mDirector), new Resource(EResourceType.Trash, Center, mDirector), new Resource(EResourceType.Trash, Center, mDirector)};
 
             mRequested = new Dictionary<EResourceType, int>();
 
@@ -1030,6 +1032,9 @@ namespace Singularity.Platforms
         /// </summary>
         public bool Die()
         {
+            // stats tracking for a platform death
+            mDirector.GetStoryManager.UpdatePlatforms(Friendly ? "lost" : "destroyed");
+
             mIPlatformActions.RemoveAll(a => a.Die());
 
             mResources.RemoveAll(r => r.Die());

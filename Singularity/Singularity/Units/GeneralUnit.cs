@@ -534,6 +534,9 @@ namespace Singularity.Units
 
         public bool Die()
         {
+            // stats tracking for the death of a general unit
+            mDirector.GetStoryManager.UpdateUnits("lost");
+
             mTask = new Task(Job, Optional<PlatformBlank>.Of(null), null, Optional<IPlatformAction>.Of(null));
             if (Carrying.IsPresent())
             {
