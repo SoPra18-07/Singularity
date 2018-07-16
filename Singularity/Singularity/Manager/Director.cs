@@ -1,8 +1,9 @@
 ﻿using System.Runtime.Serialization;
-using System.Security.Cryptography.X509Certificates;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.AI;
+using Singularity.AI.Properties;
 using Singularity.Graph.Paths;
 using Singularity.Input;
 using Singularity.Screen;
@@ -15,78 +16,78 @@ namespace Singularity.Manager
     public sealed class Director
     {
         [DataMember]
-        public Clock Clock { get; private set; }
+        public Clock GetClock { get; private set; }
         [DataMember]
-        public IdGenerator IdGenerator { get; private set; }
+        public IdGenerator GetIdGenerator { get; private set; }
 
-        public InputManager InputManager { get; private set; }
-
-        [DataMember]
-        public StoryManager StoryManager { get; private set; }
+        public InputManager GetInputManager { get; private set; }
 
         [DataMember]
-        public PathManager PathManager { get; private set; }
-
-        public SoundManager SoundManager { get; }
+        public StoryManager GetStoryManager { get; private set; }
 
         [DataMember]
-        public MilitaryManager MilitaryManager { get; private set; }
+        public PathManager GetPathManager { get; private set; }
+
+        public SoundManager GetSoundManager { get; }
 
         [DataMember]
-        public DistributionDirector DistributionDirector { get; private set; }
+        public MilitaryManager GetMilitaryManager { get; private set; }
 
         [DataMember]
-        public UserInterfaceController UserInterfaceController { get; private set; }
+        public DistributionDirector GetDistributionDirector { get; private set; }
 
-        public GraphicsDeviceManager GraphicsDeviceManager { get; }
+        [DataMember]
+        public UserInterfaceController GetUserInterfaceController { get; private set; }
+
+        public GraphicsDeviceManager GetGraphicsDeviceManager { get; }
 
         public EventLog EventLog { get; }
 
+        public EventLog GetEventLog { get; private set; }
+
         public Director(ContentManager content, GraphicsDeviceManager graphics)
         {
-            Clock = new Clock();
-            IdGenerator = new IdGenerator();
-            SoundManager = new SoundManager();
-            InputManager = new InputManager();
-            StoryManager = new StoryManager();
-            PathManager = new PathManager();
-            UserInterfaceController = new UserInterfaceController(this);
-            DistributionDirector = new DistributionDirector(this);
-            MilitaryManager = new MilitaryManager(this); // TODO: Update this code if the MilitaryManager is not getting everything from the StructureMap or sth ...
+            GetClock = new Clock();
+            GetIdGenerator = new IdGenerator();
+            GetSoundManager = new SoundManager();
+            GetInputManager = new InputManager();
+            GetStoryManager = new StoryManager();
+            GetPathManager = new PathManager();
+            GetUserInterfaceController = new UserInterfaceController(this);
+            GetDistributionDirector = new DistributionDirector(this);
+            GetMilitaryManager = new MilitaryManager(this); // TODO: Update this code if the MilitaryManager is not getting everything from the StructureMap or sth ...
                                                         // (like units telling it they exist and the like)
-            EventLog = new EventLog(UserInterfaceController, this, content);
-            GraphicsDeviceManager = graphics;
+            EventLog = new EventLog(GetUserInterfaceController, this, content);
+            GetGraphicsDeviceManager = graphics;
 
-            SoundManager.LoadContent(content);
-            SoundManager.PlaySoundTrack();
+            GetSoundManager.LoadContent(content);
+            GetSoundManager.PlaySoundTrack();
             // Dd}{_:
         }
 
         internal void ReloadContent(Director dir, Vector2 mapmeasurements)
         {
-            Clock = dir.Clock;
-            IdGenerator = dir.IdGenerator;
-            StoryManager = dir.StoryManager;
-            MilitaryManager = dir.MilitaryManager;
-            PathManager = dir.PathManager;
-            UserInterfaceController = dir.UserInterfaceController;
-            DistributionDirector = dir.DistributionDirector;
-            StoryManager.LoadAchievements();
-            MilitaryManager.ReloadContent(mapmeasurements, this);
+            GetClock = dir.GetClock;
+            GetIdGenerator = dir.GetIdGenerator;
+            GetStoryManager = dir.GetStoryManager;
+            GetMilitaryManager = dir.GetMilitaryManager;
+            GetPathManager = dir.GetPathManager;
+            GetUserInterfaceController = dir.GetUserInterfaceController;
+            GetDistributionDirector = dir.GetDistributionDirector;
+            GetStoryManager.LoadAchievements();
+            GetMilitaryManager.ReloadContent(mapmeasurements, this);
         }
-
-        
 
         public void Update(GameTime gametime, bool isActive)
         {
             if (isActive)
             {
-                InputManager.Update(gametime);
+                GetInputManager.Update(gametime);
                 EventLog.Update(gametime);
             }
-            StoryManager.Update(gametime);
-            MilitaryManager.Update(gametime);
-            Clock.Update(gametime);
+            GetStoryManager.Update(gametime);
+            GetMilitaryManager.Update(gametime);
+            GetClock.Update(gametime);
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
+using Singularity.Manager;
 using Singularity.Property;
 using Singularity.Units;
 using Singularity.Utils;
@@ -35,6 +36,7 @@ namespace Singularity.Resources
             Type = type;
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(10, 10);
+
         }
 
         public void Follow(GeneralUnit unit)

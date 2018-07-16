@@ -116,11 +116,11 @@ namespace Singularity.Platforms
             // need the structure map to make sure platforms arent placed on collidable objects
             mMap = map;
 
-            mDirector.InputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
-            mDirector.InputManager.AddMousePositionListener(this);
+            mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
+            mDirector.GetInputManager.AddMousePositionListener(this);
             mCurrentState = new State3(1);
 
-            director.UserInterfaceController.BuildingProcessStarted(platformType);
+            director.GetUserInterfaceController.BuildingProcessStarted(platformType);
 
 
             // for further information as to why which states refer to the documentation for mCurrentState
@@ -146,7 +146,7 @@ namespace Singularity.Platforms
             UpdateBounds();
 
             // makes a sound once when platform is placed
-            mPlatformCreateSoundId = mDirector.SoundManager.CreateSoundInstance("PlatformCreate",
+            mPlatformCreateSoundId = mDirector.GetSoundManager.CreateSoundInstance("PlatformCreate",
                 mPlatform.Center.X,
                 mPlatform.Center.Y,
                 .24f,
@@ -207,6 +207,7 @@ namespace Singularity.Platforms
 
                         mPlatform.SetColor(Color.Red);
                         mPlaySound = false;
+
                     }
 
                     break;
@@ -220,8 +221,8 @@ namespace Singularity.Platforms
                         if (!mPlaySound)
                         {
                             // makes a sound once when platform is placed
-                            mDirector.SoundManager.SetSoundPosition(mPlatformCreateSoundId, mMouseX, mMouseY);
-                            mDirector.SoundManager.PlaySound(mPlatformCreateSoundId);
+                            mDirector.GetSoundManager.SetSoundPosition(mPlatformCreateSoundId, mMouseX, mMouseY);
+                            mDirector.GetSoundManager.PlaySound(mPlatformCreateSoundId);
                             mPlaySound = true;
                         }
 
@@ -238,7 +239,7 @@ namespace Singularity.Platforms
 
                         // we only color the platform red if the distance to the platform hovered is too great
                         if (Vector2.Distance(mHoveringPlatform.Center, mPlatform.Center) >
-                            mPlatform.RevelationRadius + mHoveringPlatform.RevelationRadius)
+                            mPlatform.RevelationRadius + mHoveringPlatform.RevelationRadius || !mHoveringPlatform.Friendly)
                         {
                             mPlatform.SetColor(Color.Red);
                         }
@@ -274,7 +275,7 @@ namespace Singularity.Platforms
                     }
                     mIsFinished = true;
                     mUnregister = true;
-                    mDirector.UserInterfaceController.BuildingProcessFinished(mPlatformType);
+                    mDirector.GetUserInterfaceController.BuildingProcessFinished(mPlatformType);
 
                     break;
 
@@ -336,10 +337,9 @@ namespace Singularity.Platforms
                         if (!mIsRoadPlacement)
                         {
 
-                            if (mHoveringPlatform == null)
+                            if (mHoveringPlatform == null || !mHoveringPlatform.Friendly)
                             {
                                 break;
-
                             }
 
                             // this limits two platforms to only be connectable by a road if the road isn't in the fog of war this was requested by felix
@@ -353,7 +353,7 @@ namespace Singularity.Platforms
                         }
                         else
                         {
-                            if (mHoveringPlatform == null || mHoveringPlatform.Equals(mOldHovering))
+                            if (mHoveringPlatform == null || mHoveringPlatform.Equals(mOldHovering) || !mHoveringPlatform.Friendly)
                             {
                                 break;
                             }
@@ -377,7 +377,7 @@ namespace Singularity.Platforms
                 if (mCurrentState.GetState() == 1)
                 {
 
-                    mDirector.UserInterfaceController.BuildingProcessFinished(mPlatformType);
+                    mDirector.GetUserInterfaceController.BuildingProcessFinished(mPlatformType);
                     mCanceled = true;
                     mIsFinished = true;
                     giveThrough = false;
@@ -477,8 +477,8 @@ namespace Singularity.Platforms
 
         private void UnregisterFromInputManager()
         {
-            mDirector.InputManager.FlagForRemoval(this);
-            mDirector.InputManager.RemoveMousePositionListener(this);
+            mDirector.GetInputManager.FlagForRemoval(this);
+            mDirector.GetInputManager.RemoveMousePositionListener(this);
         }
     }
 }

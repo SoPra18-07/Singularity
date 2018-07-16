@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 ﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -13,7 +14,7 @@ using Singularity.Units;
 namespace Singularity.Platforms
 {
     [DataContract]
-    internal abstract class DefenseBase : PlatformBlank, IShooting
+    public abstract class DefenseBase : PlatformBlank, IShooting
     {
         /// <summary>
         /// For defense platforms, indicates if they are shooting.
@@ -80,7 +81,7 @@ namespace Singularity.Platforms
             // Cone (Defense Platforms)
             // Draw the basic platform first
             spriteBatch.Draw(mPlatformBaseTexture,
-                Vector2.Add(AbsolutePosition, new Vector2(0, 78)),
+                Vector2.Add(AbsolutePosition, new Vector2(0, mType == EStructureType.Blank ? 0 : 78)),
                 null,
                 mColorBase * transparency,
                 0f,
@@ -88,6 +89,7 @@ namespace Singularity.Platforms
                 1f,
                 SpriteEffects.None,
                 LayerConstants.BasePlatformLayer);
+            if (mType == EStructureType.Blank) return;
             // then draw what's on top of that
             spriteBatch.Draw(mPlatformSpriteSheet,
                 AbsolutePosition,
@@ -99,21 +101,21 @@ namespace Singularity.Platforms
                 SpriteEffects.None,
                 LayerConstants.PlatformLayer);
 
-            if (!mShoot)
+            if (!mShoot || mShootingTarget == null)
             {
                 return;
             }
 
+            var color = Friendly ? Color.White : Color.Red;
             // draws a laser line a a slight glow around the line, then sets the shoot future off
-            spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2);
-            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6);
+            spriteBatch.DrawLine(Center, mShootingTarget.Center, color, 2);
+            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, color * .2f, 6);
             mShoot = false;
         }
 
         public void SetShootingTarget(ICollider target)
         {
             mShootingTarget = target;
-            Shoot(target);
         }
 
         /// <summary>
@@ -123,7 +125,7 @@ namespace Singularity.Platforms
         /// <returns></returns>
         private Vector2 MapCoordinates(Vector2 v)
         {
-            var camera = mDirector.StoryManager.Level.Camera;
+            var camera = mDirector.GetStoryManager.Level.Camera;
             return new Vector2(Vector2.Transform(new Vector2(v.X, v.Y),
                 Matrix.Invert(camera.GetTransform())).X, Vector2.Transform(new Vector2(v.X, v.Y),
                 Matrix.Invert(camera.GetTransform())).Y);

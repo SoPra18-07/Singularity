@@ -16,11 +16,10 @@ namespace Singularity.Units
             Health = 100;
         }
 
-        
+
         public override void Update(GameTime gameTime)
         {
             // do nothing
-            base.Update(gameTime);
         }
     }
 }

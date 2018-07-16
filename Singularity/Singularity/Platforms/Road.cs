@@ -109,6 +109,12 @@ namespace Singularity.Platforms
 
         }
 
+        public void ResetCenterValues()
+        {
+            Source = ((PlatformBlank)SourceAsNode).Center;
+            Destination = ((PlatformBlank) DestinationAsNode).Center;
+        }
+
         public INode GetParent()
         {
             return SourceAsNode;
@@ -126,7 +132,7 @@ namespace Singularity.Platforms
 
         public bool Die()
         {
-            mDirector.StoryManager.Level.GameScreen.RemoveObject(this);
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             return true;
         }
 

@@ -1,5 +1,3 @@
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -7,7 +5,6 @@ using Singularity.Levels;
 using Singularity.Manager;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
-using Singularity.Serialization;
 
 namespace Singularity
 {
@@ -52,7 +49,7 @@ namespace Singularity
             mDirector = new Director(Content, mGraphics);
 
 
-            mScreenManager = new StackScreenManager(Content, mDirector.InputManager);
+            mScreenManager = new StackScreenManager(Content, mDirector.GetInputManager);
 
         }
 

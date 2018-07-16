@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Singularity.Manager;
 using Singularity.PlatformActions;
@@ -12,7 +11,7 @@ using Singularity.Utils;
 namespace Singularity.Screen
 {
     /// <summary>
-    /// The UserInterfaceController manages the exchange between anything and the UI
+    /// The GetUserInterfaceController manages the exchange between anything and the UI
     /// </summary>
     [DataContract]
     public sealed class UserInterfaceController
@@ -25,10 +24,10 @@ namespace Singularity.Screen
         private PlatformBlank mActivePlatform;
 
         // the UI that is controlled by this UIController
-        internal UserInterfaceScreen ControlledUserInterface { private get; set; }
+        internal UserInterfaceScreen ControlledUserInterface { get; set; }
 
         /// <summary>
-        /// Creates an UserInterfaceController which manages the exchange between classes and the UI
+        /// Creates an GetUserInterfaceController which manages the exchange between classes and the UI
         /// </summary>
         /// <param name="director">the director</param>
         internal UserInterfaceController(Director director)
@@ -70,7 +69,7 @@ namespace Singularity.Screen
         /// <returns>amount of idle units</returns>
         public int GetIdleUnits(int graphid)
         {
-            return mDirector.DistributionDirector.GetManager(graphid).GetJobCount(JobType.Idle);
+            return mDirector.GetDistributionDirector.GetManager(graphid).GetJobCount(JobType.Idle);
         }
 
         /// <summary>

@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Property;
-using Singularity.Utils;
 
 namespace Singularity.Nature
 {
@@ -49,7 +48,7 @@ namespace Singularity.Nature
 
         public Rock(Vector2 position, ref Director director)
         {
-            Id = director.IdGenerator.NextiD();
+            Id = director.GetIdGenerator.NextiD();
             AbsoluteSize = new Vector2(160, 130);
             mDrawSize = new Vector2(80,40);
             AbsolutePosition = position;

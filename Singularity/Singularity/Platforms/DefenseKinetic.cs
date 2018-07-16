@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
-using Singularity.PlatformActions;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Sound;
@@ -42,7 +39,7 @@ namespace Singularity.Platforms
         {
             // Todo: Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int> {{EResourceType.Metal, 1}};
-            mSoundId = mDirector.SoundManager.CreateSoundInstance("KineticTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+            mSoundId = mDirector.GetSoundManager.CreateSoundInstance("KineticTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
         }
 
         public override void Shoot(ICollider target)
@@ -53,7 +50,7 @@ namespace Singularity.Platforms
             }
 
             mShoot = true;
-            mDirector.SoundManager.PlaySound(mSoundId);
+            mDirector.GetSoundManager.PlaySound(mSoundId);
         }
 
         public override void Update(GameTime t)
@@ -70,7 +67,7 @@ namespace Singularity.Platforms
 
             if (mDefenseAction.AmmoCount <= 30 && mAmmoRequested < 2)
             {
-                mDirector.DistributionDirector.GetManager(GetGraphIndex())
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex())
                     .RequestResource(this, EResourceType.Metal, null);
                 mAmmoRequested++;
             }
@@ -78,7 +75,7 @@ namespace Singularity.Platforms
 
         public override void ReloadContent(ContentManager content, ref Director dir)
         {
-            mSoundId = mDirector.SoundManager.CreateSoundInstance("KineticTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+            mSoundId = mDirector.GetSoundManager.CreateSoundInstance("KineticTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
             base.ReloadContent(content, ref dir);
         }
     }

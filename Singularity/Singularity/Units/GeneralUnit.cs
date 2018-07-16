@@ -14,7 +14,7 @@ using Singularity.Utils;
 namespace Singularity.Units
 {
     [DataContract]
-    public sealed class GeneralUnit : ISpatial, IDie
+    public sealed class GeneralUnit : ISpatial
     {
         [DataMember]
         public int Id { get; private set; }
@@ -34,6 +34,10 @@ namespace Singularity.Units
         [DataMember]
         private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
 
+        /// <summary>
+        /// The sprite used by the general unit. Drawing a sprite turns out to be more efficient than drawing a primitive.
+        /// </summary>
+        internal static Texture2D mGenUnitTexture;
 
         //These are the assigned task and a flag, wether the unit is done with it.
         [DataMember]
@@ -104,7 +108,7 @@ namespace Singularity.Units
         {
             Graphid = platform.GetGraphIndex();
             platform.AddGeneralUnit(this);
-            Id = director.IdGenerator.NextiD();
+            Id = director.GetIdGenerator.NextiD();
             mDestination = Optional<INode>.Of(null);
 
             CurrentNode = platform;
@@ -116,7 +120,7 @@ namespace Singularity.Units
 
             mIsMoving = false;
             mDirector = director;
-            mDirector.DistributionDirector.GetManager(Graphid).Register(this);
+            mDirector.GetDistributionDirector.GetManager(Graphid).Register(this);
             mDone = true;
             mFinishTask = false;
         }
@@ -155,14 +159,14 @@ namespace Singularity.Units
                     {
                         if (mTask.GetResource != null)
                         {
-                            mDirector.DistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get(), isbuilding);
+                            mDirector.GetDistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get(), isbuilding);
                         }
                     }
                     else
                     {
                         if (mTask.GetResource != null)
                         {
-                            mDirector.DistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null, isbuilding);
+                            mDirector.GetDistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null, isbuilding);
                         }
                     }
                 }
@@ -250,7 +254,7 @@ namespace Singularity.Units
                         {
                             mDone = false;
 
-                            mTask = mDirector.DistributionDirector.GetManager(Graphid)
+                            mTask = mDirector.GetDistributionDirector.GetManager(Graphid)
                                 .RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
                             //Check if the given destination is null (it shouldnt)
                             if (mTask.End.IsPresent())
@@ -271,14 +275,13 @@ namespace Singularity.Units
 
                     case JobType.Production:
                         //You arrived at your destination and you now want to work.
-                        if (!mIsMoving && !mDone && CurrentNode.Equals(mTask.End.Get()))
+                        if (!mIsMoving && !mDone && CurrentNode.Equals(mTask.End.Get()) && !mAssigned)
                         {
-                            if (!mAssigned)
-                            {
-                                mTask.End.Get().ShowedUp(this, Job);
-                                mAssigned = true;
-                            }
+                            mTask.End.Get().ShowedUp(this, Job);
+                            mAssigned = true;
                         }
+                        if (mAssigned)
+                            mTask.End.Get().Produce();
                         RegulateMovement();
                         break;
 
@@ -328,7 +331,7 @@ namespace Singularity.Units
             {
                 mDone = false;
 
-                mTask = mDirector.DistributionDirector.GetManager(Graphid).RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
+                mTask = mDirector.GetDistributionDirector.GetManager(Graphid).RequestNewTask(unit: this, job: Job, assignedAction: Optional<IPlatformAction>.Of(null));
                 //First go to the location where you want to get your Resource from
                 //Check if the given destination is null (it shouldnt).
                 if (mTask.Begin.IsPresent())
@@ -363,14 +366,14 @@ namespace Singularity.Units
                             {
                                 if (mTask.GetResource != null)
                                 {
-                                    mDirector.DistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get());
+                                    mDirector.GetDistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get());
                                 }
                             }
                             else
                             {
                                 if (mTask.GetResource != null)
                                 {
-                                    mDirector.DistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null);
+                                    mDirector.GetDistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null);
                                 }
                             }
                         }
@@ -380,14 +383,14 @@ namespace Singularity.Units
                             {
                                 if (mTask.GetResource != null)
                                 {
-                                    mDirector.DistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get(), true);
+                                    mDirector.GetDistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, mTask.Action.Get(), true);
                                 }
                             }
                             else
                             {
                                 if (mTask.GetResource != null)
                                 {
-                                    mDirector.DistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null, true);
+                                    mDirector.GetDistributionDirector.GetManager(Graphid).RequestResource(mTask.End.Get(), (EResourceType)mTask.GetResource, null, true);
                                 }
                             }
                         }
@@ -459,7 +462,7 @@ namespace Singularity.Units
             {
                 ((PlatformBlank)CurrentNode).RemoveGeneralUnit(this);
 
-                mNodeQueue = mDirector.PathManager.GetPath(this, mDestination.Get(), ((PlatformBlank)mDestination.Get()).GetGraphIndex()).GetNodePath();
+                mNodeQueue = mDirector.GetPathManager.GetPath(this, mDestination.Get(), ((PlatformBlank)mDestination.Get()).GetGraphIndex()).GetNodePath();
 
                 CurrentNode = mNodeQueue.Dequeue();
 
@@ -512,7 +515,17 @@ namespace Singularity.Units
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.StrokedCircle(AbsolutePosition, 10, Color.AntiqueWhite, Color.Black, LayerConstants.GeneralUnitLayer);
+
+            spriteBatch.Draw(mGenUnitTexture,
+                AbsolutePosition,
+                null,
+                Color.White,
+                0f,
+                new Vector2(10),
+                Vector2.One,
+                SpriteEffects.None,
+                LayerConstants.GeneralUnitLayer);
+
             if (Carrying.IsPresent())
             {
                 Carrying.Get().Draw(spriteBatch);
@@ -528,19 +541,33 @@ namespace Singularity.Units
                 Carrying = Optional<Resource>.Of(null);
             }
 
-            mDirector.DistributionDirector.GetManager(Graphid).Kill(this);
+            mDirector.GetDistributionDirector.GetManager(Graphid).Kill(this);
             mAssignedAction?.Kill(this);
-            mDirector.StoryManager.Level.GameScreen.RemoveObject(this);
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
 
             return true;
         }
 
+        /// <summary>
+        /// Basically tell the Unit that its platform just died and it needs to get a new job.
+        /// But only if the id is found in its current task.
+        /// </summary>
+        /// <param name="id"></param>
         public void Kill(int id)
         {
-            if (mTask.Contains(id))
+            if (!mTask.Contains(id)) return;
+            switch (Job)
             {
-                mTask = mDirector.DistributionDirector.GetManager(Graphid).RequestNewTask(this, Job, null);
-                // also the mAssignedTask-platformaction is included in this.
+                case JobType.Defense:
+                    mDirector.GetDistributionDirector.GetManager(Graphid).NewProductionHall(this, true);
+                    break;
+                case JobType.Production:
+                    mDirector.GetDistributionDirector.GetManager(Graphid).NewProductionHall(this, false);
+                    break;
+                default:
+                    mDirector.GetDistributionDirector.GetManager(Graphid)
+                        .RequestNewTask(this, Job, Optional<IPlatformAction>.Of(null));
+                    break;
             }
         }
     }

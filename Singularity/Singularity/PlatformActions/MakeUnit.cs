@@ -6,7 +6,6 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Manager;
 using Singularity.Platforms;
-using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Units;
 
@@ -26,10 +25,10 @@ namespace Singularity.PlatformActions
             // unsure why this is a static method since it just returns a military unit anyways
             // var unit = MilitaryUnit.CreateMilitaryUnit(mPlatform.Center + mOffset, ref mDirector);
 
-            var camera = mDirector.StoryManager.Level.Camera;
-            var map = mDirector.StoryManager.Level.Map;
+            var camera = mDirector.GetStoryManager.Level.Camera;
+            var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryFast(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
-            mDirector.MilitaryManager.AddUnit(unit);
+            mDirector.GetMilitaryManager.AddUnit(unit);
         }
     }
 
@@ -43,10 +42,10 @@ namespace Singularity.PlatformActions
 
         protected override void CreateUnit()
         {
-            var camera = mDirector.StoryManager.Level.Camera;
-            var map = mDirector.StoryManager.Level.Map;
+            var camera = mDirector.GetStoryManager.Level.Camera;
+            var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryHeavy(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
-            mDirector.MilitaryManager.AddUnit(unit);
+            mDirector.GetMilitaryManager.AddUnit(unit);
         }
     }
 
@@ -61,8 +60,23 @@ namespace Singularity.PlatformActions
 
         protected override void CreateUnit()
         {
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(new GeneralUnit(mPlatform, ref mDirector));
+        }
+    }
 
-            mDirector.StoryManager.Level.GameScreen.AddObject(new GeneralUnit(mPlatform, ref mDirector));
+    [DataContract]
+    internal sealed class MakeSettlerUnit : AMakeUnit
+    {
+        public MakeSettlerUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
+        {
+            // Todo: update prices
+            mBuildingCost = new Dictionary<EResourceType, int> { {EResourceType.Chip, 3} };
+        }
+
+        protected override void CreateUnit()
+        {
+            var settler = Settler.Create(mPlatform.Center + mOffset, ref mDirector);
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(settler);
         }
     }
 
@@ -77,13 +91,13 @@ namespace Singularity.PlatformActions
 
         protected override void CreateUnit()
         {
-            var camera = mDirector.StoryManager.Level.Camera;
-            var map = mDirector.StoryManager.Level.Map;
+            var camera = mDirector.GetStoryManager.Level.Camera;
+            var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryUnit(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
-            mDirector.MilitaryManager.AddUnit(unit);
+            mDirector.GetMilitaryManager.AddUnit(unit);
         }
     }
-    
+
     [DataContract]
     public abstract class AMakeUnit : APlatformAction
     {
@@ -130,15 +144,15 @@ namespace Singularity.PlatformActions
                 } else {
                     mToRequest[resource] = mToRequest[resource] - 1;
                 }
-                mDirector.DistributionDirector.GetManager(mPlatform.GetGraphIndex()).RequestResource(mPlatform, resource, this, mIsBuilding);
+                mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).RequestResource(mPlatform, resource, this, mIsBuilding);
                 Debug.WriteLine("Requested " + resource + " just now. Waiting. (" + mPlatform.Id + ")");
             }
 
             foreach (var r in mPlatform.GetPlatformResources().ToList()) GetResource(r.Type);
 
             if (mMissingResources.Count > 0) return;
-            CreateUnit();
             State = PlatformActionState.Available;
+            CreateUnit();
         }
 
         #region private function
@@ -163,25 +177,36 @@ namespace Singularity.PlatformActions
             {
                 mMissingResources = new Dictionary<EResourceType, int>(mBuildingCost);
             }
-            mToRequest = new Dictionary<EResourceType, int>(mMissingResources);
+            foreach (var resources in mMissingResources)
+            {
+                var inside = 0;
+                if (mToRequest.TryGetValue(resources.Key, out inside))
+                {
+                    mToRequest[resources.Key] = inside + resources.Value;
+                }
+                else
+                {
+                    mToRequest.Add(resources.Key, inside + resources.Value);
+                }
+            }
         }
 
         public override Dictionary<EResourceType, int> GetRequiredResources()
         {
             return mMissingResources;
         }
-        
+
         public override void UiToggleState()
         {
             switch (State)
             {
                 case PlatformActionState.Available:
-                    mDirector.DistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(this);
+                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(this);
                     UpdateResources();
                     State = PlatformActionState.Active;
                     break;
                 case PlatformActionState.Active:
-                    mDirector.DistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this);
+                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this);
                     State = PlatformActionState.Available;
                     break;
                 case PlatformActionState.Deactivated:

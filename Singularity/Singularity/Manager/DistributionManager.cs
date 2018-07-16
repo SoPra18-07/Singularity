@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using Singularity.Exceptions;
@@ -10,7 +11,6 @@ using Singularity.Resources;
 using Singularity.Screen;
 using Singularity.Units;
 using Singularity.Utils;
-using System.Diagnostics;
 
 namespace Singularity.Manager
 {
@@ -125,6 +125,7 @@ namespace Singularity.Manager
 
             while (currentlevel.Count > 0)
             {
+                Debug.WriteLine("Looking for: " + res + ", currentL: " + currentlevel.Count);
                 //Create the next level of BFS. While doing this, check if any platform has the resource you want. If yes return it.
                 foreach (var platform in currentlevel)
                 {
@@ -174,9 +175,9 @@ namespace Singularity.Manager
                 }
 
                 //Update levels
-                previouslevel = nextpreviouslevel;
+                previouslevel.AddRange(nextpreviouslevel);
                 nextpreviouslevel = new List<PlatformBlank>();
-                currentlevel = nextlevel;
+                currentlevel.AddRange(nextlevel);
                 nextlevel = new List<PlatformBlank>();
             }
             return null;
@@ -197,6 +198,16 @@ namespace Singularity.Manager
             total += mDefense.Count;
             total += mLogistics.Count;
             return total;
+        }
+
+        public List<IPlatformAction> GetPlatformActions()
+        {
+            return mPlatformActions;
+        }
+
+        public void SetPlatformActions(List<IPlatformAction> actions)
+        {
+            mPlatformActions = actions;
         }
 
         /// <summary>
@@ -438,7 +449,7 @@ namespace Singularity.Manager
                     //This means that the Action is paused.
                     if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()) && task.Job != JobType.Construction)
                     {
-                        task = RequestNewTask(unit, job, assignedAction);
+                        return RequestNewTask(unit, job, assignedAction);
                     }
                     if (task.End.IsPresent() && task.GetResource != null)
                     {
@@ -476,7 +487,7 @@ namespace Singularity.Manager
                     //This means that the Action is paused.
                     if (task.Action.IsPresent() && !mPlatformActions.Contains(task.Action.Get()))
                     {
-                        task = RequestNewTask(unit, job, assignedAction);
+                        return RequestNewTask(unit, job, assignedAction);
                     }
                     if (task.End.IsPresent() && task.GetResource != null)
                     {
@@ -521,6 +532,31 @@ namespace Singularity.Manager
         #region Unit Distribution and Assigning Units to Jobs
 
         /// <summary>
+        /// This is a method to find a new home for genunits with destroyed workstations.
+        /// </summary>
+        /// <param name="unit">The poor unit</param>
+        /// <param name="isDefense">True if its a defending unit, false if it is producing</param>
+        public void NewProductionHall(GeneralUnit unit, bool isDefense)
+        {
+            if (isDefense)
+            {
+                mDefense.Remove(unit);
+                unit.ChangeJob(JobType.Idle);
+                var units = new List<GeneralUnit>();
+                units.Add(unit);
+                AssignUnitsFairly(new List<GeneralUnit>(units), true);
+            }
+            else
+            {
+                mProduction.Remove(unit);
+                unit.ChangeJob(JobType.Idle);
+                var units = new List<GeneralUnit>();
+                units.Add(unit);
+                AssignUnitsFairly(new List<GeneralUnit>(units), false);
+            }
+        }
+
+        /// <summary>
         /// This is called by the player, when he wants to distribute the units to certain jobs.
         /// </summary>
         /// <param name="oldj">The old job of the units</param>
@@ -528,49 +564,8 @@ namespace Singularity.Manager
         /// <param name="amount">The amount of units to be transferred</param>
         public void DistributeJobs(JobType oldj, JobType newj, int amount)
         {
-            List<GeneralUnit> oldlist;
-            switch (oldj)
-            {
-                case JobType.Construction:
-                    oldlist = mConstruction;
-                    break;
-                case JobType.Logistics:
-                    oldlist = mLogistics;
-                    break;
-                case JobType.Idle:
-                    oldlist = mIdle;
-                    break;
-                case JobType.Production:
-                    oldlist = mProduction;
-                    break;
-                case JobType.Defense:
-                    oldlist = mDefense;
-                    break;
-                default:
-                    throw new InvalidGenericArgumentException("You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
-
-            }
-            List<GeneralUnit> newlist;
-            switch (newj)
-            {
-                case JobType.Construction:
-                    newlist = mConstruction;
-                    break;
-                case JobType.Idle:
-                    newlist = mIdle;
-                    break;
-                case JobType.Logistics:
-                    newlist = mLogistics;
-                    break;
-                case JobType.Production:
-                    newlist = mProduction;
-                    break;
-                case JobType.Defense:
-                    newlist = mDefense;
-                    break;
-                default:
-                    throw new InvalidGenericArgumentException("You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
-            }
+            var oldlist = GetJobUnits(oldj);
+            var newlist = GetJobUnits(newj);
 
             //Production and Defense have to be distributed differently than the other jobs because we want to assure fairness
             if (oldj == JobType.Production || oldj == JobType.Defense)
@@ -886,7 +881,7 @@ namespace Singularity.Manager
                         //We have to re-add the units to the job list because GetUnitsFairly did unassign them
                         mProduction.Add(unit);
                         //Also unassigns the unit.
-                        unit.AssignTask(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(null)));
+                        unit.AssignTask(new Task(JobType.Production, Optional<PlatformBlank>.Of(platform), null, Optional<IPlatformAction>.Of(platform.GetIPlatformActions()[0])));
                     }
 
                     mProdPlatforms.Add(new Pair<PlatformBlank, int>(platform, list.Count));
@@ -921,27 +916,7 @@ namespace Singularity.Manager
         /// <param name="job">The Job the units had/are supposed to have.</param>
         public void ManualAssign(int amount, IPlatformAction action, JobType job)
         {
-            List<GeneralUnit> oldlist;
-            switch (job)
-            {
-                case JobType.Construction:
-                    oldlist = mConstruction;
-                    break;
-                case JobType.Idle:
-                    oldlist = mIdle;
-                    break;
-                case JobType.Production:
-                    oldlist = mProduction;
-                    break;
-                case JobType.Defense:
-                    oldlist = mDefense;
-                    break;
-                case JobType.Logistics:
-                    oldlist = mLogistics;
-                    break;
-                default:
-                    throw new InvalidGenericArgumentException("You have to use a JobType of Idle, Production, Logistics, Construction or Defense.");
-            }
+            var oldlist = GetJobUnits(job);
 
             //COLLECT THE UNITS
             List<GeneralUnit> list;
@@ -1045,9 +1020,9 @@ namespace Singularity.Manager
         /// Is called by producing and defending Platforms when they are created or added to the distributionmanager.
         /// </summary>
         /// <param name="platform">The platform itself</param>
-        /// <param name="isDef">Is true, when the platform is a defending platform, false otherwise (only producing platforms should register themselves besides defending ones)</param>
-        public void Register(PlatformBlank platform, bool isDef)
+        public void Register(PlatformBlank platform)
         {
+            var isDef = platform.IsDefense();
             var job = isDef ? JobType.Defense : JobType.Production;
             var joblist = isDef ? mDefense : mProduction;
             var alreadyonplatform = 0;
@@ -1175,9 +1150,6 @@ namespace Singularity.Manager
         {
             Kill(action);
             // TODO: throw new NotImplementedException(); // (currently commented out, since it'd break stuff)
-            // Actions need a sleep method
-            // No, they're just being removed from occurences in the DistributionManager. As soon as they unpause, they'll send requests for Resources and units again.
-            // Ah ok I got that part
         }
 
 
@@ -1188,7 +1160,18 @@ namespace Singularity.Manager
             mProdPlatforms.Remove(mProdPlatforms.Find(p => p.GetFirst().Equals(platform)));
             mDefPlatforms.Remove(mDefPlatforms.Find(p => p.GetFirst().Equals(platform)));
             var lists = new List<List<GeneralUnit>> { mIdle, mLogistics, mConstruction, mProduction, mDefense, mManual };
-            lists.ForEach(l => l.ForEach(u => u.Kill(platform.Id)));
+            foreach (var list in lists)
+            {
+                //We need this because the list is changed by the call of unit.Kill
+                var copy = new List<GeneralUnit>();
+                copy.AddRange(list);
+                foreach (var unit in copy)
+                {
+                    unit.Kill(platform.Id);
+                }
+            }
+            //Update the handler afterwards
+            mHandler?.ForceSliderPages();
             // the first in the pair is the id, the second is the TTL
             mKilled.Add(new Pair<int, int>(platform.Id, Math.Max(mBuildingResources.Count, mRefiningOrStoringResources.Count)));
         }

@@ -1,12 +1,11 @@
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
-﻿using System;
+ using System;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map.Properties;
-using Singularity.Property;
 using Singularity.Screen;
 
 namespace Singularity.Map
@@ -48,7 +47,7 @@ namespace Singularity.Map
                 if(mDirector != null)
                 {
                     ValidatePosition();
-                    mDirector.SoundManager.SetListenerPosition(value.X + mOrigin.X, value.Y + mOrigin.Y, -13 * mZoom + 20);
+                    mDirector.GetSoundManager.SetListenerPosition(value.X + mOrigin.X, value.Y + mOrigin.Y, -13 * mZoom + 20);
                 }
             }
         }
@@ -124,20 +123,20 @@ namespace Singularity.Map
             mZoom = 1.0f;
             mPosition = new Vector2(x, y);
 
-            director.SoundManager.SetListenerPosition(x, y, -13 * mZoom + 20);
+            director.GetSoundManager.SetListenerPosition(x, y, -13 * mZoom + 20);
 
             mNeo = neo;
             mGraphics = graphics;
             mBounds = new Rectangle(0, 0, MapConstants.MapWidth, MapConstants.MapHeight);
 
             mDirector = director;
-            director.InputManager.FlagForAddition((IMouseWheelListener)this);
-            director.InputManager.FlagForAddition((IKeyListener)this);
-            director.InputManager.AddMousePositionListener(this);
+            director.GetInputManager.FlagForAddition((IMouseWheelListener)this);
+            director.GetInputManager.FlagForAddition((IKeyListener)this);
+            director.GetInputManager.AddMousePositionListener(this);
 
             mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(0, 0, 0);
 
-            mDirector.InputManager.CameraMoved(mTransform);
+            mDirector.GetInputManager.CameraMoved(mTransform);
 
         }
 
@@ -145,15 +144,15 @@ namespace Singularity.Map
         {
             mGraphics = graphics.GraphicsDevice;
             mDirector = director;
-            director.InputManager.FlagForAddition((IMouseWheelListener) this);
-            director.InputManager.FlagForAddition((IKeyListener) this);
-            director.InputManager.AddMousePositionListener(this);
+            director.GetInputManager.FlagForAddition((IMouseWheelListener) this);
+            director.GetInputManager.FlagForAddition((IKeyListener) this);
+            director.GetInputManager.AddMousePositionListener(this);
 
             mTransform = Matrix.CreateScale(new Vector3(mZoom, mZoom, 1)) * Matrix.CreateTranslation(0, 0, 0);
 
             UpdateTransformMatrix();
 
-            director.InputManager.CameraMoved(mTransform);
+            director.GetInputManager.CameraMoved(mTransform);
         }
 
         /// <summary>
@@ -281,7 +280,7 @@ namespace Singularity.Map
                          * Matrix.CreateTranslation(new Vector3(-mOrigin, 0f))
                          * Matrix.CreateScale(mZoom, mZoom, 1f)
                          * Matrix.CreateTranslation(new Vector3(mOrigin, 0f));
-            mDirector.InputManager.CameraMoved(mTransform);
+            mDirector.GetInputManager.CameraMoved(mTransform);
         }
 
         public bool KeyTyped(KeyEvent keyEvent)

@@ -52,7 +52,7 @@ namespace Singularity.Screen
         /// </summary>
         public void Refresh()
         {
-            var distr = mDirector.DistributionDirector.GetManager(mCurrentGraphid);
+            var distr = mDirector.GetDistributionDirector.GetManager(mCurrentGraphid);
             var free = distr.GetJobCount(JobType.Idle);
             var total = distr.GetUnitTotal();
 
@@ -95,15 +95,15 @@ namespace Singularity.Screen
         /// </summary>
         public void ForceSliderPages()
         {
-            mDefSlider.SetCurrentPage(mDirector.DistributionDirector.GetManager(mCurrentGraphid).GetJobCount(JobType.Defense));
-            mProductionSlider.SetCurrentPage(mDirector.DistributionDirector.GetManager(mCurrentGraphid).GetJobCount(JobType.Production));
-            mConstructionSlider.SetCurrentPage(mDirector.DistributionDirector.GetManager(mCurrentGraphid).GetJobCount(JobType.Construction));
-            mLogisticsSlider.SetCurrentPage(mDirector.DistributionDirector.GetManager(mCurrentGraphid).GetJobCount(JobType.Logistics));
+            mDefSlider.SetCurrentPage(mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).GetJobCount(JobType.Defense));
+            mProductionSlider.SetCurrentPage(mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).GetJobCount(JobType.Production));
+            mConstructionSlider.SetCurrentPage(mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).GetJobCount(JobType.Construction));
+            mLogisticsSlider.SetCurrentPage(mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).GetJobCount(JobType.Logistics));
         }
 
         public void Initialize()
         {
-            mDirector.DistributionDirector.GetManager(mCurrentGraphid).Register(this);
+            mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).Register(this);
             Refresh();
         }
 
@@ -113,27 +113,26 @@ namespace Singularity.Screen
             //A negative value means there will be more units assigned to this job and vice versa.
             if (amount < 0)
             {
-                mDirector.DistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Idle, JobType.Defense, -1 * amount);
+                mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Idle, JobType.Defense, -1 * amount);
             }
             else
             {
-                mDirector.DistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Defense, JobType.Idle, amount);
+                mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Defense, JobType.Idle, amount);
             }
             Refresh();
         }
 
         public void ProdListen(object sender, EventArgs eventArgs, int page)
         {
-            Console.WriteLine(GetHashCode());
             var amount = mCurrentPages[3] - page;
             //A negative value means there will be more units assigned to this job and vice versa.
             if (amount < 0)
             {
-                mDirector.DistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Idle, JobType.Production, -1 * amount);
+                mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Idle, JobType.Production, -1 * amount);
             }
             else
             {
-                mDirector.DistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Production, JobType.Idle, amount);
+                mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Production, JobType.Idle, amount);
             }
             Refresh();
         }
@@ -144,11 +143,11 @@ namespace Singularity.Screen
             //A negative value means there will be more units assigned to this job and vice versa.
             if (amount < 0)
             {
-                mDirector.DistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Idle, JobType.Construction, -1 * amount);
+                mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Idle, JobType.Construction, -1 * amount);
             }
             else
             {
-                mDirector.DistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Construction, JobType.Idle, amount);
+                mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Construction, JobType.Idle, amount);
             }
             Refresh();
         }
@@ -159,11 +158,11 @@ namespace Singularity.Screen
             //A negative value means there will be more units assigned to this job and vice versa.
             if (amount < 0)
             {
-                mDirector.DistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Idle, JobType.Logistics, -1 * amount);
+                mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Idle, JobType.Logistics, -1 * amount);
             }
             else
             {
-                mDirector.DistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Logistics, JobType.Idle, amount);
+                mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).DistributeJobs(JobType.Logistics, JobType.Idle, amount);
             }
             Refresh();
         }
@@ -177,11 +176,11 @@ namespace Singularity.Screen
         {
             if (oldId != -1)
             {
-                mDirector.DistributionDirector.GetManager(oldId)?.Unregister(this);
+                mDirector.GetDistributionDirector.GetManager(oldId)?.Unregister(this);
             }
 
             mCurrentGraphid = id;
-            mDirector.DistributionDirector.GetManager(id).Register(this);
+            mDirector.GetDistributionDirector.GetManager(id).Register(this);
 
             Refresh();
             ForceSliderPages();

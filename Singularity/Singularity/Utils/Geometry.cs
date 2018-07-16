@@ -90,7 +90,7 @@ namespace Singularity.Utils
         /// <see cref="http://blog.wouldbetheologian.com/2011/11/fast-approximate-sqrt-method-in-c.html"/>
         public static float FastSqrt(float z)
         {
-            if (z == 0)
+            if (Math.Abs(z) < 0.15e-10)
             {
                 return 0;
             }

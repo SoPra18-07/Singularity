@@ -2,17 +2,14 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Exceptions;
+using Singularity.Input;
 using Singularity.Libraries;
+using Singularity.Manager;
 using Singularity.Map.Properties;
 using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Screen;
-using Singularity.Units;
-using Singularity.Input;
-using System;
-using Singularity.Manager;
-using System.Diagnostics;
 
 namespace Singularity.Map
 {
@@ -57,7 +54,7 @@ namespace Singularity.Map
         /// <summary>
         /// A list of all the resources in the game
         /// </summary>
-        private List<MapResource> mMapResources;
+        // private List<MapResource> mMapResources;
 
         public Vector2 Position { get; set; }
 
@@ -90,12 +87,12 @@ namespace Singularity.Map
             mDownscaleFactor = MapConstants.MapWidth / MapConstants.MiniMapWidth;
             mTexture = minimapTexture;
 
-            director.InputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
-            director.InputManager.AddMousePositionListener(this);
+            director.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            director.GetInputManager.AddMousePositionListener(this);
 
             mRevealing = new LinkedList<IRevealing>();
             mPlatforms = new LinkedList<PlatformBlank>();
-            mMapResources = new List<MapResource>();
+            // mMapResources = new List<MapResource>();
 
             Size = new Vector2(MapConstants.MiniMapWidth, MapConstants.MiniMapHeight);
             Position = new Vector2(0, 0);
@@ -124,6 +121,11 @@ namespace Singularity.Map
             // now draw the platforms. Currently platforms are resembled with a 1 pixel green dot
             foreach (var platform in mPlatforms)
             {
+                if (!platform.Friendly)
+                {
+                    continue;
+                }
+
                 var newCenter = platform.Center / mDownscaleFactor;
 
                 var centerInMiniMap = new Vector2(Position.X + newCenter.X, Position.Y + 10 + newCenter.Y);
@@ -142,7 +144,7 @@ namespace Singularity.Map
             */
 
             // draw the cameras viewport on the minimap
-            spriteBatch.StrokedRectangle(new Vector2(Position.X + mDirector.StoryManager.Level.Camera.GetRelativePosition().X / mDownscaleFactor, Position.Y + 10 + mDirector.StoryManager.Level.Camera.GetRelativePosition().Y / mDownscaleFactor), mDirector.StoryManager.Level.Camera.GetSize() / mDownscaleFactor, Color.Red, Color.Transparent, 1f, 0f);
+            spriteBatch.StrokedRectangle(new Vector2(Position.X + mDirector.GetStoryManager.Level.Camera.GetRelativePosition().X / mDownscaleFactor, Position.Y + 10 + mDirector.GetStoryManager.Level.Camera.GetRelativePosition().Y / mDownscaleFactor), mDirector.GetStoryManager.Level.Camera.GetSize() / mDownscaleFactor, Color.Red, Color.Transparent, 1f, 0f);
         }
 
         public void Update(GameTime gametime)
@@ -159,9 +161,9 @@ namespace Singularity.Map
                 return;
             }
 
-            mPlatforms = mDirector.StoryManager.Level.Map.GetStructureMap().GetPlatformList();
-            mMapResources = mDirector.StoryManager.Level.Map.GetResourceMap().GetAllResources();
-            mRevealing = mDirector.StoryManager.Level.Map.GetFogOfWar().GetRevealingObjects();
+            mPlatforms = mDirector.GetStoryManager.Level.Map.GetStructureMap().GetPlatformList();
+            // mMapResources = mDirector.GetStoryManager.Level.Map.GetResourceMap().GetAllResources();
+            mRevealing = mDirector.GetStoryManager.Level.Map.GetFogOfWar().GetRevealingObjects();
 
         }
 
@@ -183,7 +185,7 @@ namespace Singularity.Map
                 return true;
             }
 
-            mDirector.StoryManager.Level.Camera.CenterOn(new Vector2(mMouseX * mDownscaleFactor, mMouseY * mDownscaleFactor));
+            mDirector.GetStoryManager.Level.Camera.CenterOn(new Vector2(mMouseX * mDownscaleFactor, mMouseY * mDownscaleFactor));
             return false;
         }
 
@@ -193,4 +195,3 @@ namespace Singularity.Map
         }
     }
 }
-

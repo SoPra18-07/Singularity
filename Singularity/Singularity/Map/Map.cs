@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
@@ -72,13 +71,13 @@ namespace Singularity.Map
 
             mFow = fow;
 
-            var initialResources = ResourceHelper.GetRandomlyDistributedResources(50);
+            var initialResources = ResourceHelper.GetRandomlyDistributedResources(50, ref director);
 
             mCollisionMap = new CollisionMap();
             mStructureMap = new StructureMap(fow, ref director);
             mResourceMap = new ResourceMap(initialResources);
 
-            director.StoryManager.StructureMap = mStructureMap;
+            director.GetStoryManager.StructureMap = mStructureMap;
         }
 
         public void ReloadContent(Texture2D background, Camera camera, FogOfWar fow, ref Director dir, ContentManager content, UserInterfaceScreen ui)

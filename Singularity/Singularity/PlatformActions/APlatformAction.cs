@@ -1,12 +1,10 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.PlatformActions
 {
@@ -28,7 +26,7 @@ namespace Singularity.PlatformActions
         {
             mPlatform = platform;
             mDirector = director;
-            Id = director.IdGenerator.NextiD();
+            Id = director.GetIdGenerator.NextiD();
         }
 
         public void ReloadContent(ref Director dir)
@@ -90,7 +88,7 @@ namespace Singularity.PlatformActions
 
         public bool Die()
         {
-            mDirector.DistributionDirector.GetManager(mPlatform.GetGraphIndex()).Kill(this);
+            mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Kill(this);
             mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
             mPlatform.Kill(this);
             mPlatform = null;

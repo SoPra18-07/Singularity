@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Property;
-using Singularity.Utils;
 
 namespace Singularity.Nature
 {
@@ -39,7 +38,7 @@ namespace Singularity.Nature
 
         public Puddle(Vector2 position, ref Director director, bool bigPuddle = true)
         {
-            Id = director.IdGenerator.NextiD();
+            Id = director.GetIdGenerator.NextiD();
             AbsoluteSize = new Vector2(160, 130);
 
             mBigPuddle = bigPuddle;

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
+using Singularity.PlatformActions;
 using Singularity.Resources;
-using Singularity.Units;
 
 namespace Singularity.Platforms
 {
@@ -39,12 +41,24 @@ namespace Singularity.Platforms
             mType = EStructureType.Factory;
             mSpritename = "Dome";
             SetPlatfromParameters();
+
+            mIPlatformActions.Add(new RefineResourceAction(this, ref mDirector, new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 } }, EResourceType.Steel));
+            mIPlatformActions.Add(new RefineResourceAction(this, ref mDirector, new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 } }, EResourceType.Copper));
+            mIPlatformActions.Add(new RefineResourceAction(this, ref mDirector, new Dictionary<EResourceType, int> { { EResourceType.Sand, 1 } }, EResourceType.Silicon));
+            mIPlatformActions.Add(new RefineResourceAction(this, ref mDirector, new Dictionary<EResourceType, int> { { EResourceType.Oil, 1 } }, EResourceType.Fuel));
+            mIPlatformActions.Add(new RefineResourceAction(this, ref mDirector, new Dictionary<EResourceType, int> { { EResourceType.Oil, 1 } }, EResourceType.Plastic));
+            mIPlatformActions.Add(new RefineResourceAction(this, ref mDirector, new Dictionary<EResourceType, int> { { EResourceType.Water, 1 }, { EResourceType.Sand, 1 } }, EResourceType.Concrete));
+            mIPlatformActions.Add(new RefineResourceAction(this, ref mDirector, new Dictionary<EResourceType, int> { { EResourceType.Plastic, 1 }, {EResourceType.Silicon, 1}, { EResourceType.Copper, 1 } }, EResourceType.Chip));
         }
 
         public override void Produce()
         {
-            throw new NotImplementedException();
-            //mIPlatformActions[0].Execute();
+            mIPlatformActions.ForEach(a => a.Execute());
+        }
+
+        public void UiToggleAll()
+        {
+            mIPlatformActions.ForEach(a => a.UiToggleState());
         }
     }
 }

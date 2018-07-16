@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -11,7 +12,6 @@ using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.Map
 {
@@ -85,7 +85,7 @@ namespace Singularity.Map
         /// </summary>
         public StructureMap(FogOfWar fow, ref Director director)
         {
-            director.InputManager.AddMousePositionListener(this);
+            director.GetInputManager.AddMousePositionListener(this);
 
             mFow = fow;
 
@@ -105,7 +105,7 @@ namespace Singularity.Map
         {
             mFow = fow;
             mDirector = dir;
-            dir.InputManager.AddMousePositionListener(this);
+            dir.GetInputManager.AddMousePositionListener(this);
             foreach (var placement in mStructuresToPlace)
             {
                 placement.ReloadContent(camera, ref dir, map);
@@ -142,6 +142,13 @@ namespace Singularity.Map
         {
 
             mPlatforms.AddLast(platform);
+
+            // TODO: quick implementation to prevent enemy platforms from being discoverable through FOW
+            if (!platform.Friendly)
+            {
+                return;
+            }
+
             mFow.AddRevealingObject(platform);
 
             // first of all get the "connection graph" of the platform to add. The connection graph
@@ -173,11 +180,11 @@ namespace Singularity.Map
             mGraphIdToGraph[index] = graph;
             mPlatformToGraphId[platform] = index;
             platform.SetGraphIndex(index);
-            
+
             UpdateGenUnitsGraphIndex(mGraphIdToGraph[index], index);
 
-            mDirector.DistributionDirector.AddManager(index);
-            mDirector.PathManager.AddGraph(index, graph);
+            mDirector.GetDistributionDirector.AddManager(index);
+            mDirector.GetPathManager.AddGraph(index, graph);
         }
 
         /// <summary>
@@ -187,14 +194,18 @@ namespace Singularity.Map
         public void RemovePlatform(PlatformBlank platform)
         {
             mPlatforms.Remove(platform);
-            mFow.RemoveRevealingObject(platform);
 
-            var index = mPlatformToGraphId[platform];
 
-            mGraphIdToGraph[index] = null;
+            // TODO : made this only for friendly platforms since right now enemy platforms should not be added to Graph ID
+            if (platform.Friendly)
+            {
+                mFow.RemoveRevealingObject(platform);
+                var index = mPlatformToGraphId[platform];
+                mGraphIdToGraph[index] = null;
 
-            mDirector.DistributionDirector.RemoveManager(index, mGraphIdToGraph);
-            mDirector.PathManager.RemoveGraph(index);
+                mDirector.GetDistributionDirector.RemoveManager(index, mGraphIdToGraph);
+                mDirector.GetPathManager.RemoveGraph(index);
+            }
         }
 
         /// <summary>
@@ -208,53 +219,56 @@ namespace Singularity.Map
             // first check if two graphs got connected.
             // because we need to differ between road connected two graphs, or road was added to one graph only
 
-            if (mPlatformToGraphId[(PlatformBlank) road.GetChild()] !=
-                mPlatformToGraphId[(PlatformBlank) road.GetParent()])
+            if (((PlatformBlank) road.GetChild()).Friendly && ((PlatformBlank) road.GetParent()).Friendly)
             {
-                var childIndex = mPlatformToGraphId[(PlatformBlank) road.GetChild()];
-                var parentIndex = mPlatformToGraphId[(PlatformBlank) road.GetParent()];
 
-                // since the graphes will get connected by this road, we first
-                // get all the nodes and edges from both graphes
-                var connectGraphNodes = mGraphIdToGraph[childIndex].GetNodes()
-                    .Concat(mGraphIdToGraph[parentIndex].GetNodes()).ToList();
-
-                var connectGraphEdges = mGraphIdToGraph[childIndex].GetEdges()
-                    .Concat(mGraphIdToGraph[parentIndex].GetEdges()).ToList();
-
-                // don't forget to add the current road to the graph aswell
-                connectGraphEdges.Add(road);
-
-                foreach (var node in connectGraphNodes)
+                if (mPlatformToGraphId[(PlatformBlank) road.GetChild()] !=
+                    mPlatformToGraphId[(PlatformBlank) road.GetParent()])
                 {
-                    // now we update our dictionary, such that all nodes formerly in the graph
-                    // of the node road.GetChild() are now in the parent nodes graph.
-                    // this is "arbitrary", we could also do it the other way around
-                    mPlatformToGraphId[(PlatformBlank) node] = parentIndex;
-                    ((PlatformBlank)node).SetGraphIndex(parentIndex);
-                }
+                    var childIndex = mPlatformToGraphId[(PlatformBlank) road.GetChild()];
+                    var parentIndex = mPlatformToGraphId[(PlatformBlank) road.GetParent()];
 
-                // now we create the actual connected graph
-                var graph = new Graph.Graph(connectGraphNodes, connectGraphEdges);
+                    // since the graphes will get connected by this road, we first
+                    // get all the nodes and edges from both graphes
+                    var connectGraphNodes = mGraphIdToGraph[childIndex].GetNodes()
+                        .Concat(mGraphIdToGraph[parentIndex].GetNodes()).ToList();
 
-                // the only thing left is to update the two former graph references
-                // and add the new graph
-                mGraphIdToGraph[childIndex] = null;
-                mGraphIdToGraph[parentIndex] = graph;
+                    var connectGraphEdges = mGraphIdToGraph[childIndex].GetEdges()
+                        .Concat(mGraphIdToGraph[parentIndex].GetEdges()).ToList();
+
+                    // don't forget to add the current road to the graph aswell
+                    connectGraphEdges.Add(road);
+
+                    foreach (var node in connectGraphNodes)
+                    {
+                        // now we update our dictionary, such that all nodes formerly in the graph
+                        // of the node road.GetChild() are now in the parent nodes graph.
+                        // this is "arbitrary", we could also do it the other way around
+                        mPlatformToGraphId[(PlatformBlank) node] = parentIndex;
+                        ((PlatformBlank) node).SetGraphIndex(parentIndex);
+                    }
+
+                    // now we create the actual connected graph
+                    var graph = new Graph.Graph(connectGraphNodes, connectGraphEdges);
+
+                    // the only thing left is to update the two former graph references
+                    // and add the new graph
+                    mGraphIdToGraph[childIndex] = null;
+                    mGraphIdToGraph[parentIndex] = graph;
 
                 UpdateGenUnitsGraphIndex(mGraphIdToGraph[parentIndex], parentIndex);
-
-                mGraphIdToEnergyLevel[parentIndex] =
-                    mGraphIdToEnergyLevel[parentIndex] + mGraphIdToEnergyLevel[childIndex];
                 mGraphIdToEnergyLevel[childIndex] = 0;
 
-                mDirector.DistributionDirector.MergeManagers(childIndex, parentIndex, parentIndex);
-                mDirector.PathManager.RemoveGraph(childIndex);
-                mDirector.PathManager.AddGraph(parentIndex, graph);
-                return;
+                    mDirector.GetDistributionDirector.MergeManagers(childIndex, parentIndex, parentIndex);
+                    mDirector.GetPathManager.RemoveGraph(childIndex);
+                    mDirector.GetPathManager.AddGraph(parentIndex, graph);
+                    return;
+                }
+
+
+                // the road was in the same graph, thus just add it to the graph
+                mGraphIdToGraph[mPlatformToGraphId[(PlatformBlank) road.GetChild()]].AddEdge(road);
             }
-            // the road was in the same graph, thus just add it to the graph
-            mGraphIdToGraph[mPlatformToGraphId[(PlatformBlank) road.GetChild()]].AddEdge(road);
 
         }
 
@@ -264,6 +278,7 @@ namespace Singularity.Map
         /// <param name="road">The road to be added to the game</param>
         public void RemoveRoad(Road road)
         {
+
             mRoads.Remove(road);
 
             var child = road.GetChild();
@@ -271,6 +286,12 @@ namespace Singularity.Map
 
             ((PlatformBlank)child)?.RemoveEdge(road);
             ((PlatformBlank)parent)?.RemoveEdge(road);
+
+            if (!((PlatformBlank)road.GetChild()).Friendly || !((PlatformBlank)road.GetParent()).Friendly)
+            {
+                //Skip the Whole Graphid part since the enemy roads are not registered in a graph with graphid
+                return;
+            }
 
             // more accurately: we have two cases:
             // 1. road gets destroyed -> two new seperate graphs get created
@@ -357,9 +378,9 @@ namespace Singularity.Map
             UpdateEnergyLevel(newChildIndex);
             UpdateEnergyLevel(mPlatformToGraphId[(PlatformBlank)parent]);
 
-            mDirector.DistributionDirector.SplitManagers(mPlatformToGraphId[(PlatformBlank)parent], newChildIndex, platforms, units, mGraphIdToGraph);
-            mDirector.PathManager.AddGraph(newChildIndex, childReachableGraph);
-            mDirector.PathManager.AddGraph(mPlatformToGraphId[(PlatformBlank)parent], parentReachableGraph);
+            mDirector.GetDistributionDirector.SplitManagers(mPlatformToGraphId[(PlatformBlank)parent], newChildIndex, platforms, units, mGraphIdToGraph);
+            mDirector.GetPathManager.AddGraph(newChildIndex, childReachableGraph);
+            mDirector.GetPathManager.AddGraph(mPlatformToGraphId[(PlatformBlank)parent], parentReachableGraph);
         }
 
         /// <summary>
@@ -428,6 +449,7 @@ namespace Singularity.Map
             {
                 road.Draw(spriteBatch);
             }
+            // todo: draw MapResources here
         }
 
         public void Update(GameTime gametime)
@@ -568,7 +590,7 @@ namespace Singularity.Map
                 mGraphIdToEnergyLevel[graphId] = mGraphIdToEnergyLevel[graphId] - ((PlatformBlank) node).GetDrainingEnergy();
             }
 
-            CheckEnergyLevel(graphId, wasNegative);
+            CheckEnergyLevel(graphId);
         }
 
         /// <summary>
@@ -602,21 +624,14 @@ namespace Singularity.Map
             mMouseY = worldY;
         }
 
-        private void CheckEnergyLevel(int graphId, bool wasNegative)
+        private void CheckEnergyLevel(int graphId)
         {
             // energy level was positive and still is
-            if (!wasNegative && mGraphIdToEnergyLevel[graphId] >= 0)
-            {
-                return;
-            }
-
-            // energy level was negative and is positive considering all the platforms that weren't manually deactivated
-            // -> reactivate all the platforms which weren't manually deactivated
-            if (wasNegative && mGraphIdToEnergyLevel[graphId] >= 0)
+            if (mGraphIdToEnergyLevel[graphId] >= 0)
             {
                 foreach (var node in mGraphIdToGraph[graphId].GetNodes())
                 {
-                    if (((PlatformBlank) node).IsManuallyDeactivated())
+                    if (((PlatformBlank)node).IsManuallyDeactivated())
                     {
                         continue;
                     }

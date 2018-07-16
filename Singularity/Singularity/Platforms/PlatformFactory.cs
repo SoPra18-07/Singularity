@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.AI.Structures;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Screen;
@@ -47,13 +48,15 @@ namespace Singularity.Platforms
         /// <param name="y">The initial y coordinate of the platform</param>
         /// <param name="resourceMap">The resource map needed to initialize some platforms</param>
         /// <param name="friendly">The allegiance of the platform.</param>
+        /// <param name="commandBlueprint">If a built CommandCenter should be a Blueprint or not</param>
         /// <returns></returns>
         public static PlatformBlank Get(EStructureType type,
             ref Director director,
             float x = 0,
             float y = 0,
             ResourceMap resourceMap = null,
-            bool friendly = true)
+            bool friendly = true,
+            bool commandBlueprint = true)
         {
             if (sConeSheet == null || sCylinderSheet == null || sDomeSheet == null || sBlankSheet == null)
             {
@@ -74,7 +77,8 @@ namespace Singularity.Platforms
                     return new PlatformBlank(position, sBlankSheet, sBlankSheet, sLibSans12, ref director, friendly: friendly);
 
                 case EStructureType.Command:
-                    return new CommandCenter(position, sCylinderSheet, sBlankSheet, sLibSans12, ref director, friendly);
+
+                    return new CommandCenter(position, sCylinderSheet, sBlankSheet, sLibSans12, ref director, commandBlueprint, friendly);
 
                 case EStructureType.Energy:
                     return new EnergyFacility(position, sDomeSheet, sBlankSheet, sLibSans12, ref director, friendly);
@@ -106,6 +110,12 @@ namespace Singularity.Platforms
 
                 case EStructureType.Laser:
                     return new DefenseLaser(position, sConeSheet, sBlankSheet, sLibSans12, ref director, friendly);
+
+                case EStructureType.Sentinel:
+                    return new Sentinel(position, sConeSheet, sBlankSheet, sLibSans12, ref director);
+
+                case EStructureType.Spawner:
+                    return new Spawner(position, sCylinderSheet, sBlankSheet, ref director);
 
                 default:
                     break;
