@@ -7,7 +7,7 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="MilitaryUnit"/>
     [DataContract]
-    internal class Native : MilitaryFast
+    internal class Native : EnemyFast
     {
         /// <summary>
         /// Enemy units controlled by AI and opposed to the player; Native of the environment.
@@ -17,7 +17,7 @@ namespace Singularity.Units
         /// <param name="director">Reference to the game director.</param>
         /// <param name="map">Reference to the game map.</param>
         public Native(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
-            : base(position, camera, ref director, ref map, false)
+            : base(position, camera, ref director, ref map)
         {
             mSpeed = 10;
             Health = 6;
