@@ -68,7 +68,7 @@ namespace Singularity.Resources
 
             // Track the creation of a resource in the statistics.
             mDirector.GetStoryManager.UpdateResources(Type);
-            return Optional<Resource>.Of(new Resource(Type, location));
+            return Optional<Resource>.Of(new Resource(Type, location, mDirector));
         }
 
         public void Draw(SpriteBatch spriteBatch)
