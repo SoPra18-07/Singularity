@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Singularity.Property;
+using Singularity.Units;
 
 namespace Singularity.Map
 {
@@ -107,6 +108,16 @@ namespace Singularity.Map
         /// <param name="unitPos">Precalculated tile position for optimization.</param>
         internal void RemoveUnit(ICollider unit, Vector2 unitPos)
         {
+            for (var x = 0; x < 31; x++)
+            {
+                for (var y = 0; y < 31; y++)
+                {
+                    if (mUnitGrid[x, y].UnitList.Contains(unit) && unit is Settler)
+                    {
+                        Console.Out.WriteLine(x + " " + y);
+                    }
+                }
+            }
             mUnitGrid[(int) unitPos.X, (int) unitPos.Y].UnitList.Remove(unit);
             mLookupTable.Remove(unit.Id);
         }

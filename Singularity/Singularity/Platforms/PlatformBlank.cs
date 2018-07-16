@@ -1025,6 +1025,8 @@ namespace Singularity.Platforms
             mDrainingEnergy = 0;
 
             UpdateValues();
+            mDirector.GetMilitaryManager.RemovePlatform(this);
+            mDirector.GetMilitaryManager.AddUnit(this);
         }
 
         /// <summary>
@@ -1044,6 +1046,7 @@ namespace Singularity.Platforms
 
             // TODO: REMOVE from everywhere.
             // see https://github.com/SoPra18-07/Singularity/issues/215
+
 
             // removing the PlatformActions first
 
