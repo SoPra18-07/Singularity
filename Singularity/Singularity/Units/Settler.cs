@@ -157,6 +157,13 @@ namespace Singularity.Units
             }
         }
 
+        public override bool Die()
+        {
+            base.Die();
+            mDirector.GetInputManager.FlagForRemoval((IKeyListener) this);
+            return true;
+        }
+
         public bool KeyTyped(KeyEvent keyEvent)
         {
             // b key is used to convert the settler unit into a command center
