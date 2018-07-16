@@ -422,6 +422,10 @@ namespace Singularity.Units
         public void MakeDamage(int damage)
         {
             Health -= damage;
+            if (Health <= 0 && !mDead)
+            {
+                Die();
+            }
         }
 
         public bool Die()
