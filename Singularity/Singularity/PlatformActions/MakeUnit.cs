@@ -64,6 +64,7 @@ namespace Singularity.PlatformActions
         }
     }
 
+    [DataContract]
     internal sealed class MakeSettlerUnit : AMakeUnit
     {
         public MakeSettlerUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)

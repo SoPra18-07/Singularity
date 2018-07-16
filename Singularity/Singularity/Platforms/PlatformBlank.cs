@@ -434,7 +434,7 @@ namespace Singularity.Platforms
 
         public virtual void Produce()
         {
-            Debug.WriteLine("There's producing Units at a PlatformBlank!!!");
+            Debug.WriteLine("There's producing Units at a PlatformBlank!!! (" + mType + ")");
             // throw new NotImplementedException();
         }
         /// <summary>
@@ -1198,11 +1198,11 @@ namespace Singularity.Platforms
 
                 mIsManuallyDeactivated = true;
             }
-
-            mIsActive = false;
+            
             // TODO: remove this or change it to something more appropriately, this is used by @Ativelox for
             // TODO: debugging purposes to easily see which platforms are currently deactivated
             mColor = Color.Green;
+            if (!mIsActive) return;
             //Only unregister if this platform is a defense or production platform
             if (IsDefense())
             {
@@ -1214,6 +1214,7 @@ namespace Singularity.Platforms
                 var selflist = new List<PlatformBlank> {this};
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Unregister(selflist, false, true);
             }
+            mIsActive = false;
         }
 
         public List<GeneralUnit> GetGeneralUnitsOnPlatform()

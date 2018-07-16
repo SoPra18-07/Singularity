@@ -14,7 +14,7 @@ using Singularity.Utils;
 namespace Singularity.PlatformActions
 {
     [DataContract]
-    class RefineResourceAction : AMakeUnit
+    sealed class RefineResourceAction : AMakeUnit
     {
         [DataMember]
         private EResourceType mRefiningTo;
@@ -25,7 +25,10 @@ namespace Singularity.PlatformActions
         [DataMember]
         public override List<JobType> UnitsRequired { get; set; } = new List<JobType> { JobType.Production };
 
-        public RefineResourceAction(PlatformBlank platform, ref Director director, Dictionary<EResourceType, int> from, EResourceType to) : base(platform, ref director)
+        public RefineResourceAction(PlatformBlank platform,
+            ref Director director,
+            Dictionary<EResourceType, int> from,
+            EResourceType to) : base(platform, ref director)
         {
             State = PlatformActionState.Available;
             mBuildingCost = from;
@@ -63,7 +66,7 @@ namespace Singularity.PlatformActions
             {
                 case PlatformActionState.Available:
                     mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(this);
-                    //mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(mPlatform);
+                    // mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(mPlatform);
                     UpdateResources();
                     State = PlatformActionState.Active;
                     break;
