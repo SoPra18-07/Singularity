@@ -36,9 +36,10 @@ namespace Singularity.AI.Structures
             friendly: friendly)
         {
             mDrainingEnergy = DrainingEnergy;
-
+            mIsBlueprint = false;
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
+            
         }
 
         public override void Update(GameTime time)
