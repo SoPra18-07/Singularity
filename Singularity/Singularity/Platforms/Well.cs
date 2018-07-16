@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,11 +13,6 @@ namespace Singularity.Platforms
     [DataContract]
     internal sealed class Well: PlatformBlank
     {
-        [DataMember]
-        private new const int PlatformWidth = 144;
-        [DataMember]
-        private new const int PlatformHeight = 127;
-
         public Well(Vector2 position,
             Texture2D platformSpriteSheet,
             Texture2D baseSprite,
@@ -33,9 +27,8 @@ namespace Singularity.Platforms
                 ref director,
                 EStructureType.Well,
                 -50,
-                friendly: friendly)
+                friendly)
         {
-            //Add possible Actions in this array
             mIPlatformActions.Add(new ProduceWellResource(this, resource, ref mDirector));
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.
@@ -44,28 +37,16 @@ namespace Singularity.Platforms
             mSpritename = "Dome";
             Property = JobType.Production;
             SetPlatfromParameters();
+            mPlatformWidth = 144;
+            mPlatformHeight = 127;
         }
 
         public override void Produce()
         {
-            foreach (var pair in mAssignedUnits[JobType.Production])
+           // only produce resources, if the platform is active.
+            if (IsActive())
             {
-                //That means the unit is not at work yet.
-                if (!pair.GetSecond())
-                {
-                    continue;
-                }
-                mIPlatformActions[1].Execute();
-            }
-        }
-
-        public new void Update(GameTime time)
-        {
-            base.Update(time);
-            if (time.TotalGameTime.TotalSeconds % 5 <= 0.5)
-            {
-                Console.Out.WriteLine("PRODUCE!!!!");
-                Produce();
+                mIPlatformActions[0].Execute();
             }
         }
     }

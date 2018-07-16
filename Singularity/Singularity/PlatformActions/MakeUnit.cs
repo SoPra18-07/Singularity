@@ -28,7 +28,7 @@ namespace Singularity.PlatformActions
             var camera = mDirector.GetStoryManager.Level.Camera;
             var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryFast(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
-            mDirector.GetMilitaryManager.AddUnit(unit);
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(unit);
         }
     }
 
@@ -45,7 +45,7 @@ namespace Singularity.PlatformActions
             var camera = mDirector.GetStoryManager.Level.Camera;
             var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryHeavy(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
-            mDirector.GetMilitaryManager.AddUnit(unit);
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(unit);
         }
     }
 
@@ -60,8 +60,26 @@ namespace Singularity.PlatformActions
 
         protected override void CreateUnit()
         {
+            var unit = new GeneralUnit(mPlatform, ref mDirector);
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(unit);
 
-            mDirector.GetStoryManager.Level.GameScreen.AddObject(new GeneralUnit(mPlatform, ref mDirector));
+            mDirector.GetUserInterfaceController.UpdateSLiderHandler();
+        }
+    }
+
+    [DataContract]
+    internal sealed class MakeSettlerUnit : AMakeUnit
+    {
+        public MakeSettlerUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
+        {
+            // Todo: update prices
+            mBuildingCost = new Dictionary<EResourceType, int> { {EResourceType.Chip, 3} };
+        }
+
+        protected override void CreateUnit()
+        {
+            var settler = Settler.Create(mPlatform.Center + mOffset, ref mDirector);
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(settler);
         }
     }
 
@@ -79,10 +97,10 @@ namespace Singularity.PlatformActions
             var camera = mDirector.GetStoryManager.Level.Camera;
             var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryUnit(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
-            mDirector.GetMilitaryManager.AddUnit(unit);
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(unit);
         }
     }
-    
+
     [DataContract]
     public abstract class AMakeUnit : APlatformAction
     {
@@ -136,8 +154,8 @@ namespace Singularity.PlatformActions
             foreach (var r in mPlatform.GetPlatformResources().ToList()) GetResource(r.Type);
 
             if (mMissingResources.Count > 0) return;
-            CreateUnit();
             State = PlatformActionState.Available;
+            CreateUnit();
         }
 
         #region private function
@@ -162,14 +180,30 @@ namespace Singularity.PlatformActions
             {
                 mMissingResources = new Dictionary<EResourceType, int>(mBuildingCost);
             }
-            mToRequest = new Dictionary<EResourceType, int>(mMissingResources);
+            foreach (var resources in mMissingResources)
+            {
+                var inside = 0;
+                if (mToRequest.TryGetValue(resources.Key, out inside))
+                {
+                    mToRequest[resources.Key] = inside + resources.Value;
+                }
+                else
+                {
+                    mToRequest.Add(resources.Key, inside + resources.Value);
+                }
+            }
         }
 
         public override Dictionary<EResourceType, int> GetRequiredResources()
         {
             return mMissingResources;
         }
-        
+
+        public Dictionary<EResourceType, int> GetBuildingCost()
+        {
+            return mBuildingCost;
+        }
+
         public override void UiToggleState()
         {
             switch (State)

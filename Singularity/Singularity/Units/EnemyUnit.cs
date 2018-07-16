@@ -20,6 +20,7 @@ namespace Singularity.Units
             : base(position, camera, ref director, ref map, false)
         {
             mColor = Color.Maroon;
+            mShootColor = Color.Red;
         }
     }
 }

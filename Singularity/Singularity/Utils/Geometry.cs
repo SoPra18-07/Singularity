@@ -48,6 +48,25 @@ namespace Singularity.Utils
         }
 
         /// <summary>
+        /// Returns whether the given Vector2 is contained in the circle specified by radius
+        /// </summary>
+        /// <param name="radius"></param>
+        /// <param name="toCheck"></param>
+        /// <returns></returns>
+        public static bool Contains(Vector2 circleCenter, float radius, Vector2 toCheck, bool alsoOn = false)
+        {
+            var distanceSquared = Math.Pow(toCheck.X - circleCenter.X, 2) + Math.Pow(toCheck.Y - circleCenter.Y, 2);
+
+            if (alsoOn)
+            {
+                return distanceSquared <= Math.Pow(radius, 2);
+            }
+
+            return distanceSquared < Math.Pow(radius, 2);
+
+        }
+
+        /// <summary>
         /// Gets the approximate distance between 2 points quickly.
         /// </summary>
         /// <param name="pointA">The first point.</param>
@@ -101,6 +120,21 @@ namespace Singularity.Utils
             u.tmp -= 1 << 23; /* Subtract 2^m. */
             u.tmp >>= 1; /* Divide by 2. */
             u.tmp += 1 << 29; /* Add ((b + 1) / 2) * 2^m. */
+            return u.f;
+        }
+
+        /// <summary>
+        /// Divides quickly by 2^divideBy.
+        /// </summary>
+        /// <param name="z">The numerator.</param>
+        /// <param name="divideBy">The exponent of the denominator 2^divideBy.</param>
+        /// <returns>The float divided by 2^divideBy.</returns>
+        public static float BitShiftFloat(float z, int divideBy)
+        {
+            FloatIntUnion u;
+            u.tmp = 0;
+            u.f = z;
+            u.tmp >>= divideBy;
             return u.f;
         }
 

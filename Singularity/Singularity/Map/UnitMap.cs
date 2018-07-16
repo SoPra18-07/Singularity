@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Singularity.Platforms;
 using Singularity.Property;
+using Singularity.Units;
 
 namespace Singularity.Map
 {
-    internal sealed class UnitMap
+    internal sealed class UnitMap : IUpdate
     {
         /// <summary>
         /// Stores which units are in which grid position on the map.
@@ -33,7 +35,9 @@ namespace Singularity.Map
         internal UnitMap(int mapSizeX, int mapSizeY)
         {
             mLookupTable = new Dictionary<int, Vector2>();
-            mUnitGrid = new UnitMapTile[mapSizeX / 2, mapSizeY / 2];
+            // + 1 Because the Unit grid is an array and it can happen that there is an Indexoutofboundsexception
+            // when a unit is moving at the corner
+            mUnitGrid = new UnitMapTile[mapSizeX / 2 + 1, mapSizeY / 2 + 1];
 
             for (var i = 0; i < mUnitGrid.GetLength(0); i++)
             {
@@ -121,6 +125,16 @@ namespace Singularity.Map
         /// <param name="unitPos">Precalculated tile position for optimization.</param>
         internal void RemoveUnit(ICollider unit, Vector2 unitPos)
         {
+            for (var x = 0; x < 31; x++)
+            {
+                for (var y = 0; y < 31; y++)
+                {
+                    if (mUnitGrid[x, y].UnitList.Contains(unit) && unit is Quarry)
+                    {
+                        Console.Out.WriteLine(x + " " + y);
+                    }
+                }
+            }
             mUnitGrid[(int) unitPos.X, (int) unitPos.Y].UnitList.Remove(unit);
             mLookupTable.Remove(unit.Id);
 
@@ -220,6 +234,26 @@ namespace Singularity.Map
 
             return new Vector2(column, row);
 
+        }
+
+        public void Update(GameTime gametime)
+        {
+            var movedUnitList = new List<ICollider>();
+            foreach (var unitMapTile in mUnitGrid)
+            {
+                foreach (var unit in unitMapTile.UnitList)
+                {
+                    if (unit.Moved)
+                    {
+                        movedUnitList.Add(unit);
+                    }
+                }
+            }
+
+            foreach (var unit in movedUnitList)
+            {
+                MoveUnit(unit);
+            }
         }
     }
 }

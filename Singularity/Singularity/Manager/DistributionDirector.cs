@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Singularity.PlatformActions;
 using Singularity.Platforms;
 using Singularity.Screen;
 using Singularity.Units;
@@ -30,9 +31,6 @@ namespace Singularity.Manager
         public void AddManager(int graphid)
         {
             mDMs[graphid] = new DistributionManager(graphid);
-
-            // update UI
-            mUserInterfaceController.AddGraph(graphid);
         }
 
         /// <summary>
@@ -81,6 +79,10 @@ namespace Singularity.Manager
                 productiontasks.Enqueue(task);
             }
 
+            //Merge the PlatformActions
+            var actions = new List<IPlatformAction>(dist1.GetPlatformActions());
+            actions.AddRange(dist2.GetPlatformActions());
+
             //Set up the new DistributionManager
             dist3.SetJobUnits(idle, JobType.Idle);
             dist3.SetJobUnits(prod, JobType.Production);
@@ -95,6 +97,7 @@ namespace Singularity.Manager
             dist3.SetTasks(buildingtasks, true);
             dist3.SetTasks(productiontasks, false);
 
+            dist3.SetPlatformActions(actions);
             //Remove the two old DMs and add the new DM to the Dictionary
             mDMs.Remove(graphid1);
             mDMs.Remove(graphid2);
@@ -112,12 +115,10 @@ namespace Singularity.Manager
         /// <param name="newgraphid">The graphid of the split-off DistributionManager</param>
         /// <param name="platforms">The platforms of the new split-off DistributionManager</param>
         /// <param name="units">The units of the new split-off DistributionManager</param>
-        /// <param name="graphIdToGraph">the structuremap's graphIdToGraph-dictionary</param>
         public void SplitManagers(int oldgraphid,
             int newgraphid,
             List<PlatformBlank> platforms,
-            List<GeneralUnit> units,
-            Dictionary<int, Graph.Graph> graphIdToGraph)
+            List<GeneralUnit> units)
         {
             var olddist = mDMs[oldgraphid];
             mDMs[newgraphid] = new DistributionManager(newgraphid);
@@ -133,7 +134,7 @@ namespace Singularity.Manager
                     olddist.Unregister(platformcontainer, platform.IsDefense(), false);
 
                     //Only readd the platform when it was in the old distributionmanager. That is the case only when its a defending or producing platform.
-                    newdist.Register(platform, platform.IsDefense());
+                    newdist.Register(platform);
                 }
                 //TODO: Make somehow sure the IPlatformactions request their missing things anew, because currently they dont.
 
@@ -150,18 +151,17 @@ namespace Singularity.Manager
             }
 
             // update UI by "calling all graphs" - see description in UIController
-            mUserInterfaceController.CallingAllGraphs(graphIdToGraph);
+            mUserInterfaceController.SplitGraph(oldgraphid);
         }
 
         public DistributionManager GetManager(int graphid)
         {
-            return mDMs[graphid];
+             return mDMs[graphid];
         }
 
         public void RemoveManager(int graphId, Dictionary<int, Graph.Graph> graphIdToGraph)
         {
             mDMs.Remove(graphId);
-            mUserInterfaceController.CallingAllGraphs(graphIdToGraph);
         }
 
         public void ReloadContent(UserInterfaceController uic)

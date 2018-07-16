@@ -24,6 +24,7 @@ namespace Singularity.Screen.ScreenClasses
 
         // all text is stored as string variables to allow for easy changes
         private const string ResumeString = "Resume";
+        private const string SaveGameString = "Save Game";
         private const string StatisticsString = "Statistics";
         private const string MainMenuString = "Back to Main Menu";
         private const string Title = "Pause Menu";
@@ -37,6 +38,7 @@ namespace Singularity.Screen.ScreenClasses
 
         // Buttons on the pause menu
         private Button mResumeButton;
+        private Button mSaveGameButton;
         private Button mStatisticsButton;
         private Button mMainMenuButton;
 
@@ -48,12 +50,10 @@ namespace Singularity.Screen.ScreenClasses
 
         // Transition fields and properties
         private float mMenuOpacity;
-        private float mWindowOpacity;
         private Vector2 mMenuBoxSize;
         private double mTransitionStartTime;
         private double mTransitionDuration;
         private EScreen mTargetScreen;
-        private EScreen mOriginScreen;
         public bool TransitionRunning { get; private set; }
 
         /// <summary>
@@ -86,19 +86,23 @@ namespace Singularity.Screen.ScreenClasses
             mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter);
 
             mResumeButton = new Button(ResumeString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding), Color.White);
-            mStatisticsButton = new Button(StatisticsString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 100), Color.White);
-            mMainMenuButton = new Button(MainMenuString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 200), Color.White);
+            mSaveGameButton = new Button(SaveGameString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 85), Color.White);
+            mStatisticsButton = new Button(StatisticsString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 170), Color.White);
+            mMainMenuButton = new Button(MainMenuString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 255), Color.White);
             mButtonList.Add(mResumeButton);
+            mButtonList.Add(mSaveGameButton);
             mButtonList.Add(mStatisticsButton);
             mButtonList.Add(mMainMenuButton);
 
             mSelectorTriangle = content.Load<Texture2D>("SelectorTriangle");
 
             mResumeButton.ButtonReleased += GamePauseManagerScreen.OnResumeButtonReleased;
+            mSaveGameButton.ButtonReleased += GamePauseManagerScreen.OnSaveGameButtonReleased;
             mStatisticsButton.ButtonReleased += GamePauseManagerScreen.OnStatisticsButtonReleased;
             mMainMenuButton.ButtonReleased += GamePauseManagerScreen.OnMainMenuButtonReleased;
 
             mResumeButton.ButtonHovering += OnResumeHovering;
+            mSaveGameButton.ButtonHovering += OnSaveGameHovering;
             mStatisticsButton.ButtonHovering += OnStatisticsHovering;
             mMainMenuButton.ButtonHovering += OnMainMenuHovering;
 
@@ -130,13 +134,14 @@ namespace Singularity.Screen.ScreenClasses
 
         public void TransitionTo(EScreen originScreen, EScreen targetScreen, GameTime gameTime)
         {
-            mOriginScreen = originScreen;
             mTargetScreen = targetScreen;
             TransitionRunning = true;
             mTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
 
             switch (targetScreen)
             {
+                case EScreen.SaveGameScreen:
+                    break;
                 case EScreen.StatisticsScreen:
                     break;
                 case EScreen.GamePauseScreen:
@@ -157,6 +162,16 @@ namespace Singularity.Screen.ScreenClasses
         {
             switch (mTargetScreen)
             {
+                case EScreen.SaveGameScreen:
+                    if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
+                    {
+                        TransitionRunning = false;
+                        mMenuOpacity = 1f;
+                    }
+
+                    mMenuOpacity =
+                        (float)Animations.Easing(0, 1f, mTransitionStartTime, mTransitionDuration, gameTime);
+                    break;
                 case EScreen.StatisticsScreen:
                     if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
                     {
@@ -219,7 +234,7 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.DrawString(spriteFont: mLibSans36,
                 text: Title,
                 position: new Vector2(x: mMenuBoxPosition.X + 20, y: mMenuBoxPosition.Y + 10),
-                color: new Color(new Vector3(.9137f, .9058f, .8314f)));
+                color: new Color(new Vector3(.9137f, .9058f, .8314f)) * mMenuOpacity);
 
             // draw selector triangle
             spriteBatch.Draw(texture: mSelectorTriangle,
@@ -265,14 +280,19 @@ namespace Singularity.Screen.ScreenClasses
             mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter);
         }
 
+        private void OnSaveGameHovering(Object sender, EventArgs eventArgs)
+        {
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 85);
+        }
+
         private void OnStatisticsHovering(Object sender, EventArgs eventArgs)
         {
-            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 100);
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 170);
         }
 
         private void OnMainMenuHovering(Object sender, EventArgs eventArgs)
         {
-            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 200);
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 255);
         }
 
         #endregion

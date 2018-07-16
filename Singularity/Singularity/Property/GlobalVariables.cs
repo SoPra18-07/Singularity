@@ -32,5 +32,7 @@
             get { return sUiVolume * MasterVolume; }
             set { sUiVolume = value; }
         }
+
+        internal static bool MonoSound { get; set; }
     }
 }

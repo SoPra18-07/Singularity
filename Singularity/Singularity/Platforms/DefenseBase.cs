@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 ﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Manager;
@@ -12,7 +14,7 @@ using Singularity.Units;
 namespace Singularity.Platforms
 {
     [DataContract]
-    internal abstract class DefenseBase : PlatformBlank, IShooting
+    public abstract class DefenseBase : PlatformBlank, IShooting
     {
         /// <summary>
         /// For defense platforms, indicates if they are shooting.
@@ -33,6 +35,8 @@ namespace Singularity.Platforms
         [DataMember]
         protected Shoot mDefenseAction;
 
+        protected int mSoundId;
+
         /// <summary>
         /// Represents an abstract class for all defense platforms. Implements their draw methods.
         /// </summary>
@@ -52,9 +56,13 @@ namespace Singularity.Platforms
         {
 
             mDefenseAction = new Shoot(this, ref mDirector);
-            mSpritename = "Cone";
+            mSpritename = "Cones";
             Property = JobType.Defense;
+
+            
             SetPlatfromParameters();
+
+
 
             RevelationRadius = 500;
         }
@@ -73,7 +81,7 @@ namespace Singularity.Platforms
             // Cone (Defense Platforms)
             // Draw the basic platform first
             spriteBatch.Draw(mPlatformBaseTexture,
-                Vector2.Add(AbsolutePosition, new Vector2(0, 78)),
+                Vector2.Add(AbsolutePosition, new Vector2(0, mType == EStructureType.Blank ? 0 : 78)),
                 null,
                 mColorBase * transparency,
                 0f,
@@ -81,6 +89,7 @@ namespace Singularity.Platforms
                 1f,
                 SpriteEffects.None,
                 LayerConstants.BasePlatformLayer);
+            if (mType == EStructureType.Blank) return;
             // then draw what's on top of that
             spriteBatch.Draw(mPlatformSpriteSheet,
                 AbsolutePosition,
@@ -92,21 +101,21 @@ namespace Singularity.Platforms
                 SpriteEffects.None,
                 LayerConstants.PlatformLayer);
 
-            if (!mShoot)
+            if (!mShoot || mShootingTarget == null)
             {
                 return;
             }
 
+            var color = Friendly ? Color.White : Color.Red;
             // draws a laser line a a slight glow around the line, then sets the shoot future off
-            spriteBatch.DrawLine(Center, mShootingTarget.Center, Color.White, 2);
-            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, Color.White * .2f, 6);
+            spriteBatch.DrawLine(Center, mShootingTarget.Center, color, 2);
+            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, color * .2f, 6);
             mShoot = false;
         }
 
         public void SetShootingTarget(ICollider target)
         {
             mShootingTarget = target;
-            Shoot(target);
         }
 
         /// <summary>

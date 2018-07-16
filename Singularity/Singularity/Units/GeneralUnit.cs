@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
-using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.PlatformActions;
 using Singularity.Platforms;
@@ -14,7 +14,7 @@ using Singularity.Utils;
 namespace Singularity.Units
 {
     [DataContract]
-    public sealed class GeneralUnit : ISpatial, IDie
+    public sealed class GeneralUnit : ADie, ISpatial
     {
         [DataMember]
         public int Id { get; private set; }
@@ -104,7 +104,7 @@ namespace Singularity.Units
         [DataMember]
         public bool Active { get; set; }
 
-        public GeneralUnit(PlatformBlank platform, ref Director director)
+        public GeneralUnit(PlatformBlank platform, ref Director director) : base(ref director)
         {
             Graphid = platform.GetGraphIndex();
             platform.AddGeneralUnit(this);
@@ -125,9 +125,10 @@ namespace Singularity.Units
             mFinishTask = false;
         }
 
-        internal void ReloadContent(ref Director director)
+        internal void ReloadContent(ref Director director, ContentManager content)
         {
             mDirector = director;
+            mGenUnitTexture = content.Load<Texture2D>("GenUnit");
         }
 
         /// <summary>
@@ -275,14 +276,13 @@ namespace Singularity.Units
 
                     case JobType.Production:
                         //You arrived at your destination and you now want to work.
-                        if (!mIsMoving && !mDone && CurrentNode.Equals(mTask.End.Get()))
+                        if (!mIsMoving && !mDone && CurrentNode.Equals(mTask.End.Get()) && !mAssigned)
                         {
-                            if (!mAssigned)
-                            {
-                                mTask.End.Get().ShowedUp(this, Job);
-                                mAssigned = true;
-                            }
+                            mTask.End.Get().ShowedUp(this, Job);
+                            mAssigned = true;
                         }
+                        if (mAssigned)
+                            mTask.End.Get().Produce();
                         RegulateMovement();
                         break;
 
@@ -516,13 +516,13 @@ namespace Singularity.Units
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            
+
             spriteBatch.Draw(mGenUnitTexture,
                 AbsolutePosition,
                 null,
                 Color.White,
                 0f,
-                new Vector2(10), 
+                new Vector2(10),
                 Vector2.One,
                 SpriteEffects.None,
                 LayerConstants.GeneralUnitLayer);
@@ -533,8 +533,11 @@ namespace Singularity.Units
             }
         }
 
-        public bool Die()
+        public override bool Die()
         {
+            // stats tracking for the death of a general unit
+            mDirector.GetStoryManager.UpdateUnits("lost");
+
             mTask = new Task(Job, Optional<PlatformBlank>.Of(null), null, Optional<IPlatformAction>.Of(null));
             if (Carrying.IsPresent())
             {
@@ -556,22 +559,19 @@ namespace Singularity.Units
         /// <param name="id"></param>
         public void Kill(int id)
         {
-            if (mTask.Contains(id))
+            if (!mTask.Contains(id)) return;
+            switch (Job)
             {
-                if (Job == JobType.Defense)
-                {
+                case JobType.Defense:
                     mDirector.GetDistributionDirector.GetManager(Graphid).NewProductionHall(this, true);
-                }
-                else if (Job == JobType.Production)
-                {
+                    break;
+                case JobType.Production:
                     mDirector.GetDistributionDirector.GetManager(Graphid).NewProductionHall(this, false);
-                }
-                else
-                {
-                    // also the mAssignedTask-platformaction is included in this.
+                    break;
+                default:
                     mDirector.GetDistributionDirector.GetManager(Graphid)
                         .RequestNewTask(this, Job, Optional<IPlatformAction>.Of(null));
-                }
+                    break;
             }
         }
     }

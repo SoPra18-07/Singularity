@@ -11,7 +11,7 @@ using Singularity.Utils;
 namespace Singularity.Screen
 {
     /// <summary>
-    /// The UserInterfaceController manages the exchange between anything and the UI
+    /// The GetUserInterfaceController manages the exchange between anything and the UI
     /// </summary>
     [DataContract]
     public sealed class UserInterfaceController
@@ -24,10 +24,10 @@ namespace Singularity.Screen
         private PlatformBlank mActivePlatform;
 
         // the UI that is controlled by this UIController
-        internal UserInterfaceScreen ControlledUserInterface { private get; set; }
+        internal UserInterfaceScreen ControlledUserInterface { get; set; }
 
         /// <summary>
-        /// Creates an UserInterfaceController which manages the exchange between classes and the UI
+        /// Creates an GetUserInterfaceController which manages the exchange between classes and the UI
         /// </summary>
         /// <param name="director">the director</param>
         internal UserInterfaceController(Director director)
@@ -35,6 +35,10 @@ namespace Singularity.Screen
             mDirector = director;
         }
 
+        /// <summary>
+        /// Called during load-game
+        /// </summary>
+        /// <param name="dir"></param>
         public void ReloadContent(ref Director dir)
         {
             mDirector = dir;
@@ -61,15 +65,6 @@ namespace Singularity.Screen
         {
             // set/update data in UI
             ControlledUserInterface.SetSelectedPlatformValues(id, isActive, isManuallyDeactivated, type, resourceAmountList, unitAssignmentDict, actionsList);
-        }
-
-        /// <summary>
-        /// Returns the idle-units amount
-        /// </summary>
-        /// <returns>amount of idle units</returns>
-        public int GetIdleUnits(int graphid)
-        {
-            return mDirector.GetDistributionDirector.GetManager(graphid).GetJobCount(JobType.Idle);
         }
 
         /// <summary>
@@ -115,7 +110,7 @@ namespace Singularity.Screen
         }
 
         /// <summary>
-        /// Updates the eventLog by passing the newest event and the oldest event from the EventLog
+        /// Updates the eventLog by passing the newest event and the oldest event from the GetEventLog
         /// </summary>
         /// <param name="newEvent">event to add to eventLog</param>
         /// <param name="oldEvent">oldest event to eventually delete</param>
@@ -126,32 +121,31 @@ namespace Singularity.Screen
         }
 
         /// <summary>
-        /// Add a graph id to the graphswitcher in the UI
-        /// </summary>
-        /// <param name="graphId"></param>
-        internal void AddGraph(int graphId)
-        {
-            ControlledUserInterface?.AddGraph(graphId);
-        }
-
-        /// <summary>
         /// Merge two graphs of the graphswitcher in the UI
         /// </summary>
-        /// <param name="newGraphId"></param>
-        /// <param name="oldGraphId1"></param>
-        /// <param name="oldGraphId2"></param>
+        /// <param name="newGraphId">the new, merged graph id</param>
+        /// <param name="oldGraphId1">first merged graph</param>
+        /// <param name="oldGraphId2">second merged graph</param>
         internal void MergeGraph(int newGraphId, int oldGraphId1, int oldGraphId2)
         {
             ControlledUserInterface?.MergeGraph(newGraphId, oldGraphId1, oldGraphId2);
         }
 
         /// <summary>
-        /// This will send an info to the UI, which, in return, will send an info to the graphSwitcher,
-        /// which will call all graphIDs from the structure map and use them to update it's dictionaries.
-        /// </summary>
-        public void CallingAllGraphs(Dictionary<int, Graph.Graph> graphIdToGraph)
+        /// A Graph is split -> just forward the information to the UI
+        /// /// </summary>
+        /// <param name="splittedGraphId"></param>
+        internal void SplitGraph(int splittedGraphId)
         {
-            ControlledUserInterface?.CallingAllGraphs(graphIdToGraph);
+            ControlledUserInterface?.SplitGraph(splittedGraphId);
+        }
+
+        /// <summary>
+        /// A SliderUpdate was requested -> just forward the information to the UI
+        /// /// </summary>
+        public void UpdateSLiderHandler()
+        {
+            ControlledUserInterface.UpdateSLiderHandler();
         }
 
         /// <summary>
@@ -162,6 +156,7 @@ namespace Singularity.Screen
         {
             ControlledUserInterface?.SelectedPlatformSetsGraphId(graphId);
         }
+
         public void BuildingProcessStarted(EStructureType structureType)
         {
             ControlledUserInterface.BuildingProcessStarted(structureType);
@@ -171,7 +166,5 @@ namespace Singularity.Screen
         {
             ControlledUserInterface.BuildingProcessFinished(structureType);
         }
-
-        // TODO : ADD EVENT LOG CONTROLLING
     }
 }

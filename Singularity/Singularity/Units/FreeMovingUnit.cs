@@ -11,14 +11,13 @@ using Singularity.Map;
 using Singularity.Map.Properties;
 using Singularity.Property;
 using Singularity.Screen;
-using EventLog = Singularity.Screen.EventLog;
 
 namespace Singularity.Units
 {
     /// <inheritdoc cref="ICollider"/>
     /// <inheritdoc cref="IRevealing"/>
     [DataContract]
-    internal abstract class FreeMovingUnit : ICollider, IRevealing, IMouseClickListener, IMousePositionListener
+    internal abstract class FreeMovingUnit : ADie, ICollider, IRevealing, IMouseClickListener, IMousePositionListener
     {
         /// <summary>
         /// The unique ID of the unit.
@@ -32,7 +31,7 @@ namespace Singularity.Units
         /// The state of the unit in terms of living or dead. False when alive.
         /// </summary>
         [DataMember]
-        protected bool mDead;
+        public bool HasDieded { get; private set; }
 
         /// <summary>
         /// The time of death of the unit, used to calculate when to fade away.
@@ -221,7 +220,7 @@ namespace Singularity.Units
         /// map, and implements pathfinding for objects on the map. It also allows subclasses to have
         /// health and to be damaged.
         /// </remarks>
-        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true)
+        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true) : base(ref director)
         {
             Id = director.GetIdGenerator.NextiD(); // id for the specific unit.
 
@@ -304,6 +303,7 @@ namespace Singularity.Units
             {
                 return false;
             }
+
             mToAdd = Vector2.Zero;
             return true;
         }
@@ -314,14 +314,19 @@ namespace Singularity.Units
         /// <returns></returns>
         protected bool HasReachedWaypoint()
         {
+            //TODO: This is a hotfix for mPath being empty but peek being called. I dont know if this could cause additional errors.
+            if (mPath.Count == 0)
+            {
+                return true;
+            }
             if (Math.Abs(Center.X + mToAdd.X - mPath.Peek().X) < 8
                 && Math.Abs(Center.Y + mToAdd.Y - mPath.Peek().Y) < 8)
             {
                 // If the position is within 8 pixels of the waypoint, (i.e. it will overshoot the waypoint if it moves
                 // for one more update, do the following
 
-                Debug.WriteLine("Waypoint reached.");
-                Debug.WriteLine("Next waypoint: " + mPath.Peek());
+                //Debug.WriteLine("Waypoint reached.");
+                //Debug.WriteLine("Next waypoint: " + mPath.Peek());
                 return true;
             }
 
@@ -416,12 +421,25 @@ namespace Singularity.Units
         public void MakeDamage(int damage)
         {
             Health -= damage;
+            if (Health <= 0 && !HasDieded)
+            {
+                FlagForDeath();
+            }
         }
 
-        public bool Die()
+        public override bool Die()
         {
-            mDead = true;
-            mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, Friendly ? "A Friendly" : "An enemy" + " unit was killed!", this);
+            HasDieded = true;
+            // stats tracking for the death of any free moving unit
+            mDirector.GetStoryManager.UpdateUnits(Friendly ? "lost" : "killed");
+            
+            mDirector.GetInputManager.FlagForRemoval(this);
+            mDirector.GetInputManager.RemoveMousePositionListener(this);
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
+            mDirector.GetMilitaryManager.RemoveUnit(this);
+            mIsMoving = false;
+            mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, (Friendly ? "A friendly" : "An enemy") + " unit was killed!", this);
+
             return true;
         }
 

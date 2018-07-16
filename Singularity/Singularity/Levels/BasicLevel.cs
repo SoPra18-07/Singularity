@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Singularity.AI;
+using Singularity.AI.Properties;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
@@ -42,6 +44,9 @@ namespace Singularity.Levels
         [DataMember]
         protected Director mDirector;
 
+        [DataMember]
+        public IArtificalIntelligence Ai { get; set; }
+
         protected IScreenManager mScreenManager;
 
         private ContentManager mContent;
@@ -73,6 +78,8 @@ namespace Singularity.Levels
             var libSans12 = content.Load<SpriteFont>("LibSans12");
 
             PlatformFactory.Init(platformConeTexture, platformCylTexture, platformDomeTexture, platformBlankTexture, libSans12);
+            StructureLayoutHolder.Initialize(ref mDirector);
+
             //Map related stuff
             Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 2800, 2800);
             mFow = new FogOfWar(Camera, mGraphics.GraphicsDevice);
@@ -91,13 +98,17 @@ namespace Singularity.Levels
 
             //INITIALIZE SCREENS
             GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
-            Ui = new UserInterfaceScreen(ref mDirector, mGraphics, Map, Camera, mScreenManager);
+            Ui = new UserInterfaceScreen(ref mDirector, Map, Camera, mScreenManager);
             mDirector.GetUserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
 
             // the input manager keeps this from not getting collected by the GC
             mDebugscreen = new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
 
             mDirector.GetInputManager.FlagForAddition(this);
+
+            // KI STUFF
+            Ai = new BasicAi(EaiDifficulty.Easy, ref mDirector);
+            GameScreen.AddObject(Ai);
         }
 
         public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, ref Director director, IScreenManager screenmanager)
@@ -122,7 +133,7 @@ namespace Singularity.Levels
             //Map related stuff
             Camera.ReloadContent(mGraphics, ref mDirector);
             mFow.ReloadContent(mGraphics, Camera);
-            Ui = new UserInterfaceScreen(ref mDirector, mGraphics, Map, Camera, mScreenManager);
+            Ui = new UserInterfaceScreen(ref mDirector, Map, Camera, mScreenManager);
             Ui.LoadContent(content);
             Ui.Loaded = true;
             //This has to be after ui creation, because the ui graphid dictionary is updated in the structuremap.reloadcontent method
@@ -137,6 +148,10 @@ namespace Singularity.Levels
             // the input manager keeps this from not getting collected by the GC
             mDebugscreen = new DebugScreen((StackScreenManager)mScreenManager, Camera, Map, ref mDirector);
             mDirector.GetInputManager.FlagForAddition(this);
+
+            //AI Stuff
+            Ai.ReloadContent(ref mDirector);
+            StructureLayoutHolder.Initialize(ref mDirector);
         }
 
         public abstract void LoadContent(ContentManager content);

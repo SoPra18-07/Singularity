@@ -14,7 +14,7 @@ namespace Singularity.Screen
     /// </summary>
     public class InfoBoxWindow : IDraw, IUpdate, IMousePositionListener
     {
-        #region member variables 
+        #region member variables
 
         // list of items to put in info box
         protected readonly List<IWindowItem> mItemList;
@@ -23,11 +23,12 @@ namespace Singularity.Screen
         protected Vector2 mSize;
 
         // colors for the info box rectangle
-        private readonly Color mBorderColor;
-        private readonly Color mCenterColor;
+        protected readonly Color mBorderColor;
+
+        protected readonly Color mCenterColor;
 
         // mouse Position
-        protected Vector2 mMouse;
+        private Vector2 mMouse;
 
         // bool to enable or disable the rectangle around the infoBox
         private readonly bool mBoxed;
@@ -95,9 +96,9 @@ namespace Singularity.Screen
         /// standard draw method
         /// </summary>
         /// <param name="spriteBatch"></param>
-        public void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
-            if (!Active || mCounter <= 10) return;
+            if (!Active || mCounter <= 10) { return; }
             if (mBoxed)
             {
                 // infoBox Rectangle
@@ -124,7 +125,7 @@ namespace Singularity.Screen
 
                 // shifts the items from the top left corner to their position
                 var yShift = 2;
-                
+
                 // set starting values, maxWidth is the maximum width of all items added to the infoBox, maxHeight ~ same just with height
                 float maxWidth = 0;
                 float maxHeight = 0;

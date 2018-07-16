@@ -9,7 +9,7 @@ using Singularity.Property;
 namespace Singularity.Screen
 {
     /// <summary>
-    /// EventLog IWindowItems are created by the eventLog when receiving a new event
+    /// GetEventLog IWindowItems are created by the eventLog when receiving a new event
     /// </summary>
     public sealed class EventLogIWindowItem : IWindowItem
     {
@@ -63,29 +63,25 @@ namespace Singularity.Screen
         /// <inheritdoc />
         public void Update(GameTime gametime)
         {
-            if (ActiveInWindow && !OutOfScissorRectangle)
-            {
-                // update position of all components
-                mPositionButton.Position = Position;
-                mText.Position = new Vector2(mPositionButton.Position.X + mShiftValue, Position.Y + mPositionButton.Size.Y);
+            if (!ActiveInWindow || OutOfScissorRectangle) {  return; }
+            // update position of all components
+            mPositionButton.Position = Position;
+            mText.Position = new Vector2(mPositionButton.Position.X + mShiftValue, Position.Y + mPositionButton.Size.Y);
 
-                // update all components
-                mPositionButton.Update(gametime);
-                mText.Update(gametime);
-                mInfoBox.Update(gametime);
-            }
+            // update all components
+            mPositionButton.Update(gametime);
+            mText.Update(gametime);
+            mInfoBox.Update(gametime);
         }
 
         /// <inheritdoc />
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (ActiveInWindow && !OutOfScissorRectangle)
-            {
-                // draw all components
-                mPositionButton.Draw(spriteBatch);
-                mText.Draw(spriteBatch);
-                mInfoBox.Draw(spriteBatch);
-            }
+            if (!ActiveInWindow || OutOfScissorRectangle) {  return; }
+            // draw all components
+            mPositionButton.Draw(spriteBatch);
+            mText.Draw(spriteBatch);
+            mInfoBox.Draw(spriteBatch);
         }
 
         /// <summary>
@@ -117,9 +113,6 @@ namespace Singularity.Screen
         {
             var asSpatial = (SpatialPositionEventArgs) eventArgs;
 
-            //TODO: pass accurate coordinates, right now it goes to the top left texture point of the platform blank on the map
-            // also note, since the validate position code is atm buggy, the map might disappear when the zoom level is too far out
-            // im going to fix this definitely
             mDirector.GetStoryManager.Level.Camera.CenterOn(asSpatial.GetAbsoluteCenter());
         }
 
