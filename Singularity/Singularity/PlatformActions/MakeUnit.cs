@@ -60,8 +60,23 @@ namespace Singularity.PlatformActions
 
         protected override void CreateUnit()
         {
-
             mDirector.GetStoryManager.Level.GameScreen.AddObject(new GeneralUnit(mPlatform, ref mDirector));
+        }
+    }
+
+    [DataContract]
+    internal sealed class MakeSettlerUnit : AMakeUnit
+    {
+        public MakeSettlerUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
+        {
+            // Todo: update prices
+            mBuildingCost = new Dictionary<EResourceType, int> { {EResourceType.Chip, 3} };
+        }
+
+        protected override void CreateUnit()
+        {
+            var settler = Settler.Create(mPlatform.Center + mOffset, ref mDirector);
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(settler);
         }
     }
 
@@ -136,8 +151,8 @@ namespace Singularity.PlatformActions
             foreach (var r in mPlatform.GetPlatformResources().ToList()) GetResource(r.Type);
 
             if (mMissingResources.Count > 0) return;
-            CreateUnit();
             State = PlatformActionState.Available;
+            CreateUnit();
         }
 
         #region private function
@@ -162,7 +177,18 @@ namespace Singularity.PlatformActions
             {
                 mMissingResources = new Dictionary<EResourceType, int>(mBuildingCost);
             }
-            mToRequest = new Dictionary<EResourceType, int>(mMissingResources);
+            foreach (var resources in mMissingResources)
+            {
+                var inside = 0;
+                if (mToRequest.TryGetValue(resources.Key, out inside))
+                {
+                    mToRequest[resources.Key] = inside + resources.Value;
+                }
+                else
+                {
+                    mToRequest.Add(resources.Key, inside + resources.Value);
+                }
+            }
         }
 
         public override Dictionary<EResourceType, int> GetRequiredResources()

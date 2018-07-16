@@ -145,11 +145,12 @@ namespace Singularity.Screen.ScreenClasses
 
         // actions of selectedPlatformWindow
         private PlatformActionIWindowItem mMakeFastMilitaryAction;
-        private PlatformActionIWindowItem mMakeStrongMilitaryAction;
+        private PlatformActionIWindowItem mMakeHeavyMilitaryAction;
         private PlatformActionIWindowItem mProduceWellResourceAction;
         private PlatformActionIWindowItem mProduceQuarryResourceAction;
         private PlatformActionIWindowItem mProduceMineResourceAction;
         private PlatformActionIWindowItem mBuildBluePrintAction;
+        private PlatformActionIWindowItem mRefineResourceAction;
 
         // bools if the platformactions have already been added to the selectedplatformwindow
         private bool mFastMilitaryAdded;
@@ -158,6 +159,7 @@ namespace Singularity.Screen.ScreenClasses
         private bool mProduceQuarryResourceAdded;
         private bool mProduceMineResourceAdded;
         private bool mBuildBluePrintActionAdded;
+        private bool mRefineResourceActionAdded;
 
         // save id to reset the scroll-value if the id changes
         private int mSelectedPlatformId;
@@ -1634,18 +1636,23 @@ namespace Singularity.Screen.ScreenClasses
 /*
             switch (type)
             {
-                case EStructureType.Blank:
-                    foreach (var action in mSelectedPlatformActionList)
-                    {
-                        if (action != null)
-                        {
-                            mMakeFastMilitaryAction.ActiveInWindow = false;
-                        }
-                    }
-                    break;
-                case EStructureType.Barracks:
-
-                    break;
+                mMakeFastMilitaryAction.ActiveInWindow = false;
+            }
+            if (mMakeHeavyMilitaryAction != null)
+            {
+                mMakeHeavyMilitaryAction.ActiveInWindow = false;
+            }
+            if (mProduceMineResourceAction != null)
+            {
+                mProduceMineResourceAction.ActiveInWindow = false;
+            }
+            if (mProduceQuarryResourceAction != null)
+            {
+                mProduceQuarryResourceAction.ActiveInWindow = false;
+            }
+            if (mProduceWellResourceAction != null)
+            {
+                mProduceWellResourceAction.ActiveInWindow = false;
             }
 */
 
@@ -1657,78 +1664,83 @@ namespace Singularity.Screen.ScreenClasses
                     mMakeFastMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
                         new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
-                    mMakeFastMilitaryAction.ActiveInWindow = true;
-
-                    if (mFastMilitaryAdded) { continue; }
-
+                    if (mFastMilitaryAdded) continue;
+                    mFastMilitaryAdded = true;
                     mSelectedPlatformWindow.AddItem(mMakeFastMilitaryAction);
                     mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
                     mFastMilitaryAdded = true;
                 }
                 else if (action is MakeHeavyMilitaryUnit)
                 {
-                    mMakeStrongMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
-                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
+                    mMakeHeavyMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
-                    mMakeStrongMilitaryAction.ActiveInWindow = true;
-
-                    if (mStronggMilitaryAdded) { continue; }
-
-                    mSelectedPlatformWindow.AddItem(mMakeStrongMilitaryAction);
-                    mSelectedPlatformActionList.Add(mMakeStrongMilitaryAction);
+                    if (mStronggMilitaryAdded) continue;
                     mStronggMilitaryAdded = true;
+                    mSelectedPlatformWindow.AddItem(mMakeHeavyMilitaryAction);
+                    mSelectedPlatformActionList.Add(mMakeHeavyMilitaryAction);
                 }
                 else if (action is ProduceMineResource)
                 {
                     mProduceMineResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
                         new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
-                    mProduceMineResourceAction.ActiveInWindow = true;
-
-                    if (mProduceMineResourceAdded) { continue; }
-
-                    mSelectedPlatformWindow.AddItem(mProduceMineResourceAction);
-                    mSelectedPlatformActionList.Add(mProduceMineResourceAction);
-                    mProduceMineResourceAdded = true;
+                    if (!mProduceMineResourceAdded)
+                    {
+                        mProduceMineResourceAdded = true;
+                        mSelectedPlatformWindow.AddItem(mProduceMineResourceAction);
+                        mSelectedPlatformActionList.Add(mProduceMineResourceAction);
+                    }
                 }
                 else if (action is ProduceQuarryResource)
                 {
                     mProduceQuarryResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
                         new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
-                    mProduceQuarryResourceAction.ActiveInWindow = true;
-
-                    if (mProduceQuarryResourceAdded) { continue; }
-
-                    mSelectedPlatformWindow.AddItem(mProduceQuarryResourceAction);
-                    mSelectedPlatformActionList.Add(mProduceQuarryResourceAction);
-                    mProduceQuarryResourceAdded = true;
+                    if (!mProduceQuarryResourceAdded)
+                    {
+                        mProduceQuarryResourceAdded = true;
+                        mSelectedPlatformWindow.AddItem(mProduceQuarryResourceAction);
+                        mSelectedPlatformActionList.Add(mProduceQuarryResourceAction);
+                    }
                 }
                 else if (action is ProduceWellResource)
                 {
                     mProduceWellResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
                         new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
-                    mProduceWellResourceAction.ActiveInWindow = true;
-
-                    if (mProduceWellResourceAdded) { continue; }
-
-                    mSelectedPlatformWindow.AddItem(mProduceWellResourceAction);
-                    mSelectedPlatformActionList.Add(mProduceWellResourceAction);
-                    mProduceWellResourceAdded = true;
-                }
-                else if (action is BuildBluePrint)
+                    if (!mProduceWellResourceAdded)
+                    {
+                        mProduceWellResourceAdded = true;
+                        mSelectedPlatformWindow.AddItem(mProduceWellResourceAction);
+                        mSelectedPlatformActionList.Add(mProduceWellResourceAction);
+                    }
+                } else if (action is BuildBluePrint)
                 {
-                    mBuildBluePrintAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero,
-                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
+                    mBuildBluePrintAction = new PlatformActionIWindowItem(action,
+                        mLibSans10,
+                        Vector2.Zero,
+                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y),
+                        mDirector);
+                    if (!mBuildBluePrintActionAdded)
+                    {
+                        mBuildBluePrintActionAdded = true;
+                        mSelectedPlatformWindow.AddItem(mBuildBluePrintAction);
+                        mSelectedPlatformActionList.Add(mBuildBluePrintAction);
+                    }
+                } else if (action is RefineResourceAction)
+                {
+                    mRefineResourceAction = new PlatformActionIWindowItem(action,
+                        mLibSans10,
+                        Vector2.Zero,
+                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y),
+                        mDirector);
+                    if (!mRefineResourceActionAdded)
+                    {
+                        mRefineResourceActionAdded = true;
+                        mSelectedPlatformWindow.AddItem(mRefineResourceAction);
+                        mSelectedPlatformActionList.Add(mRefineResourceAction);
+                    }
 
-                    mBuildBluePrintAction.ActiveInWindow = true;
-
-                    if (mBuildBluePrintActionAdded) { continue; }
-
-                    mSelectedPlatformWindow.AddItem(mBuildBluePrintAction);
-                    mSelectedPlatformActionList.Add(mBuildBluePrintAction);
-                    mBuildBluePrintActionAdded = true;
                 }
             }
 

@@ -52,9 +52,7 @@ namespace Singularity.Map
 
         public Optional<Resource> GetWellResource(Vector2 location)
         {
-            Debug.WriteLine("Looking for Well-Resource at " + location);
             var resourcesWell = GetResources(location).Where(r => r.Type == EResourceType.Water || r.Type == EResourceType.Oil).ToList();
-            Debug.WriteLine("There is: " + resourcesWell.Count);
             return !resourcesWell.Any() ? Optional<Resource>.Of(null) : resourcesWell[0].Get(location);
         }
 

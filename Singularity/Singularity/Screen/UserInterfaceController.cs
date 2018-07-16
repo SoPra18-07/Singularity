@@ -24,7 +24,7 @@ namespace Singularity.Screen
         private PlatformBlank mActivePlatform;
 
         // the UI that is controlled by this UIController
-        internal UserInterfaceScreen ControlledUserInterface { private get; set; }
+        internal UserInterfaceScreen ControlledUserInterface { get; set; }
 
         /// <summary>
         /// Creates an UserInterfaceController which manages the exchange between classes and the UI
