@@ -237,16 +237,13 @@ namespace Singularity.Manager
             var unitsToKill = new List<FreeMovingUnit>();
             var platformsToKill = new List<PlatformBlank>();
 
+            mUnitMap?.Update(gametime);
+
             #region Check targets for friendly units
 
             foreach (var unit in mFriendlyMilitary)
             {
                 // iterate through each friendly unit, if there's a target nearby, shoot the closest one.
-                if (unit.Moved)
-                {
-                    mUnitMap.MoveUnit(unit);
-                }
-
                 // get all the adjacent units
                 var adjacentUnits = mUnitMap.GetAdjacentUnits(unit.AbsolutePosition);
 
@@ -376,12 +373,6 @@ namespace Singularity.Manager
             foreach (var unit in mHostileMilitary)
             {
                 // iterate through each hostile unit, if there's a target nearby, shoot it.
-                // iterate through each friendly unit, if there's a target nearby, shoot the closest one.
-                if (unit.Moved)
-                {
-                    mUnitMap.MoveUnit(unit);
-                }
-
                 // get all the adjacent units
                 var adjacentUnits = mUnitMap.GetAdjacentUnits(unit.AbsolutePosition);
 

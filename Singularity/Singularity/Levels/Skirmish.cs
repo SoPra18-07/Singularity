@@ -76,6 +76,7 @@ namespace Singularity.Levels
             // Enemy Unit
             var enemyUnit = new Target(new Vector2(3200, 3050), Camera, ref mDirector, ref map);
             var enemyUnit2 = new EnemyUnit(new Vector2(3200, 2950), Camera, ref mDirector, ref map);
+
             var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
 
             
@@ -122,7 +123,9 @@ namespace Singularity.Levels
 
             GameScreen.AddObjects(genUnit);
             GameScreen.AddObject(enemyUnit);
+
             GameScreen.AddObject(enemyUnit2);
+
             GameScreen.AddObject(milUnit);
             GameScreen.AddObject(settler);
 
