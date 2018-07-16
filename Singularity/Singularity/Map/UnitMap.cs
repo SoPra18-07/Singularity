@@ -6,7 +6,7 @@ using Singularity.Property;
 
 namespace Singularity.Map
 {
-    internal sealed class UnitMap
+    internal sealed class UnitMap : IUpdate
     {
         /// <summary>
         /// Stores which units are in which grid position on the map.
@@ -195,6 +195,26 @@ namespace Singularity.Map
 
             return new Vector2(column, row);
 
+        }
+
+        public void Update(GameTime gametime)
+        {
+            var movedUnitList = new List<ICollider>();
+            foreach (var unitMapTile in mUnitGrid)
+            {
+                foreach (var unit in unitMapTile.UnitList)
+                {
+                    if (unit.Moved)
+                    {
+                        movedUnitList.Add(unit);
+                    }
+                }
+            }
+
+            foreach (var unit in movedUnitList)
+            {
+                MoveUnit(unit);
+            }
         }
     }
 }
