@@ -431,12 +431,16 @@ namespace Singularity.Units
         public virtual bool Die()
         {
             HasDieded = true;
+            // stats tracking for the death of any free moving unit
+            mDirector.GetStoryManager.UpdateUnits(Friendly ? "lost" : "killed");
+            
             mDirector.GetInputManager.FlagForRemoval(this);
             mDirector.GetInputManager.RemoveMousePositionListener(this);
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             mDirector.GetMilitaryManager.RemoveUnit(this);
             mIsMoving = false;
             mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, (Friendly ? "A friendly" : "An enemy") + " unit was killed!", this);
+
             return true;
         }
 
