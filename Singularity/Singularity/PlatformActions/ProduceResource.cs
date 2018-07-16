@@ -70,7 +70,7 @@ namespace Singularity.PlatformActions
             }
         }
     }
-    
+
     [DataContract]
     public abstract class APlatformResourceAction : APlatformAction
     {

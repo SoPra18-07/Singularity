@@ -11,7 +11,7 @@ using Singularity.Units;
 namespace Singularity.Platforms
 {
     [DataContract]
-    internal sealed class CommandCenter: PlatformBlank
+    public sealed class CommandCenter: PlatformBlank
     {
         [DataMember]
         private const int ProvidingEnergy = 20;
@@ -30,14 +30,15 @@ namespace Singularity.Platforms
             Texture2D baseSprite,
             SpriteFont libSans12,
             ref Director director,
-            bool blueprintState = true)
+            bool blueprintState = true,
+            bool friendly = true)
              : base(position,
                 spritesheet,
                 baseSprite,
                 libSans12,
                 ref director,
                 EStructureType.Command,
-                -50)
+                -50, friendly)
         {
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
             //Add Costs of the platform here if you got them.

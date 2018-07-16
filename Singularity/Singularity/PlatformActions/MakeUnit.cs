@@ -102,7 +102,7 @@ namespace Singularity.PlatformActions
             mDirector.GetStoryManager.Level.GameScreen.AddObject(unit);
         }
     }
-    
+
     [DataContract]
     public abstract class AMakeUnit : APlatformAction
     {
@@ -200,7 +200,7 @@ namespace Singularity.PlatformActions
         {
             return mMissingResources;
         }
-        
+
         public override void UiToggleState()
         {
             switch (State)

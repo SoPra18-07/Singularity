@@ -121,6 +121,11 @@ namespace Singularity.Map
             // now draw the platforms. Currently platforms are resembled with a 1 pixel green dot
             foreach (var platform in mPlatforms)
             {
+                if (!platform.Friendly)
+                {
+                    continue;
+                }
+
                 var newCenter = platform.Center / mDownscaleFactor;
 
                 var centerInMiniMap = new Vector2(Position.X + newCenter.X, Position.Y + 10 + newCenter.Y);
@@ -190,4 +195,3 @@ namespace Singularity.Map
         }
     }
 }
-

@@ -43,7 +43,7 @@ namespace Singularity.Units
 
             AbsoluteSize = new Vector2(20, 20);
 
-            RevelationRadius = (int)AbsoluteSize.X * 3;
+            RevelationRadius = (int)AbsoluteSize.X * 6;
 
             mDirector.GetInputManager.FlagForAddition(this);
 
@@ -142,7 +142,11 @@ namespace Singularity.Units
                 else
                 {
                     mPath.Pop();
-                    MoveToTarget(mPath.Peek(), mSpeed);
+                    //TODO: THis is a hotfix, the same as in HasREachedWaypoint. I dont know if this could create strange behaviour
+                    if (mPath.Count != 0)
+                    {
+                        MoveToTarget(mPath.Peek(), mSpeed);
+                    }
                 }
             }
 
@@ -158,6 +162,13 @@ namespace Singularity.Units
             {
                 mNeverMoved = false;
             }
+        }
+
+        public override bool Die()
+        {
+            base.Die();
+            mDirector.GetInputManager.FlagForRemoval((IKeyListener) this);
+            return true;
         }
 
         public bool KeyTyped(KeyEvent keyEvent)

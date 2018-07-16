@@ -61,6 +61,14 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AI\BasicAI.cs" />
+    <Compile Include="AI\Behavior\IAIBehavior.cs" />
+    <Compile Include="AI\Properties\EAIDifficulty.cs" />
+    <Compile Include="AI\Properties\IArtificalIntelligence.cs" />
+    <Compile Include="AI\StructureLayoutHolder.cs" />
+    <Compile Include="AI\Structures\Sentinel.cs" />
+    <Compile Include="AI\Behavior\SimpleAIBehavior.cs" />
+    <Compile Include="AI\Structures\Spawner.cs" />
     <Compile Include="Levels\PlatformDestructionTestLevel.cs" />
     <Compile Include="Events\SpatialPositionEventArgs.cs" />
     <Compile Include="Nature\Rock.cs" />
@@ -68,6 +76,7 @@
     <Compile Include="Levels\ILevel.cs" />
     <Compile Include="Manager\DistributionDirector.cs" />
     <Compile Include="Manager\DistributionManager.cs" />
+    <Compile Include="Screen\Checkbox.cs" />
     <Compile Include="PlatformActions\RefineResourceAction.cs" />
     <Compile Include="Screen\ELogEventType.cs" />
     <Compile Include="Screen\EventLog.cs" />
@@ -159,7 +168,7 @@
     <Compile Include="Input\MouseAction.cs" />
     <Compile Include="Platforms\CommandCenter.cs" />
     <Compile Include="Platforms\EnergyFacility.cs" />
-    <Compile Include="Platforms\EPlatformType.cs" />
+    <Compile Include="Platforms\EStructureType.cs" />
     <Compile Include="Platforms\Factory.cs" />
     <Compile Include="Platforms\Junkyard.cs" />
     <Compile Include="Platforms\Mine.cs" />

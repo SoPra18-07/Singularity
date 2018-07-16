@@ -515,13 +515,13 @@ namespace Singularity.Units
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            
+
             spriteBatch.Draw(mGenUnitTexture,
                 AbsolutePosition,
                 null,
                 Color.White,
                 0f,
-                new Vector2(10), 
+                new Vector2(10),
                 Vector2.One,
                 SpriteEffects.None,
                 LayerConstants.GeneralUnitLayer);
@@ -534,6 +534,9 @@ namespace Singularity.Units
 
         public bool Die()
         {
+            // stats tracking for the death of a general unit
+            mDirector.GetStoryManager.UpdateUnits("lost");
+
             mTask = new Task(Job, Optional<PlatformBlank>.Of(null), null, Optional<IPlatformAction>.Of(null));
             if (Carrying.IsPresent())
             {

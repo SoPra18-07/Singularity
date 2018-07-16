@@ -10,7 +10,7 @@ namespace Singularity.Utils
     /// <typeparam name="T2">The type of the second value of the tuple</typeparam>
     /// <typeparam name="T3">The type of the third value of the tuple</typeparam>
     [DataContract]
-    internal sealed class Triple<T1, T2, T3>
+    public sealed class Triple<T1, T2, T3>
     {
         [DataMember]
         private readonly T1 mFirstValue;

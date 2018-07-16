@@ -40,7 +40,11 @@ namespace Singularity.Platforms
 
         public override void Produce()
         {
-            mIPlatformActions[0].Execute();
+            // only produce resources, if the platform is active.
+            if (IsActive())
+            {
+                mIPlatformActions[0].Execute();
+            }
         }
     }
 }

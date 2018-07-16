@@ -285,7 +285,9 @@ namespace Singularity.Screen.ScreenClasses
                 updateable.Update(gametime);
             }
 
-            foreach (var spatial in mSpatialObjects.Concat(mMap.GetStructureMap().GetPlatformList()))
+            List<ISpatial> copyList = (mSpatialObjects.Concat(mMap.GetStructureMap().GetPlatformList()).ToList());
+
+            foreach (var spatial in copyList)
             {
                 var collidingObject = spatial as ICollider;
 
@@ -445,6 +447,8 @@ namespace Singularity.Screen.ScreenClasses
             if (platform != null)
             {
                 mMap.RemovePlatform(platform);
+                // TODO removes platform from military manager (should stop the shooting)
+                mDirector.GetMilitaryManager.RemovePlatform(platform);
             }
 
             if (settler != null)
@@ -505,10 +509,10 @@ namespace Singularity.Screen.ScreenClasses
             // TODO requires a road to be place and therefore throws an exception !!!!!
 
             // adds the command center to the GameScreen, as well as two general units
-            
+
             var cCenter = PlatformFactory.Get(EStructureType.Command, ref mDirector, v.X - 55, v.Y - 100, commandBlueprint: false);
             AddObject(cCenter);
-            
+
 
             var genUnit = new GeneralUnit(cCenter, ref mDirector);
             AddObject(genUnit);

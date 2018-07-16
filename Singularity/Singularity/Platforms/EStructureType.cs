@@ -15,6 +15,8 @@
         Storage,
         Well,
         Blank,
+        Spawner,
+        Sentinel,
         Road
     }
 }

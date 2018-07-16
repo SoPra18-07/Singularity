@@ -1,6 +1,6 @@
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
-﻿using System;
+ using System;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
@@ -47,6 +47,7 @@ namespace Singularity.Map
                 if(mDirector != null)
                 {
                     ValidatePosition();
+                    mDirector.GetSoundManager.SetListenerPosition(value.X + mOrigin.X, value.Y + mOrigin.Y, -13 * mZoom + 20);
                 }
             }
         }
@@ -121,6 +122,8 @@ namespace Singularity.Map
 
             mZoom = 1.0f;
             mPosition = new Vector2(x, y);
+
+            director.GetSoundManager.SetListenerPosition(x, y, -13 * mZoom + 20);
 
             mNeo = neo;
             mGraphics = graphics;

@@ -1,6 +1,7 @@
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Singularity.AI.Properties;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Screen;
@@ -25,6 +26,10 @@ namespace Singularity.Levels
 
         [DataMember]
         Camera Camera { get; set; }
+
+        [DataMember]
+        IArtificalIntelligence Ai { get; set; }
+
         [DataMember]
         Map.Map Map { get; }
     }
