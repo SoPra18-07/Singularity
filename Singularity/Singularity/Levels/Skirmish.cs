@@ -31,7 +31,7 @@ namespace Singularity.Levels
         public override void LoadContent(ContentManager content)
         {
             var map = Map;
-
+            
             //INGAME OBJECTS INITIALIZATION ===================================================
             //Platforms
             var sentinel = new Sentinel(new Vector2(4000, 4000),
@@ -59,6 +59,7 @@ namespace Singularity.Levels
             var road3 = new Road(platform3, platform1, ref mDirector);
             GameScreen.AddObject(road3);
 
+            var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, Ui);
 
 
             var platform4 = PlatformFactory.Get(EStructureType.Energy, ref mDirector, 3000, 2800, Map.GetResourceMap());
@@ -73,10 +74,11 @@ namespace Singularity.Levels
             GameScreen.AddObject(road5);
 
             // Enemy Unit
-            //var enemyUnit = new Target(new Vector2(3000, 2950), Camera, ref mDirector, ref map);
+            var enemyUnit = new Target(new Vector2(3200, 3050), Camera, ref mDirector, ref map);
+            var enemyUnit2 = new EnemyUnit(new Vector2(3200, 2950), Camera, ref mDirector, ref map);
             var milUnit = new MilitaryUnit(new Vector2(3000, 2900), Camera, ref mDirector, ref map);
 
-            var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, Ui);
+            
 
             var rock1 = new Rock(new Vector2(3500, 2800), ref mDirector);
             //var rock2 = new Rock(new Vector2(3500, 3000));
@@ -119,7 +121,8 @@ namespace Singularity.Levels
             platform2.StoreResource(res12);
 
             GameScreen.AddObjects(genUnit);
-            //GameScreen.AddObject(enemyUnit);
+            GameScreen.AddObject(enemyUnit);
+            GameScreen.AddObject(enemyUnit2);
             GameScreen.AddObject(milUnit);
             GameScreen.AddObject(settler);
 
@@ -129,6 +132,8 @@ namespace Singularity.Levels
 
             //TESTMETHODS HERE ====================================
             mDirector.GetDistributionDirector.GetManager(platform2.GetGraphIndex()).RequestResource(platform2, EResourceType.Oil, null);
+    
+
         }
 
         public GameScreen GetGameScreen()
