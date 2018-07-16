@@ -113,6 +113,9 @@ namespace Singularity.AI.Behavior
 
         public void CreateNewBase(GameTime gametime)
         {
+            // don't do this right now since its super annoying for people actually trying to do other stuff
+            return;
+
             if ((int)gametime.TotalGameTime.TotalMilliseconds % 10000 != 0)
             {
                 return;
