@@ -134,7 +134,7 @@ namespace Singularity.Screen.ScreenClasses
 
         // unitSliders of selectedPlatformWindow
         private Slider mSelectedPlatformDefSlider;
-        private Slider mSelectedPlatformBuildSlider;
+        private Slider mSelectedPlatformConstructionSlider;
         private Slider mSelectedPlatformLogisticsSlider;
         private Slider mSelectedPlatformProductionSlider;
 
@@ -176,14 +176,11 @@ namespace Singularity.Screen.ScreenClasses
         private int mCivilUnitsGraphId;
         private int mCivilUnitsGraphIdToCompare;
 
-        public Dictionary<int, Graph.Graph> GraphIdToGraphStructureDict { get; set; }
-
-        // an indexSwitcher to go through all graphs (graphList is set through UIController)
-        //private IndexSwitcherIWindowItem mGraphSwitcher; // TODO : DELETE IF GRAPHSWITCHER REMOVED
+        public Dictionary<int, Graph.Graph> GraphIdToGraphStructureDict { private get; set; }
 
         // sliders for distribution
         private Slider mDefSlider;
-        private Slider mBuildSlider;
+        private Slider mConstructionSlider;
         private Slider mLogisticsSlider;
         private Slider mProductionSlider;
 
@@ -448,12 +445,6 @@ namespace Singularity.Screen.ScreenClasses
 
                 mResourceWindowResourceAmountLastTick = mDirector.GetStoryManager.Resources;
             }
-
-/*            // update idle amount
-            if (mStructureMap.GetDictionaryGraphIdToGraph().Keys.Contains(mCivilUnitsGraphId))
-            {
-                mIdleUnitsTextAndAmount.Amount = mUserInterfaceController.GetIdleUnits(mCivilUnitsGraphId);
-            }*/
         }
 
         /// <inheritdoc />
@@ -569,7 +560,6 @@ namespace Singularity.Screen.ScreenClasses
             mSelectedPlatformIsAutoDeactivatedText.InactiveInSelectedPlatformWindow = true;
 
             // resource-section-title
-            //mSelectedPlatformResourcesButton = new TextField("Resources", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, 0), mLibSans12, Color.White);
             mSelectedPlatformResourcesButton = new Button("Resources", mLibSans12, Vector2.Zero, Color.White) { Opacity = 1f };
             mSelectedPlatformResourcesButton.ButtonReleased += CloseResourcesInSelectedWindow;
             mSelectedPlatformWindow.AddItem(mSelectedPlatformResourcesButton);
@@ -615,7 +605,6 @@ namespace Singularity.Screen.ScreenClasses
             mSelectedPlatformResourcesList.Add(mSelectedPlatformTrash);
 
             // unit assignment - section + title
-            //mSelectedPlatformUnitAssignmentButton = new TextField("Unit Assignments", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12, Color.White);
             mSelectedPlatformUnitAssignmentButton = new Button("Unit Assignments", mLibSans12, Vector2.Zero, Color.White) { Opacity = 1f };
             mSelectedPlatformUnitAssignmentButton.ButtonReleased += CloseUnitAssignmentsInSelectedWindow;
             mSelectedPlatformWindow.AddItem(mSelectedPlatformUnitAssignmentButton);
@@ -629,9 +618,9 @@ namespace Singularity.Screen.ScreenClasses
             mSelectedPlatformBuildTextField = new TextField("Build", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10, Color.White);
             mSelectedPlatformUnitAssignmentList.Add(mSelectedPlatformBuildTextField);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformBuildTextField);
-            mSelectedPlatformBuildSlider = new Slider(Vector2.Zero, 150, 10, mLibSans10, ref mDirector);
-            mSelectedPlatformUnitAssignmentList.Add(mSelectedPlatformBuildSlider);
-            mSelectedPlatformWindow.AddItem(mSelectedPlatformBuildSlider);
+            mSelectedPlatformConstructionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans10, ref mDirector);
+            mSelectedPlatformUnitAssignmentList.Add(mSelectedPlatformConstructionSlider);
+            mSelectedPlatformWindow.AddItem(mSelectedPlatformConstructionSlider);
             mSelectedPlatformLogisticsTextField = new TextField("Logistics", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans10, Color.White);
             mSelectedPlatformUnitAssignmentList.Add(mSelectedPlatformLogisticsTextField);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformLogisticsTextField);
@@ -646,18 +635,13 @@ namespace Singularity.Screen.ScreenClasses
             mSelectedPlatformWindow.AddItem(mSelectedPlatformProductionSlider);
 
             // actions-section-title
-            //mSelectedPlatformActionsButton = new TextField("Actions", Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X, 0), mLibSans12, Color.White);
             mSelectedPlatformActionsButton = new Button("Actions", mLibSans12, Vector2.Zero, Color.White) { Opacity = 1f };
             mSelectedPlatformActionsButton.ButtonReleased += CloseActionsInSelectedWindow;
             mSelectedPlatformWindow.AddItem(mSelectedPlatformActionsButton);
 
-            // deactivate all items from selectedPlatformWindow since no platform is selected
+            // deactivate all items from selectedPlatformWindow since no platform is selected at the beginning
             mSelectedPlatformActivatePlatformButton.ActiveInWindow = false;
             mSelectedPlatformDeactivatePlatformButton.ActiveInWindow = false;
-            foreach (var item in mSelectedPlatformActionList)
-            {
-                item.ActiveInWindow = false;
-            }
 
             foreach (var item in mSelectedPlatformResourcesList)
             {
@@ -690,7 +674,7 @@ namespace Singularity.Screen.ScreenClasses
             mDefTextField = new TextField("Defense", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
             mDefSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true);
             mBuildTextField = new TextField("Build", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
-            mBuildSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true);
+            mConstructionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true);
             mLogisticsTextField = new TextField("Logistics", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
             mLogisticsSlider = new Slider(Vector2.Zero, 150, 10, mLibSans12, ref mDirector, true, true);
             mProductionTextField = new TextField("Production", Vector2.Zero, new Vector2(civilUnitsWidth, civilUnitsWidth), mLibSans12, Color.White);
@@ -698,15 +682,12 @@ namespace Singularity.Screen.ScreenClasses
 
             mIdleUnitsTextAndAmount = new TextAndAmountIWindowItem("Idle", 0, Vector2.Zero, new Vector2(civilUnitsWidth, 0), mLibSans12, Color.White);
 
-            //This instance will handle the comunication between Sliders and DistributionManager.
-            mCivilUnitsSliderHandler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mBuildSlider, mLogisticsSlider, mIdleUnitsTextAndAmount);
-
             // adding all items
             mCivilUnitsWindow.AddItem(mIdleUnitsTextAndAmount);
             mCivilUnitsWindow.AddItem(mDefTextField);
             mCivilUnitsWindow.AddItem(mDefSlider);
             mCivilUnitsWindow.AddItem(mBuildTextField);
-            mCivilUnitsWindow.AddItem(mBuildSlider);
+            mCivilUnitsWindow.AddItem(mConstructionSlider);
             mCivilUnitsWindow.AddItem(mLogisticsTextField);
             mCivilUnitsWindow.AddItem(mLogisticsSlider);
             mCivilUnitsWindow.AddItem(mProductionTextField);
@@ -1450,6 +1431,9 @@ namespace Singularity.Screen.ScreenClasses
             // subscribe to input manager
             mDirector.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
 
+            //This instance will handle the comunication between Sliders and DistributionManager.
+            mCivilUnitsSliderHandler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mConstructionSlider, mLogisticsSlider, mIdleUnitsTextAndAmount);
+
             mCivilUnitsSliderHandler.Initialize();
         }
 
@@ -1636,7 +1620,7 @@ namespace Singularity.Screen.ScreenClasses
             // TODO : UPDATE TRUE/FALSE VALUES FOR EVERY PLATFORM TO SHOW ONLY POSSIBLE ACTIONS (FOR EXAMPLE COMMANDCENTER PROBABLY DOESN'T NEED PRODUCTION UNITS)
             /*
                         mSelectedPlatformBuildTextField;
-                        mSelectedPlatformBuildSlider;
+                        mSelectedPlatformConstructionSlider;
                         mSelectedPlatformLogisticsTextField;
                         mSelectedPlatformLogisticsSlider;
             */
@@ -1647,105 +1631,117 @@ namespace Singularity.Screen.ScreenClasses
 
             #region actions
 
-            // deactivate all actions
-            if (mMakeFastMilitaryAction != null)
+/*
+            switch (type)
             {
-                mMakeFastMilitaryAction.ActiveInWindow = false;
-            }
-            if (mMakeStrongMilitaryAction != null)
-            {
-                mMakeStrongMilitaryAction.ActiveInWindow = false;
-            }
-            if (mProduceMineResourceAction != null)
-            {
-                mProduceMineResourceAction.ActiveInWindow = false;
-            }
-            if (mProduceQuarryResourceAction != null)
-            {
-                mProduceQuarryResourceAction.ActiveInWindow = false;
-            }
-            if (mProduceWellResourceAction != null)
-            {
-                mProduceWellResourceAction.ActiveInWindow = false;
-            }
-            if (mBuildBluePrintAction != null)
-            {
-                mBuildBluePrintAction.ActiveInWindow = false;
-            }
+                case EStructureType.Blank:
+                    foreach (var action in mSelectedPlatformActionList)
+                    {
+                        if (action != null)
+                        {
+                            mMakeFastMilitaryAction.ActiveInWindow = false;
+                        }
+                    }
+                    break;
+                case EStructureType.Barracks:
 
+                    break;
+            }
+*/
 
             // activate all actions possible on this platform + add them to the window if they haven't been added yet
             foreach (var action in actionsList)
             {
-                /*
-                var actionIWindowItem = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
-                mSelectedPlatformWindow.AddItem(actionIWindowItem);
-                mSelectedPlatformActionList.Add(actionIWindowItem);
-                // */
-
-                // Debug.WriteLine("Element in actionlist: " + action.GetType());
-
-
-                // /*
                 if (action is MakeFastMilitaryUnit)
                 {
-                    mMakeFastMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
+                    mMakeFastMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
+                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
+
+                    mMakeFastMilitaryAction.ActiveInWindow = true;
+
+                    Console.Out.WriteLine("makefastmilitary");
 
                     if (mFastMilitaryAdded) { continue; }
+
                     mSelectedPlatformWindow.AddItem(mMakeFastMilitaryAction);
                     mSelectedPlatformActionList.Add(mMakeFastMilitaryAction);
+                    mFastMilitaryAdded = true;
                 }
                 else if (action is MakeHeavyMilitaryUnit)
                 {
-                    mMakeStrongMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
+                    mMakeStrongMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
+                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
+
+                    mMakeStrongMilitaryAction.ActiveInWindow = true;
+
+                    Console.Out.WriteLine("makestrongmilitary");
 
                     if (mStronggMilitaryAdded) { continue; }
+
                     mSelectedPlatformWindow.AddItem(mMakeStrongMilitaryAction);
                     mSelectedPlatformActionList.Add(mMakeStrongMilitaryAction);
+                    mStronggMilitaryAdded = true;
                 }
                 else if (action is ProduceMineResource)
                 {
-                    mProduceMineResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
+                    mProduceMineResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
+                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
-                    if (!mProduceMineResourceAdded)
-                    {
-                        mSelectedPlatformWindow.AddItem(mProduceMineResourceAction);
-                        mSelectedPlatformActionList.Add(mProduceMineResourceAction);
-                    }
+                    mProduceMineResourceAction.ActiveInWindow = true;
+
+                    Console.Out.WriteLine("produceMineRes");
+
+                    if (mProduceMineResourceAdded) { continue; }
+
+                    mSelectedPlatformWindow.AddItem(mProduceMineResourceAction);
+                    mSelectedPlatformActionList.Add(mProduceMineResourceAction);
+                    mProduceMineResourceAdded = true;
                 }
                 else if (action is ProduceQuarryResource)
                 {
-                    mProduceQuarryResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
+                    mProduceQuarryResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
+                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
-                    if (!mProduceQuarryResourceAdded)
-                    {
-                        mSelectedPlatformWindow.AddItem(mProduceQuarryResourceAction);
-                        mSelectedPlatformActionList.Add(mProduceQuarryResourceAction);
-                    }
+                    mProduceQuarryResourceAction.ActiveInWindow = true;
+
+                    Console.Out.WriteLine("produceQuarryRes");
+
+                    if (mProduceQuarryResourceAdded) { continue; }
+
+                    mSelectedPlatformWindow.AddItem(mProduceQuarryResourceAction);
+                    mSelectedPlatformActionList.Add(mProduceQuarryResourceAction);
+                    mProduceQuarryResourceAdded = true;
                 }
                 else if (action is ProduceWellResource)
                 {
-                    mProduceWellResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
+                    mProduceWellResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
+                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
-                    if (!mProduceWellResourceAdded)
-                    {
-                        mSelectedPlatformWindow.AddItem(mProduceWellResourceAction);
-                        mSelectedPlatformActionList.Add(mProduceWellResourceAction);
-                    }
-                } else if (action is BuildBluePrint)
-                {
-                    mBuildBluePrintAction = new PlatformActionIWindowItem(action,
-                        mLibSans10,
-                        Vector2.Zero,
-                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y),
-                        mDirector);
-                    if (!mBuildBluePrintActionAdded)
-                    {
-                        mSelectedPlatformWindow.AddItem(mBuildBluePrintAction);
-                        mSelectedPlatformActionList.Add(mBuildBluePrintAction);
-                    }
+                    mProduceWellResourceAction.ActiveInWindow = true;
+
+                    Console.Out.WriteLine("produceWellRes");
+
+                    if (mProduceWellResourceAdded) { continue; }
+
+                    mSelectedPlatformWindow.AddItem(mProduceWellResourceAction);
+                    mSelectedPlatformActionList.Add(mProduceWellResourceAction);
+                    mProduceWellResourceAdded = true;
                 }
-                // */
+                else if (action is BuildBluePrint)
+                {
+                    mBuildBluePrintAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero,
+                        new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
+
+                    mBuildBluePrintAction.ActiveInWindow = true;
+
+                    Console.Out.WriteLine("build blueprint");
+
+                    if (mBuildBluePrintActionAdded) { continue; }
+
+                    mSelectedPlatformWindow.AddItem(mBuildBluePrintAction);
+                    mSelectedPlatformActionList.Add(mBuildBluePrintAction);
+                    mBuildBluePrintActionAdded = true;
+                }
             }
 
             #endregion
@@ -1756,8 +1752,6 @@ namespace Singularity.Screen.ScreenClasses
                 mSelectedPlatformWindow.ResetScrollValue();
             }
 
-            //selected platform id was never set, resulting in the comparision above to always equal to true -> permanently setting
-            // the scroll value to 0 which lead to not being able to scroll anymore.
             mSelectedPlatformId = id;
         }
 
