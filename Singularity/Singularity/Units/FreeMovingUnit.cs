@@ -426,6 +426,9 @@ namespace Singularity.Units
 
         public bool Die()
         {
+            // stats tracking for the death of any free moving unit
+            mDirector.GetStoryManager.UpdateUnits(Friendly ? "lost" : "killed");
+
             Console.Out.Write("I died and my friendly value is: " + Friendly);
             mDead = true;
             mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, Friendly ? "A Friendly" : "An enemy" + " unit was killed!", this);
