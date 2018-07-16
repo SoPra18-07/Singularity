@@ -139,4 +139,10 @@ namespace Singularity.Units
             mGroup = Optional<FlockingGroup>.Of(group);
         }
     }
+
+
+
+    // more Links:
+    // http://www.kfish.org/boids/pseudocode.html
+    // https://3carrotsonastick.wordpress.com/2012/11/01/boids-in-c-xna/
 }
