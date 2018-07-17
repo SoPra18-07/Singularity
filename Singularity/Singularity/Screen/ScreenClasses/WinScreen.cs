@@ -33,9 +33,9 @@ namespace Singularity.Screen.ScreenClasses
 
         private int mCounter;
 
-        private StackScreenManager mScreenMananger;
+        private IScreenManager mScreenMananger;
 
-        public WinScreen(Director director, StackScreenManager screenManager>)
+        public WinScreen(Director director, IScreenManager screenManager)
         {
             mDirector = director;
             mScreenMananger = screenManager;

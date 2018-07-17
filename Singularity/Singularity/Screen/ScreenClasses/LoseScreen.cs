@@ -34,9 +34,9 @@ namespace Singularity.Screen.ScreenClasses
 
         private int mCounter;
 
-        private StackScreenManager mScreenMananger;
+        private IScreenManager mScreenMananger;
 
-        public LoseScreen(Director director, StackScreenManager screenManager)
+        public LoseScreen(Director director, IScreenManager screenManager)
         {
             mDirector = director;
             mScreenMananger = screenManager;
