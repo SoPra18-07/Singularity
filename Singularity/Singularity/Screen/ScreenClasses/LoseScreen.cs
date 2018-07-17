@@ -34,7 +34,7 @@ namespace Singularity.Screen.ScreenClasses
 
         private int mCounter;
 
-        private IScreenManager mScreenManager;
+        private readonly IScreenManager mScreenManager;
 
         public LoseScreen(Director director, IScreenManager screenManager)
         {
@@ -59,7 +59,7 @@ namespace Singularity.Screen.ScreenClasses
 
             if (mCounter >= 100 && mCounter < 250)
             {
-                spriteBatch.DrawString(mLibSans72, "Defeat", new Vector2((mScreenSize.X - mLibSans72.MeasureString("Defeat").X) / 2, 100), Color.Red);
+                spriteBatch.DrawString(mLibSans72, "Defeat", new Vector2((mScreenSize.X - mLibSans72.MeasureString("Defeat").X) / 2, (mScreenSize.Y - mSingularityLogo.Height) / 4), Color.Red);
 
                 spriteBatch.Draw(mSingularityLogo, new Vector2((mScreenSize.X - mSingularityLogo.Width) / 2, (mScreenSize.Y - mSingularityLogo.Height) / 2), Color.White);
             }
@@ -67,7 +67,7 @@ namespace Singularity.Screen.ScreenClasses
             {
                 spriteBatch.Draw(mSingularityLogo, new Vector2((mScreenSize.X - mSingularityLogo.Width) / 2, (mScreenSize.Y - mSingularityLogo.Height) / 2), new Color(0.2f, 0.2f, 0.2f, 0.1f));
 
-                spriteBatch.DrawString(mLibSans72, "Defeat", new Vector2((mScreenSize.X - mLibSans72.MeasureString("Defeat").X) / 2, 100), Color.Red);
+                spriteBatch.DrawString(mLibSans72, "Defeat", new Vector2((mScreenSize.X - mLibSans72.MeasureString("Defeat").X) / 2, (mScreenSize.Y - mSingularityLogo.Height) / 4), Color.Red);
 
                 spriteBatch.Draw(mSingularityText, new Vector2((mScreenSize.X - mSingularityText.Width) / 2, (mScreenSize.Y - mSingularityText.Height) / 2.5f), Color.White);
             }
@@ -95,7 +95,7 @@ namespace Singularity.Screen.ScreenClasses
             mSingularityText = content.Load<Texture2D>("SingularityText");
             mSingularityLogo = content.Load<Texture2D>("Logo");
 
-            mStatisticsWindow = new WindowObject("// Statistics", new Vector2((mScreenSize.X - mScreenSize.X / 2) / 2, mScreenSize.Y - (mScreenSize.Y / 2.8f) - 20), new Vector2(mScreenSize.X / 2, mScreenSize.Y / 2.8f), Color.White, new Color(0.467f, 0.534f, 0.6f, 0.8f), 10, 20, false, mLibSans20, mDirector) { Active = false }; // new Color(0.44f, 0.5f, 0.564f, 0.8f)
+            mStatisticsWindow = new WindowObject("// Statistics", new Vector2((mScreenSize.X - mScreenSize.X / 2) / 2, mScreenSize.Y - (mScreenSize.Y / 2.8f) - 20), new Vector2(mScreenSize.X / 2, mScreenSize.Y / 2.8f), Color.White, new Color(0.467f, 0.534f, 0.6f, 0.8f), 10, 20, true, mLibSans20, mDirector) { Active = false }; // new Color(0.44f, 0.5f, 0.564f, 0.8f)
 
             mStatisticsWindow.AddItem(new TextAndAmountIWindowItem("Units created: ", mDirector.GetStoryManager.Units["created"], Vector2.Zero, new Vector2(mStatisticsWindow.Size.X, mLibSans14.MeasureString("A").Y), mLibSans14, Color.White));
             mStatisticsWindow.AddItem(new TextAndAmountIWindowItem("Units lost: ", mDirector.GetStoryManager.Units["lost"], Vector2.Zero, new Vector2(mStatisticsWindow.Size.X, mLibSans14.MeasureString("A").Y), mLibSans14, Color.White));
@@ -110,7 +110,7 @@ namespace Singularity.Screen.ScreenClasses
             var buttonPositionX = mScreenSize.X - measuredButtonStringSize.X - 20;//mScreenSize.X - ((mScreenSize.X - mStatisticsWindow.Size.X) / 2 - measuredButtonStringSize.X) / 2 - measuredButtonStringSize.X;
             var buttonPositionY = 20;//mScreenSize.Y - measuredButtonStringSize.Y - 20;//mScreenSize.Y - ((mScreenSize.X - mStatisticsWindow.Size.X) / 2 - measuredButtonStringSize.X) / 2 - measuredButtonStringSize.Y;
 
-            mMainMenuButton = new Button("Main Menu", mLibSans20, new Vector2(buttonPositionX, buttonPositionY), Color.White) { Opacity = 1f };
+            mMainMenuButton = new Button("Main Menu", mLibSans20, new Vector2(buttonPositionX, buttonPositionY), Color.Red) { Opacity = 1f };
 
             mMainMenuButton.ButtonReleased += ReturnToMainMenu;
         }
