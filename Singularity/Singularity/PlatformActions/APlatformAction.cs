@@ -77,7 +77,11 @@ namespace Singularity.PlatformActions
             var list = new List<GeneralUnit>();
             foreach (var unit in mAssignedUnits.Keys)
             {
-                if (unit.Job != job || amount <= 0) continue;
+                if (unit.Job != job || amount <= 0)
+                {
+                    continue;
+                }
+
                 mAssignedUnits.Remove(unit);
                 list.Add(unit);
                 amount -= 1;
@@ -88,7 +92,10 @@ namespace Singularity.PlatformActions
 
         public bool Die()
         {
-            mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Kill(this);
+            if (mPlatform.Friendly)
+            {
+                mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Kill(this);
+            }
             mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
             mPlatform.Kill(this);
             mPlatform = null;

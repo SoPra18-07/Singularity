@@ -80,6 +80,9 @@ namespace Singularity.Map
         [DataMember]
         private float mMouseY;
 
+        [DataMember]
+        private int mCommandCenterCount;
+
         /// <summary>
         /// Creates a new structure map which holds all the structures currently in the game.
         /// </summary>
@@ -140,6 +143,12 @@ namespace Singularity.Map
         /// <param name="platform">The platform to be added</param>
         public void AddPlatform(PlatformBlank platform)
         {
+            var platformAsCc = platform as CommandCenter;
+
+            if (platformAsCc != null && platform.Friendly)
+            {
+                mCommandCenterCount++;
+            }
 
             mPlatforms.AddLast(platform);
 
@@ -193,6 +202,19 @@ namespace Singularity.Map
         /// <param name="platform">The platform to be removed</param>
         public void RemovePlatform(PlatformBlank platform)
         {
+            var platformAsCc = platform as CommandCenter;
+
+            if (platformAsCc != null && platform.Friendly)
+            {
+                mCommandCenterCount--;
+
+                if (mCommandCenterCount <= 0)
+                {
+                    mDirector.GetStoryManager.Lose();
+                    return;
+                }
+            }
+
             mPlatforms.Remove(platform);
 
 
@@ -681,3 +703,4 @@ namespace Singularity.Map
         }
     }
 }
+

@@ -705,8 +705,8 @@ namespace Singularity.Platforms
             // only if the platform is friendly and the mouse is hovering over it is the info box shown
             if (Friendly && Bounds.Contains(new Vector2(Mouse.GetState().X, Mouse.GetState().Y)))
             {
-                mInfoBox.UpdateString(GetResourceString());
-                mInfoBox.Draw(spritebatch);
+                mInfoBox?.UpdateString(GetResourceString());
+                mInfoBox?.Draw(spritebatch);
             }
 
             // also draw the resources on top
@@ -755,7 +755,11 @@ namespace Singularity.Platforms
             }
 
             // manage updating of values in the UI
-            if (!IsSelected || mDataSent) return;
+            if (!IsSelected || mDataSent)
+            {
+                return;
+            }
+
             // update previous values
             mPrevResources = GetPlatformResources();
             mPrevUnitAssignments = GetAssignedUnits();
@@ -1325,7 +1329,11 @@ namespace Singularity.Platforms
             // TODO: remove this or change it to something more appropriately, this is used by @Ativelox for
             // TODO: debugging purposes to easily see which platforms are currently deactivated
             mColor = Color.Green;
-            if (!mIsActive) return;
+            if (!mIsActive)
+            {
+                return;
+            }
+
             //Only unregister if this platform is a defense or production platform
             if (IsDefense())
             {

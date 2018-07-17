@@ -6,6 +6,8 @@ using Singularity.Levels;
 using Singularity.Map;
 using Singularity.Property;
 using Singularity.Resources;
+using Singularity.Screen;
+using Singularity.Screen.ScreenClasses;
 using Singularity.Serialization;
 
 namespace Singularity.Manager
@@ -32,6 +34,8 @@ namespace Singularity.Manager
         private Achievements mAchievements;
 
         private Director mDirector;
+
+        private IScreenManager mScreenManager;
 
         [DataMember]
         private LevelType mLevelType;
@@ -188,6 +192,27 @@ namespace Singularity.Manager
             //I thought about some state-system to help the handle method track at what point we are and what to trigger next.
             //Trigger Infoboxes.
             //Trigger Events for tutorial.
+        }
+
+        /// <summary>
+        /// If this is called the game is won
+        /// </summary>
+        public void Win()
+        {
+            mScreenManager.AddScreen(new WinScreen());
+        }
+
+        /// <summary>
+        /// If this is called the game is lost
+        /// </summary>
+        public void Lose()
+        {
+            mScreenManager.AddScreen(new LoseScreen());
+        }
+
+        public void SetScreenManager(IScreenManager screenManager)
+        {
+            mScreenManager = screenManager;
         }
     }
 }

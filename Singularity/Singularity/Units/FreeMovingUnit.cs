@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.Serialization;
+using EpPathFinding.cs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -283,7 +284,8 @@ namespace Singularity.Units
             mPath = new Stack<Vector2>();
             mPath = mPathfinder.FindPath(currentPosition,
                 mTargetPosition,
-                ref mMap);
+                ref mMap,
+                Friendly? EndNodeUnWalkableTreatment.DISALLOW : EndNodeUnWalkableTreatment.ALLOW);
 
             if (GlobalVariables.DebugState)
             {
