@@ -313,7 +313,7 @@ namespace Singularity.Units
 
                     case JobType.Logistics:
 
-                        HandleTransport();
+                        HandleTransport(gametime);
                         RegulateMovement();
 
                         if (Carrying.IsPresent())
@@ -323,7 +323,7 @@ namespace Singularity.Units
                         break;
 
                     case JobType.Construction:
-                        HandleTransport();
+                        HandleTransport(gametime);
                         RegulateMovement();
 
                         if (Carrying.IsPresent())
@@ -338,7 +338,7 @@ namespace Singularity.Units
         /// <summary>
         /// Logistics and Construction resemble each other very much, so this is the method to handle both.
         /// </summary>
-        private void HandleTransport()
+        private void HandleTransport(GameTime time)
         {
             if (!mIsMoving && mDone)
             {

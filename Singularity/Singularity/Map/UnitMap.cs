@@ -93,6 +93,11 @@ namespace Singularity.Map
         /// <param name="unit"></param>
         internal void MoveUnit(ICollider unit)
         {
+            if (!mLookupTable.ContainsKey(unit.Id))
+            {
+                return;
+            }
+
             // first check if the unit moved out of its current tile
             var newPos = VectorToTilePos(unit.AbsolutePosition);
             var oldPos = mLookupTable[unit.Id];

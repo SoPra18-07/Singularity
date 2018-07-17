@@ -41,6 +41,8 @@ namespace Singularity.AI.Structures
 
         public override void Update(GameTime time)
         {
+            base.Update(time);
+
             if (mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds > 1000)
             {
                 if (mShootingTarget != null)

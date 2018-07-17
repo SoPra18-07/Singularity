@@ -38,8 +38,9 @@ namespace Singularity.Units
         /// <summary>
         /// The current time used for moving time information between methods not called by update.
         /// </summary>
-        [DataMember]
         protected double mCurrentTime;
+
+        protected readonly HealthBar mHealthBar;
 
         [DataMember]
         public bool KillMe { get; protected set; }
@@ -192,6 +193,8 @@ namespace Singularity.Units
 
             Friendly = friendly;
 
+            mHealthBar = new HealthBar(this);
+
             if (friendly)
             {
                 mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
@@ -201,12 +204,24 @@ namespace Singularity.Units
             mGroup = Optional<FlockingGroup>.Of(null);
 
             ColliderGrid = new[,]
-            {
-                { true, true, true },
-                { true, true, true }
-            };
+                {
+                    { true, true, true },
+                    { true, true, true }
+                };
         }
 
+        protected void ReloadContent(ref Director director, Camera camera, ref Map.Map map)
+        {
+            base.ReloadContent(ref director);
+            mDirector = director;
+            mCamera = camera;
+            if (Friendly)
+            {
+                mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
+                mDirector.GetInputManager.AddMousePositionListener(this);
+            }
+        }
+        
         protected void ReloadContent(ref Director director, Camera camera)
         {
             base.ReloadContent(ref director);

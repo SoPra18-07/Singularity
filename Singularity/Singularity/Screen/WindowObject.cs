@@ -97,7 +97,6 @@ namespace Singularity.Screen
         /// <param name="size">window size</param>
         /// <param name="minimizable">window minimizable</param>
         /// <param name="spriteFont">title font</param>
-        /// <param name="inputManager">standard inputManager</param>
         /// <param name="director">basic director</param>
         public WindowObject(
             string windowName,
@@ -144,7 +143,6 @@ namespace Singularity.Screen
         /// <param name="objectPadding">gap between items</param>
         /// <param name="minimizable">window minimizable</param>
         /// <param name="spriteFont">title font</param>
-        /// <param name="inputManager">standard inputManager</param>
         /// <param name="director">basic director</param>
         public WindowObject(
             string windowName,
@@ -195,7 +193,6 @@ namespace Singularity.Screen
         /// <param name="objectPadding">gap between items</param>
         /// <param name="minimizable">window minimizable</param>
         /// <param name="spriteFont">title font</param>
-        /// <param name="inputManager">standard inputManager</param>
         /// <param name="director">basic director</param>
         public WindowObject(
             string windowName,

@@ -75,7 +75,6 @@ namespace Singularity.Units
         /// <summary>
         /// Used to make sure that it doesn't shoot too often.
         /// </summary>
-        [DataMember]
         private float mShootingTimer = -1f;
 
 
@@ -119,6 +118,7 @@ namespace Singularity.Units
         public void ReloadContent(ContentManager content, ref Director director, Camera camera, ref Map.Map map)
         {
             ReloadContent(ref director, camera);
+            mSoundId = mDirector.GetSoundManager.CreateSoundInstance("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -128,6 +128,8 @@ namespace Singularity.Units
             {
                 throw new Exception("load the MilSheet and GlowTexture first!");
             }
+
+            mHealthBar.Draw(spriteBatch);
 
             // Draw military unit
             spriteBatch.Draw(
@@ -179,6 +181,8 @@ namespace Singularity.Units
             // Bounds = new Rectangle(
                 // (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
                 // (already happening in FreeMovingUnit )
+
+            mHealthBar.Update(gameTime);
 
 
             // this makes the unit rotate according to the mouse position when its selected and not moving.
