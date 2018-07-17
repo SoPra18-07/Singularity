@@ -98,7 +98,7 @@ namespace Singularity.Levels
 
             //INITIALIZE SCREENS
             GameScreen = new GameScreen(mGraphics.GraphicsDevice, ref mDirector, Map, Camera, mFow);
-            Ui = new UserInterfaceScreen(ref mDirector, mGraphics, Map, Camera, mScreenManager);
+            Ui = new UserInterfaceScreen(ref mDirector, Map, Camera, mScreenManager);
             mDirector.GetUserInterfaceController.ControlledUserInterface = Ui; // the UI needs to be added to the controller
 
             // the input manager keeps this from not getting collected by the GC
@@ -107,7 +107,7 @@ namespace Singularity.Levels
             mDirector.GetInputManager.FlagForAddition(this);
 
             // KI STUFF
-            Ai = new BasicAi(EaiDifficulty.Easy, ref mDirector);
+            Ai = new BasicAi(EaiDifficulty.Medium, ref mDirector);
             GameScreen.AddObject(Ai);
         }
 
@@ -133,7 +133,7 @@ namespace Singularity.Levels
             //Map related stuff
             Camera.ReloadContent(mGraphics, ref mDirector);
             mFow.ReloadContent(mGraphics, Camera);
-            Ui = new UserInterfaceScreen(ref mDirector, mGraphics, Map, Camera, mScreenManager);
+            Ui = new UserInterfaceScreen(ref mDirector, Map, Camera, mScreenManager);
             Ui.LoadContent(content);
             Ui.Loaded = true;
             //This has to be after ui creation, because the ui graphid dictionary is updated in the structuremap.reloadcontent method

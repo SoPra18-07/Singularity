@@ -18,7 +18,7 @@ namespace Singularity.Units
     /// <inheritdoc cref="IRevealing"/>
     /// <inheritdoc cref="AFlocking"/>
     [DataContract]
-    internal abstract class FreeMovingUnit : AFlocking, ICollider, IRevealing, IMouseClickListener, IMousePositionListener
+    public abstract class FreeMovingUnit : AFlocking, ICollider, IRevealing, IMouseClickListener, IMousePositionListener
     {
         /// <summary>
         /// The unique ID of the unit.
@@ -290,11 +290,11 @@ namespace Singularity.Units
             Health -= damage;
             if (Health <= 0 && !HasDieded)
             {
-                Die();
+                FlagForDeath();
             }
         }
 
-        public virtual bool Die()
+        public override bool Die()
         {
             HasDieded = true;
             // stats tracking for the death of any free moving unit
@@ -305,6 +305,11 @@ namespace Singularity.Units
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             mDirector.GetMilitaryManager.RemoveUnit(this);
             Moved = false;
+            if (!Friendly)
+            {
+                // note that this has to be an enemy unit, otherwise it wouldn't be friendly.
+                mDirector.GetStoryManager.Level.Ai.Kill((EnemyUnit)this);
+            }
             mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, (Friendly ? "A friendly" : "An enemy") + " unit was killed!", this);
 
             return true;

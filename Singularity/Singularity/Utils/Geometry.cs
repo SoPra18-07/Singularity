@@ -48,6 +48,25 @@ namespace Singularity.Utils
         }
 
         /// <summary>
+        /// Returns whether the given Vector2 is contained in the circle specified by radius
+        /// </summary>
+        /// <param name="radius"></param>
+        /// <param name="toCheck"></param>
+        /// <returns></returns>
+        public static bool Contains(Vector2 circleCenter, float radius, Vector2 toCheck, bool alsoOn = false)
+        {
+            var distanceSquared = Math.Pow(toCheck.X - circleCenter.X, 2) + Math.Pow(toCheck.Y - circleCenter.Y, 2);
+
+            if (alsoOn)
+            {
+                return distanceSquared <= Math.Pow(radius, 2);
+            }
+
+            return distanceSquared < Math.Pow(radius, 2);
+
+        }
+
+        /// <summary>
         /// Gets the approximate distance between 2 points quickly.
         /// </summary>
         /// <param name="pointA">The first point.</param>

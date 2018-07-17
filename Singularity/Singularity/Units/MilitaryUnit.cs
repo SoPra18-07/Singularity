@@ -15,7 +15,7 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="ControllableUnit"/>
     [DataContract]
-    internal class MilitaryUnit : FreeMovingUnit, IShooting
+    public class MilitaryUnit : FreeMovingUnit, IShooting
     {
         /// <summary>
         /// Default width of a unit before scaling.
@@ -49,7 +49,7 @@ namespace Singularity.Units
         /// Used to set the enemy target that should be shot at.
         /// </summary>
         [DataMember]
-        private ICollider mShootingTarget;
+        protected ICollider mShootingTarget;
 
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace Singularity.Units
             Rotate(mShootingTarget.Center);
             
 
-                if (mShootingTimer < 0.5f)
+            if (mShootingTimer < 0.5f)
                 {
                     mShootingTimer = (float) gameTime.TotalGameTime.TotalMilliseconds;
                     Shoot(mShootingTarget);
@@ -215,7 +215,7 @@ namespace Singularity.Units
                         Shoot(mShootingTarget);
                     }
                 }
-        
+                mDirector.GetStoryManager.Level.Ai.Shooting(this, mShootingTarget, gameTime);
         }
 
         private void Shoot(IDamageable target)

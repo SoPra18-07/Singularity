@@ -41,7 +41,7 @@ namespace Singularity.Units
 
 
     [DataContract]
-    public abstract class AFlocking : IFlocking
+    public abstract class AFlocking : ADie, IFlocking
     {
         [DataMember]
         public Vector2 AbsolutePosition { get; set; }
@@ -51,8 +51,7 @@ namespace Singularity.Units
         public Vector2 Velocity { get; set; }
         [DataMember]
         public int Speed { get; set; }
-
-        protected Director mDirector;
+        
         [DataMember]
         protected Optional<FlockingGroup> mGroup;
         [DataMember]
@@ -61,9 +60,8 @@ namespace Singularity.Units
 
         private List<IFlocking> mOtherUnits = new List<IFlocking>();
 
-        protected AFlocking(ref Director director, Optional<FlockingGroup> group)
+        protected AFlocking(ref Director director, Optional<FlockingGroup> group) : base(ref director)
         {
-            mDirector = director;
             mGroup = group;
             FlockingId = -1;
             // FlockingId = mGroup.IsPresent() ? mGroup.Get().FlockingId : mDirector.GetIdGenerator.NextId();
@@ -72,7 +70,7 @@ namespace Singularity.Units
 
         public virtual void Move()
         {
-            if (mGroup.Get().UnitCount() == 1)
+            if (mGroup.Get().Count == 1)
             {
                 Velocity = mGroup.Get().Velocity;
                 Debug.WriteLine("unit: " + AbsolutePosition + ", vel: " + Velocity);
@@ -116,12 +114,7 @@ namespace Singularity.Units
             AbsolutePosition += Velocity;
         }
         
-
-
-        public virtual void ReloadContent(ref Director director)
-        {
-            mDirector = director;
-        }
+        
 
         public abstract void Draw(SpriteBatch spriteBatch);
 

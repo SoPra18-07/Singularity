@@ -40,17 +40,22 @@ namespace Singularity.Units
         [DataMember]
         private List<IFlocking> mUnits;
         
+        [DataMember]
         private int? mSuperiorFlockingId = null;
+        [DataMember]
         public int FlockingId { get; private set; }
 
+
         public Vector2 CohesionRaw { get; private set; }
-        public Vector2 SeperationRaw { get; private set; }
+        public Vector2 SeperationRaw { get; set; }
         public float ActualSpeed { get; private set; }
 
+        [DataMember]
         public bool Moved { get; private set; }
 
         public Map.Map Map { get; private set; }
         
+        [DataMember]
         public int Counter { get; private set; } // todo: use counter in FlockingGroup to look for other units 
 
         /// <summary>
@@ -236,10 +241,7 @@ namespace Singularity.Units
             return mUnits;
         }
 
-        public int UnitCount()
-        {
-            return mUnits.Count;
-        }
+        public int Count => mUnits.Count;
 
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -254,7 +256,7 @@ namespace Singularity.Units
             }
         }
 
-        public bool Die()
+        public override bool Die()
         {
             // The FlockingGroup cannot die as a whole, and is not dead if there's still units left in it.
             return mUnits.Count == 0 && mDirector.GetMilitaryManager.Kill(this);

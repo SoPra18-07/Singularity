@@ -56,7 +56,7 @@ namespace Singularity.Platforms
         {
 
             mDefenseAction = new Shoot(this, ref mDirector);
-            mSpritename = "Cone";
+            mSpritename = "Cones";
             Property = JobType.Defense;
 
             

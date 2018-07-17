@@ -26,9 +26,7 @@ namespace Singularity.PlatformActions
             // var unit = MilitaryUnit.CreateMilitaryUnit(mPlatform.Center + mOffset, ref mDirector);
 
             var camera = mDirector.GetStoryManager.Level.Camera;
-            var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryFast(mPlatform.Center + mOffset, camera, ref mDirector);
-            mDirector.GetMilitaryManager.AddUnit(unit);
             mDirector.GetStoryManager.Level.GameScreen.AddObject(unit);
         }
     }
@@ -44,9 +42,7 @@ namespace Singularity.PlatformActions
         protected override void CreateUnit()
         {
             var camera = mDirector.GetStoryManager.Level.Camera;
-            var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryHeavy(mPlatform.Center + mOffset, camera, ref mDirector);
-            mDirector.GetMilitaryManager.AddUnit(unit);
             mDirector.GetStoryManager.Level.GameScreen.AddObject(unit);
         }
     }
@@ -65,6 +61,7 @@ namespace Singularity.PlatformActions
             var unit = new GeneralUnit(mPlatform, ref mDirector);
             mDirector.GetStoryManager.Level.GameScreen.AddObject(unit);
 
+            mDirector.GetUserInterfaceController.UpdateSLiderHandler();
         }
     }
 
@@ -96,9 +93,7 @@ namespace Singularity.PlatformActions
         protected override void CreateUnit()
         {
             var camera = mDirector.GetStoryManager.Level.Camera;
-            var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryUnit(mPlatform.Center + mOffset, camera, ref mDirector);
-            mDirector.GetMilitaryManager.AddUnit(unit);
             mDirector.GetStoryManager.Level.GameScreen.AddObject(unit);
         }
     }
@@ -199,6 +194,11 @@ namespace Singularity.PlatformActions
         public override Dictionary<EResourceType, int> GetRequiredResources()
         {
             return mMissingResources;
+        }
+
+        public Dictionary<EResourceType, int> GetBuildingCost()
+        {
+            return mBuildingCost;
         }
 
         public override void UiToggleState()

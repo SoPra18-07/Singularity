@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
@@ -10,6 +11,7 @@ using Singularity.Resources;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework.Content;
 using Singularity.Screen.ScreenClasses;
+using Singularity.Utils;
 
 namespace Singularity.Map
 {
@@ -88,6 +90,7 @@ namespace Singularity.Map
             //ADD ALL THE THINGS TO THE CAMERA AND THE FOW
             mStructureMap.ReloadContent(content, mFow, ref dir, mCamera, this, ui);
             mCollisionMap.ReloadContent();
+            mResourceMap.ReloadContent(ref dir);
         }
 
         /// <see cref="CollisionMap.UpdateCollider(ICollider)"/>
@@ -197,7 +200,6 @@ namespace Singularity.Map
 
         public void Update(GameTime gametime)
         {
-
             // -1 for the left/top limits since we want fluid transitions and not the effect of tiles "lagging behind".
             mXPosMin = (int)(mCamera.GetRelativePosition().Y / 50) - 1;
             mXPosMax = (int)(mCamera.GetRelativePosition().Y / 50 + mCamera.GetSize().Y / 50);
@@ -322,6 +324,53 @@ namespace Singularity.Map
                    IsOnTop(new Vector2(rect.X + rect.Width, rect.Y), camera) &&
                    IsOnTop(new Vector2(rect.X, rect.Y + rect.Height), camera) &&
                    IsOnTop(new Vector2(rect.X + rect.Width, rect.Y + rect.Height), camera);
+
+        }
+
+        public bool IsInVision(Rectangle rect)
+        {
+           // if one of the edge points of the given rectangle is already in view make sure to return true.
+
+            return (IsInVision(new Vector2(rect.X, rect.Y)) ||
+                    IsInVision(new Vector2(rect.X + rect.Width, rect.Y)) ||
+                    IsInVision(new Vector2(rect.X, rect.Y + rect.Height)) ||
+                    IsInVision(new Vector2(rect.X + rect.Width, rect.Y + rect.Height)));
+        }
+
+        private bool IsInVision(Vector2 position)
+        {
+            var inVision = false;
+
+            foreach (var revealing in mFow.GetRevealingObjects())
+            {
+                inVision = inVision || Geometry.Contains(revealing.Center, revealing.RevelationRadius, position);
+            }
+
+            return inVision;
+        }
+
+
+        /// <summary>
+        /// Gets a valid random position on the current map
+        /// </summary>
+        /// <returns></returns>
+        public static Vector2 GetRandomPositionOnMap()
+        {
+            var random = new Random();
+
+            var isOnMap = false;
+            var pos = Vector2.Zero;
+
+            while (!isOnMap)
+            {
+                pos = new Vector2(random.Next(MapConstants.MapWidth), random.Next(MapConstants.MapHeight));
+                if (IsOnTop(pos))
+                {
+                    isOnMap = true;
+                }
+
+            }
+            return pos;
 
         }
 

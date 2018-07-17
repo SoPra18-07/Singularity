@@ -12,7 +12,7 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="MilitaryUnit"/>
     [DataContract]
-    internal class EnemyUnit : MilitaryUnit
+    public class EnemyUnit : MilitaryUnit
     {
         /// <summary>
         /// Enemy units controlled by AI and opposed to the player; standard type.
@@ -26,6 +26,17 @@ namespace Singularity.Units
         {
             mColor = Color.Maroon;
             mShootColor = Color.Red;
+        }
+
+        public ICollider GetShootingTarget()
+        {
+            return mShootingTarget;
+        }
+
+        public void SetMovementTarget(Vector2 goal)
+        {
+            // let the flocker take care of it
+            throw new NotImplementedException();
         }
     }
 }
