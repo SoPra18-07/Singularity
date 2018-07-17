@@ -92,6 +92,7 @@ namespace Singularity.Manager
             GetStoryManager.Update(gametime);
             GetMilitaryManager.Update(gametime);
             GetClock.Update(gametime);
+            GetSoundManager.SetMediaPlayerVolume();
         }
     }
 }

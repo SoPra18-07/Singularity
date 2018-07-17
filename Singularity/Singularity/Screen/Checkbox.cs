@@ -20,7 +20,7 @@ namespace Singularity.Screen
         /// <summary>
         /// The position of the checkbox.
         /// </summary>
-        private readonly Vector2 mCheckboxPosition;
+        public Vector2 CheckboxPosition { get; set; }
 
         /// <summary>
         /// The state of the checkbox
@@ -31,7 +31,7 @@ namespace Singularity.Screen
             : base(buttonText, font, textPosition, color)
         {
             mCheckboxSize = new Vector2(font.MeasureString("Gg").Y);
-            mCheckboxPosition = checkboxPosition;
+            CheckboxPosition = checkboxPosition;
 
             // calculate the offset from the end of the string the start of the checkbox
             var checkboxLength = checkboxPosition.X - textPosition.X + mCheckboxSize.X;
@@ -42,19 +42,19 @@ namespace Singularity.Screen
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
-            spriteBatch.DrawRectangle(mCheckboxPosition,
+            spriteBatch.DrawRectangle(CheckboxPosition,
                 mCheckboxSize,
-                mColor);
+                mColor * Opacity);
             if (CheckboxState)
             {
-                spriteBatch.DrawLine(Vector2.Add(mCheckboxPosition, new Vector2(1, 0)),
-                    Vector2.Add(Vector2.Add(mCheckboxPosition, mCheckboxSize), new Vector2(1, 0)),
-                    mColor);
-                spriteBatch.DrawLine(mCheckboxPosition.X + mCheckboxSize.X + 2,
-                    mCheckboxPosition.Y,
-                    mCheckboxPosition.X + 2,
-                    mCheckboxPosition.Y + mCheckboxSize.Y,
-                    mColor);
+                spriteBatch.DrawLine(Vector2.Add(CheckboxPosition, new Vector2(1, 0)),
+                    Vector2.Add(Vector2.Add(CheckboxPosition, mCheckboxSize), new Vector2(1, 0)),
+                    mColor * Opacity);
+                spriteBatch.DrawLine(CheckboxPosition.X + mCheckboxSize.X + 2,
+                    CheckboxPosition.Y,
+                    CheckboxPosition.X + 2,
+                    CheckboxPosition.Y + mCheckboxSize.Y,
+                    mColor * Opacity);
             }
         }
 

@@ -8,6 +8,7 @@ using Singularity.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Map.Properties;
 using Singularity.Property;
 
 namespace Singularity.Screen.ScreenClasses
@@ -221,14 +222,7 @@ namespace Singularity.Screen.ScreenClasses
 
             GlobalVariables.mFowEnabled = !GlobalVariables.mFowEnabled;
 
-            if (GlobalVariables.mFowEnabled)
-            {
-                mFowButton.ChangeText(DisableText);
-            }
-            else
-            {
-                mFowButton.ChangeText(EnableText);
-            }
+            mFowButton.ChangeText(GlobalVariables.mFowEnabled ? DisableText : EnableText);
 
             mClicked = true;
         }

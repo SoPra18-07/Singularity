@@ -25,7 +25,7 @@ namespace Singularity.Screen.ScreenClasses
         //The name of the game to load
         private string mName;
 
-        private bool mLoadingGame;
+        private bool mGameLoaded;
 
         private ILevel mLevel;
         private bool mNewGame;
@@ -72,7 +72,7 @@ namespace Singularity.Screen.ScreenClasses
 
             sPressed = "None";
             sResolutionChanged = false;
-            mLoadingGame = false;
+            mGameLoaded = false;
             mNewGame = false;
             mName = "";
         }
@@ -93,10 +93,10 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
-            if (mLoadingGame)
+            if (mGameLoaded)
             {
-                mScreenManager.RemoveScreen();
-                mLoadingGame = false;
+                
+                mGameLoaded = false;
             }
 
             if (sResolutionChanged)
@@ -111,6 +111,12 @@ namespace Singularity.Screen.ScreenClasses
                     return;
                 case "Skirmish":
                     mLevel = new Skirmish(mGraphics, ref mDirector, mContent, mScreenManager);
+                    mGameScreen = mLevel.GameScreen;
+                    mUi = mLevel.Ui;
+                    mNewGame = true;
+                    break;
+                case "TechDemo":
+                    mLevel = new TechDemo(mGraphics, ref mDirector, mContent, mScreenManager);
                     mGameScreen = mLevel.GameScreen;
                     mUi = mLevel.Ui;
                     mNewGame = true;
@@ -145,6 +151,7 @@ namespace Singularity.Screen.ScreenClasses
                 var levelToBe = XSerializer.Load(mName, false);
                 if (levelToBe.IsPresent())
                 {
+                    mScreenManager.AddScreen(mLoadingScreen);
                     mLevel = (ILevel)levelToBe.Get();
                     mLevel.ReloadContent(mContent, mGraphics, ref mDirector, mScreenManager);
                     mGameScreen = mLevel.GameScreen;
@@ -156,11 +163,12 @@ namespace Singularity.Screen.ScreenClasses
                     }
                     mScreenManager.AddScreen(mGameScreen);
                     mScreenManager.AddScreen(mUi);
-                    mScreenManager.AddScreen(mLoadingScreen);
-                    mLoadingGame = true;
+                    mGameLoaded = true;
                     mName = "";
                 }
-            } else if (mNewGame)
+            }
+            
+            else if (mNewGame)
             {
                 //Remove all screens above this screen, of course this only works if this screen is really on the bottom of the stack
                 for (var i = mScreenManager.GetScreenCount() - 1; i > 0; i--)
@@ -169,10 +177,11 @@ namespace Singularity.Screen.ScreenClasses
                 }
                 mScreenManager.AddScreen(mGameScreen);
                 mScreenManager.AddScreen(mUi);
-                mScreenManager.AddScreen(mLoadingScreen);
-                mLoadingGame = true;
+                
+                mGameLoaded = true;
                 mNewGame = false;
             }
+            
             sPressed = "None";
         }
 
@@ -309,6 +318,11 @@ namespace Singularity.Screen.ScreenClasses
             // TODO: implement start game with story
             throw new NotImplementedException("No story yet unfortunately");
 
+        }
+
+        public static void OnTechDemoButtonReleased(Object sender, EventArgs eventArgs)
+        {
+            sPressed = "TechDemo";
         }
         #endregion
 
