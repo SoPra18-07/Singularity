@@ -25,6 +25,8 @@ namespace Singularity.Screen
         // is the slider slave to the mouse
         private bool mSlave;
 
+        public float Opacity { get; set; } = 1f;
+
         // with value box on right side, bar with pages (notches)
         private readonly bool mWithValue;
         private readonly bool mWithPages;
@@ -96,7 +98,29 @@ namespace Singularity.Screen
             mDirector = director;
             mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
+        }
 
+        public Slider(Vector2 position,
+            int length,
+            int sliderSize,
+            SpriteFont font,
+            bool withValueBox = true,
+            bool withPages = false,
+            int pages = 0)
+        {
+            Position = position;
+            mLastPosition = position;
+            mMin = Position.X;
+            mMax = Position.X + length;
+            Size = new Vector2(length, sliderSize);
+            mCurrentX = mMin;
+            mValuePrevious = mMin;
+            mWithValue = withValueBox;
+            mWithPages = withPages;
+            mFont = font;
+            ActiveInWindow = true;
+            Pages = pages;
+            mLastPagesCount = Pages;
             // if value box requested, initiate string value to 0
             if (mWithValue)
             {
@@ -316,8 +340,8 @@ namespace Singularity.Screen
                             Position.Y - 12 - mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).Y / 4),
                         new Vector2(mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X,
                             mFont.MeasureString(mMax.ToString(CultureInfo.InvariantCulture)).X),
-                        Color.Gray,
-                        Color.Black,
+                        Color.Gray * Opacity,
+                        Color.Black * Opacity,
                         1,
                         (float) 0.8);
 
@@ -328,7 +352,7 @@ namespace Singularity.Screen
                             origin: Vector2.Zero,
                             position: new Vector2(mMax + Size.Y + 30 - mFont.MeasureString(mStringValue).X / 2,
                                 Position.Y - 12),
-                            color: Color.White,
+                            color: Color.White * Opacity,
                             text: mStringValue,
                             rotation: 0f,
                             scale: 1f,
@@ -345,7 +369,7 @@ namespace Singularity.Screen
                                 spriteBatch.DrawLine(new Vector2(Position.X + i * (Size.X / Pages), Position.Y - 2),
                                     4,
                                     1.57f,
-                                    Color.White * .8f,
+                                    Color.White * .8f * Opacity,
                                     1);
                             }
                         }
@@ -356,7 +380,7 @@ namespace Singularity.Screen
                             position: new Vector2(
                                 mMax + Size.Y + 30 - mFont.MeasureString(mCurrentPage.ToString()).X / 2,
                                 Position.Y - 12),
-                            color: Color.White,
+                            color: Color.White * Opacity,
                             text: mCurrentPage.ToString(),
                             rotation: 0f,
                             scale: 1f,
@@ -372,8 +396,8 @@ namespace Singularity.Screen
                     spriteBatch.StrokedRectangle(
                         new Vector2(mCurrentX - Size.Y / 2, Position.Y - Size.Y / 2),
                         new Vector2(Size.Y, Size.Y),
-                        Color.Gray,
-                        Color.Black,
+                        Color.Gray * Opacity,
+                        Color.Black * Opacity,
                         (float) .5,
                         (float) 0.8);
 
