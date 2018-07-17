@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -26,6 +27,7 @@ namespace Singularity.Units
         {
             mColor = Color.Maroon;
             mShootColor = Color.Red;
+            ColliderGrid = new bool[,] {};
         }
 
         public ICollider GetShootingTarget()
@@ -33,13 +35,22 @@ namespace Singularity.Units
             return mShootingTarget;
         }
 
+        public override void Move()
+        {
+            base.Move();
+            Debug.WriteLine("Enemy Unit trying to move.");
+        }
+
         public void SetMovementTarget(Vector2 goal)
         {
             // let the flocker take care of it
             // throw new NotImplementedException();
-
             if (!mGroup.IsPresent())
+            {
+                Debug.WriteLine("Enemy Unit now gets assigned to new Flock ... " + Id);
                 mGroup = Optional<FlockingGroup>.Of(mDirector.GetMilitaryManager.GetNewFlock());
+                mGroup.Get().AssignUnit(this);
+            }
             mGroup.Get().FindPath(goal);
             // mGroup.Get().mTargetPosition = goal;
         }

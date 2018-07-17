@@ -81,22 +81,25 @@ namespace Singularity.Units
             SetAbsBounds();
             if (!mDirector.GetStoryManager.Level.Map.GetCollisionMap().CanPlaceCollider(this))
             {
+                Debug.WriteLine("Could not move1 " + Id);
                 AbsolutePosition -= new Vector2(Velocity.X, 0);
                 SetAbsBounds();
                 if (!mDirector.GetStoryManager.Level.Map.GetCollisionMap().CanPlaceCollider(this))
                 {
+                    Debug.WriteLine("Could not move2 " + Id);
                     AbsolutePosition += new Vector2(Velocity.X, -Velocity.Y);
                     SetAbsBounds();
                     if (!mDirector.GetStoryManager.Level.Map.GetCollisionMap().CanPlaceCollider(this))
                     {
+                        Debug.WriteLine("Could not move at all. " + Id);
                         AbsolutePosition -= new Vector2(0, Velocity.Y);
                         SetAbsBounds();
                     }
                 }
             }
             // */
-
-                if (mGroup.Get().Count == 1)
+            
+            if (mGroup.Get().Count == 1)
             {
                 Velocity = mGroup.Get().Velocity;
                 Debug.WriteLine("unit: " + AbsolutePosition + ", vel: " + Velocity);
