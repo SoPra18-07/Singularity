@@ -77,8 +77,9 @@ namespace Singularity.Nature
         }
 
 
-        public void ReloadContent()
+        public void ReloadContent(ref Director dir)
         {
+            base.ReloadContent(ref dir);
             if (mBigPuddle)
             {
                 ColliderGrid = new[,]

@@ -697,7 +697,7 @@ namespace Singularity.Screen.ScreenClasses
 
             mWindowList.Add(mCivilUnitsWindow);
 
-            mCivilUnitsGraphId = mStructureMap.GetDictionaryGraphIdToGraph().Keys.Min();
+            mCivilUnitsGraphId = mDirector.GetDistributionDirector.GetSomeId();
             mCivilUnitsGraphIdToCompare = -1;
 
             #endregion
@@ -1438,8 +1438,7 @@ namespace Singularity.Screen.ScreenClasses
 
             //This instance will handle the comunication between Sliders and DistributionManager.
             mCivilUnitsSliderHandler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mConstructionSlider, mLogisticsSlider, mIdleUnitsTextAndAmount);
-
-            mCivilUnitsSliderHandler.Initialize();
+            mCivilUnitsSliderHandler.Initialize(mDirector.GetDistributionDirector.GetSomeId());
         }
 
         /// <inheritdoc />

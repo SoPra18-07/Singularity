@@ -60,6 +60,12 @@ namespace Singularity.Resources
             AbsolutePosition += mVelocity;
         }
 
+        public new void ReloadContent(ref Director dir)
+        {
+            //This reload is called in the platform and the units to really reload every resource
+            base.ReloadContent(ref dir);
+        }
+
         public Vector2 GetVelocity()
         {
             return mVelocity;
