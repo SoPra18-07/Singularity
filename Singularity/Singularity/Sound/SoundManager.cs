@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Media;
 using Singularity.Property;
-using Singularity.Utils;
 
 namespace Singularity.Sound
 {
@@ -52,59 +51,59 @@ namespace Singularity.Sound
         public void LoadContent(ContentManager contentManager)
         {
             // Load all sound files from the directory.
-            foreach (string s in Directory.GetFiles(@"Content\Sound", "*.xnb"))
+            foreach (var s in Directory.GetFiles(@"Content\Sound", "*.xnb"))
             {
                 // Cut off file ending and determine game phase.
-                string fullName = s.Substring(8);
-                int endPos = fullName.LastIndexOf(".", StringComparison.Ordinal);
-                int phasePos = fullName.LastIndexOf("_", StringComparison.Ordinal);
-                int levelPos = fullName.LastIndexOf(@"\", StringComparison.Ordinal);
+                var fullName = s.Substring(8);
+                var endPos = fullName.LastIndexOf(".", StringComparison.Ordinal);
+                var phasePos = fullName.LastIndexOf("_", StringComparison.Ordinal);
+                var levelPos = fullName.LastIndexOf(@"\", StringComparison.Ordinal);
                 fullName = fullName.Substring(0, endPos);
-                string levelName = fullName.Substring(levelPos + 1, phasePos - levelPos - 1);
-                string phase = fullName.Substring(phasePos + 1);
-                Console.WriteLine($"Loading theme {levelName} for game phase {phase} from {fullName}");
-                Song song = contentManager.Load<Song>(fullName);
+                var levelName = fullName.Substring(levelPos + 1, phasePos - levelPos - 1);
+                var phase = fullName.Substring(phasePos + 1);
+                Debug.WriteLine($"Loading theme {levelName} for game phase {phase} from {fullName}");
+                var song = contentManager.Load<Song>(fullName);
                 if (!mAllSongs.ContainsKey(levelName))
                 {
                     mAllSongs[levelName] = new Song[3];
                 }
 
-                if (phase == "Menu")
+                switch (phase)
                 {
-                    mAllSongs[levelName][(int)SoundPhase.Menu] = song;
-                }
-
-                if (phase == "Build")
-                {
-                    mAllSongs[levelName][(int)SoundPhase.Build] = song;
-                }
-
-                if (phase == "Battle")
-                {
-                    mAllSongs[levelName][(int)SoundPhase.Battle] = song;
+                    case "Menu":
+                        mAllSongs[levelName][(int)SoundPhase.Menu] = song;
+                        break;
+                    case "Build":
+                        mAllSongs[levelName][(int)SoundPhase.Build] = song;
+                        break;
+                    case "Battle":
+                        mAllSongs[levelName][(int)SoundPhase.Battle] = song;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
 
-            foreach (string s in Directory.GetFiles(@"Content\Sound\SFX", "*.xnb"))
+            foreach (var s in Directory.GetFiles(@"Content\Sound\SFX", "*.xnb"))
             {
-                string fullName = s.Substring(8);
-                int endPos = fullName.LastIndexOf(".", StringComparison.Ordinal);
+                var fullName = s.Substring(8);
+                var endPos = fullName.LastIndexOf(".", StringComparison.Ordinal);
                 fullName = fullName.Substring(0, endPos);
-                SoundEffect effect = contentManager.Load<SoundEffect>(fullName);
-                string effectName = fullName.Substring(fullName.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+                var effect = contentManager.Load<SoundEffect>(fullName);
+                var effectName = fullName.Substring(fullName.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
                 mEffects[effectName] = effect;
-                Console.WriteLine($"Loaded {effectName}");
+                Debug.WriteLine($"Loaded {effectName}");
             }
 
-            foreach (string s in Directory.GetFiles(@"Content\Sound\UI", "*.xnb"))
+            foreach (var s in Directory.GetFiles(@"Content\Sound\UI", "*.xnb"))
             {
-                string fullName = s.Substring(8);
-                int endPos = fullName.LastIndexOf(".", StringComparison.Ordinal);
+                var fullName = s.Substring(8);
+                var endPos = fullName.LastIndexOf(".", StringComparison.Ordinal);
                 fullName = fullName.Substring(0, endPos);
-                SoundEffect effect = contentManager.Load<SoundEffect>(fullName);
-                string effectName = fullName.Substring(fullName.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+                var effect = contentManager.Load<SoundEffect>(fullName);
+                var effectName = fullName.Substring(fullName.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
                 mEffects[effectName] = effect;
-                Console.WriteLine($"Loaded {effectName}");
+                Debug.WriteLine($"Loaded {effectName}");
             }
 
             //sSoundtrack = contentManager.Load<Song>("BGmusic");
@@ -129,11 +128,12 @@ namespace Singularity.Sound
             mUiSounds = new Dictionary<string, SoundEffect>();
             mEffectInstances = new Dictionary<int, SoundEffectInstance>();
             mUiInstances = new Dictionary<int, SoundEffectInstance>();
-            mLevel = String.Empty;
+            mLevel = string.Empty;
             mEffectInstanceId = 0;
             mUiInstanceId = 0;
             mAllInstanceId = 0;
             mInstanceMap = new Dictionary<int, Tuple<SoundClass, int>>();
+            SetMediaPlayerVolume();
         }
 
         
@@ -145,11 +145,17 @@ namespace Singularity.Sound
             {
                 return;
             }
-
-            MediaPlayer.Volume = GlobalVariables.MasterVolume;
             MediaPlayer.Play(sSSoundtrack);
         }
 
+        /// <summary>
+        /// Called to update the media player volume according to the global variables list.
+        /// </summary>
+        public void SetMediaPlayerVolume()
+        {
+            MediaPlayer.Volume = GlobalVariables.MusicVolume;
+            Debug.WriteLine(MediaPlayer.Volume);
+        }
 
         /// <summary>
         /// Adds an instance of the sound effect with the given properties to the Dictionary containing all instances and plays it.
@@ -171,39 +177,44 @@ namespace Singularity.Sound
             {
                 return -2;
             }
-            if (soundClass == SoundClass.Effect)
+
+            SoundEffectInstance effectInstance;
+
+            switch (soundClass)
             {
-                SoundEffectInstance effectInstance = mEffects[name].CreateInstance();
-                effectInstance.Volume = GlobalVariables.EffectsVolume * GlobalVariables.MasterVolume;
-                effectInstance.Pitch = pitch;
-                effectInstance.IsLooped = loop;
-                if (!isGlobal)
-                {
-                    AudioEmitter emitter = new AudioEmitter { Position = new Vector3(x, y, 0), DopplerScale = 0f};
-                    effectInstance.Apply3D(mListener, emitter);
-                }
-                mEffectInstances.Add(mEffectInstanceId, effectInstance);
-                mInstanceMap.Add(mAllInstanceId, new Tuple<SoundClass, int>(soundClass, mEffectInstanceId));
-                mEffectInstanceId++;
-                return mAllInstanceId;
+                case SoundClass.Effect:
+                    effectInstance = mEffects[name].CreateInstance();
+                    effectInstance.Volume = GlobalVariables.EffectsVolume;
+                    effectInstance.Pitch = pitch;
+                    effectInstance.IsLooped = loop;
+                    if (!isGlobal)
+                    {
+                        var emitter = new AudioEmitter {Position = new Vector3(x, y, 0), DopplerScale = 0f};
+                        effectInstance.Apply3D(mListener, emitter);
+                    }
+
+                    mEffectInstances.Add(mEffectInstanceId, effectInstance);
+                    mInstanceMap.Add(mAllInstanceId, new Tuple<SoundClass, int>(soundClass, mEffectInstanceId));
+                    mEffectInstanceId++;
+                    return mAllInstanceId;
+                case SoundClass.Ui:
+                    effectInstance = mUiSounds[name].CreateInstance();
+                    effectInstance.Volume = GlobalVariables.UiVolume;
+                    effectInstance.Pitch = pitch;
+                    effectInstance.IsLooped = loop;
+                    if (!isGlobal)
+                    {
+                        var emitter = new AudioEmitter {Position = new Vector3(x, y, 0), DopplerScale = 0f};
+                        effectInstance.Apply3D(mListener, emitter);
+                    }
+
+                    mUiInstances.Add(mEffectInstanceId, effectInstance);
+                    mInstanceMap.Add(mAllInstanceId, new Tuple<SoundClass, int>(soundClass, mUiInstanceId));
+                    mUiInstanceId++;
+                    return mAllInstanceId;
+                default:
+                    return -1;
             }
-            if (soundClass == SoundClass.Ui)
-            {
-                SoundEffectInstance effectInstance = mUiSounds[name].CreateInstance();
-                effectInstance.Volume = GlobalVariables.UiVolume * GlobalVariables.MasterVolume;
-                effectInstance.Pitch = pitch;
-                effectInstance.IsLooped = loop;
-                if (!isGlobal)
-                {
-                    AudioEmitter emitter = new AudioEmitter { Position = new Vector3(x, y, 0), DopplerScale = 0f };
-                    effectInstance.Apply3D(mListener, emitter);
-                }
-                mUiInstances.Add(mEffectInstanceId, effectInstance);
-                mInstanceMap.Add(mAllInstanceId, new Tuple<SoundClass, int>(soundClass, mUiInstanceId));
-                mUiInstanceId++;
-                return mAllInstanceId;
-            }
-            return -1;
         }
 
         /// <summary>
@@ -216,13 +227,13 @@ namespace Singularity.Sound
             {
                 case SoundClass.Effect:
                     mEffectInstances[mInstanceMap[id].Item2].Volume =
-                        GlobalVariables.EffectsVolume * GlobalVariables.MasterVolume;
+                        GlobalVariables.EffectsVolume;
                     mEffectInstances[mInstanceMap[id].Item2].Play();
                     break;
 
                 case SoundClass.Ui:
                     mUiInstances[mInstanceMap[id].Item2].Volume =
-                        GlobalVariables.UiVolume * GlobalVariables.MasterVolume;
+                        GlobalVariables.UiVolume;
                     mUiInstances[mInstanceMap[id].Item2].Play();;
                     break;
 

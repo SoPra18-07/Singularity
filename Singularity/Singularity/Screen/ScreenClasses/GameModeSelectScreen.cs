@@ -15,67 +15,90 @@ namespace Singularity.Screen.ScreenClasses
     /// and a back button.
     /// </summary>
 
-    internal sealed class GameModeSelectScreen : ITransitionableMenu
+    internal sealed class GameModeSelectScreen : MenuWindow, ITransitionableMenu
     {
         public EScreen Screen { get; private set; } = EScreen.GameModeSelectScreen;
 
         public bool Loaded { get; set; }
 
-
-        private readonly string mMStoryString;
-        private readonly string mMFreePlayString;
-        private readonly string mMBackString;
         private readonly string mMWindowTitleString;
 
-        private readonly List<Button> mMButtonList;
-
-        private SpriteFont mMLibSans36;
-        private SpriteFont mMLibSans20;
-
-        private Button mMStoryButton;
-        private Button mMFreePlayButton;
-        private Button mMBackButton;
+        private readonly List<Button> mButtonList;
 
         // Transition variables
-        private readonly Vector2 mMMenuBoxPosition;
-        private float mMMenuOpacity;
-        private double mMTransitionStartTime;
-        private double mMTransitionDuration;
-        private EScreen mMTargetScreen;
+        private float mMenuOpacity;
+        private double mTransitionStartTime;
+        private double mTransitionDuration;
+        private EScreen mTargetScreen;
         public bool TransitionRunning { get; private set; }
 
         // Selector Triangle
-        private Texture2D mMSelectorTriangle;
-        private float mMButtonVerticalCenter;
-        private Vector2 mMSelectorPosition;
+        private Texture2D mSelectorTriangle;
+        private float mButtonVerticalCenter;
+        private Vector2 mSelectorPosition;
 
         // Layout Variables
-        private readonly float mMButtonTopPadding;
-        private readonly float mMButtonLeftPadding;
+        private readonly float mButtonTopPadding;
+        private readonly float mButtonLeftPadding;
 
 
         public GameModeSelectScreen(Vector2 screenResolution)
+            : base(screenResolution)
         {
-            mMMenuBoxPosition = new Vector2(screenResolution.X / 2 - 204, screenResolution.Y / 4);
+            mMenuBoxPosition = new Vector2(screenResolution.X / 2 - 204, screenResolution.Y / 4);
 
-            mMStoryString = "Campaign Mode";
-            mMFreePlayString = "Skirmish";
-            mMBackString = "Back";
+            mMenuBoxSize = new Vector2(408, 420);
+
             mMWindowTitleString = "New Game";
 
-            mMButtonLeftPadding = mMMenuBoxPosition.X + 60;
-            mMButtonTopPadding = mMMenuBoxPosition.Y + 90;
+            mButtonLeftPadding = mMenuBoxPosition.X + 60;
+            mButtonTopPadding = mMenuBoxPosition.Y + 90;
 
-            mMButtonList = new List<Button>(3);
+            mButtonList = new List<Button>(3);
 
-            mMMenuOpacity = 0;
+            mMenuOpacity = 0;
+            mWindowOpacity = 1;
         }
 
-        /// <summary>
-        /// Updates the contents of the screen.
-        /// </summary>
-        /// <param name="gametime">Current gametime. Used for actions
-        /// that take place over time </param>
+        public override void LoadContent(ContentManager content)
+        {
+            base.LoadContent(content);
+
+            // Strings
+            const string storyString = "Campaign Mode";
+            const string freePlayString = "Skirmish";
+            const string techDemoString = "Tech Demo";
+            const string backString = "Back";
+
+            // fonts and variables
+            mButtonVerticalCenter = mLibSans20.MeasureString("Gg").Y / 2;
+
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter);
+            mSelectorTriangle = content.Load<Texture2D>("SelectorTriangle");
+
+            var storyButton = new Button(storyString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
+            var freePlayButton = new Button(freePlayString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
+            var techDemoButton = new Button(techDemoString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
+            var backButton = new Button(backString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
+            mButtonList.Add(storyButton);
+            mButtonList.Add(freePlayButton);
+            mButtonList.Add(techDemoButton);
+            mButtonList.Add(backButton);
+
+            storyButton.ButtonReleased += LoadGameManagerScreen.OnStoryButtonReleased;
+            freePlayButton.ButtonReleased += LoadGameManagerScreen.OnSkirmishReleased;
+            techDemoButton.ButtonReleased += LoadGameManagerScreen.OnTechDemoButtonReleased;
+
+            backButton.ButtonReleased += MainMenuManagerScreen.OnBackButtonReleased;
+
+            storyButton.ButtonHovering += OnStoryHover;
+            freePlayButton.ButtonHovering += OnSkirmishHover;
+            techDemoButton.ButtonHovering += OnTechDemoHover;
+            backButton.ButtonHovering += OnBackHover;
+
+            Loaded = true;
+        }
+
         public void Update(GameTime gametime)
         {
             if (TransitionRunning)
@@ -83,10 +106,10 @@ namespace Singularity.Screen.ScreenClasses
                 Transition(gametime);
             }
 
-            foreach (Button button in mMButtonList)
+            foreach (Button button in mButtonList)
             {
                 button.Update(gametime);
-                button.Opacity = mMMenuOpacity;
+                button.Opacity = mMenuOpacity;
             }
         }
 
@@ -96,27 +119,27 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="gameTime">Current gameTime</param>
         private void Transition(GameTime gameTime)
         {
-            switch (mMTargetScreen)
+            switch (mTargetScreen)
             {
                 case EScreen.GameModeSelectScreen:
-                    if (gameTime.TotalGameTime.TotalMilliseconds >= mMTransitionStartTime + mMTransitionDuration)
+                    if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
                     {
                         TransitionRunning = false;
-                        mMMenuOpacity = 1f;
+                        mMenuOpacity = 1f;
                     }
 
-                    mMMenuOpacity =
-                        (float)Animations.Easing(0, 1f, mMTransitionStartTime, mMTransitionDuration, gameTime);
+                    mMenuOpacity =
+                        (float)Animations.Easing(0, 1f, mTransitionStartTime, mTransitionDuration, gameTime);
                     break;
                 case EScreen.MainMenuScreen:
-                    if (gameTime.TotalGameTime.TotalMilliseconds >= mMTransitionStartTime + mMTransitionDuration)
+                    if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
                     {
                         TransitionRunning = false;
-                        mMMenuOpacity = 0f;
+                        mMenuOpacity = 0f;
                     }
 
-                    mMMenuOpacity =
-                        (float)Animations.Easing(1, 0f, mMTransitionStartTime, mMTransitionDuration, gameTime);
+                    mMenuOpacity =
+                        (float)Animations.Easing(1, 0f, mTransitionStartTime, mTransitionDuration, gameTime);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -127,20 +150,22 @@ namespace Singularity.Screen.ScreenClasses
         /// Draws the content of this screen.
         /// </summary>
         /// <param name="spriteBatch">spriteBatch that this object should draw to.</param>
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
 
-            foreach (Button button in mMButtonList)
+            base.Draw(spriteBatch);
+
+            foreach (Button button in mButtonList)
             {
                 button.Draw(spriteBatch);
             }
 
             // Draw selector triangle
-            spriteBatch.Draw(mMSelectorTriangle,
-                mMSelectorPosition,
+            spriteBatch.Draw(mSelectorTriangle,
+                mSelectorPosition,
                 null,
-                Color.White * mMMenuOpacity,
+                Color.White * mMenuOpacity,
                 0f,
                 new Vector2(0, 11),
                 1f,
@@ -148,49 +173,18 @@ namespace Singularity.Screen.ScreenClasses
                 0f);
 
             // Draw menu window
-            spriteBatch.StrokedRectangle(mMMenuBoxPosition,
-                new Vector2(408, 420),
+            spriteBatch.StrokedRectangle(mMenuBoxPosition,
+                mMenuBoxSize,
                 Color.White,
                 Color.White,
                 .5f,
                 .20f);
-            spriteBatch.DrawString(mMLibSans36,
+            spriteBatch.DrawString(mLibSans36,
                 mMWindowTitleString,
-                new Vector2(mMMenuBoxPosition.X + 20, mMMenuBoxPosition.Y + 10),
-                new Color(new Vector3(.9137f, .9058f, .8314f)) * mMMenuOpacity);
+                new Vector2(mMenuBoxPosition.X + 20, mMenuBoxPosition.Y + 10),
+                new Color(new Vector3(.9137f, .9058f, .8314f)) * mMenuOpacity);
 
             spriteBatch.End();
-        }
-
-        /// <summary>
-        /// Loads any content specific to this screen.
-        /// </summary>
-        /// <param name="content">Content Manager that should handle the content loading</param>
-        public void LoadContent(ContentManager content)
-        {
-            mMLibSans36 = content.Load<SpriteFont>("LibSans36");
-            mMLibSans20 = content.Load<SpriteFont>("LibSans20");
-            mMButtonVerticalCenter = mMLibSans20.MeasureString("Gg").Y / 2;
-
-            mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter);
-            mMSelectorTriangle = content.Load<Texture2D>("SelectorTriangle");
-
-            mMStoryButton = new Button(mMStoryString, mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
-            mMFreePlayButton = new Button(mMFreePlayString, mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
-            mMBackButton = new Button(mMBackString, mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
-            mMButtonList.Add(mMStoryButton);
-            mMButtonList.Add(mMFreePlayButton);
-            mMButtonList.Add(mMBackButton);
-
-            mMStoryButton.ButtonReleased += LoadGameManagerScreen.OnStoryButtonReleased;
-            mMFreePlayButton.ButtonReleased += LoadGameManagerScreen.OnSkirmishReleased;
-            mMBackButton.ButtonReleased += MainMenuManagerScreen.OnBackButtonReleased;
-
-            mMStoryButton.ButtonHovering += OnStoryHover;
-            mMFreePlayButton.ButtonHovering += OnSkirmishHover;
-            mMBackButton.ButtonHovering += OnBackHover;
-
-            Loaded = true;
         }
 
         /// <summary>
@@ -213,9 +207,9 @@ namespace Singularity.Screen.ScreenClasses
 
         public void TransitionTo(EScreen originScreen, EScreen targetScreen, GameTime gameTime)
         {
-            mMTargetScreen = targetScreen;
-            mMTransitionDuration = 350;
-            mMTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
+            mTargetScreen = targetScreen;
+            mTransitionDuration = 350;
+            mTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
             TransitionRunning = true;
         }
 
@@ -223,17 +217,22 @@ namespace Singularity.Screen.ScreenClasses
 
         private void OnStoryHover(Object sender, EventArgs eventArgs)
         {
-            mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter);
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter);
         }
 
         private void OnSkirmishHover(Object sender, EventArgs eventArgs)
         {
-            mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter + 50);
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 50);
+        }
+
+        private void OnTechDemoHover(Object sender, EventArgs eventArgs)
+        {
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 100);
         }
 
         private void OnBackHover(Object sender, EventArgs eventArgs)
         {
-            mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter + 100);
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 150);
         }
         #endregion
     }
