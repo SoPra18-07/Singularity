@@ -43,8 +43,9 @@ namespace Singularity.Units
         /// <summary>
         /// The current time used for moving time information between methods not called by update.
         /// </summary>
-        [DataMember]
         protected double mCurrentTime;
+
+        protected readonly HealthBar mHealthBar;
 
         [DataMember]
         public bool KillMe { get; protected set; }
@@ -132,7 +133,6 @@ namespace Singularity.Units
         protected double mZoomSnapshot;
         [DataMember]
         public Rectangle AbsBounds { get; protected set; }
-        //TODO: Make clear whether we need to reload that
         public bool[,] ColliderGrid { get; protected set; }
         [DataMember]
         public int RevelationRadius { get; protected set; }
@@ -237,6 +237,8 @@ namespace Singularity.Units
 
             Friendly = friendly;
 
+            mHealthBar = new HealthBar(this);
+
             if (friendly)
             {
                 mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
@@ -251,6 +253,11 @@ namespace Singularity.Units
             mDirector = director;
             mCamera = camera;
             mMap = map;
+            if (Friendly)
+            {
+                mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
+                mDirector.GetInputManager.AddMousePositionListener(this);
+            }
         }
 
         #region Pathfinding Methods
