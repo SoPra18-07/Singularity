@@ -52,7 +52,7 @@ namespace Singularity.Manager
             GetIdGenerator = new IdGenerator();
             GetSoundManager = new SoundManager();
             GetInputManager = new InputManager();
-            GetStoryManager = new StoryManager();
+            GetStoryManager = new StoryManager(this);
             GetPathManager = new PathManager();
             GetUserInterfaceController = new UserInterfaceController(this);
             GetDistributionDirector = new DistributionDirector(this);
@@ -79,6 +79,7 @@ namespace Singularity.Manager
             GetDistributionDirector.ReloadContent(GetUserInterfaceController);
             GetStoryManager.LoadAchievements();
             GetMilitaryManager.ReloadContent(mapmeasurements, this);
+            GetStoryManager.ReloadContent(this);
         }
 
         public void Update(GameTime gametime, bool isActive)
