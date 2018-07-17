@@ -1805,9 +1805,26 @@ namespace Singularity.Screen.ScreenClasses
         public void SplitGraph(int splittedId)
         {
             if (!mActiveUserInterface) { return; }
-
+            foreach (var id in mStructureMap.GetDictionaryGraphIdToGraph().Keys)
+            {
+                Console.Out.WriteLine("graphID: " + id);
+            }
             if (mCivilUnitsGraphId == splittedId)
             {
+                if (!mStructureMap.GetDictionaryGraphIdToGraph().ContainsKey(splittedId))
+                {
+                    Console.Out.WriteLine("min");
+                    mCivilUnitsGraphId = mStructureMap.GetDictionaryGraphIdToGraph().Keys.Min();
+                }
+                else
+                {
+                    Console.Out.WriteLine("id to graph: " + mStructureMap.GetDictionaryGraphIdToGraph()[splittedId]);
+                    if (mStructureMap.GetDictionaryGraphIdToGraph()[splittedId] == null)
+                    {
+                        Console.Out.WriteLine("min");
+                        mCivilUnitsGraphId = mStructureMap.GetDictionaryGraphIdToGraph().Keys.Min();
+                    }
+                }
                 mCivilUnitsSliderHandler.Refresh();
                 mCivilUnitsSliderHandler.ForceSliderPages();
             }
@@ -1833,7 +1850,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <summary>
         /// Used to Deactivate the UI to activate it later (used by settler)
         /// </summary>
-        private void Deactivate()
+        public void Deactivate()
         {
             mActiveUserInterface = false;
         }

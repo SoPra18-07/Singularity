@@ -121,7 +121,7 @@ namespace Singularity.Manager
 
             while (currentlevel.Count > 0)
             {
-                Debug.WriteLine("Looking for: " + res + ", currentL: " + currentlevel.Count);
+                //Debug.WriteLine("Looking for: " + res + ", currentL: " + currentlevel.Count);
                 //Create the next level of BFS. While doing this, check if any platform has the resource you want. If yes return it.
                 foreach (var platform in currentlevel)
                 {
