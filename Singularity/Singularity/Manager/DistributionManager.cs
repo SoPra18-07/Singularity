@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
+using Microsoft.Xna.Framework;
 using Singularity.Exceptions;
 using Singularity.Graph;
 using Singularity.PlatformActions;
@@ -56,10 +57,6 @@ namespace Singularity.Manager
         [DataMember]
         private int mGraphId;
 
-        // This list is the ban list of the Bfs. A resource may be removed from that list like every two seconds.
-        [DataMember]
-        private List<Resource> mBanList;
-
 
         public DistributionManager(int graphid)
         {
@@ -86,7 +83,6 @@ namespace Singularity.Manager
             mRandom = new Random();
             mKilled = new List<Pair<int, int>>();
             mGraphId = graphid;
-            mBanList = new List<Resource>();
         }
 
         public void TestAttributes()
@@ -96,6 +92,7 @@ namespace Singularity.Manager
             Console.Out.WriteLine(mProdPlatforms[1].GetFirst().mType + " " + mProdPlatforms[1].GetSecond());
             Console.Out.WriteLine(mProdPlatforms[0].GetFirst().mType + " " + mProdPlatforms[0].GetSecond());
         }
+
 
         /// <summary>
         /// Deactivates tasks requested by a certain action.
@@ -116,6 +113,7 @@ namespace Singularity.Manager
         /// <returns>The platform with the desired resource, if it exists, null if not</returns>
         private PlatformBlank FindBegin(PlatformBlank destination, EResourceType res)
         {
+
             var visited = new List<PlatformBlank>();
 
             var currentlevel = new List<PlatformBlank>();
@@ -123,14 +121,11 @@ namespace Singularity.Manager
 
             var nextlevel = new List<PlatformBlank>();
 
-
             while (currentlevel.Count > 0)
             {
-                Debug.WriteLine("Looking for: " + res + ", currentL: " + currentlevel.Count);
                 //Create the next level of BFS. While doing this, check if any platform has the resource you want. If yes return it.
                 foreach (var platform in currentlevel)
                 {
-
                     foreach (var edge in platform.GetInwardsEdges())
                     {
                         var candidatePlatform = (PlatformBlank)edge.GetParent();
@@ -398,7 +393,7 @@ namespace Singularity.Manager
         /// <param name="job">Its Job</param>
         /// <param name="assignedAction">The PlatformAction the unit is eventually assigned to</param>
         /// <returns></returns>
-        public Task RequestNewTask(GeneralUnit unit, JobType job, Optional<IPlatformAction> assignedAction)
+        internal Task RequestNewTask(GeneralUnit unit, JobType job, Optional<IPlatformAction> assignedAction)
         {
             var nodes = new List<INode>();
             Task task;

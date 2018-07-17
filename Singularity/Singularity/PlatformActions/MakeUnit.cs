@@ -148,7 +148,7 @@ namespace Singularity.PlatformActions
                     mToRequest[resource] = mToRequest[resource] - 1;
                 }
                 mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).RequestResource(mPlatform, resource, this, mIsBuilding);
-                Debug.WriteLine("Requested " + resource + " just now. Waiting. (" + mPlatform.Id + ")");
+                Console.Out.WriteLine("Requested " + resource + " just now. Waiting. (" + mPlatform.Id + ")");
             }
 
             foreach (var r in mPlatform.GetPlatformResources().ToList()) GetResource(r.Type);
