@@ -468,8 +468,14 @@ namespace Singularity.Units
             {
                 ((PlatformBlank)CurrentNode).RemoveGeneralUnit(this);
 
-                mNodeQueue = mDirector.GetPathManager.GetPath(this, mDestination.Get(), ((PlatformBlank)mDestination.Get()).GetGraphIndex()).GetNodePath();
-
+                var path = mDirector.GetPathManager.GetPath(this,
+                    mDestination.Get(),
+                    ((PlatformBlank) mDestination.Get()).GetGraphIndex());
+                if ( path == null)
+                {
+                    return;
+                }
+                mNodeQueue = path.GetNodePath();
                 CurrentNode = mNodeQueue.Dequeue();
 
                 if ((PlatformBlank)CurrentNode != null && !((PlatformBlank)CurrentNode).HasDieded)
