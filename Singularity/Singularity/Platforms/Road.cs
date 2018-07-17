@@ -43,7 +43,8 @@ namespace Singularity.Platforms
             set
             {
                 mBlueprint = value;
-                if (!value) { // todo: add road to graph - done?
+                if (!value) {
+                    // todo: add road to graph - done?
                            }
             }
         }

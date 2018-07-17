@@ -360,6 +360,7 @@ namespace Singularity.Platforms
 
                             mRoadToBuild.DestinationAsNode = mHoveringPlatform;
                             mRoadToBuild.Destination = mHoveringPlatform.Center;
+                            mHoveringPlatform.AddBlueprint(new BuildBluePrint(mOldHovering, mRoadToBuild, ref mDirector));
                             mCurrentState.NextState();
                         }
 

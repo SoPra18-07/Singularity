@@ -154,7 +154,7 @@ namespace Singularity.Sound
         public void SetMediaPlayerVolume()
         {
             MediaPlayer.Volume = GlobalVariables.MusicVolume;
-            Debug.WriteLine(MediaPlayer.Volume);
+            // Debug.WriteLine(MediaPlayer.Volume);
         }
 
         /// <summary>
