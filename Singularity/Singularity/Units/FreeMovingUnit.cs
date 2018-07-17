@@ -17,7 +17,7 @@ namespace Singularity.Units
     /// <inheritdoc cref="ICollider"/>
     /// <inheritdoc cref="IRevealing"/>
     [DataContract]
-    internal abstract class FreeMovingUnit : ICollider, IRevealing, IMouseClickListener, IMousePositionListener
+    public abstract class FreeMovingUnit : ADie, ICollider, IRevealing, IMouseClickListener, IMousePositionListener
     {
         /// <summary>
         /// The unique ID of the unit.
@@ -220,7 +220,7 @@ namespace Singularity.Units
         /// map, and implements pathfinding for objects on the map. It also allows subclasses to have
         /// health and to be damaged.
         /// </remarks>
-        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true)
+        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true) : base(ref director)
         {
             Id = director.GetIdGenerator.NextiD(); // id for the specific unit.
 
@@ -245,6 +245,7 @@ namespace Singularity.Units
 
         protected void ReloadContent(ref Director director, Camera camera, ref Map.Map map)
         {
+            base.ReloadContent(ref director);
             mPathfinder = new FreeMovingPathfinder();
             mDirector = director;
             mCamera = camera;
@@ -423,11 +424,11 @@ namespace Singularity.Units
             Health -= damage;
             if (Health <= 0 && !HasDieded)
             {
-                Die();
+                FlagForDeath();
             }
         }
 
-        public virtual bool Die()
+        public override bool Die()
         {
             HasDieded = true;
             // stats tracking for the death of any free moving unit
@@ -438,6 +439,11 @@ namespace Singularity.Units
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             mDirector.GetMilitaryManager.RemoveUnit(this);
             mIsMoving = false;
+            if (!Friendly)
+            {
+                // note that this has to be an enemy unit, otherwise it wouldn't be friendly.
+                mDirector.GetStoryManager.Level.Ai.Kill((EnemyUnit)this);
+            }
             mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, (Friendly ? "A friendly" : "An enemy") + " unit was killed!", this);
 
             return true;

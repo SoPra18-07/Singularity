@@ -14,7 +14,7 @@ using Singularity.Utils;
 namespace Singularity.Units
 {
     [DataContract]
-    public sealed class GeneralUnit : ISpatial
+    public sealed class GeneralUnit : ADie, ISpatial
     {
         [DataMember]
         public int Id { get; private set; }
@@ -104,7 +104,7 @@ namespace Singularity.Units
         [DataMember]
         public bool Active { get; set; }
 
-        public GeneralUnit(PlatformBlank platform, ref Director director)
+        public GeneralUnit(PlatformBlank platform, ref Director director) : base(ref director)
         {
             Graphid = platform.GetGraphIndex();
             platform.AddGeneralUnit(this);
@@ -127,6 +127,11 @@ namespace Singularity.Units
 
         internal void ReloadContent(ref Director director, ContentManager content)
         {
+            base.ReloadContent(ref director);
+            if (Carrying.IsPresent())
+            {
+                Carrying.Get().ReloadContent(ref director);
+            }
             mDirector = director;
             mGenUnitTexture = content.Load<Texture2D>("GenUnit");
         }
@@ -463,11 +468,20 @@ namespace Singularity.Units
             {
                 ((PlatformBlank)CurrentNode).RemoveGeneralUnit(this);
 
-                mNodeQueue = mDirector.GetPathManager.GetPath(this, mDestination.Get(), ((PlatformBlank)mDestination.Get()).GetGraphIndex()).GetNodePath();
-
+                var path = mDirector.GetPathManager.GetPath(this,
+                    mDestination.Get(),
+                    ((PlatformBlank) mDestination.Get()).GetGraphIndex());
+                if ( path == null)
+                {
+                    return;
+                }
+                mNodeQueue = path.GetNodePath();
                 CurrentNode = mNodeQueue.Dequeue();
 
-                ((PlatformBlank) CurrentNode)?.AddGeneralUnit(this);
+                if ((PlatformBlank)CurrentNode != null && !((PlatformBlank)CurrentNode).HasDieded)
+                {
+                    ((PlatformBlank)CurrentNode)?.AddGeneralUnit(this);
+                }
             }
 
             if (CurrentNode == null)
@@ -482,7 +496,10 @@ namespace Singularity.Units
 
                 CurrentNode = mNodeQueue.Dequeue();
 
-                ((PlatformBlank)CurrentNode).AddGeneralUnit(this);
+                if (!((PlatformBlank) CurrentNode).HasDieded)
+                {
+                    ((PlatformBlank)CurrentNode).AddGeneralUnit(this);
+                }
             }
 
             // finally move to the current node.
@@ -533,7 +550,7 @@ namespace Singularity.Units
             }
         }
 
-        public bool Die()
+        public override bool Die()
         {
             // stats tracking for the death of a general unit
             mDirector.GetStoryManager.UpdateUnits("lost");

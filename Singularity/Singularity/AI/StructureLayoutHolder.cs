@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.AI.Properties;
+using Singularity.AI.Structures;
+using Singularity.Graph;
 using Singularity.Manager;
+using Singularity.Map.Properties;
 using Singularity.Platforms;
+using Singularity.Property;
 using Singularity.Utils;
 
 namespace Singularity.AI
@@ -22,34 +28,104 @@ namespace Singularity.AI
 
         private static Dictionary<EaiDifficulty, Triple<CommandCenter, List<PlatformBlank>, List<Road>>[]> sAllStructures;
 
-        public static Triple<CommandCenter, List<PlatformBlank>, List<Road>> GetRandomStructureAtCenter(float x, float y, EaiDifficulty difficulty)
+        public static Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle> GetRandomStructureAtCenter(float x, float y, EaiDifficulty difficulty, ref Director director)
         {
             var rnd = new Random();
-            //var structure = sAllStructures[difficulty][sAllStructures[difficulty].Length - 1];
-            var structure = sAllStructures[EaiDifficulty.Easy][1];
-            // 
+
             // everything thats happening below here is to adjust the position of the taken structure to its new center.
 
-            structure.GetFirst().AbsolutePosition += new Vector2(x, y);
-            structure.GetFirst().UpdateValues();
+            var index = rnd.Next(sAllStructures[difficulty].Length);
+
+            var structure = sAllStructures[difficulty][index];
+
+            // make sure to not take the same reference as in this sAllStructures dict. Otherwise the AI can't take the same structure more than once.
+            // -> recreate every object and give that to the caller
+
+            var tempOldPlatNewPlatMapping = new Dictionary<INode, PlatformBlank>();
+
+            var commandCenter = (CommandCenter) PlatformFactory.Get(EStructureType.Command,
+                ref director,
+                structure.GetFirst().AbsolutePosition.X + x,
+                structure.GetFirst().AbsolutePosition.Y + y, null, false, false);
+
+            tempOldPlatNewPlatMapping[structure.GetFirst()] = commandCenter;
+
+            var boundingRectangle = commandCenter.AbsBounds;
+
+            var platformList = new List<PlatformBlank>();
+
 
             foreach (var platform in structure.GetSecond())
             {
-                platform.AbsolutePosition += new Vector2(x, y);
-                platform.UpdateValues();
+                var platformToAdd = PlatformFactory.Get(platform.GetMyType(),
+                    ref director,
+                    platform.AbsolutePosition.X + x,
+                    platform.AbsolutePosition.Y + y, null, false);
+                platformToAdd.Built();
+
+                boundingRectangle = UpdateRectangle(boundingRectangle, platformToAdd);
+
+                tempOldPlatNewPlatMapping[platform] = platformToAdd;
+
+                platformList.Add(platformToAdd);
             }
+
+            var roadList = new List<Road>();
 
             foreach (var road in structure.GetThird())
             {
-                road.ResetCenterValues();
+                var parent = road.GetParent();
+                var child = road.GetChild();
+
+                var roadToAdd = new Road(tempOldPlatNewPlatMapping[parent], tempOldPlatNewPlatMapping[child], ref director);
+                roadList.Add(roadToAdd);
             }
 
-            return structure;
+            return new Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle>(new Triple<CommandCenter, List<PlatformBlank>, List<Road>>(commandCenter, platformList, roadList), boundingRectangle);
         }
 
-        public static Triple<CommandCenter, List<PlatformBlank>, List<Road>> GetRandomStructureAtCenter(Vector2 center, EaiDifficulty difficulty)
+        private static Rectangle UpdateRectangle(Rectangle oldRect, ICollider platform)
         {
-            return GetRandomStructureAtCenter(center.X, center.Y, difficulty);
+            var tempRect = new Rectangle(oldRect.X, oldRect.Y, oldRect.Width, oldRect.Height);
+
+            if (platform.AbsBounds.X + platform.AbsBounds.Width > oldRect.X + oldRect.Width)
+            {
+                tempRect.Width = (platform.AbsBounds.X - oldRect.X) + platform.AbsBounds.Width;
+            }
+
+            if (platform.AbsBounds.X  < oldRect.X)
+            {
+                tempRect.X = platform.AbsBounds.X;
+                tempRect.Width = oldRect.Width + oldRect.X - platform.AbsBounds.X;
+            }
+
+            if (platform.AbsBounds.Y + platform.AbsBounds.Height > oldRect.Y + oldRect.Height)
+            {
+                tempRect.Height = (platform.AbsBounds.Y - oldRect.Y) + platform.AbsBounds.Height;
+            }
+
+            if (platform.AbsBounds.Y < oldRect.Y)
+            {
+                tempRect.Y = platform.AbsBounds.Y;
+                tempRect.Height = oldRect.Height + oldRect.Y - platform.AbsBounds.Y;
+            }
+
+            return tempRect;
+        }
+        public static Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle> GetStructureOnMap(EaiDifficulty difficulty, ref Director director)
+        {
+            while (true)
+            {
+                var pos = Map.Map.GetRandomPositionOnMap();
+                var possibleStructure =
+                    StructureLayoutHolder.GetRandomStructureAtCenter(pos.X, pos.Y, difficulty, ref director);
+
+                if (Map.Map.IsOnTop(possibleStructure.GetSecond()) &&
+                    !director.GetStoryManager.Level.Map.IsInVision(possibleStructure.GetSecond()))
+                {
+                    return possibleStructure;
+                }
+            }
         }
 
         /// <summary>
@@ -70,8 +146,8 @@ namespace Singularity.AI
             var struct1CommandCenter = (CommandCenter) PlatformFactory.Get(EStructureType.Command, ref director, 0f, 0f, null, false, false);
 
             var struct1Platforms = new List<PlatformBlank>();
-            var struct1Plat1 = PlatformFactory.Get(EStructureType.Spawner, ref director, -200);
-            var struct1Plat2 = PlatformFactory.Get(EStructureType.Sentinel, ref director, 200);
+            var struct1Plat1 = (Spawner) PlatformFactory.Get(EStructureType.Spawner, ref director, -200);
+            var struct1Plat2 = (Sentinel) PlatformFactory.Get(EStructureType.Sentinel, ref director, 200);
 
             struct1Platforms.Add(struct1Plat1);
             struct1Platforms.Add(struct1Plat2);

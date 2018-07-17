@@ -15,7 +15,7 @@ namespace Singularity.Resources
     /// Represents a resource-field on the Map in the game. Resources can be extraced from it using the Well, the Mine or the Quarry.
     /// </summary>
     [DataContract]
-    public sealed class MapResource : ISpatial
+    public sealed class MapResource : ADie, ISpatial
     {
         private Director mDirector;
 
@@ -45,7 +45,7 @@ namespace Singularity.Resources
         /// <param name="position">The inital position for this resource</param>
         /// <param name="width">The width of the resource on screen</param>
         /// /// <param name="director">Director of the game.</param>
-        public MapResource(EResourceType type, Vector2 position, int width, ref Director director)
+        public MapResource(EResourceType type, Vector2 position, int width, ref Director director) : base(ref director)
         {
             Type = type;
             AbsolutePosition = position;
@@ -59,6 +59,12 @@ namespace Singularity.Resources
             // mColor = ResourceHelper.GetColor(type);
 
             mDirector = director;
+        }
+
+        public new void ReloadContent(ref Director dir)
+        {
+            base.ReloadContent(ref dir);
+            mDirector = dir;
         }
 
         public Optional<Resource> Get(Vector2 location)
@@ -82,7 +88,7 @@ namespace Singularity.Resources
             // There is no update code.
         }
 
-        public bool Die()
+        public override bool Die()
         {
             return true;
         }

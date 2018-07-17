@@ -1,11 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Singularity.AI.Behavior;
 using Singularity.AI.Properties;
 using Singularity.AI.Structures;
+using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Platforms;
+using Singularity.Property;
+using Singularity.Units;
 using Singularity.Utils;
 
 namespace Singularity.AI
@@ -24,23 +32,23 @@ namespace Singularity.AI
         [DataMember]
         private readonly IAiBehavior mBehavior;
 
-        // this is a representation of the structure this AI operates on.
+        // this is a representation of the structure this AI operates on, this is a list since the AI might possibly have multiple bases
         [DataMember]
-        private readonly Triple<CommandCenter, List<PlatformBlank>, List<Road>> mStructure;
+        private readonly List<Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle>> mStructure;
+
+        private readonly List<Rectangle> mBoundsToDraw;
 
         public BasicAi(EaiDifficulty difficulty, ref Director director)
         {
             Difficulty = difficulty;
             mDirector = director;
 
+            mBoundsToDraw = new List<Rectangle>();
+
+            mStructure = new List<Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle>>();
+
             //TODO: change the behavior with the difficulty
-            mBehavior = new SimpleAIBehavior(this, ref director);
-
-            mStructure = StructureLayoutHolder.GetRandomStructureAtCenter(9000, 3000, difficulty);
-
-            director.GetStoryManager.Level.GameScreen.AddObject(mStructure.GetFirst());
-            director.GetStoryManager.Level.GameScreen.AddObjects(mStructure.GetSecond());
-            director.GetStoryManager.Level.GameScreen.AddObjects(mStructure.GetThird());
+            mBehavior = new AdvancedAiBehavior(this, ref director);
         }
 
         public void ReloadContent(ref Director dir)
@@ -51,24 +59,36 @@ namespace Singularity.AI
 
         public void Update(GameTime gametime)
         {
+
+            mBehavior.CreateNewBase(gametime);
+
             mBehavior.Spawn(gametime);
 
             mBehavior.Move(gametime);
         }
 
-        public IEnumerable<Spawner> GetSpawners()
+        public Dictionary<int, List<Spawner>> GetSpawners()
         {
-            var tempList = new List<Spawner>();
+            var tempList = new Dictionary<int, List<Spawner>>();
 
-            foreach (var platform in mStructure.GetSecond())
+            var index = 0;
+
+            foreach (var structure in mStructure)
             {
-                var spawner = platform as Spawner;
+                tempList[index] = new List<Spawner>();
 
-                if (spawner == null)
+                foreach (var platform in structure.GetFirst().GetSecond())
                 {
-                    continue;
+                    var spawner = platform as Spawner;
+
+                    if (spawner == null)
+                    {
+                        continue;
+                    }
+                    tempList[index].Add(spawner);
                 }
-                tempList.Add(spawner);
+                index++;
+
             }
 
             return tempList;
@@ -76,7 +96,59 @@ namespace Singularity.AI
 
         public void Kill(PlatformBlank platform)
         {
-            mStructure.GetSecond().Remove(platform);
+            foreach (var structure in mStructure)
+            {
+                if (!structure.GetFirst().GetSecond().Contains(platform))
+                {
+                    continue;
+                }
+                structure.GetFirst().GetSecond().Remove(platform);
+                return;
+            }
+        }
+
+        public void Kill(EnemyUnit unit)
+        {
+            mBehavior.Kill(unit);
+        }
+
+        public void AddStructureToGame(Triple<CommandCenter, List<PlatformBlank>, List<Road>> structure, Rectangle bounds)
+        {
+            mStructure.Add(new Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle>(structure, bounds));
+
+            mBoundsToDraw.Add(bounds);
+
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(structure.GetFirst());
+            mDirector.GetStoryManager.Level.GameScreen.AddObjects(structure.GetSecond());
+            mDirector.GetStoryManager.Level.GameScreen.AddObjects(structure.GetThird());
+        }
+
+        public Rectangle GetBoundsOfStructure(int index)
+        {
+            return mStructure[index].GetSecond();
+        }
+
+        public int GetStructureCount()
+        {
+            return mStructure.Count;
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            if (!GlobalVariables.DebugState)
+            {
+                return;
+            }
+
+            foreach (var rectangle in mBoundsToDraw)
+            {
+                spriteBatch.DrawRectangle(rectangle, Color.Red, 4f, LayerConstants.PlatformLayer);
+            }
+        }
+
+        public void Shooting(MilitaryUnit sender, ICollider shootingAt, GameTime gametime)
+        {
+            mBehavior.Shooting(sender, shootingAt, gametime);
         }
     }
 }

@@ -62,8 +62,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AI\BasicAI.cs" />
+    <Compile Include="AI\Behavior\AdvancedAiBehavior.cs" />
     <Compile Include="AI\Behavior\IAIBehavior.cs" />
+    <Compile Include="AI\Helper\PrioritizableObject.cs" />
+    <Compile Include="AI\Helper\PrioritizableObjectAscendingComparer.cs" />
     <Compile Include="AI\Properties\EAIDifficulty.cs" />
+    <Compile Include="AI\Properties\EEnemyType.cs" />
     <Compile Include="AI\Properties\IArtificalIntelligence.cs" />
     <Compile Include="AI\StructureLayoutHolder.cs" />
     <Compile Include="AI\Structures\Sentinel.cs" />
@@ -71,11 +75,13 @@
     <Compile Include="AI\Structures\Spawner.cs" />
     <Compile Include="Levels\PlatformDestructionTestLevel.cs" />
     <Compile Include="Events\SpatialPositionEventArgs.cs" />
+    <Compile Include="Manager\DeathManager.cs" />
     <Compile Include="Nature\Rock.cs" />
     <Compile Include="Levels\BasicLevel.cs" />
     <Compile Include="Levels\ILevel.cs" />
     <Compile Include="Manager\DistributionDirector.cs" />
     <Compile Include="Manager\DistributionManager.cs" />
+    <Compile Include="Property\ADie.cs" />
     <Compile Include="Screen\Checkbox.cs" />
     <Compile Include="PlatformActions\RefineResourceAction.cs" />
     <Compile Include="Screen\ELogEventType.cs" />
@@ -224,6 +230,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Screen\UserInterfaceController.cs" />
+    <Compile Include="Utils\AscendingIntegerComparer.cs" />
     <Compile Include="Utils\Clock.cs" />
     <Compile Include="Utils\State3.cs" />
     <Compile Include="Utils\Geometry.cs" />

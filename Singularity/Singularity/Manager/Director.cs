@@ -39,6 +39,9 @@ namespace Singularity.Manager
         [DataMember]
         public UserInterfaceController GetUserInterfaceController { get; private set; }
 
+        [DataMember]
+        public DeathManager GetDeathManager { get; private set; }
+
         public GraphicsDeviceManager GetGraphicsDeviceManager { get; }
 
         public EventLog GetEventLog { get; }
@@ -57,6 +60,7 @@ namespace Singularity.Manager
                                                         // (like units telling it they exist and the like)
             GetEventLog = new EventLog(GetUserInterfaceController, this, content);
             GetGraphicsDeviceManager = graphics;
+            GetDeathManager = new DeathManager();
 
             GetSoundManager.LoadContent(content);
             GetSoundManager.PlaySoundTrack();
@@ -72,6 +76,7 @@ namespace Singularity.Manager
             GetPathManager = dir.GetPathManager;
             GetUserInterfaceController = dir.GetUserInterfaceController;
             GetDistributionDirector = dir.GetDistributionDirector;
+            GetDistributionDirector.ReloadContent(GetUserInterfaceController);
             GetStoryManager.LoadAchievements();
             GetMilitaryManager.ReloadContent(mapmeasurements, this);
         }

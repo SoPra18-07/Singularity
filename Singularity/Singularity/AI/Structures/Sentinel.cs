@@ -33,6 +33,7 @@ namespace Singularity.AI.Structures
         {
             mDrainingEnergy = DrainingEnergy;
             mIsBlueprint = false;
+            mType = EStructureType.Sentinel;
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
             

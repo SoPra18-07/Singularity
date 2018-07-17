@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Runtime.Serialization;
 using Singularity.Manager;
 using Singularity.Units;
@@ -20,6 +21,8 @@ namespace Singularity.Screen
 
         private readonly Slider mLogisticsSlider;
 
+        private readonly TextAndAmountIWindowItem mIdleUnits;
+
         private readonly Director mDirector;
 
         //This is an Array of length 4. The entrys will be (with rising index): Defense, Construction, Logistics, Production
@@ -29,13 +32,14 @@ namespace Singularity.Screen
 
         private int mCurrentGraphid;
 
-        public SliderHandler(ref Director director, Slider def, Slider prod, Slider constr, Slider logi)
+        public SliderHandler(ref Director director, Slider def, Slider prod, Slider constr, Slider logi, TextAndAmountIWindowItem idle)
         {
             mDirector = director;
             mDefSlider = def;
             mProductionSlider = prod;
             mConstructionSlider = constr;
             mLogisticsSlider = logi;
+            mIdleUnits = idle;
             mCurrentPages = new int[4];
 
             mDefSlider.PageMoving += DefListen;
@@ -53,7 +57,7 @@ namespace Singularity.Screen
         public void Refresh()
         {
             var distr = mDirector.GetDistributionDirector.GetManager(mCurrentGraphid);
-            var free = distr.GetJobCount(JobType.Idle);
+            mIdleUnits.Amount = distr.GetJobCount(JobType.Idle);
             var total = distr.GetUnitTotal();
 
             mDefSlider.Pages = total;
@@ -74,7 +78,7 @@ namespace Singularity.Screen
             }
             else
             {
-                mDefSlider.MaxIncrement = mDefSlider.GetCurrentPage() + free;
+                mDefSlider.MaxIncrement = mDefSlider.GetCurrentPage() + mIdleUnits.Amount;
             }
 
             if (distr.GetRestrictions(false))
@@ -83,10 +87,10 @@ namespace Singularity.Screen
             }
             else
             {
-                mProductionSlider.MaxIncrement = mProductionSlider.GetCurrentPage() + free;
+                mProductionSlider.MaxIncrement = mProductionSlider.GetCurrentPage() + mIdleUnits.Amount;
             }
-            mConstructionSlider.MaxIncrement = mConstructionSlider.GetCurrentPage() + free;
-            mLogisticsSlider.MaxIncrement = mLogisticsSlider.GetCurrentPage() + free;
+            mConstructionSlider.MaxIncrement = mConstructionSlider.GetCurrentPage() + mIdleUnits.Amount;
+            mLogisticsSlider.MaxIncrement = mLogisticsSlider.GetCurrentPage() + mIdleUnits.Amount;
 
         }
 
@@ -101,8 +105,9 @@ namespace Singularity.Screen
             mLogisticsSlider.SetCurrentPage(mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).GetJobCount(JobType.Logistics));
         }
 
-        public void Initialize()
+        public void Initialize(int graphid)
         {
+            mCurrentGraphid = graphid;
             mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).Register(this);
             Refresh();
         }
@@ -171,14 +176,8 @@ namespace Singularity.Screen
         /// Update the graph id that is handled by the sliderhandler
         /// </summary>
         /// <param name="id">the new id to handle</param>
-        /// <param name="oldId">the old id</param>
-        public void SetGraphId(int id, int oldId)
+        public void SetGraphId(int id)
         {
-            if (oldId != -1)
-            {
-                mDirector.GetDistributionDirector.GetManager(oldId)?.Unregister(this);
-            }
-
             mCurrentGraphid = id;
             mDirector.GetDistributionDirector.GetManager(id).Register(this);
 
