@@ -551,7 +551,7 @@ namespace Singularity.Manager
 
             #endregion
 
-            #region Flocking stuff
+            #region Flocking adding
 
             if (mSelected.Count > 0)
             {
@@ -596,6 +596,14 @@ namespace Singularity.Manager
         public bool Kill(FlockingGroup group)
         {
             return mGroups.Remove(group);
+        }
+
+        public void EnsureIncluded(FlockingGroup group)
+        {
+            if (!mGroups.Contains(group))
+            {
+                mGroups.Add(group);
+            }
         }
     }
 }
