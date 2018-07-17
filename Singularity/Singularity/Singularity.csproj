@@ -90,6 +90,7 @@
     <Compile Include="Nature\Puddle.cs" />
     <Compile Include="Screen\BarIWindowItem.cs" />
     <Compile Include="Screen\EventLogIWindowItem.cs" />
+    <Compile Include="Screen\HealthBar.cs" />
     <Compile Include="Screen\PlatformActionIWindowItem.cs" />
     <Compile Include="PlatformActions\ConsumeResource.cs" />
     <Compile Include="Exceptions\MiniMapProportionsOffException.cs" />

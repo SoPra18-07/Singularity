@@ -45,6 +45,8 @@ namespace Singularity.Units
         /// </summary>
         protected double mCurrentTime;
 
+        protected readonly HealthBar mHealthBar;
+
         [DataMember]
         public bool KillMe { get; protected set; }
         #region Movement Variables
@@ -234,6 +236,8 @@ namespace Singularity.Units
             mPathfinder = new FreeMovingPathfinder();
 
             Friendly = friendly;
+
+            mHealthBar = new HealthBar(this);
 
             if (friendly)
             {

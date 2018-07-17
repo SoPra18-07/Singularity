@@ -225,6 +225,9 @@ namespace Singularity.Platforms
         [DataMember]
         protected int mPowerDownSoundId;
 
+        [DataMember]
+        private HealthBar mHealthBar;
+
         public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libsans12, ref Director director, EStructureType type = EStructureType.Blank, float centerOffsetY = -36, bool friendly = true) : base(ref director)
         {
 
@@ -331,6 +334,8 @@ namespace Singularity.Platforms
 
             // Track the creation of a platform in the statistics.
             director.GetStoryManager.UpdatePlatforms("created");
+
+            mHealthBar = new HealthBar(this);
 
             if (!friendly)
             {
@@ -621,6 +626,8 @@ namespace Singularity.Platforms
         {
             var transparency = mIsBlueprint ? 0.35f : 1f;
 
+            mHealthBar.Draw(spritebatch);
+
             switch (mSheet)
             {
                 case 0:
@@ -637,7 +644,7 @@ namespace Singularity.Platforms
                     break;
                 case 1:
                     spritebatch.Draw(mPlatformBaseTexture,
-                        AbsolutePosition,
+                        Vector2.Add(AbsolutePosition, new Vector2(0, 78)),
                         null,
                         mColorBase * transparency,
                         0f,
@@ -728,6 +735,8 @@ namespace Singularity.Platforms
             mToKill.RemoveAll(a => mIPlatformActions.Remove(a));
 
             Uncollide();
+
+            mHealthBar.Update(t);
 
             Bounds = new Rectangle((int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
 

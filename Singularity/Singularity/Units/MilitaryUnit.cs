@@ -129,6 +129,8 @@ namespace Singularity.Units
                 throw new Exception("load the MilSheet and GlowTexture first!");
             }
 
+            mHealthBar.Draw(spriteBatch);
+
             // Draw military unit
             spriteBatch.Draw(
                 mMilSheet,
@@ -186,6 +188,8 @@ namespace Singularity.Units
             //make sure to update the relative bounds rectangle enclosing this unit.
             Bounds = new Rectangle(
                 (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
+
+            mHealthBar.Update(gameTime);
 
 
             // this makes the unit rotate according to the mouse position when its selected and not moving.
