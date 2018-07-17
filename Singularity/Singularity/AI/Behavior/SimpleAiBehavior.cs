@@ -19,7 +19,7 @@ namespace Singularity.AI.Behavior
 {
     /// <summary>
     /// A simple implementation of an AI behavior. Simply spawns units at set intervals and
-    /// moves them all at once to random locations at set intervals.
+    /// moves them all at once to random locations at set intervals. This is outdated and probably won't work as expected
     /// </summary>
     [DataContract]
     public sealed class SimpleAiBehavior : IAiBehavior
