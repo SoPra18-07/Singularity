@@ -22,13 +22,6 @@ namespace Singularity.Units
     [DataContract]
     public abstract class FreeMovingUnit : AFlocking, ICollider, IRevealing, IMouseClickListener, IMousePositionListener
     {
-        /// <summary>
-        /// The unique ID of the unit.
-        /// </summary>
-        [DataMember]
-        public int Id { get; private set; }
-        [DataMember]
-        public bool Friendly { get; protected set; }
         
         /// <summary>
         /// The state of the unit in terms of living or dead. False when alive.
@@ -98,17 +91,20 @@ namespace Singularity.Units
         /// </summary>
         // [DataMember]
         // protected double mZoomSnapshot;
-        [DataMember]
-        public Rectangle AbsBounds { get; protected set; }
-        //TODO: Make clear whether we need to reload that
-        public bool[,] ColliderGrid { get; protected set; }
+        
+            //   the following are already in AFlocking.
+        // [DataMember]
+        // public Rectangle AbsBounds { get; protected set; }
+        // TODO: Make clear whether we need to reload that
+        // [DataMember]
+        // public bool[,] ColliderGrid { get; protected set; }
         [DataMember]
         public int RevelationRadius { get; protected set; }
-        [DataMember]
-        public Vector2 RelativePosition { get; set; }
-        [DataMember]
-        public Vector2 RelativeSize { get; set; }
-        [DataMember]
+        // [DataMember]
+        // public Vector2 RelativePosition { get; set; }
+        // [DataMember]
+        // public Vector2 RelativeSize { get; set; }
+        // [DataMember]
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
 
         #endregion
@@ -118,8 +114,9 @@ namespace Singularity.Units
         /// <summary>
         /// Stores the center of a unit's position.
         /// </summary>
-        [DataMember]
-        public Vector2 Center { get; protected set; }
+        /// already 
+        // [DataMember]
+        // public override Vector2 Center { get; protected set; }
 
         
 
@@ -185,7 +182,6 @@ namespace Singularity.Units
         /// </remarks>
         protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, bool friendly = true) : base(ref director, null)
         {
-            Id = director.GetIdGenerator.NextId(); // id for the specific unit.
 
             AbsolutePosition = position;
 
@@ -203,6 +199,12 @@ namespace Singularity.Units
             }
 
             mGroup = Optional<FlockingGroup>.Of(null);
+
+            ColliderGrid = new[,]
+            {
+                { true, true, true },
+                { true, true, true }
+            };
         }
 
         protected void ReloadContent(ref Director director, Camera camera)
@@ -213,7 +215,7 @@ namespace Singularity.Units
 
         public override void Move()
         {
-            Rotate(Velocity * 50 + AbsolutePosition, true);
+            Rotate(Vector2.Normalize(Velocity) * 180 + AbsolutePosition, true);
             base.Move();
         }
 
@@ -287,6 +289,11 @@ namespace Singularity.Units
                 (int)RelativeSize.X,
                 (int)RelativeSize.Y);
 
+            SetAbsBounds();
+        }
+
+        public override void SetAbsBounds()
+        {
             AbsBounds = new Rectangle((int)AbsolutePosition.X + 16,
                 (int)AbsolutePosition.Y + 11,
                 (int)AbsoluteSize.X,
@@ -307,7 +314,7 @@ namespace Singularity.Units
         /// Damages the unit by a certain amount.
         /// </summary>
         /// <param name="damage"></param>
-        public void MakeDamage(int damage)
+        public override void MakeDamage(int damage)
         {
             Health -= damage;
             if (Health <= 0 && !HasDieded)
@@ -376,9 +383,6 @@ namespace Singularity.Units
                             Debug.WriteLine("pos: " + AbsolutePosition);
                             mGroup.Get().FindPath(target);
                         }
-                        Debug.WriteLine("Fix this ...");
-                        // SetMovementTarget(Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                            // Matrix.Invert(mCamera.GetTransform())));
                     }
 
 
@@ -386,6 +390,14 @@ namespace Singularity.Units
                     {
                         mSelected = true;
                         giveThrough = false;
+
+                        if (!mGroup.IsPresent())
+                        {
+                            var group = Optional<FlockingGroup>.Of(mDirector.GetMilitaryManager.GetNewFlock());
+                            group.Get().AssignUnit(this);
+                            mGroup = group;
+                            // do the fuck not change these lines here. Costs you at least 3h for debugging.
+                        }
                     }
 
                     break;

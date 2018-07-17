@@ -50,6 +50,12 @@ namespace Singularity.Units
 
             mGameScreen = gameScreen;
             mUi = ui;
+
+            ColliderGrid = new[,]
+            {
+                {true, true},
+                {true, true}
+            };
         }
 
         public static Settler Create(Vector2 position, ref Director director)
@@ -113,6 +119,14 @@ namespace Singularity.Units
             {
                 mNeverMoved = false;
             }
+        }
+
+        public override void SetAbsBounds()
+        {
+            AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                (int)AbsolutePosition.Y,
+                (int)AbsoluteSize.X,
+                (int)AbsoluteSize.Y);
         }
 
         public override bool Die()

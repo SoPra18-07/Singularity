@@ -182,10 +182,10 @@ namespace Singularity.Units
 
 
             // this makes the unit rotate according to the mouse position when its selected and not moving.
-            if (mSelected && !Moved && !mShoot)
-            {
-                 Rotate(new Vector2(mMouseX, mMouseY));
-            }
+            // if (mSelected && !Moved && !mShoot)
+            // {
+                 // Rotate(new Vector2(mMouseX, mMouseY));
+            // }
             
             
             // these are values needed to properly get the current sprite out of the spritesheet.

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 using System.Text;
@@ -47,6 +48,8 @@ namespace Singularity.Units
         public Vector2 CohesionRaw { get; private set; }
         public Vector2 SeperationRaw { get; set; }
         public float ActualSpeed { get; private set; }
+
+        private int mGoalCounter;
         
 
         public Map.Map Map { get; private set; }
@@ -85,6 +88,18 @@ namespace Singularity.Units
             foreach (var u in mUnits) u.ReloadContent(ref director);
         }
 
+        // public override Vector2 RelativePosition { get; set; }   // does not really make sense but AFloking : ICollider ...
+        // public override Vector2 RelativeSize { get; set; }       // does not really make sense but AFloking : ICollider ...
+
+        // public override bool[,] ColliderGrid { get; } // does not really make sense but AFloking : ICollider ...
+        // public override Rectangle AbsBounds { get; }  // does not really make sense but AFloking : ICollider ...
+        // public override Vector2 Center { get; }       // does not really make sense but AFloking : ICollider ...
+
+        public override void SetAbsBounds()
+        {
+            throw new NotImplementedException();
+        }
+
         public override void Move()
         {
 
@@ -107,13 +122,6 @@ namespace Singularity.Units
             CohesionRaw = AbsolutePosition;
             // ActualSpeed = mUnits.Any(u => u.Speed > ActualSpeed);
 
-
-            if (Geometry.Length(mTargetPosition - AbsolutePosition) < mUnits.Count * Speed)
-            {
-                Moved = false;
-                mUnits.ForEach(u => u.Moved = false);
-            }
-
             var diff = mTargetPosition - AbsolutePosition;
             var dist = (float) Geometry.Length(diff);
 
@@ -124,6 +132,7 @@ namespace Singularity.Units
             if (dist < 50 && mPath.Count > 0)
             {
                 mTargetPosition = mPath.Pop();
+                mGoalCounter = 0;
             }
 
 
@@ -131,6 +140,20 @@ namespace Singularity.Units
 
             // setting variables used from the AFlocking parts
             mUnits.ForEach(u => u.Move());
+
+
+            if (Geometry.Length(mTargetPosition - AbsolutePosition) < mUnits.Count * Speed)
+            {
+                mGoalCounter++;
+            }
+
+            if (mGoalCounter > 3)
+            {
+                Moved = false;
+                mUnits.ForEach(u => u.Moved = false);
+                mGoalCounter = 0;
+            }
+
 
             /*   todo: implement / fix
 
@@ -150,6 +173,10 @@ namespace Singularity.Units
 
             if (target == mUltimateTarget || mUnits.Count == 0) return;
 
+            if (mUnits.Count > 30)
+            {
+                // find path with heatmap.
+            }
 
             SeperationRaw = Vector2.Zero;
 
@@ -185,6 +212,7 @@ namespace Singularity.Units
             Debug.WriteLine("Path is " + mPath.Count + " long.");
 
             mTargetPosition = mPath.Pop(); // directly getting first goal-part.
+            mDirector.GetMilitaryManager.EnsureIncluded(this);
         }
 
 
@@ -213,6 +241,13 @@ namespace Singularity.Units
             // mUnits.ForEach(u => u.Update(t));
         }
 
+        // public override int Health { get; }           // does not really make sense but AFloking : ICollider ...
+        // public override bool Friendly { get; }        // does not really make sense but AFloking : ICollider ...
+        public override void MakeDamage(int damage)   // does not really make sense but AFloking : ICollider ...
+        {
+            throw new NotImplementedException();
+        }
+        
         internal void AssignUnit(IFlocking unit)
         {
             Debug.WriteLine("Unit got added to " + FlockingId);

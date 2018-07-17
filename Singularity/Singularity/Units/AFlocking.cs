@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
@@ -13,12 +11,8 @@ using Singularity.Utils;
 
 namespace Singularity.Units
 {
-    public interface IFlocking : IUpdate
+    public interface IFlocking : ICollider
     {
-        [DataMember]
-        Vector2 AbsolutePosition { get; set; }
-        [DataMember]
-        Vector2 AbsoluteSize { get; set; }
 
         /// <summary>
         /// This is simply the velocity the FlockingUnit has.
@@ -28,9 +22,7 @@ namespace Singularity.Units
 
         [DataMember]
         int Speed { get; }
-
-        bool Moved { get; set; }
-
+        
         [DataMember]
         int FlockingId { get; }
 
@@ -53,6 +45,7 @@ namespace Singularity.Units
         [DataMember]
         public int Speed { get; set; }
 
+        [DataMember]
         public bool Moved { get; set; }
 
         [DataMember]
@@ -65,19 +58,48 @@ namespace Singularity.Units
 
         protected AFlocking(ref Director director, Optional<FlockingGroup> group) : base(ref director)
         {
+            Id = director.GetIdGenerator.NextId(); // id for the specific unit.
             mGroup = group;
             FlockingId = -1;
             // FlockingId = mGroup.IsPresent() ? mGroup.Get().FlockingId : mDirector.GetIdGenerator.NextId();
         }
 
+        public abstract void SetAbsBounds();
 
         public virtual void Move()
         {
-            if (mGroup.Get().Count == 1)
+            /*
+            AbsolutePosition += Velocity;
+            SetAbsBounds();
+            if (!mDirector.GetStoryManager.Level.Map.GetCollisionMap().CanPlaceCollider(this))
+            {
+                AbsolutePosition -= Velocity;
+                SetAbsBounds();
+            } // */
+            // weird shit happening. Try fully another day.
+            AbsolutePosition += Velocity;
+            SetAbsBounds();
+            if (!mDirector.GetStoryManager.Level.Map.GetCollisionMap().CanPlaceCollider(this))
+            {
+                AbsolutePosition -= new Vector2(Velocity.X, 0);
+                SetAbsBounds();
+                if (!mDirector.GetStoryManager.Level.Map.GetCollisionMap().CanPlaceCollider(this))
+                {
+                    AbsolutePosition += new Vector2(Velocity.X, -Velocity.Y);
+                    SetAbsBounds();
+                    if (!mDirector.GetStoryManager.Level.Map.GetCollisionMap().CanPlaceCollider(this))
+                    {
+                        AbsolutePosition -= new Vector2(0, Velocity.Y);
+                        SetAbsBounds();
+                    }
+                }
+            }
+            // */
+
+                if (mGroup.Get().Count == 1)
             {
                 Velocity = mGroup.Get().Velocity;
                 Debug.WriteLine("unit: " + AbsolutePosition + ", vel: " + Velocity);
-                AbsolutePosition += Velocity;
                 return;
             }
 
@@ -109,12 +131,12 @@ namespace Singularity.Units
             
             var goal = Vector2.Normalize(diff);
 
-            Velocity = Vector2.Normalize(Velocity * 2 + align + cohes * 0.75f + seper * 1.5f) * actualSpeed;
-
-            Debug.WriteLine("unit: " + goal + ", " + align + ", " + cohes + ", " + seper + ", " + Velocity);
-
+            Velocity = Vector2.Normalize(goal * 0.2f + Velocity * 2 + align + cohes * 0.75f + seper * 1.5f) * actualSpeed;
+        
+            // Debug.WriteLine("Freemoving: " + mGroup.Get().Velocity + ", " + mGroup.Get().CohesionRaw);
+            // Debug.WriteLine("unit: " + goal + ", " + align + ", " + cohes + ", " + seper + ", " + Velocity);
             
-            AbsolutePosition += Velocity;
+            // the new velocity will actually be used only next Update in the beginning.
         
         }
         
@@ -135,6 +157,34 @@ namespace Singularity.Units
             }
             mGroup = Optional<FlockingGroup>.Of(group);
         }
+
+
+
+        #region ICollider-stuff.
+
+        
+
+
+        public Vector2 RelativePosition { get; set; }
+        public Vector2 RelativeSize { get; set; }
+
+        [DataMember]
+        public bool[,] ColliderGrid { get; protected set; }
+        [DataMember]
+        public Rectangle AbsBounds { get; protected set; }
+        [DataMember]
+        public Vector2 Center { get; protected set; }
+
+        [DataMember]
+        public int Health { get; protected set; }
+        [DataMember]
+        public bool Friendly { get; protected set; }
+        public abstract void MakeDamage(int damage);
+        [DataMember]
+        public int Id { get; }
+
+
+        #endregion
     }
 
 
