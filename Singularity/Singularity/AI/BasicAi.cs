@@ -39,6 +39,9 @@ namespace Singularity.AI
         [DataMember]
         private readonly List<Rectangle> mBoundsToDraw;
 
+        [DataMember]
+        private int mCommandCenterKillCount;
+
         public BasicAi(EaiDifficulty difficulty, ref Director director)
         {
             Difficulty = difficulty;
@@ -103,8 +106,21 @@ namespace Singularity.AI
                 {
                     continue;
                 }
+
+                var asCc = platform as CommandCenter;
+
+                if (asCc != null)
+                {
+                    mCommandCenterKillCount++;
+                }
+
                 structure.GetFirst().GetSecond().Remove(platform);
                 return;
+            }
+
+            if (mCommandCenterKillCount >= mStructure.Count)
+            {
+                mDirector.GetStoryManager.
             }
         }
 
