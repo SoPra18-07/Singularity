@@ -232,50 +232,6 @@ namespace Singularity.Screen.ScreenClasses
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            /* old code
-            var origin = new EScreen();
-            // make sure that this isn't a switch to the gamescreen, represented by this being the screen that is passed
-            if (targetScreen != mLoadingScreen)
-            {
-                // check if the transition is running. If yes, then don't do anything
-                if (!mMenuBackgroundScreen.TransitionRunning)
-                {
-                    origin = mScreenState;
-                    // if the transition hasn't started, start it
-                    if (mMenuBackgroundScreen.CurrentScreen != eScreen)
-                    {
-                        mCurrentScreen.TransitionTo(origin, eScreen, gameTime);
-
-                        mMenuBackgroundScreen.TransitionTo(origin, eScreen, gameTime);
-                    }
-                    // if it is finish, "reset" the transition states.
-                    if (!mCurrentScreen.TransitionRunning)
-                    {
-                        mCurrentScreen = targetScreen;
-                        mScreenState = eScreen;
-                        sPressed = "None";
-                    }
-                }
-            }
-            // special switch case for loading screen
-            else
-            {
-                // remove menu background if it is a switch to gamescreen
-                mScreenManager.RemoveScreen();
-            }
-            // check to see if the transition out of the current screen is done but the transition in hasn't been completed yet
-            if (!mCurrentScreen.TransitionRunning && mCurrentScreen == targetScreen)
-            {
-                // once the transition is finished, remove the screen
-                mScreenManager.RemoveScreen();
-                // add the target screen and replace the current screen with that screen
-                mScreenManager.AddScreen(targetScreen);
-                targetScreen.TransitionTo(origin, eScreen, gameTime);
-                mCurrentScreen = targetScreen;
-
-            }
-            */
         }
 
         /// <summary>
@@ -330,25 +286,6 @@ namespace Singularity.Screen.ScreenClasses
             mSplashScreen = new SplashScreen(screenResolution);
             mMainMenuScreen = new MainMenuScreen(screenResolution);
         }
-
-        /*
-        /// <summary>
-        /// Loads the contents of the main menu screens
-        /// </summary>
-        /// <param name="content">ContentManager that contains the content</param>
-        private void LoadScreenContents(ContentManager content)
-        {
-            // Load content for all the other menu screens
-            mMenuBackgroundScreen.LoadContent(content);
-            mSplashScreen.LoadContent(content);
-            mMainMenuScreen.LoadContent(content);
-            mGameModeSelectScreen.LoadContent(content);
-            mLoadSelectScreen.LoadContent(content);
-            mAchievementsScreen.LoadContent(content);
-            mOptionsScreen.LoadContent(content);
-            mLoadingScreen.LoadContent(content);
-        }
-        */
 
 
         #region MainMenuScreen Button Handlers

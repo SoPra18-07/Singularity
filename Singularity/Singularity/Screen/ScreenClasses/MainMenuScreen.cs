@@ -12,15 +12,11 @@ namespace Singularity.Screen.ScreenClasses
     /// Shows the main menu screen with 5 options:
     /// New Game, Load Game, Achievements, Options, and Quit Game.
     /// </summary>
-    internal sealed class MainMenuScreen : ITransitionableMenu
+    internal sealed class MainMenuScreen : MenuWindow, ITransitionableMenu
     {
 
         public EScreen Screen { get; private set; } = EScreen.MainMenuScreen;
         public bool Loaded { get; set; }
-
-        // Fonts
-        private SpriteFont mLibSans36;
-        private SpriteFont mLibSans20;
 
         // all text is stored as string variables to allow for easy changes
         private readonly string mPlayString;
@@ -34,8 +30,7 @@ namespace Singularity.Screen.ScreenClasses
         private readonly float mButtonLeftPadding;
         private readonly float mButtonTopPadding;
         private float mButtonVerticalCenter;
-        private readonly Vector2 mScreenResolution;
-        private Vector2 mMenuBoxPosition;
+
 
         // Buttons on the main menu
         private Button mPlayButton;
@@ -51,8 +46,6 @@ namespace Singularity.Screen.ScreenClasses
 
         // Transition fields and properties
         private float mMenuOpacity;
-        private float mWindowOpacity;
-        private Vector2 mMenuBoxSize;
         private double mTransitionStartTime;
         private double mTransitionDuration;
         private EScreen mTargetScreen;
@@ -63,10 +56,10 @@ namespace Singularity.Screen.ScreenClasses
         /// Used to construct a new instance of the main menu screen
         /// </summary>
         /// <param name="screenResolution">Screen resolution of the game</param>
-        public MainMenuScreen(Vector2 screenResolution)
+        public MainMenuScreen(Vector2 screenResolution) 
+            : base(screenResolution)
         {
             mMenuBoxPosition = new Vector2(screenResolution.X / 2 - 204, screenResolution.Y / 4);
-            mScreenResolution = screenResolution;
             mMenuBoxSize = new Vector2(408, 420);
 
             mButtonLeftPadding = mMenuBoxPosition.X + 60;
@@ -83,21 +76,15 @@ namespace Singularity.Screen.ScreenClasses
             mMenuOpacity = 1;
         }
 
-
-
-        /// <summary>
-        /// Loads any content specific to this screen.
-        /// </summary>
-        /// <param name="content">Content Manager that should handle the content loading</param>
-        public void LoadContent(ContentManager content)
+        public override void LoadContent(ContentManager content)
         {
-            mLibSans36 = content.Load<SpriteFont>("LibSans36");
-            mLibSans20 = content.Load<SpriteFont>("LibSans20");
+            base.LoadContent(content);
 
-            // Selector Triangle Positioning
+            // Selector Triangle
             mButtonVerticalCenter = mLibSans20.MeasureString("Gg").Y / 2;
             mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter);
-
+            mSelectorTriangle = content.Load<Texture2D>("SelectorTriangle");
+            
 
             mPlayButton = new Button(mPlayString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
             mLoadButton = new Button(mLoadSelectString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
@@ -109,8 +96,6 @@ namespace Singularity.Screen.ScreenClasses
             mButtonList.Add(mOptionsButton);
             mButtonList.Add(mAchievementsButton);
             mButtonList.Add(mQuitButton);
-
-            mSelectorTriangle = content.Load<Texture2D>("SelectorTriangle");
 
             mPlayButton.ButtonReleased += MainMenuManagerScreen.OnPlayButtonReleased;
             mLoadButton.ButtonReleased += MainMenuManagerScreen.OnLoadButtonReleased;
@@ -134,8 +119,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
-
-            foreach (Button button in mButtonList)
+            foreach (var button in mButtonList)
             {
                 button.Update(gametime);
             }
@@ -145,9 +129,10 @@ namespace Singularity.Screen.ScreenClasses
                 Transition(gametime);
             }
 
-            foreach (Button button in mButtonList)
+            foreach (var button in mButtonList)
             {
                 button.Opacity = mMenuOpacity;
+                button.Position = new Vector2(mMenuBoxPosition.X + 60, button.Position.Y);
             }
         }
 
@@ -195,25 +180,11 @@ namespace Singularity.Screen.ScreenClasses
                     if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
                     {
                         TransitionRunning = false;
-                        mMenuOpacity = 0f;
-                        mMenuBoxSize = new Vector2(600, 650);
-                        mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - 300, mScreenResolution.Y / 2 - 325);
+                        mMenuOpacity = 0;
                     }
-                    // TODO change the achievements screen
-                    var widthAch = (float)Animations.Easing(408,
-                        600,
-                        mTransitionStartTime,
-                        mTransitionDuration,
-                        gameTime);
 
-                    var heightAch = (float)Animations.Easing(420,
-                        650,
-                        mTransitionStartTime,
-                        mTransitionDuration,
-                        gameTime);
-
-                    mMenuBoxSize = new Vector2(widthAch, heightAch);
-                    mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - (int)Math.Floor(widthAch / 2), mScreenResolution.Y / 4 - (int)Math.Floor(heightAch));
+                    mMenuOpacity =
+                        (float)Animations.Easing(1, 0, mTransitionStartTime, mTransitionDuration, gameTime);
                     break;
                 case EScreen.GameModeSelectScreen:
                     if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
@@ -293,9 +264,11 @@ namespace Singularity.Screen.ScreenClasses
         /// Draws the content of this screen.
         /// </summary>
         /// <param name="spriteBatch">spriteBatch that this object should draw to.</param>
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
+
+            base.Draw(spriteBatch);
 
             foreach (Button button in mButtonList)
             {

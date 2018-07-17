@@ -15,7 +15,7 @@ namespace Singularity.Screen.ScreenClasses
     /// and a back button.
     /// </summary>
 
-    internal sealed class GameModeSelectScreen : ITransitionableMenu
+    internal sealed class GameModeSelectScreen : MenuWindow, ITransitionableMenu
     {
         public EScreen Screen { get; private set; } = EScreen.GameModeSelectScreen;
 
@@ -25,11 +25,7 @@ namespace Singularity.Screen.ScreenClasses
 
         private readonly List<Button> mButtonList;
 
-        private SpriteFont mLibSans36;
-        private SpriteFont mLibSans20;
-
         // Transition variables
-        private readonly Vector2 mMenuBoxPosition;
         private float mMenuOpacity;
         private double mTransitionStartTime;
         private double mTransitionDuration;
@@ -47,10 +43,12 @@ namespace Singularity.Screen.ScreenClasses
 
 
         public GameModeSelectScreen(Vector2 screenResolution)
+            : base(screenResolution)
         {
             mMenuBoxPosition = new Vector2(screenResolution.X / 2 - 204, screenResolution.Y / 4);
 
-            
+            mMenuBoxSize = new Vector2(408, 420);
+
             mMWindowTitleString = "New Game";
 
             mButtonLeftPadding = mMenuBoxPosition.X + 60;
@@ -59,14 +57,13 @@ namespace Singularity.Screen.ScreenClasses
             mButtonList = new List<Button>(3);
 
             mMenuOpacity = 0;
+            mWindowOpacity = 1;
         }
 
-        /// <summary>
-        /// Loads any content specific to this screen.
-        /// </summary>
-        /// <param name="content">Content Manager that should handle the content loading</param>
-        public void LoadContent(ContentManager content)
+        public override void LoadContent(ContentManager content)
         {
+            base.LoadContent(content);
+
             // Strings
             const string storyString = "Campaign Mode";
             const string freePlayString = "Skirmish";
@@ -74,8 +71,6 @@ namespace Singularity.Screen.ScreenClasses
             const string backString = "Back";
 
             // fonts and variables
-            mLibSans36 = content.Load<SpriteFont>("LibSans36");
-            mLibSans20 = content.Load<SpriteFont>("LibSans20");
             mButtonVerticalCenter = mLibSans20.MeasureString("Gg").Y / 2;
 
             mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter);
@@ -98,16 +93,12 @@ namespace Singularity.Screen.ScreenClasses
 
             storyButton.ButtonHovering += OnStoryHover;
             freePlayButton.ButtonHovering += OnSkirmishHover;
+            techDemoButton.ButtonHovering += OnTechDemoHover;
             backButton.ButtonHovering += OnBackHover;
 
             Loaded = true;
         }
 
-        /// <summary>
-        /// Updates the contents of the screen.
-        /// </summary>
-        /// <param name="gametime">Current gametime. Used for actions
-        /// that take place over time </param>
         public void Update(GameTime gametime)
         {
             if (TransitionRunning)
@@ -159,9 +150,11 @@ namespace Singularity.Screen.ScreenClasses
         /// Draws the content of this screen.
         /// </summary>
         /// <param name="spriteBatch">spriteBatch that this object should draw to.</param>
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
+
+            base.Draw(spriteBatch);
 
             foreach (Button button in mButtonList)
             {
@@ -181,7 +174,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // Draw menu window
             spriteBatch.StrokedRectangle(mMenuBoxPosition,
-                new Vector2(408, 420),
+                mMenuBoxSize,
                 Color.White,
                 Color.White,
                 .5f,
@@ -232,9 +225,14 @@ namespace Singularity.Screen.ScreenClasses
             mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 50);
         }
 
-        private void OnBackHover(Object sender, EventArgs eventArgs)
+        private void OnTechDemoHover(Object sender, EventArgs eventArgs)
         {
             mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 100);
+        }
+
+        private void OnBackHover(Object sender, EventArgs eventArgs)
+        {
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 150);
         }
         #endregion
     }

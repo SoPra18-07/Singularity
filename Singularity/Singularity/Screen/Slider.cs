@@ -141,7 +141,7 @@ namespace Singularity.Screen
         {
             if (SliderMoving != null && ActiveInWindow)
             {
-                SliderMoving(this, EventArgs.Empty, mCurrentX / (mMax - mMin));
+                SliderMoving(this, EventArgs.Empty, (mCurrentX - mMin) / (mMax - mMin));
             }
         }
 
