@@ -107,7 +107,7 @@ namespace Singularity.Levels
             mDirector.GetInputManager.FlagForAddition(this);
 
             // KI STUFF
-            Ai = new BasicAi(EaiDifficulty.Easy, ref mDirector);
+            Ai = new BasicAi(EaiDifficulty.Medium, ref mDirector);
             GameScreen.AddObject(Ai);
         }
 

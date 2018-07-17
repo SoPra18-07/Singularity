@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Singularity.Property;
 using Microsoft.Xna.Framework;
 using Singularity.Manager;
+using Singularity.Units;
 
 namespace Singularity.AI.Behavior
 {
@@ -37,5 +38,9 @@ namespace Singularity.AI.Behavior
         /// </summary>
         /// <param name="dir"></param>
         void ReloadContent(ref Director dir);
+
+        void Kill(EnemyUnit unit);
+
+        void Shooting(MilitaryUnit sender, ICollider shootingAt, GameTime gametime);
     }
 }
