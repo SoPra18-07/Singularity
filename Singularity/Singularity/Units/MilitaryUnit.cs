@@ -75,7 +75,6 @@ namespace Singularity.Units
         /// <summary>
         /// Used to make sure that it doesn't shoot too often.
         /// </summary>
-        [DataMember]
         private float mShootingTimer = -1f;
 
 
