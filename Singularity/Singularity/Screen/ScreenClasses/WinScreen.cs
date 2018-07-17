@@ -94,7 +94,7 @@ namespace Singularity.Screen.ScreenClasses
             mSingularityText = content.Load<Texture2D>("SingularityText");
             mSingularityLogo = content.Load<Texture2D>("Logo");
 
-            mStatisticsWindow = new WindowObject("// Statistics", new Vector2((mScreenSize.X - mScreenSize.X / 2) / 2, mScreenSize.Y - (mScreenSize.Y / 2.8f) - 20), new Vector2(mScreenSize.X / 2, mScreenSize.Y / 2.8f), Color.White, new Color(0.467f, 0.534f, 0.6f, 0.8f), 10, 20, false, mLibSans20, mDirector) {Active = false}; // new Color(0.44f, 0.5f, 0.564f, 0.8f)
+            mStatisticsWindow = new WindowObject("// Statistics", new Vector2((mScreenSize.X - mScreenSize.X / 2) / 2, mScreenSize.Y - (mScreenSize.Y / 2.8f) - 20), new Vector2(mScreenSize.X / 2, mScreenSize.Y / 2.8f), Color.White, new Color(0.467f, 0.534f, 0.6f, 0.8f), 10, 20, false, mLibSans20, mDirector, EScreen.WinScreen) {Active = false}; // new Color(0.44f, 0.5f, 0.564f, 0.8f)
 
             mStatisticsWindow.AddItem(new TextAndAmountIWindowItem("Units created: ", mDirector.GetStoryManager.Units["created"], Vector2.Zero, new Vector2(mStatisticsWindow.Size.X, mLibSans14.MeasureString("A").Y), mLibSans14, Color.White));
             mStatisticsWindow.AddItem(new TextAndAmountIWindowItem("Units lost: ", mDirector.GetStoryManager.Units["lost"], Vector2.Zero, new Vector2(mStatisticsWindow.Size.X, mLibSans14.MeasureString("A").Y), mLibSans14, Color.White));
