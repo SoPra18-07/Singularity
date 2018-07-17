@@ -763,6 +763,8 @@ namespace Singularity.Platforms
             mPreviousIsManuallyDeactivatedState = mIsManuallyDeactivated;
             mPreviousIsActiveState = IsActive();
 
+
+
             // send data to UIController
             mDirector.GetUserInterfaceController.SetDataOfSelectedPlatform(Id,
                 mIsActive,
@@ -1275,6 +1277,7 @@ namespace Singularity.Platforms
             //TODO: Tell the PlatformAction to request everything it needs again.
             if (manually)
             {
+                mIsManuallyDeactivated = false;
                 // TODO find a power on sound
                 mDirector.GetSoundManager.PlaySound(mPowerOnSoundId);
             }
