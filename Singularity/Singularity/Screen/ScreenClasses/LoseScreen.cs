@@ -34,12 +34,12 @@ namespace Singularity.Screen.ScreenClasses
 
         private int mCounter;
 
-        private IScreenManager mScreenMananger;
+        private IScreenManager mScreenManager;
 
         public LoseScreen(Director director, IScreenManager screenManager)
         {
             mDirector = director;
-            mScreenMananger = screenManager;
+            mScreenManager = screenManager;
 
             mScreenSize = new Vector2(mDirector.GetGraphicsDeviceManager.PreferredBackBufferWidth, mDirector.GetGraphicsDeviceManager.PreferredBackBufferHeight);
 
@@ -108,11 +108,11 @@ namespace Singularity.Screen.ScreenClasses
             var measuredButtonStringSize = mLibSans20.MeasureString("Main Menu");
 
             var buttonPositionX = mScreenSize.X - measuredButtonStringSize.X - 20;//mScreenSize.X - ((mScreenSize.X - mStatisticsWindow.Size.X) / 2 - measuredButtonStringSize.X) / 2 - measuredButtonStringSize.X;
-            var buttonPositionY = mScreenSize.Y - measuredButtonStringSize.Y - 20;//mScreenSize.Y - ((mScreenSize.X - mStatisticsWindow.Size.X) / 2 - measuredButtonStringSize.X) / 2 - measuredButtonStringSize.Y;
+            var buttonPositionY = 20;//mScreenSize.Y - measuredButtonStringSize.Y - 20;//mScreenSize.Y - ((mScreenSize.X - mStatisticsWindow.Size.X) / 2 - measuredButtonStringSize.X) / 2 - measuredButtonStringSize.Y;
 
             mMainMenuButton = new Button("Main Menu", mLibSans20, new Vector2(buttonPositionX, buttonPositionY), Color.White) { Opacity = 1f };
 
-            mMainMenuButton.ButtonClicked += OpenMainMenu;
+            mMainMenuButton.ButtonReleased += ReturnToMainMenu;
         }
 
         public void Update(GameTime gametime)
@@ -143,9 +143,13 @@ namespace Singularity.Screen.ScreenClasses
             return false;
         }
 
-        private void OpenMainMenu(object sender, EventArgs eventArgs)
+        private void ReturnToMainMenu(object sender, EventArgs eventArgs)
         {
-            // TODO : Open MainMenuScreen
+            for (int i = 0; i < mScreenManager.GetScreenCount() - 1; i++)
+            {
+                mScreenManager.RemoveScreen();
+            }
+            LoadGameManagerScreen.OnReturnToMainMenuClicked(sender, eventArgs);
         }
     }
 }

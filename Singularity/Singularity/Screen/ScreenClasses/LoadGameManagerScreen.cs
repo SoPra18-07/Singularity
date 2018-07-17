@@ -130,6 +130,10 @@ namespace Singularity.Screen.ScreenClasses
                 case "Save5":
                     mName = XSerializer.GetSaveNames()[4];
                     break;
+                case "ReturnToMainMenu":
+                    Console.Out.WriteLine("screenadded");
+                    mScreenManager.AddScreen(new MainMenuManagerScreen(sViewportResolution, mScreenManager, true, mGame));
+                    break;
                 default:
                     throw new InvalidGenericArgumentException(
                         "Somehow the LoadGameManagerScreen was assigned to a button that he should not have been assigned to. Cannot handle" +
@@ -218,6 +222,15 @@ namespace Singularity.Screen.ScreenClasses
             mLoadingScreen = new LoadingScreen(screenResolution);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArg"></param>
+        public static void OnReturnToMainMenuClicked(Object sender, EventArgs eventArg)
+        {
+            sPressed = "ReturnToMainMenu";
+        }
 
         #region MainMenuScreen Button Handlers
 

@@ -200,6 +200,7 @@ namespace Singularity.Manager
         /// </summary>
         public void Win()
         {
+            mScreenManager.RemoveScreen();
             mScreenManager.AddScreen(new WinScreen(mDirector, mScreenManager));
         }
 
@@ -208,6 +209,7 @@ namespace Singularity.Manager
         /// </summary>
         public void Lose()
         {
+            mScreenManager.RemoveScreen();
             mScreenManager.AddScreen(new LoseScreen(mDirector, mScreenManager));
         }
 

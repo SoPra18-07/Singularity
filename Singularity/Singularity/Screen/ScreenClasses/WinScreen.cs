@@ -33,12 +33,12 @@ namespace Singularity.Screen.ScreenClasses
 
         private int mCounter;
 
-        private IScreenManager mScreenMananger;
+        private IScreenManager mScreenManager;
 
         public WinScreen(Director director, IScreenManager screenManager)
         {
             mDirector = director;
-            mScreenMananger = screenManager;
+            mScreenManager = screenManager;
 
             mScreenSize = new Vector2(mDirector.GetGraphicsDeviceManager.PreferredBackBufferWidth, mDirector.GetGraphicsDeviceManager.PreferredBackBufferHeight);
 
@@ -111,7 +111,7 @@ namespace Singularity.Screen.ScreenClasses
 
             mMainMenuButton = new Button("Main Menu", mLibSans20, new Vector2(buttonPositionX, buttonPositionY), Color.White) {Opacity = 1f};
 
-            mMainMenuButton.ButtonClicked += OpenMainMenu;
+            mMainMenuButton.ButtonReleased += ReturnToMainMenu;
         }
 
         public void Update(GameTime gametime)
@@ -142,9 +142,13 @@ namespace Singularity.Screen.ScreenClasses
             return false;
         }
 
-        private void OpenMainMenu(object sender, EventArgs eventArgs)
+        private void ReturnToMainMenu(object sender, EventArgs eventArgs)
         {
-            // TODO : Open MainMenuScreen
+            for (int i = 0; i < mScreenManager.GetScreenCount() - 1; i++)
+            {
+                mScreenManager.RemoveScreen();
+            }
+            LoadGameManagerScreen.OnReturnToMainMenuClicked(sender, eventArgs);
         }
     }
 }
