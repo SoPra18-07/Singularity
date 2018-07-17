@@ -15,7 +15,7 @@ namespace Singularity.Screen.ScreenClasses
     /// they will load.
     /// </summary>
 
-    internal sealed class LoadSelectScreen : ITransitionableMenu
+    internal sealed class LoadSelectScreen : MenuWindow, ITransitionableMenu
     {
         public EScreen Screen { get; private set; } = EScreen.GameModeSelectScreen;
 
@@ -23,13 +23,10 @@ namespace Singularity.Screen.ScreenClasses
 
         public int Saves { get; private set; }
         private string[] mGameSaveStrings;
-        private readonly string mMBackString;
-        private readonly string mMWindowTitleString;
+        private readonly string mBackString;
+        private readonly string mWindowTitleString;
 
         private readonly List<Button> mMButtonList;
-
-        private SpriteFont mMLibSans36;
-        private SpriteFont mMLibSans20;
 
         private Button mSave1;
         private Button mSave2;
@@ -39,36 +36,38 @@ namespace Singularity.Screen.ScreenClasses
         private Button mMBackButton;
 
         // Transition variables
-        private readonly Vector2 mMMenuBoxPosition;
-        private float mMMenuOpacity;
-        private double mMTransitionStartTime;
-        private double mMTransitionDuration;
-        private EScreen mMTargetScreen;
+        private float mMenuOpacity;
+        private double mTransitionStartTime;
+        private double mTransitionDuration;
+        private EScreen mTargetScreen;
         public bool TransitionRunning { get; private set; }
 
         // Selector Triangle
-        private Texture2D mMSelectorTriangle;
-        private float mMButtonVerticalCenter;
-        private Vector2 mMSelectorPosition;
+        private Texture2D mSelectorTriangle;
+        private float mButtonVerticalCenter;
+        private Vector2 mSelectorPosition;
 
         // Layout Variables
-        private readonly float mMButtonTopPadding;
-        private readonly float mMButtonLeftPadding;
+        private readonly float mButtonTopPadding;
+        private readonly float mButtonLeftPadding;
 
 
         public LoadSelectScreen(Vector2 screenResolution)
+            : base(screenResolution)
         {
-            mMMenuBoxPosition = new Vector2(screenResolution.X / 2 - 204, screenResolution.Y / 4);
+            mMenuBoxPosition = new Vector2(screenResolution.X / 2 - 204, screenResolution.Y / 4);
+            mMenuBoxSize = new Vector2(408, 420);
 
-            mMBackString = "Back";
-            mMWindowTitleString = "Load Game";
+            mBackString = "Back";
+            mWindowTitleString = "Load Game";
 
-            mMButtonLeftPadding = mMMenuBoxPosition.X + 60;
-            mMButtonTopPadding = mMMenuBoxPosition.Y + 90;
+            mButtonLeftPadding = mMenuBoxPosition.X + 60;
+            mButtonTopPadding = mMenuBoxPosition.Y + 90;
 
             mMButtonList = new List<Button>(6);
 
-            mMMenuOpacity = 0;
+            mMenuOpacity = 0;
+            mWindowOpacity = 1;
         }
 
         /// <summary>
@@ -86,7 +85,7 @@ namespace Singularity.Screen.ScreenClasses
             foreach (Button button in mMButtonList)
             {
                 button.Update(gametime);
-                button.Opacity = mMMenuOpacity;
+                button.Opacity = mMenuOpacity;
             }
         }
 
@@ -96,27 +95,27 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="gameTime">Current gameTime</param>
         private void Transition(GameTime gameTime)
         {
-            switch (mMTargetScreen)
+            switch (mTargetScreen)
             {
                 case EScreen.LoadSelectScreen:
-                    if (gameTime.TotalGameTime.TotalMilliseconds >= mMTransitionStartTime + mMTransitionDuration)
+                    if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
                     {
                         TransitionRunning = false;
-                        mMMenuOpacity = 1f;
+                        mMenuOpacity = 1f;
                     }
 
-                    mMMenuOpacity =
-                        (float)Animations.Easing(0, 1f, mMTransitionStartTime, mMTransitionDuration, gameTime);
+                    mMenuOpacity =
+                        (float)Animations.Easing(0, 1f, mTransitionStartTime, mTransitionDuration, gameTime);
                     break;
                 case EScreen.MainMenuScreen:
-                    if (gameTime.TotalGameTime.TotalMilliseconds >= mMTransitionStartTime + mMTransitionDuration)
+                    if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
                     {
                         TransitionRunning = false;
-                        mMMenuOpacity = 0f;
+                        mMenuOpacity = 0f;
                     }
 
-                    mMMenuOpacity =
-                        (float)Animations.Easing(1, 0f, mMTransitionStartTime, mMTransitionDuration, gameTime);
+                    mMenuOpacity =
+                        (float)Animations.Easing(1, 0f, mTransitionStartTime, mTransitionDuration, gameTime);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -127,20 +126,22 @@ namespace Singularity.Screen.ScreenClasses
         /// Draws the content of this screen.
         /// </summary>
         /// <param name="spriteBatch">spriteBatch that this object should draw to.</param>
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
 
-            foreach (Button button in mMButtonList)
+            base.Draw(spriteBatch);
+
+            foreach (var button in mMButtonList)
             {
                 button.Draw(spriteBatch);
             }
 
             // Draw selector triangle
-            spriteBatch.Draw(mMSelectorTriangle,
-                position: mMSelectorPosition,
+            spriteBatch.Draw(mSelectorTriangle,
+                position: mSelectorPosition,
                 sourceRectangle: null,
-                color: Color.White * mMMenuOpacity,
+                color: Color.White * mMenuOpacity,
                 rotation: 0f,
                 origin: new Vector2(0, 11),
                 scale: 1f,
@@ -148,16 +149,16 @@ namespace Singularity.Screen.ScreenClasses
                 layerDepth: 0f);
 
             // Draw menu window
-            spriteBatch.StrokedRectangle(mMMenuBoxPosition,
-                new Vector2(408, 420),
+            spriteBatch.StrokedRectangle(mMenuBoxPosition,
+                mMenuBoxSize,
                 Color.White,
                 Color.White,
                 .5f,
                 .20f);
-            spriteBatch.DrawString(mMLibSans36,
-                mMWindowTitleString,
-                new Vector2(mMMenuBoxPosition.X + 20, mMMenuBoxPosition.Y + 10),
-                new Color(new Vector3(.9137f, .9058f, .8314f)) * mMMenuOpacity);
+            spriteBatch.DrawString(mLibSans36,
+                mWindowTitleString,
+                new Vector2(mMenuBoxPosition.X + 20, mMenuBoxPosition.Y + 10),
+                new Color(new Vector3(.9137f, .9058f, .8314f)) * mMenuOpacity);
 
             spriteBatch.End();
         }
@@ -166,62 +167,61 @@ namespace Singularity.Screen.ScreenClasses
         /// Loads any content specific to this screen.
         /// </summary>
         /// <param name="content">Content Manager that should handle the content loading</param>
-        public void LoadContent(ContentManager content)
+        public override void LoadContent(ContentManager content)
         {
-            mMLibSans36 = content.Load<SpriteFont>("LibSans36");
-            mMLibSans20 = content.Load<SpriteFont>("LibSans20");
-            mMButtonVerticalCenter = mMLibSans20.MeasureString("Gg").Y / 2;
+            base.LoadContent(content);
+            mButtonVerticalCenter = mLibSans20.MeasureString("Gg").Y / 2;
 
-            mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter);
-            mMSelectorTriangle = content.Load<Texture2D>("SelectorTriangle");
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter);
+            mSelectorTriangle = content.Load<Texture2D>("SelectorTriangle");
 
             mGameSaveStrings = XSerializer.GetSaveNames();
             switch (mGameSaveStrings.Length)
             {
                 case 0:
-                    mSave1 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave2 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave3 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave4 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave5 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave1 = new Button("Empty Slot", mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave2 = new Button("Empty Slot", mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave3 = new Button("Empty Slot", mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave4 = new Button("Empty Slot", mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave5 = new Button("Empty Slot", mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     Saves = 0;
                     break;
                 case 1:
-                    mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave2 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave3 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave4 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave5 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave2 = new Button("Empty Slot", mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave3 = new Button("Empty Slot", mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave4 = new Button("Empty Slot", mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave5 = new Button("Empty Slot", mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     Saves = 1;
                     mSave1.ButtonReleased += LoadGameManagerScreen.OnSave1Released;
                     break;
                 case 2:
-                    mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave2 = new Button(mGameSaveStrings[1].Remove(mGameSaveStrings[1].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave3 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave4 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave5 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave2 = new Button(mGameSaveStrings[1].Remove(mGameSaveStrings[1].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave3 = new Button("Empty Slot", mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave4 = new Button("Empty Slot", mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave5 = new Button("Empty Slot", mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     Saves = 2;
                     mSave1.ButtonReleased += LoadGameManagerScreen.OnSave1Released;
                     mSave2.ButtonReleased += LoadGameManagerScreen.OnSave2Released;
                     break;
                 case 3:
-                    mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave2 = new Button(mGameSaveStrings[1].Remove(mGameSaveStrings[1].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave3 = new Button(mGameSaveStrings[2].Remove(mGameSaveStrings[2].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave4 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave5 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave2 = new Button(mGameSaveStrings[1].Remove(mGameSaveStrings[1].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave3 = new Button(mGameSaveStrings[2].Remove(mGameSaveStrings[2].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave4 = new Button("Empty Slot", mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave5 = new Button("Empty Slot", mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     Saves = 3;
                     mSave1.ButtonReleased += LoadGameManagerScreen.OnSave1Released;
                     mSave2.ButtonReleased += LoadGameManagerScreen.OnSave2Released;
                     mSave3.ButtonReleased += LoadGameManagerScreen.OnSave3Released;
                     break;
                 case 4:
-                    mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave2 = new Button(mGameSaveStrings[1].Remove(mGameSaveStrings[1].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave3 = new Button(mGameSaveStrings[2].Remove(mGameSaveStrings[2].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave4 = new Button(mGameSaveStrings[3].Remove(mGameSaveStrings[3].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave5 = new Button("Empty Slot", mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave2 = new Button(mGameSaveStrings[1].Remove(mGameSaveStrings[1].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave3 = new Button(mGameSaveStrings[2].Remove(mGameSaveStrings[2].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave4 = new Button(mGameSaveStrings[3].Remove(mGameSaveStrings[3].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave5 = new Button("Empty Slot", mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     Saves = 4;
                     mSave1.ButtonReleased += LoadGameManagerScreen.OnSave1Released;
                     mSave2.ButtonReleased += LoadGameManagerScreen.OnSave2Released;
@@ -229,11 +229,11 @@ namespace Singularity.Screen.ScreenClasses
                     mSave4.ButtonReleased += LoadGameManagerScreen.OnSave4Released;
                     break;
                 case 5:
-                    mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave2 = new Button(mGameSaveStrings[1].Remove(mGameSaveStrings[1].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave3 = new Button(mGameSaveStrings[2].Remove(mGameSaveStrings[2].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave4 = new Button(mGameSaveStrings[3].Remove(mGameSaveStrings[3].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave5 = new Button(mGameSaveStrings[4].Remove(mGameSaveStrings[4].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave2 = new Button(mGameSaveStrings[1].Remove(mGameSaveStrings[1].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave3 = new Button(mGameSaveStrings[2].Remove(mGameSaveStrings[2].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave4 = new Button(mGameSaveStrings[3].Remove(mGameSaveStrings[3].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave5 = new Button(mGameSaveStrings[4].Remove(mGameSaveStrings[4].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     Saves = 5;
                     mSave1.ButtonReleased += LoadGameManagerScreen.OnSave1Released;
                     mSave2.ButtonReleased += LoadGameManagerScreen.OnSave2Released;
@@ -244,15 +244,15 @@ namespace Singularity.Screen.ScreenClasses
                 default:
                     //Just load 5 saves, if by any chance there are more than 5 saves. It means that the player has added more saves and knows what he does...I hope...
                     //TODO: Spawn Textbox informing the player that there are only 5 slots but more saves
-                    mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave2 = new Button(mGameSaveStrings[1].Remove(mGameSaveStrings[1].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave3 = new Button(mGameSaveStrings[2].Remove(mGameSaveStrings[2].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave4 = new Button(mGameSaveStrings[3].Remove(mGameSaveStrings[3].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
-                    mSave5 = new Button(mGameSaveStrings[4].Remove(mGameSaveStrings[4].Length - 4), mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave1 = new Button(mGameSaveStrings[0].Remove(mGameSaveStrings[0].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave2 = new Button(mGameSaveStrings[1].Remove(mGameSaveStrings[1].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave3 = new Button(mGameSaveStrings[2].Remove(mGameSaveStrings[2].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave4 = new Button(mGameSaveStrings[3].Remove(mGameSaveStrings[3].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
+                    mSave5 = new Button(mGameSaveStrings[4].Remove(mGameSaveStrings[4].Length - 4), mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
                     Saves = 5;
                     break;
             }
-            mMBackButton = new Button(mMBackString, mMLibSans20, new Vector2(mMButtonLeftPadding, mMButtonTopPadding + 250), new Color(new Vector3(.9137f, .9058f, .8314f)));
+            mMBackButton = new Button(mBackString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 250), new Color(new Vector3(.9137f, .9058f, .8314f)));
             mMButtonList.Add(mMBackButton);
             mMButtonList.Add(mSave1);
             mMButtonList.Add(mSave2);
@@ -292,9 +292,9 @@ namespace Singularity.Screen.ScreenClasses
 
         public void TransitionTo(EScreen originScreen, EScreen targetScreen, GameTime gameTime)
         {
-            mMTargetScreen = targetScreen;
-            mMTransitionDuration = 350;
-            mMTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
+            mTargetScreen = targetScreen;
+            mTransitionDuration = 350;
+            mTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
             TransitionRunning = true;
         }
 
@@ -302,32 +302,32 @@ namespace Singularity.Screen.ScreenClasses
 
         private void OnBackHover(Object sender, EventArgs eventArgs)
         {
-            mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter + 250);
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 250);
         }
 
         private void OnSave1(Object sender, EventArgs eventArgs)
         {
-            mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter);
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter);
         }
 
         private void OnSave2(Object sender, EventArgs eventArgs)
         {
-            mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter + 50);
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 50);
         }
 
         private void OnSave3(Object sender, EventArgs eventArgs)
         {
-            mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter + 100);
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 100);
         }
 
         private void OnSave4(Object sender, EventArgs eventArgs)
         {
-            mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter + 150);
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 150);
         }
 
         private void OnSave5(Object sender, EventArgs eventArgs)
         {
-            mMSelectorPosition = new Vector2(mMMenuBoxPosition.X + 22, mMButtonTopPadding + mMButtonVerticalCenter + 200);
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 200);
         }
         #endregion
     }

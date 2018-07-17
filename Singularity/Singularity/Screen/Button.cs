@@ -41,7 +41,7 @@ namespace Singularity.Screen
         /// <summary>
         /// Opacity of the button useful for transitions or transparent buttons
         /// </summary>
-        public float Opacity { private get; set; }
+        public float Opacity { protected get; set; }
 
         // these events are sent out when they occur to an
         // instance of a button
