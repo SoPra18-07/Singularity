@@ -120,7 +120,7 @@ namespace Singularity.AI
 
             if (mCommandCenterKillCount >= mStructure.Count)
             {
-                mDirector.GetStoryManager.
+                mDirector.GetStoryManager.Lose();
             }
         }
 
