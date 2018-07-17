@@ -8,6 +8,8 @@
 
         public static bool mFowEnabled = true;
 
+        public static bool mHealthBarEnabled = true;
+
         /// <summary>
         /// Indicates whether the game is in debug mode or not
         /// </summary>

@@ -32,13 +32,6 @@ namespace Singularity.Levels
             var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, Ui);
             GameScreen.AddObject(settler);
 
-            var militaryunit = new MilitaryUnit(new Vector2(2800, 2800), Camera, ref mDirector, ref map, true);
-            GameScreen.AddObject(militaryunit);
-            var target = new Target(new Vector2(3500, 3500), Camera, ref mDirector, ref map);
-            var target2 = new Target(new Vector2(3500, 3500), Camera, ref mDirector, ref map);
-            GameScreen.AddObject(target);
-            GameScreen.AddObject(target2);
-
             // add a puddle
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2500), ref mDirector));
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2700), ref mDirector, false));
