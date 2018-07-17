@@ -122,8 +122,8 @@ namespace Singularity.Levels
             platform2.StoreResource(res12);
 
             GameScreen.AddObjects(genUnit);
-            GameScreen.AddObject(enemyUnit);
-            GameScreen.AddObject(enemyUnit2);
+            //GameScreen.AddObject(enemyUnit);
+            //GameScreen.AddObject(enemyUnit2);
 
             GameScreen.AddObject(milUnit);
             GameScreen.AddObject(settler);
