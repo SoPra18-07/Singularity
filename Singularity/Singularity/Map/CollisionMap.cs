@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using EpPathFinding.cs;
 using Microsoft.Xna.Framework;
@@ -30,6 +31,8 @@ namespace Singularity.Map
         /// </summary>
         private  BaseGrid mWalkableGrid;
 
+        private int mCounter;
+
         /// <summary>
         /// Creates a new Collision map used to store and update all colliding objects.
         /// </summary>
@@ -60,7 +63,7 @@ namespace Singularity.Map
                 }
             }
             mWalkableGrid = new StaticGrid(gridXLength, gridYLength, movableMatrix);
-
+            
         }
 
         public void ReloadContent()
@@ -140,6 +143,7 @@ namespace Singularity.Map
 
         public void RemoveCollider(ICollider toRemove)
         {
+            mCounter++;
 
             var oldBounds = mLookUpTable[toRemove.Id];
 
@@ -158,6 +162,63 @@ namespace Singularity.Map
                     mWalkableGrid.SetWalkableAt(x, y, true);
                 }
             }
+
+            // seems like a reasonable number. Grid Cleaning works.
+            if (mCounter > 100 * mLookUpTable.Count)
+            {
+                CleanGrid();
+                mCounter = 0;
+            }
+        }
+
+
+        private void CleanGrid()
+        {
+
+            for (var i = 0; i < mCollisionMap.GetLength(0); i++)
+            {
+                for (var j = 0; j < mCollisionMap.GetLength(1); j++)
+                {
+                    if (mCollisionMap[i, j].Collider.IsPresent())
+                    {
+                        if ((mCollisionMap[i, j].Collider.Get().Center / new Vector2(MapConstants.GridWidth, MapConstants.GridHeight)).Length() > 2)
+                        {
+                            mCollisionMap[i, j] = new CollisionNode(i, j, Optional<ICollider>.Of(null));
+                            mWalkableGrid.SetWalkableAt(i, j, true);
+                        }
+                    }
+                }
+            }
+
+        }
+
+
+        public bool CanPlaceCollider(ICollider tester)
+        {
+
+            var xConst = tester.AbsBounds.X / MapConstants.GridWidth;
+            var yConst = tester.AbsBounds.Y / MapConstants.GridHeight;
+
+            //add the given collider to the collision map.
+            for (var i = 0; i < tester.ColliderGrid.GetLength(1); i++)
+            {
+                for (var j = 0; j < tester.ColliderGrid.GetLength(0); j++)
+                {
+                    if (!tester.ColliderGrid[j, i])
+                    {
+                        continue;
+                    }
+
+                    var x = xConst + i;
+                    var y = yConst + j;
+                    if (!mWalkableGrid.IsWalkableAt(x, y) && mCollisionMap[x, y].Collider.IsPresent() && !Equals(mCollisionMap[x, y].Collider.Get(), tester))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+
         }
     }
 }
