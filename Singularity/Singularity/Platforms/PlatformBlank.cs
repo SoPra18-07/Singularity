@@ -628,7 +628,7 @@ namespace Singularity.Platforms
                     spritebatch.Draw(mPlatformBaseTexture,
                         AbsolutePosition,
                         null,
-                        mColorBase * transparency,
+                        (Friendly ? mColor : mColorBase) * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
