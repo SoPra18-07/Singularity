@@ -98,12 +98,13 @@ namespace Singularity.Map
         /// <param name="collider">The collider to be updated.</param>
         internal void UpdateCollider(ICollider collider)
         {
-            mLookUpTable[collider.Id] = collider.AbsBounds;
 
             if (mLookUpTable.ContainsKey(collider.Id) && collider.Moved)
             {
                 RemoveCollider(collider);
             }
+
+            mLookUpTable[collider.Id] = collider.AbsBounds;
 
             if (collider.ColliderGrid == null)
             {
@@ -119,10 +120,9 @@ namespace Singularity.Map
                         continue;
                     }
 
-                    var x = (int) (collider.AbsolutePosition.X / MapConstants.GridWidth) + i;
-                    var y = (int) (collider.AbsolutePosition.Y / MapConstants.GridHeight) + j;
+                    var x = collider.AbsBounds.X / MapConstants.GridWidth + i;
+                    var y = collider.AbsBounds.Y / MapConstants.GridHeight + j;
                     mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(collider));
-                    Optional<ICollider>.Of(collider);
                     mWalkableGrid.SetWalkableAt(x, y, false);
                 }
             }
@@ -140,19 +140,24 @@ namespace Singularity.Map
 
         public void RemoveCollider(ICollider toRemove)
         {
-            //Check if the location of an already existing collider needs to be updated.
-            
+
             var oldBounds = mLookUpTable[toRemove.Id];
 
-            for (var x = oldBounds.X / MapConstants.GridWidth; x <= (oldBounds.X + oldBounds.Width) / MapConstants.GridWidth; x++)
+            for (var i = 0; i < toRemove.ColliderGrid.GetLength(1); i++)
             {
-                for (var y = oldBounds.Y / MapConstants.GridHeight; y <= (oldBounds.Y + oldBounds.Height) / MapConstants.GridHeight; y++)
+                for (var j = 0; j < toRemove.ColliderGrid.GetLength(0); j++)
                 {
+                    if (!toRemove.ColliderGrid[j, i])
+                    {
+                        continue;
+                    }
+
+                    var x = oldBounds.X / MapConstants.GridWidth + i;
+                    var y = oldBounds.Y / MapConstants.GridHeight + j;
                     mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(null));
                     mWalkableGrid.SetWalkableAt(x, y, true);
                 }
             }
-
         }
     }
 }
