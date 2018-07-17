@@ -236,14 +236,10 @@ namespace Singularity.Screen.ScreenClasses
             {
                 CheckboxState = GlobalVariables.AudioMute
             };
-            var masterSlider = new Slider(new Vector2(mMenuBoxPosition.X + mContentPadding, mTopContentPadding + 90), 300, 30, mLibSans14) ;
-            var musicSlider = new Slider(new Vector2(mMenuBoxPosition.X + mContentPadding, mTopContentPadding + 150), 300, 30, mLibSans14);
-            var soundEffectSlider = new Slider(new Vector2(mMenuBoxPosition.X + mContentPadding, mTopContentPadding + 210), 30, 5, mLibSans14);
-            var uiSlider = new Slider(new Vector2(mMenuBoxPosition.X + mContentPadding, mTopContentPadding + 270), 300, 30, mLibSans14);
-
-            // Background volume and toggle
-            // Sound effect volume and toggle
-            // 3D sound effect toggle
+            var masterSlider = new Slider(new Vector2(mMenuBoxPosition.X + mContentPadding, mTopContentPadding + 90), 300, 20, mLibSans14) ;
+            var musicSlider = new Slider(new Vector2(mMenuBoxPosition.X + mContentPadding, mTopContentPadding + 150), 300, 20, mLibSans14);
+            var soundEffectSlider = new Slider(new Vector2(mMenuBoxPosition.X + mContentPadding, mTopContentPadding + 210), 300, 20, mLibSans14);
+            var uiSlider = new Slider(new Vector2(mMenuBoxPosition.X + mContentPadding, mTopContentPadding + 270), 300, 20, mLibSans14);
 
             mAudioCheckboxes.Add(muteButton);
             mAudioSliders.Add(masterSlider);
@@ -274,26 +270,6 @@ namespace Singularity.Screen.ScreenClasses
             #endregion
 
             Loaded = true;
-        }
-
-        private void OnUiSliderMoving(object source, EventArgs args, float percentMoved)
-        {
-            GlobalVariables.UiVolume = percentMoved;
-        }
-
-        private void OnSoundEffectSliderMoving(object source, EventArgs args, float percentMoved)
-        {
-            GlobalVariables.EffectsVolume = percentMoved;
-        }
-
-        private void OnMusicSliderMoving(object source, EventArgs args, float percentMoved)
-        {
-            GlobalVariables.MusicVolume = percentMoved;
-        }
-
-        private void OnMasterAudioMoving(object source, EventArgs args, float percentMoved)
-        {
-            GlobalVariables.MasterVolume = percentMoved;
         }
 
         public void Update(GameTime gametime)
@@ -559,6 +535,10 @@ namespace Singularity.Screen.ScreenClasses
         private void OnAudioReleased(Object sender, EventArgs eventArgs)
         {
             mScreenState = EOptionScreenState.Audio;
+            mAudioSliders[0].SetSliderPosition(GlobalVariables.MasterVolume);
+            mAudioSliders[1].SetSliderPosition(GlobalVariables.MusicVolume / GlobalVariables.MasterVolume);
+            mAudioSliders[2].SetSliderPosition(GlobalVariables.EffectsVolume / GlobalVariables.MasterVolume);
+            mAudioSliders[3].SetSliderPosition(GlobalVariables.UiVolume / GlobalVariables.MasterVolume);
         }
 
         /// <summary>
@@ -605,6 +585,26 @@ namespace Singularity.Screen.ScreenClasses
         private void OnMuteReleased(Object sender, EventArgs eventArgs)
         {
             MediaPlayer.IsMuted = !MediaPlayer.IsMuted;
+        }
+
+        private void OnUiSliderMoving(object source, EventArgs args, float percentMoved)
+        {
+            GlobalVariables.UiVolume = percentMoved;
+        }
+
+        private void OnSoundEffectSliderMoving(object source, EventArgs args, float percentMoved)
+        {
+            GlobalVariables.EffectsVolume = percentMoved;
+        }
+
+        private void OnMusicSliderMoving(object source, EventArgs args, float percentMoved)
+        {
+            GlobalVariables.MusicVolume = percentMoved;
+        }
+
+        private void OnMasterAudioMoving(object source, EventArgs args, float percentMoved)
+        {
+            GlobalVariables.MasterVolume = percentMoved;
         }
 
         #endregion

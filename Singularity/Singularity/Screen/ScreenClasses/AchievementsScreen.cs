@@ -59,6 +59,7 @@ namespace Singularity.Screen.ScreenClasses
             mTextColor = new Color(new Vector3(.9137f, .9058f, .8314f));
 
             mTabButtons = new List<Button>(1);
+            
 
             mWindowOpacity = 1;
         }

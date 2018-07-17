@@ -16,15 +16,15 @@
 
         internal static float MasterVolume
         {
-            get { return (AudioMute ? 1 : 0) * sMasterVolume; }
-            set { sMusicVolume = value; }
+            get { return (AudioMute ? 0 : 1) * sMasterVolume; }
+            set { sMasterVolume = value; }
         }
 
         internal static bool AudioMute { get; set; } = false;
 
         internal static float EffectsVolume
         {
-            get { return sEffectsVolume * MasterVolume * (AudioMute? 1 : 0); }
+            get { return sEffectsVolume * MasterVolume; }
             set { sEffectsVolume = value; }
         }
 

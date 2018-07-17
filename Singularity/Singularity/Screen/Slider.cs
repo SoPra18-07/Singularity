@@ -153,6 +153,17 @@ namespace Singularity.Screen
             }
         }
 
+        /// <summary>
+        /// Sets the position of the slider for percentage sliders.
+        /// </summary>
+        /// <param name="value">Takes a value between 0 and 1.</param>
+        public void SetSliderPosition(float value)
+        {
+            mCurrentX = mMin + value * (mMax - mMin);
+            mValuePrevious = mCurrentX;
+            mStringValue = ((int)(value * 100)).ToString();
+        }
+
 
         /// <summary>
         /// Update the values and placement of slider bar
