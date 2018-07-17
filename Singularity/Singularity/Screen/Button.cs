@@ -37,6 +37,8 @@ namespace Singularity.Screen
         private Rectangle mBounds;
         private bool mClicked;
         private bool mWithBorder;
+        private bool mImRelevant;
+        private bool mClicking;
 
         /// <summary>
         /// Opacity of the button useful for transitions or transparent buttons
@@ -303,31 +305,40 @@ namespace Singularity.Screen
                 }
 
                 // check if button has been left clicked
-                if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                    Mouse.GetState().X >= Position.X &&
-                    Mouse.GetState().X <= Position.X + Size.X &&
-                    Mouse.GetState().Y >= Position.Y &&
-                    Mouse.GetState().Y <= Position.Y + Size.Y)
-                {
-                    OnButtonClicked();
-                    mClicked = true;
-                }
-
-                // check if left button is also released within button bounds to send out ButtonReleased event
-
-                if (Mouse.GetState().LeftButton == ButtonState.Released && mClicked)
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed && !mClicking)
                 {
                     if (Mouse.GetState().X >= Position.X &&
                         Mouse.GetState().X <= Position.X + Size.X &&
                         Mouse.GetState().Y >= Position.Y &&
                         Mouse.GetState().Y <= Position.Y + Size.Y)
                     {
-                        OnButtonReleased();
+                        OnButtonClicked();
+                        mClicked = true;
                     }
-
-                    // reset to not clicked
-                    mClicked = false;
+                    mClicking = true;
                 }
+
+                // check if left button is also released within button bounds to send out ButtonReleased event
+
+                if (Mouse.GetState().LeftButton == ButtonState.Released)
+                {
+                    if (mClicked && mClicking)
+                    {
+                        if (Mouse.GetState().X >= Position.X &&
+                            Mouse.GetState().X <= Position.X + Size.X &&
+                            Mouse.GetState().Y >= Position.Y &&
+                            Mouse.GetState().Y <= Position.Y + Size.Y)
+                        {
+                            OnButtonReleased();
+                        }
+
+                        // reset to not clicked
+                        mClicked = false;
+                    }
+                    mClicked = false;
+                    mClicking = false;
+                }
+                
             }
         }
 
