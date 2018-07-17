@@ -45,9 +45,17 @@ namespace Singularity.PlatformActions
 
         public override void Execute()
         {
-            if (State != PlatformActionState.Active || !mReady) return;
+            if (State != PlatformActionState.Active || !mReady)
+            {
+                return;
+            }
+
             mCounter++;
-            if (mCounter % 240 != 0) return;
+            if (mCounter % 240 != 0)
+            {
+                return;
+            }
+
             mCounter = 0;
             CreateResource();
         }

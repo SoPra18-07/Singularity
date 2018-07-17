@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.Serialization;
+using EpPathFinding.cs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -214,7 +215,6 @@ namespace Singularity.Units
         {
             Rotate(Velocity * 50 + AbsolutePosition, true);
             base.Move();
-            
         }
 
         /// <summary>

@@ -643,11 +643,6 @@ namespace Singularity.AI.Behavior
             GetPrioritiyQueueByEnemyType(type).Add(minPrioUnit);
         }
 
-        private float GetRandomPriority()
-        {
-            return (float) mRandom.NextDouble();
-        }
-
         public void Kill(EnemyUnit unit)
         {
             var type = EEnemyType.Attack;

@@ -21,7 +21,7 @@ namespace Singularity.Units
         /// <param name="endPosition">Destination</param>
         /// <param name="map">Game map currently being used</param>
         /// <returns>A list of Vector2 waypoints that the object must traverse to get to its destination</returns>
-        internal Stack<Vector2> FindPath(Vector2 startPosition, Vector2 endPosition, ref Map.Map map)
+        internal Stack<Vector2> FindPath(Vector2 startPosition, Vector2 endPosition, ref Map.Map map, EndNodeUnWalkableTreatment endNodeUnWalkable = EndNodeUnWalkableTreatment.DISALLOW)
         {
             Debug.WriteLine("Searching for path");
             var startGridPos = VectorToGridPos(startPosition);
@@ -46,7 +46,7 @@ namespace Singularity.Units
                         startGridPos,
                         iDiagonalMovement: DiagonalMovement.OnlyWhenNoObstacles,
                         iEndPos: endGridPos,
-                        iAllowEndNodeUnWalkable: EndNodeUnWalkableTreatment.DISALLOW,
+                        iAllowEndNodeUnWalkable: endNodeUnWalkable,
                         iMode: HeuristicMode.MANHATTAN);
                 }
 

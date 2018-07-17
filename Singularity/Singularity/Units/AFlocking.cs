@@ -109,7 +109,7 @@ namespace Singularity.Units
             
             var goal = Vector2.Normalize(diff);
 
-            Velocity = Vector2.Normalize(Velocity + align + cohes * 0.75f + seper * 1.2f) * actualSpeed;
+            Velocity = Vector2.Normalize(Velocity * 2 + align + cohes * 0.75f + seper * 1.5f) * actualSpeed;
 
             Debug.WriteLine("unit: " + goal + ", " + align + ", " + cohes + ", " + seper + ", " + Velocity);
 

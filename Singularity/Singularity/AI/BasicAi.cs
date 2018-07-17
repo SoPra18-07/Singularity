@@ -39,6 +39,9 @@ namespace Singularity.AI
         [DataMember]
         private readonly List<Rectangle> mBoundsToDraw;
 
+        [DataMember]
+        private int mCommandCenterKillCount;
+
         public BasicAi(EaiDifficulty difficulty, ref Director director)
         {
             Difficulty = difficulty;
@@ -48,7 +51,6 @@ namespace Singularity.AI
 
             mStructure = new List<Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle>>();
 
-            //TODO: change the behavior with the difficulty
             mBehavior = new AdvancedAiBehavior(this, ref director);
         }
 
@@ -99,6 +101,13 @@ namespace Singularity.AI
         {
             foreach (var structure in mStructure)
             {
+                if (platform.Equals(structure.GetFirst().GetFirst()))
+                {
+                    mCommandCenterKillCount++;
+                    structure.GetFirst().GetSecond().Remove(platform);
+                    break;
+                }
+
                 if (!structure.GetFirst().GetSecond().Contains(platform))
                 {
                     continue;
@@ -106,6 +115,13 @@ namespace Singularity.AI
                 structure.GetFirst().GetSecond().Remove(platform);
                 return;
             }
+
+            if (mCommandCenterKillCount < mStructure.Count)
+            {
+                return;
+            }
+            mDirector.GetStoryManager.Win();
+
         }
 
         public void Kill(EnemyUnit unit)
