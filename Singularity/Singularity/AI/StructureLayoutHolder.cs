@@ -36,9 +36,8 @@ namespace Singularity.AI
 
             var index = rnd.Next(sAllStructures[difficulty].Length);
 
-            //var structure = sAllStructures[difficulty][index]; 
+            var structure = sAllStructures[difficulty][index]; 
 
-            var structure = sAllStructures[EaiDifficulty.Hard][1];
             // make sure to not take the same reference as in this sAllStructures dict. Otherwise the AI can't take the same structure more than once.
             // -> recreate every object and give that to the caller
 
