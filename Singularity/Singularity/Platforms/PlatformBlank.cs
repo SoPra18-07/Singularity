@@ -1283,7 +1283,7 @@ namespace Singularity.Platforms
             }
             ResetColor();
             //Only reregister the platforms if they are defense or production platforms
-            if (!mIsActive)
+            if (!mIsActive && (IsProduction() || IsDefense()))
             {
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this);
             }
