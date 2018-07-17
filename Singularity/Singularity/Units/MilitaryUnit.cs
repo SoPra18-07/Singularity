@@ -119,6 +119,7 @@ namespace Singularity.Units
         public void ReloadContent(ContentManager content, ref Director director, Camera camera, ref Map.Map map)
         {
             ReloadContent(ref director, camera, ref map);
+            mSoundId = mDirector.GetSoundManager.CreateSoundInstance("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
