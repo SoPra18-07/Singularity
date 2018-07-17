@@ -26,9 +26,9 @@ namespace Singularity.AI
         private const int MediumStructureCount = 1;
         private const int HardStructureCount = 0;
 
-        private static Dictionary<EaiDifficulty2, Triple<CommandCenter, List<PlatformBlank>, List<Road>>[]> sAllStructures;
+        private static Dictionary<EaiDifficulty, Triple<CommandCenter, List<PlatformBlank>, List<Road>>[]> sAllStructures;
 
-        public static Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle> GetRandomStructureAtCenter(float x, float y, EaiDifficulty2 difficulty, ref Director director)
+        public static Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle> GetRandomStructureAtCenter(float x, float y, EaiDifficulty difficulty, ref Director director)
         {
             var rnd = new Random();
 
@@ -112,7 +112,7 @@ namespace Singularity.AI
 
             return tempRect;
         }
-        public static Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle> GetStructureOnMap(EaiDifficulty2 difficulty, ref Director director)
+        public static Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle> GetStructureOnMap(EaiDifficulty difficulty, ref Director director)
         {
             while (true)
             {
@@ -134,11 +134,11 @@ namespace Singularity.AI
         /// <param name="director"></param>
         public static void Initialize(ref Director director)
         {
-            sAllStructures = new Dictionary<EaiDifficulty2, Triple<CommandCenter, List<PlatformBlank>, List<Road>>[]>();
+            sAllStructures = new Dictionary<EaiDifficulty, Triple<CommandCenter, List<PlatformBlank>, List<Road>>[]>();
 
-            sAllStructures[EaiDifficulty2.Easy] = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>[EasyStructureCount];
-            sAllStructures[EaiDifficulty2.Medium] = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>[MediumStructureCount];
-            sAllStructures[EaiDifficulty2.Hard] = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>[HardStructureCount];
+            sAllStructures[EaiDifficulty.Easy] = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>[EasyStructureCount];
+            sAllStructures[EaiDifficulty.Medium] = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>[MediumStructureCount];
+            sAllStructures[EaiDifficulty.Hard] = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>[HardStructureCount];
 
             #region 1. Easy Structure
             //One Spawner then one Command Center then one Sentinal laser tower in a line
@@ -159,7 +159,7 @@ namespace Singularity.AI
 
             var struct1 = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>(struct1CommandCenter, struct1Platforms, struct1Roads);
 
-            sAllStructures[EaiDifficulty2.Easy][0] = struct1;
+            sAllStructures[EaiDifficulty.Easy][0] = struct1;
 
             #endregion
 
@@ -189,7 +189,7 @@ namespace Singularity.AI
 
             var struct2 = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>(struct2CommandCenter, struct2Platforms, struct2Roads);
 
-            sAllStructures[EaiDifficulty2.Easy][1] = struct2;
+            sAllStructures[EaiDifficulty.Easy][1] = struct2;
 
             #endregion
 
@@ -213,7 +213,7 @@ namespace Singularity.AI
 
             var struct3E = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>(struct3ECommandCenter, struct3EPlatforms, struct3ERoads);
 
-            sAllStructures[EaiDifficulty2.Easy][2] = struct3E;
+            sAllStructures[EaiDifficulty.Easy][2] = struct3E;
 
             #endregion
 
@@ -253,7 +253,7 @@ namespace Singularity.AI
 
             var struct1M = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>(struct1MCommandCenter, struct1MPlatforms, struct1MRoads);
 
-            sAllStructures[EaiDifficulty2.Medium][0] = struct1M;
+            sAllStructures[EaiDifficulty.Medium][0] = struct1M;
 
 
             #endregion
