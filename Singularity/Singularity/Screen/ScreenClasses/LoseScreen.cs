@@ -59,7 +59,7 @@ namespace Singularity.Screen.ScreenClasses
 
             if (mCounter >= 100 && mCounter < 250)
             {
-                spriteBatch.DrawString(mLibSans72, "Defeat", new Vector2((mScreenSize.X - mLibSans72.MeasureString("Defeat").X) / 2, 100), Color.DarkRed);
+                spriteBatch.DrawString(mLibSans72, "Defeat", new Vector2((mScreenSize.X - mLibSans72.MeasureString("Defeat").X) / 2, 100), Color.Red);
 
                 spriteBatch.Draw(mSingularityLogo, new Vector2((mScreenSize.X - mSingularityLogo.Width) / 2, (mScreenSize.Y - mSingularityLogo.Height) / 2), Color.White);
             }
@@ -67,7 +67,7 @@ namespace Singularity.Screen.ScreenClasses
             {
                 spriteBatch.Draw(mSingularityLogo, new Vector2((mScreenSize.X - mSingularityLogo.Width) / 2, (mScreenSize.Y - mSingularityLogo.Height) / 2), new Color(0.2f, 0.2f, 0.2f, 0.1f));
 
-                spriteBatch.DrawString(mLibSans72, "Defeat", new Vector2((mScreenSize.X - mLibSans72.MeasureString("Defeat").X) / 2, 100), Color.DarkRed);
+                spriteBatch.DrawString(mLibSans72, "Defeat", new Vector2((mScreenSize.X - mLibSans72.MeasureString("Defeat").X) / 2, 100), Color.Red);
 
                 spriteBatch.Draw(mSingularityText, new Vector2((mScreenSize.X - mSingularityText.Width) / 2, (mScreenSize.Y - mSingularityText.Height) / 2.5f), Color.White);
             }
