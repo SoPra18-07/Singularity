@@ -368,6 +368,7 @@ namespace Singularity.Platforms
 
         public virtual void ReloadContent(ContentManager content, ref Director dir)
         {
+            base.ReloadContent(ref dir);
             foreach (var resource in mResources)
             {
                 resource.ReloadContent(ref dir);
@@ -1194,8 +1195,8 @@ namespace Singularity.Platforms
 
             mDirector.GetMilitaryManager.RemovePlatform(this);
             mInfoBox = null;
-            //This is needed so this code is not called multiple times
             mAllGenUnits = null;
+            //This is needed so this code is not called multiple times
             HasDieded = true;
             return true;
         }

@@ -105,8 +105,9 @@ namespace Singularity.Screen
             mLogisticsSlider.SetCurrentPage(mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).GetJobCount(JobType.Logistics));
         }
 
-        public void Initialize()
+        public void Initialize(int graphid)
         {
+            mCurrentGraphid = graphid;
             mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).Register(this);
             Refresh();
         }

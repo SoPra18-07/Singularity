@@ -58,6 +58,13 @@ namespace Singularity.Platforms
             }
         }
 
+        public override bool Die()
+        {
+            mShootingTarget = null;
+            mDefenseAction = null;
+            return base.Die();
+        }
+
         public override void Update(GameTime time)
         {
             base.Update(time);

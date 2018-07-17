@@ -63,6 +63,7 @@ namespace Singularity.Resources
 
         public new void ReloadContent(ref Director dir)
         {
+            base.ReloadContent(ref dir);
             mDirector = dir;
         }
 

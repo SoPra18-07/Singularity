@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Singularity.Exceptions;
 using Singularity.PlatformActions;
 using Singularity.Platforms;
 using Singularity.Screen;
@@ -153,6 +154,23 @@ namespace Singularity.Manager
 
             // update UI by "calling all graphs" - see description in UIController
             mUserInterfaceController.SplitGraph(oldgraphid);
+        }
+
+        /// <summary>
+        /// Needed to prevent the sliderhandler from crashing while deserializing.
+        /// </summary>
+        /// <returns>a valid graphid if theres a DM, 0 else</returns>
+        public int GetSomeId()
+        {
+            foreach (var pair in mDMs)
+            {
+                if (pair.Value != null)
+                {
+                    return pair.Key;
+                }
+            }
+
+            return 0;
         }
 
         public DistributionManager GetManager(int graphid)

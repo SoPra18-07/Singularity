@@ -127,6 +127,7 @@ namespace Singularity.Units
 
         internal void ReloadContent(ref Director director, ContentManager content)
         {
+            base.ReloadContent(ref director);
             if (Carrying.IsPresent())
             {
                 Carrying.Get().ReloadContent(ref director);
@@ -471,7 +472,10 @@ namespace Singularity.Units
 
                 CurrentNode = mNodeQueue.Dequeue();
 
-                ((PlatformBlank) CurrentNode)?.AddGeneralUnit(this);
+                if ((PlatformBlank)CurrentNode != null && !((PlatformBlank)CurrentNode).HasDieded)
+                {
+                    ((PlatformBlank)CurrentNode)?.AddGeneralUnit(this);
+                }
             }
 
             if (CurrentNode == null)
@@ -486,7 +490,10 @@ namespace Singularity.Units
 
                 CurrentNode = mNodeQueue.Dequeue();
 
-                ((PlatformBlank)CurrentNode).AddGeneralUnit(this);
+                if (!((PlatformBlank) CurrentNode).HasDieded)
+                {
+                    ((PlatformBlank)CurrentNode).AddGeneralUnit(this);
+                }
             }
 
             // finally move to the current node.
