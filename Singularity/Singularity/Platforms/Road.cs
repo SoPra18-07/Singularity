@@ -137,7 +137,7 @@ namespace Singularity.Platforms
             return true;
         }
 
-        public void ReloadContent(ref Director director)
+        public new void ReloadContent(ref Director director)
         {
             base.ReloadContent(ref director);
             mDirector = director;

@@ -70,7 +70,7 @@ namespace Singularity.Nature
             mDrawRock = new bool[14, 18];
         }
 
-        public void ReloadContent(ref Director dir)
+        public new void ReloadContent(ref Director dir)
         {
             base.ReloadContent(ref dir);
             ColliderGrid = new[,]

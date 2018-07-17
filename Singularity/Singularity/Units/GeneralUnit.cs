@@ -239,7 +239,11 @@ namespace Singularity.Units
                 }
                 //This means we arrived at the point we want to leave the Resource and consider our work done
                 if (!mTask.End.IsPresent() || !CurrentNode.Equals(mTask.End.Get()) ||
-                    !ReachedTarget(mTask.End.Get().Center)) return;
+                    !ReachedTarget(mTask.End.Get().Center))
+                {
+                    return;
+                }
+
                 if (Carrying.IsPresent())
                 {
                     var res = Carrying.Get();
@@ -287,7 +291,10 @@ namespace Singularity.Units
                             mAssigned = true;
                         }
                         if (mAssigned)
+                        {
                             mTask.End.Get().Produce();
+                        }
+
                         RegulateMovement();
                         break;
 
@@ -453,7 +460,9 @@ namespace Singularity.Units
             var movementVector = Vector2.Multiply(Geometry.NormalizeVector(distance), Speed);
             var dist = (float) Geometry.Length(distance);
             if (dist < 50)
+            {
                 movementVector = Vector2.Multiply(movementVector, dist / 50f);
+            }
 
             AbsolutePosition = AbsolutePosition + movementVector;
         }
@@ -576,7 +585,11 @@ namespace Singularity.Units
         /// <param name="id"></param>
         public void Kill(int id)
         {
-            if (!mTask.Contains(id)) return;
+            if (!mTask.Contains(id))
+            {
+                return;
+            }
+
             switch (Job)
             {
                 case JobType.Defense:
