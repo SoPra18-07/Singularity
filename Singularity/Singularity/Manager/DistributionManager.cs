@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
+using Microsoft.Xna.Framework;
 using Singularity.Exceptions;
 using Singularity.Graph;
 using Singularity.PlatformActions;
@@ -92,6 +93,7 @@ namespace Singularity.Manager
             Console.Out.WriteLine(mProdPlatforms[0].GetFirst().mType + " " + mProdPlatforms[0].GetSecond());
         }
 
+
         /// <summary>
         /// Deactivates tasks requested by a certain action.
         /// </summary>
@@ -111,6 +113,7 @@ namespace Singularity.Manager
         /// <returns>The platform with the desired resource, if it exists, null if not</returns>
         private PlatformBlank FindBegin(PlatformBlank destination, EResourceType res)
         {
+
             var visited = new List<PlatformBlank>();
 
             var currentlevel = new List<PlatformBlank>();
@@ -118,13 +121,11 @@ namespace Singularity.Manager
 
             var nextlevel = new List<PlatformBlank>();
 
-
             while (currentlevel.Count > 0)
             {
                 //Create the next level of BFS. While doing this, check if any platform has the resource you want. If yes return it.
                 foreach (var platform in currentlevel)
                 {
-
                     foreach (var edge in platform.GetInwardsEdges())
                     {
                         var candidatePlatform = (PlatformBlank)edge.GetParent();
@@ -392,7 +393,7 @@ namespace Singularity.Manager
         /// <param name="job">Its Job</param>
         /// <param name="assignedAction">The PlatformAction the unit is eventually assigned to</param>
         /// <returns></returns>
-        public Task RequestNewTask(GeneralUnit unit, JobType job, Optional<IPlatformAction> assignedAction)
+        internal Task RequestNewTask(GeneralUnit unit, JobType job, Optional<IPlatformAction> assignedAction)
         {
             var nodes = new List<INode>();
             Task task;
