@@ -83,7 +83,7 @@ namespace Singularity.Platforms
             spriteBatch.Draw(mPlatformBaseTexture,
                 Vector2.Add(AbsolutePosition, new Vector2(0, mType == EStructureType.Blank ? 0 : 78)),
                 null,
-                mColorBase * transparency,
+                (Friendly? mColor : mColorBase) * transparency,
                 0f,
                 Vector2.Zero,
                 1f,
