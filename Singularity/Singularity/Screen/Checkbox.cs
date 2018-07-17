@@ -44,17 +44,17 @@ namespace Singularity.Screen
             base.Draw(spriteBatch);
             spriteBatch.DrawRectangle(mCheckboxPosition,
                 mCheckboxSize,
-                mColor);
+                mColor * Opacity);
             if (CheckboxState)
             {
                 spriteBatch.DrawLine(Vector2.Add(mCheckboxPosition, new Vector2(1, 0)),
                     Vector2.Add(Vector2.Add(mCheckboxPosition, mCheckboxSize), new Vector2(1, 0)),
-                    mColor);
+                    mColor * Opacity);
                 spriteBatch.DrawLine(mCheckboxPosition.X + mCheckboxSize.X + 2,
                     mCheckboxPosition.Y,
                     mCheckboxPosition.X + 2,
                     mCheckboxPosition.Y + mCheckboxSize.Y,
-                    mColor);
+                    mColor * Opacity);
             }
         }
 

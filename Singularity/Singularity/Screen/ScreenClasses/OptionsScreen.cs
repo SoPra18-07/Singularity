@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using Singularity.Libraries;
 using Singularity.Manager;
+using Singularity.Property;
 using Singularity.Utils;
 
 namespace Singularity.Screen.ScreenClasses
@@ -75,7 +76,8 @@ namespace Singularity.Screen.ScreenClasses
         private readonly List<Button> mTabButtons = new List<Button>(5);
 
         // Graphics tab
-        private readonly List<Button> mGraphicsButtons = new List<Button>(4);
+        private readonly List<Checkbox> mGraphicCheckboxes = new List<Checkbox>(1);
+        private readonly List<Button> mGraphicsButtons = new List<Button>(3);
 
         // pre-apply state save basically
         private int mWidth;
@@ -83,12 +85,8 @@ namespace Singularity.Screen.ScreenClasses
         private bool mTruth;
 
         // Audio tab
-        // todo add the following:
-        private readonly List<Button> mAudioButtons = new List<Button>(1);
+        private readonly List<Checkbox> mAudioCheckboxes = new List<Checkbox>(1);
         private readonly List<Slider> mAudioSliders = new List<Slider>(4);
-
-        // Background volume and toggle
-        // Sound effect volume and toggle
         // 3D sound effect toggle
 
         // Transitions variables
@@ -107,8 +105,8 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="screenResolution">Screen resolution used for scaling.</param>
         /// <param name="screenResolutionChanged">True if the screen resolution has changed.</param>
         /// <param name="game">Game1 class passed on to options to allow changing of options.</param>
-        /// <param name="screenState">The state that the screen should be initialized to.</param>
-        public OptionsScreen(Vector2 screenResolution, bool screenResolutionChanged, Game1 game, EOptionScreenState screenState = EOptionScreenState.Gameplay)
+        /// 
+        public OptionsScreen(Vector2 screenResolution, bool screenResolutionChanged, Game1 game)
         {
             // scaling of all positions according to viewport size
             mScreenResolution = screenResolution;
@@ -131,7 +129,7 @@ namespace Singularity.Screen.ScreenClasses
 
             mTextColor = new Color(new Vector3(.9137f, .9058f, .8314f));
 
-            mScreenState = EOptionScreenState.Gameplay;
+            mScreenState = EOptionScreenState.Graphics;
             mGame = game;
 
             mMenuOpacity = screenResolutionChanged ? 1 : 0;
@@ -168,8 +166,8 @@ namespace Singularity.Screen.ScreenClasses
 
             #region Tab Buttons
 
-            var gameplayButton = new Button(gameplayString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding), mTextColor);
-            var graphicsButton = new Button(graphicsString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding + 40), mTextColor);
+            var graphicsButton = new Button(graphicsString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding), mTextColor);
+            var gameplayButton = new Button(gameplayString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding + 40), mTextColor);
             var audioButton = new Button(audioString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding + 80), mTextColor);
             var backButton = new Button(backString, mLibSans20, new Vector2(mTabPadding, mTopContentPadding + 160), mTextColor);
 
@@ -188,8 +186,7 @@ namespace Singularity.Screen.ScreenClasses
 
             #region Gameplay Settings
 
-            // TODO figure out what settings can be implemented in here
-
+            // todo difficulty button
             #endregion
 
             #region Graphics Settings
@@ -229,7 +226,7 @@ namespace Singularity.Screen.ScreenClasses
 
             var saveButton = new Button(saveChangesString, mLibSans20, new Vector2(mContentPadding, mTopContentPadding + 160), mTextColor);
 
-            mGraphicsButtons.Add(fullScreen);
+            mGraphicCheckboxes.Add(fullScreen);
             mGraphicsButtons.Add(saveButton);
             mGraphicsButtons.Add(resolutionDown);
             mGraphicsButtons.Add(resolutionUp);
@@ -244,17 +241,24 @@ namespace Singularity.Screen.ScreenClasses
 
             #region Audio Settings
 
-            var muteButton = new Checkbox(muteString, mLibSans20, new Vector2(mContentPadding, mTopContentPadding), new Vector2(mContentPadding + mLibSans20.MeasureString("Mute        ").X, mTopContentPadding), mTextColor);
-            var masterSlider = new Slider(new Vector2(mContentPadding, mTopContentPadding + 90), 300, 5, mLibSans14);
-            var musicSlider = new Slider(new Vector2(mContentPadding, mTopContentPadding + 150), 300, 5, mLibSans14);
-            var soundEffectSlider = new Slider(new Vector2(mContentPadding, mTopContentPadding + 210), 300, 5, mLibSans14);
-            var uiSlider = new Slider(new Vector2(mContentPadding, mTopContentPadding + 270), 300, 5, mLibSans14);
+            var muteButton = new Checkbox(muteString,
+                mLibSans20,
+                new Vector2(mContentPadding, mTopContentPadding),
+                new Vector2(mContentPadding + mLibSans20.MeasureString("Mute        ").X, mTopContentPadding),
+                mTextColor)
+            {
+                CheckboxState = GlobalVariables.AudioMute
+            };
+            var masterSlider = new Slider(new Vector2(mContentPadding, mTopContentPadding + 90), 300, 30, mLibSans14) ;
+            var musicSlider = new Slider(new Vector2(mContentPadding, mTopContentPadding + 150), 300, 30, mLibSans14);
+            var soundEffectSlider = new Slider(new Vector2(mContentPadding, mTopContentPadding + 210), 30, 5, mLibSans14);
+            var uiSlider = new Slider(new Vector2(mContentPadding, mTopContentPadding + 270), 300, 30, mLibSans14);
 
             // Background volume and toggle
             // Sound effect volume and toggle
             // 3D sound effect toggle
 
-            mAudioButtons.Add(muteButton);
+            mAudioCheckboxes.Add(muteButton);
             mAudioSliders.Add(masterSlider);
             mAudioSliders.Add(musicSlider);
             mAudioSliders.Add(soundEffectSlider);
@@ -275,10 +279,34 @@ namespace Singularity.Screen.ScreenClasses
             saveButton.ButtonReleased += OnSaveReleased;
 
             muteButton.ButtonReleased += OnMuteReleased;
+            masterSlider.SliderMoving += OnMasterAudioMoving;
+            musicSlider.SliderMoving += OnMusicSliderMoving;
+            soundEffectSlider.SliderMoving += OnSoundEffectSliderMoving;
+            uiSlider.SliderMoving += OnUiSliderMoving;
 
             #endregion
 
             Loaded = true;
+        }
+
+        private void OnUiSliderMoving(object source, EventArgs args, float percentMoved)
+        {
+            
+        }
+
+        private void OnSoundEffectSliderMoving(object source, EventArgs args, float percentMoved)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnMusicSliderMoving(object source, EventArgs args, float percentMoved)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnMasterAudioMoving(object source, EventArgs args, float percentMoved)
+        {
+            Debug.WriteLine("Master audio slider value: " + percentMoved);
         }
 
         /// <summary>
@@ -305,17 +333,16 @@ namespace Singularity.Screen.ScreenClasses
 
                     break;
                 case EOptionScreenState.Graphics:
-                    foreach (var button in mGraphicsButtons.GetRange(0, 2))
-                    {
-                        button.Update(gametime);
-                        button.Opacity = mMenuOpacity;
-                    }
+                    mGraphicsButtons[0].Update(gametime);
+                    mGraphicsButtons[0].Opacity = mMenuOpacity;
 
-
+                    mGraphicCheckboxes[0].Update(gametime);
+                    mGraphicCheckboxes[0].Opacity = mMenuOpacity;
+                    
                     // makes it impossible to change resolution while full screened
                     if (!mGame.mGraphics.IsFullScreen)
                     {
-                        foreach (Button button in mGraphicsButtons.GetRange(2, 2))
+                        foreach (var button in mGraphicsButtons.GetRange(1, 2))
                         {
                             button.Update(gametime);
                             button.Opacity = mMenuOpacity;
@@ -334,7 +361,7 @@ namespace Singularity.Screen.ScreenClasses
 
                     break;
                 case EOptionScreenState.Audio:
-                    foreach (Button button in mAudioButtons)
+                    foreach (var button in mAudioCheckboxes)
                     {
                         button.Update(gametime);
                         button.Opacity = mMenuOpacity;
@@ -381,7 +408,7 @@ namespace Singularity.Screen.ScreenClasses
                 color: mTextColor * mMenuOpacity);
 
             // tab buttons
-            foreach (Button button in mTabButtons)
+            foreach (var button in mTabButtons)
             {
                 button.Draw(spriteBatch);
             }
@@ -394,14 +421,12 @@ namespace Singularity.Screen.ScreenClasses
                     break;
                 case EOptionScreenState.Graphics:
                     // Don't allow resolution changes when full screen.
-                    foreach (var button in mGraphicsButtons.GetRange(0, 2))
-                    {
-                        button.Draw(spriteBatch);
-                    }
+                    mGraphicCheckboxes[0].Draw(spriteBatch);
+                    mGraphicsButtons[0].Draw(spriteBatch);
 
                     if (!mGame.mGraphics.IsFullScreen)
                     {
-                        foreach (var button in mGraphicsButtons.GetRange(2, 2))
+                        foreach (var button in mGraphicsButtons.GetRange(1, 2))
                         {
                             button.Draw(spriteBatch);
                         }
@@ -428,7 +453,7 @@ namespace Singularity.Screen.ScreenClasses
                     
                     break;
                 case EOptionScreenState.Audio:
-                    foreach (var button in mAudioButtons)
+                    foreach (var button in mAudioCheckboxes)
                     {
                         button.Draw(spriteBatch);
                     }
@@ -438,10 +463,10 @@ namespace Singularity.Screen.ScreenClasses
                         slider.Draw(spriteBatch);
                     }
 
-                    spriteBatch.DrawString(mLibSans20, "Master Volume", new Vector2(mContentPadding, mTopContentPadding + 50), mTextColor);
-                    spriteBatch.DrawString(mLibSans20, "Music Volume", new Vector2(mContentPadding, mTopContentPadding + 110), mTextColor);
-                    spriteBatch.DrawString(mLibSans20, "Effects Volume", new Vector2(mContentPadding, mTopContentPadding + 170), mTextColor);
-                    spriteBatch.DrawString(mLibSans20, "UI Volume", new Vector2(mContentPadding, mTopContentPadding + 230), mTextColor);
+                    spriteBatch.DrawString(mLibSans20, "Master Volume", new Vector2(mContentPadding, mTopContentPadding + 50), mTextColor * mMenuOpacity);
+                    spriteBatch.DrawString(mLibSans20, "Music Volume", new Vector2(mContentPadding, mTopContentPadding + 110), mTextColor * mMenuOpacity);
+                    spriteBatch.DrawString(mLibSans20, "Effects Volume", new Vector2(mContentPadding, mTopContentPadding + 170), mTextColor * mMenuOpacity);
+                    spriteBatch.DrawString(mLibSans20, "UI Volume", new Vector2(mContentPadding, mTopContentPadding + 230), mTextColor * mMenuOpacity);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

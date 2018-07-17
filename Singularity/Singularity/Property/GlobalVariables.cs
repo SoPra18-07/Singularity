@@ -5,6 +5,7 @@
         private static float sEffectsVolume = 1f;
         private static float sMusicVolume = 1f;
         private static float sUiVolume = 1f;
+        private static float sMasterVolume = 1f;
 
         public static bool mFowEnabled = true;
 
@@ -13,11 +14,17 @@
         /// </summary>
         internal static bool DebugState { get; set; } = false;
 
-        internal static float MasterVolume { get; set; } = 1f;
+        internal static float MasterVolume
+        {
+            get { return (AudioMute ? 1 : 0) * sMasterVolume; }
+            set { sMusicVolume = value; }
+        }
+
+        internal static bool AudioMute { get; set; } = false;
 
         internal static float EffectsVolume
         {
-            get { return sEffectsVolume * MasterVolume; }
+            get { return sEffectsVolume * MasterVolume * (AudioMute? 1 : 0); }
             set { sEffectsVolume = value; }
         }
 

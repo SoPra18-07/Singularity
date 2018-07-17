@@ -390,7 +390,7 @@ namespace Singularity.Screen
                     }
 
                     // draws slider bar
-                    spriteBatch.DrawLine(Position, Size.X, 0f, Color.White * 0.6f, 2);
+                    spriteBatch.DrawLine(Position, Size.X, 0f, Color.White * 0.6f * Opacity, 2);
 
                     // draws slider
                     spriteBatch.StrokedRectangle(
