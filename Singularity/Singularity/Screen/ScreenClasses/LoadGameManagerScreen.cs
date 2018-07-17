@@ -131,7 +131,6 @@ namespace Singularity.Screen.ScreenClasses
                     mName = XSerializer.GetSaveNames()[4];
                     break;
                 case "ReturnToMainMenu":
-                    Console.Out.WriteLine("screenadded");
                     mScreenManager.AddScreen(new MainMenuManagerScreen(sViewportResolution, mScreenManager, true, mGame));
                     break;
                 default:
