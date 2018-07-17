@@ -265,7 +265,7 @@ namespace Singularity.Platforms
 
             // Sound Effects
             mDestroyPlatSoundId = mDirector.GetSoundManager.CreateSoundInstance("DestroyPlat", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
-            mPowerOnSoundId = mDirector.GetSoundManager.CreateSoundInstance("PowerOff",
+            mPowerOnSoundId = mDirector.GetSoundManager.CreateSoundInstance("PowerDown",
                 Center.X,
                 Center.Y,
                 .1f,
