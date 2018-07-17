@@ -36,10 +36,7 @@ namespace Singularity.Levels
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2500), ref mDirector));
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2700), ref mDirector, false));
 
-            for (int i = 0; i < 100; i++)
-            {
-                GameScreen.AddObject(new MilitaryFast(new Vector2(3000, 3000), Camera, ref mDirector, ref map));
-            }
+            GameScreen.AddObject(new EnemyFast(new Vector2(3000, 3500), Camera, ref mDirector, ref map));
 
             //TESTMETHODS HERE ====================================
         }
