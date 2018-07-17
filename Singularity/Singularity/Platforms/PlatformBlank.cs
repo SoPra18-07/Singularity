@@ -705,8 +705,8 @@ namespace Singularity.Platforms
             // only if the platform is friendly and the mouse is hovering over it is the info box shown
             if (Friendly && Bounds.Contains(new Vector2(Mouse.GetState().X, Mouse.GetState().Y)))
             {
-                mInfoBox.UpdateString(GetResourceString());
-                mInfoBox.Draw(spritebatch);
+                mInfoBox?.UpdateString(GetResourceString());
+                mInfoBox?.Draw(spritebatch);
             }
 
             // also draw the resources on top
