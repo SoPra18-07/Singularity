@@ -22,7 +22,7 @@ namespace Singularity.AI.Structures
     /// in order to produce military units
     /// </summary>
     [DataContract]
-    public class Spawner : PlatformBlank
+    public sealed class Spawner : PlatformBlank
     {
         [DataMember]
         private readonly Vector2 mPosition;

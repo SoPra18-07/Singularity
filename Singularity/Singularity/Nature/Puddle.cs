@@ -77,7 +77,7 @@ namespace Singularity.Nature
         }
 
 
-        public void ReloadContent(ref Director dir)
+        public new void ReloadContent(ref Director dir)
         {
             base.ReloadContent(ref dir);
             if (mBigPuddle)

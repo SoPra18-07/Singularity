@@ -122,9 +122,17 @@ namespace Singularity.PlatformActions
 
         public override void Execute()
         {
-            if (!mPlatform.PlatformHasSpace() || State != PlatformActionState.Active) return;
+            if (!mPlatform.PlatformHasSpace() || State != PlatformActionState.Active)
+            {
+                return;
+            }
+
             mCounter++;
-            if (mCounter % 240 != 0) return;
+            if (mCounter % 240 != 0)
+            {
+                return;
+            }
+
             mCounter = 0;
             CreateResource();
         }

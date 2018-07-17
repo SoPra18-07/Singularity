@@ -755,7 +755,11 @@ namespace Singularity.Platforms
             }
 
             // manage updating of values in the UI
-            if (!IsSelected || mDataSent) return;
+            if (!IsSelected || mDataSent)
+            {
+                return;
+            }
+
             // update previous values
             mPrevResources = GetPlatformResources();
             mPrevUnitAssignments = GetAssignedUnits();
@@ -1325,7 +1329,11 @@ namespace Singularity.Platforms
             // TODO: remove this or change it to something more appropriately, this is used by @Ativelox for
             // TODO: debugging purposes to easily see which platforms are currently deactivated
             mColor = Color.Green;
-            if (!mIsActive) return;
+            if (!mIsActive)
+            {
+                return;
+            }
+
             //Only unregister if this platform is a defense or production platform
             if (IsDefense())
             {

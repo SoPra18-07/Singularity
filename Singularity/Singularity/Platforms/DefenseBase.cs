@@ -89,7 +89,11 @@ namespace Singularity.Platforms
                 1f,
                 SpriteEffects.None,
                 LayerConstants.BasePlatformLayer);
-            if (mType == EStructureType.Blank) return;
+            if (mType == EStructureType.Blank)
+            {
+                return;
+            }
+
             // then draw what's on top of that
             spriteBatch.Draw(mPlatformSpriteSheet,
                 AbsolutePosition,
