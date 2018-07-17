@@ -234,7 +234,7 @@ namespace Singularity.Nature
                                     mDrawSize.X / 18,
                                     20,
                                     (mDrawAngle[j, i] % 2 == 0) ? Color.DimGray * .9f : Color.Gray * .9f,
-                                    1f);
+                                    .45f);
                             }
 
                             // otherwise draw a square
@@ -247,7 +247,7 @@ namespace Singularity.Nature
                                         (int)(mDrawSize.X / 8)),
                                     (mDrawAngle[j, i] % 2 == 0) ? Color.DimGray * .8f : Color.Gray * .8f,
                                     mDrawAngle[j, i] * .01f,
-                                    1f);
+                                    .45f);
                             }
                         }
                     }

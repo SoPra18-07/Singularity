@@ -32,6 +32,8 @@ namespace Singularity.AI
         {
             var rnd = new Random();
 
+            // everything thats happening below here is to adjust the position of the taken structure to its new center.
+
             var index = rnd.Next(sAllStructures[difficulty].Length);
 
             var structure = sAllStructures[difficulty][index];

@@ -17,7 +17,7 @@ namespace Singularity.Units
     /// <inheritdoc cref="ICollider"/>
     /// <inheritdoc cref="IRevealing"/>
     [DataContract]
-    internal abstract class FreeMovingUnit : ADie, ICollider, IRevealing, IMouseClickListener, IMousePositionListener
+    public abstract class FreeMovingUnit : ADie, ICollider, IRevealing, IMouseClickListener, IMousePositionListener
     {
         /// <summary>
         /// The unique ID of the unit.
@@ -442,6 +442,11 @@ namespace Singularity.Units
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             mDirector.GetMilitaryManager.RemoveUnit(this);
             mIsMoving = false;
+            if (!Friendly)
+            {
+                // note that this has to be an enemy unit, otherwise it wouldn't be friendly.
+                mDirector.GetStoryManager.Level.Ai.Kill((EnemyUnit)this);
+            }
             mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, (Friendly ? "A friendly" : "An enemy") + " unit was killed!", this);
 
             return true;

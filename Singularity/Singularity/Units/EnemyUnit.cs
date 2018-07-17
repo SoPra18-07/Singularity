@@ -2,12 +2,13 @@
 using Microsoft.Xna.Framework;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Property;
 
 namespace Singularity.Units
 {
     /// <inheritdoc cref="MilitaryUnit"/>
     [DataContract]
-    internal class EnemyUnit : MilitaryUnit
+    public class EnemyUnit : MilitaryUnit
     {
         /// <summary>
         /// Enemy units controlled by AI and opposed to the player; standard type.
@@ -21,6 +22,11 @@ namespace Singularity.Units
         {
             mColor = Color.Maroon;
             mShootColor = Color.Red;
+        }
+
+        public ICollider GetShootingTarget()
+        {
+            return mShootingTarget;
         }
     }
 }

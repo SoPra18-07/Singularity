@@ -56,6 +56,10 @@ namespace Singularity.Manager
         [DataMember]
         private int mGraphId;
 
+        // This list is the ban list of the Bfs. A resource may be removed from that list like every two seconds.
+        [DataMember]
+        private List<Resource> mBanList;
+
 
         public DistributionManager(int graphid)
         {
@@ -82,6 +86,7 @@ namespace Singularity.Manager
             mRandom = new Random();
             mKilled = new List<Pair<int, int>>();
             mGraphId = graphid;
+            mBanList = new List<Resource>();
         }
 
         public void TestAttributes()
