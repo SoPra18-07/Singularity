@@ -33,7 +33,7 @@ namespace Singularity.AI
 
         // this is a representation of the structure this AI operates on, this is a list since the AI might possibly have multiple bases
         [DataMember]
-        private readonly List<Triple<CommandCenter, List<PlatformBlank>, List<Road>>> mStructure;
+        private readonly List<Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle>> mStructure;
 
         private readonly List<Rectangle> mBoundsToDraw;
 
@@ -44,13 +44,14 @@ namespace Singularity.AI
 
             mBoundsToDraw = new List<Rectangle>();
 
-            //TODO: change the behavior with the difficulty
-            mBehavior = new SimpleAIBehavior(this, ref director);
-
-            mStructure = new List<Triple<CommandCenter, List<PlatformBlank>, List<Road>>>();
+            mStructure = new List<Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle>>();
             var structure = StructureLayoutHolder.GetRandomStructureAtCenter(9000, 3000, difficulty, ref director);
 
             AddStructureToGame(structure.GetFirst(), structure.GetSecond());
+
+
+            //TODO: change the behavior with the difficulty
+            mBehavior = new AdvancedAIBehavior(this, ref director);
         }
 
         public void ReloadContent(ref Director dir)
@@ -78,7 +79,7 @@ namespace Singularity.AI
             {
                 tempList[index] = new List<Spawner>();
 
-                foreach (var platform in structure.GetSecond())
+                foreach (var platform in structure.GetFirst().GetSecond())
                 {
                     var spawner = platform as Spawner;
 
@@ -99,24 +100,34 @@ namespace Singularity.AI
         {
             foreach (var structure in mStructure)
             {
-                if (!structure.GetSecond().Contains(platform))
+                if (!structure.GetFirst().GetSecond().Contains(platform))
                 {
                     continue;
                 }
-                structure.GetSecond().Remove(platform);
+                structure.GetFirst().GetSecond().Remove(platform);
                 return;
             }
         }
 
         public void AddStructureToGame(Triple<CommandCenter, List<PlatformBlank>, List<Road>> structure, Rectangle bounds)
         {
-            mStructure.Add(structure);
+            mStructure.Add(new Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle>(structure, bounds));
 
             mBoundsToDraw.Add(bounds);
 
             mDirector.GetStoryManager.Level.GameScreen.AddObject(structure.GetFirst());
             mDirector.GetStoryManager.Level.GameScreen.AddObjects(structure.GetSecond());
             mDirector.GetStoryManager.Level.GameScreen.AddObjects(structure.GetThird());
+        }
+
+        public Rectangle GetBoundsOfStructure(int index)
+        {
+            return mStructure[index].GetSecond();
+        }
+
+        public int GetStructureCount()
+        {
+            return mStructure.Count;
         }
 
         public void Draw(SpriteBatch spriteBatch)

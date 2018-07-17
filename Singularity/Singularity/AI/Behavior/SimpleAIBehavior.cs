@@ -99,8 +99,9 @@ namespace Singularity.AI.Behavior
             var index = mRandom.Next(mAi.GetSpawners().Count);
 
             foreach (var spawner in mAi.GetSpawners()[index])
-            {
-                var enemyUnit = spawner.SpawnEnemy(mDirector.GetStoryManager.Level.Camera,
+            { 
+                var enemyUnit = spawner.SpawnEnemy(EEnemyType.Attack, 
+                    mDirector.GetStoryManager.Level.Camera,
                     mDirector.GetStoryManager.Level.Map,
                     mDirector.GetStoryManager.Level.GameScreen);
 

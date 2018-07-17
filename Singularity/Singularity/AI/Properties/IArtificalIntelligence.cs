@@ -45,5 +45,9 @@ namespace Singularity.AI.Properties
         void Kill(PlatformBlank platform);
 
         void AddStructureToGame(Triple<CommandCenter, List<PlatformBlank>, List<Road>> structure, Rectangle bounds);
+
+        Rectangle GetBoundsOfStructure(int index);
+
+        int GetStructureCount();
     }
 }

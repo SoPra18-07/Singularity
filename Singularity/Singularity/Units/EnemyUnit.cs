@@ -7,7 +7,7 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="MilitaryUnit"/>
     [DataContract]
-    internal class EnemyUnit : MilitaryUnit
+    public class EnemyUnit : MilitaryUnit
     {
         /// <summary>
         /// Enemy units controlled by AI and opposed to the player; standard type.

@@ -15,7 +15,7 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="ControllableUnit"/>
     [DataContract]
-    internal class MilitaryUnit : FreeMovingUnit, IShooting
+    public class MilitaryUnit : FreeMovingUnit, IShooting
     {
         /// <summary>
         /// Default width of a unit before scaling.

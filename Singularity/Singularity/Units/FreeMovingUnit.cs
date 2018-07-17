@@ -17,7 +17,7 @@ namespace Singularity.Units
     /// <inheritdoc cref="ICollider"/>
     /// <inheritdoc cref="IRevealing"/>
     [DataContract]
-    internal abstract class FreeMovingUnit : ADie, ICollider, IRevealing, IMouseClickListener, IMousePositionListener
+    public abstract class FreeMovingUnit : ADie, ICollider, IRevealing, IMouseClickListener, IMousePositionListener
     {
         /// <summary>
         /// The unique ID of the unit.
