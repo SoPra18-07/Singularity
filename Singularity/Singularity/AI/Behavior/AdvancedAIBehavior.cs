@@ -15,6 +15,7 @@ using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Units;
+using Singularity.Utils;
 
 namespace Singularity.AI.Behavior
 {
@@ -83,7 +84,7 @@ namespace Singularity.AI.Behavior
     ///  8 defensive platforms etc. Every base spawns with its own set of defensive units, and defending units roam freely between all bases.
     ///  Thats probably about it with this one. The functionality of not spawning in the players viewable area should be fulfilled, but its
     ///  hard to test, since it is completely random where they get placed. (I've never had them be in my viewable area and I've tested hours and hours).
-    ///  Right now bases can overlap with eachother, but this shouldn't be too hard to address.
+    ///  Bases should also not be able to overlap with eachother
     /// </remarks>
     [DataContract]
     public sealed class AdvancedAiBehavior : IAiBehavior
@@ -169,6 +170,9 @@ namespace Singularity.AI.Behavior
         [DataMember]
         private Director mDirector;
 
+        [DataMember]
+        private List<Rectangle> mCollidingRects;
+
         //note, the heap implementation cannot be serialized.
 
         private IPriorityQueue<PrioritizableObject<EnemyUnit>> mScoutingUnits;
@@ -192,6 +196,7 @@ namespace Singularity.AI.Behavior
 
             mIsCurrentlyMoving = new Dictionary<EnemyUnit, bool>();
 
+            mCollidingRects = new List<Rectangle>();
             mScoutingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
             mAttackingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
             mDefendingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
@@ -208,9 +213,36 @@ namespace Singularity.AI.Behavior
                 return;
             }
 
-            var baseToAdd = StructureLayoutHolder.GetStructureOnMap(mAi.Difficulty, ref mDirector);
+            var requestNewPlatform = false;
+
+            Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle> baseToAdd;
+
+            do
+            {
+                baseToAdd = StructureLayoutHolder.GetStructureOnMap(mAi.Difficulty, ref mDirector);
+
+                // make sure the new structure doesn't overlap with an existing enemy structure
+                if (mBaseCount <= 0)
+                {
+                    break;
+                }
+
+                foreach (var rect in mCollidingRects)
+                {
+                    if (!rect.Intersects(baseToAdd.GetSecond()))
+                    {
+                        continue;
+                    }
+
+                    requestNewPlatform = true;
+                    break;
+                }
+
+            } while (requestNewPlatform);
 
             mAi.AddStructureToGame(baseToAdd.GetFirst(), baseToAdd.GetSecond());
+
+            mCollidingRects.Add(baseToAdd.GetSecond());
 
             var spawners = mAi.GetSpawners();
 
