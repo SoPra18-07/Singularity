@@ -69,7 +69,10 @@ namespace Singularity.Resources
 
         public Optional<Resource> Get(Vector2 location)
         {
-            if (Amount <= 0) return Optional<Resource>.Of(null);
+            if (Amount <= 0)
+            {
+                return Optional<Resource>.Of(null);
+            }
             Amount -= 1;
 
             // Track the creation of a resource in the statistics.
