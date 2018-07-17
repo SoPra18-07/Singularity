@@ -433,3 +433,10 @@
 /processorParam:TextureFormat=Color
 /build:GenUnit.png
 
+#begin LibSans72.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:LibSans72.spritefont
+
