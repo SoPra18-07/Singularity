@@ -36,6 +36,7 @@ namespace Singularity.AI
         [DataMember]
         private readonly List<Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle>> mStructure;
 
+        [DataMember]
         private readonly List<Rectangle> mBoundsToDraw;
 
         public BasicAi(EaiDifficulty difficulty, ref Director director)

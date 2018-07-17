@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Singularity.Units;
@@ -12,16 +13,19 @@ namespace Singularity.AI.Helper
     /// Provides a container for objects and a float, which can practically be used to define an
     /// order on these objects (priority queue, heaps, etc.).
     /// </summary>
+    [DataContract]
     public sealed class PrioritizableObject<T> : IComparable
     {
         /// <summary>
         /// A float depicting the prioritization of the object, where higher means higher priority.
         /// </summary>
+        [DataMember]
         private float mPrioritization;
 
         /// <summary>
         /// The object on which the "prioritization" order is defined
         /// </summary>
+        [DataMember]
         private readonly T mObjectToPrioritize;
 
         public PrioritizableObject(T objectToPrioritize, float prioritization)

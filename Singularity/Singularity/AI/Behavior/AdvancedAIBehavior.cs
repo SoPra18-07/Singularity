@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.ExceptionServices;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using C5;
@@ -84,6 +85,7 @@ namespace Singularity.AI.Behavior
     ///  hard to test, since it is completely random where they get placed. (I've never had them be in my viewable area and I've tested hours and hours).
     ///  Right now bases can overlap with eachother, but this shouldn't be too hard to address.
     /// </remarks>
+    [DataContract]
     public sealed class AdvancedAiBehavior : IAiBehavior
     {
         private const int PlatformCountNewBaseTrigger = 20;
@@ -92,14 +94,17 @@ namespace Singularity.AI.Behavior
 
         private const float PriorityAddition = 0.1f;
 
+        [DataMember]
         private readonly int[] mUnitsMovementCooldown = new int[3] {0, 0, 0};
 
+        [DataMember]
         private readonly int[] mUnitsMovementSnapshot = new int[3] {0, 0, 0};
 
         /// <summary>
         /// The time in milliseconds the AI waits to do anything. (when being attacked this is ignored and the AI starts doing stuff nontheless),
         /// where it waits 5 minutes for easy, 4 minutes for medium and 2 minutes for hard.
         /// </summary>
+        [DataMember]
         private readonly int[] mIdleTime = new int[3]
         {
             300000,
@@ -107,57 +112,75 @@ namespace Singularity.AI.Behavior
             120000
         };
 
+        [DataMember]
         private readonly int[] mUnitCreationSnapshot = new int[3] {0, 0, 0};
 
         // the reason for this not being dependant on the difficulty is because the harder difficulity AI has WAY more spawners
         // than the easier ones, which would make it completely broken (probably already is)
+        [DataMember]
         private const int ScoutCreationCooldown = 60000;
 
+        [DataMember]
         private readonly int[] mAttackCreationCooldown = new int[3]
         {
             180000,
             120000,
             60000
         };
-
+        
         private const int ScoutingSquadSize = 3;
 
         private const int MaxDefendingSquadSize = 3;
 
+        [DataMember]
         private int mOldPlayerMilitaryUnitCount;
 
+        [DataMember]
         private bool mActive;
 
+        [DataMember]
         private int mBaseCount;
-        
+
         /// <summary>
         /// as long as this is true the AI will keep attacking the target specified in mAttackPosition.
         /// </summary>
+        [DataMember]
         private bool mShouldAttack;
 
+        [DataMember]
         private ICollider mAttackPosition;
 
         /// <summary>
         /// The ai this behavior is used on.
         /// </summary>
+        [DataMember]
         private readonly IArtificalIntelligence mAi;
 
         /// <summary>
         /// The difficulty of the ai that uses this behavior. This should be used to set certain
         /// parameters to make the behavior more difficult/easy.
         /// </summary>
+        [DataMember]
         private readonly EaiDifficulty mDifficulty;
 
+        [DataMember]
         private readonly Random mRandom;
 
+        [DataMember]
         private Director mDirector;
 
-        private readonly IPriorityQueue<PrioritizableObject<EnemyUnit>> mScoutingUnits;
+        //note, the heap implementation cannot be serialized.
 
-        private readonly IPriorityQueue<PrioritizableObject<EnemyUnit>> mAttackingUnits;
+        private IPriorityQueue<PrioritizableObject<EnemyUnit>> mScoutingUnits;
 
-        private readonly IPriorityQueue<PrioritizableObject<EnemyUnit>> mDefendingUnits;
+        private IPriorityQueue<PrioritizableObject<EnemyUnit>> mAttackingUnits;
 
+        private IPriorityQueue<PrioritizableObject<EnemyUnit>> mDefendingUnits;
+
+        [DataMember]
+        private readonly List<PrioritizableObject<EnemyUnit>> mAllUnits;
+
+        [DataMember]
         private readonly Dictionary<EnemyUnit, bool> mIsCurrentlyMoving;
 
         public AdvancedAiBehavior(IArtificalIntelligence ai, ref Director director)
@@ -172,6 +195,7 @@ namespace Singularity.AI.Behavior
             mScoutingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
             mAttackingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
             mDefendingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
+            mAllUnits = new List<PrioritizableObject<EnemyUnit>>();
 
             CreateNewBase(null);
         }
@@ -508,7 +532,10 @@ namespace Singularity.AI.Behavior
 
         private void AddToQueue(EEnemyType type, EnemyUnit unit, float prio = 0f)
         {
-            GetPrioritiyQueueByEnemyType(type).Add(new PrioritizableObject<EnemyUnit>(unit, 0f));
+            var toAdd = new PrioritizableObject<EnemyUnit>(unit, prio);
+
+            GetPrioritiyQueueByEnemyType(type).Add(toAdd);
+            mAllUnits.Add(toAdd);
         }
 
         private IPriorityQueue<PrioritizableObject<EnemyUnit>> GetPrioritiyQueueByEnemyType(EEnemyType type)
@@ -613,6 +640,7 @@ namespace Singularity.AI.Behavior
 
                 if (current.GetObject().Equals(unit))
                 {
+                    mAllUnits.Remove(current);
                     break;
                 }
                 reAdd.Add(current);
@@ -627,7 +655,31 @@ namespace Singularity.AI.Behavior
 
         public void ReloadContent(ref Director dir)
         {
-            throw new NotImplementedException();
+            mDirector = dir;
+
+            mAttackingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
+            mDefendingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
+            mScoutingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
+
+            foreach (var unit in mAllUnits)
+            {
+                var asFast = unit.GetObject() as EnemyFast;
+                var asHeavy = unit.GetObject() as EnemyHeavy;
+
+                if (asFast != null)
+                {
+                    mScoutingUnits.Add(unit);
+                    continue;
+                }
+
+                if (asHeavy != null)
+                {
+                    mDefendingUnits.Add(unit);
+                    continue;
+                }
+                mAttackingUnits.Add(unit);
+            }
+
         }
 
         public void Shooting(MilitaryUnit sender, ICollider shootingAt, GameTime gametime)
