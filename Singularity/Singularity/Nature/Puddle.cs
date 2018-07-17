@@ -16,7 +16,7 @@ namespace Singularity.Nature
         [DataMember]
         public Rectangle AbsBounds { get; private set; }
         [DataMember]
-        public bool Moved { get; private set; }
+        public bool Moved { get; set; }
         [DataMember]
         public int Id { get; private set; }
         [DataMember]

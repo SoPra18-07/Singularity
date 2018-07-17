@@ -162,7 +162,7 @@ namespace Singularity.Platforms
         [DataMember]
         public Rectangle AbsBounds { get; internal set; }
         [DataMember]
-        public bool Moved { get; private set; }
+        public bool Moved { get; set; }
 
         [DataMember]
         public int Id { get; private set; }
