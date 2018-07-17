@@ -7,6 +7,7 @@ using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Property;
 using Singularity.Sound;
+using Singularity.Utils;
 
 namespace Singularity.Units
 {
@@ -20,7 +21,6 @@ namespace Singularity.Units
         /// <param name="position">Where the unit should be spawned.</param>
         /// <param name="camera">Game camera being used.</param>
         /// <param name="director">Reference to the game director.</param>
-        /// <param name="map">Reference to the game map.</param>
         public EnemyUnit(Vector2 position, Camera camera, ref Director director)
             : base(position, camera, ref director, false)
         {
@@ -36,7 +36,12 @@ namespace Singularity.Units
         public void SetMovementTarget(Vector2 goal)
         {
             // let the flocker take care of it
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
+
+            if (!mGroup.IsPresent())
+                mGroup = Optional<FlockingGroup>.Of(mDirector.GetMilitaryManager.GetNewFlock());
+            mGroup.Get().FindPath(goal);
+            // mGroup.Get().mTargetPosition = goal;
         }
     }
 }

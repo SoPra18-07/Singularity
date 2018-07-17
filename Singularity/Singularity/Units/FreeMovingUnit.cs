@@ -11,6 +11,7 @@ using Singularity.Map;
 using Singularity.Map.Properties;
 using Singularity.Property;
 using Singularity.Screen;
+using Singularity.Utils;
 
 namespace Singularity.Units
 {
@@ -119,7 +120,6 @@ namespace Singularity.Units
         [DataMember]
         public Vector2 Center { get; protected set; }
 
-        public bool Moved { get; set; }
         
 
         /// <summary>
@@ -200,6 +200,8 @@ namespace Singularity.Units
                 mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
                 mDirector.GetInputManager.AddMousePositionListener(this);
             }
+
+            mGroup = Optional<FlockingGroup>.Of(null);
         }
 
         protected void ReloadContent(ref Director director, Camera camera)
@@ -208,17 +210,37 @@ namespace Singularity.Units
             mCamera = camera;
         }
 
+        public override void Move()
+        {
+            Rotate(Velocity * 50 + AbsolutePosition, true);
+            base.Move();
+            
+        }
+
         /// <summary>
         /// Rotates unit when selected in order to face
         /// user mouse and eventually target destination.
         /// </summary>
-        /// <param name="target"></param>
-        protected void Rotate(Vector2 target)
+        /// <param name="target">Target rotation position</param>
+        /// <param name="absolute">Whether the target position is absolute or relative. True for absolute.</param>
+        protected void Rotate(Vector2 target, bool absolute = false)
         {
+            float x;
+            float y;
             // form a triangle from unit location to mouse location
             // adjust to be at center of sprite
-            var x = target.X - (RelativePosition.X + RelativeSize.X / 2);
-            var y = target.Y - (RelativePosition.Y + RelativeSize.Y / 2);
+            if (absolute)
+            {
+                x = target.X - (AbsolutePosition.X + AbsoluteSize.X / 2);
+                y = target.Y - (AbsolutePosition.Y + AbsoluteSize.Y / 2);
+            }
+            else
+            {
+                x = target.X - (RelativePosition.X + RelativeSize.X / 2);
+                y = target.Y - (RelativePosition.Y + RelativeSize.Y / 2);
+            }
+
+
             var hypot = Math.Sqrt(x * x + y * y);
 
             // calculate degree between formed triangle
@@ -327,7 +349,7 @@ namespace Singularity.Units
                 case EMouseAction.LeftClick:
                     // check for if the unit is selected, not moving, the click is not within the bounds of the unit, and the click was on the map.
                     if (mSelected
-                        && !Moved
+                        // && !Moved // now this should do pathfinding even while moving
                         && !withinBounds
                         && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f),
                                 (int)(mMouseY - RelativeSize.Y / 2f),
@@ -335,6 +357,25 @@ namespace Singularity.Units
                                 (int)RelativeSize.Y),
                             mCamera))
                     {
+
+                        if (!mGroup.IsPresent())
+                        {
+                            var group = Optional<FlockingGroup>.Of(mDirector.GetMilitaryManager.GetNewFlock());
+                            group.Get().AssignUnit(this);
+                            mGroup = group;
+                            // do the fuck not change these lines here. Costs you at least 3h for debugging.
+                        }
+
+                        var target = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
+                            Matrix.Invert(mCamera.GetTransform()));
+
+                        if (mGroup.Get().Map.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
+                            (int)target.X / MapConstants.GridWidth,
+                            (int)target.Y / MapConstants.GridHeight))
+                        {
+                            Debug.WriteLine("pos: " + AbsolutePosition);
+                            mGroup.Get().FindPath(target);
+                        }
                         Debug.WriteLine("Fix this ...");
                         // SetMovementTarget(Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
                             // Matrix.Invert(mCamera.GetTransform())));
@@ -389,10 +430,11 @@ namespace Singularity.Units
             // check if selection box intersects with MUnit bounds
             if (selBox.Intersects(AbsBounds))
             {
+                Debug.WriteLine("Unit: " + Id + " got selected");
                 mSelected = true;
+                mDirector.GetMilitaryManager.AddSelected(this); // send to FlockingManager
             }
         }
-
         #endregion
     }
 }

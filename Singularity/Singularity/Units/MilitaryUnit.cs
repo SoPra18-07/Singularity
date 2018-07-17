@@ -13,7 +13,7 @@ using Singularity.Sound;
 
 namespace Singularity.Units
 {
-    /// <inheritdoc cref="ControllableUnit"/>
+    /// <inheritdoc cref="FreeMovingUnit"/>
     [DataContract]
     public class MilitaryUnit : FreeMovingUnit, IShooting
     {

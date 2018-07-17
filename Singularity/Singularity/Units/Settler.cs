@@ -13,7 +13,7 @@ using Singularity.Screen.ScreenClasses;
 
 namespace Singularity.Units
 {
-    /// <inheritdoc cref="ControllableUnit"/>
+    /// <inheritdoc cref="FreeMovingUnit"/>
     [DataContract]
     internal sealed class Settler: FreeMovingUnit, IKeyListener
     {

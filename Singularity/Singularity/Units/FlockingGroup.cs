@@ -42,16 +42,12 @@ namespace Singularity.Units
         
         [DataMember]
         private int? mSuperiorFlockingId = null;
-        [DataMember]
-        public int FlockingId { get; private set; }
 
 
         public Vector2 CohesionRaw { get; private set; }
         public Vector2 SeperationRaw { get; set; }
         public float ActualSpeed { get; private set; }
-
-        [DataMember]
-        public bool Moved { get; private set; }
+        
 
         public Map.Map Map { get; private set; }
         
@@ -115,6 +111,7 @@ namespace Singularity.Units
             if (Geometry.Length(mTargetPosition - AbsolutePosition) < mUnits.Count * Speed)
             {
                 Moved = false;
+                mUnits.ForEach(u => u.Moved = false);
             }
 
             var diff = mTargetPosition - AbsolutePosition;
@@ -151,7 +148,7 @@ namespace Singularity.Units
         internal void FindPath(Vector2 target)
         {
 
-            if (target == mUltimateTarget) return;
+            if (target == mUltimateTarget || mUnits.Count == 0) return;
 
 
             SeperationRaw = Vector2.Zero;
@@ -172,6 +169,7 @@ namespace Singularity.Units
             }
 
             Moved = true;
+            mUnits.ForEach(u => u.Moved = true);
             mUltimateTarget = target;
             Debug.WriteLine("Starting path finding at: " + AbsolutePosition + " for " + FlockingId);
             Debug.WriteLine("Target: " + target.X + ", " + target.Y);
