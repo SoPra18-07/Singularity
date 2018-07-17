@@ -117,8 +117,7 @@ namespace Singularity.AI
             while (true)
             {
                 var pos = Map.Map.GetRandomPositionOnMap();
-                var possibleStructure =
-                    StructureLayoutHolder.GetRandomStructureAtCenter(pos.X, pos.Y, difficulty, ref director);
+                var possibleStructure = GetRandomStructureAtCenter(pos.X, pos.Y, difficulty, ref director);
 
                 if (Map.Map.IsOnTop(possibleStructure.GetSecond()) &&
                     !director.GetStoryManager.Level.Map.IsInVision(possibleStructure.GetSecond()))

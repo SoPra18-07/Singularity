@@ -225,6 +225,9 @@ namespace Singularity.Platforms
         [DataMember]
         protected int mPowerDownSoundId;
 
+        [DataMember]
+        private HealthBar mHealthBar;
+
         public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libsans12, ref Director director, EStructureType type = EStructureType.Blank, float centerOffsetY = -36, bool friendly = true) : base(ref director)
         {
 
@@ -331,6 +334,8 @@ namespace Singularity.Platforms
 
             // Track the creation of a platform in the statistics.
             director.GetStoryManager.UpdatePlatforms("created");
+
+            mHealthBar = new HealthBar(this);
 
             if (!friendly)
             {
@@ -621,6 +626,8 @@ namespace Singularity.Platforms
         {
             var transparency = mIsBlueprint ? 0.35f : 1f;
 
+            mHealthBar.Draw(spritebatch);
+
             switch (mSheet)
             {
                 case 0:
@@ -637,7 +644,7 @@ namespace Singularity.Platforms
                     break;
                 case 1:
                     spritebatch.Draw(mPlatformBaseTexture,
-                        AbsolutePosition,
+                        Vector2.Add(AbsolutePosition, new Vector2(0, 78)),
                         null,
                         mColorBase * transparency,
                         0f,
@@ -705,8 +712,8 @@ namespace Singularity.Platforms
             // only if the platform is friendly and the mouse is hovering over it is the info box shown
             if (Friendly && Bounds.Contains(new Vector2(Mouse.GetState().X, Mouse.GetState().Y)))
             {
-                mInfoBox.UpdateString(GetResourceString());
-                mInfoBox.Draw(spritebatch);
+                mInfoBox?.UpdateString(GetResourceString());
+                mInfoBox?.Draw(spritebatch);
             }
 
             // also draw the resources on top
@@ -728,6 +735,8 @@ namespace Singularity.Platforms
             mToKill.RemoveAll(a => mIPlatformActions.Remove(a));
 
             Uncollide();
+
+            mHealthBar.Update(t);
 
             Bounds = new Rectangle((int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
 
@@ -755,13 +764,19 @@ namespace Singularity.Platforms
             }
 
             // manage updating of values in the UI
-            if (!IsSelected || mDataSent) return;
+            if (!IsSelected || mDataSent)
+            {
+                return;
+            }
+
             // update previous values
             mPrevResources = GetPlatformResources();
             mPrevUnitAssignments = GetAssignedUnits();
             mPrevPlatformActions = GetIPlatformActions();
             mPreviousIsManuallyDeactivatedState = mIsManuallyDeactivated;
             mPreviousIsActiveState = IsActive();
+
+
 
             // send data to UIController
             mDirector.GetUserInterfaceController.SetDataOfSelectedPlatform(Id,
@@ -1275,12 +1290,13 @@ namespace Singularity.Platforms
             //TODO: Tell the PlatformAction to request everything it needs again.
             if (manually)
             {
+                mIsManuallyDeactivated = false;
                 // TODO find a power on sound
                 mDirector.GetSoundManager.PlaySound(mPowerOnSoundId);
             }
             ResetColor();
             //Only reregister the platforms if they are defense or production platforms
-            if (!mIsActive)
+            if (!mIsActive && (IsProduction() || IsDefense()))
             {
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this);
             }
@@ -1322,7 +1338,11 @@ namespace Singularity.Platforms
             // TODO: remove this or change it to something more appropriately, this is used by @Ativelox for
             // TODO: debugging purposes to easily see which platforms are currently deactivated
             mColor = Color.Green;
-            if (!mIsActive) return;
+            if (!mIsActive)
+            {
+                return;
+            }
+
             //Only unregister if this platform is a defense or production platform
             if (IsDefense())
             {

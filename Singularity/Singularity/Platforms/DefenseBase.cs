@@ -76,30 +76,8 @@ namespace Singularity.Platforms
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            var transparency = mIsBlueprint ? 0.35f : 1f;
+            base.Draw(spriteBatch);
 
-            // Cone (Defense Platforms)
-            // Draw the basic platform first
-            spriteBatch.Draw(mPlatformBaseTexture,
-                Vector2.Add(AbsolutePosition, new Vector2(0, mType == EStructureType.Blank ? 0 : 78)),
-                null,
-                (Friendly? mColor : mColorBase) * transparency,
-                0f,
-                Vector2.Zero,
-                1f,
-                SpriteEffects.None,
-                LayerConstants.BasePlatformLayer);
-            if (mType == EStructureType.Blank) return;
-            // then draw what's on top of that
-            spriteBatch.Draw(mPlatformSpriteSheet,
-                AbsolutePosition,
-                new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 148),
-                mColor * transparency,
-                0f,
-                Vector2.Zero,
-                1f,
-                SpriteEffects.None,
-                LayerConstants.PlatformLayer);
 
             if (!mShoot || mShootingTarget == null)
             {

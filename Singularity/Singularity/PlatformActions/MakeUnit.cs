@@ -137,7 +137,10 @@ namespace Singularity.PlatformActions
         {
             // Debug.WriteLine(mBuildingCost.Values.Sum() + ", " + mMissingResources.Values.Sum() + ", " + mToRequest.Values.Sum());
             if (State != PlatformActionState.Active)
+            {
                 return;
+            }
+
             if (mToRequest.Count > 0)
             {
                 var resource = mToRequest.Keys.ElementAt(0);
@@ -148,12 +151,19 @@ namespace Singularity.PlatformActions
                     mToRequest[resource] = mToRequest[resource] - 1;
                 }
                 mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).RequestResource(mPlatform, resource, this, mIsBuilding);
-                Debug.WriteLine("Requested " + resource + " just now. Waiting. (" + mPlatform.Id + ")");
+                Console.Out.WriteLine("Requested " + resource + " just now. Waiting. (" + mPlatform.Id + ")");
             }
 
-            foreach (var r in mPlatform.GetPlatformResources().ToList()) GetResource(r.Type);
+            foreach (var r in mPlatform.GetPlatformResources().ToList())
+            {
+                GetResource(r.Type);
+            }
 
-            if (mMissingResources.Count > 0) return;
+            if (mMissingResources.Count > 0)
+            {
+                return;
+            }
+
             State = PlatformActionState.Available;
             CreateUnit();
         }
@@ -162,7 +172,11 @@ namespace Singularity.PlatformActions
 
         private void GetResource(EResourceType type)
         {
-            if (!mMissingResources.ContainsKey(type)) return;
+            if (!mMissingResources.ContainsKey(type))
+            {
+                return;
+            }
+
             var unused = mPlatform.GetResource(type);
 
             mMissingResources[type] -= 1;

@@ -90,6 +90,7 @@
     <Compile Include="Nature\Puddle.cs" />
     <Compile Include="Screen\BarIWindowItem.cs" />
     <Compile Include="Screen\EventLogIWindowItem.cs" />
+    <Compile Include="Screen\HealthBar.cs" />
     <Compile Include="Screen\PlatformActionIWindowItem.cs" />
     <Compile Include="PlatformActions\ConsumeResource.cs" />
     <Compile Include="Exceptions\MiniMapProportionsOffException.cs" />
@@ -120,6 +121,8 @@
     <Compile Include="Screen\ActivationIWindowItem.cs" />
     <Compile Include="Screen\IndexSwitcherIWindowItem.cs" />
     <Compile Include="Screen\PlatformInfoBox.cs" />
+    <Compile Include="Screen\ScreenClasses\LoseScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\WinScreen.cs" />
     <Compile Include="Screen\SliderHandler.cs" />
     <Compile Include="Screen\TextAndAmountIWindowItem.cs" />
     <Compile Include="Units\EnemyHeavy.cs" />
