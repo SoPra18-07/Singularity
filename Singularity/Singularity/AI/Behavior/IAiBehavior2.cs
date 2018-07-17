@@ -13,7 +13,7 @@ namespace Singularity.AI.Behavior
     /// <summary>
     /// An interface for all possible AI behaviors.
     /// </summary>
-    interface IAiBehavior
+    interface IAiBehavior2
     {
         /// <summary>
         /// Moves the units in a specific way specified by the implementation

@@ -23,14 +23,14 @@ namespace Singularity.AI
     /// calls Move() and Spawn() of its behavior object
     /// </summary>
     [DataContract]
-    public sealed class BasicAi : IArtificalIntelligence
+    public sealed class BasicAi2 : IArtificalIntelligence
     {
         [DataMember]
-        public EaiDifficulty Difficulty { get; private set; }
+        public EaiDifficulty2 Difficulty { get; private set; }
 
         private Director mDirector;
         [DataMember]
-        private readonly IAiBehavior mBehavior;
+        private readonly IAiBehavior2 mBehavior;
 
         // this is a representation of the structure this AI operates on, this is a list since the AI might possibly have multiple bases
         [DataMember]
@@ -39,7 +39,7 @@ namespace Singularity.AI
         [DataMember]
         private readonly List<Rectangle> mBoundsToDraw;
 
-        public BasicAi(EaiDifficulty difficulty, ref Director director)
+        public BasicAi2(EaiDifficulty2 difficulty, ref Director director)
         {
             Difficulty = difficulty;
             mDirector = director;
@@ -49,7 +49,7 @@ namespace Singularity.AI
             mStructure = new List<Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle>>();
 
             //TODO: change the behavior with the difficulty
-            mBehavior = new AdvancedAiBehavior(this, ref director);
+            mBehavior = new AdvancedAiBehavior2(this, ref director);
         }
 
         public void ReloadContent(ref Director dir)

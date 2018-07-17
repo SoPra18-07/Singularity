@@ -87,7 +87,7 @@ namespace Singularity.AI.Behavior
     ///  Bases should also not be able to overlap with eachother
     /// </remarks>
     [DataContract]
-    public sealed class AdvancedAiBehavior : IAiBehavior
+    public sealed class AdvancedAiBehavior2 : IAiBehavior2
     {
         private const int PlatformCountNewBaseTrigger = 20;
 
@@ -162,7 +162,7 @@ namespace Singularity.AI.Behavior
         /// parameters to make the behavior more difficult/easy.
         /// </summary>
         [DataMember]
-        private readonly EaiDifficulty mDifficulty;
+        private readonly EaiDifficulty2 mDifficulty;
 
         [DataMember]
         private readonly Random mRandom;
@@ -187,7 +187,7 @@ namespace Singularity.AI.Behavior
         [DataMember]
         private readonly Dictionary<EnemyUnit, bool> mIsCurrentlyMoving;
 
-        public AdvancedAiBehavior(IArtificalIntelligence ai, ref Director director)
+        public AdvancedAiBehavior2(IArtificalIntelligence ai, ref Director director)
         {
             mAi = ai;
             mDirector = director;

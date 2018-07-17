@@ -31,7 +31,7 @@ namespace Singularity.AI.Properties
         /// Gets the difficulty of the AI
         /// </summary>
         [DataMember]
-        EaiDifficulty Difficulty { get; }
+        EaiDifficulty2 Difficulty { get; }
 
         /// <summary>
         /// This is needed to reload the Ai propertys/fields after deserializing

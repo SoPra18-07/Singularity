@@ -22,7 +22,7 @@ namespace Singularity.AI.Behavior
     /// moves them all at once to random locations at set intervals.
     /// </summary>
     [DataContract]
-    public sealed class SimpleAIBehavior : IAiBehavior
+    public sealed class SimpleAiBehavior : IAiBehavior2
     {
         [DataMember]
         private int mMoveIntervalMillis = 0;
@@ -46,7 +46,7 @@ namespace Singularity.AI.Behavior
         [DataMember]
         private readonly Random mRandom;
 
-        public SimpleAIBehavior(IArtificalIntelligence ai, ref Director director)
+        public SimpleAiBehavior(IArtificalIntelligence ai, ref Director director)
         {
             mDirector = director;
             mAi = ai;
