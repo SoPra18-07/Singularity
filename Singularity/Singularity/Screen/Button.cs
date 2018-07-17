@@ -311,8 +311,7 @@ namespace Singularity.Screen
                         Mouse.GetState().X <= Position.X + Size.X &&
                         Mouse.GetState().Y >= Position.Y &&
                         Mouse.GetState().Y <= Position.Y + Size.Y)
-                    {
-                        OnButtonClicked();
+                    {                        
                         mClicked = true;
                     }
                     mClicking = true;
@@ -329,6 +328,7 @@ namespace Singularity.Screen
                             Mouse.GetState().Y >= Position.Y &&
                             Mouse.GetState().Y <= Position.Y + Size.Y)
                         {
+                            OnButtonClicked();
                             OnButtonReleased();
                         }
 
