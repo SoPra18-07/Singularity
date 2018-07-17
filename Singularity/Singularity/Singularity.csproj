@@ -61,12 +61,12 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AI\BasicAI.cs" />
+    <Compile Include="AI\BasicAi.cs" />
     <Compile Include="AI\Behavior\AdvancedAiBehavior.cs" />
-    <Compile Include="AI\Behavior\IAIBehavior.cs" />
+    <Compile Include="AI\Behavior\IAiBehavior.cs" />
     <Compile Include="AI\Helper\PrioritizableObject.cs" />
     <Compile Include="AI\Helper\PrioritizableObjectAscendingComparer.cs" />
-    <Compile Include="AI\Properties\EAIDifficulty.cs" />
+    <Compile Include="AI\Properties\EaiDifficulty.cs" />
     <Compile Include="AI\Properties\EEnemyType.cs" />
     <Compile Include="AI\Properties\IArtificalIntelligence.cs" />
     <Compile Include="AI\StructureLayoutHolder.cs" />
