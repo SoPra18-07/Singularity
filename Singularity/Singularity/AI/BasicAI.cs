@@ -62,6 +62,7 @@ namespace Singularity.AI
 
         public void Update(GameTime gametime)
         {
+
             mBehavior.CreateNewBase(gametime);
 
             mBehavior.Spawn(gametime);

@@ -111,11 +111,7 @@ namespace Singularity.Manager
         /// <returns>The platform with the desired resource, if it exists, null if not</returns>
         private PlatformBlank FindBegin(PlatformBlank destination, EResourceType res)
         {
-            //We need these lists, because we are operating on a undirected graph. That means we have to ensure we dont go back in our BFS
-            //this list contains platforms that cannot be visited next run.
-            var previouslevel = new List<PlatformBlank>();
-            //This list contains platforms that have been visited this run.
-            var nextpreviouslevel = new List<PlatformBlank>();
+            var visited = new List<PlatformBlank>();
 
             var currentlevel = new List<PlatformBlank>();
             currentlevel.Add(destination);
@@ -134,7 +130,7 @@ namespace Singularity.Manager
                     {
                         var candidatePlatform = (PlatformBlank)edge.GetParent();
                         //If true, we have already visited this platform
-                        if (previouslevel.Contains(candidatePlatform) || nextpreviouslevel.Contains(candidatePlatform))
+                        if (visited.Contains(candidatePlatform))
                         {
                             continue;
                         }
@@ -155,7 +151,7 @@ namespace Singularity.Manager
                     {
                         var candidatePlatform = (PlatformBlank)edge.GetChild();
                         //If true, we have already visited this platform
-                        if (previouslevel.Contains(platform) || nextpreviouslevel.Contains(platform))
+                        if (visited.Contains(candidatePlatform))
                         {
                             continue;
                         }
@@ -171,13 +167,11 @@ namespace Singularity.Manager
                         }
                     }
                     //mark that you have visited this platform now
-                    nextpreviouslevel.Add(platform);
+                    visited.Add(platform);
                 }
 
                 //Update levels
-                previouslevel.AddRange(nextpreviouslevel);
-                nextpreviouslevel = new List<PlatformBlank>();
-                currentlevel.AddRange(nextlevel);
+                currentlevel = nextlevel;
                 nextlevel = new List<PlatformBlank>();
             }
             return null;
@@ -1093,7 +1087,9 @@ namespace Singularity.Manager
                 //In this case look if every assigned unit is on the same graph as the platform and handle it
                 else
                 {
-                    foreach (var unitbool in units)
+                    var unitbools = new List<Pair<GeneralUnit, bool>>();
+                    unitbools.AddRange(units);
+                    foreach (var unitbool in unitbools)
                     {
                         //In this case they are on the platform
                         if (unitbool.GetSecond())

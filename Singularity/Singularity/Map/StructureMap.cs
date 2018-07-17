@@ -257,8 +257,8 @@ namespace Singularity.Map
                     mGraphIdToGraph[childIndex] = null;
                     mGraphIdToGraph[parentIndex] = graph;
 
-                UpdateGenUnitsGraphIndex(mGraphIdToGraph[parentIndex], parentIndex);
-                mGraphIdToEnergyLevel[childIndex] = 0;
+                    UpdateGenUnitsGraphIndex(mGraphIdToGraph[parentIndex], parentIndex);
+                    mGraphIdToEnergyLevel[childIndex] = 0;
 
                     mDirector.GetDistributionDirector.MergeManagers(childIndex, parentIndex, parentIndex);
                     mDirector.GetPathManager.RemoveGraph(childIndex);

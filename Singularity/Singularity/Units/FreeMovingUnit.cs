@@ -245,6 +245,7 @@ namespace Singularity.Units
 
         protected void ReloadContent(ref Director director, Camera camera, ref Map.Map map)
         {
+            base.ReloadContent(ref director);
             mPathfinder = new FreeMovingPathfinder();
             mDirector = director;
             mCamera = camera;

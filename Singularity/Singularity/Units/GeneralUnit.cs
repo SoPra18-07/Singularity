@@ -127,6 +127,11 @@ namespace Singularity.Units
 
         internal void ReloadContent(ref Director director, ContentManager content)
         {
+            base.ReloadContent(ref director);
+            if (Carrying.IsPresent())
+            {
+                Carrying.Get().ReloadContent(ref director);
+            }
             mDirector = director;
             mGenUnitTexture = content.Load<Texture2D>("GenUnit");
         }
@@ -463,11 +468,20 @@ namespace Singularity.Units
             {
                 ((PlatformBlank)CurrentNode).RemoveGeneralUnit(this);
 
-                mNodeQueue = mDirector.GetPathManager.GetPath(this, mDestination.Get(), ((PlatformBlank)mDestination.Get()).GetGraphIndex()).GetNodePath();
-
+                var path = mDirector.GetPathManager.GetPath(this,
+                    mDestination.Get(),
+                    ((PlatformBlank) mDestination.Get()).GetGraphIndex());
+                if ( path == null)
+                {
+                    return;
+                }
+                mNodeQueue = path.GetNodePath();
                 CurrentNode = mNodeQueue.Dequeue();
 
-                ((PlatformBlank) CurrentNode)?.AddGeneralUnit(this);
+                if ((PlatformBlank)CurrentNode != null && !((PlatformBlank)CurrentNode).HasDieded)
+                {
+                    ((PlatformBlank)CurrentNode)?.AddGeneralUnit(this);
+                }
             }
 
             if (CurrentNode == null)
@@ -482,7 +496,10 @@ namespace Singularity.Units
 
                 CurrentNode = mNodeQueue.Dequeue();
 
-                ((PlatformBlank)CurrentNode).AddGeneralUnit(this);
+                if (!((PlatformBlank) CurrentNode).HasDieded)
+                {
+                    ((PlatformBlank)CurrentNode).AddGeneralUnit(this);
+                }
             }
 
             // finally move to the current node.
