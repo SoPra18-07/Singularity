@@ -51,7 +51,6 @@ namespace Singularity.AI
 
             mStructure = new List<Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle>>();
 
-            //TODO: change the behavior with the difficulty
             mBehavior = new AdvancedAiBehavior(this, ref director);
         }
 
@@ -102,26 +101,27 @@ namespace Singularity.AI
         {
             foreach (var structure in mStructure)
             {
+                if (platform.Equals(structure.GetFirst().GetFirst()))
+                {
+                    mCommandCenterKillCount++;
+                    structure.GetFirst().GetSecond().Remove(platform);
+                    break;
+                }
+
                 if (!structure.GetFirst().GetSecond().Contains(platform))
                 {
                     continue;
                 }
-
-                var asCc = platform as CommandCenter;
-
-                if (asCc != null)
-                {
-                    mCommandCenterKillCount++;
-                }
-
                 structure.GetFirst().GetSecond().Remove(platform);
                 return;
             }
 
-            if (mCommandCenterKillCount >= mStructure.Count)
+            if (mCommandCenterKillCount < mStructure.Count)
             {
-                mDirector.GetStoryManager.Lose();
+                return;
             }
+            mDirector.GetStoryManager.Win();
+
         }
 
         public void Kill(EnemyUnit unit)
