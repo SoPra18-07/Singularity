@@ -80,6 +80,9 @@ namespace Singularity.Map
         [DataMember]
         private float mMouseY;
 
+        [DataMember]
+        private int mCommandCenterCount;
+
         /// <summary>
         /// Creates a new structure map which holds all the structures currently in the game.
         /// </summary>
@@ -116,7 +119,7 @@ namespace Singularity.Map
                 platform.ReloadContent(content, ref dir);
             }
             //Update uis graphid dictionary
-            ui.CallingAllGraphs(mGraphIdToGraph);
+            ui.GraphIdToGraphStructureDict = mGraphIdToGraph;
 
             foreach(var roads in mRoads)
             {
@@ -140,6 +143,12 @@ namespace Singularity.Map
         /// <param name="platform">The platform to be added</param>
         public void AddPlatform(PlatformBlank platform)
         {
+            var platformAsCc = platform as CommandCenter;
+
+            if (platformAsCc != null && platform.Friendly)
+            {
+                mCommandCenterCount++;
+            }
 
             mPlatforms.AddLast(platform);
 
@@ -193,6 +202,19 @@ namespace Singularity.Map
         /// <param name="platform">The platform to be removed</param>
         public void RemovePlatform(PlatformBlank platform)
         {
+            var platformAsCc = platform as CommandCenter;
+
+            if (platformAsCc != null && platform.Friendly)
+            {
+                mCommandCenterCount--;
+
+                if (mCommandCenterCount <= 0)
+                {
+                    mDirector.GetStoryManager.Lose();
+                    return;
+                }
+            }
+
             mPlatforms.Remove(platform);
 
 
@@ -205,6 +227,7 @@ namespace Singularity.Map
 
                 mDirector.GetDistributionDirector.RemoveManager(index, mGraphIdToGraph);
                 mDirector.GetPathManager.RemoveGraph(index);
+                mPlatformToGraphId.Remove(platform);
             }
         }
 
@@ -256,8 +279,8 @@ namespace Singularity.Map
                     mGraphIdToGraph[childIndex] = null;
                     mGraphIdToGraph[parentIndex] = graph;
 
-                UpdateGenUnitsGraphIndex(mGraphIdToGraph[parentIndex], parentIndex);
-                mGraphIdToEnergyLevel[childIndex] = 0;
+                    UpdateGenUnitsGraphIndex(mGraphIdToGraph[parentIndex], parentIndex);
+                    mGraphIdToEnergyLevel[childIndex] = 0;
 
                     mDirector.GetDistributionDirector.MergeManagers(childIndex, parentIndex, parentIndex);
                     mDirector.GetPathManager.RemoveGraph(childIndex);
@@ -378,7 +401,7 @@ namespace Singularity.Map
             UpdateEnergyLevel(newChildIndex);
             UpdateEnergyLevel(mPlatformToGraphId[(PlatformBlank)parent]);
 
-            mDirector.GetDistributionDirector.SplitManagers(mPlatformToGraphId[(PlatformBlank)parent], newChildIndex, platforms, units, mGraphIdToGraph);
+            mDirector.GetDistributionDirector.SplitManagers(mPlatformToGraphId[(PlatformBlank)parent], newChildIndex, platforms, units);
             mDirector.GetPathManager.AddGraph(newChildIndex, childReachableGraph);
             mDirector.GetPathManager.AddGraph(mPlatformToGraphId[(PlatformBlank)parent], parentReachableGraph);
         }
@@ -543,14 +566,14 @@ namespace Singularity.Map
                 toRemove.AddLast(structureToAdd);
                 if (structureToAdd.GetPlatform() != null)
                 {
-                    AddPlatform(structureToAdd.GetPlatform());
+                    mDirector.GetStoryManager.Level.GameScreen.AddObject(structureToAdd.GetPlatform());
                     structureToAdd.GetPlatform().Register();
                     structureToAdd.GetConnectionRoad().Place(structureToAdd.GetPlatform(), hovering);
-                    AddRoad(structureToAdd.GetConnectionRoad());
+                    mDirector.GetStoryManager.Level.GameScreen.AddObject(structureToAdd.GetConnectionRoad());
                 }
                 else
                 {
-                    AddRoad(structureToAdd.GetRoad());
+                    mDirector.GetStoryManager.Level.GameScreen.AddObject(structureToAdd.GetRoad());
                 }
 
             }
@@ -673,5 +696,11 @@ namespace Singularity.Map
                 genUnit.Graphid = newId;
             }
         }
+
+        public Dictionary<int, Graph.Graph> GetDictionaryGraphIdToGraph()
+        {
+            return mGraphIdToGraph;
+        }
     }
 }
+

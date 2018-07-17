@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
+using Microsoft.Xna.Framework;
 using Singularity.Exceptions;
 using Singularity.Graph;
 using Singularity.PlatformActions;
@@ -92,6 +93,7 @@ namespace Singularity.Manager
             Console.Out.WriteLine(mProdPlatforms[0].GetFirst().mType + " " + mProdPlatforms[0].GetSecond());
         }
 
+
         /// <summary>
         /// Deactivates tasks requested by a certain action.
         /// </summary>
@@ -111,30 +113,24 @@ namespace Singularity.Manager
         /// <returns>The platform with the desired resource, if it exists, null if not</returns>
         private PlatformBlank FindBegin(PlatformBlank destination, EResourceType res)
         {
-            //We need these lists, because we are operating on a undirected graph. That means we have to ensure we dont go back in our BFS
-            //this list contains platforms that cannot be visited next run.
-            var previouslevel = new List<PlatformBlank>();
-            //This list contains platforms that have been visited this run.
-            var nextpreviouslevel = new List<PlatformBlank>();
+
+            var visited = new List<PlatformBlank>();
 
             var currentlevel = new List<PlatformBlank>();
             currentlevel.Add(destination);
 
             var nextlevel = new List<PlatformBlank>();
 
-
             while (currentlevel.Count > 0)
             {
-                Debug.WriteLine("Looking for: " + res + ", currentL: " + currentlevel.Count);
                 //Create the next level of BFS. While doing this, check if any platform has the resource you want. If yes return it.
                 foreach (var platform in currentlevel)
                 {
-
                     foreach (var edge in platform.GetInwardsEdges())
                     {
                         var candidatePlatform = (PlatformBlank)edge.GetParent();
                         //If true, we have already visited this platform
-                        if (previouslevel.Contains(candidatePlatform) || nextpreviouslevel.Contains(candidatePlatform))
+                        if (visited.Contains(candidatePlatform))
                         {
                             continue;
                         }
@@ -155,7 +151,7 @@ namespace Singularity.Manager
                     {
                         var candidatePlatform = (PlatformBlank)edge.GetChild();
                         //If true, we have already visited this platform
-                        if (previouslevel.Contains(platform) || nextpreviouslevel.Contains(platform))
+                        if (visited.Contains(candidatePlatform))
                         {
                             continue;
                         }
@@ -171,13 +167,11 @@ namespace Singularity.Manager
                         }
                     }
                     //mark that you have visited this platform now
-                    nextpreviouslevel.Add(platform);
+                    visited.Add(platform);
                 }
 
                 //Update levels
-                previouslevel.AddRange(nextpreviouslevel);
-                nextpreviouslevel = new List<PlatformBlank>();
-                currentlevel.AddRange(nextlevel);
+                currentlevel = nextlevel;
                 nextlevel = new List<PlatformBlank>();
             }
             return null;
@@ -399,7 +393,7 @@ namespace Singularity.Manager
         /// <param name="job">Its Job</param>
         /// <param name="assignedAction">The PlatformAction the unit is eventually assigned to</param>
         /// <returns></returns>
-        public Task RequestNewTask(GeneralUnit unit, JobType job, Optional<IPlatformAction> assignedAction)
+        internal Task RequestNewTask(GeneralUnit unit, JobType job, Optional<IPlatformAction> assignedAction)
         {
             var nodes = new List<INode>();
             Task task;
@@ -1093,7 +1087,9 @@ namespace Singularity.Manager
                 //In this case look if every assigned unit is on the same graph as the platform and handle it
                 else
                 {
-                    foreach (var unitbool in units)
+                    var unitbools = new List<Pair<GeneralUnit, bool>>();
+                    unitbools.AddRange(units);
+                    foreach (var unitbool in unitbools)
                     {
                         //In this case they are on the platform
                         if (unitbool.GetSecond())

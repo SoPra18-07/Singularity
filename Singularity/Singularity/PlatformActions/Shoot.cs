@@ -34,7 +34,11 @@ namespace Singularity.PlatformActions
 
         public override void Execute()
         {
-            if (AmmoCount <= 0) return;
+            if (AmmoCount <= 0)
+            {
+                return;
+            }
+
             AmmoCount--;
             ((DefenseBase) mPlatform).Shoot();
         }

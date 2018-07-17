@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
-using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.PlatformActions;
 using Singularity.Platforms;
@@ -14,7 +14,7 @@ using Singularity.Utils;
 namespace Singularity.Units
 {
     [DataContract]
-    public sealed class GeneralUnit : ISpatial
+    public sealed class GeneralUnit : ADie, ISpatial
     {
         [DataMember]
         public int Id { get; private set; }
@@ -104,7 +104,7 @@ namespace Singularity.Units
         [DataMember]
         public bool Active { get; set; }
 
-        public GeneralUnit(PlatformBlank platform, ref Director director)
+        public GeneralUnit(PlatformBlank platform, ref Director director) : base(ref director)
         {
             Graphid = platform.GetGraphIndex();
             platform.AddGeneralUnit(this);
@@ -125,9 +125,15 @@ namespace Singularity.Units
             mFinishTask = false;
         }
 
-        internal void ReloadContent(ref Director director)
+        internal void ReloadContent(ref Director director, ContentManager content)
         {
+            base.ReloadContent(ref director);
+            if (Carrying.IsPresent())
+            {
+                Carrying.Get().ReloadContent(ref director);
+            }
             mDirector = director;
+            mGenUnitTexture = content.Load<Texture2D>("GenUnit");
         }
 
         /// <summary>
@@ -233,7 +239,11 @@ namespace Singularity.Units
                 }
                 //This means we arrived at the point we want to leave the Resource and consider our work done
                 if (!mTask.End.IsPresent() || !CurrentNode.Equals(mTask.End.Get()) ||
-                    !ReachedTarget(mTask.End.Get().Center)) return;
+                    !ReachedTarget(mTask.End.Get().Center))
+                {
+                    return;
+                }
+
                 if (Carrying.IsPresent())
                 {
                     var res = Carrying.Get();
@@ -281,7 +291,10 @@ namespace Singularity.Units
                             mAssigned = true;
                         }
                         if (mAssigned)
+                        {
                             mTask.End.Get().Produce();
+                        }
+
                         RegulateMovement();
                         break;
 
@@ -300,7 +313,7 @@ namespace Singularity.Units
 
                     case JobType.Logistics:
 
-                        HandleTransport();
+                        HandleTransport(gametime);
                         RegulateMovement();
 
                         if (Carrying.IsPresent())
@@ -310,7 +323,7 @@ namespace Singularity.Units
                         break;
 
                     case JobType.Construction:
-                        HandleTransport();
+                        HandleTransport(gametime);
                         RegulateMovement();
 
                         if (Carrying.IsPresent())
@@ -325,7 +338,7 @@ namespace Singularity.Units
         /// <summary>
         /// Logistics and Construction resemble each other very much, so this is the method to handle both.
         /// </summary>
-        private void HandleTransport()
+        private void HandleTransport(GameTime time)
         {
             if (!mIsMoving && mDone)
             {
@@ -447,7 +460,9 @@ namespace Singularity.Units
             var movementVector = Vector2.Multiply(Geometry.NormalizeVector(distance), Speed);
             var dist = (float) Geometry.Length(distance);
             if (dist < 50)
+            {
                 movementVector = Vector2.Multiply(movementVector, dist / 50f);
+            }
 
             AbsolutePosition = AbsolutePosition + movementVector;
         }
@@ -462,11 +477,20 @@ namespace Singularity.Units
             {
                 ((PlatformBlank)CurrentNode).RemoveGeneralUnit(this);
 
-                mNodeQueue = mDirector.GetPathManager.GetPath(this, mDestination.Get(), ((PlatformBlank)mDestination.Get()).GetGraphIndex()).GetNodePath();
-
+                var path = mDirector.GetPathManager.GetPath(this,
+                    mDestination.Get(),
+                    ((PlatformBlank) mDestination.Get()).GetGraphIndex());
+                if ( path == null)
+                {
+                    return;
+                }
+                mNodeQueue = path.GetNodePath();
                 CurrentNode = mNodeQueue.Dequeue();
 
-                ((PlatformBlank) CurrentNode)?.AddGeneralUnit(this);
+                if ((PlatformBlank)CurrentNode != null && !((PlatformBlank)CurrentNode).HasDieded)
+                {
+                    ((PlatformBlank)CurrentNode)?.AddGeneralUnit(this);
+                }
             }
 
             if (CurrentNode == null)
@@ -481,7 +505,10 @@ namespace Singularity.Units
 
                 CurrentNode = mNodeQueue.Dequeue();
 
-                ((PlatformBlank)CurrentNode).AddGeneralUnit(this);
+                if (!((PlatformBlank) CurrentNode).HasDieded)
+                {
+                    ((PlatformBlank)CurrentNode).AddGeneralUnit(this);
+                }
             }
 
             // finally move to the current node.
@@ -532,7 +559,7 @@ namespace Singularity.Units
             }
         }
 
-        public bool Die()
+        public override bool Die()
         {
             // stats tracking for the death of a general unit
             mDirector.GetStoryManager.UpdateUnits("lost");
@@ -558,7 +585,11 @@ namespace Singularity.Units
         /// <param name="id"></param>
         public void Kill(int id)
         {
-            if (!mTask.Contains(id)) return;
+            if (!mTask.Contains(id))
+            {
+                return;
+            }
+
             switch (Job)
             {
                 case JobType.Defense:

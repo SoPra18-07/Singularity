@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
-using Singularity.PlatformActions;
 using Singularity.Platforms;
 using Singularity.Resources;
-using Singularity.Units;
 
 namespace Singularity.AI.Structures
 {
@@ -37,6 +33,7 @@ namespace Singularity.AI.Structures
         {
             mDrainingEnergy = DrainingEnergy;
             mIsBlueprint = false;
+            mType = EStructureType.Sentinel;
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
             
@@ -44,6 +41,8 @@ namespace Singularity.AI.Structures
 
         public override void Update(GameTime time)
         {
+            base.Update(time);
+
             if (mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds > 1000)
             {
                 if (mShootingTarget != null)

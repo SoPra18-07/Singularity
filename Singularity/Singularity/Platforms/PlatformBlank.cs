@@ -26,7 +26,7 @@ namespace Singularity.Platforms
     /// <inheritdoc cref="ICollider"/>
     /// <inheritdoc cref="IDamageable"/>
     [DataContract]
-    public class PlatformBlank : IRevealing, INode, ICollider, IMouseClickListener
+    public class PlatformBlank : ADie, IRevealing, INode, ICollider, IMouseClickListener
     {
         #region private
 
@@ -166,7 +166,6 @@ namespace Singularity.Platforms
         [DataMember]
         public int Id { get; private set; }
 
-        [DataMember]
         protected Director mDirector;
 
         ///<summary>
@@ -202,6 +201,7 @@ namespace Singularity.Platforms
         [DataMember]
         protected Vector2 mBaseOffset;
 
+        [DataMember]
         public bool HasDieded { get; private set; }
         #endregion
 
@@ -212,19 +212,23 @@ namespace Singularity.Platforms
 
         public bool[,] ColliderGrid { get; internal set; }
 
+        [DataMember]
         private List<IPlatformAction> mToKill = new List<IPlatformAction>();
 
         //This is for registering the platform at the DistrManager.
         [DataMember]
         public JobType Property { get; set; }
-
+        [DataMember]
         protected int mDestroyPlatSoundId;
-
+        [DataMember]
         protected int mPowerOnSoundId;
-
+        [DataMember]
         protected int mPowerDownSoundId;
 
-        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libsans12, ref Director director, EStructureType type = EStructureType.Blank, float centerOffsetY = -36, bool friendly = true)
+        [DataMember]
+        private HealthBar mHealthBar;
+
+        public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libsans12, ref Director director, EStructureType type = EStructureType.Blank, float centerOffsetY = -36, bool friendly = true) : base(ref director)
         {
 
             mPrevPlatformActions = new List<IPlatformAction>();
@@ -264,7 +268,7 @@ namespace Singularity.Platforms
 
             // Sound Effects
             mDestroyPlatSoundId = mDirector.GetSoundManager.CreateSoundInstance("DestroyPlat", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
-            mPowerOnSoundId = mDirector.GetSoundManager.CreateSoundInstance("PowerOff",
+            mPowerOnSoundId = mDirector.GetSoundManager.CreateSoundInstance("PowerDown",
                 Center.X,
                 Center.Y,
                 .1f,
@@ -331,6 +335,13 @@ namespace Singularity.Platforms
             // Track the creation of a platform in the statistics.
             director.GetStoryManager.UpdatePlatforms("created");
 
+            mHealthBar = new HealthBar(this);
+
+            if (!friendly)
+            {
+                mAddedToInputManager = true;
+            }
+
             // mInfoBox = new PlatformInfoBox(new List<IWindowItem> { new TextField("PlattformInfo", AbsolutePosition, AbsoluteSize, mLibSans12, Color.White) }, AbsoluteSize, new Color(0.86f, 0.86f, 0.86f), new Color(1f, 1, 1), true, this, mDirector);
 
             /*
@@ -362,6 +373,11 @@ namespace Singularity.Platforms
 
         public virtual void ReloadContent(ContentManager content, ref Director dir)
         {
+            base.ReloadContent(ref dir);
+            foreach (var resource in mResources)
+            {
+                resource.ReloadContent(ref dir);
+            }
             mPlatformSpriteSheet = content.Load<Texture2D>(mSpritename);
             mPlatformBaseTexture = content.Load<Texture2D>("PlatformBasic");
             mDirector = dir;
@@ -543,7 +559,7 @@ namespace Singularity.Platforms
             {
                 if (mType == EStructureType.Blank)
                 {
-                    Die();
+                    FlagForDeath();
                 }
                 else
                 {
@@ -610,6 +626,8 @@ namespace Singularity.Platforms
         {
             var transparency = mIsBlueprint ? 0.35f : 1f;
 
+            mHealthBar.Draw(spritebatch);
+
             switch (mSheet)
             {
                 case 0:
@@ -623,6 +641,26 @@ namespace Singularity.Platforms
                         1f,
                         SpriteEffects.None,
                         LayerConstants.BasePlatformLayer);
+                    break;
+                case 1:
+                    spritebatch.Draw(mPlatformBaseTexture,
+                        Vector2.Add(AbsolutePosition, new Vector2(0, 78)),
+                        null,
+                        mColorBase * transparency,
+                        0f,
+                        Vector2.Zero,
+                        1f,
+                        SpriteEffects.None,
+                        LayerConstants.BasePlatformLayer);
+                    spritebatch.Draw(mPlatformSpriteSheet,
+                        AbsolutePosition,
+                        new Rectangle(mPlatformWidth * mSheetPosition, 0, 148, 148),
+                        mColor * transparency,
+                        0f,
+                        Vector2.Zero,
+                        1f,
+                        SpriteEffects.None,
+                        LayerConstants.PlatformLayer);
                     break;
                 case 2:
                     // Cylinder (Unit Platforms
@@ -674,8 +712,8 @@ namespace Singularity.Platforms
             // only if the platform is friendly and the mouse is hovering over it is the info box shown
             if (Friendly && Bounds.Contains(new Vector2(Mouse.GetState().X, Mouse.GetState().Y)))
             {
-                mInfoBox.UpdateString(GetResourceString());
-                mInfoBox.Draw(spritebatch);
+                mInfoBox?.UpdateString(GetResourceString());
+                mInfoBox?.Draw(spritebatch);
             }
 
             // also draw the resources on top
@@ -698,9 +736,10 @@ namespace Singularity.Platforms
 
             Uncollide();
 
+            mHealthBar.Update(t);
+
             Bounds = new Rectangle((int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
 
-            // TODO: if the platform is an enemy it should not be subscribed to the input manager
             // TODO: if the platform is an enemy it should not be subscribed to the input manager
             if (!mAddedToInputManager)
             {
@@ -725,13 +764,19 @@ namespace Singularity.Platforms
             }
 
             // manage updating of values in the UI
-            if (!IsSelected || mDataSent) return;
+            if (!IsSelected || mDataSent)
+            {
+                return;
+            }
+
             // update previous values
             mPrevResources = GetPlatformResources();
             mPrevUnitAssignments = GetAssignedUnits();
             mPrevPlatformActions = GetIPlatformActions();
             mPreviousIsManuallyDeactivatedState = mIsManuallyDeactivated;
             mPreviousIsActiveState = IsActive();
+
+
 
             // send data to UIController
             mDirector.GetUserInterfaceController.SetDataOfSelectedPlatform(Id,
@@ -932,6 +977,24 @@ namespace Singularity.Platforms
                         mPlatformWidth,
                         170);
                     break;
+                case EStructureType.Sentinel:
+                    //Same as in Laser
+                    mSheet = 1;
+                    mSheetPosition = 1;
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        mPlatformWidth,
+                        165);
+                    break;
+                case EStructureType.Spawner:
+                    //Same as in Barracks
+                    mSheet = 2;
+                    mSheetPosition = 1;
+                    AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                        (int)AbsolutePosition.Y,
+                        mPlatformWidth,
+                        170);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -1033,11 +1096,15 @@ namespace Singularity.Platforms
             // stats tracking for a platform death
             mDirector.GetStoryManager.UpdatePlatforms(Friendly ? "lost" : "destroyed");
 
-            mDirector.GetInputManager.FlagForRemoval(this);
-            //Already tells the unit that it is no longer employed
-            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
-            mDirector.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            if (Friendly)
+            {
+                mDirector.GetInputManager.FlagForRemoval(this);
+                //Already tells the unit that it is no longer employed
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
+                mDirector.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            }
 
+            mDirector.GetMilitaryManager.RemovePlatform(this);
             // create the event in eventLog that the specialised part has been destroyed
             mDirector.GetEventLog.AddEvent(ELogEventType.PlatformDestroyed, mType + " has been destroyed", this);
             // if platform was an enemy keep red base
@@ -1070,11 +1137,10 @@ namespace Singularity.Platforms
             mDrainingEnergy = 0;
 
             UpdateValues();
-            mDirector.GetMilitaryManager.RemovePlatform(this);
             mDirector.GetMilitaryManager.AddUnit(this);
         }
 
-        public bool Die()
+        public override bool Die()
         {
             // stats tracking for a platform death
             mDirector.GetStoryManager.UpdatePlatforms(Friendly ? "lost" : "destroyed");
@@ -1125,15 +1191,26 @@ namespace Singularity.Platforms
 
             mIPlatformActions.ForEach(a => a.Platform = null);
             mIPlatformActions.RemoveAll(a => a.Die());
-            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
+            if (Friendly)
+            {
+                mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
+            }
+
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             if (!Friendly)
             {
                 mDirector.GetStoryManager.Level.Ai.Kill(this);
             }
-            mDirector.GetInputManager.FlagForRemoval(this);
-            mDirector.GetInputManager.RemoveMousePositionListener(mInfoBox);
+
+            if (Friendly)
+            {
+                mDirector.GetInputManager.FlagForRemoval(this);
+                mDirector.GetInputManager.RemoveMousePositionListener(mInfoBox);
+            }
+
+            mDirector.GetMilitaryManager.RemovePlatform(this);
             mInfoBox = null;
+            mAllGenUnits = null;
             //This is needed so this code is not called multiple times
             HasDieded = true;
             return true;
@@ -1213,12 +1290,13 @@ namespace Singularity.Platforms
             //TODO: Tell the PlatformAction to request everything it needs again.
             if (manually)
             {
+                mIsManuallyDeactivated = false;
                 // TODO find a power on sound
                 mDirector.GetSoundManager.PlaySound(mPowerOnSoundId);
             }
             ResetColor();
             //Only reregister the platforms if they are defense or production platforms
-            if (!mIsActive)
+            if (!mIsActive && (IsProduction() || IsDefense()))
             {
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Register(this);
             }
@@ -1260,7 +1338,11 @@ namespace Singularity.Platforms
             // TODO: remove this or change it to something more appropriately, this is used by @Ativelox for
             // TODO: debugging purposes to easily see which platforms are currently deactivated
             mColor = Color.Green;
-            if (!mIsActive) return;
+            if (!mIsActive)
+            {
+                return;
+            }
+
             //Only unregister if this platform is a defense or production platform
             if (IsDefense())
             {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.Serialization;
+using EpPathFinding.cs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -17,7 +18,7 @@ namespace Singularity.Units
     /// <inheritdoc cref="ICollider"/>
     /// <inheritdoc cref="IRevealing"/>
     [DataContract]
-    internal abstract class FreeMovingUnit : ICollider, IRevealing, IMouseClickListener, IMousePositionListener
+    public abstract class FreeMovingUnit : ADie, ICollider, IRevealing, IMouseClickListener, IMousePositionListener
     {
         /// <summary>
         /// The unique ID of the unit.
@@ -42,8 +43,9 @@ namespace Singularity.Units
         /// <summary>
         /// The current time used for moving time information between methods not called by update.
         /// </summary>
-        [DataMember]
         protected double mCurrentTime;
+
+        protected readonly HealthBar mHealthBar;
 
         [DataMember]
         public bool KillMe { get; protected set; }
@@ -131,7 +133,6 @@ namespace Singularity.Units
         protected double mZoomSnapshot;
         [DataMember]
         public Rectangle AbsBounds { get; protected set; }
-        //TODO: Make clear whether we need to reload that
         public bool[,] ColliderGrid { get; protected set; }
         [DataMember]
         public int RevelationRadius { get; protected set; }
@@ -220,7 +221,7 @@ namespace Singularity.Units
         /// map, and implements pathfinding for objects on the map. It also allows subclasses to have
         /// health and to be damaged.
         /// </remarks>
-        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true)
+        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true) : base(ref director)
         {
             Id = director.GetIdGenerator.NextiD(); // id for the specific unit.
 
@@ -236,6 +237,8 @@ namespace Singularity.Units
 
             Friendly = friendly;
 
+            mHealthBar = new HealthBar(this);
+
             if (friendly)
             {
                 mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
@@ -245,10 +248,16 @@ namespace Singularity.Units
 
         protected void ReloadContent(ref Director director, Camera camera, ref Map.Map map)
         {
+            base.ReloadContent(ref director);
             mPathfinder = new FreeMovingPathfinder();
             mDirector = director;
             mCamera = camera;
             mMap = map;
+            if (Friendly)
+            {
+                mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
+                mDirector.GetInputManager.AddMousePositionListener(this);
+            }
         }
 
         #region Pathfinding Methods
@@ -279,7 +288,8 @@ namespace Singularity.Units
             mPath = new Stack<Vector2>();
             mPath = mPathfinder.FindPath(currentPosition,
                 mTargetPosition,
-                ref mMap);
+                ref mMap,
+                Friendly? EndNodeUnWalkableTreatment.DISALLOW : EndNodeUnWalkableTreatment.ALLOW);
 
             if (GlobalVariables.DebugState)
             {
@@ -423,11 +433,11 @@ namespace Singularity.Units
             Health -= damage;
             if (Health <= 0 && !HasDieded)
             {
-                Die();
+                FlagForDeath();
             }
         }
 
-        public virtual bool Die()
+        public override bool Die()
         {
             HasDieded = true;
             // stats tracking for the death of any free moving unit
@@ -438,6 +448,11 @@ namespace Singularity.Units
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             mDirector.GetMilitaryManager.RemoveUnit(this);
             mIsMoving = false;
+            if (!Friendly)
+            {
+                // note that this has to be an enemy unit, otherwise it wouldn't be friendly.
+                mDirector.GetStoryManager.Level.Ai.Kill((EnemyUnit)this);
+            }
             mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, (Friendly ? "A friendly" : "An enemy") + " unit was killed!", this);
 
             return true;

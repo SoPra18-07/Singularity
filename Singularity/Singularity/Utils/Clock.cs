@@ -20,6 +20,7 @@ namespace Singularity.Utils
         [DataMember]
         private TimeSpan mShootLaserTicker;
 
+
         public Clock()
         {
             mIngametime = new TimeSpan(0, 0, 0, 0);
@@ -36,11 +37,11 @@ namespace Singularity.Utils
                 mProduceTicker = new TimeSpan(0, 0, 0);
             }
             //THIS determines the attackspeed of a laser tower.
+            //When changing this also change the values in the towers!
             if (mShootLaserTicker.TotalMilliseconds > 1000)
             {
                 mShootLaserTicker = new TimeSpan(0, 0, 0, 0);
             }
-
             mShootLaserTicker = mShootLaserTicker.Add(time.ElapsedGameTime);
             mProduceTicker = mProduceTicker.Add(time.ElapsedGameTime);
         }

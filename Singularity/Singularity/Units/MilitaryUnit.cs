@@ -15,7 +15,7 @@ namespace Singularity.Units
 {
     /// <inheritdoc cref="ControllableUnit"/>
     [DataContract]
-    internal class MilitaryUnit : FreeMovingUnit, IShooting
+    public class MilitaryUnit : FreeMovingUnit, IShooting
     {
         /// <summary>
         /// Default width of a unit before scaling.
@@ -49,7 +49,7 @@ namespace Singularity.Units
         /// Used to set the enemy target that should be shot at.
         /// </summary>
         [DataMember]
-        private ICollider mShootingTarget;
+        protected ICollider mShootingTarget;
 
 
         /// <summary>
@@ -75,7 +75,6 @@ namespace Singularity.Units
         /// <summary>
         /// Used to make sure that it doesn't shoot too often.
         /// </summary>
-        [DataMember]
         private float mShootingTimer = -1f;
 
 
@@ -119,6 +118,7 @@ namespace Singularity.Units
         public void ReloadContent(ContentManager content, ref Director director, Camera camera, ref Map.Map map)
         {
             ReloadContent(ref director, camera, ref map);
+            mSoundId = mDirector.GetSoundManager.CreateSoundInstance("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -128,6 +128,8 @@ namespace Singularity.Units
             {
                 throw new Exception("load the MilSheet and GlowTexture first!");
             }
+
+            mHealthBar.Draw(spriteBatch);
 
             // Draw military unit
             spriteBatch.Draw(
@@ -186,6 +188,8 @@ namespace Singularity.Units
             //make sure to update the relative bounds rectangle enclosing this unit.
             Bounds = new Rectangle(
                 (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
+
+            mHealthBar.Update(gameTime);
 
 
             // this makes the unit rotate according to the mouse position when its selected and not moving.
@@ -250,8 +254,8 @@ namespace Singularity.Units
                         Shoot(mShootingTarget);
                     }
                 }
+                mDirector.GetStoryManager.Level.Ai.Shooting(this, mShootingTarget, gameTime);
             }
-
 
         }
 

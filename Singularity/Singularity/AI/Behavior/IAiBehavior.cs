@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Singularity.Property;
 using Microsoft.Xna.Framework;
 using Singularity.Manager;
+using Singularity.Units;
 
 namespace Singularity.AI.Behavior
 {
@@ -27,9 +28,19 @@ namespace Singularity.AI.Behavior
         void Spawn(GameTime gametime);
 
         /// <summary>
+        /// Creates a new base in a specific way specified by the implementation
+        /// </summary>
+        /// <param name="gametime">A snapshot of timing values</param>
+        void CreateNewBase(GameTime gametime);
+
+        /// <summary>
         /// Needed for reloading the references etc. after deserializing
         /// </summary>
         /// <param name="dir"></param>
         void ReloadContent(ref Director dir);
+
+        void Kill(EnemyUnit unit);
+
+        void Shooting(MilitaryUnit sender, ICollider shootingAt, GameTime gametime);
     }
 }

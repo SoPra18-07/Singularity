@@ -11,7 +11,7 @@ using System.Diagnostics;
 namespace Singularity.Platforms
 {
     [DataContract]
-    public sealed class Road : ISpatial, IEdge
+    public sealed class Road : ADie, ISpatial, IEdge
     {
         [DataMember]
         public Vector2 Source { get; set; }
@@ -36,6 +36,7 @@ namespace Singularity.Platforms
         /// If it is a blueprint, then set this value to true. Once the road changes from a blueprint to a real road,
         /// this should automatically also add the road to the graph
         /// </summary>
+        [DataMember]
         public bool Blueprint
         {
             get { return mBlueprint; }
@@ -55,7 +56,7 @@ namespace Singularity.Platforms
         /// <param name="source">The source IRevealing object from which this road gets drawn</param>
         /// <param name="destination">The destinaion IRevealing object to which this road gets drawn</param>
         /// <param name="blueprint">Whether this road is a blueprint or not</param>
-        public Road(PlatformBlank source, PlatformBlank destination, ref Director director, bool blueprint = false)
+        public Road(PlatformBlank source, PlatformBlank destination, ref Director director, bool blueprint = false) : base(ref director)
         {
 
             // the hardcoded values need some changes for different platforms, ill wait until those are implemented to find a good solution.
@@ -130,14 +131,15 @@ namespace Singularity.Platforms
             return Vector2.Distance(Source, Destination);
         }
 
-        public bool Die()
+        public override bool Die()
         {
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             return true;
         }
 
-        public void ReloadContent(ref Director director)
+        public new void ReloadContent(ref Director director)
         {
+            base.ReloadContent(ref director);
             mDirector = director;
         }
     }

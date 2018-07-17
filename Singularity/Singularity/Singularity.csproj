@@ -61,22 +61,28 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AI\BasicAI.cs" />
-    <Compile Include="AI\Behavior\IAIBehavior.cs" />
-    <Compile Include="AI\Properties\EAIDifficulty.cs" />
+    <Compile Include="AI\BasicAi.cs" />
+    <Compile Include="AI\Behavior\AdvancedAiBehavior.cs" />
+    <Compile Include="AI\Behavior\IAiBehavior.cs" />
+    <Compile Include="AI\Helper\PrioritizableObject.cs" />
+    <Compile Include="AI\Helper\PrioritizableObjectAscendingComparer.cs" />
+    <Compile Include="AI\Properties\EaiDifficulty.cs" />
+    <Compile Include="AI\Properties\EEnemyType.cs" />
     <Compile Include="AI\Properties\IArtificalIntelligence.cs" />
     <Compile Include="AI\StructureLayoutHolder.cs" />
     <Compile Include="AI\Structures\Sentinel.cs" />
-    <Compile Include="AI\Behavior\SimpleAIBehavior.cs" />
+    <Compile Include="AI\Behavior\SimpleAiBehavior.cs" />
     <Compile Include="AI\Structures\Spawner.cs" />
     <Compile Include="Levels\PlatformDestructionTestLevel.cs" />
     <Compile Include="Events\SpatialPositionEventArgs.cs" />
     <Compile Include="Levels\TechDemo.cs" />
+    <Compile Include="Manager\DeathManager.cs" />
     <Compile Include="Nature\Rock.cs" />
     <Compile Include="Levels\BasicLevel.cs" />
     <Compile Include="Levels\ILevel.cs" />
     <Compile Include="Manager\DistributionDirector.cs" />
     <Compile Include="Manager\DistributionManager.cs" />
+    <Compile Include="Property\ADie.cs" />
     <Compile Include="Screen\Checkbox.cs" />
     <Compile Include="PlatformActions\RefineResourceAction.cs" />
     <Compile Include="Screen\ELogEventType.cs" />
@@ -85,6 +91,7 @@
     <Compile Include="Nature\Puddle.cs" />
     <Compile Include="Screen\BarIWindowItem.cs" />
     <Compile Include="Screen\EventLogIWindowItem.cs" />
+    <Compile Include="Screen\HealthBar.cs" />
     <Compile Include="Screen\PlatformActionIWindowItem.cs" />
     <Compile Include="PlatformActions\ConsumeResource.cs" />
     <Compile Include="Exceptions\MiniMapProportionsOffException.cs" />
@@ -116,6 +123,8 @@
     <Compile Include="Screen\IndexSwitcherIWindowItem.cs" />
     <Compile Include="Screen\PlatformInfoBox.cs" />
     <Compile Include="Screen\ScreenClasses\MenuWindow.cs" />
+    <Compile Include="Screen\ScreenClasses\LoseScreen.cs" />
+    <Compile Include="Screen\ScreenClasses\WinScreen.cs" />
     <Compile Include="Screen\SliderHandler.cs" />
     <Compile Include="Screen\TextAndAmountIWindowItem.cs" />
     <Compile Include="Units\EnemyHeavy.cs" />
@@ -226,6 +235,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Screen\UserInterfaceController.cs" />
+    <Compile Include="Utils\AscendingIntegerComparer.cs" />
     <Compile Include="Utils\Clock.cs" />
     <Compile Include="Utils\State3.cs" />
     <Compile Include="Utils\Geometry.cs" />

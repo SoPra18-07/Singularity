@@ -51,6 +51,14 @@ namespace Singularity.Map
             mDirector = director;
         }
 
+        public void ReloadContent(ref Director dir)
+        {
+            mDirector = dir;
+            foreach (var resource in mResourceMap)
+            {
+                resource.ReloadContent(ref dir);
+            }
+        }
 
         public Optional<Resource> GetWellResource(Vector2 location)
         {

@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
-using Singularity.PlatformActions;
 using Singularity.Property;
 using Singularity.Resources;
 using Singularity.Sound;
@@ -21,6 +18,12 @@ namespace Singularity.Platforms
     {
         [DataMember]
         private const int DrainingEnergy = 40;
+
+        [DataMember]
+        private int mShotsperSecond;
+
+        [DataMember]
+        private int mShotsDone;
 
         /// <summary>
         /// Constructs a Laser (i.e. uses energy) defense platform that automatically attacks
@@ -44,6 +47,8 @@ namespace Singularity.Platforms
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
             mSoundId = mDirector.GetSoundManager.CreateSoundInstance("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
+            mShotsperSecond = 0;
+            mShotsDone = 0;
         }
 
 
@@ -62,27 +67,54 @@ namespace Singularity.Platforms
             }
         }
 
+        public override bool Die()
+        {
+            mShootingTarget = null;
+            mDefenseAction = null;
+            return base.Die();
+        }
+
         public override void Update(GameTime time)
         {
-            //IF YOU CHANGE THIS THRESHOLD CHANGE IT IN THE CLOCK, TOO. THIS DETERMINES THE ATTACKSPEED.
-            //Ask for friendly here because the sentinel handles the shooting on its own!
-            if (mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds > 1000)
+            base.Update(time);
+            //Increase attackspeed for every unit present. Only recalculate attackspeed once every second.
+            if (mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds >= 1000)
             {
-                //Shoot for every unit thats present
+                mShotsperSecond = 0;
+                mShotsDone = 0;
                 foreach (var unitbool in mAssignedUnits[JobType.Defense])
                 {
                     if (unitbool.GetSecond())
                     {
-                        mDefenseAction.Execute();
+                        mShotsperSecond++;
                     }
                 }
+            }
+
+            //Ask for friendly here because the sentinel handles the shooting on its own!
+            //To the calculations: 1000 (so one second) is the maximum value of the shootinglaserticker.
+            //We now just calculate whether that ticker is in a timespan where we are allowed to shoot again.
+            //This formula very likely can be exploited by the player. But he doesnt have to know ;).
+            if (mShotsperSecond != 0)
+            {
+                Console.Out.WriteLine(1000 / mShotsperSecond * mShotsDone);
+                Console.Out.WriteLine(1000 / mShotsperSecond * (mShotsDone + 1));
+            }
+            if (mShotsperSecond != 0 &&
+                !(mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds > 1000) &&
+                (1000 / mShotsperSecond * mShotsDone <= mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds
+                 && mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds <= 1000 / mShotsperSecond * (mShotsDone + 1)) 
+                && Friendly)
+            {
+                mDefenseAction.Execute();
+                mShotsDone++;
             }
         }
 
         public override void ReloadContent(ContentManager content, ref Director dir)
         {
-            mSoundId = mDirector.GetSoundManager.CreateSoundInstance("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
             base.ReloadContent(content, ref dir);
+            mSoundId = mDirector.GetSoundManager.CreateSoundInstance("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
         }
     }
 }

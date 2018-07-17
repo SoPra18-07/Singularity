@@ -28,7 +28,7 @@ namespace Singularity.PlatformActions
             var camera = mDirector.GetStoryManager.Level.Camera;
             var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryFast(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
-            mDirector.GetMilitaryManager.AddUnit(unit);
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(unit);
         }
     }
 
@@ -45,7 +45,7 @@ namespace Singularity.PlatformActions
             var camera = mDirector.GetStoryManager.Level.Camera;
             var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryHeavy(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
-            mDirector.GetMilitaryManager.AddUnit(unit);
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(unit);
         }
     }
 
@@ -60,7 +60,10 @@ namespace Singularity.PlatformActions
 
         protected override void CreateUnit()
         {
-            mDirector.GetStoryManager.Level.GameScreen.AddObject(new GeneralUnit(mPlatform, ref mDirector));
+            var unit = new GeneralUnit(mPlatform, ref mDirector);
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(unit);
+
+            mDirector.GetUserInterfaceController.UpdateSLiderHandler();
         }
     }
 
@@ -94,7 +97,7 @@ namespace Singularity.PlatformActions
             var camera = mDirector.GetStoryManager.Level.Camera;
             var map = mDirector.GetStoryManager.Level.Map;
             var unit = new MilitaryUnit(mPlatform.Center + mOffset, camera, ref mDirector, ref map);
-            mDirector.GetMilitaryManager.AddUnit(unit);
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(unit);
         }
     }
 
@@ -134,7 +137,10 @@ namespace Singularity.PlatformActions
         {
             // Debug.WriteLine(mBuildingCost.Values.Sum() + ", " + mMissingResources.Values.Sum() + ", " + mToRequest.Values.Sum());
             if (State != PlatformActionState.Active)
+            {
                 return;
+            }
+
             if (mToRequest.Count > 0)
             {
                 var resource = mToRequest.Keys.ElementAt(0);
@@ -145,12 +151,19 @@ namespace Singularity.PlatformActions
                     mToRequest[resource] = mToRequest[resource] - 1;
                 }
                 mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).RequestResource(mPlatform, resource, this, mIsBuilding);
-                Debug.WriteLine("Requested " + resource + " just now. Waiting. (" + mPlatform.Id + ")");
+                Console.Out.WriteLine("Requested " + resource + " just now. Waiting. (" + mPlatform.Id + ")");
             }
 
-            foreach (var r in mPlatform.GetPlatformResources().ToList()) GetResource(r.Type);
+            foreach (var r in mPlatform.GetPlatformResources().ToList())
+            {
+                GetResource(r.Type);
+            }
 
-            if (mMissingResources.Count > 0) return;
+            if (mMissingResources.Count > 0)
+            {
+                return;
+            }
+
             State = PlatformActionState.Available;
             CreateUnit();
         }
@@ -159,7 +172,11 @@ namespace Singularity.PlatformActions
 
         private void GetResource(EResourceType type)
         {
-            if (!mMissingResources.ContainsKey(type)) return;
+            if (!mMissingResources.ContainsKey(type))
+            {
+                return;
+            }
+
             var unused = mPlatform.GetResource(type);
 
             mMissingResources[type] -= 1;
@@ -194,6 +211,11 @@ namespace Singularity.PlatformActions
         public override Dictionary<EResourceType, int> GetRequiredResources()
         {
             return mMissingResources;
+        }
+
+        public Dictionary<EResourceType, int> GetBuildingCost()
+        {
+            return mBuildingCost;
         }
 
         public override void UiToggleState()

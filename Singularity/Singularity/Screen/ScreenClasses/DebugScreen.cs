@@ -97,7 +97,6 @@ namespace Singularity.Screen.ScreenClasses
 
 
 
-
             spriteBatch.DrawString(mFont, "GameObjects", new Vector2(15, 200), Color.White);
             spriteBatch.DrawString(mFont, "PlatformCount: " + mMap.GetStructureMap().GetPlatformList().Count + ", " + mActivePlatforms + ", " + mDeactivePlatforms, new Vector2(30, 235), Color.White);
             spriteBatch.DrawString(mFont, "GraphCount: " + mMap.GetStructureMap().GetGraphCount(), new Vector2(30, 255), Color.White);
@@ -110,9 +109,9 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.DrawLine(300, 209, 300, 335, Color.White);
 
 
-
-            spriteBatch.DrawString(mFont, "FPS: " + mFps, new Vector2(15, 365), Color.White);
-            spriteBatch.DrawString(mFont, "UPS: " + mUps, new Vector2(15, 385), Color.White);
+            spriteBatch.DrawString(mFont, "EnemyDifficulty: " + mDirector.GetStoryManager.Level.Ai.Difficulty, new Vector2(15, 355), Color.White);
+            spriteBatch.DrawString(mFont, "FPS: " + mFps, new Vector2(15, 395), Color.White);
+            spriteBatch.DrawString(mFont, "UPS: " + mUps, new Vector2(15, 415), Color.White);
 
             mFowButton.Draw(spriteBatch);
 
@@ -129,14 +128,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             mFont = content.Load<SpriteFont>("LibSans14");
 
-            var text = DisableText;
-
-            if (!GlobalVariables.mFowEnabled)
-            {
-                text = EnableText;
-            }
-
-            mFowButton = new Button(text, mFont, new Vector2(130, 450), Color.Red, true) {Opacity = 1f};
+            mFowButton = new Button(DisableText, mFont, new Vector2(130, 450), Color.Red, true) {Opacity = 1f};
 
             mFowButton.ButtonClicked += FowButtonClicked;
             mFowButton.ButtonReleased += FowButtonReleased;
@@ -230,14 +222,7 @@ namespace Singularity.Screen.ScreenClasses
 
             GlobalVariables.mFowEnabled = !GlobalVariables.mFowEnabled;
 
-            if (GlobalVariables.mFowEnabled)
-            {
-                mFowButton.ChangeText(DisableText);
-            }
-            else
-            {
-                mFowButton.ChangeText(EnableText);
-            }
+            mFowButton.ChangeText(GlobalVariables.mFowEnabled ? DisableText : EnableText);
 
             mClicked = true;
         }

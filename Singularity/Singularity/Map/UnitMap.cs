@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
+using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Units;
 
@@ -15,6 +16,11 @@ namespace Singularity.Map
         private readonly UnitMapTile[,] mUnitGrid;
         private readonly Dictionary<int, Vector2> mLookupTable;
         private readonly int mMapSizeX;
+
+        /// <summary>
+        /// The number of player platforms on the map.
+        /// </summary>
+        internal int PlayerPlatformCount { get; private set; }
 
         /// <summary>
         /// Constructs a unit map which stores a grid with all free moving units on it.
@@ -68,6 +74,17 @@ namespace Singularity.Map
 
             // and put the unit in the lookup table
             mLookupTable.Add(unit.Id, unitPos);
+
+            var platform = unit as PlatformBlank;
+            if (platform == null)
+            {
+                return;
+            }
+
+            if (platform.Friendly)
+            {
+                PlayerPlatformCount++;
+            }
         }
 
         /// <summary>
@@ -76,6 +93,11 @@ namespace Singularity.Map
         /// <param name="unit"></param>
         internal void MoveUnit(ICollider unit)
         {
+            if (!mLookupTable.ContainsKey(unit.Id))
+            {
+                return;
+            }
+
             // first check if the unit moved out of its current tile
             var newPos = VectorToTilePos(unit.AbsolutePosition);
             var oldPos = mLookupTable[unit.Id];
@@ -112,7 +134,7 @@ namespace Singularity.Map
             {
                 for (var y = 0; y < 31; y++)
                 {
-                    if (mUnitGrid[x, y].UnitList.Contains(unit) && unit is Settler)
+                    if (mUnitGrid[x, y].UnitList.Contains(unit) && unit is Quarry)
                     {
                         Console.Out.WriteLine(x + " " + y);
                     }
@@ -120,6 +142,17 @@ namespace Singularity.Map
             }
             mUnitGrid[(int) unitPos.X, (int) unitPos.Y].UnitList.Remove(unit);
             mLookupTable.Remove(unit.Id);
+
+            var platform = unit as PlatformBlank;
+            if (platform == null)
+            {
+                return;
+            }
+
+            if (platform.Friendly)
+            {
+                PlayerPlatformCount--;
+            }
         }
 
         /// <summary>
