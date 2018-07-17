@@ -11,6 +11,8 @@ using Singularity.AI.Helper;
 using Singularity.AI.Properties;
 using Singularity.AI.Structures;
 using Singularity.Manager;
+using Singularity.Platforms;
+using Singularity.Property;
 using Singularity.Units;
 
 namespace Singularity.AI.Behavior
@@ -54,10 +56,40 @@ namespace Singularity.AI.Behavior
     ///  current difficulty just to make things more exciting. The base gets literally just spawned, but it should at all times
     ///  be made sure that it doesn't "collide" with any of the existing bases and should NEVER be in the view of the player
     ///  when spawned, since that would look extremely weird.
-    ///  
+    ///
+    ///
+    ///  This is what the behavior already does:
+    ///
+    ///  Move: The AI has 3 different unit "typed", attacking, scouting and defending, each of them being a different
+    ///  enemy unit, where scouting is a fast unit, attacking a normal one and defending a heavy one. The scouting units
+    ///  always try to avoid battle and instantly flee after attacking something, whereas the defending units and the attacking
+    ///  ones always focus down certain targets that are dangerous. The snapshot mentioned above is not yet implemented, since
+    ///  I think the remaining time should be invested into bugfixes. All of the units move in squads, where the scouting units
+    ///  always try to form squads of three, and enemy units try to move with all their forces at once. All the stuff like when
+    ///  to move etc. is handled in the respective method and can be read there. Scouting units serve as "markers" if you will,
+    ///  as soon as a scouting unit attacks something that "something" is marked for the AI as hostile and it will move with
+    ///  its attacking units there if it decides that it is ready to attack. This actually looks pretty cool in action
+    ///
+    ///  Spawn: So I made it in such a way that the AI doesn't do anything the first X minutes (defined by difficulty) and only
+    ///  "activates" itself after said minutes or if it gets attacked directly (one of its units). The spawning itself is pretty simple
+    ///  every X seconds a new scouting unit spawns, and every "base" comes with 5 defending units. The spawning of the attacking units
+    ///  is as described above, the AI creates a snapshot at one time and in X minutes creates as much attacking units as the player
+    ///  had then, and repeats itself. The AI can never have more units than the player once had at his peak. (this also serves as
+    ///  a unit limitation)
+    ///
+    ///  New Base: I've kept the conditions for a new base pretty simple. Right now if the player has more than 20 platforms OR more than
+    ///  4 defensive platforms a new base gets created by the AI. This works in such a way that for the 3rd base the condition is 40 platforms OR
+    ///  8 defensive platforms etc. Every base spawns with its own set of defensive units, and defending units roam freely between all bases.
+    ///  Thats probably about it with this one. The functionality of not spawning in the players viewable area should be fulfilled, but its
+    ///  hard to test, since it is completely random where they get placed. (I've never had them be in my viewable area and I've tested hours and hours).
+    ///  Right now bases can overlap with eachother, but this shouldn't be too hard to address.
     /// </remarks>
-    public sealed class AdvancedAIBehavior : IAiBehavior
+    public sealed class AdvancedAiBehavior : IAiBehavior
     {
+        private const int PlatformCountNewBaseTrigger = 20;
+
+        private const int DefensePlatformCountNewBaseTrigger = 4;
+
         private const float PriorityAddition = 0.1f;
 
         private readonly int[] mUnitsMovementCooldown = new int[3] {0, 0, 0};
@@ -70,8 +102,7 @@ namespace Singularity.AI.Behavior
         /// </summary>
         private readonly int[] mIdleTime = new int[3]
         {
-            //300000 this is currently commented since we don't want to wait 5 minutes for debugging, remove this for actual gameplay
-            0,
+            300000,
             240000,
             120000
         };
@@ -82,7 +113,12 @@ namespace Singularity.AI.Behavior
         // than the easier ones, which would make it completely broken (probably already is)
         private const int ScoutCreationCooldown = 60000;
 
-        private readonly int[] mAttackCreationCooldown = new int[3] {180000, 120000, 120000};
+        private readonly int[] mAttackCreationCooldown = new int[3]
+        {
+            180000,
+            120000,
+            60000
+        };
 
         private const int ScoutingSquadSize = 3;
 
@@ -90,11 +126,16 @@ namespace Singularity.AI.Behavior
 
         private int mOldPlayerMilitaryUnitCount;
 
+        private bool mActive;
 
-
+        private int mBaseCount;
+        
+        /// <summary>
+        /// as long as this is true the AI will keep attacking the target specified in mAttackPosition.
+        /// </summary>
         private bool mShouldAttack;
 
-        private Vector2 mAttackPosition;
+        private ICollider mAttackPosition;
 
         /// <summary>
         /// The ai this behavior is used on.
@@ -109,7 +150,7 @@ namespace Singularity.AI.Behavior
 
         private readonly Random mRandom;
 
-        private readonly Director mDirector;
+        private Director mDirector;
 
         private readonly IPriorityQueue<PrioritizableObject<EnemyUnit>> mScoutingUnits;
 
@@ -119,7 +160,7 @@ namespace Singularity.AI.Behavior
 
         private readonly Dictionary<EnemyUnit, bool> mIsCurrentlyMoving;
 
-        public AdvancedAIBehavior(IArtificalIntelligence ai, ref Director director)
+        public AdvancedAiBehavior(IArtificalIntelligence ai, ref Director director)
         {
             mAi = ai;
             mDirector = director;
@@ -132,39 +173,52 @@ namespace Singularity.AI.Behavior
             mAttackingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
             mDefendingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
 
-            //this behavior starts off with one unit
-            var spawners = ai.GetSpawners();
-
-            if (spawners.Count <= 0)
-            {
-                // we don't have any spawners available in the given structure thus not able to spawn any enemy units.
-                return;
-            }
-
-            if (spawners[0].Count <= 0)
-            {
-                return;
-            }
-
-            // we definitely have one spawner on the initial position, generate one scouting unit.
-            SpawnOneUnit(EEnemyType.Scout, ai.GetSpawners()[0][0]);
-
-            // also generate some defending units, note that these don't move away from their base, but are more or less stationary defenders.
-            SpawnOneUnit(EEnemyType.Defend, ai.GetSpawners()[0][0]);
-            SpawnOneUnit(EEnemyType.Defend, ai.GetSpawners()[0][0]);
-            SpawnOneUnit(EEnemyType.Defend, ai.GetSpawners()[0][0]);
-            SpawnOneUnit(EEnemyType.Defend, ai.GetSpawners()[0][0]);
-            SpawnOneUnit(EEnemyType.Defend, ai.GetSpawners()[0][0]);
+            CreateNewBase(null);
         }
 
         public void CreateNewBase(GameTime gametime)
         {
+            if (!(mDirector.GetMilitaryManager.PlayerPlatformCount > PlatformCountNewBaseTrigger * mBaseCount ||
+                  mDirector.GetMilitaryManager.PlayerDefensePlatformCount > DefensePlatformCountNewBaseTrigger * mBaseCount))
+            {
+                return;
+            }
 
+            var baseToAdd = StructureLayoutHolder.GetStructureOnMap(mAi.Difficulty, ref mDirector);
+
+            mAi.AddStructureToGame(baseToAdd.GetFirst(), baseToAdd.GetSecond());
+
+            var spawners = mAi.GetSpawners();
+
+            if (spawners.Count <= mBaseCount || spawners[mBaseCount].Count <= 0)
+            {
+                // we don't have any spawners available in the given structure thus not able to spawn any enemy units.
+                mBaseCount++;
+                return;
+            }
+
+            Debug.WriteLine("spawn now");
+
+            SpawnOneUnit(EEnemyType.Scout, mAi.GetSpawners()[mBaseCount][0]);
+
+            // also generate some defending units, note that these don't move away from their base, but are more or less stationary defenders.
+            SpawnOneUnit(EEnemyType.Defend, mAi.GetSpawners()[mBaseCount][0]);
+            SpawnOneUnit(EEnemyType.Defend, mAi.GetSpawners()[mBaseCount][0]);
+            SpawnOneUnit(EEnemyType.Defend, mAi.GetSpawners()[mBaseCount][0]);
+            SpawnOneUnit(EEnemyType.Defend, mAi.GetSpawners()[mBaseCount][0]);
+            SpawnOneUnit(EEnemyType.Defend, mAi.GetSpawners()[mBaseCount][0]);
+
+            mBaseCount++;
         }
 
         public void Move(GameTime gametime)
         {
-            if (gametime.TotalGameTime.TotalMilliseconds < mIdleTime[(int) mAi.Difficulty])
+            if (gametime.TotalGameTime.TotalMilliseconds > mIdleTime[(int) mAi.Difficulty] && !mActive)
+            {
+                mActive = true;
+            }
+
+            if (!mActive || mBaseCount <= 0)
             {
                 return;
             }
@@ -202,7 +256,7 @@ namespace Singularity.AI.Behavior
                     {
                         break;
                     }
-
+                    
                     squadMembers.Add(queue.DeleteMax().GetObject());
                 }
 
@@ -265,7 +319,7 @@ namespace Singularity.AI.Behavior
 
                 foreach (var squadMember in squadMembers)
                 {
-                    squadMember.SetMovementTarget(position + new Vector2(offset, offset));
+                    squadMember.SetMovementTarget(position.Center + new Vector2(position.AbsBounds.Width / 2f, position.AbsBounds.Height / 2f) + new Vector2(offset, offset));
                     mIsCurrentlyMoving[squadMember] = true;
                     AddToQueue(EEnemyType.Attack, squadMember);
 
@@ -320,7 +374,12 @@ namespace Singularity.AI.Behavior
 
         public void Spawn(GameTime gametime)
         {
-            if (gametime.TotalGameTime.TotalMilliseconds < mIdleTime[(int)mAi.Difficulty])
+            if (gametime.TotalGameTime.TotalMilliseconds > mIdleTime[(int)mAi.Difficulty] && !mActive)
+            {
+                mActive = true;
+            }
+
+            if (!mActive || mBaseCount <= 0)
             {
                 return;
             }
@@ -364,8 +423,34 @@ namespace Singularity.AI.Behavior
                 mAttackCreationCooldown[(int) mAi.Difficulty])
             {
                 // the timer is over, create as much units as the player had at that moment
+                var spawners = mAi.GetSpawners();
 
+                var myUnitCount = GetPrioritiyQueueByEnemyType(EEnemyType.Attack).Count;
+
+                for (var i = 0; i < mOldPlayerMilitaryUnitCount - myUnitCount; i++)
+                {
+                    // this represents all the spawners at a random structure of the AI
+                    var structureToSpawnAt = spawners[mRandom.Next(spawners.Count)];
+
+                    // this represents one random spawner at the current structure, this might possibly not work, if
+                    // there's a structure with no spawner, but if we try to "catch" that bug we might run into an
+                    // infinite loop, so I've just left it since this will be read if it happens at some point.
+                    // EDIT: this does fix it but not in a good way, since now the AI won't have enough units
+                    if (structureToSpawnAt.Count <= 0)
+                    {
+                        continue;
+                    }
+
+                    var randomSpawner = structureToSpawnAt[mRandom.Next(structureToSpawnAt.Count)];
+                    
+                    SpawnOneUnit(EEnemyType.Attack, randomSpawner);
+                } 
+
+                mOldPlayerMilitaryUnitCount = mDirector.GetMilitaryManager.PlayerUnitCount;
+                mUnitCreationSnapshot[(int) EEnemyType.Attack] = (int) gametime.TotalGameTime.TotalMilliseconds;
             }
+
+            //TODO: spawn defending units someday
 
         }
 
@@ -403,7 +488,7 @@ namespace Singularity.AI.Behavior
             return position;
         }
 
-        private void SetAttackTarget(Vector2 attackPosition)
+        private void SetAttackTarget(ICollider attackPosition)
         {
             mShouldAttack = true;
             mAttackPosition = attackPosition;
@@ -492,7 +577,6 @@ namespace Singularity.AI.Behavior
             }
 
             minPrioUnit.SetPrioritization(minPrioUnit.GetPrioritization() + PriorityAddition);
-            Debug.WriteLine(minPrioUnit.GetPrioritization() + ", " + mIsCurrentlyMoving[minPrioUnit.GetObject()]);
 
             GetPrioritiyQueueByEnemyType(type).Add(minPrioUnit);
         }
@@ -502,9 +586,122 @@ namespace Singularity.AI.Behavior
             return (float) mRandom.NextDouble();
         }
 
+        public void Kill(EnemyUnit unit)
+        {
+            var type = EEnemyType.Attack;
+
+            var unitAsHeavy = unit as EnemyHeavy;
+            var unitAsFast = unit as EnemyFast;
+
+            if (unitAsHeavy != null)
+            {
+                type = EEnemyType.Defend;
+
+            }else if (unitAsFast != null)
+            {
+                type = EEnemyType.Scout;
+            }
+
+            // note, a heap structure is definitely no good solution for a kill method (obviously), but it should be ok, since the enemy won't even have over 100 units
+            // in its own "assignment" and iterating over max 100 units on a kill call is still ok, therefore the logic for moving is super simple.
+            var reAdd = new List<PrioritizableObject<EnemyUnit>>();
+            var queue = GetPrioritiyQueueByEnemyType(type);
+
+            while (!queue.IsEmpty)
+            {
+                var current = queue.DeleteMin();
+
+                if (current.GetObject().Equals(unit))
+                {
+                    break;
+                }
+                reAdd.Add(current);
+            }
+
+            foreach (var toAdd in reAdd)
+            {
+                queue.Add(toAdd);
+            }
+
+        }
+
         public void ReloadContent(ref Director dir)
         {
             throw new NotImplementedException();
+        }
+
+        public void Shooting(MilitaryUnit sender, ICollider shootingAt, GameTime gametime)
+        {
+            // make sure to active the AI if it wasn't already because something is shooting
+            // (either getting shot at or shooting at smth)
+            if (!mActive)
+            {
+                mActive = true;
+            }
+
+            // now check whether your units fired or you get attacked by the enemy, we don't really need to do anything if
+            // we're not the ones shooting
+
+            var asEnemy = sender as EnemyUnit;
+
+            if (asEnemy == null)
+            {
+                return;
+            }
+
+            var senderAsFast = sender as EnemyFast;
+            var senderAsHeavy = sender as EnemyHeavy;
+
+            var targetAsPlatform = shootingAt as PlatformBlank;
+
+            if (senderAsFast != null)
+            {
+                // the one who shot was a scouting unit, make sure to retreat ASAP
+                Retreat(senderAsFast, EEnemyType.Scout, gametime);
+
+                // at this point we know that our scout attacked an enemy platform
+                if (targetAsPlatform != null)
+                {
+                    // make sure to not attack the center, since then the unit wouldn't even move there since there's collision.
+                    // this basically sets the position to attack for the AI if it decides to attack.
+                    SetAttackTarget(targetAsPlatform);
+                }
+
+                return;
+            }
+
+            if (senderAsHeavy != null)
+            {
+                // a defending unit shot, thus move (currently all) defending units to where this happened
+                var allDefendings = GetPrioritiyQueueByEnemyType(EEnemyType.Defend).ToList();
+
+                foreach (var defending in allDefendings)
+                {
+                    defending.GetObject().SetMovementTarget(shootingAt.Center);
+                }
+
+                return;
+            }
+
+            // now the unit is defintely an attacking one, make sure to retreat once the target is destroyed.
+
+            if (shootingAt.Health > 0)
+            {
+                SetAttackTarget(shootingAt);
+
+                return;
+            }
+
+            mShouldAttack = false;
+            Retreat(asEnemy, EEnemyType.Attack, gametime);
+        }
+
+        private void Retreat(FreeMovingUnit unit, EEnemyType type, GameTime gametime)
+        {
+            // make the scout that attacked retreat to a random structure of the ai
+            unit.SetMovementTarget(GetRandomPositionOnRectangle(mAi.GetBoundsOfStructure(mRandom.Next(mAi.GetStructureCount()))));
+
+            mUnitsMovementSnapshot[(int) type] = (int) gametime.TotalGameTime.TotalMilliseconds;
         }
     }
 }

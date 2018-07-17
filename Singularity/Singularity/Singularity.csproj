@@ -62,9 +62,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AI\BasicAI.cs" />
-    <Compile Include="AI\Behavior\AdvancedAIBehavior.cs" />
+    <Compile Include="AI\Behavior\AdvancedAiBehavior.cs" />
     <Compile Include="AI\Behavior\IAIBehavior.cs" />
-    <Compile Include="AI\Helper\PrioritizableEnemyUnit.cs" />
+    <Compile Include="AI\Helper\PrioritizableObject.cs" />
     <Compile Include="AI\Helper\PrioritizableObjectAscendingComparer.cs" />
     <Compile Include="AI\Properties\EAIDifficulty.cs" />
     <Compile Include="AI\Properties\EEnemyType.cs" />

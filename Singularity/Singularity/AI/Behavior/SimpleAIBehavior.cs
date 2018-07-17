@@ -11,6 +11,7 @@ using Singularity.AI.Properties;
 using Singularity.Manager;
 using Singularity.Map.Properties;
 using Singularity.Platforms;
+using Singularity.Property;
 using Singularity.Units;
 using Singularity.Utils;
 
@@ -124,6 +125,21 @@ namespace Singularity.AI.Behavior
 
             var structure = StructureLayoutHolder.GetStructureOnMap(mAi.Difficulty, ref mDirector);
             mAi.AddStructureToGame(structure.GetFirst(), structure.GetSecond());
+        }
+
+        public void Kill(EnemyUnit unit)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Shooting(MilitaryUnit sender, ICollider shootingAt)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Shooting(MilitaryUnit sender, ICollider shootingAt, GameTime gametime)
+        {
+            throw new NotImplementedException();
         }
     }
 }

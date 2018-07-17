@@ -13,6 +13,7 @@ using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Platforms;
 using Singularity.Property;
+using Singularity.Units;
 using Singularity.Utils;
 
 namespace Singularity.AI
@@ -45,13 +46,9 @@ namespace Singularity.AI
             mBoundsToDraw = new List<Rectangle>();
 
             mStructure = new List<Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle>>();
-            var structure = StructureLayoutHolder.GetRandomStructureAtCenter(9000, 3000, difficulty, ref director);
-
-            AddStructureToGame(structure.GetFirst(), structure.GetSecond());
-
 
             //TODO: change the behavior with the difficulty
-            mBehavior = new AdvancedAIBehavior(this, ref director);
+            mBehavior = new AdvancedAiBehavior(this, ref director);
         }
 
         public void ReloadContent(ref Director dir)
@@ -88,10 +85,10 @@ namespace Singularity.AI
                     {
                         continue;
                     }
-                    tempList[0].Add(spawner);
+                    tempList[index].Add(spawner);
                 }
-
                 index++;
+
             }
 
             return tempList;
@@ -108,6 +105,11 @@ namespace Singularity.AI
                 structure.GetFirst().GetSecond().Remove(platform);
                 return;
             }
+        }
+
+        public void Kill(EnemyUnit unit)
+        {
+            mBehavior.Kill(unit);
         }
 
         public void AddStructureToGame(Triple<CommandCenter, List<PlatformBlank>, List<Road>> structure, Rectangle bounds)
@@ -142,6 +144,11 @@ namespace Singularity.AI
             {
                 spriteBatch.DrawRectangle(rectangle, Color.Red, 4f, LayerConstants.PlatformLayer);
             }
+        }
+
+        public void Shooting(MilitaryUnit sender, ICollider shootingAt, GameTime gametime)
+        {
+            mBehavior.Shooting(sender, shootingAt, gametime);
         }
     }
 }

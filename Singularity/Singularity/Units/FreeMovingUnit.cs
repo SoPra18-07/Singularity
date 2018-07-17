@@ -439,6 +439,11 @@ namespace Singularity.Units
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             mDirector.GetMilitaryManager.RemoveUnit(this);
             mIsMoving = false;
+            if (!Friendly)
+            {
+                // note that this has to be an enemy unit, otherwise it wouldn't be friendly.
+                mDirector.GetStoryManager.Level.Ai.Kill((EnemyUnit)this);
+            }
             mDirector.GetEventLog.AddEvent(ELogEventType.UnitAttacked, (Friendly ? "A friendly" : "An enemy") + " unit was killed!", this);
 
             return true;

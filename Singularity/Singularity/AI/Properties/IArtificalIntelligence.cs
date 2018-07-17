@@ -44,10 +44,18 @@ namespace Singularity.AI.Properties
         /// <param name="platform"></param>
         void Kill(PlatformBlank platform);
 
+        /// <summary>
+        /// A method to remove the units of the ai when they die.
+        /// </summary>
+        /// <param name="unit">The unit to kill</param>
+        void Kill(EnemyUnit unit);
+
         void AddStructureToGame(Triple<CommandCenter, List<PlatformBlank>, List<Road>> structure, Rectangle bounds);
 
         Rectangle GetBoundsOfStructure(int index);
 
         int GetStructureCount();
+
+        void Shooting(MilitaryUnit sender, ICollider shootingAt, GameTime gametime);
     }
 }
