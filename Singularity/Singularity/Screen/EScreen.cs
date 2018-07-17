@@ -18,6 +18,8 @@
         MainMenuManagerScreen,
         UserInterfaceScreen,
         LoadGameManagerScreen,
-        DebugScreen
+        DebugScreen,
+        WinScreen,
+        LoseScreen
     }
 }
