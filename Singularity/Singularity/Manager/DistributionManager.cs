@@ -117,6 +117,13 @@ namespace Singularity.Manager
             var currentlevel = new List<PlatformBlank>();
             currentlevel.Add(destination);
 
+            //Check whether the platform has the resource itself
+            if (destination.GetPlatformResources()
+                .Any(resource => resource.Type == res))
+            {
+                return destination;
+            }
+
             var nextlevel = new List<PlatformBlank>();
 
             while (currentlevel.Count > 0)
