@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Schema;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Singularity.Manager;
@@ -16,6 +11,7 @@ using Singularity.Units;
 
 namespace Singularity.Levels
 {
+    [DataContract]
     class TechDemo : BasicLevel
     {
 

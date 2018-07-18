@@ -69,5 +69,8 @@ namespace Singularity.Property
             get { return sUiVolume * MasterVolume; }
             set { sUiVolume = value; }
         }
+
+        // Flag used to control the mission time.
+        public static bool mGameIsPaused = false;
     }
 }
