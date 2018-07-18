@@ -463,11 +463,9 @@ namespace Singularity.Screen.ScreenClasses
         /// <inheritdoc />
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (!mActiveUserInterface || !mInitialized) { return; }
-
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, mRasterizerState);
 
-            if (!mActiveUserInterface)
+            if (!mActiveUserInterface || !mInitialized)
             {
                 mPauseButtonBeforeUi?.Draw(spriteBatch);
 
@@ -532,8 +530,6 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             Loaded = true;
-
-            Initialize();
         }
 
         /// <summary>
@@ -635,6 +631,8 @@ namespace Singularity.Screen.ScreenClasses
             mSelectedPlatformResourcesList.Add(mSelectedPlatformWater);
             mSelectedPlatformResourcesList.Add(mSelectedPlatformTrash);
 
+            // TODO : KEEP ?
+            /*
             // unit assignment - section + title
             mSelectedPlatformUnitAssignmentButton = new Button("Unit Assignments", mLibSans12, Vector2.Zero, Color.White) { Opacity = 1f };
             mSelectedPlatformUnitAssignmentButton.ButtonReleased += CloseUnitAssignmentsInSelectedWindow;
@@ -664,6 +662,7 @@ namespace Singularity.Screen.ScreenClasses
             mSelectedPlatformProductionSlider = new Slider(Vector2.Zero, 150, 10, mLibSans10, ref mDirector);
             mSelectedPlatformUnitAssignmentList.Add(mSelectedPlatformProductionSlider);
             mSelectedPlatformWindow.AddItem(mSelectedPlatformProductionSlider);
+            */
 
             // actions-section-title
             mSelectedPlatformActionsButton = new Button("Actions", mLibSans12, Vector2.Zero, Color.White) { Opacity = 1f };
@@ -905,7 +904,6 @@ namespace Singularity.Screen.ScreenClasses
 
             #endregion
 
-            // TODO : BALANCING - COSTS FOR PLATFORMS
             #region info when hovering over the building menu buttons
 
             mInfoBoxList = new List<InfoBoxWindow>();
@@ -993,15 +991,17 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10,
                 Color.White);
 
+            var dictWithRes = PlatformBlank.GetResourceCosts(EStructureType.Blank);
+
             var infoBuildBlankStone = new ResourceIWindowItem(
                 EResourceType.Stone,
-                1,
+                dictWithRes[EResourceType.Stone],
                 mLibSans10.MeasureString("Blank Platform"),
                 mLibSans10);
 
             var infoBuildBlankMetal = new ResourceIWindowItem(
                 EResourceType.Metal,
-                1,
+                dictWithRes[EResourceType.Metal],
                 mLibSans10.MeasureString("Blank Platform"),
                 mLibSans10);
 
@@ -1022,7 +1022,7 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10,
                 Color.White);
 
-            var infoRoadStone = new ResourceIWindowItem(
+/*            var infoRoadStone = new ResourceIWindowItem(
                 EResourceType.Stone,
                 1,
                 mLibSans10.MeasureString("Road"),
@@ -1032,10 +1032,10 @@ namespace Singularity.Screen.ScreenClasses
                 EResourceType.Metal,
                 1,
                 mLibSans10.MeasureString("Road"),
-                mLibSans10);
+                mLibSans10);*/
 
             mInfoBuildRoad = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoRoad, infoRoadStone, infoRoadMetal },
+                itemList: new List<IWindowItem> { infoRoad },
                 size: mLibSans10.MeasureString("Road"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1051,21 +1051,23 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10,
                 Color.White);
 
+            dictWithRes = PlatformBlank.GetResourceCosts(EStructureType.Command);
+
             var infoCommandConcrete = new ResourceIWindowItem(
                 EResourceType.Concrete,
-                1,
+                dictWithRes[EResourceType.Concrete],
                 mLibSans10.MeasureString("Commandcenter"),
                 mLibSans10);
 
             var infoCommandChip = new ResourceIWindowItem(
                 EResourceType.Chip,
-                1,
+                dictWithRes[EResourceType.Chip],
                 mLibSans10.MeasureString("Commandcenter"),
                 mLibSans10);
 
             var infoCommandSteel = new ResourceIWindowItem(
                 EResourceType.Steel,
-                1,
+                dictWithRes[EResourceType.Steel],
                 mLibSans10.MeasureString("Commandcenter"),
                 mLibSans10);
 
@@ -1090,15 +1092,17 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10,
                 Color.White);
 
+            dictWithRes = PlatformBlank.GetResourceCosts(EStructureType.Quarry);
+
             var infoBuildQuarryStone = new ResourceIWindowItem(
                 EResourceType.Stone,
-                1,
+                dictWithRes[EResourceType.Stone],
                 mLibSans10.MeasureString("Quarry"),
                 mLibSans10);
 
             var infoBuildQuarryMetal = new ResourceIWindowItem(
                 EResourceType.Metal,
-                1,
+                dictWithRes[EResourceType.Metal],
                 mLibSans10.MeasureString("Quarry"),
                 mLibSans10);
 
@@ -1119,15 +1123,17 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10,
                 Color.White);
 
+            dictWithRes = PlatformBlank.GetResourceCosts(EStructureType.Mine);
+
             var infoBuildMineStone = new ResourceIWindowItem(
                 EResourceType.Stone,
-                1,
+                dictWithRes[EResourceType.Stone],
                 mLibSans10.MeasureString("Mine"),
                 mLibSans10);
 
             var infoBuildMineMetal = new ResourceIWindowItem(
                 EResourceType.Metal,
-                1,
+                dictWithRes[EResourceType.Metal],
                 mLibSans10.MeasureString("Mine"),
                 mLibSans10);
 
@@ -1148,15 +1154,17 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10,
                 Color.White);
 
+            dictWithRes = PlatformBlank.GetResourceCosts(EStructureType.Well);
+
             var infoBuildWellStone = new ResourceIWindowItem(
                 EResourceType.Stone,
-                1,
+                dictWithRes[EResourceType.Stone],
                 mLibSans10.MeasureString("Well"),
                 mLibSans10);
 
             var infoBuildWellMetal = new ResourceIWindowItem(
                 EResourceType.Metal,
-                1,
+                dictWithRes[EResourceType.Metal],
                 mLibSans10.MeasureString("Well"),
                 mLibSans10);
 
@@ -1177,21 +1185,23 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10,
                 Color.White);
 
+            dictWithRes = PlatformBlank.GetResourceCosts(EStructureType.Energy);
+
             var infoBuildPowerhouseCopper = new ResourceIWindowItem(
                 EResourceType.Copper,
-                1,
+                dictWithRes[EResourceType.Copper],
                 mLibSans10.MeasureString("Powerhouse"),
                 mLibSans10);
 
             var infoBuildPowerhouseMetal = new ResourceIWindowItem(
                 EResourceType.Metal,
-                1,
+                dictWithRes[EResourceType.Metal],
                 mLibSans10.MeasureString("Powerhouse"),
                 mLibSans10);
 
             var infoBuildPowerhouseSilicon = new ResourceIWindowItem(
                 EResourceType.Silicon,
-                1,
+                dictWithRes[EResourceType.Silicon],
                 mLibSans10.MeasureString("Powerhouse"),
                 mLibSans10);
 
@@ -1216,21 +1226,23 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10,
                 Color.White);
 
+            dictWithRes = PlatformBlank.GetResourceCosts(EStructureType.Junkyard);
+
             var infoBuildJunkyardStone = new ResourceIWindowItem(
                 EResourceType.Stone,
-                1,
+                dictWithRes[EResourceType.Stone],
                 mLibSans10.MeasureString("Junkyard"),
                 mLibSans10);
 
             var infoBuildJunkyardMetal = new ResourceIWindowItem(
                 EResourceType.Metal,
-                1,
+                dictWithRes[EResourceType.Metal],
                 mLibSans10.MeasureString("Junkyard"),
                 mLibSans10);
 
             var infoBuildJunkyardWater = new ResourceIWindowItem(
                 EResourceType.Water,
-                1,
+                dictWithRes[EResourceType.Water],
                 mLibSans10.MeasureString("Junkyard"),
                 mLibSans10);
 
@@ -1251,21 +1263,23 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10,
                 Color.White);
 
+            dictWithRes = PlatformBlank.GetResourceCosts(EStructureType.Factory);
+
             var infoBuildFactoryStone = new ResourceIWindowItem(
                 EResourceType.Stone,
-                1,
+                dictWithRes[EResourceType.Stone],
                 mLibSans10.MeasureString("Factory"),
                 mLibSans10);
 
             var infoBuildFactoryMetal = new ResourceIWindowItem(
                 EResourceType.Metal,
-                1,
+                dictWithRes[EResourceType.Metal],
                 mLibSans10.MeasureString("Factory"),
                 mLibSans10);
 
             var infoBuildFactoryWater = new ResourceIWindowItem(
                 EResourceType.Water,
-                1,
+                dictWithRes[EResourceType.Water],
                 mLibSans10.MeasureString("Factory"),
                 mLibSans10);
 
@@ -1286,15 +1300,17 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10,
                 Color.White);
 
+            dictWithRes = PlatformBlank.GetResourceCosts(EStructureType.Storage);
+
             var infoBuildStorageConcrete = new ResourceIWindowItem(
                 EResourceType.Concrete,
-                1,
+                dictWithRes[EResourceType.Concrete],
                 mLibSans10.MeasureString("Storage"),
                 mLibSans10);
 
             var infoBuildStorageMetal = new ResourceIWindowItem(
                 EResourceType.Metal,
-                1,
+                dictWithRes[EResourceType.Metal],
                 mLibSans10.MeasureString("Storage"),
                 mLibSans10);
 
@@ -1319,15 +1335,17 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10,
                 Color.White);
 
+            dictWithRes = PlatformBlank.GetResourceCosts(EStructureType.Kinetic);
+
             var infoBuildKineticTowerConcrete = new ResourceIWindowItem(
                 EResourceType.Concrete,
-                1,
+                dictWithRes[EResourceType.Concrete],
                 mLibSans10.MeasureString("Kinetic Tower"),
                 mLibSans10);
 
             var infoBuildKineticTowerMetal = new ResourceIWindowItem(
                 EResourceType.Metal,
-                1,
+                dictWithRes[EResourceType.Metal],
                 mLibSans10.MeasureString("Kinetic Tower"),
                 mLibSans10);
 
@@ -1348,15 +1366,17 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10,
                 Color.White);
 
+            dictWithRes = PlatformBlank.GetResourceCosts(EStructureType.Laser);
+
             var infoBuildLaserTowerConcrete = new ResourceIWindowItem(
                 EResourceType.Concrete,
-                1,
+                dictWithRes[EResourceType.Concrete],
                 mLibSans10.MeasureString("Laser Tower"),
                 mLibSans10);
 
             var infoBuildLaserTowerMetal = new ResourceIWindowItem(
                 EResourceType.Metal,
-                1,
+                dictWithRes[EResourceType.Metal],
                 mLibSans10.MeasureString("Laser Tower"),
                 mLibSans10);
 
@@ -1377,21 +1397,23 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10,
                 Color.White);
 
+            dictWithRes = PlatformBlank.GetResourceCosts(EStructureType.Barracks);
+
             var infoBuildBarracksSteel = new ResourceIWindowItem(
                 EResourceType.Steel,
-                1,
+                dictWithRes[EResourceType.Steel],
                 mLibSans10.MeasureString("Barracks"),
                 mLibSans10);
 
             var infoBuildBarracksConcrete = new ResourceIWindowItem(
                 EResourceType.Concrete,
-                1,
+                dictWithRes[EResourceType.Concrete],
                 mLibSans10.MeasureString("Barracks"),
                 mLibSans10);
 
             var infoBuildBarracksChip = new ResourceIWindowItem(
                 EResourceType.Chip,
-                1,
+                dictWithRes[EResourceType.Chip],
                 mLibSans10.MeasureString("Barracks"),
                 mLibSans10);
 
@@ -1630,32 +1652,35 @@ namespace Singularity.Screen.ScreenClasses
             #endregion
 
             // TODO : COMBINE UNIT ASSIGNMENTS AND DISTRIBUTIONMANAGER
+
             #region unitAssignments
 
-            // activate defense text/sliders + deactivate production text/sliders if the platform is a defense tower,
-            // else deactivate defense text/sliders + activate production text/sliders
-            if (type == EStructureType.Kinetic || type == EStructureType.Laser)
-            {
-                mSelectedPlatformDefTextField.ActiveInWindow = true;
-                mSelectedPlatformDefSlider.ActiveInWindow = true;
-                mSelectedPlatformProductionTextField.ActiveInWindow = false;
-                mSelectedPlatformProductionSlider.ActiveInWindow = false;
-            }
-            else
-            {
-                mSelectedPlatformDefTextField.ActiveInWindow = false;
-                mSelectedPlatformDefSlider.ActiveInWindow = false;
-                mSelectedPlatformProductionTextField.ActiveInWindow = true;
-                mSelectedPlatformProductionSlider.ActiveInWindow = true;
-            }
-
-            // TODO : UPDATE TRUE/FALSE VALUES FOR EVERY PLATFORM TO SHOW ONLY POSSIBLE ACTIONS (FOR EXAMPLE COMMANDCENTER PROBABLY DOESN'T NEED PRODUCTION UNITS)
             /*
-                        mSelectedPlatformBuildTextField;
-                        mSelectedPlatformConstructionSlider;
-                        mSelectedPlatformLogisticsTextField;
-                        mSelectedPlatformLogisticsSlider;
-            */
+
+// activate defense text/sliders + deactivate production text/sliders if the platform is a defense tower,
+// else deactivate defense text/sliders + activate production text/sliders
+if (type == EStructureType.Kinetic || type == EStructureType.Laser)
+{
+    mSelectedPlatformDefTextField.ActiveInWindow = true;
+    mSelectedPlatformDefSlider.ActiveInWindow = true;
+    mSelectedPlatformProductionTextField.ActiveInWindow = false;
+    mSelectedPlatformProductionSlider.ActiveInWindow = false;
+}
+else
+{
+    mSelectedPlatformDefTextField.ActiveInWindow = false;
+    mSelectedPlatformDefSlider.ActiveInWindow = false;
+    mSelectedPlatformProductionTextField.ActiveInWindow = true;
+    mSelectedPlatformProductionSlider.ActiveInWindow = true;
+}
+
+// TODO : UPDATE TRUE/FALSE VALUES FOR EVERY PLATFORM TO SHOW ONLY POSSIBLE ACTIONS (FOR EXAMPLE COMMANDCENTER PROBABLY DOESN'T NEED PRODUCTION UNITS)
+/*
+            mSelectedPlatformBuildTextField;
+            mSelectedPlatformConstructionSlider;
+            mSelectedPlatformLogisticsTextField;
+            mSelectedPlatformLogisticsSlider;
+*/
 
 
 
