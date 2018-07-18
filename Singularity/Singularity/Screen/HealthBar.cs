@@ -35,7 +35,7 @@ namespace Singularity.Screen
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (!GlobalVariables.mHealthBarEnabled)
+            if (!GlobalVariables.HealthBarEnabled)
             {
                 return;
             }
@@ -46,7 +46,7 @@ namespace Singularity.Screen
 
         public void Update(GameTime gametime)
         {
-            if (!GlobalVariables.mHealthBarEnabled)
+            if (!GlobalVariables.HealthBarEnabled)
             {
                 return;
             }

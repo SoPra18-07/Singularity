@@ -86,6 +86,8 @@ namespace Singularity.Screen.ScreenClasses
             switch (targetScreen)
             {
                 case EScreen.AchievementsScreen:
+                    mTransitionTargetValue = 5f;
+                    mTransitionDuration = 300;
                     break;
                 case EScreen.GameModeSelectScreen:
                     break;
@@ -93,7 +95,7 @@ namespace Singularity.Screen.ScreenClasses
                     break;
                 case EScreen.MainMenuScreen:
                     mTransitionTargetValue = 2f;
-                    mTransitionDuration = 500;
+                    mTransitionDuration = originSscreen == EScreen.SplashScreen ? 500 : 300;
                     break;
                 case EScreen.OptionsScreen:
                     mTransitionTargetValue = 4f;

@@ -98,13 +98,15 @@ namespace Singularity.Screen
         /// <param name="minimizable">window minimizable</param>
         /// <param name="spriteFont">title font</param>
         /// <param name="director">basic director</param>
+        /// <param name="screen">the screen to place the window on</param>
         public WindowObject(
             string windowName,
             Vector2 position,
             Vector2 size,
             bool minimizable,
             SpriteFont spriteFont,
-            Director director)
+            Director director,
+            EScreen screen = EScreen.UserInterfaceScreen)
         {
             // use parameter-variables
             WindowName = windowName;
@@ -125,6 +127,8 @@ namespace Singularity.Screen
 
             mBackgroundGiven = true;
 
+            Screen = screen;
+
             director.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
             director.GetInputManager.FlagForAddition(this);
             director.GetInputManager.AddMousePositionListener(this);
@@ -144,6 +148,7 @@ namespace Singularity.Screen
         /// <param name="minimizable">window minimizable</param>
         /// <param name="spriteFont">title font</param>
         /// <param name="director">basic director</param>
+        /// <param name="screen">the screen to place the window on</param>
         public WindowObject(
             string windowName,
             Vector2 position,
@@ -154,7 +159,8 @@ namespace Singularity.Screen
             float objectPadding,
             bool minimizable,
             SpriteFont spriteFont,
-            Director director)
+            Director director,
+            EScreen screen = EScreen.UserInterfaceScreen)
         {
             // set parameter-variables
             WindowName = windowName;
@@ -170,6 +176,8 @@ namespace Singularity.Screen
             // screen size - needed for input management
             mCurrentScreenWidth = director.GetGraphicsDeviceManager.PreferredBackBufferWidth;
             mCurrentScreenHeight = director.GetGraphicsDeviceManager.PreferredBackBufferHeight;
+
+            Screen = screen;
 
             Initialization();
 
@@ -194,6 +202,7 @@ namespace Singularity.Screen
         /// <param name="minimizable">window minimizable</param>
         /// <param name="spriteFont">title font</param>
         /// <param name="director">basic director</param>
+        /// <param name="screen">the screen to place the window on</param>
         public WindowObject(
             string windowName,
             Vector2 position,
@@ -203,7 +212,8 @@ namespace Singularity.Screen
             float objectPadding,
             bool minimizable,
             SpriteFont spriteFont,
-            Director director)
+            Director director,
+            EScreen screen = EScreen.UserInterfaceScreen)
         {
             // set parameter-variables
             WindowName = windowName;
@@ -219,6 +229,8 @@ namespace Singularity.Screen
             // screen size - needed for input management
             mCurrentScreenWidth = director.GetGraphicsDeviceManager.PreferredBackBufferWidth;
             mCurrentScreenHeight = director.GetGraphicsDeviceManager.PreferredBackBufferHeight;
+
+            Screen = screen;
 
             Initialization();
 
@@ -405,8 +417,8 @@ namespace Singularity.Screen
                     item.Position = localItemPos;
 
                     if (item.Position.Y < mScissorRectangle.Y - item.Size.Y ||
-                        item.Position.Y > mScissorRectangle.Y + mScissorRectangle.Height)
-                        // if the item goes completely out of the scissor rectangle's range -> deactivate it
+                        item.Position.Y > mScissorRectangle.Y + mScissorRectangle.Height - item.Size.Y / 2)
+                        // if the item goes half out of the scissor rectangle's range -> deactivate it
                         // (to prevent buttons/... from being active out of window)
                     {
                         item.OutOfScissorRectangle = true;

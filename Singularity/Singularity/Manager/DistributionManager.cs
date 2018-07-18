@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
-using Microsoft.Xna.Framework;
 using Singularity.Exceptions;
 using Singularity.Graph;
 using Singularity.PlatformActions;
@@ -118,6 +116,13 @@ namespace Singularity.Manager
 
             var currentlevel = new List<PlatformBlank>();
             currentlevel.Add(destination);
+
+            //Check whether the platform has the resource itself
+            if (destination.GetPlatformResources()
+                .Any(resource => resource.Type == res))
+            {
+                return destination;
+            }
 
             var nextlevel = new List<PlatformBlank>();
 
