@@ -34,12 +34,6 @@ namespace Singularity.Property
         [DataMember]
         public int ChosenResolution { get; set; }
 
-        /// <summary>
-        /// Indicates whether the game is in debug mode or not
-        /// </summary>
-        [DataMember]
-        internal bool DebugState { get; set; }
-
         [DataMember]
         internal bool AudioMute { get; set; }
 
@@ -53,7 +47,6 @@ namespace Singularity.Property
             GlobalVariables.HealthBarEnabled = HealthBarEnabled;
             GlobalVariables.IsFullScreen = IsFullScreen;
             GlobalVariables.ChosenResolution = ChosenResolution;
-            GlobalVariables.DebugState = DebugState;
             GlobalVariables.AudioMute = AudioMute;
         }
 
@@ -67,7 +60,6 @@ namespace Singularity.Property
             HealthBarEnabled = GlobalVariables.HealthBarEnabled;
             IsFullScreen = GlobalVariables.IsFullScreen;
             ChosenResolution = GlobalVariables.ChosenResolution;
-            DebugState = GlobalVariables.DebugState;
             AudioMute = GlobalVariables.AudioMute;
         }
     }

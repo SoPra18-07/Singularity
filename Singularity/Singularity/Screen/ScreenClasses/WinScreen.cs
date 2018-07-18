@@ -202,7 +202,7 @@ namespace Singularity.Screen.ScreenClasses
 
         private void ReturnToMainMenu(object sender, EventArgs eventArgs)
         {
-            for (int i = 0; i < mScreenManager.GetScreenCount() - 1; i++)
+            for (var i = 0; i < mScreenManager.GetScreenCount() - 1; i++)
             {
                 mScreenManager.RemoveScreen();
             }
