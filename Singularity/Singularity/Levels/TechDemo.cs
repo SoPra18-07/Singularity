@@ -44,7 +44,7 @@ namespace Singularity.Levels
                     i--;
                     continue;
                 }
-                GameScreen.AddObject(new MilitaryUnit(new Vector2(x, y), Camera, ref mDirector, ref map));
+                GameScreen.AddObject(new MilitaryUnit(new Vector2(x, y), Camera, ref mDirector));
 
             }
 

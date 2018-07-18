@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.AI.Structures;
 using Singularity.Manager;
 using Singularity.Nature;
+using Singularity.Platforms;
+using Singularity.Resources;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
@@ -29,12 +31,17 @@ namespace Singularity.Levels
 
         public override void LoadContent(ContentManager content)
         {
-            var map = Map;
-
-            var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, Ui);
-            
+            var settler = new Settler(new Vector2(2900, 3200), Camera, ref mDirector, GameScreen, Ui);
             GameScreen.AddObject(settler);
             
+            var milunitList = new List<MilitaryHeavy>(6);
+            for (var i = 0; i < 6; i++)
+            {
+                milunitList.Add(new MilitaryHeavy(new Vector2(3000 + (i > 2 ? 100 : 0), 3000 + (i % 3) * 50), Camera, ref mDirector));
+            }
+            
+            GameScreen.AddObjects(milunitList);
+
             // add a puddle
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2500), ref mDirector));
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2700), ref mDirector, false));

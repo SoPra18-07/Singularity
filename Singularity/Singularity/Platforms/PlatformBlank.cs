@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -161,7 +162,7 @@ namespace Singularity.Platforms
         [DataMember]
         public Rectangle AbsBounds { get; internal set; }
         [DataMember]
-        public bool Moved { get; private set; }
+        public bool Moved { get; set; }
 
         [DataMember]
         public int Id { get; private set; }
@@ -232,10 +233,10 @@ namespace Singularity.Platforms
         {
 
             mPrevPlatformActions = new List<IPlatformAction>();
-
+            
+            Id = director.GetIdGenerator.NextId();
             HasDieded = false;
-
-            Id = director.GetIdGenerator.NextiD();
+            
 
             mDirector = director;
 
@@ -863,6 +864,8 @@ namespace Singularity.Platforms
             return mType == b.GetMyType();
         }
 
+        [SuppressMessage("ReSharper", "BaseObjectGetHashCodeCallInGetHashCode")]
+        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
         public override int GetHashCode()
         {
             return base.GetHashCode() + Id.GetHashCode();

@@ -62,8 +62,8 @@ namespace Singularity.Manager
             GetPathManager = new PathManager();
             GetUserInterfaceController = new UserInterfaceController(this);
             GetDistributionDirector = new DistributionDirector(this);
-            GetMilitaryManager = new MilitaryManager(this); // TODO: Update this code if the MilitaryManager is not getting everything from the StructureMap or sth ...
-                                                        // (like units telling it they exist and the like)
+            GetMilitaryManager = new MilitaryManager(this);
+            // GetFlockingManager = new FlockingManager(this);
             GetEventLog = new EventLog(GetUserInterfaceController, this, content);
             GetGraphicsDeviceManager = graphics;
             GetDeathManager = new DeathManager();
@@ -96,7 +96,7 @@ namespace Singularity.Manager
             GetGlobalVariablesInstance.UpdateFromStatic();
             XSerializer.Save(GetGlobalVariablesInstance, @"Config.xml", true);
         }
-
+        
         public void Update(GameTime gametime, bool isActive)
         {
             if (isActive)

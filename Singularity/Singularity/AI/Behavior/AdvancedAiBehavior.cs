@@ -303,7 +303,10 @@ namespace Singularity.AI.Behavior
                 var queue = GetPrioritiyQueueByEnemyType(EEnemyType.Scout);
 
                 var squadMembers = new List<EnemyUnit>();
+                // var map = mDirector.GetStoryManager.Level.Map;
+                // var squad = new FlockingGroup(ref mDirector, ref map);
 
+                // while (!queue.IsEmpty && squad.Count < ScoutingSquadSize)
                 while (!queue.IsEmpty && squadMembers.Count < ScoutingSquadSize)
                 {
                     // we don't wanna do anything if the one with highest priority is currently already moving.
@@ -312,7 +315,7 @@ namespace Singularity.AI.Behavior
                     {
                         break;
                     }
-                    
+                    // squad.AssignUnit(queue.DeleteMax().GetObject());
                     squadMembers.Add(queue.DeleteMax().GetObject());
                 }
 
@@ -775,7 +778,7 @@ namespace Singularity.AI.Behavior
             Retreat(asEnemy, EEnemyType.Attack, gametime);
         }
 
-        private void Retreat(FreeMovingUnit unit, EEnemyType type, GameTime gametime)
+        private void Retreat(EnemyUnit unit, EEnemyType type, GameTime gametime)
         {
             // make the scout that attacked retreat to a random structure of the ai
             unit.SetMovementTarget(GetRandomPositionOnRectangle(mAi.GetBoundsOfStructure(mRandom.Next(mAi.GetStructureCount()))));

@@ -26,8 +26,7 @@ namespace Singularity.Levels
             //INGAME OBJECTS INITIALIZATION ===================================================
 
             //SetUnit
-            var map = Map;
-            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, ref map, GameScreen, Ui);
+            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, GameScreen, Ui);
 
             GameScreen.AddObject(setUnit);
 

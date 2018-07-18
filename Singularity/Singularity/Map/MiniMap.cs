@@ -20,7 +20,7 @@ namespace Singularity.Map
     /// "true" purpose of a minimap is to be able to see everything at once at first glance without having to
     /// move the games camera to that exact location.
     /// </summary>
-    public sealed class MiniMap : IWindowItem, IMousePositionListener, IMouseClickListener
+    internal sealed class MiniMap : IWindowItem, IMousePositionListener, IMouseClickListener
     {
         /// <summary>
         /// The interval in which the references to all the ingame objects get updated
