@@ -285,6 +285,7 @@ namespace Singularity.AI.Behavior
                 return;
             }
 
+
             #region Defending
 
             if (mUnitsMovementCooldown[(int)EEnemyType.Defend] <= 0)
@@ -315,7 +316,13 @@ namespace Singularity.AI.Behavior
 
                 foreach (var squadMember in squadMembers)
                 {
-                    squadMember.SetMovementTarget(GetRandomPositionOnRectangle(randomBounds));
+                    if (!mUnitToFlockingGroup.ContainsKey(squadMember))
+                    {
+                        mUnitToFlockingGroup[squadMember] = mDirector.GetMilitaryManager.GetNewFlock();
+                        mUnitToFlockingGroup[squadMember].AssignUnit(squadMember);
+                    }
+
+                    mUnitToFlockingGroup[squadMember].FindPath(GetRandomPositionOnRectangle(randomBounds));
                     mIsCurrentlyMoving[squadMember] = true;
                     AddToQueue(EEnemyType.Defend, squadMember);
                 }
