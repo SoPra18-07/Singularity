@@ -346,7 +346,7 @@ namespace Singularity.Screen.ScreenClasses
                     {
                         slider.Update(gametime);
                         slider.Opacity = mMenuOpacity;
-                        slider.Position = new Vector2(mMenuBoxPosition.X + mContentPadding, mTopContentPadding + 270);
+                        slider.Position = new Vector2(mMenuBoxPosition.X + mContentPadding, slider.Position.Y);
                     }
                     break;
                 default:
