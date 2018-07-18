@@ -57,7 +57,6 @@ namespace Singularity.Screen.ScreenClasses
         private readonly float mButtonLeftPadding;
         private const float BottomPadding = 10;
 
-
         public SaveGameScreen(Vector2 screenResolution)
         {
             mMenuBoxSize = new Vector2(350, 400);
@@ -171,6 +170,7 @@ namespace Singularity.Screen.ScreenClasses
             mButtonList.Add(mSave5);
 
             mBackButton.ButtonReleased += GamePauseManagerScreen.OnBackButtonReleased;
+            mSave1.ButtonClicked += GamePauseManagerScreen.OnSave1ButtonClicked;
 
             mBackButton.ButtonHovering += OnBackHover;
             mSave1.ButtonHovering += OnSave1;
@@ -223,6 +223,7 @@ namespace Singularity.Screen.ScreenClasses
                     if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
                     {
                         TransitionRunning = false;
+                        // Console.WriteLine("SGS Transition ended");
                         mMenuOpacity = 1f;
                     }
 
@@ -241,8 +242,12 @@ namespace Singularity.Screen.ScreenClasses
             {
                 mMenuOpacity = 0f;
             }
+            if (originScreen == EScreen.SaveGameScreen)
+            {
+                mMenuOpacity = 1f;
+            }
             mTargetScreen = targetScreen;
-            mTransitionDuration = 350;
+            mTransitionDuration = 350f;
             mTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
             TransitionRunning = true;
         }

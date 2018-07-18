@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Globalization;
+using System.IO;
+using System.Net;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
+using Singularity.Property;
+using Singularity.Serialization;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -22,6 +27,8 @@ namespace Singularity.Screen.ScreenClasses
 
         private EScreen mScreenState;
 
+        private readonly Vector2 mScreenResolution;
+
         // All connecting screens
         private GamePauseScreen mGamePauseScreen;
         private SaveGameScreen mSaveGameScreen;
@@ -32,6 +39,11 @@ namespace Singularity.Screen.ScreenClasses
         private int mTransitionState;
 
         private static bool sPausedAgain;
+
+        private string[] mGameSaveStrings;
+        private static bool sSaved = false;
+
+        private readonly Director mDirector;
 
         /// <summary>
         /// Creates an instance of the GamePauseManagerScreen class
@@ -44,6 +56,8 @@ namespace Singularity.Screen.ScreenClasses
             Director director)
         {
             mScreenManager = screenManager;
+            mDirector = director;
+            mScreenResolution = screenResolution;
 
             Initialize(screenResolution, director);
 
@@ -94,6 +108,14 @@ namespace Singularity.Screen.ScreenClasses
                 mScreenManager.AddScreen(mGamePauseScreen);
                 sPausedAgain = false;
             }
+
+            if (sSaved)
+            {
+                mSaveGameScreen = new SaveGameScreen(mScreenResolution);
+                sPressed = "Save Game";
+                Console.WriteLine("Save Screen Updated");
+                sSaved = false;
+            }
             switch (mScreenState)
             {
                 case EScreen.GameScreen:
@@ -123,6 +145,30 @@ namespace Singularity.Screen.ScreenClasses
                     if (sPressed == "Back")
                     {
                         SwitchScreen(EScreen.GamePauseScreen, mSaveGameScreen, mGamePauseScreen, gametime);
+                    }
+                    if (sPressed == "Save Game")
+                    {
+                        mScreenManager.RemoveScreen();
+                        mScreenManager.AddScreen(mSaveGameScreen);
+                        // SwitchScreen(EScreen.SaveGameScreen, mSaveGameScreen, mSaveGameScreen, gametime);
+                        // SwitchScreen(EScreen.SaveGameScreen, mGamePauseScreen, mSaveGameScreen, gametime);
+                        sPressed = "None";
+                    }
+                    if (sPressed == "Save1")
+                    {
+                        mGameSaveStrings = XSerializer.GetSaveNames();
+                        if (mGameSaveStrings.Length == 1)
+                        {
+                            var path = @"%USERPROFILE%\Saved Games\Singularity\Saves";
+                            path = Environment.ExpandEnvironmentVariables(path);
+                            path = path + @"\" + mGameSaveStrings[0];
+                            File.Delete(path);
+                        }
+                        mDirector.GetStoryManager.SaveAchievements();
+                        var saveName = DateTime.Now;
+                        XSerializer.Save(mDirector.GetStoryManager.Level, saveName.ToString(CultureInfo.CurrentCulture).Replace(':', '_') + ".xml", false);
+                        Console.WriteLine("Game Saved");
+                        sSaved = true;
                     }
                     break;
                 case EScreen.StatisticsScreen:
@@ -168,8 +214,8 @@ namespace Singularity.Screen.ScreenClasses
                         targetScreen.TransitionTo(mScreenState, targetEScreen, gameTime);
                         mTransitionState = 2;
                     }
-
                     break;
+
                 case 2:
                     // now wait for the target screen to finish transitioning in
                     if (!targetScreen.TransitionRunning)
@@ -226,10 +272,11 @@ namespace Singularity.Screen.ScreenClasses
         public static void OnResumeButtonReleased(Object sender, EventArgs eventArg)
         {
             sPressed = "Resume";
+            GlobalVariables.GameIsPaused = false;
         }
 
         /// <summary>
-        /// Receives Statistics button released event and changes sPressed
+        /// Receives Save Game button released event and changes sPressed
         /// to result in screen change within Update method.
         /// </summary>
         /// <param name="sender"></param>
@@ -237,6 +284,17 @@ namespace Singularity.Screen.ScreenClasses
         public static void OnSaveGameButtonReleased(Object sender, EventArgs eventArgs)
         {
             sPressed = "Save Game";
+        }
+
+        /// <summary>
+        /// Receives Save1 button released event and changes sPressed
+        /// to result in screen change within Update method.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        public static void OnSave1ButtonClicked(object sender, EventArgs eventArgs)
+        {
+            sPressed = "Save1";
         }
 
         /// <summary>
