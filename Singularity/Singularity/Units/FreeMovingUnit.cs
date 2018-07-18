@@ -282,8 +282,6 @@ namespace Singularity.Units
         {
 
             mIsMoving = true;
-            Debug.WriteLine("Starting path finding at: " + currentPosition.X + ", " + currentPosition.Y);
-            Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
 
             mPath = new Stack<Vector2>();
             mPath = mPathfinder.FindPath(currentPosition,
