@@ -121,6 +121,7 @@ namespace Singularity.Units
             mIsMoving = false;
             mDirector = director;
             mDirector.GetDistributionDirector.GetManager(Graphid).Register(this);
+            mDirector.GetStoryManager.UpdateUnits("created");
             mDone = true;
             mFinishTask = false;
         }
