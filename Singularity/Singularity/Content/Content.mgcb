@@ -433,3 +433,9 @@
 /processorParam:TextureFormat=Color
 /build:GenUnit.png
 
+#begin Sound/SFX/PowerOn.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/SFX/PowerOn.wav
+

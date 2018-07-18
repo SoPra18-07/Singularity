@@ -28,7 +28,7 @@ namespace Singularity.Levels
         {
             var map = Map;
 
-            GlobalVariables.mFowEnabled = false;
+            GlobalVariables.FowEnabled = false;
 
             var platform = PlatformFactory.Get(EStructureType.Barracks, ref mDirector, 3000, 3000);
 

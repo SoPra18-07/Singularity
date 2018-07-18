@@ -16,12 +16,14 @@ namespace Singularity.Screen.ScreenClasses
         protected Vector2 mMenuBoxSize;
 
 
-        protected Texture2D mGlowEdge;
-        protected Texture2D mGlowCorner;
+        private Texture2D mGlowEdge;
+        private Texture2D mGlowCorner;
 
         protected SpriteFont mLibSans36;
         protected SpriteFont mLibSans20;
         protected SpriteFont mLibSans14;
+        protected SpriteFont mLibSans12;
+
 
         // Transitions
         protected float mWindowOpacity;
@@ -39,6 +41,7 @@ namespace Singularity.Screen.ScreenClasses
             mLibSans36 = content.Load<SpriteFont>("LibSans36");
             mLibSans20 = content.Load<SpriteFont>("LibSans20");
             mLibSans14 = content.Load<SpriteFont>("LibSans14");
+            mLibSans12 = content.Load<SpriteFont>("LibSans12");
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
