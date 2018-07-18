@@ -45,6 +45,7 @@ namespace Singularity.Units
         /// </summary>
         protected double mCurrentTime;
 
+        [DataMember]
         protected readonly HealthBar mHealthBar;
 
         [DataMember]
