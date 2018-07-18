@@ -9,6 +9,7 @@ using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platforms;
+using Singularity.Property;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Serialization;
@@ -108,7 +109,7 @@ namespace Singularity.Levels
             mDirector.GetInputManager.FlagForAddition(this);
 
             // KI STUFF
-            Ai = new BasicAi(EaiDifficulty.Medium, ref mDirector);
+            Ai = new BasicAi(GlobalVariables.Difficulty, ref mDirector);
             GameScreen.AddObject(Ai);
         }
 

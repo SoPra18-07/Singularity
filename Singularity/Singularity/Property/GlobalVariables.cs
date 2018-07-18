@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Singularity.AI.Properties;
 
 namespace Singularity.Property
 {
@@ -72,5 +73,7 @@ namespace Singularity.Property
 
         // Flag used to control the mission time.
         public static bool mGameIsPaused = false;
+
+        public static EaiDifficulty Difficulty { get; set; } = EaiDifficulty.Easy;
     }
 }
