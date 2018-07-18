@@ -56,6 +56,7 @@ namespace Singularity.Units
                 {true, true},
                 {true, true}
             };
+            SetAbsBounds();
         }
 
         public static Settler Create(Vector2 position, ref Director director)

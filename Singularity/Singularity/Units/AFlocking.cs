@@ -21,10 +21,10 @@ namespace Singularity.Units
         Vector2 Velocity { get; set; }
 
         [DataMember]
-        int Speed { get; }
+        int Speed { get; set; }
         
         [DataMember]
-        int FlockingId { get; }
+        int FlockingId { get; set; }
 
         void Move();
         void ReloadContent(ref Director director);
@@ -61,6 +61,7 @@ namespace Singularity.Units
             Id = director.GetIdGenerator.NextId(); // id for the specific unit.
             mGroup = group;
             FlockingId = -1;
+            Velocity = Vector2.Zero;
             // FlockingId = mGroup.IsPresent() ? mGroup.Get().FlockingId : mDirector.GetIdGenerator.NextId();
         }
 
@@ -77,21 +78,26 @@ namespace Singularity.Units
                 SetAbsBounds();
             } // */
             // weird shit happening. Try fully another day.
+
+            if (!mGroup.IsPresent() || mGroup.Get().GetUnits().Count == 0) return;
+
+            // Debug.WriteLine("Abs before setting: " + AbsolutePosition + ", vel: " + Velocity);
             AbsolutePosition += Velocity;
+            // Debug.WriteLine("Abs after setting: " + AbsolutePosition);
             SetAbsBounds();
             if (!mDirector.GetStoryManager.Level.Map.GetCollisionMap().CanPlaceCollider(this))
             {
-                Debug.WriteLine("Could not move1 " + Id);
+                // Debug.WriteLine("Could not move1 " + Id);
                 AbsolutePosition -= new Vector2(Velocity.X, 0);
                 SetAbsBounds();
                 if (!mDirector.GetStoryManager.Level.Map.GetCollisionMap().CanPlaceCollider(this))
                 {
-                    Debug.WriteLine("Could not move2 " + Id);
+                    // Debug.WriteLine("Could not move2 " + Id);
                     AbsolutePosition += new Vector2(Velocity.X, -Velocity.Y);
                     SetAbsBounds();
                     if (!mDirector.GetStoryManager.Level.Map.GetCollisionMap().CanPlaceCollider(this))
                     {
-                        Debug.WriteLine("Could not move at all. " + Id);
+                        // Debug.WriteLine("Could not move at all. " + Id);
                         AbsolutePosition -= new Vector2(0, Velocity.Y);
                         SetAbsBounds();
                     }
@@ -102,7 +108,7 @@ namespace Singularity.Units
             if (mGroup.Get().Count == 1)
             {
                 Velocity = mGroup.Get().Velocity;
-                Debug.WriteLine("unit: " + AbsolutePosition + ", vel: " + Velocity);
+                // Debug.WriteLine("unit: " + AbsolutePosition + ", vel: " + Velocity);
                 return;
             }
 
@@ -120,7 +126,7 @@ namespace Singularity.Units
             // - Seperation
             //     The steering away from other members of the FlockingGroup. this is also precomputed there.
             var align = Vector2.Normalize(mGroup.Get().Velocity);
-            var cohes = Vector2.Normalize(mGroup.Get().CohesionRaw - AbsolutePosition);
+            var cohes = (mGroup.Get().CohesionRaw - AbsolutePosition).Length() > 0.5 ? Vector2.Normalize(mGroup.Get().CohesionRaw - AbsolutePosition) : Vector2.Zero;
             // var seper = Vector2.Normalize(mGroup.Get().SeperationRaw - AbsolutePosition * mGroup.Get().UnitCount()) * -1;
             // var seper = Vector2.Normalize(new Vector2(
                 // mGroup.Get().GetUnits().Sum(u => u.AbsolutePosition.X - AbsolutePosition.X),
@@ -130,14 +136,19 @@ namespace Singularity.Units
                 .FindAll(u => Geometry.Length(u.AbsolutePosition - AbsolutePosition) < 90 && !u.Equals(this))
                 .Select(f => f.AbsolutePosition).ToList();
                 // .Aggregate((a, b) => a + b);
-            var seper = close.Count > 0 ? Vector2.Normalize(close.Aggregate((a, b) => a + b) - AbsolutePosition * close.Count) * -1 : Vector2.Zero;
+            var seper = close.Count > 0 ? (close.Aggregate((a, b) => a + b) - AbsolutePosition * close.Count) * -1 : Vector2.Zero;
             
+            if (seper.Length() > 1)
+            {
+                seper = Vector2.Normalize(seper);
+            }
+
             var goal = Vector2.Normalize(diff);
 
             Velocity = Vector2.Normalize(goal * 0.2f + Velocity * 2 + align + cohes * 0.75f + seper * 1.5f) * actualSpeed;
         
-            // Debug.WriteLine("Freemoving: " + mGroup.Get().Velocity + ", " + mGroup.Get().CohesionRaw);
-            // Debug.WriteLine("unit: " + goal + ", " + align + ", " + cohes + ", " + seper + ", " + Velocity);
+            // Debug.WriteLine("Group: " + mGroup.Get().Velocity + ", " + mGroup.Get().CohesionRaw);
+            // Debug.WriteLine("unit: " + AbsolutePosition + ", " + align + ", " + cohes + ", " + seper + ", " + Velocity);
             
             // the new velocity will actually be used only next Update in the beginning.
         
@@ -184,7 +195,7 @@ namespace Singularity.Units
         public bool Friendly { get; protected set; }
         public abstract void MakeDamage(int damage);
         [DataMember]
-        public int Id { get; }
+        public int Id { get; protected set; }
 
 
         #endregion

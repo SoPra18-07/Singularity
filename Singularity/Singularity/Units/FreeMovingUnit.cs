@@ -50,8 +50,8 @@ namespace Singularity.Units
         /// <summary>
         /// Target position that the unit wants to reach.
         /// </summary>
-        [DataMember]
-        protected Vector2 mTargetPosition;
+        // [DataMember]
+        // protected Vector2 mTargetPosition;
 
         /// <summary>
         /// Indicates if the unit is currently moving towards a target.
@@ -64,8 +64,8 @@ namespace Singularity.Units
         /// <summary>
         /// Normalized vector to indicate direction of movement.
         /// </summary>
-        [DataMember]
-        protected Vector2 mMovementVector;
+        // [DataMember]
+        // protected Vector2 mMovementVector;
 
         #endregion
 
@@ -173,7 +173,6 @@ namespace Singularity.Units
         /// <param name="position">Where the unit should be spawned.</param>
         /// <param name="camera">Game camera being used.</param>
         /// <param name="director">Reference to the game director.</param>
-        /// <param name="map">Reference to the game map.</param>
         /// <param name="friendly">The allegiance of the unit. True if the unit is player controlled.</param>
         /// <remarks>
         /// FreeMovingUnit is an abstract class that can be implemented to allow free movement outside
@@ -210,23 +209,17 @@ namespace Singularity.Units
                     { true, true, true }
                 };
         }
-
-        protected void ReloadContent(ref Director director, Camera camera, ref Map.Map map)
+        
+        protected void ReloadContent(ref Director director, Camera camera)
         {
             base.ReloadContent(ref director);
-            mDirector = director;
             mCamera = camera;
+
             if (Friendly)
             {
                 mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
                 mDirector.GetInputManager.AddMousePositionListener(this);
             }
-        }
-
-        protected void ReloadContent(ref Director director, Camera camera)
-        {
-            base.ReloadContent(ref director);
-            mCamera = camera;
         }
 
         public override void Move()
@@ -323,8 +316,8 @@ namespace Singularity.Units
         /// <summary>
         /// Defines the health of the unit, defaults to 10.
         /// </summary>
-        [DataMember]
-        public int Health { get; set; }
+        // [DataMember]
+        // public int Health { get; set; }
 
         /// <summary>
         /// Damages the unit by a certain amount.

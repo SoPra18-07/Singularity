@@ -266,7 +266,7 @@ namespace Singularity.Units
             {
                 if (mTargetWasNull)
                 {
-                    mTargetPosition = AbsolutePosition;
+                    // mTargetPosition = AbsolutePosition;
                     Moved = false;
                     //TODO: THis is a hotfix. Threw an error for the path being null...
                     mShoot = true;
