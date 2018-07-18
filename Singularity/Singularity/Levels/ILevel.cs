@@ -2,6 +2,7 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Singularity.AI.Properties;
+using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Screen;
@@ -9,7 +10,7 @@ using Singularity.Screen.ScreenClasses;
 
 namespace Singularity.Levels
 {
-    public interface ILevel
+    public interface ILevel : IKeyListener
     {
         /// <summary>
         /// This method Loads all the data in the Level.

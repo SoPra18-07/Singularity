@@ -17,7 +17,7 @@ using Singularity.Units;
 namespace Singularity.Levels
 {
     [DataContract]
-    internal abstract class BasicLevel : ILevel, IKeyListener
+    internal abstract class BasicLevel : ILevel
     {
 
         [DataMember]
@@ -175,7 +175,6 @@ namespace Singularity.Levels
 
             return true;
         }
-
 
         public bool KeyPressed(KeyEvent keyEvent)
         {

@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Nature;
@@ -493,7 +494,45 @@ namespace Singularity.Screen.ScreenClasses
             return mCamera;
         }
 
+        public void Unload()
+        {
+            var keyListenersList = new List<IKeyListener>();
+            var mousePosListenersList = new List<IMousePositionListener>();
+            var mouseClickListenersList = new List<IMouseClickListener>();
+            var mouseScrollListenersList = new List<IMouseWheelListener>();
 
+            foreach (var updateable in mUpdateables)
+            {
+                var key = updateable as IKeyListener;
+                var mousePos = updateable as IMousePositionListener;
+                var mouseClick = updateable as IMouseClickListener;
+                var mouseScroll = updateable as IMouseWheelListener;
+
+                if (key != null)
+                {
+                    mDirector.GetInputManager.FlagForRemoval(key);
+                }
+
+                if (mousePos != null)
+                {
+                    mDirector.GetInputManager.RemoveMousePositionListener(mousePos);
+                }
+
+                if (mouseClick != null)
+                {
+                    mDirector.GetInputManager.FlagForRemoval(mouseClick);
+                }
+
+                if (mouseScroll != null)
+                {
+                    mDirector.GetInputManager.FlagForRemoval(mouseScroll);
+                }
+            }
+            mDirector.GetInputManager.RemoveMousePositionListener(mSelBox);
+            mDirector.GetInputManager.FlagForRemoval(mSelBox);
+            mDirector.GetInputManager.FlagForRemoval(mCamera as IKeyListener);
+            mDirector.GetInputManager.FlagForRemoval(mCamera as IMouseWheelListener);
+        }
         /// <summary>
         /// This get executed when a settler is transformed into a command center
         /// Essentially this builds a command center
