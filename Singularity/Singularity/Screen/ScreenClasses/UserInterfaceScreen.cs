@@ -530,6 +530,8 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             Loaded = true;
+
+            Initialize();
         }
 
         /// <summary>
@@ -905,7 +907,6 @@ namespace Singularity.Screen.ScreenClasses
             #region info when hovering over the building menu buttons
 
             mInfoBoxList = new List<InfoBoxWindow>();
-
             var infoBoxBorderColor = Color.White;
             var infoBoxCenterColor = Color.Black;
 

@@ -62,7 +62,7 @@ namespace Singularity.Screen.ScreenClasses
 
             mDirector = director;
 
-            Initialize(screenResolution, false, game);
+            Initialize(screenResolution, false, showSplash, game);
 
             mScreenState = showSplash ? EScreen.SplashScreen : EScreen.MainMenuScreen;
 
@@ -106,7 +106,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             if (sResolutionChanged)
             {
-                Initialize(sViewportResolution, sResolutionChanged, mGame);
+                Initialize(sViewportResolution, sResolutionChanged, false, mGame);
                 // LoadScreenContents(mContent);
                 mScreenManager.RemoveScreen();
                 mScreenManager.RemoveScreen();
@@ -280,7 +280,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="screenResolution"></param>
         /// <param name="screenResolutionChanged"></param>
         /// <param name="game"></param>
-        private void Initialize(Vector2 screenResolution, bool screenResolutionChanged, Game1 game)
+        private void Initialize(Vector2 screenResolution, bool screenResolutionChanged, bool showSplash, Game1 game)
         {
             mGameModeSelectScreen = new GameModeSelectScreen(screenResolution);
             mLoadSelectScreen = new LoadSelectScreen(screenResolution);
@@ -289,7 +289,7 @@ namespace Singularity.Screen.ScreenClasses
             mOptionsScreen = new OptionsScreen(screenResolution, screenResolutionChanged, game, ref mDirector);
             mMenuBackgroundScreen = new MenuBackgroundScreen(screenResolution);
             mSplashScreen = new SplashScreen(screenResolution);
-            mMainMenuScreen = new MainMenuScreen(screenResolution);
+            mMainMenuScreen = new MainMenuScreen(screenResolution, showSplash);
         }
 
 

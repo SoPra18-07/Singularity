@@ -49,6 +49,8 @@ namespace Singularity.Manager
 
         public EventLog GetEventLog { get; }
 
+        public IScreenManager GetScreenManager { get; private set; }
+
         public Director(ContentManager content, GraphicsDeviceManager graphics, GlobalVariablesInstance globalVariablesInstance)
         {
             GetGlobalVariablesInstance = globalVariablesInstance;

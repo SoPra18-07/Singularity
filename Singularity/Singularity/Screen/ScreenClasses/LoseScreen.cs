@@ -104,10 +104,10 @@ namespace Singularity.Screen.ScreenClasses
                     position: new Vector2(x: mScreenSize.X / 2,
                                           y: mScreenSize.Y / 2.5f),
                     sourceRectangle: null,
-                    color: new Color(r: 0.2f,
-                        g: 0.2f,
-                        b: 0.2f,
-                        alpha: 0.1f),
+                    color: new Color(r: 1f,
+                        g: 1f,
+                        b: 1f,
+                        alpha: 1f),
                     rotation: 0f,
                     origin: new Vector2(mSingularityText.Width / 2f, mSingularityText.Height / 2f),
                     scale: 0.8f,
@@ -118,6 +118,11 @@ namespace Singularity.Screen.ScreenClasses
             if (mCounter >= 300)
             {
                 mStatisticsWindow.Draw(spriteBatch: spriteBatch);
+                var measuredButtonStringSize = mLibSans20.MeasureString("Main Menu");
+                var buttonPositionX = mScreenSize.X - measuredButtonStringSize.X - 20;
+                var buttonPositionY = 20;
+
+                spriteBatch.FillRectangle(new Vector2(buttonPositionX, buttonPositionY), measuredButtonStringSize, Color.Black);
 
                 mMainMenuButton.Draw(spriteBatch: spriteBatch);
             }
@@ -150,10 +155,10 @@ namespace Singularity.Screen.ScreenClasses
 
             var measuredButtonStringSize = mLibSans20.MeasureString("Main Menu");
 
-            var buttonPositionX = mScreenSize.X - measuredButtonStringSize.X - 20;//mScreenSize.X - ((mScreenSize.X - mStatisticsWindow.Size.X) / 2 - measuredButtonStringSize.X) / 2 - measuredButtonStringSize.X;
-            var buttonPositionY = 20;//mScreenSize.Y - measuredButtonStringSize.Y - 20;//mScreenSize.Y - ((mScreenSize.X - mStatisticsWindow.Size.X) / 2 - measuredButtonStringSize.X) / 2 - measuredButtonStringSize.Y;
+            var buttonPositionX = mScreenSize.X - measuredButtonStringSize.X - 20;
+            var buttonPositionY = 20;
 
-            mMainMenuButton = new Button("Main Menu", mLibSans20, new Vector2(buttonPositionX, buttonPositionY), Color.Red) { Opacity = 1f };
+            mMainMenuButton = new Button("Main Menu", mLibSans20, new Vector2(buttonPositionX, buttonPositionY), Color.White, true) { Opacity = 1f };
 
             mMainMenuButton.ButtonReleased += ReturnToMainMenu;
         }

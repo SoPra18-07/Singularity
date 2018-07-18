@@ -45,7 +45,7 @@ namespace Singularity.Units
         /// </summary>
         protected double mCurrentTime;
 
-        protected readonly HealthBar mHealthBar;
+        protected HealthBar mHealthBar;
 
         [DataMember]
         public bool KillMe { get; protected set; }
@@ -253,6 +253,8 @@ namespace Singularity.Units
             mDirector = director;
             mCamera = camera;
             mMap = map;
+
+            mHealthBar = new HealthBar(this);
             if (Friendly)
             {
                 mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
