@@ -72,7 +72,6 @@ namespace Singularity.Units
             SeperationRaw = Vector2.Zero;
             
             // mMap = mDirector.GetStoryManager.Level.Map;
-            Debug.WriteLineIf(map == null, "Map is null for some reason.");
             Map = map;
 
             FlockingId = mDirector.GetIdGenerator.NextId();
@@ -134,10 +133,7 @@ namespace Singularity.Units
                 mTargetPosition = mPath.Pop();
                 mGoalCounter = 0;
             }
-
-
-            Debug.WriteLine("vel:" + Velocity + ", pos: " + AbsolutePosition + ", Coh: " + CohesionRaw + ", Sep: " + SeperationRaw);
-
+            
             // setting variables used from the AFlocking parts
             mUnits.ForEach(u => u.Move());
 
@@ -183,7 +179,6 @@ namespace Singularity.Units
             if (mUnits.Count == 1)
             {
                 AbsolutePosition = mUnits[0].AbsolutePosition;
-                Debug.WriteLine("pos2: " + mUnits[0].AbsolutePosition);
             }
             else
             {
@@ -192,14 +187,11 @@ namespace Singularity.Units
                     SeperationRaw += unit.AbsolutePosition;
                 }
                 AbsolutePosition = SeperationRaw / mUnits.Count;
-                Debug.WriteLine("pos2: " + AbsolutePosition + ", count: " + mUnits.Count);
             }
 
             Moved = true;
             mUnits.ForEach(u => u.Moved = true);
             mUltimateTarget = target;
-            Debug.WriteLine("Starting path finding at: " + AbsolutePosition + " for " + FlockingId);
-            Debug.WriteLine("Target: " + target.X + ", " + target.Y);
 
             var map = Map;
             mPath = new Stack<Vector2>();
@@ -208,8 +200,6 @@ namespace Singularity.Units
                 ref map);
             
             mDebugPath = mPath.ToArray();
-
-            Debug.WriteLine("Path is " + mPath.Count + " long.");
 
             mTargetPosition = mPath.Pop(); // directly getting first goal-part.
             mDirector.GetMilitaryManager.EnsureIncluded(this);
@@ -250,7 +240,6 @@ namespace Singularity.Units
         
         internal void AssignUnit(IFlocking unit)
         {
-            Debug.WriteLine("Unit got added to " + FlockingId);
             mUnits.Add(unit);
             unit.AddGroup(this);
             if (Speed == 0)

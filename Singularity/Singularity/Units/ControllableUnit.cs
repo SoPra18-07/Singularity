@@ -97,7 +97,6 @@ namespace Singularity.Units
                             (int)target.X / MapConstants.GridWidth,
                             (int)target.Y / MapConstants.GridHeight))
                         {
-                            Debug.WriteLine("pos: " + AbsolutePosition);
                             mGroup.Get().FindPath(target);
                         }
                     }
@@ -151,7 +150,6 @@ namespace Singularity.Units
             // check if selection box intersects with MUnit bounds
             if (selBox.Intersects(AbsBounds))
             {
-                Debug.WriteLine("Unit: " + Id + " got selected");
                 mSelected = true;
                 mDirector.GetMilitaryManager.AddSelected(this); // send to FlockingManager
             }
