@@ -12,21 +12,16 @@ using Singularity.Map;
 using Singularity.Map.Properties;
 using Singularity.Property;
 using Singularity.Screen;
+using Singularity.Utils;
 
 namespace Singularity.Units
 {
     /// <inheritdoc cref="ICollider"/>
     /// <inheritdoc cref="IRevealing"/>
+    /// <inheritdoc cref="AFlocking"/>
     [DataContract]
-    public abstract class FreeMovingUnit : ADie, ICollider, IRevealing, IMouseClickListener, IMousePositionListener
+    public abstract class FreeMovingUnit : AFlocking, ICollider, IRevealing, IMouseClickListener, IMousePositionListener
     {
-        /// <summary>
-        /// The unique ID of the unit.
-        /// </summary>
-        [DataMember]
-        public int Id { get; private set; }
-        [DataMember]
-        public bool Friendly { get; protected set; }
 
         /// <summary>
         /// The state of the unit in terms of living or dead. False when alive.
@@ -53,68 +48,34 @@ namespace Singularity.Units
         #region Movement Variables
 
         /// <summary>
-        /// Indicates the vector that needs to be added to the current vector to indicate the movement
-        /// direction.
-        /// </summary>
-        [DataMember]
-        protected Vector2 mToAdd;
-
-        /// <summary>
         /// Target position that the unit wants to reach.
         /// </summary>
-        [DataMember]
-        protected Vector2 mTargetPosition;
+        // [DataMember]
+        // protected Vector2 mTargetPosition;
 
         /// <summary>
         /// Indicates if the unit is currently moving towards a target.
         /// </summary>
-        [DataMember]
-        protected bool mIsMoving;
+        // [DataMember]
+        // protected bool mIsMoving;
 
-        /// <summary>
-        /// Path the unit must take to get to the target position without colliding with obstacles.
-        /// </summary>
-        [DataMember]
-        protected Stack<Vector2> mPath;
 
-        /// <summary>
-        /// Stores the path the unit is taking so that it can be drawn for debugging.
-        /// </summary>
-        [DataMember]
-        protected Vector2[] mDebugPath;
-
-        /// <summary>
-        /// Provides a snapshot of the current bounds of the unit at every update call.
-        /// </summary>
-        [DataMember]
-        protected Rectangle mBoundsSnapshot;
 
         /// <summary>
         /// Normalized vector to indicate direction of movement.
         /// </summary>
-        [DataMember]
-        protected Vector2 mMovementVector;
-        [DataMember]
-        protected float mSpeed;
+        // [DataMember]
+        // protected Vector2 mMovementVector;
 
         #endregion
 
         #region Director/map/camera/library/fow Variables
 
-        /// <summary>
-        /// Stores a reference to the game director.
-        /// </summary>
-        protected Director mDirector;
-
-        /// <summary>
-        /// MilitaryPathfinders enables pathfinding using jump point search or line of sight.
-        /// </summary>
-        protected FreeMovingPathfinder mPathfinder;
 
         /// <summary>
         /// Stores a reference to the game map.
         /// </summary>
-        protected Map.Map mMap;
+        // protected Map.Map mMap;
 
         /// <summary>
         /// Stores the game camera.
@@ -130,18 +91,22 @@ namespace Singularity.Units
         /// <summary>
         /// Used by the camera to figure out where it is.
         /// </summary>
-        [DataMember]
-        protected double mZoomSnapshot;
-        [DataMember]
-        public Rectangle AbsBounds { get; protected set; }
-        public bool[,] ColliderGrid { get; protected set; }
+        // [DataMember]
+        // protected double mZoomSnapshot;
+        
+            //   the following are already in AFlocking.
+        // [DataMember]
+        // public Rectangle AbsBounds { get; protected set; }
+        // TODO: Make clear whether we need to reload that
+        // [DataMember]
+        // public bool[,] ColliderGrid { get; protected set; }
         [DataMember]
         public int RevelationRadius { get; protected set; }
-        [DataMember]
-        public Vector2 RelativePosition { get; set; }
-        [DataMember]
-        public Vector2 RelativeSize { get; set; }
-        [DataMember]
+        // [DataMember]
+        // public Vector2 RelativePosition { get; set; }
+        // [DataMember]
+        // public Vector2 RelativeSize { get; set; }
+        // [DataMember]
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
 
         #endregion
@@ -149,20 +114,13 @@ namespace Singularity.Units
         #region Positioning Variables
 
         /// <summary>
-        /// Indicates if a unit has moved between updates.
-        /// </summary>
-        [DataMember]
-        public bool Moved { get; protected set; }
-
-        /// <summary>
         /// Stores the center of a unit's position.
         /// </summary>
-        [DataMember]
-        public Vector2 Center { get; protected set; }
-        [DataMember]
-        public Vector2 AbsolutePosition { get; set; }
-        [DataMember]
-        public Vector2 AbsoluteSize { get; set; }
+        /// already 
+        // [DataMember]
+        // public override Vector2 Center { get; protected set; }
+
+        
 
         /// <summary>
         /// Value of the unit's rotation.
@@ -190,8 +148,8 @@ namespace Singularity.Units
         /// <summary>
         /// Indicates if the unit is currently selected.
         /// </summary>
-        [DataMember]
-        internal bool mSelected;
+        // [DataMember]
+        // internal bool mSelected;
 
         /// <summary>
         /// Stores the current x position of the mouse
@@ -205,6 +163,8 @@ namespace Singularity.Units
         [DataMember]
         internal float mMouseY;
 
+        private bool mDead;
+
         #endregion
 
         /// <summary>
@@ -213,7 +173,6 @@ namespace Singularity.Units
         /// <param name="position">Where the unit should be spawned.</param>
         /// <param name="camera">Game camera being used.</param>
         /// <param name="director">Reference to the game director.</param>
-        /// <param name="map">Reference to the game map.</param>
         /// <param name="friendly">The allegiance of the unit. True if the unit is player controlled.</param>
         /// <remarks>
         /// FreeMovingUnit is an abstract class that can be implemented to allow free movement outside
@@ -222,19 +181,15 @@ namespace Singularity.Units
         /// map, and implements pathfinding for objects on the map. It also allows subclasses to have
         /// health and to be damaged.
         /// </remarks>
-        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, ref Map.Map map, bool friendly = true) : base(ref director)
+        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, bool friendly = true) : base(ref director, null)
         {
-            Id = director.GetIdGenerator.NextiD(); // id for the specific unit.
 
             AbsolutePosition = position;
-            mMap = map;
 
             Moved = false;
-            mIsMoving = false;
 
             mDirector = director;
             mCamera = camera;
-            mPathfinder = new FreeMovingPathfinder();
 
             Friendly = friendly;
 
@@ -245,15 +200,22 @@ namespace Singularity.Units
                 mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
                 mDirector.GetInputManager.AddMousePositionListener(this);
             }
-        }
 
-        protected void ReloadContent(ref Director director, Camera camera, ref Map.Map map)
+            mGroup = Optional<FlockingGroup>.Of(null);
+
+            /* too inefficient
+            ColliderGrid = new[,]
+                {
+                    { true, true, true },
+                    { true, true, true }
+                };
+             */
+        }
+        
+        protected void ReloadContent(ref Director director, Camera camera)
         {
             base.ReloadContent(ref director);
-            mPathfinder = new FreeMovingPathfinder();
-            mDirector = director;
             mCamera = camera;
-            mMap = map;
 
             if (Friendly)
             {
@@ -262,85 +224,10 @@ namespace Singularity.Units
             }
         }
 
-        #region Pathfinding Methods
-
-        /// <summary>
-        /// Calculates the direction the unit should be moving and moves it into that direction.
-        /// </summary>
-        /// <param name="target">The target to which to move.</param>
-        /// <param name="speed">Speed to go towards the target at.</param>
-        protected void MoveToTarget(Vector2 target, float speed)
+        public override void Move()
         {
-            var movementVector = new Vector2(target.X - Center.X, target.Y - Center.Y);
-            movementVector.Normalize();
-            mToAdd += mMovementVector * (float)(mZoomSnapshot * speed);
-
-            Rotate(target, true);
-
-            AbsolutePosition = new Vector2(AbsolutePosition.X + movementVector.X * speed, AbsolutePosition.Y + movementVector.Y * speed);
-        }
-
-        protected void FindPath(Vector2 currentPosition, Vector2 targetPosition)
-        {
-
-            mIsMoving = true;
-
-            mPath = new Stack<Vector2>();
-            mPath = mPathfinder.FindPath(currentPosition,
-                mTargetPosition,
-                ref mMap,
-                Friendly? EndNodeUnWalkableTreatment.DISALLOW : EndNodeUnWalkableTreatment.ALLOW);
-
-            if (GlobalVariables.DebugState)
-            {
-                mDebugPath = mPath.ToArray();
-            }
-
-            mBoundsSnapshot = Bounds;
-            mZoomSnapshot = mCamera.GetZoom();
-        }
-
-        /// <summary>
-        /// Checks whether the target position is reached or not.
-        /// </summary>
-        protected bool HasReachedTarget()
-        {
-
-            if (!(Math.Abs(Center.X + mToAdd.X -
-                           mTargetPosition.X) < 8 &&
-                  Math.Abs(Center.Y + mToAdd.Y -
-                           mTargetPosition.Y) < 8))
-            {
-                return false;
-            }
-
-            mToAdd = Vector2.Zero;
-            return true;
-        }
-
-        /// <summary>
-        /// Checks whether the next waypoint has been reached.
-        /// </summary>
-        /// <returns></returns>
-        protected bool HasReachedWaypoint()
-        {
-            //TODO: This is a hotfix for mPath being empty but peek being called. I dont know if this could cause additional errors.
-            if (mPath.Count == 0)
-            {
-                return true;
-            }
-            if (Math.Abs(Center.X + mToAdd.X - mPath.Peek().X) < 8
-                && Math.Abs(Center.Y + mToAdd.Y - mPath.Peek().Y) < 8)
-            {
-                // If the position is within 8 pixels of the waypoint, (i.e. it will overshoot the waypoint if it moves
-                // for one more update, do the following
-
-                //Debug.WriteLine("Waypoint reached.");
-                //Debug.WriteLine("Next waypoint: " + mPath.Peek());
-                return true;
-            }
-
-            return false;
+            Rotate(Vector2.Normalize(Velocity) * 180 + AbsolutePosition, true);
+            base.Move();
         }
 
         /// <summary>
@@ -349,7 +236,7 @@ namespace Singularity.Units
         /// </summary>
         /// <param name="target">Target rotation position</param>
         /// <param name="absolute">Whether the target position is absolute or relative. True for absolute.</param>
-        protected void Rotate(Vector2 target, bool absolute=false)
+        protected void Rotate(Vector2 target, bool absolute = false)
         {
             float x;
             float y;
@@ -394,25 +281,35 @@ namespace Singularity.Units
             mRotation = (mRotation + 42) % 360;
         }
 
-        internal void SetMovementTarget(Vector2 target)
-        {
-            mTargetPosition = target;
+        #region Overridden Methods
 
-            if (mMap.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
-                (int)mTargetPosition.X / MapConstants.GridWidth,
-                (int)mTargetPosition.Y / MapConstants.GridWidth))
-            {
-                FindPath(Center, mTargetPosition);
-            }
+        public override void Update(GameTime gametime)
+        {
+
+            // The unit might have gotten moved. base.Update() would only call Move(), but it's the job of the FlockingGroup to do that.
+            // base.Update(gametime);
+            
+
+            // ============ now update all the values, since the position changed ===========
+
+            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
+
+            //make sure to update the relative bounds rectangle enclosing this unit.
+            Bounds = new Rectangle((int)RelativePosition.X,
+                (int)RelativePosition.Y,
+                (int)RelativeSize.X,
+                (int)RelativeSize.Y);
+
+            SetAbsBounds();
         }
 
-        #endregion
-
-        #region Abstract Methods
-
-        public abstract void Update(GameTime gametime);
-
-        public abstract void Draw(SpriteBatch spriteBatch);
+        public override void SetAbsBounds()
+        {
+            AbsBounds = new Rectangle((int)AbsolutePosition.X + 16,
+                (int)AbsolutePosition.Y + 11,
+                (int)AbsoluteSize.X,
+                (int)AbsoluteSize.Y);
+        }
 
         #endregion
 
@@ -421,14 +318,14 @@ namespace Singularity.Units
         /// <summary>
         /// Defines the health of the unit, defaults to 10.
         /// </summary>
-        [DataMember]
-        public int Health { get; set; }
+        // [DataMember]
+        // public int Health { get; set; }
 
         /// <summary>
         /// Damages the unit by a certain amount.
         /// </summary>
         /// <param name="damage"></param>
-        public void MakeDamage(int damage)
+        public override void MakeDamage(int damage)
         {
             Health -= damage;
             if (Health <= 0 && !HasDieded)
@@ -447,7 +344,7 @@ namespace Singularity.Units
             mDirector.GetInputManager.RemoveMousePositionListener(this);
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
             mDirector.GetMilitaryManager.RemoveUnit(this);
-            mIsMoving = false;
+            Moved = false;
             if (!Friendly)
             {
                 // note that this has to be an enemy unit, otherwise it wouldn't be friendly.
@@ -469,8 +366,8 @@ namespace Singularity.Units
             {
                 case EMouseAction.LeftClick:
                     // check for if the unit is selected, not moving, the click is not within the bounds of the unit, and the click was on the map.
-                    if (mSelected
-                        && !mIsMoving
+                    if (Selected
+                        // && !Moved // now this should do pathfinding even while moving
                         && !withinBounds
                         && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f),
                                 (int)(mMouseY - RelativeSize.Y / 2f),
@@ -478,21 +375,52 @@ namespace Singularity.Units
                                 (int)RelativeSize.Y),
                             mCamera))
                     {
-                        SetMovementTarget(Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
-                            Matrix.Invert(mCamera.GetTransform())));
+
+                        if (!mGroup.IsPresent())
+                        {
+                            var group = Optional<FlockingGroup>.Of(mDirector.GetMilitaryManager.GetNewFlock());
+                            group.Get().AssignUnit(this);
+                            mGroup = group;
+                            // do the fuck not change these lines here. Costs you at least 3h for debugging.
+                        }
+
+                        var target = Vector2.Transform(new Vector2(Mouse.GetState().X, Mouse.GetState().Y),
+                            Matrix.Invert(mCamera.GetTransform()));
+
+                        if (mGroup.Get().Map.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(
+                            (int)target.X / MapConstants.GridWidth,
+                            (int)target.Y / MapConstants.GridHeight))
+                        {
+                            Debug.WriteLine("pos: " + AbsolutePosition);
+                            mGroup.Get().FindPath(target);
+                        }
                     }
 
 
                     if (withinBounds)
                     {
-                        mSelected = true;
+                        Selected = true;
                         giveThrough = false;
+
+                        if (!mGroup.IsPresent())
+                        {
+                            var group = Optional<FlockingGroup>.Of(mDirector.GetMilitaryManager.GetNewFlock());
+                            group.Get().AssignUnit(this);
+                            mGroup = group;
+                            // do the fuck not change these lines here. Costs you at least 3h for debugging.
+                        }
+                        else if (!mGroup.Get().AllSelected())
+                        {
+                            var group = Optional<FlockingGroup>.Of(mDirector.GetMilitaryManager.GetNewFlock());
+                            group.Get().AssignUnit(this);
+                            mGroup = group;
+                        }
                     }
 
                     break;
 
                 case EMouseAction.RightClick:
-                    mSelected = false;
+                    Selected = false;
                     break;
             }
 
@@ -531,10 +459,11 @@ namespace Singularity.Units
             // check if selection box intersects with MUnit bounds
             if (selBox.Intersects(AbsBounds))
             {
-                mSelected = true;
+                Debug.WriteLine("Unit: " + Id + " got selected");
+                Selected = true;
+                mDirector.GetMilitaryManager.AddSelected(this); // send to FlockingManager
             }
         }
-
         #endregion
     }
 }

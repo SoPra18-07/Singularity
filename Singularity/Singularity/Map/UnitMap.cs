@@ -167,7 +167,12 @@ namespace Singularity.Map
 
             var unitList = new List<ICollider>();
 
-            unitList.AddRange(mUnitGrid[(int)centerTile.X, (int)centerTile.Y].UnitList);
+            unitList.AddRange(mUnitGrid[(int)centerTile.X, (int)centerTile.Y].UnitList); // "System.IndexOutOfRangeException" happening sometimes
+            // values: -1.610614E+07, 2.684359E+07 (multiple times)
+            //               30, 29  (once, weird situation though)
+            // when selecting units that have not been selected before (while having others selected)
+            // maybe while there's units within a 'not-allowed'-CollisionMap zone. also happened when selecting three units and moving, the one in the middle (probably in a platform) vanished for some reason.
+            // units vanish when clicking on unpassable objects ...
 
             // ↑
             if (n)

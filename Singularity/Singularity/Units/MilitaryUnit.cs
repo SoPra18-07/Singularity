@@ -12,7 +12,7 @@ using Singularity.Sound;
 
 namespace Singularity.Units
 {
-    /// <inheritdoc cref="ControllableUnit"/>
+    /// <inheritdoc cref="FreeMovingUnit"/>
     [DataContract]
     public class MilitaryUnit : FreeMovingUnit, IShooting
     {
@@ -88,16 +88,16 @@ namespace Singularity.Units
         [DataMember]
         protected bool mTargetWasNull;
 
+        private double mCurrentTime;
 
 
         public MilitaryUnit(Vector2 position,
             Camera camera,
             ref Director director,
-            ref Map.Map map,
             bool friendly = true)
-            : base(position, camera, ref director, ref map, friendly)
+            : base(position, camera, ref director, friendly)
         {
-            mSpeed = MilitaryUnitStats.StandardSpeed;
+            Speed = MilitaryUnitStats.StandardSpeed;
             Health = MilitaryUnitStats.StandardHealth;
 
             AbsoluteSize = new Vector2(DefaultWidth * mScale, DefaultHeight * mScale);
@@ -116,7 +116,7 @@ namespace Singularity.Units
 
         public void ReloadContent(ContentManager content, ref Director director, Camera camera, ref Map.Map map)
         {
-            ReloadContent(ref director, camera, ref map);
+            ReloadContent(ref director, camera);
             mSoundId = mDirector.GetSoundManager.CreateSoundInstance("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
         }
 
@@ -135,7 +135,7 @@ namespace Singularity.Units
                 mMilSheet,
                 AbsolutePosition,
                 new Rectangle(150 * mColumn, 75 * mRow, (int)(AbsoluteSize.X / mScale), (int)(AbsoluteSize.Y / mScale)),
-                mSelected ? mSelectedColor : mColor,
+                Selected ? mSelectedColor : mColor,
                 0f,
                 Vector2.Zero,
                 new Vector2(mScale),
@@ -144,7 +144,7 @@ namespace Singularity.Units
             );
 
             // Draw the glow under it
-            if (mSelected)
+            if (Selected)
             {
                 spriteBatch.Draw(
                     mGlowTexture,
@@ -158,16 +158,6 @@ namespace Singularity.Units
                     LayerConstants.MilitaryUnitLayer - 0.01f);
             }
 
-            if (GlobalVariables.DebugState)
-            {
-                if (mDebugPath != null)
-                {
-                    for (var i = 0; i < mDebugPath.Length - 1; i++)
-                    {
-                        spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
-                    }
-                }
-            }
 
             if (mShoot)
             {
@@ -184,61 +174,36 @@ namespace Singularity.Units
         public override void Update(GameTime gameTime)
         {
 
+            base.Update(gameTime);
+
             //make sure to update the relative bounds rectangle enclosing this unit.
-            Bounds = new Rectangle(
-                (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
+            // Bounds = new Rectangle(
+                // (int)RelativePosition.X, (int)RelativePosition.Y, (int)RelativeSize.X, (int)RelativeSize.Y);
+                // (already happening in FreeMovingUnit )
 
             mHealthBar.Update(gameTime);
 
 
             // this makes the unit rotate according to the mouse position when its selected and not moving.
-            if (mSelected && !mIsMoving && !mShoot)
-            {
-                 Rotate(new Vector2(mMouseX, mMouseY));
-            }
-
-
-            else if (HasReachedTarget())
-            {
-                mIsMoving = false;
-            }
-
-            // calculate path to target position
-            else if (mIsMoving)
-            {
-                if (!HasReachedWaypoint())
-                {
-                    MoveToTarget(mPath.Peek(), mSpeed);
-                }
-                else
-                {
-                    //TODO This is a hotfix. Basically the same as the other two TODO hotfixes. Search for them for more information?
-                    if (mPath.Count != 0)
-                    {
-                        mPath.Pop();
-                        if (mPath.Count != 0)
-                        {
-                            MoveToTarget(mPath.Peek(), mSpeed);
-                        }
-                    }
-                }
-            }
-
+            // if (mSelected && !Moved && !mShoot)
+            // {
+                 // Rotate(new Vector2(mMouseX, mMouseY));
+            // }
+            
+            
             // these are values needed to properly get the current sprite out of the spritesheet.
             mRow = mRotation / 18;
             mColumn = (mRotation - mRow * 18) / 3;
 
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
             AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * mScale), (int) (AbsoluteSize.Y * mScale));
-            Moved = mIsMoving;
 
-            if (!mIsMoving && mShoot)
-            {
-                // Rotate to the center of the shooting target
-                Rotate(mShootingTarget.Center, true);
+            if (Moved || !mShoot) return;
+            // Rotate to the center of the shooting target
+            Rotate(mShootingTarget.Center);
+            
 
-
-                if (mShootingTimer < 0.5f)
+            if (mShootingTimer < 0.5f)
                 {
                     mShootingTimer = (float) gameTime.TotalGameTime.TotalMilliseconds;
                     Shoot(mShootingTarget);
@@ -254,8 +219,6 @@ namespace Singularity.Units
                     }
                 }
                 mDirector.GetStoryManager.Level.Ai.Shooting(this, mShootingTarget, gameTime);
-            }
-
         }
 
         private void Shoot(IDamageable target)
@@ -302,10 +265,9 @@ namespace Singularity.Units
             {
                 if (mTargetWasNull)
                 {
-                    mTargetPosition = AbsolutePosition;
-                    mIsMoving = false;
+                    // mTargetPosition = AbsolutePosition;
+                    Moved = false;
                     //TODO: THis is a hotfix. Threw an error for the path being null...
-                    mPath?.Clear();
                     mShoot = true;
                 }
 

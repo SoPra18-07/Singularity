@@ -16,10 +16,10 @@ namespace Singularity.Units
         /// <param name="camera">Game camera being used.</param>
         /// <param name="director">Reference to the game director.</param>
         /// <param name="map">Reference to the game map.</param>
-        public EnemyFast(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
-            : base(position, camera, ref director, ref map)
+        public EnemyFast(Vector2 position, Camera camera, ref Director director)
+            : base(position, camera, ref director)
         {
-            mSpeed = MilitaryUnitStats.FastSpeed;
+            Speed = MilitaryUnitStats.FastSpeed;
             Health = MilitaryUnitStats.FastHealth;
             Range = MilitaryUnitStats.FastRange;
             mColor = new Color(new Vector3(0.80784f, 0.588235f, 0.176471f));

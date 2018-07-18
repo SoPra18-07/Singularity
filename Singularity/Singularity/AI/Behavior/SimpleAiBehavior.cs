@@ -69,7 +69,7 @@ namespace Singularity.AI.Behavior
                 mMoveIntervalMillis = mRandom.Next(500, 1000);
             }
 
-            if ((int) gametime.TotalGameTime.TotalMilliseconds % mMoveIntervalMillis != 0)
+            if ((int)gametime.TotalGameTime.TotalMilliseconds % mMoveIntervalMillis != 0)
             {
                 return;
             }
@@ -92,7 +92,7 @@ namespace Singularity.AI.Behavior
                 mSpawnIntervalMillis = mRandom.Next(1000, 10000);
             }
 
-            if ((int) gametime.TotalGameTime.TotalMilliseconds % mSpawnIntervalMillis != 0)
+            if ((int)gametime.TotalGameTime.TotalMilliseconds % mSpawnIntervalMillis != 0)
             {
                 return;
             }
@@ -100,8 +100,8 @@ namespace Singularity.AI.Behavior
             var index = mRandom.Next(mAi.GetSpawners().Count);
 
             foreach (var spawner in mAi.GetSpawners()[index])
-            { 
-                var enemyUnit = spawner.SpawnEnemy(EEnemyType.Attack, 
+            {
+                var enemyUnit = spawner.SpawnEnemy(EEnemyType.Attack,
                     mDirector.GetStoryManager.Level.Camera,
                     mDirector.GetStoryManager.Level.Map,
                     mDirector.GetStoryManager.Level.GameScreen);

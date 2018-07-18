@@ -44,21 +44,21 @@ namespace Singularity.AI.Structures
             switch (type)
             {
                 case EEnemyType.Attack:
-                    enemyUnit = new EnemyUnit(new Vector2(Center.X + 100, Center.Y), camera, ref mDirector, ref map);
+                    enemyUnit = new EnemyUnit(new Vector2(Center.X + 100, Center.Y + 30), camera, ref mDirector);
                     break;
 
                 case EEnemyType.Defend:
-                    enemyUnit = new EnemyHeavy(new Vector2(Center.X + 100, Center.Y), camera, ref mDirector, ref map);
+                    enemyUnit = new EnemyHeavy(new Vector2(Center.X + 100, Center.Y + 30), camera, ref mDirector);
                     break;
 
                 case EEnemyType.Scout:
-                    enemyUnit = new EnemyFast(new Vector2(Center.X + 100, Center.Y), camera, ref mDirector, ref map);
+                    enemyUnit = new EnemyFast(new Vector2(Center.X + 100, Center.Y + 30), camera, ref mDirector);
                     break;
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
-
+            
             gameScreen.AddObject(enemyUnit);
             return enemyUnit;
         }

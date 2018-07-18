@@ -11,7 +11,7 @@ namespace Singularity.Property
     [DataContract]
     public abstract class ADie : IDie
     {
-        private Director mDirector;
+        protected Director mDirector;
 
         protected ADie(ref Director director)
         {
@@ -21,7 +21,7 @@ namespace Singularity.Property
         [DataMember]
         public int DeathOrder { get; protected set; } = 0;
 
-        public void ReloadContent(ref Director dir)
+        public virtual void ReloadContent(ref Director dir)
         {
             mDirector = dir;
         }
