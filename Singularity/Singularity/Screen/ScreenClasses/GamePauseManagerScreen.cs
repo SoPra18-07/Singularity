@@ -112,6 +112,7 @@ namespace Singularity.Screen.ScreenClasses
             if (sSaved)
             {
                 mSaveGameScreen = new SaveGameScreen(mScreenResolution);
+                mSaveGameScreen.mMenuOpacity = 1f;
                 sPressed = "Save Game";
                 Console.WriteLine("Save Screen Updated");
                 sSaved = false;
@@ -272,7 +273,7 @@ namespace Singularity.Screen.ScreenClasses
         public static void OnResumeButtonReleased(Object sender, EventArgs eventArg)
         {
             sPressed = "Resume";
-            GlobalVariables.GameIsPaused = false;
+            GlobalVariables.mGameIsPaused = false;
         }
 
         /// <summary>

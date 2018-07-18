@@ -40,7 +40,7 @@ namespace Singularity.Screen.ScreenClasses
 
         // Transition variables
         private readonly Vector2 mMenuBoxPosition;
-        private float mMenuOpacity;
+        public float mMenuOpacity;
         private readonly Vector2 mMenuBoxSize;
         private double mTransitionStartTime;
         private double mTransitionDuration;
@@ -258,6 +258,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="spriteBatch">spriteBatch that this object should draw to.</param>
         public void Draw(SpriteBatch spriteBatch)
         {
+            Console.Out.WriteLine(GetHashCode());
             spriteBatch.Begin();
 
             // Draw menu window

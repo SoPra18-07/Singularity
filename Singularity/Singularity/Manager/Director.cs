@@ -94,7 +94,7 @@ namespace Singularity.Manager
             GetClock.Update(gametime);
             GetSoundManager.SetMediaPlayerVolume();
 
-            if (!GlobalVariables.GameIsPaused)
+            if (!GlobalVariables.mGameIsPaused)
             {
                 GetClock.Update(gametime);
             }

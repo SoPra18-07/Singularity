@@ -253,7 +253,7 @@ namespace Singularity.Screen
         private void PauseButtonReleased(object sender, EventArgs eventArgs)
         {
             mScreenManager.AddScreen(mGamePauseManagerScreen);
-            GlobalVariables.GameIsPaused = true;
+            GlobalVariables.mGameIsPaused = true;
         }
 
         // toggles the civilUnits window opened/closed
