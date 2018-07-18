@@ -25,6 +25,8 @@ namespace Singularity.Screen
         // is the slider slave to the mouse
         private bool mSlave;
 
+        private bool mClicking;
+
         public float Opacity { get; set; } = 1f;
 
         // with value box on right side, bar with pages (notches)
@@ -209,19 +211,24 @@ namespace Singularity.Screen
                 }
 
                 // if slider is left click them make it slave to the mouse
-                if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                    Mouse.GetState().X >= mCurrentX - Size.Y / 2 &&
-                    Mouse.GetState().X <= mCurrentX + Size.Y / 2 &&
-                    Mouse.GetState().Y >= Position.Y - Size.Y / 2 &&
-                    Mouse.GetState().Y <= Position.Y + Size.Y / 2)
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed && !mClicking)
                 {
-                    mSlave = true;
+                    if (Mouse.GetState().X >= mCurrentX - Size.Y / 2 &&
+                        Mouse.GetState().X <= mCurrentX + Size.Y / 2 &&
+                        Mouse.GetState().Y >= Position.Y - Size.Y / 2 &&
+                        Mouse.GetState().Y <= Position.Y + Size.Y / 2)
+                    {
+                        mSlave = true;
+                    }
+                    mClicking = true;
                 }
+                    
 
                 // if slider is left button released then unslave from mouse
-                if (Mouse.GetState().LeftButton == ButtonState.Released)
+                if (Mouse.GetState().LeftButton == ButtonState.Released && mClicking)
                 {
                     mSlave = false;
+                    mClicking = false;
                 }
 
                 // if slave to the mouse then move according to the limits of the slider bar
