@@ -45,7 +45,7 @@ namespace Singularity.Platforms
 
             mProvidingEnergy = ProvidingEnergy;
 
-            mCost = new Dictionary<EResourceType, int>();
+            mCost = GetResourceCosts(EStructureType.Command);
             mType = EStructureType.Command;
             mSpritename = "Cylinders";
             SetPlatfromParameters();
