@@ -532,8 +532,6 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             Loaded = true;
-
-            Initialize();
         }
 
         /// <summary>
