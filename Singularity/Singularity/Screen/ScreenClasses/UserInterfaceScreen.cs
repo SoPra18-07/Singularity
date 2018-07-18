@@ -463,11 +463,9 @@ namespace Singularity.Screen.ScreenClasses
         /// <inheritdoc />
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (!mActiveUserInterface || !mInitialized) { return; }
-
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, mRasterizerState);
 
-            if (!mActiveUserInterface)
+            if (!mActiveUserInterface || !mInitialized)
             {
                 mPauseButtonBeforeUi?.Draw(spriteBatch);
 
