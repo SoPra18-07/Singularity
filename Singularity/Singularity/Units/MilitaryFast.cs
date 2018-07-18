@@ -1,10 +1,12 @@
 ﻿
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Manager;
 using Singularity.Map;
 
 namespace Singularity.Units
 {
+    [DataContract]
     internal class MilitaryFast : MilitaryUnit
     {
         public MilitaryFast(Vector2 position,
