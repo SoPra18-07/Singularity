@@ -68,6 +68,8 @@ namespace Singularity.Manager
 
             GetSoundManager.LoadContent(content);
             GetSoundManager.PlaySoundTrack();
+
+            GetStoryManager.LoadAchievements();
         }
 
         internal void ReloadContent(Director dir, Vector2 mapmeasurements, ContentManager content)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Levels;
 using Singularity.Libraries;
 
 namespace Singularity.Screen.ScreenClasses
@@ -127,83 +128,83 @@ namespace Singularity.Screen.ScreenClasses
 
             // First
             spriteBatch.DrawString(mLibSans20,
-                "The system goes online August 14th 1997",
+                Achievements.SystemOnline() ? "The system goes online August 14th 1997" : "???",
                 new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 80),
-                mTextColor * mMenuOpacity);
+                mTextColor * mMenuOpacity * (Achievements.SystemOnline() ? 1 : 0.5f));
             spriteBatch.DrawString(mLibSans12,
                 "Place 1 Platform",
                 new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 110),
-                mTextColor * mMenuOpacity);
+                mTextColor * mMenuOpacity * (Achievements.SystemOnline() ? 1 : 0.5f));
 
             // Second
             spriteBatch.DrawString(mLibSans20,
-                "It becomes self aware at 2:14 AM",
+                Achievements.SelfAware() ? "It becomes self aware at 2:14 AM" : "???",
                 new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 140),
-                mTextColor * mMenuOpacity);
+                mTextColor * mMenuOpacity * (Achievements.SelfAware() ? 1 : 0.5f));
             spriteBatch.DrawString(mLibSans12,
                 "Complete the tutorial",
                 new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 170),
-                mTextColor * mMenuOpacity);
+                mTextColor * mMenuOpacity * (Achievements.SystemOnline() ? 1 : 0.5f));
 
             // Third
             spriteBatch.DrawString(mLibSans20,
-                "Skynet",
+                Achievements.Skynet() ? "Skynet" : "???",
                 new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 200),
-                mTextColor * mMenuOpacity);
+                mTextColor * mMenuOpacity * (Achievements.Skynet() ? 1 : 0.5f));
             spriteBatch.DrawString(mLibSans12,
                 "Build a network of 30 platforms",
                 new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 230),
-                mTextColor * mMenuOpacity);
+                mTextColor * mMenuOpacity * (Achievements.Skynet() ? 1 : 0.5f));
 
             // Fourth
             spriteBatch.DrawString(mLibSans20,
-                "Wall E",
+                Achievements.WallE() ? "Wall E" : "???",
                 new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 260),
-                mTextColor * mMenuOpacity);
+                mTextColor * mMenuOpacity * (Achievements.WallE() ? 1 : 0.5f));
             spriteBatch.DrawString(mLibSans12,
                 "Burn 10,000 units of trash",
                 new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 290),
-                mTextColor * mMenuOpacity);
+                mTextColor * mMenuOpacity * (Achievements.WallE() ? 1 : 0.5f));
 
             // Fifth
             spriteBatch.DrawString(mLibSans20,
-                "HAL 9000",
+                Achievements.Hal9000() ? "HAL 9000" : "???",
                 new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 320),
-                mTextColor * mMenuOpacity);
+                mTextColor * mMenuOpacity * (Achievements.Hal9000() ? 1 : 0.5f));
             spriteBatch.DrawString(mLibSans12,
                 "Complete the campaign",
                 new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 350),
-                mTextColor * mMenuOpacity);
+                mTextColor * mMenuOpacity * (Achievements.Hal9000() ? 1 : 0.5f));
 
             // Sixth
             spriteBatch.DrawString(mLibSans20,
-                "Replicant",
+                Achievements.Replicant() ? "Replicant" : "???",
                 new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 380),
-                mTextColor * mMenuOpacity);
+                mTextColor * mMenuOpacity * (Achievements.Replicant() ? 1 : 0.5f));
             spriteBatch.DrawString(mLibSans12,
                 "Produce 50 units",
                 new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 410),
-                mTextColor * mMenuOpacity);
+                mTextColor * mMenuOpacity * (Achievements.Replicant() ? 1 : 0.5f));
 
             // Seventh
             spriteBatch.DrawString(mLibSans20,
-                "Please rate our game perfect 5/7",
+                Achievements.RateOurGame() ? "Please rate our game perfect 5/7" : "???",
                 new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 440),
-                mTextColor * mMenuOpacity);
+                mTextColor * mMenuOpacity * (Achievements.RateOurGame() ? 1 : 0.5f));
             spriteBatch.DrawString(mLibSans12,
                 "Build 1,000 Military units",
                 new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 470),
-                mTextColor * mMenuOpacity);
+                mTextColor * mMenuOpacity * (Achievements.RateOurGame() ? 1 : 0.5f));
 
             // Third
             spriteBatch.DrawString(mLibSans20,
-                "Overachiever",
+                Achievements.Overachiever() ? "Overachiever" : "???",
                 new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 500),
-                mTextColor * mMenuOpacity);
+                mTextColor * mMenuOpacity * (Achievements.Overachiever() ? 1 : 0.5f));
             spriteBatch.DrawString(mLibSans12,
                 "Unlock all achievements",
                 new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 530),
-                mTextColor * mMenuOpacity);
+                mTextColor * mMenuOpacity * (Achievements.Overachiever() ? 1 : 0.5f));
             #endregion
 
             spriteBatch.End();

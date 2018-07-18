@@ -121,19 +121,22 @@ namespace Singularity.Manager
         public void UpdateUnits(string action)
         {
             int a;
-            Units.TryGetValue(action, out a);
-            Units[action] += 1;
-
-            if (action == "created")
+            var temp = action;
+            
+            if (temp == "created")
             {
                 Achievements.UnitsBuilt++;
             }
 
-            if (action == "military created")
+            if (temp == "military created")
             {
                 Achievements.UnitsBuilt++;
                 Achievements.MilitaryUnitsBuilt++;
+                temp = "created";
             }
+
+            Units.TryGetValue(temp, out a);
+            Units[temp] += 1;
 
             if (Achievements.Replicant())
             {

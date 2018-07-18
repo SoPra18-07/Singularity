@@ -97,7 +97,12 @@ namespace Singularity.Levels
         /// <returns></returns>
         internal static bool Overachiever()
         {
-            AllCompleted = SystemOnline() && SelfAware() && Skynet() && WallE() && Hal9000() && Replicant() && RateOurGame();
+            if (!AllCompleted)
+            {
+                AllCompleted = SystemOnline() && SelfAware() && Skynet() && WallE() && Hal9000() && Replicant() &&
+                               RateOurGame();
+            }
+
             return AllCompleted;
         }
     }
