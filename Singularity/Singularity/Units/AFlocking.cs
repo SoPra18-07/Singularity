@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
+using Singularity.Map.Properties;
 using Singularity.Property;
 using Singularity.Utils;
 
@@ -134,7 +135,10 @@ namespace Singularity.Units
             //     Steering towards the Center of mass relative to other members of the FlockingGroup (has a Center/AbsolutePosition for that matter)
             // - Seperation
             //     The steering away from other members of the FlockingGroup. this is also precomputed there.
-            var align = Vector2.Normalize(mGroup.Get().Velocity);
+
+            var x = AbsBounds.X / MapConstants.GridWidth;
+            var y = AbsBounds.Y / MapConstants.GridHeight;
+            var align = mGroup.Get().HeatMap.IsPresent() ? mGroup.Get().HeatMap.Get()[x, y] : Vector2.Normalize(mGroup.Get().Velocity);
             var cohes = (mGroup.Get().CohesionRaw - AbsolutePosition).Length() > 0.5 ? Vector2.Normalize(mGroup.Get().CohesionRaw - AbsolutePosition) : Vector2.Zero;
             // var seper = Vector2.Normalize(mGroup.Get().SeperationRaw - AbsolutePosition * mGroup.Get().UnitCount()) * -1;
             // var seper = Vector2.Normalize(new Vector2(
