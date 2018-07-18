@@ -168,7 +168,7 @@ namespace Singularity.Levels
                 if (key == Keys.Q)
                 {
                     mDirector.GetStoryManager.SaveAchievements();
-                    XSerializer.Save(this, "xXxSwaglordofYolonessxXx.xml", false);
+                    XSerializer.Save(this, "Quicksave.xml", false);
                     return false;
                 }
             }
