@@ -1,9 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Runtime.Serialization;
+using Microsoft.Xna.Framework;
 using Singularity.Manager;
 using Singularity.Map;
 
 namespace Singularity.Units
 {
+    [DataContract]
     internal class MilitaryHeavy : MilitaryUnit
     {
         public MilitaryHeavy(Vector2 position,

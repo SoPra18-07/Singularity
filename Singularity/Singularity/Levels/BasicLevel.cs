@@ -17,7 +17,7 @@ using Singularity.Units;
 namespace Singularity.Levels
 {
     [DataContract]
-    internal abstract class BasicLevel : ILevel, IKeyListener
+    internal abstract class BasicLevel : ILevel
     {
 
         [DataMember]
