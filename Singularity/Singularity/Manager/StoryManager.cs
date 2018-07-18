@@ -40,8 +40,9 @@ namespace Singularity.Manager
         [DataMember]
         private LevelType mLevelType;
 
-        public StoryManager(LevelType level = LevelType.None)
+        public StoryManager(Director director, LevelType level = LevelType.None)
         {
+            mDirector = director;
 
             mLevelType = level;
             LoadAchievements();
@@ -233,7 +234,11 @@ namespace Singularity.Manager
         /// </summary>
         public void Win()
         {
-            mScreenManager.AddScreen(new WinScreen());
+            if (mLevelType != LevelType.Techdemo && mLevelType != LevelType.NoWinLose)
+            {
+                mScreenManager.RemoveScreen();
+                mScreenManager.AddScreen(new WinScreen(mDirector, mScreenManager));
+            }
         }
 
         /// <summary>
@@ -241,12 +246,21 @@ namespace Singularity.Manager
         /// </summary>
         public void Lose()
         {
-            mScreenManager.AddScreen(new LoseScreen());
+            if (mLevelType != LevelType.Techdemo && mLevelType != LevelType.NoWinLose)
+            {
+                mScreenManager.RemoveScreen();
+                mScreenManager.AddScreen(new LoseScreen(mDirector, mScreenManager));
+            }
         }
 
         public void SetScreenManager(IScreenManager screenManager)
         {
             mScreenManager = screenManager;
+        }
+
+        public void ReloadContent(Director director)
+        {
+            mDirector = director;
         }
     }
 }

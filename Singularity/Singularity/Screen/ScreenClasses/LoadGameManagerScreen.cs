@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Exceptions;
 using Singularity.Levels;
 using Singularity.Manager;
+using Singularity.Property;
 using Singularity.Serialization;
 
 namespace Singularity.Screen.ScreenClasses
@@ -110,13 +111,13 @@ namespace Singularity.Screen.ScreenClasses
                 case "None":
                     return;
                 case "Skirmish":
-                    mLevel = new Skirmish(mGraphics, ref mDirector, mContent, mScreenManager);
+                    mLevel = new Skirmish(mGraphics, ref mDirector, mContent, mScreenManager, LevelType.Skirmish);
                     mGameScreen = mLevel.GameScreen;
                     mUi = mLevel.Ui;
                     mNewGame = true;
                     break;
                 case "TechDemo":
-                    mLevel = new TechDemo(mGraphics, ref mDirector, mContent, mScreenManager);
+                    mLevel = new TechDemo(mGraphics, ref mDirector, mContent, mScreenManager, LevelType.Techdemo);
                     mGameScreen = mLevel.GameScreen;
                     mUi = mLevel.Ui;
                     mNewGame = true;
@@ -136,6 +137,26 @@ namespace Singularity.Screen.ScreenClasses
                 case "Save5":
                     mName = XSerializer.GetSaveNames()[4];
                     break;
+                case "ReturnToMainMenu":
+                    int width;
+                    int height;
+                    if (GlobalVariables.IsFullScreen)
+                    {
+                        width = mGame.mGraphicsAdapter.CurrentDisplayMode.Width;
+                        height = mGame.mGraphicsAdapter.CurrentDisplayMode.Height;
+                    }
+                    else
+                    {
+                        width = GlobalVariables.ResolutionList[GlobalVariables.ChosenResolution].Item1;
+                        height = GlobalVariables.ResolutionList[GlobalVariables.ChosenResolution].Item2;
+                    }
+
+                    mScreenManager.AddScreen(new MainMenuManagerScreen(screenResolution: new Vector2(width, height),
+                        screenManager: mScreenManager,
+                        director: ref mDirector,
+                        showSplash: false,
+                        game: mGame));
+                    break;
                 default:
                     throw new InvalidGenericArgumentException(
                         "Somehow the LoadGameManagerScreen was assigned to a button that he should not have been assigned to. Cannot handle" +
@@ -148,18 +169,18 @@ namespace Singularity.Screen.ScreenClasses
                 var levelToBe = XSerializer.Load(mName, false);
                 if (levelToBe.IsPresent())
                 {
-                    mScreenManager.AddScreen(mLoadingScreen);
                     mLevel = (ILevel)levelToBe.Get();
                     mLevel.ReloadContent(mContent, mGraphics, ref mDirector, mScreenManager);
                     mGameScreen = mLevel.GameScreen;
                     mUi = mLevel.Ui;
                     //Remove all screens above this screen, of course this only works if this screen is really on the bottom of the stack
-                    for (var i = mScreenManager.GetScreenCount() - 1; i > 0; i--)
+                    for (var i = mScreenManager.GetScreenCount() - 1; i > 1; i--)
                     {
                         mScreenManager.RemoveScreen();
                     }
                     mScreenManager.AddScreen(mGameScreen);
                     mScreenManager.AddScreen(mUi);
+                    mDirector.GetStoryManager.SetScreenManager(mScreenManager);
                     mGameLoaded = true;
                     mName = "";
                 }
@@ -227,6 +248,15 @@ namespace Singularity.Screen.ScreenClasses
             mLoadingScreen = new LoadingScreen(screenResolution);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArg"></param>
+        public static void OnReturnToMainMenuClicked(Object sender, EventArgs eventArg)
+        {
+            sPressed = "ReturnToMainMenu";
+        }
 
         #region MainMenuScreen Button Handlers
 

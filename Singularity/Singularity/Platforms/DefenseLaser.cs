@@ -94,11 +94,6 @@ namespace Singularity.Platforms
             //To the calculations: 1000 (so one second) is the maximum value of the shootinglaserticker.
             //We now just calculate whether that ticker is in a timespan where we are allowed to shoot again.
             //This formula very likely can be exploited by the player. But he doesnt have to know ;).
-            if (mShotsperSecond != 0)
-            {
-                Console.Out.WriteLine(1000 / mShotsperSecond * mShotsDone);
-                Console.Out.WriteLine(1000 / mShotsperSecond * (mShotsDone + 1));
-            }
             if (mShotsperSecond != 0 &&
                 !(mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds > 1000) &&
                 (1000 / mShotsperSecond * mShotsDone <= mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds
