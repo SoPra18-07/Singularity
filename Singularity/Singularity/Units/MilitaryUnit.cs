@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -136,7 +135,7 @@ namespace Singularity.Units
                 mMilSheet,
                 AbsolutePosition,
                 new Rectangle(150 * mColumn, 75 * mRow, (int)(AbsoluteSize.X / mScale), (int)(AbsoluteSize.Y / mScale)),
-                mSelected ? mSelectedColor : mColor,
+                Selected ? mSelectedColor : mColor,
                 0f,
                 Vector2.Zero,
                 new Vector2(mScale),
@@ -145,7 +144,7 @@ namespace Singularity.Units
             );
 
             // Draw the glow under it
-            if (mSelected)
+            if (Selected)
             {
                 spriteBatch.Draw(
                     mGlowTexture,

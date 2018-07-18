@@ -44,8 +44,7 @@ namespace Singularity.Platforms
         {
             mDrainingEnergy = DrainingEnergy;
 
-            //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<EResourceType, int>();
+            mCost = GetResourceCosts(EStructureType.Laser);
             mSoundId = mDirector.GetSoundManager.CreateSoundInstance("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
             mShotsperSecond = 0;
             mShotsDone = 0;

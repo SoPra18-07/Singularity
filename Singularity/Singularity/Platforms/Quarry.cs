@@ -28,8 +28,7 @@ namespace Singularity.Platforms
                 friendly)
         {
             mIPlatformActions.Add(new ProduceQuarryResource(platform: this, resourceMap: resource, director: ref mDirector));
-            // Todo: Add Costs of the platform here if you got them.
-            // mCost = new Dictionary<EResourceType, int>();
+            mCost = GetResourceCosts(EStructureType.Quarry);
             mType = EStructureType.Quarry;
             mSpritename = "Dome";
             Property = JobType.Production;

@@ -26,9 +26,14 @@ namespace Singularity.Units
         [DataMember]
         int FlockingId { get; set; }
 
+        [DataMember]
+        bool Selected { get; set; }
+
         void Move();
         void ReloadContent(ref Director director);
         void AddGroup(FlockingGroup group);
+
+        
     }
 
 
@@ -53,6 +58,9 @@ namespace Singularity.Units
         [DataMember]
         public int FlockingId { get; set; }
 
+        [DataMember]
+        public bool Selected { get; set; }
+
 
         private List<IFlocking> mOtherUnits = new List<IFlocking>();
 
@@ -69,6 +77,8 @@ namespace Singularity.Units
 
         public virtual void Move()
         {
+            if (!mGroup.IsPresent() || mGroup.Get().GetUnits().Count == 0) return;
+            AbsolutePosition += Velocity; // todo: fix
             /*
             AbsolutePosition += Velocity;
             SetAbsBounds();
@@ -79,8 +89,7 @@ namespace Singularity.Units
             } // */
             // weird shit happening. Try fully another day.
 
-            if (!mGroup.IsPresent() || mGroup.Get().GetUnits().Count == 0) return;
-
+            /* inefficient. todo: improve
             // Debug.WriteLine("Abs before setting: " + AbsolutePosition + ", vel: " + Velocity);
             AbsolutePosition += Velocity;
             // Debug.WriteLine("Abs after setting: " + AbsolutePosition);

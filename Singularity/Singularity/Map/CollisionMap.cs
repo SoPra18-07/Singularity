@@ -143,6 +143,11 @@ namespace Singularity.Map
 
         public void RemoveCollider(ICollider toRemove)
         {
+            if (toRemove.ColliderGrid == null)
+            {
+                return;
+            }
+
             mCounter++;
 
             var oldBounds = mLookUpTable[toRemove.Id];

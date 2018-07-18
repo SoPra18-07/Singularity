@@ -51,11 +51,14 @@ namespace Singularity.Units
             mGameScreen = gameScreen;
             mUi = ui;
 
+            /* too inefficient
             ColliderGrid = new[,]
             {
                 {true, true},
                 {true, true}
             };
+            */
+
             SetAbsBounds();
         }
 
@@ -104,7 +107,7 @@ namespace Singularity.Units
             spriteBatch.StrokedRectangle(AbsolutePosition,
                 AbsoluteSize,
                 Color.Gray,
-                mSelected ? Color.Wheat : Color.Beige,
+                Selected ? Color.Wheat : Color.Beige,
                 .8f,
                 1f,
                 LayerConstants.MilitaryUnitLayer);
@@ -145,7 +148,7 @@ namespace Singularity.Units
             {
                 // if key b has been pressed and the settler unit is selected and its not moving
                 // --> send out event that deletes settler and adds a command center
-                if (key != Keys.B || !mSelected || (!mGroup.Get().NearTarget() && !mNeverMoved)) continue;
+                if (key != Keys.B || !Selected || (!mGroup.Get().NearTarget() && !mNeverMoved)) continue;
                 OnBuildCommandCenter();
                 return false;
             }

@@ -207,6 +207,12 @@ namespace Singularity.AI.Behavior
 
         public void CreateNewBase(GameTime gametime)
         {
+            if (mBaseCount > 0 && !mActive)
+            {
+                // don't build any further bases when the AI isn't active.
+                return;
+            }
+
             if (!(mDirector.GetMilitaryManager.PlayerPlatformCount > PlatformCountNewBaseTrigger * mBaseCount ||
                   mDirector.GetMilitaryManager.PlayerDefensePlatformCount > DefensePlatformCountNewBaseTrigger * mBaseCount))
             {
@@ -269,12 +275,57 @@ namespace Singularity.AI.Behavior
 
         public void Move(GameTime gametime)
         {
+            if (mBaseCount <= 0)
+            {
+                return;
+            }
+
+            #region Defending
+
+            if (mUnitsMovementCooldown[(int)EEnemyType.Defend] <= 0)
+            {
+                // this is the time in millis that the unit stands still after having moved and reached its position. Since defending units don't
+                // need to move that much this is definitely OK. Note this is only for the "idle" movement. If attacked behavior might change
+                mUnitsMovementCooldown[(int)EEnemyType.Defend] = mRandom.Next(1000, 10000);
+            }
+
+            if (gametime.TotalGameTime.TotalMilliseconds - mUnitsMovementSnapshot[(int)EEnemyType.Defend] > mUnitsMovementCooldown[(int)EEnemyType.Defend])
+            {
+                // the idea is for defending units to only move around bases of the ai, this might leave some bases undefended, which is fine,
+                // since otherwise the player might be too much handicapped
+
+                var queue = GetPrioritiyQueueByEnemyType(EEnemyType.Defend);
+
+                var squadMembers = new List<EnemyUnit>();
+
+                while (!queue.IsEmpty && squadMembers.Count < MaxDefendingSquadSize)
+                {
+                    // we want to maximally reposition the amount specified in MaxDefendingSquadSize
+
+                    squadMembers.Add(queue.DeleteMax().GetObject());
+                }
+
+                // so we basically want to walk on the edges of the rectangle.
+                var randomBounds = mAi.GetBoundsOfStructure(mRandom.Next(mAi.GetStructureCount()));
+
+                foreach (var squadMember in squadMembers)
+                {
+                    squadMember.SetMovementTarget(GetRandomPositionOnRectangle(randomBounds));
+                    mIsCurrentlyMoving[squadMember] = true;
+                    AddToQueue(EEnemyType.Defend, squadMember);
+                }
+
+                mUnitsMovementSnapshot[(int)EEnemyType.Defend] = (int)gametime.TotalGameTime.TotalMilliseconds;
+            }
+
+            #endregion
+
             if (gametime.TotalGameTime.TotalMilliseconds > mIdleTime[(int) mAi.Difficulty] && !mActive)
             {
                 mActive = true;
             }
 
-            if (!mActive || mBaseCount <= 0)
+            if (!mActive)
             {
                 return;
             }
@@ -386,46 +437,6 @@ namespace Singularity.AI.Behavior
                 }
 
                 mUnitsMovementSnapshot[(int)EEnemyType.Attack] = (int)gametime.TotalGameTime.TotalMilliseconds;
-            }
-
-            #endregion
-
-            #region Defending
-
-            if (mUnitsMovementCooldown[(int)EEnemyType.Defend] <= 0)
-            {
-                // this is the time in millis that the unit stands still after having moved and reached its position. Since defending units don't
-                // need to move that much this is definitely OK. Note this is only for the "idle" movement. If attacked behavior might change
-                mUnitsMovementCooldown[(int)EEnemyType.Defend] = mRandom.Next(1000, 10000);
-            }
-
-            if (gametime.TotalGameTime.TotalMilliseconds - mUnitsMovementSnapshot[(int)EEnemyType.Defend] > mUnitsMovementCooldown[(int)EEnemyType.Defend])
-            {
-                // the idea is for defending units to only move around bases of the ai, this might leave some bases undefended, which is fine,
-                // since otherwise the player might be too much handicapped
-
-                var queue = GetPrioritiyQueueByEnemyType(EEnemyType.Defend);
-
-                var squadMembers = new List<EnemyUnit>();
-
-                while (!queue.IsEmpty && squadMembers.Count < MaxDefendingSquadSize)
-                {
-                    // we want to maximally reposition the amount specified in MaxDefendingSquadSize
-
-                    squadMembers.Add(queue.DeleteMax().GetObject());
-                }
-
-                // so we basically want to walk on the edges of the rectangle.
-                var randomBounds = mAi.GetBoundsOfStructure(mRandom.Next(mAi.GetStructureCount()));
-
-                foreach (var squadMember in squadMembers)
-                {
-                    squadMember.SetMovementTarget(GetRandomPositionOnRectangle(randomBounds));
-                    mIsCurrentlyMoving[squadMember] = true;
-                    AddToQueue(EEnemyType.Defend, squadMember);
-                }
-
-                mUnitsMovementSnapshot[(int)EEnemyType.Defend] = (int)gametime.TotalGameTime.TotalMilliseconds;
             }
 
             #endregion
