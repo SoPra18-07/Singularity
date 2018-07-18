@@ -200,8 +200,11 @@ namespace Singularity.Manager
         /// </summary>
         public void Win()
         {
-            mScreenManager.RemoveScreen();
-            mScreenManager.AddScreen(new WinScreen(mDirector, mScreenManager));
+            if (mLevelType != LevelType.Techdemo && mLevelType != LevelType.NoWinLose)
+            {
+                mScreenManager.RemoveScreen();
+                mScreenManager.AddScreen(new WinScreen(mDirector, mScreenManager));
+            }
         }
 
         /// <summary>
@@ -209,8 +212,11 @@ namespace Singularity.Manager
         /// </summary>
         public void Lose()
         {
-            mScreenManager.RemoveScreen();
-            mScreenManager.AddScreen(new LoseScreen(mDirector, mScreenManager));
+            if (mLevelType != LevelType.Techdemo && mLevelType != LevelType.NoWinLose)
+            {
+                mScreenManager.RemoveScreen();
+                mScreenManager.AddScreen(new LoseScreen(mDirector, mScreenManager));
+            }
         }
 
         public void SetScreenManager(IScreenManager screenManager)

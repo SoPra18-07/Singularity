@@ -163,5 +163,6 @@ namespace Singularity.AI
         {
             mBehavior.Shooting(sender, shootingAt, gametime);
         }
+
     }
 }

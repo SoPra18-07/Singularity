@@ -110,13 +110,13 @@ namespace Singularity.Screen.ScreenClasses
                 case "None":
                     return;
                 case "Skirmish":
-                    mLevel = new Skirmish(mGraphics, ref mDirector, mContent, mScreenManager);
+                    mLevel = new Skirmish(mGraphics, ref mDirector, mContent, mScreenManager, LevelType.Skirmish);
                     mGameScreen = mLevel.GameScreen;
                     mUi = mLevel.Ui;
                     mNewGame = true;
                     break;
                 case "TechDemo":
-                    mLevel = new TechDemo(mGraphics, ref mDirector, mContent, mScreenManager);
+                    mLevel = new TechDemo(mGraphics, ref mDirector, mContent, mScreenManager, LevelType.Techdemo);
                     mGameScreen = mLevel.GameScreen;
                     mUi = mLevel.Ui;
                     mNewGame = true;
