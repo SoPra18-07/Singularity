@@ -170,7 +170,11 @@ namespace Singularity.Screen.ScreenClasses
             mButtonList.Add(mSave5);
 
             mBackButton.ButtonReleased += GamePauseManagerScreen.OnBackButtonReleased;
-            mSave1.ButtonClicked += GamePauseManagerScreen.OnSave1ButtonClicked;
+            mSave1.ButtonReleased += GamePauseManagerScreen.OnSave1ButtonReleased;
+            mSave2.ButtonReleased += GamePauseManagerScreen.OnSave2ButtonReleased;
+            mSave3.ButtonReleased += GamePauseManagerScreen.OnSave3ButtonReleased;
+            mSave4.ButtonReleased += GamePauseManagerScreen.OnSave4ButtonReleased;
+            mSave5.ButtonReleased += GamePauseManagerScreen.OnSave5ButtonReleased;
 
             mBackButton.ButtonHovering += OnBackHover;
             mSave1.ButtonHovering += OnSave1;
@@ -213,11 +217,11 @@ namespace Singularity.Screen.ScreenClasses
                     if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
                     {
                         TransitionRunning = false;
-                        mMenuOpacity = 0f;
+                        mMenuOpacity = 0;
                     }
 
                     mMenuOpacity =
-                        (float)Animations.Easing(1, 0f, mTransitionStartTime, mTransitionDuration, gameTime);
+                        (float)Animations.Easing(1f, 0, mTransitionStartTime, mTransitionDuration, gameTime);
                     break;
                 case EScreen.SaveGameScreen:
                     if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
@@ -258,7 +262,6 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="spriteBatch">spriteBatch that this object should draw to.</param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            Console.Out.WriteLine(GetHashCode());
             spriteBatch.Begin();
 
             // Draw menu window

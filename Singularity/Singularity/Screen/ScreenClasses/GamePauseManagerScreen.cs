@@ -158,19 +158,79 @@ namespace Singularity.Screen.ScreenClasses
                     if (sPressed == "Save1")
                     {
                         mGameSaveStrings = XSerializer.GetSaveNames();
-                        if (mGameSaveStrings.Length == 1)
+                        var path = @"%USERPROFILE%\Saved Games\Singularity\Saves";
+                        if (mGameSaveStrings.Length >= 1)
                         {
-                            var path = @"%USERPROFILE%\Saved Games\Singularity\Saves";
                             path = Environment.ExpandEnvironmentVariables(path);
                             path = path + @"\" + mGameSaveStrings[0];
+                       }
+                        if (File.Exists(path))
+                        {
                             File.Delete(path);
                         }
-                        mDirector.GetStoryManager.SaveAchievements();
-                        var saveName = DateTime.Now;
-                        XSerializer.Save(mDirector.GetStoryManager.Level, saveName.ToString(CultureInfo.CurrentCulture).Replace(':', '_') + ".xml", false);
-                        Console.WriteLine("Game Saved");
-                        sSaved = true;
+                        SaveGame();
                     }
+                    if (sPressed == "Save2")
+                    {
+                        mGameSaveStrings = XSerializer.GetSaveNames();
+                        var path = @"%USERPROFILE%\Saved Games\Singularity\Saves";
+                        if (mGameSaveStrings.Length >= 2)
+                        {
+                            path = Environment.ExpandEnvironmentVariables(path);
+                            path = path + @"\" + mGameSaveStrings[1];
+                        }
+                        if (File.Exists(path))
+                        {
+                            File.Delete(path);
+                        }
+                        SaveGame();
+                    }
+                    if (sPressed == "Save3")
+                    {
+                        mGameSaveStrings = XSerializer.GetSaveNames();
+                        var path = @"%USERPROFILE%\Saved Games\Singularity\Saves";
+                        if (mGameSaveStrings.Length >= 3)
+                        {
+                            path = Environment.ExpandEnvironmentVariables(path);
+                            path = path + @"\" + mGameSaveStrings[2];
+                        }
+                        if (File.Exists(path))
+                        {
+                            File.Delete(path);
+                        }
+                        SaveGame();
+                    }
+                    if (sPressed == "Save4")
+                    {
+                        mGameSaveStrings = XSerializer.GetSaveNames();
+                        var path = @"%USERPROFILE%\Saved Games\Singularity\Saves";
+                        if (mGameSaveStrings.Length >= 4)
+                        {
+                            path = Environment.ExpandEnvironmentVariables(path);
+                            path = path + @"\" + mGameSaveStrings[3];
+                        }
+                        if (File.Exists(path))
+                        {
+                            File.Delete(path);
+                        }
+                        SaveGame();
+                    }
+                    if (sPressed == "Save5")
+                    {
+                        mGameSaveStrings = XSerializer.GetSaveNames();
+                        var path = @"%USERPROFILE%\Saved Games\Singularity\Saves";
+                        if (mGameSaveStrings.Length >= 5)
+                        {
+                            path = Environment.ExpandEnvironmentVariables(path);
+                            path = path + @"\" + mGameSaveStrings[4];
+                        }
+                        if (File.Exists(path))
+                        {
+                            File.Delete(path);
+                        }
+                        SaveGame();
+                    }
+
                     break;
                 case EScreen.StatisticsScreen:
                     if (sPressed == "Back")
@@ -182,6 +242,16 @@ namespace Singularity.Screen.ScreenClasses
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        private void SaveGame()
+        {
+            mDirector.GetStoryManager.SaveAchievements();
+            var saveName = DateTime.Now;
+            XSerializer.Save(mDirector.GetStoryManager.Level, saveName.ToString(CultureInfo.CurrentCulture).Replace(':', '_') + ".xml", false);
+            Console.WriteLine("Game Saved");
+            sSaved = true;
+        }
+
 
         /// <summary>
         /// Automates the process of removing and adding new screens
@@ -273,7 +343,7 @@ namespace Singularity.Screen.ScreenClasses
         public static void OnResumeButtonReleased(Object sender, EventArgs eventArg)
         {
             sPressed = "Resume";
-            GlobalVariables.mGameIsPaused = false;
+            GlobalVariables.GameIsPaused = false;
         }
 
         /// <summary>
@@ -293,9 +363,53 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="eventArgs"></param>
-        public static void OnSave1ButtonClicked(object sender, EventArgs eventArgs)
+        public static void OnSave1ButtonReleased(object sender, EventArgs eventArgs)
         {
             sPressed = "Save1";
+        }
+
+        /// <summary>
+        /// Receives Save2 button released event and changes sPressed
+        /// to result in screen change within Update method.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        public static void OnSave2ButtonReleased(object sender, EventArgs eventArgs)
+        {
+            sPressed = "Save2";
+        }
+
+        /// <summary>
+        /// Receives Save3 button released event and changes sPressed
+        /// to result in screen change within Update method.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        public static void OnSave3ButtonReleased(object sender, EventArgs eventArgs)
+        {
+            sPressed = "Save3";
+        }
+
+        /// <summary>
+        /// Receives Save4 button released event and changes sPressed
+        /// to result in screen change within Update method.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        public static void OnSave4ButtonReleased(object sender, EventArgs eventArgs)
+        {
+            sPressed = "Save4";
+        }
+
+        /// <summary>
+        /// Receives Save5 button released event and changes sPressed
+        /// to result in screen change within Update method.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        public static void OnSave5ButtonReleased(object sender, EventArgs eventArgs)
+        {
+            sPressed = "Save5";
         }
 
         /// <summary>
