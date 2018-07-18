@@ -14,8 +14,9 @@ namespace Singularity.Levels
         public Tutorial(GraphicsDeviceManager graphics,
             ref Director director,
             ContentManager content,
-            IScreenManager screenmanager)
-            : base(graphics, ref director, content, screenmanager)
+            IScreenManager screenmanager, 
+            LevelType level)
+            : base(graphics, ref director, content, screenmanager, level)
         {
             LoadContent(content);
         }

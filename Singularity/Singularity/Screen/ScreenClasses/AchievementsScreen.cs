@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Levels;
 using Singularity.Libraries;
 
 namespace Singularity.Screen.ScreenClasses
@@ -23,18 +24,16 @@ namespace Singularity.Screen.ScreenClasses
         public bool Loaded { get; set; }
 
         // Layout.
-        private readonly float mBottomPadding = 10;
+        private const float AchievementOffset = 35;
 
         // All strings are variables to allow for easy editing and localization
-        private readonly string mWindowTitleStr = "Achievements";
+        private const string WindowTitleStr = "Achievements";
 
         // Button colors
         private readonly Color mTextColor;
 
         // tab buttons
-        private readonly List<Button> mTabButtons;
         private Button mBackButton;
-        private Button mBackButtonDummy;
 
         // Transitions variables
         private float mMenuOpacity;
@@ -51,15 +50,12 @@ namespace Singularity.Screen.ScreenClasses
         public AchievementsScreen(Vector2 screenResolution)
             : base(screenResolution)
         {
-            mMenuBoxPosition = new Vector2(screenResolution.X / 2 - 204, screenResolution.Y / 4);
-            mMenuBoxSize = new Vector2(408, 420);
+            mMenuBoxPosition = new Vector2(screenResolution.X / 2 - 283, screenResolution.Y / 4 - 120);
+            mMenuBoxSize = new Vector2(566, 634);
 
             mMenuOpacity = 0;
 
             mTextColor = new Color(new Vector3(.9137f, .9058f, .8314f));
-
-            mTabButtons = new List<Button>(1);
-            
 
             mWindowOpacity = 1;
         }
@@ -73,23 +69,15 @@ namespace Singularity.Screen.ScreenClasses
             base.LoadContent(content);
 
             var mBackStr = "Back";
-
-        // Create a dummy button to get the dimensions of it so I can center the real button.
-        mBackButtonDummy = new Button(mBackStr, mLibSans20, new Vector2(0, 0), mTextColor);
-            var backButtonPosX = mMenuBoxPosition.X + (mMenuBoxSize.X / 2) - (mBackButtonDummy.Size.X / 2);
-            var backButtonPosY = mMenuBoxPosition.Y + mMenuBoxSize.Y - mBackButtonDummy.Size.Y - mBottomPadding;
-            mBackButton = new Button(mBackStr, mLibSans20, new Vector2(backButtonPosX, backButtonPosY), mTextColor);
-
-            mTabButtons.Add(mBackButton);
-
-            foreach (var tabButton in mTabButtons)
-            {
-                tabButton.Opacity = mMenuOpacity;
-            }
+            
+            // create the back button
+            mBackButton = new Button(mBackStr,
+                mLibSans20,
+                mMenuBoxPosition + new Vector2(AchievementOffset, mMenuBoxSize.Y -40),
+                mTextColor * mMenuOpacity);
 
             mBackButton.ButtonReleased += MainMenuManagerScreen.OnBackButtonReleased;
 
-            Loaded = true;
         }
 
         /// <summary>
@@ -104,11 +92,9 @@ namespace Singularity.Screen.ScreenClasses
                 Transition(gametime);
             }
 
-            foreach (var button in mTabButtons)
-            {
-                button.Update(gametime);
-                button.Opacity = mMenuOpacity;
-            }
+            mBackButton.Update(gametime);
+            mBackButton.Opacity = mMenuOpacity;
+            mBackButton.Position = mMenuBoxPosition + new Vector2(AchievementOffset, mMenuBoxSize.Y - 40);
         }
 
         /// <summary>
@@ -131,20 +117,100 @@ namespace Singularity.Screen.ScreenClasses
 
             // window title
             spriteBatch.DrawString(mLibSans36,
-                text: mWindowTitleStr,
+                text: WindowTitleStr,
                 position: mMenuBoxPosition + new Vector2(20, 10),
                 color: mTextColor * mMenuOpacity);
 
-            // tab buttons
-            foreach (var button in mTabButtons)
-            {
-                button.Draw(spriteBatch);
-            }
+            // Back Button
+            mBackButton.Draw(spriteBatch);
+
+            #region Achievements
+
+            // First
+            spriteBatch.DrawString(mLibSans20,
+                Achievements.SystemOnline() ? "The system goes online August 14th 1997" : "???",
+                new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 80),
+                mTextColor * mMenuOpacity * (Achievements.SystemOnline() ? 1 : 0.5f));
+            spriteBatch.DrawString(mLibSans12,
+                "Place 1 Platform",
+                new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 110),
+                mTextColor * mMenuOpacity * (Achievements.SystemOnline() ? 1 : 0.5f));
+
+            // Second
+            spriteBatch.DrawString(mLibSans20,
+                Achievements.SelfAware() ? "It becomes self aware at 2:14 AM" : "???",
+                new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 140),
+                mTextColor * mMenuOpacity * (Achievements.SelfAware() ? 1 : 0.5f));
+            spriteBatch.DrawString(mLibSans12,
+                "Complete the tutorial",
+                new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 170),
+                mTextColor * mMenuOpacity * (Achievements.SystemOnline() ? 1 : 0.5f));
+
+            // Third
+            spriteBatch.DrawString(mLibSans20,
+                Achievements.Skynet() ? "Skynet" : "???",
+                new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 200),
+                mTextColor * mMenuOpacity * (Achievements.Skynet() ? 1 : 0.5f));
+            spriteBatch.DrawString(mLibSans12,
+                "Build a network of 30 platforms",
+                new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 230),
+                mTextColor * mMenuOpacity * (Achievements.Skynet() ? 1 : 0.5f));
+
+            // Fourth
+            spriteBatch.DrawString(mLibSans20,
+                Achievements.WallE() ? "Wall E" : "???",
+                new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 260),
+                mTextColor * mMenuOpacity * (Achievements.WallE() ? 1 : 0.5f));
+            spriteBatch.DrawString(mLibSans12,
+                "Burn 10,000 units of trash",
+                new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 290),
+                mTextColor * mMenuOpacity * (Achievements.WallE() ? 1 : 0.5f));
+
+            // Fifth
+            spriteBatch.DrawString(mLibSans20,
+                Achievements.Hal9000() ? "HAL 9000" : "???",
+                new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 320),
+                mTextColor * mMenuOpacity * (Achievements.Hal9000() ? 1 : 0.5f));
+            spriteBatch.DrawString(mLibSans12,
+                "Complete the campaign",
+                new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 350),
+                mTextColor * mMenuOpacity * (Achievements.Hal9000() ? 1 : 0.5f));
+
+            // Sixth
+            spriteBatch.DrawString(mLibSans20,
+                Achievements.Replicant() ? "Replicant" : "???",
+                new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 380),
+                mTextColor * mMenuOpacity * (Achievements.Replicant() ? 1 : 0.5f));
+            spriteBatch.DrawString(mLibSans12,
+                "Produce 50 units",
+                new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 410),
+                mTextColor * mMenuOpacity * (Achievements.Replicant() ? 1 : 0.5f));
+
+            // Seventh
+            spriteBatch.DrawString(mLibSans20,
+                Achievements.RateOurGame() ? "Please rate our game perfect 5/7" : "???",
+                new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 440),
+                mTextColor * mMenuOpacity * (Achievements.RateOurGame() ? 1 : 0.5f));
+            spriteBatch.DrawString(mLibSans12,
+                "Build 1,000 Military units",
+                new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 470),
+                mTextColor * mMenuOpacity * (Achievements.RateOurGame() ? 1 : 0.5f));
+
+            // Third
+            spriteBatch.DrawString(mLibSans20,
+                Achievements.Overachiever() ? "Overachiever" : "???",
+                new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 500),
+                mTextColor * mMenuOpacity * (Achievements.Overachiever() ? 1 : 0.5f));
+            spriteBatch.DrawString(mLibSans12,
+                "Unlock all achievements",
+                new Vector2(mMenuBoxPosition.X + AchievementOffset, mMenuBoxPosition.Y + 530),
+                mTextColor * mMenuOpacity * (Achievements.Overachiever() ? 1 : 0.5f));
+            #endregion
 
             spriteBatch.End();
         }
 
-
+        #region Screen Manager bools
         /// <summary>
         /// Determines whether or not the screen below this on the stack should update.
         /// </summary>
@@ -163,6 +229,9 @@ namespace Singularity.Screen.ScreenClasses
             return true;
         }
 
+        #endregion
+
+        #region Transition
         private void Transition(GameTime gameTime)
         {
             switch (mTargetScreen)
@@ -174,6 +243,7 @@ namespace Singularity.Screen.ScreenClasses
                         mMenuOpacity = 1f;
                     }
 
+                    // opacity change
                     mMenuOpacity =
                         (float)Animations.Easing(0, 1f, mTransitionStartTime, mTransitionDuration, gameTime);
                     break;
@@ -181,11 +251,34 @@ namespace Singularity.Screen.ScreenClasses
                     if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)
                     {
                         TransitionRunning = false;
-                        mMenuOpacity = 0f;
+                        mMenuOpacity = 0;
                     }
 
+                    // change menu opacity
                     mMenuOpacity =
-                        (float)Animations.Easing(1, 0f, mTransitionStartTime, mTransitionDuration, gameTime);
+                        (float)Animations.Easing(1, 0, mTransitionStartTime, mTransitionDuration, gameTime);
+
+                    // position change
+                    var xpos = (float)Animations.Easing(mScreenResolution.X / 2 - 283,
+                        mScreenResolution.X / 2 - 204,
+                        mTransitionStartTime,
+                        mTransitionDuration,
+                        gameTime);
+                    var ypos = (float)Animations.Easing(mScreenResolution.Y / 4 - 120,
+                        mScreenResolution.Y / 4,
+                        mTransitionStartTime,
+                        mTransitionDuration,
+                        gameTime);
+
+                    mMenuBoxPosition = new Vector2(xpos, ypos);
+
+                    // size change
+                    var height =
+                        (float)Animations.Easing(566, 408, mTransitionStartTime, mTransitionDuration, gameTime);
+                    var menuWidth =
+                        (float)Animations.Easing(634, 420, mTransitionStartTime, mTransitionDuration, gameTime);
+
+                    mMenuBoxSize = new Vector2(height, menuWidth);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -199,10 +292,13 @@ namespace Singularity.Screen.ScreenClasses
                 mMenuOpacity = 0f;
             }
             mTargetScreen = targetScreen;
-            mTransitionDuration = 350;
+            mTransitionDuration = 300;
             mTransitionStartTime = gameTime.TotalGameTime.TotalMilliseconds;
+            mMenuBoxPosition = new Vector2(mScreenResolution.X / 2 - 283, mScreenResolution.Y / 4 - 120);
+            mMenuBoxSize = new Vector2(566, 634);
             TransitionRunning = true;
 
         }
+        #endregion
     }
 }

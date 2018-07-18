@@ -95,6 +95,22 @@ namespace Singularity.Screen
             ActiveInWindow = true;
             Pages = pages;
             mLastPagesCount = Pages;
+
+            // if value box requested, initiate string value to 0
+            if (mWithValue)
+            {
+                mStringValue = 0.ToString();
+            }
+
+            // set initial max increment of the slider to the max amount of pages
+            if (mWithPages)
+            {
+                mCurrentPage = 0;
+                mLastPage = 0;
+                MaxIncrement = Pages;
+                mPageSize = Size.X / Pages;
+            }
+
             mDirector = director;
             mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
