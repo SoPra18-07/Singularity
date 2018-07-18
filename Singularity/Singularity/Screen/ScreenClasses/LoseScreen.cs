@@ -51,28 +51,75 @@ namespace Singularity.Screen.ScreenClasses
         {
             spriteBatch.Begin();
 
-            spriteBatch.StrokedRectangle(Vector2.Zero, new Vector2(mScreenSize.X, mScreenSize.Y), new Color(mFadingScreenColorValue, 0, 0), new Color(mFadingScreenColorValue, 0, 0), 0.65f, 0.65f);
+            spriteBatch.FillRectangle(location: Vector2.Zero,
+                size: new Vector2(x: mScreenSize.X,
+                    y: mScreenSize.Y),
+                color: new Color(r: mFadingScreenColorValue,
+                                 g: 0,
+                                 b: 0) * 0.65f);
 
             if (mCounter >= 100 && mCounter < 250)
             {
-                spriteBatch.DrawString(mLibSans72, "Defeat", new Vector2((mScreenSize.X - mLibSans72.MeasureString("Defeat").X) / 2, (mScreenSize.Y - mSingularityLogo.Height) / 4), Color.Red);
+                spriteBatch.DrawString(spriteFont: mLibSans72,
+                    text: "Defeat",
+                    position: new Vector2(x: (mScreenSize.X - mLibSans72.MeasureString(text: "Victory").X) / 2,
+                                          y: 100),
+                    color: Color.Maroon);
+                spriteBatch.Draw(texture: mSingularityLogo,
+                    position: mScreenSize / 2,
+                    sourceRectangle: null,
+                    color: Color.White,
+                    rotation: 0f,
+                    origin: new Vector2(mSingularityLogo.Width, mSingularityLogo.Height) / 2,
+                    scale: 0.5f,
+                    effects: SpriteEffects.None,
+                    layerDepth: 0);
 
-                spriteBatch.Draw(mSingularityLogo, new Vector2((mScreenSize.X - mSingularityLogo.Width) / 2, (mScreenSize.Y - mSingularityLogo.Height) / 2), Color.White);
             }
             else if (mCounter >= 250)
             {
-                spriteBatch.Draw(mSingularityLogo, new Vector2((mScreenSize.X - mSingularityLogo.Width) / 2, (mScreenSize.Y - mSingularityLogo.Height) / 2), new Color(0.2f, 0.2f, 0.2f, 0.1f));
+                spriteBatch.Draw(texture: mSingularityLogo,
+                    position: mScreenSize / 2,
+                    sourceRectangle: null,
+                    color: new Color(r: 0.2f,
+                        g: 0.2f,
+                        b: 0.2f,
+                        alpha: 0.1f),
+                    rotation: 0f,
+                    origin: new Vector2(mSingularityLogo.Width, mSingularityLogo.Height) / 2,
+                    scale: 0.5f,
+                    effects: SpriteEffects.None,
+                    layerDepth: 0);
 
-                spriteBatch.DrawString(mLibSans72, "Defeat", new Vector2((mScreenSize.X - mLibSans72.MeasureString("Defeat").X) / 2, (mScreenSize.Y - mSingularityLogo.Height) / 4), Color.Red);
+                spriteBatch.DrawString(spriteFont: mLibSans72,
+                    text: "Defeat",
+                    position: new Vector2(x: (mScreenSize.X -
+                                              mLibSans72.MeasureString(text: "Victory")
+                                                  .X) /
+                                             2,
+                        y: 100),
+                    color: Color.Maroon);
 
-                spriteBatch.Draw(mSingularityText, new Vector2((mScreenSize.X - mSingularityText.Width) / 2, (mScreenSize.Y - mSingularityText.Height) / 2.5f), Color.White);
+                spriteBatch.Draw(texture: mSingularityText,
+                    position: new Vector2(x: mScreenSize.X / 2,
+                                          y: mScreenSize.Y / 2.5f),
+                    sourceRectangle: null,
+                    color: new Color(r: 0.2f,
+                        g: 0.2f,
+                        b: 0.2f,
+                        alpha: 0.1f),
+                    rotation: 0f,
+                    origin: new Vector2(mSingularityText.Width / 2f, mSingularityText.Height / 2f),
+                    scale: 0.8f,
+                    effects: SpriteEffects.None,
+                    layerDepth: 0);
             }
 
             if (mCounter >= 300)
             {
-                mStatisticsWindow.Draw(spriteBatch);
+                mStatisticsWindow.Draw(spriteBatch: spriteBatch);
 
-                mMainMenuButton.Draw(spriteBatch);
+                mMainMenuButton.Draw(spriteBatch: spriteBatch);
             }
 
             spriteBatch.End();

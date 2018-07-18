@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -31,7 +32,14 @@ namespace Singularity.Levels
             var map = Map;
 
             var settler = new Settler(new Vector2(3000, 3200), Camera, ref mDirector, ref map, GameScreen, Ui);
+            var milunitList = new List<MilitaryHeavy>(40);
+            for (var i = 0; i < 40; i++)
+            {
+                milunitList.Add(new MilitaryHeavy(new Vector2(3000, 3000 + i * 50), Camera, ref mDirector, ref map));
+            }
+
             GameScreen.AddObject(settler);
+            GameScreen.AddObjects(milunitList);
 
             // add a puddle
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2500), ref mDirector));

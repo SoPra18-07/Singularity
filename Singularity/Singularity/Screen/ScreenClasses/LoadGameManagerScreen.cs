@@ -137,7 +137,7 @@ namespace Singularity.Screen.ScreenClasses
                     mName = XSerializer.GetSaveNames()[4];
                     break;
                 case "ReturnToMainMenu":
-                    mScreenManager.AddScreen(new MainMenuManagerScreen(sViewportResolution, mScreenManager, true, mGame));
+                    mScreenManager.AddScreen(new MainMenuManagerScreen(sViewportResolution, mScreenManager, ref mDirector, true, mGame));
                     break;
                 default:
                     throw new InvalidGenericArgumentException(
