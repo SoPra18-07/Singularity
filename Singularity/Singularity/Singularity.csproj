@@ -61,7 +61,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AI\BasicAi.cs" />
+    <Compile Include="AI\BasicAI.cs" />
     <Compile Include="AI\Behavior\AdvancedAiBehavior.cs" />
     <Compile Include="AI\Behavior\IAiBehavior.cs" />
     <Compile Include="AI\Helper\PrioritizableObject.cs" />
