@@ -78,6 +78,7 @@ namespace Singularity.Platforms
         {
             base.Draw(spriteBatch);
 
+
             if (!mShoot || mShootingTarget == null)
             {
                 return;

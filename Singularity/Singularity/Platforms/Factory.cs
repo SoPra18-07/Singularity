@@ -36,8 +36,7 @@ namespace Singularity.Platforms
         {
             //mIPlatformActions[0] = new ProduceFactoryResource(this);
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
-            //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<EResourceType, int>();
+            mCost = GetResourceCosts(EStructureType.Factory);
             mType = EStructureType.Factory;
             mSpritename = "Dome";
             SetPlatfromParameters();

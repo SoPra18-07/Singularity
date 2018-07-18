@@ -30,9 +30,7 @@ namespace Singularity.Platforms
                 friendly)
         {
             mIPlatformActions.Add(new ProduceMineResource(platform: this, resourceMap: resource, director: ref mDirector));
-            // Todo: Add Costs of the platform here if you got them.
-            // mCost = new Dictionary<EResourceType, int>();
-            mCost = new Dictionary<EResourceType, int>();
+            mCost = GetResourceCosts(EStructureType.Mine);
             mType = EStructureType.Mine;
             mSpritename = "Dome";
             Property = JobType.Production;

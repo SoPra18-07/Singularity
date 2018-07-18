@@ -61,7 +61,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AI\BasicAI.cs" />
+    <Compile Include="AI\BasicAi.cs" />
     <Compile Include="AI\Behavior\AdvancedAiBehavior.cs" />
     <Compile Include="AI\Behavior\IAiBehavior.cs" />
     <Compile Include="AI\Helper\PrioritizableObject.cs" />
@@ -73,6 +73,7 @@
     <Compile Include="AI\Structures\Sentinel.cs" />
     <Compile Include="AI\Behavior\SimpleAiBehavior.cs" />
     <Compile Include="AI\Structures\Spawner.cs" />
+    <Compile Include="Levels\AchievementInstance.cs" />
     <Compile Include="Levels\PlatformDestructionTestLevel.cs" />
     <Compile Include="Events\SpatialPositionEventArgs.cs" />
     <Compile Include="Levels\TechDemo.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Manager\DistributionDirector.cs" />
     <Compile Include="Manager\DistributionManager.cs" />
     <Compile Include="Property\ADie.cs" />
+    <Compile Include="Property\GlobalVariablesInstance.cs" />
     <Compile Include="Screen\Checkbox.cs" />
     <Compile Include="PlatformActions\RefineResourceAction.cs" />
     <Compile Include="Screen\ELogEventType.cs" />

@@ -31,8 +31,7 @@ namespace Singularity.Platforms
                 friendly: friendly)
         {
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
-            //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<EResourceType, int>();
+            mCost = GetResourceCosts(EStructureType.Junkyard);
             mType = EStructureType.Junkyard;
             mSpritename = "Dome";
             SetPlatfromParameters();

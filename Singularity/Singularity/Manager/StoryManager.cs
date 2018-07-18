@@ -31,7 +31,7 @@ namespace Singularity.Manager
         public ILevel Level { get; set; }
 
         //Do not serialize this, BUT also do not forget to load the achievements again after deserialization!
-        private Achievements mAchievements;
+        private AchievementInstance mAchievements;
 
         private Director mDirector;
 
@@ -40,8 +40,9 @@ namespace Singularity.Manager
         [DataMember]
         private LevelType mLevelType;
 
-        public StoryManager(LevelType level = LevelType.None)
+        public StoryManager(Director director, LevelType level = LevelType.None)
         {
+            mDirector = director;
 
             mLevelType = level;
             LoadAchievements();
@@ -94,13 +95,14 @@ namespace Singularity.Manager
             var achievements = XSerializer.Load(@"Achievements.xml", true);
             if (achievements.IsPresent())
             {
-                mAchievements = (Achievements) achievements.Get();
+                mAchievements = (AchievementInstance) achievements.Get();
             }
             else
             {
-                mAchievements = new Achievements();
+                mAchievements = new AchievementInstance();
             }
 
+            mAchievements.LoadToStatic();
         }
 
         /// <summary>
@@ -109,6 +111,7 @@ namespace Singularity.Manager
         /// </summary>
         internal void SaveAchievements()
         {
+            mAchievements.UpdateFromStatic();
             XSerializer.Save(mAchievements, @"Achievements.xml" ,true);
         }
 
@@ -119,11 +122,31 @@ namespace Singularity.Manager
         public void UpdateUnits(string action)
         {
             int a;
-            Units.TryGetValue(action, out a);
-            Units[action] += 1;
-            if (mAchievements.Replicant())
+            var temp = action;
+            
+            if (temp == "created")
+            {
+                Achievements.UnitsBuilt++;
+            }
+
+            if (temp == "military created")
+            {
+                Achievements.UnitsBuilt++;
+                Achievements.MilitaryUnitsBuilt++;
+                temp = "created";
+            }
+
+            Units.TryGetValue(temp, out a);
+            Units[temp] += 1;
+
+            if (Achievements.Replicant())
             {
                 //trigger Achievement-popup;
+            }
+
+            if (Achievements.RateOurGame())
+            {
+                // trigger achievement.
             }
         }
 
@@ -136,7 +159,18 @@ namespace Singularity.Manager
             int a;
             Platforms.TryGetValue(action, out a);
             Platforms[action] += 1;
-            if (mAchievements.Skynet())
+
+            if (action == "created")
+            {
+                Achievements.PlatformsBuilt++;
+            }
+
+            if (Achievements.SelfAware())
+            {
+                // do something TODO
+            }
+
+            if (Achievements.Skynet())
             {
                 //trigger Achievement-popup;
             }
@@ -158,7 +192,8 @@ namespace Singularity.Manager
         /// </summary>
         public void Trash()
         {
-            if (mAchievements.WallE())
+            Achievements.TrashBurned++;
+            if (Achievements.WallE())
             {
                 //trigger Achievement-popup;
             }
@@ -199,7 +234,11 @@ namespace Singularity.Manager
         /// </summary>
         public void Win()
         {
-            mScreenManager.AddScreen(new WinScreen());
+            if (mLevelType != LevelType.Techdemo && mLevelType != LevelType.NoWinLose)
+            {
+                mScreenManager.RemoveScreen();
+                mScreenManager.AddScreen(new WinScreen(mDirector, mScreenManager));
+            }
         }
 
         /// <summary>
@@ -207,12 +246,21 @@ namespace Singularity.Manager
         /// </summary>
         public void Lose()
         {
-            mScreenManager.AddScreen(new LoseScreen());
+            if (mLevelType != LevelType.Techdemo && mLevelType != LevelType.NoWinLose)
+            {
+                mScreenManager.RemoveScreen();
+                mScreenManager.AddScreen(new LoseScreen(mDirector, mScreenManager));
+            }
         }
 
         public void SetScreenManager(IScreenManager screenManager)
         {
             mScreenManager = screenManager;
+        }
+
+        public void ReloadContent(Director director)
+        {
+            mDirector = director;
         }
     }
 }

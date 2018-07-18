@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
+using Singularity.Map.Properties;
 using Singularity.PlatformActions;
 using Singularity.Property;
 using Singularity.Screen;
@@ -101,6 +102,9 @@ namespace Singularity.Platforms
         [DataMember]
         private EStructureType mPlatformType;
 
+        [DataMember]
+        private bool mNatureObjectThere;
+
         private int mPlatformCreateSoundId;
 
         public StructurePlacer(EStructureType platformType, EPlacementType placementType, EScreen screen, Camera camera, ref Director director, ref Map.Map map, float x = 0, float y = 0, ResourceMap resourceMap = null)
@@ -195,12 +199,35 @@ namespace Singularity.Platforms
                 case 1:
                     if (!mIsRoadPlacement)
                     {
+                        mNatureObjectThere = false;
                         mPlatform.ResetColor();
                         // for this, we want the platform to follow the mouse, and also be centered on the sprite.
                         mPlatform.AbsolutePosition = new Vector2(mMouseX - mPlatform.AbsoluteSize.X / 2f,
                             mMouseY - mPlatform.AbsoluteSize.Y / 2f);
 
-                        if (mHoveringPlatform == null)
+                        for (int
+                            x = (int)(mPlatform.AbsolutePosition.X /
+                                      MapConstants.GridWidth); x < (int)((mPlatform.AbsolutePosition.X +
+                                                                          mPlatform.AbsoluteSize.X) /
+                                                                         MapConstants.GridWidth); x++)
+                        {
+                            for (int
+                                y = (int)(mPlatform.AbsolutePosition.Y /
+                                          MapConstants.GridWidth);
+                                y < (int)((mPlatform.AbsolutePosition.Y +
+                                           mPlatform.AbsoluteSize.Y) /
+                                          MapConstants.GridWidth);
+                                y++)
+                            {
+                                if (!mMap.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(x, y))
+                                {
+                                    mNatureObjectThere = true;
+                                }
+                            }
+
+                        }
+
+                        if (mHoveringPlatform == null && !mNatureObjectThere)
                         {
                             break;
                         }
@@ -307,7 +334,7 @@ namespace Singularity.Platforms
                             mPlatform.UpdateValues();
 
                             //first check if the platform is even on the map, if not we don't want to progress, since it isn't a valid position
-                            if (!Map.Map.IsOnTop(mPlatform.AbsBounds) || mHoveringPlatform != null)
+                            if (!Map.Map.IsOnTop(mPlatform.AbsBounds) || mHoveringPlatform != null || mNatureObjectThere)
                             {
                                 break;
    

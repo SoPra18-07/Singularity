@@ -25,6 +25,8 @@ namespace Singularity.Screen
         // is the slider slave to the mouse
         private bool mSlave;
 
+        private bool mClicking;
+
         public float Opacity { get; set; } = 1f;
 
         // with value box on right side, bar with pages (notches)
@@ -95,6 +97,22 @@ namespace Singularity.Screen
             ActiveInWindow = true;
             Pages = pages;
             mLastPagesCount = Pages;
+
+            // if value box requested, initiate string value to 0
+            if (mWithValue)
+            {
+                mStringValue = 0.ToString();
+            }
+
+            // set initial max increment of the slider to the max amount of pages
+            if (mWithPages)
+            {
+                mCurrentPage = 0;
+                mLastPage = 0;
+                MaxIncrement = Pages;
+                mPageSize = Size.X / Pages;
+            }
+
             mDirector = director;
             mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
@@ -193,19 +211,24 @@ namespace Singularity.Screen
                 }
 
                 // if slider is left click them make it slave to the mouse
-                if (Mouse.GetState().LeftButton == ButtonState.Pressed &&
-                    Mouse.GetState().X >= mCurrentX - Size.Y / 2 &&
-                    Mouse.GetState().X <= mCurrentX + Size.Y / 2 &&
-                    Mouse.GetState().Y >= Position.Y - Size.Y / 2 &&
-                    Mouse.GetState().Y <= Position.Y + Size.Y / 2)
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed && !mClicking)
                 {
-                    mSlave = true;
+                    if (Mouse.GetState().X >= mCurrentX - Size.Y / 2 &&
+                        Mouse.GetState().X <= mCurrentX + Size.Y / 2 &&
+                        Mouse.GetState().Y >= Position.Y - Size.Y / 2 &&
+                        Mouse.GetState().Y <= Position.Y + Size.Y / 2)
+                    {
+                        mSlave = true;
+                    }
+                    mClicking = true;
                 }
+                    
 
                 // if slider is left button released then unslave from mouse
-                if (Mouse.GetState().LeftButton == ButtonState.Released)
+                if (Mouse.GetState().LeftButton == ButtonState.Released && mClicking)
                 {
                     mSlave = false;
+                    mClicking = false;
                 }
 
                 // if slave to the mouse then move according to the limits of the slider bar

@@ -268,7 +268,7 @@ namespace Singularity.Platforms
 
             // Sound Effects
             mDestroyPlatSoundId = mDirector.GetSoundManager.CreateSoundInstance("DestroyPlat", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
-            mPowerOnSoundId = mDirector.GetSoundManager.CreateSoundInstance("PowerDown",
+            mPowerOnSoundId = mDirector.GetSoundManager.CreateSoundInstance("PowerOn",
                 Center.X,
                 Center.Y,
                 .1f,
@@ -302,7 +302,7 @@ namespace Singularity.Platforms
             };
 
             //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<EResourceType, int> { {EResourceType.Metal, 2} };
+            mCost = GetResourceCosts(EStructureType.Blank);//new Dictionary<EResourceType, int> { {EResourceType.Metal, 2} };
 
             mProvidingEnergy = 0;
             mDrainingEnergy = 0;
@@ -564,6 +564,7 @@ namespace Singularity.Platforms
                 else
                 {
                     // makes destruction sound
+                    mDirector.GetSoundManager.SetSoundPosition(mDestroyPlatSoundId, Center.X, Center.Y);
                     mDirector.GetSoundManager.PlaySound(mDestroyPlatSoundId);
                     DieBlank();
                 }
@@ -635,7 +636,7 @@ namespace Singularity.Platforms
                     spritebatch.Draw(mPlatformBaseTexture,
                         AbsolutePosition,
                         null,
-                        mColor * transparency,
+                        (Friendly ? mColor : mColorBase) * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
@@ -646,7 +647,7 @@ namespace Singularity.Platforms
                     spritebatch.Draw(mPlatformBaseTexture,
                         Vector2.Add(AbsolutePosition, new Vector2(0, 78)),
                         null,
-                        mColorBase * transparency,
+                        (Friendly ? mColor : mColorBase) * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
@@ -1292,6 +1293,7 @@ namespace Singularity.Platforms
             {
                 mIsManuallyDeactivated = false;
                 // TODO find a power on sound
+                mDirector.GetSoundManager.SetSoundPosition(mPowerOnSoundId, Center.X, Center.Y);
                 mDirector.GetSoundManager.PlaySound(mPowerOnSoundId);
             }
             ResetColor();
@@ -1330,6 +1332,7 @@ namespace Singularity.Platforms
             if (manually)
             {
                 // TODO maybe need to regulate sound a little when put to action
+                mDirector.GetSoundManager.SetSoundPosition(mPowerDownSoundId, Center.X, Center.Y);
                 mDirector.GetSoundManager.PlaySound(mPowerDownSoundId);
 
                 mIsManuallyDeactivated = true;
@@ -1385,6 +1388,46 @@ namespace Singularity.Platforms
         public int GetDrainingEnergy()
         {
             return mDrainingEnergy;
+        }
+
+        /// <summary>
+        /// Should be called by all platforms to set their costs + the UI to show the costs in buildMenu
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static Dictionary<EResourceType, int> GetResourceCosts(EStructureType type)
+        {
+            // TODO : BALANCING - COST OF BUILDINGS
+            // TODO NOTICE : DON'T CHANGE THE USED RESOURCES!! ONLY THE AMOUNT SHOULD BE CHANGED OR YOU WILL RUN INTO CRASHES!!
+            switch (type)
+            {
+                case EStructureType.Blank:
+                    return new Dictionary<EResourceType, int> { {EResourceType.Metal, 1 }, { EResourceType.Stone, 1 } };
+                case EStructureType.Energy:
+                    return new Dictionary<EResourceType, int> { { EResourceType.Copper, 1 }, { EResourceType.Metal, 2 }, { EResourceType.Silicon, 1 } };
+                case EStructureType.Factory:
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 3 }, { EResourceType.Stone, 2 }, { EResourceType.Water, 1 } };
+                case EStructureType.Junkyard:
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 2 }, { EResourceType.Stone, 2 }, { EResourceType.Water, 1 } };
+                case EStructureType.Mine:
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 }, { EResourceType.Stone, 1 } };
+                case EStructureType.Quarry:
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 }, { EResourceType.Stone, 1 } };
+                case EStructureType.Storage:
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 }, { EResourceType.Concrete, 3 } };
+                case EStructureType.Well:
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 2 }, { EResourceType.Stone, 2 } };
+                case EStructureType.Kinetic:
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 2 }, { EResourceType.Concrete, 3 } };
+                case EStructureType.Laser:
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 4 }, { EResourceType.Concrete, 4 } };
+                case EStructureType.Barracks:
+                    return new Dictionary<EResourceType, int> { { EResourceType.Steel, 3 }, { EResourceType.Concrete, 3 }, { EResourceType.Chip, 1 } };
+                case EStructureType.Command:
+                    return new Dictionary<EResourceType, int> { { EResourceType.Steel, 5 }, { EResourceType.Concrete, 5 }, { EResourceType.Chip, 5 } };
+                default:
+                    throw new NotImplementedException("There should not be any other platforms left");
+            }
         }
 
         public bool IsActive()

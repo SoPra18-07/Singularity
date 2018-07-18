@@ -37,8 +37,7 @@ namespace Singularity.Platforms
             EStructureType.Kinetic,
             friendly: friendly)
         {
-            // Todo: Add Costs of the platform here if you got them.
-            mCost = new Dictionary<EResourceType, int> {{EResourceType.Metal, 1}};
+            mCost = GetResourceCosts(EStructureType.Kinetic);
             mSoundId = mDirector.GetSoundManager.CreateSoundInstance("KineticTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
         }
 

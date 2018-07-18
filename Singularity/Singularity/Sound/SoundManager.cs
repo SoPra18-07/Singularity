@@ -154,7 +154,6 @@ namespace Singularity.Sound
         public void SetMediaPlayerVolume()
         {
             MediaPlayer.Volume = GlobalVariables.MusicVolume;
-            // Debug.WriteLine(MediaPlayer.Volume);
         }
 
         /// <summary>
@@ -234,7 +233,7 @@ namespace Singularity.Sound
                 case SoundClass.Ui:
                     mUiInstances[mInstanceMap[id].Item2].Volume =
                         GlobalVariables.UiVolume;
-                    mUiInstances[mInstanceMap[id].Item2].Play();;
+                    mUiInstances[mInstanceMap[id].Item2].Play();
                     break;
 
                 case SoundClass.Music:

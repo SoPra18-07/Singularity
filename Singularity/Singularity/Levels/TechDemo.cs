@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Schema;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Singularity.Manager;
@@ -16,10 +11,11 @@ using Singularity.Units;
 
 namespace Singularity.Levels
 {
+    [DataContract]
     class TechDemo : BasicLevel
     {
 
-        public TechDemo(GraphicsDeviceManager graphics, ref Director director, ContentManager content, IScreenManager screenmanager) : base(graphics, ref director, content, screenmanager)
+        public TechDemo(GraphicsDeviceManager graphics, ref Director director, ContentManager content, IScreenManager screenmanager, LevelType level) : base(graphics, ref director, content, screenmanager, level)
         {
             LoadContent(content);
         }
@@ -28,7 +24,7 @@ namespace Singularity.Levels
         {
             var map = Map;
 
-            GlobalVariables.mFowEnabled = false;
+            GlobalVariables.FowEnabled = false;
 
             var platform = PlatformFactory.Get(EStructureType.Barracks, ref mDirector, 3000, 3000);
 

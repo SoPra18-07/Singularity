@@ -49,6 +49,9 @@ namespace Singularity.Screen.ScreenClasses
 
         private Button mFowButton;
 
+        private Button mWinButton;
+        private Button mLoseButton;
+
         private int mUps;
 
         private bool mClicked;
@@ -80,8 +83,8 @@ namespace Singularity.Screen.ScreenClasses
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
-            spriteBatch.FillRectangle(new Rectangle(10, 0, 400, 500), new Color(Color.Black, 0.8f));
-            spriteBatch.DrawRectangle(new Rectangle(10, 0, 400, 500), Color.Black, 10f);
+            spriteBatch.FillRectangle(new Rectangle(10, 0, 400, 550), new Color(Color.Black, 0.8f));
+            spriteBatch.DrawRectangle(new Rectangle(10, 0, 400, 550), Color.Black, 10f);
 
             spriteBatch.DrawString(mFont, "Camera", new Vector2(15, 15), Color.White);
             spriteBatch.DrawString(mFont, "ScreenX: " + mCamera.GetRelativePosition().X, new Vector2(30, 50), Color.White);
@@ -114,6 +117,8 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.DrawString(mFont, "UPS: " + mUps, new Vector2(15, 415), Color.White);
 
             mFowButton.Draw(spriteBatch);
+            mWinButton.Draw(spriteBatch);
+            mLoseButton.Draw(spriteBatch);
 
             //spriteBatch.DrawString(mFont, "FPS: " + mCurrentFps, new Vector2(15, 200), Color.White);
             spriteBatch.End();
@@ -130,8 +135,22 @@ namespace Singularity.Screen.ScreenClasses
 
             mFowButton = new Button(DisableText, mFont, new Vector2(130, 450), Color.Red, true) {Opacity = 1f};
 
-            mFowButton.ButtonClicked += FowButtonClicked;
+            mWinButton = new Button("Win", mFont, new Vector2(130, 480), Color.White, true) {Opacity = 1f};
+            mLoseButton = new Button("Lose", mFont, new Vector2(130, 510), Color.White, true) { Opacity = 1f };
+            
             mFowButton.ButtonReleased += FowButtonReleased;
+            mWinButton.ButtonReleased += OnWinButtonReleased;
+            mLoseButton.ButtonReleased += OnLoseButtonReleased;
+        }
+
+        private void OnWinButtonReleased(object sender, EventArgs e)
+        {
+            mDirector.GetStoryManager.Win();
+        }
+
+        private void OnLoseButtonReleased(object sender, EventArgs e)
+        {
+            mDirector.GetStoryManager.Lose();
         }
 
         public void Update(GameTime gametime)
@@ -174,6 +193,8 @@ namespace Singularity.Screen.ScreenClasses
             mGenUnitCount = genUnitsCount;
 
             mFowButton.Update(gametime);
+            mWinButton.Update(gametime);
+            mLoseButton.Update(gametime);
         }
 
         public bool UpdateLower()
@@ -213,23 +234,11 @@ namespace Singularity.Screen.ScreenClasses
             return true;
         }
 
-        private void FowButtonClicked(object sender, EventArgs args)
-        {
-            if (mClicked)
-            {
-                return;
-            }
-
-            GlobalVariables.mFowEnabled = !GlobalVariables.mFowEnabled;
-
-            mFowButton.ChangeText(GlobalVariables.mFowEnabled ? DisableText : EnableText);
-
-            mClicked = true;
-        }
-
         private void FowButtonReleased(object sender, EventArgs args)
         {
-            mClicked = false;
+            GlobalVariables.FowEnabled = !GlobalVariables.FowEnabled;
+
+            mFowButton.ChangeText(GlobalVariables.FowEnabled ? DisableText : EnableText);
         }
     }
 }

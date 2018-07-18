@@ -29,8 +29,7 @@ namespace Singularity.Platforms
                 -50,
                 friendly: friendly)
         {
-            // Todo: Add Costs of the platform here if you got them.
-            // mCost = new Dictionary<EResourceType, int>();
+            mCost = GetResourceCosts(EStructureType.Storage);
             mType = EStructureType.Storage;
             mSpritename = "Dome";
             SetPlatfromParameters();

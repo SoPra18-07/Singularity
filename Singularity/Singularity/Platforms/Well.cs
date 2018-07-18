@@ -31,8 +31,7 @@ namespace Singularity.Platforms
         {
             mIPlatformActions.Add(new ProduceWellResource(this, resource, ref mDirector));
             //Something like "Hello Distributionmanager I exist now(GiveBlueprint)"
-            //Add Costs of the platform here if you got them.
-            mCost = new Dictionary<EResourceType, int>();
+            mCost = GetResourceCosts(EStructureType.Well);
             mType = EStructureType.Well;
             mSpritename = "Dome";
             Property = JobType.Production;

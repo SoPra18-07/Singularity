@@ -30,8 +30,7 @@ namespace Singularity.Platforms
             mIPlatformActions.Add(new MakeHeavyMilitaryUnit(this, ref director));
             mIPlatformActions.Add(new MakeStandardMilitaryUnit(this, ref director));
 
-            // Todo: add cost if you have it.
-            // mCost = new Dictionary<EResourceType, int>();
+            mCost = GetResourceCosts(EStructureType.Barracks);
             
         }
     }

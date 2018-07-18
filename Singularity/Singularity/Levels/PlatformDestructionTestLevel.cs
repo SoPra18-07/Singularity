@@ -9,7 +9,7 @@ namespace Singularity.Levels
 {
     sealed class PlatformDestructionTestLevel : BasicLevel
     {
-        public PlatformDestructionTestLevel(GraphicsDeviceManager graphics, ref Director director, ContentManager content, IScreenManager screenmanager) : base(graphics, ref director, content, screenmanager)
+        public PlatformDestructionTestLevel(GraphicsDeviceManager graphics, ref Director director, ContentManager content, IScreenManager screenmanager, LevelType level) : base(graphics, ref director, content, screenmanager, level)
         {
             LoadContent(content);
         }
