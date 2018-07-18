@@ -27,7 +27,7 @@ namespace Singularity.Units
         {
             mColor = Color.Maroon;
             mShootColor = Color.Red;
-            //ColliderGrid = new bool[,] {};
+            ColliderGrid = new bool[,] {};
         }
 
         public ICollider GetShootingTarget()

@@ -122,6 +122,8 @@ namespace Singularity.Units
 
         
 
+        
+
         /// <summary>
         /// Value of the unit's rotation.
         /// </summary>
@@ -148,8 +150,8 @@ namespace Singularity.Units
         /// <summary>
         /// Indicates if the unit is currently selected.
         /// </summary>
-        [DataMember]
-        internal bool mSelected;
+        // [DataMember]
+        // internal bool mSelected;
 
         /// <summary>
         /// Stores the current x position of the mouse
@@ -203,11 +205,13 @@ namespace Singularity.Units
 
             mGroup = Optional<FlockingGroup>.Of(null);
 
+            /* too inefficient
             ColliderGrid = new[,]
                 {
                     { true, true, true },
                     { true, true, true }
                 };
+             */
         }
         
         protected void ReloadContent(ref Director director, Camera camera)
@@ -364,7 +368,7 @@ namespace Singularity.Units
             {
                 case EMouseAction.LeftClick:
                     // check for if the unit is selected, not moving, the click is not within the bounds of the unit, and the click was on the map.
-                    if (mSelected
+                    if (Selected
                         // && !Moved // now this should do pathfinding even while moving
                         && !withinBounds
                         && Map.Map.IsOnTop(new Rectangle((int)(mMouseX - RelativeSize.X / 2f),
@@ -397,7 +401,7 @@ namespace Singularity.Units
 
                     if (withinBounds)
                     {
-                        mSelected = true;
+                        Selected = true;
                         giveThrough = false;
 
                         if (!mGroup.IsPresent())
@@ -407,12 +411,18 @@ namespace Singularity.Units
                             mGroup = group;
                             // do the fuck not change these lines here. Costs you at least 3h for debugging.
                         }
+                        else if (!mGroup.Get().AllSelected())
+                        {
+                            var group = Optional<FlockingGroup>.Of(mDirector.GetMilitaryManager.GetNewFlock());
+                            group.Get().AssignUnit(this);
+                            mGroup = group;
+                        }
                     }
 
                     break;
 
                 case EMouseAction.RightClick:
-                    mSelected = false;
+                    Selected = false;
                     break;
             }
 
@@ -452,7 +462,7 @@ namespace Singularity.Units
             if (selBox.Intersects(AbsBounds))
             {
                 Debug.WriteLine("Unit: " + Id + " got selected");
-                mSelected = true;
+                Selected = true;
                 mDirector.GetMilitaryManager.AddSelected(this); // send to FlockingManager
             }
         }

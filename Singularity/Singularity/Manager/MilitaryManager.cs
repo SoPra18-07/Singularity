@@ -607,5 +607,36 @@ namespace Singularity.Manager
                 mGroups.Add(group);
             }
         }
+
+        public List<ICollider> GetAdjecentUnits(Vector2 position)
+        {
+            return mUnitMap.GetAdjacentUnits(position);
+        }
+
+        public void AddSelected(IFlocking unit)
+        {
+            mSelected.Add(unit);
+            Debug.WriteLine("unit got selected");
+        }
+
+        public FlockingGroup GetNewFlock()
+        {
+            var group = new FlockingGroup(ref mDirector, ref mMap);
+            mGroups.Add(group);
+            return group;
+        }
+
+        public bool Kill(FlockingGroup group)
+        {
+            return mGroups.Remove(group);
+        }
+
+        public void EnsureIncluded(FlockingGroup group)
+        {
+            if (!mGroups.Contains(group))
+            {
+                mGroups.Add(group);
+            }
+        }
     }
 }

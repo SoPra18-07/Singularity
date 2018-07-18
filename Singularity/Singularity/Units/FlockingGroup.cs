@@ -326,5 +326,10 @@ namespace Singularity.Units
         {
             return mUnits.Remove(unit);
         }
+
+        public bool AllSelected()
+        {
+            return mUnits.TrueForAll(u => u.Selected);
+        }
     }
 }
