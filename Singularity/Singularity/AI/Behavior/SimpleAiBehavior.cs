@@ -79,7 +79,7 @@ namespace Singularity.AI.Behavior
                 return;
             }
 
-            mEnemyUnits[mRandom.Next(mEnemyUnits.Count)].SetMovementTarget(Map.Map.GetRandomPositionOnMap());
+            //mEnemyUnits[mRandom.Next(mEnemyUnits.Count)].SetMovementTarget(Map.Map.GetRandomPositionOnMap());
 
             mMoveIntervalMillis = 0;
         }

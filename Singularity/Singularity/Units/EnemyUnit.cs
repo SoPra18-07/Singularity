@@ -27,7 +27,7 @@ namespace Singularity.Units
         {
             mColor = Color.Maroon;
             mShootColor = Color.Red;
-            ColliderGrid = new bool[,] {};
+            //ColliderGrid = new bool[,] {};
         }
 
         public ICollider GetShootingTarget()
@@ -39,20 +39,6 @@ namespace Singularity.Units
         {
             base.Move();
             Debug.WriteLine("Enemy Unit trying to move.");
-        }
-
-        public void SetMovementTarget(Vector2 goal)
-        {
-            // let the flocker take care of it
-            // throw new NotImplementedException();
-            if (!mGroup.IsPresent())
-            {
-                Debug.WriteLine("Enemy Unit now gets assigned to new Flock ... " + Id);
-                mGroup = Optional<FlockingGroup>.Of(mDirector.GetMilitaryManager.GetNewFlock());
-                mGroup.Get().AssignUnit(this);
-            }
-            mGroup.Get().FindPath(goal);
-            // mGroup.Get().mTargetPosition = goal;
         }
     }
 }

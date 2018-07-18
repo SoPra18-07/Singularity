@@ -262,6 +262,8 @@ namespace Singularity.Manager
             {
                 mHostileMilitary.Remove(hostileMilitary);
             }
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(unit);
+            mUnitMap.RemoveUnit(unit);
 
             mUnitMap.RemoveUnit(unit);
         }
@@ -547,7 +549,7 @@ namespace Singularity.Manager
                 RemovePlatform(platform);
                 mUnitMap.RemoveUnit(platform);
                 mMap.GetCollisionMap().RemoveCollider(platform);
-            } */
+            }*/
 
             #endregion
 
