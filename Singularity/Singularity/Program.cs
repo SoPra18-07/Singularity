@@ -2,7 +2,6 @@
 
 namespace Singularity
 {
-#if WINDOWS || LINUX
     /// <summary>
     /// The main class.
     /// </summary>
@@ -15,10 +14,7 @@ namespace Singularity
         static void Main()
         {
             using (var game = new Game1())
-            {
                 game.Run();
-            }
         }
     }
-#endif
 }
