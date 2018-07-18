@@ -183,8 +183,31 @@ namespace Singularity.Screen.ScreenClasses
                         mMenuOpacity = 0;
                     }
 
+                    // change menu opacity
                     mMenuOpacity =
                         (float)Animations.Easing(1, 0, mTransitionStartTime, mTransitionDuration, gameTime);
+                    
+                    // position change
+                    var xpos = (float)Animations.Easing(mScreenResolution.X / 2 - 204,
+                        mScreenResolution.X / 2 - 283,
+                        mTransitionStartTime,
+                        mTransitionDuration,
+                        gameTime);
+                    var ypos = (float)Animations.Easing(mScreenResolution.Y / 4,
+                        mScreenResolution.Y / 4 - 120,
+                        mTransitionStartTime,
+                        mTransitionDuration,
+                        gameTime);
+
+                    mMenuBoxPosition = new Vector2(xpos, ypos);
+
+                    // size change
+                    var height =
+                        (float)Animations.Easing(408, 566, mTransitionStartTime, mTransitionDuration, gameTime);
+                    var menuWidth =
+                        (float)Animations.Easing(420, 634, mTransitionStartTime, mTransitionDuration, gameTime);
+
+                    mMenuBoxSize = new Vector2(height, menuWidth);
                     break;
                 case EScreen.GameModeSelectScreen:
                     if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)

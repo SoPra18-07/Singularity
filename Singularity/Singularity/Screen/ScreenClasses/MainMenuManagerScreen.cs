@@ -3,23 +3,26 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Singularity.Manager;
 
 namespace Singularity.Screen.ScreenClasses
 {
+    /// <inheritdoc cref="IScreen"/>
+    /// <summary>
+    /// Manages the main menu. This is the screen that is second loaded into the stack screen manager
+    /// and loads all the other main menu screens. Also handles button events which involve switching
+    /// between menu screens.
+    /// </summary>
     internal sealed class MainMenuManagerScreen : IScreen
     {
         public EScreen Screen { get; private set; } = EScreen.MainMenuManagerScreen;
 
         public bool Loaded { get; set; }
 
-        /// <inheritdoc cref="IScreen"/>
-        /// <summary>
-        /// Manages the main menu. This is the screen that is second loaded into the stack screen manager
-        /// and loads all the other main menu screens. Also handles button events which involve switching
-        /// between menu screens.
-        /// </summary>
         private readonly IScreenManager mScreenManager;
         private EScreen mScreenState;
+
+        private Director mDirector;
 
         // All connecting screens
         private ITransitionableMenu mGameModeSelectScreen;
@@ -31,7 +34,7 @@ namespace Singularity.Screen.ScreenClasses
 
         // Background
         private MenuBackgroundScreen mMenuBackgroundScreen;
-
+        
         // Screen transition variables
         private static string sPressed;
         private int mTransitionState;
@@ -52,10 +55,12 @@ namespace Singularity.Screen.ScreenClasses
         /// (used when going back to main menu from within the game where showing the
         /// splash screen would not be necessary).</param>
         /// <param name="game">Used to pass on to the options screen to change game settings</param>
-        public MainMenuManagerScreen(Vector2 screenResolution, IScreenManager screenManager, bool showSplash, Game1 game)
+        public MainMenuManagerScreen(Vector2 screenResolution, IScreenManager screenManager, ref Director director, bool showSplash, Game1 game)
         {
             mScreenManager = screenManager;
             mGame = game;
+
+            mDirector = director;
 
             Initialize(screenResolution, false, game);
 
@@ -281,7 +286,7 @@ namespace Singularity.Screen.ScreenClasses
             mLoadSelectScreen = new LoadSelectScreen(screenResolution);
             mAchievementsScreen = new AchievementsScreen(screenResolution);
 
-            mOptionsScreen = new OptionsScreen(screenResolution, screenResolutionChanged, game);
+            mOptionsScreen = new OptionsScreen(screenResolution, screenResolutionChanged, game, ref mDirector);
             mMenuBackgroundScreen = new MenuBackgroundScreen(screenResolution);
             mSplashScreen = new SplashScreen(screenResolution);
             mMainMenuScreen = new MainMenuScreen(screenResolution);

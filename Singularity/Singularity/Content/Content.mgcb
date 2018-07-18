@@ -440,3 +440,9 @@
 /processorParam:TextureFormat=Compressed
 /build:LibSans72.spritefont
 
+#begin Sound/SFX/PowerOn.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/SFX/PowerOn.wav
+
