@@ -194,7 +194,6 @@ namespace Singularity.Units
         public Vector2 RelativePosition { get; set; }
         public Vector2 RelativeSize { get; set; }
 
-        [DataMember]
         public bool[,] ColliderGrid { get; protected set; }
         [DataMember]
         public Rectangle AbsBounds { get; protected set; }

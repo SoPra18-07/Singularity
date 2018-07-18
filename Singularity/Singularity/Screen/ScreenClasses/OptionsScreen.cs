@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Singularity.AI.Properties;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Property;
@@ -43,6 +45,7 @@ namespace Singularity.Screen.ScreenClasses
 
         // Gameplay tab
         private readonly List<Checkbox> mGameplayCheckboxes = new List<Checkbox>(1);
+        private readonly List<Button> mGameplayButtons = new List<Button>(1);
 
         // Graphics tab
         private readonly List<Checkbox> mGraphicCheckboxes = new List<Checkbox>(1);
@@ -162,6 +165,12 @@ namespace Singularity.Screen.ScreenClasses
                 CheckboxState = GlobalVariables.HealthBarEnabled
             };
 
+            var difficulty = new Button("Easy",
+                mLibSans20,
+                new Vector2(mMenuBoxPosition.X + mContentPadding, mTopContentPadding + 100),
+                mTextColor * mMenuOpacity);
+
+            mGameplayButtons.Add(difficulty);
             mGameplayCheckboxes.Add(healthBar);
 
             #endregion
@@ -247,6 +256,7 @@ namespace Singularity.Screen.ScreenClasses
             backButton.ButtonReleased += MainMenuManagerScreen.OnBackButtonReleased;
 
             healthBar.ButtonReleased += OnHealthBarReleased;
+            difficulty.ButtonReleased += OnDifficultyReleased;
 
             fullScreen.ButtonReleased += OnFullScreenReleased;
             resolutionDown.ButtonReleased += OnResoDownReleased;
@@ -262,6 +272,27 @@ namespace Singularity.Screen.ScreenClasses
             #endregion
 
             Loaded = true;
+        }
+
+        private void OnDifficultyReleased(object sender, EventArgs e)
+        {
+            switch (GlobalVariables.Difficulty)
+            {
+                case EaiDifficulty.Easy:
+                    mGameplayButtons[0].ChangeText("Medium");
+                    GlobalVariables.Difficulty = EaiDifficulty.Medium;
+                    break;
+                case EaiDifficulty.Medium:
+                    mGameplayButtons[0].ChangeText("Hard");
+                    GlobalVariables.Difficulty = EaiDifficulty.Hard;
+                    break;
+                case EaiDifficulty.Hard:
+                    mGameplayButtons[0].ChangeText("Easy");
+                    GlobalVariables.Difficulty = EaiDifficulty.Easy;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public void Update(GameTime gametime)
@@ -290,6 +321,13 @@ namespace Singularity.Screen.ScreenClasses
                         gameplayCheckbox.CheckboxPosition = new Vector2(mMenuBoxPosition.X + mContentPadding +
                                                                         mLibSans20.MeasureString("Health bar:        ").X,
                                                                         mTopContentPadding);
+                    }
+
+                    foreach (var button in mGameplayButtons)
+                    {
+                        button.Update(gametime);
+                        button.Opacity = mMenuOpacity;
+                        button.Position = new Vector2(mMenuBoxPosition.X + mContentPadding, button.Position.Y);
                     }
                     break;
                 case EOptionScreenState.Graphics:
@@ -391,9 +429,18 @@ namespace Singularity.Screen.ScreenClasses
             switch (mScreenState)
             {
                 case EOptionScreenState.Gameplay:
+                    spriteBatch.DrawString(mLibSans20,
+                        "Difficulty",
+                        new Vector2(mMenuBoxPosition.X + mContentPadding, mTopContentPadding + 50),
+                        mTextColor * mMenuOpacity);
                     foreach (var checkbox in mGameplayCheckboxes)
                     {
                         checkbox.Draw(spriteBatch);
+                    }
+
+                    foreach (var button in mGameplayButtons)
+                    {
+                        button.Draw(spriteBatch);
                     }
                     break;
                 case EOptionScreenState.Graphics:

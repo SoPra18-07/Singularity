@@ -53,7 +53,6 @@ namespace Singularity.Screen.ScreenClasses
             mHoloProjectionWidthScaling = 1f;
             mHoloProjectionHeightScaling = screenResolution.Y / 1024;
             SetResolution(screenResolution);
-            CurrentScreen = EScreen.SplashScreen;
 
             TransitionRunning = false;
             mHoloOpacity = 1;
@@ -128,6 +127,11 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
+            if (CurrentScreen == EScreen.MainMenuScreen && !TransitionRunning && mHoloProjectionWidthScaling != 2)
+            {
+                TransitionTo(EScreen.GameModeSelectScreen, EScreen.MainMenuScreen, gameTime);
+
+            }
             // code for transitioning
             Transition(gameTime);
 

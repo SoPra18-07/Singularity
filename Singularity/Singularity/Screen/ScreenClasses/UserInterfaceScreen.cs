@@ -401,6 +401,18 @@ namespace Singularity.Screen.ScreenClasses
                 mCivilUnitsSliderHandler.ForceSliderPages();
             }
 
+            if (mStructureMap.GetDictionaryGraphIdToGraph()[mCivilUnitsGraphId] == null)
+            {
+                var index = 0;
+
+                while (mStructureMap.GetDictionaryGraphIdToGraph().ElementAt(index).Value == null)
+                {
+                    index += 1;
+                }
+
+                mCivilUnitsGraphId = mStructureMap.GetDictionaryGraphIdToGraph().ElementAt(index).Key;
+            }
+
             // if the resolution has changed -> reset windows positions
             if (mCurrentScreenWidth != mPrevScreenWidth || mCurrentScreenHeight != mPrevScreenHeight)
             {
@@ -1857,24 +1869,16 @@ else
         /// <param name="splittedId"></param>
         public void SplitGraph(int splittedId)
         {
-            if (!mActiveUserInterface) { return; }
-            foreach (var id in mStructureMap.GetDictionaryGraphIdToGraph().Keys)
-            {
-                Console.Out.WriteLine("graphID: " + id);
-            }
             if (mCivilUnitsGraphId == splittedId)
             {
                 if (!mStructureMap.GetDictionaryGraphIdToGraph().ContainsKey(splittedId))
                 {
-                    Console.Out.WriteLine("min");
                     mCivilUnitsGraphId = mStructureMap.GetDictionaryGraphIdToGraph().Keys.Min();
                 }
                 else
                 {
-                    Console.Out.WriteLine("id to graph: " + mStructureMap.GetDictionaryGraphIdToGraph()[splittedId]);
                     if (mStructureMap.GetDictionaryGraphIdToGraph()[splittedId] == null)
                     {
-                        Console.Out.WriteLine("min");
                         mCivilUnitsGraphId = mStructureMap.GetDictionaryGraphIdToGraph().Keys.Min();
                     }
                 }
