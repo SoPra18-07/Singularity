@@ -43,5 +43,8 @@
         }
 
         internal static bool MonoSound { get; set; }
+
+        // Flag used to control the mission time.
+        public static bool GameIsPaused = false;
     }
 }
