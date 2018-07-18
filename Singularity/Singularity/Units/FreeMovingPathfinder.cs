@@ -23,7 +23,11 @@ namespace Singularity.Units
         /// <returns>A list of Vector2 waypoints that the object must traverse to get to its destination</returns>
         internal Stack<Vector2> FindPath(Vector2 startPosition, Vector2 endPosition, ref Map.Map map, EndNodeUnWalkableTreatment endNodeUnWalkable = EndNodeUnWalkableTreatment.DISALLOW)
         {
-            Debug.WriteLine("Searching for path");
+            if (!Map.Map.IsOnTop(endPosition))
+            {
+                return new Stack<Vector2>();
+            }
+
             var startGridPos = VectorToGridPos(startPosition);
             var endGridPos = VectorToGridPos(endPosition);
 
@@ -31,7 +35,6 @@ namespace Singularity.Units
             {
                 var pathVector = new Stack<Vector2>(1);
                 pathVector.Push(endPosition);
-                Debug.WriteLine("returning direct Path!");
                 return pathVector;
             }
             else
@@ -62,7 +65,6 @@ namespace Singularity.Units
                     var gridPos = GridPosToVector2(pathGrid[i]);
                     pathVector.Push(gridPos);
                 }
-                Debug.WriteLine("Path is this long: " + pathVector.Count);
 
                 return pathVector;
             }

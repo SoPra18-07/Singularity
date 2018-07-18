@@ -112,8 +112,6 @@ namespace Singularity.Manager
         internal void SetMap(ref Map.Map map)
         {
             mUnitMap = new UnitMap((int)map.GetMeasurements().X, (int)map.GetMeasurements().Y);
-            Debug.WriteLine("Map got apparently set.");
-            Debug.WriteLineIf(map == null, "But map is null :/");
             mMap = map;
             mSelectedGroup = new FlockingGroup(ref mDirector, ref mMap);
             mGroups.Add(mSelectedGroup);
@@ -262,6 +260,8 @@ namespace Singularity.Manager
             {
                 mHostileMilitary.Remove(hostileMilitary);
             }
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(unit);
+            mUnitMap.RemoveUnit(unit);
 
             mUnitMap.RemoveUnit(unit);
         }
@@ -336,7 +336,6 @@ namespace Singularity.Manager
                 {
                     unit.SetShootingTarget(null);
                 }
-                //Debug.WriteLineIf(closestAdjacent != null, closestAdjacent);
             }
 
             #endregion
@@ -547,7 +546,7 @@ namespace Singularity.Manager
                 RemovePlatform(platform);
                 mUnitMap.RemoveUnit(platform);
                 mMap.GetCollisionMap().RemoveCollider(platform);
-            } */
+            }*/
 
             #endregion
 
@@ -556,14 +555,12 @@ namespace Singularity.Manager
             if (mSelected.Count > 0)
             {
                 mIsSelected = true;
-                Debug.WriteLine("Reset of selected");
                 mSelectedGroup.Reset();
                 mSelected.ForEach(u => mSelectedGroup.AssignUnit(u));
                 mGroups.Add(mSelectedGroup);
             } else if (mIsSelected)
             {
                 mIsSelected = false;
-                Debug.WriteLineIf(mMap == null, "mMap is null for some reason.");
                 mSelectedGroup = new FlockingGroup(ref mDirector, ref mMap);
             }
             mSelected = new List<IFlocking>();
@@ -583,7 +580,6 @@ namespace Singularity.Manager
         public void AddSelected(IFlocking unit)
         {
             mSelected.Add(unit);
-            Debug.WriteLine("unit got selected");
         }
 
         public FlockingGroup GetNewFlock()
