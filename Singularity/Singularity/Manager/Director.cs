@@ -106,7 +106,10 @@ namespace Singularity.Manager
             }
             GetStoryManager.Update(gametime);
             GetMilitaryManager.Update(gametime);
-            GetClock.Update(gametime);
+            if (!GlobalVariables.mGameIsPaused)
+            {
+                GetClock.Update(gametime);
+            }
             GetSoundManager.SetMediaPlayerVolume();
         }
     }

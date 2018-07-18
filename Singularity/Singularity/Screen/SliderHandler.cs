@@ -56,7 +56,6 @@ namespace Singularity.Screen
         /// </summary>
         public void Refresh()
         {
-            if (mCurrentGraphid == 0) return;
             var distr = mDirector.GetDistributionDirector.GetManager(mCurrentGraphid);
             mIdleUnits.Amount = distr.GetJobCount(JobType.Idle);
             var total = distr.GetUnitTotal();
@@ -109,7 +108,7 @@ namespace Singularity.Screen
         public void Initialize(int graphid)
         {
             mCurrentGraphid = graphid;
-            // mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).Register(this);
+            mDirector.GetDistributionDirector.GetManager(mCurrentGraphid).Register(this);
             Refresh();
         }
 
