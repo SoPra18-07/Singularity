@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
@@ -10,7 +8,7 @@ namespace Singularity.Platforms
 {
     /// <inheritdoc cref="PlatformBlank"/>
     [DataContract]
-    internal class Barracks : PlatformBlank
+    internal sealed class Barracks : PlatformBlank
     {
         public Barracks(Vector2 position,
             Texture2D platformSpriteSheet,

@@ -11,11 +11,10 @@ namespace Singularity.Units
         public MilitaryHeavy(Vector2 position,
             Camera camera,
             ref Director director,
-            ref Map.Map map,
             bool friendly = true)
-            : base(position, camera, ref director, ref map, friendly)
+            : base(position, camera, ref director, friendly)
         {
-            mSpeed = MilitaryUnitStats.HeavySpeed;
+            Speed = MilitaryUnitStats.HeavySpeed;
             Health = MilitaryUnitStats.HeavyHealth;
             Range = MilitaryUnitStats.HeavyRange;
 

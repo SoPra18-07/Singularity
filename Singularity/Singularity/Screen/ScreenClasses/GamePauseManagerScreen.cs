@@ -141,10 +141,10 @@ namespace Singularity.Screen.ScreenClasses
                         SwitchScreen(EScreen.StatisticsScreen, mGamePauseScreen, mStatisticsScreen, gametime);
                     }
 
-                    if (sPressed == "Main Menu") 
+                    if (sPressed == "Main Menu")
                     {
                         mDirector.GetStoryManager.Level.GameScreen.Unload();
-                        
+
                         for (var i = 0; i < mScreenManager.GetScreenCount() - 1; i++)
                         {
                             mScreenManager.RemoveScreen();

@@ -17,8 +17,6 @@ namespace Singularity.Resources
     [DataContract]
     public sealed class MapResource : ADie, ISpatial
     {
-        private Director mDirector;
-
         /// <summary>
         /// The color of this resource.
         /// </summary>
@@ -57,8 +55,6 @@ namespace Singularity.Resources
 
             mColor = new Color(Vector3.Multiply(ResourceHelper.GetColor(type).ToVector3(), 0.75f));
             // mColor = ResourceHelper.GetColor(type);
-
-            mDirector = director;
         }
 
         public new void ReloadContent(ref Director dir)

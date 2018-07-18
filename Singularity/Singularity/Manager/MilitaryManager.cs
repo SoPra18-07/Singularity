@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Map;
@@ -41,6 +42,22 @@ namespace Singularity.Manager
         /// </summary>
         [DataMember]
         private readonly List<DefenseBase> mFriendlyDefensePlatforms = new List<DefenseBase>();
+
+        #endregion
+
+        #region Flocking and Selection
+
+        [DataMember]
+        private List<IFlocking> mSelected = new List<IFlocking>();
+
+        [DataMember]
+        private bool mIsSelected = true; // for initializing the FlockingGroup
+
+        [DataMember]
+        private FlockingGroup mSelectedGroup;
+
+        [DataMember]
+        private List<FlockingGroup> mGroups = new List<FlockingGroup>();
 
         #endregion
 
@@ -98,7 +115,11 @@ namespace Singularity.Manager
         internal void SetMap(ref Map.Map map)
         {
             mUnitMap = new UnitMap((int)map.GetMeasurements().X, (int)map.GetMeasurements().Y);
+            Debug.WriteLine("Map got apparently set.");
+            Debug.WriteLineIf(map == null, "But map is null :/");
             mMap = map;
+            mSelectedGroup = new FlockingGroup(ref mDirector, ref mMap);
+            mGroups.Add(mSelectedGroup);
         }
 
         public void ReloadContent(Vector2 mapmeasurements, Director director)
@@ -110,6 +131,7 @@ namespace Singularity.Manager
         {
             mMap = map;
             mUnitMap = new UnitMap((int) map.GetMeasurements().X, (int) map.GetMeasurements().Y);
+            mSelectedGroup = new FlockingGroup(ref mDirector, ref mMap);
             foreach (var funit in mFriendlyMilitary)
             {
                 mUnitMap.AddUnit(funit);
@@ -527,8 +549,63 @@ namespace Singularity.Manager
                 RemovePlatform(platform);
                 mUnitMap.RemoveUnit(platform);
                 mMap.GetCollisionMap().RemoveCollider(platform);
-            }*/
+            } */
+
             #endregion
+
+            #region Flocking adding
+
+            if (mSelected.Count > 0)
+            {
+                mIsSelected = true;
+                Debug.WriteLine("Reset of selected");
+                mSelectedGroup.Reset();
+                mSelected.ForEach(u => mSelectedGroup.AssignUnit(u));
+                mGroups.Add(mSelectedGroup);
+            } else if (mIsSelected)
+            {
+                mIsSelected = false;
+                Debug.WriteLineIf(mMap == null, "mMap is null for some reason.");
+                mSelectedGroup = new FlockingGroup(ref mDirector, ref mMap);
+            }
+            mSelected = new List<IFlocking>();
+
+            mGroups.RemoveAll(g => g.Die());
+
+            mGroups.ForEach(g => g.Update(gametime));
+
+            #endregion
+        }
+
+        public List<ICollider> GetAdjecentUnits(Vector2 position)
+        {
+            return mUnitMap.GetAdjacentUnits(position);
+        }
+
+        public void AddSelected(IFlocking unit)
+        {
+            mSelected.Add(unit);
+            Debug.WriteLine("unit got selected");
+        }
+
+        public FlockingGroup GetNewFlock()
+        {
+            var group = new FlockingGroup(ref mDirector, ref mMap);
+            mGroups.Add(group);
+            return group;
+        }
+
+        public bool Kill(FlockingGroup group)
+        {
+            return mGroups.Remove(group);
+        }
+
+        public void EnsureIncluded(FlockingGroup group)
+        {
+            if (!mGroups.Contains(group))
+            {
+                mGroups.Add(group);
+            }
         }
     }
 }

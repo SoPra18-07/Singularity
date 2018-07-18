@@ -13,7 +13,7 @@ using Singularity.Screen.ScreenClasses;
 
 namespace Singularity.Units
 {
-    /// <inheritdoc cref="ControllableUnit"/>
+    /// <inheritdoc cref="FreeMovingUnit"/>
     [DataContract]
     internal sealed class Settler: FreeMovingUnit, IKeyListener
     {
@@ -32,13 +32,12 @@ namespace Singularity.Units
         /// <param name="position">Where the unit should be spawned.</param>
         /// <param name="camera">Game camera being used.</param>
         /// <param name="director">Reference to the game director.</param>
-        /// <param name="map">Reference to the game map.</param>
         /// <param name="gameScreen">Gamescreen of the game so that the settler can build platforms.</param>
         /// <param name="ui">UI of the game so the settler can edit the UI.</param>
-        public Settler(Vector2 position, Camera camera, ref Director director, ref Map.Map map, GameScreen gameScreen, UserInterfaceScreen ui)
-            : base(position, camera, ref director, ref map)
+        public Settler(Vector2 position, Camera camera, ref Director director, GameScreen gameScreen, UserInterfaceScreen ui)
+            : base(position, camera, ref director)
         {
-            mSpeed = 4;
+            Speed = 4;
             Health = 10;
 
             AbsoluteSize = new Vector2(20, 20);
@@ -51,12 +50,22 @@ namespace Singularity.Units
 
             mGameScreen = gameScreen;
             mUi = ui;
+
+            /* too inefficient
+            ColliderGrid = new[,]
+            {
+                {true, true},
+                {true, true}
+            };
+            */
+
+            SetAbsBounds();
         }
 
         public static Settler Create(Vector2 position, ref Director director)
         {
             var map = director.GetStoryManager.Level.Map;
-            return new Settler(position, director.GetStoryManager.Level.Camera, ref director, ref map, director.GetStoryManager.Level.GameScreen, director.GetUserInterfaceController.ControlledUserInterface);
+            return new Settler(position, director.GetStoryManager.Level.Camera, ref director, director.GetStoryManager.Level.GameScreen, director.GetUserInterfaceController.ControlledUserInterface);
         }
 
         #region BuildCommanCenterEvent
@@ -86,7 +95,7 @@ namespace Singularity.Units
 
         public void ReloadContent(ref Director director, Camera camera, ref Map.Map map, GameScreen gamescreen, UserInterfaceScreen ui)
         {
-            ReloadContent(ref director, camera, ref map);
+            ReloadContent(ref director, camera);
             mGameScreen = gamescreen;
             mUi = ui;
             mDirector.GetInputManager.FlagForAddition(this);
@@ -98,70 +107,30 @@ namespace Singularity.Units
             spriteBatch.StrokedRectangle(AbsolutePosition,
                 AbsoluteSize,
                 Color.Gray,
-                mSelected ? Color.Wheat : Color.Beige,
+                Selected ? Color.Wheat : Color.Beige,
                 .8f,
                 1f,
                 LayerConstants.MilitaryUnitLayer);
-
-            #region Debug
-
-            if (mDebugPath == null)
-            {
-                return;
-            }
-
-            for (var i = 0; i < mDebugPath.Length - 1; i++)
-            {
-                spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);
-            }
-            #endregion
+            
         }
 
 
         public override void Update(GameTime gameTime)
         {
-            //make sure to update the relative bounds rectangle enclosing this unit.
-            Bounds = new Rectangle((int) RelativePosition.X,
-                (int) RelativePosition.Y,
-                (int) RelativeSize.X,
-                (int) RelativeSize.Y);
-
-            if (HasReachedTarget())
-            {
-                mIsMoving = false;
-            }
-
-            // calculate path to target position
-            else if (mIsMoving)
-            {
-                if (!HasReachedWaypoint())
-                {
-                    MoveToTarget(mPath.Peek(), mSpeed);
-                }
-
-                else
-                {
-                    mPath.Pop();
-                    //TODO: THis is a hotfix, the same as in HasREachedWaypoint. I dont know if this could create strange behaviour
-                    if (mPath.Count != 0)
-                    {
-                        MoveToTarget(mPath.Peek(), mSpeed);
-                    }
-                }
-            }
-
-            Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
-
-            AbsBounds = new Rectangle((int) AbsolutePosition.X + 16,
-                (int) AbsolutePosition.Y + 11,
-                (int) AbsoluteSize.X,
-                (int) AbsoluteSize.Y);
-            Moved = mIsMoving;
-
+            base.Update(gameTime);
+            
             if (Moved)
             {
                 mNeverMoved = false;
             }
+        }
+
+        public override void SetAbsBounds()
+        {
+            AbsBounds = new Rectangle((int)AbsolutePosition.X,
+                (int)AbsolutePosition.Y,
+                (int)AbsoluteSize.X,
+                (int)AbsoluteSize.Y);
         }
 
         public override bool Die()
@@ -179,11 +148,9 @@ namespace Singularity.Units
             {
                 // if key b has been pressed and the settler unit is selected and its not moving
                 // --> send out event that deletes settler and adds a command center
-                if (key == Keys.B && mSelected && (HasReachedTarget() || mNeverMoved))
-                {
-                    OnBuildCommandCenter();
-                    return false;
-                }
+                if (key != Keys.B || !Selected || (!mGroup.Get().NearTarget() && !mNeverMoved)) continue;
+                OnBuildCommandCenter();
+                return false;
             }
 
             return true;

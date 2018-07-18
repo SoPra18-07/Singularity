@@ -28,7 +28,7 @@ namespace Singularity.Utils
         /// Get the next unique ID from the ID generator.
         /// </summary>
         /// <returns>A unique ID for the object.</returns>
-        internal int NextiD()
+        internal int NextId()
         {
             mId++;
             return mId;
