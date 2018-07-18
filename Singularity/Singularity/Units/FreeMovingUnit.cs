@@ -45,7 +45,8 @@ namespace Singularity.Units
         /// </summary>
         protected double mCurrentTime;
 
-        protected HealthBar mHealthBar;
+        [DataMember]
+        protected readonly HealthBar mHealthBar;
 
         [DataMember]
         public bool KillMe { get; protected set; }
@@ -254,7 +255,6 @@ namespace Singularity.Units
             mCamera = camera;
             mMap = map;
 
-            mHealthBar = new HealthBar(this);
             if (Friendly)
             {
                 mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
@@ -284,8 +284,6 @@ namespace Singularity.Units
         {
 
             mIsMoving = true;
-            Debug.WriteLine("Starting path finding at: " + currentPosition.X + ", " + currentPosition.Y);
-            Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
 
             mPath = new Stack<Vector2>();
             mPath = mPathfinder.FindPath(currentPosition,
