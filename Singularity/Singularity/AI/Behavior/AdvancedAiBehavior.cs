@@ -264,8 +264,6 @@ namespace Singularity.AI.Behavior
                 return;
             }
 
-            Debug.WriteLine("spawn now");
-
             SpawnOneUnit(EEnemyType.Scout, mAi.GetSpawners()[mBaseCount][0]);
 
             // also generate some defending units, note that these don't move away from their base, but are more or less stationary defenders.
@@ -284,6 +282,8 @@ namespace Singularity.AI.Behavior
             {
                 return;
             }
+
+            UpdateMovingValues();
 
 
             #region Defending
@@ -321,7 +321,7 @@ namespace Singularity.AI.Behavior
                         mUnitToFlockingGroup[squadMember] = mDirector.GetMilitaryManager.GetNewFlock();
                         mUnitToFlockingGroup[squadMember].AssignUnit(squadMember);
                     }
-
+                    
                     mUnitToFlockingGroup[squadMember].FindPath(GetRandomPositionOnRectangle(randomBounds));
                     mIsCurrentlyMoving[squadMember] = true;
                     AddToQueue(EEnemyType.Defend, squadMember);
@@ -341,8 +341,6 @@ namespace Singularity.AI.Behavior
             {
                 return;
             }
-
-            UpdateMovingValues();
 
             //first of update the priority of the unit that has the lowest of them all.
             UpdateLowestPriorityQueueElements();

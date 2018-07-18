@@ -38,7 +38,6 @@ namespace Singularity.Units
         public override void Move()
         {
             base.Move();
-            Debug.WriteLine("Enemy Unit trying to move.");
         }
     }
 }
