@@ -56,11 +56,13 @@ namespace Singularity.Screen.ScreenClasses
         /// Used to construct a new instance of the main menu screen
         /// </summary>
         /// <param name="screenResolution">Screen resolution of the game</param>
-        public MainMenuScreen(Vector2 screenResolution) 
+        public MainMenuScreen(Vector2 screenResolution, bool fromSplash) 
             : base(screenResolution)
         {
             mMenuBoxPosition = new Vector2(screenResolution.X / 2 - 204, screenResolution.Y / 4);
             mMenuBoxSize = new Vector2(408, 420);
+
+            mWindowOpacity = fromSplash ? 0 : 1;
 
             mButtonLeftPadding = mMenuBoxPosition.X + 60;
             mButtonTopPadding = mMenuBoxPosition.Y + 90;
@@ -183,8 +185,31 @@ namespace Singularity.Screen.ScreenClasses
                         mMenuOpacity = 0;
                     }
 
+                    // change menu opacity
                     mMenuOpacity =
                         (float)Animations.Easing(1, 0, mTransitionStartTime, mTransitionDuration, gameTime);
+                    
+                    // position change
+                    var xpos = (float)Animations.Easing(mScreenResolution.X / 2 - 204,
+                        mScreenResolution.X / 2 - 283,
+                        mTransitionStartTime,
+                        mTransitionDuration,
+                        gameTime);
+                    var ypos = (float)Animations.Easing(mScreenResolution.Y / 4,
+                        mScreenResolution.Y / 4 - 120,
+                        mTransitionStartTime,
+                        mTransitionDuration,
+                        gameTime);
+
+                    mMenuBoxPosition = new Vector2(xpos, ypos);
+
+                    // size change
+                    var height =
+                        (float)Animations.Easing(408, 566, mTransitionStartTime, mTransitionDuration, gameTime);
+                    var menuWidth =
+                        (float)Animations.Easing(420, 634, mTransitionStartTime, mTransitionDuration, gameTime);
+
+                    mMenuBoxSize = new Vector2(height, menuWidth);
                     break;
                 case EScreen.GameModeSelectScreen:
                     if (gameTime.TotalGameTime.TotalMilliseconds >= mTransitionStartTime + mTransitionDuration)

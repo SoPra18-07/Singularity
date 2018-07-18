@@ -19,7 +19,7 @@ namespace Singularity.Levels
     class TechDemo : BasicLevel
     {
 
-        public TechDemo(GraphicsDeviceManager graphics, ref Director director, ContentManager content, IScreenManager screenmanager) : base(graphics, ref director, content, screenmanager)
+        public TechDemo(GraphicsDeviceManager graphics, ref Director director, ContentManager content, IScreenManager screenmanager, LevelType level) : base(graphics, ref director, content, screenmanager, level)
         {
             LoadContent(content);
         }
@@ -28,7 +28,7 @@ namespace Singularity.Levels
         {
             var map = Map;
 
-            GlobalVariables.mFowEnabled = false;
+            GlobalVariables.FowEnabled = false;
 
             var platform = PlatformFactory.Get(EStructureType.Barracks, ref mDirector, 3000, 3000);
 

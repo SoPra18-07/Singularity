@@ -55,11 +55,9 @@ namespace Singularity.Units
                 pathVector.Push(endPosition);
 
 
-                Debug.WriteLine("Path:");
                 for (var i = pathGrid.Count - 1; i > 0; i--)
                 {
                     var gridPos = GridPosToVector2(pathGrid[i]);
-                    Debug.WriteLine(gridPos.X + ", " + gridPos.Y);
                     pathVector.Push(gridPos);
                 }
 

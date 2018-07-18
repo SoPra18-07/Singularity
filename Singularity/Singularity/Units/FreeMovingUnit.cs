@@ -45,6 +45,7 @@ namespace Singularity.Units
         /// </summary>
         protected double mCurrentTime;
 
+        [DataMember]
         protected readonly HealthBar mHealthBar;
 
         [DataMember]
@@ -253,6 +254,7 @@ namespace Singularity.Units
             mDirector = director;
             mCamera = camera;
             mMap = map;
+
             if (Friendly)
             {
                 mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
@@ -282,8 +284,6 @@ namespace Singularity.Units
         {
 
             mIsMoving = true;
-            Debug.WriteLine("Starting path finding at: " + currentPosition.X + ", " + currentPosition.Y);
-            Debug.WriteLine("Target: " + mTargetPosition.X + ", " + mTargetPosition.Y);
 
             mPath = new Stack<Vector2>();
             mPath = mPathfinder.FindPath(currentPosition,

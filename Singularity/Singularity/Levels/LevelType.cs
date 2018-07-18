@@ -4,6 +4,9 @@
     {
         None,
         Tutorial,
-        Skirmish
+        Skirmish,
+        Techdemo,
+        NoWinLose,
+        Debugging
     }
 }

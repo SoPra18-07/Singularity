@@ -137,9 +137,13 @@ namespace Singularity.Screen.ScreenClasses
                     {
                         SwitchScreen(EScreen.StatisticsScreen, mGamePauseScreen, mStatisticsScreen, gametime);
                     }
-                    if (sPressed == "Main Menu") // TODO: Implement a way to get back to the Main Menu from Pause Menu.
+
+                    if (sPressed == "Main Menu")
                     {
-                        throw new NotImplementedException();
+                        for (var i = 0; i < mScreenManager.GetScreenCount() - 1; i++)
+                        {
+                            mScreenManager.RemoveScreen();
+                        }
                     }
                     break;
                 case EScreen.SaveGameScreen:
