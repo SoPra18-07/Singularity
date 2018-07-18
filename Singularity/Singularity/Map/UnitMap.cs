@@ -130,16 +130,6 @@ namespace Singularity.Map
         /// <param name="unitPos">Precalculated tile position for optimization.</param>
         internal void RemoveUnit(ICollider unit, Vector2 unitPos)
         {
-            for (var x = 0; x < 31; x++)
-            {
-                for (var y = 0; y < 31; y++)
-                {
-                    if (mUnitGrid[x, y].UnitList.Contains(unit) && unit is Quarry)
-                    {
-                        Console.Out.WriteLine(x + " " + y);
-                    }
-                }
-            }
             mUnitGrid[(int) unitPos.X, (int) unitPos.Y].UnitList.Remove(unit);
             mLookupTable.Remove(unit.Id);
 

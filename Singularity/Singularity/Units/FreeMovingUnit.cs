@@ -22,7 +22,7 @@ namespace Singularity.Units
     [DataContract]
     public abstract class FreeMovingUnit : AFlocking, ICollider, IRevealing, IMouseClickListener, IMousePositionListener
     {
-        
+
         /// <summary>
         /// The state of the unit in terms of living or dead. False when alive.
         /// </summary>
@@ -40,6 +40,7 @@ namespace Singularity.Units
         /// </summary>
         protected double mCurrentTime;
 
+        [DataMember]
         protected readonly HealthBar mHealthBar;
 
         [DataMember]
@@ -58,18 +59,18 @@ namespace Singularity.Units
         // [DataMember]
         // protected bool mIsMoving;
 
-        
-        
+
+
         /// <summary>
         /// Normalized vector to indicate direction of movement.
         /// </summary>
         [DataMember]
         protected Vector2 mMovementVector;
-        
+
         #endregion
 
         #region Director/map/camera/library/fow Variables
-        
+
 
         /// <summary>
         /// Stores a reference to the game map.
@@ -221,7 +222,7 @@ namespace Singularity.Units
                 mDirector.GetInputManager.AddMousePositionListener(this);
             }
         }
-        
+
         protected void ReloadContent(ref Director director, Camera camera)
         {
             base.ReloadContent(ref director);
@@ -256,8 +257,8 @@ namespace Singularity.Units
                 x = target.X - (RelativePosition.X + RelativeSize.X / 2);
                 y = target.Y - (RelativePosition.Y + RelativeSize.Y / 2);
             }
-
-
+            
+            
             var hypot = Math.Sqrt(x * x + y * y);
 
             // calculate degree between formed triangle
@@ -314,7 +315,7 @@ namespace Singularity.Units
                 (int)AbsoluteSize.X,
                 (int)AbsoluteSize.Y);
         }
-        
+
         #endregion
 
         #region Health, damage methods

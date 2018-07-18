@@ -269,7 +269,7 @@ namespace Singularity.Platforms
 
             // Sound Effects
             mDestroyPlatSoundId = mDirector.GetSoundManager.CreateSoundInstance("DestroyPlat", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
-            mPowerOnSoundId = mDirector.GetSoundManager.CreateSoundInstance("PowerDown",
+            mPowerOnSoundId = mDirector.GetSoundManager.CreateSoundInstance("PowerOn",
                 Center.X,
                 Center.Y,
                 .1f,
@@ -565,6 +565,7 @@ namespace Singularity.Platforms
                 else
                 {
                     // makes destruction sound
+                    mDirector.GetSoundManager.SetSoundPosition(mDestroyPlatSoundId, Center.X, Center.Y);
                     mDirector.GetSoundManager.PlaySound(mDestroyPlatSoundId);
                     DieBlank();
                 }
@@ -636,7 +637,7 @@ namespace Singularity.Platforms
                     spritebatch.Draw(mPlatformBaseTexture,
                         AbsolutePosition,
                         null,
-                        mColor * transparency,
+                        (Friendly ? mColor : mColorBase) * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
@@ -647,7 +648,7 @@ namespace Singularity.Platforms
                     spritebatch.Draw(mPlatformBaseTexture,
                         Vector2.Add(AbsolutePosition, new Vector2(0, 78)),
                         null,
-                        mColorBase * transparency,
+                        (Friendly ? mColor : mColorBase) * transparency,
                         0f,
                         Vector2.Zero,
                         1f,
@@ -1295,6 +1296,7 @@ namespace Singularity.Platforms
             {
                 mIsManuallyDeactivated = false;
                 // TODO find a power on sound
+                mDirector.GetSoundManager.SetSoundPosition(mPowerOnSoundId, Center.X, Center.Y);
                 mDirector.GetSoundManager.PlaySound(mPowerOnSoundId);
             }
             ResetColor();
@@ -1333,6 +1335,7 @@ namespace Singularity.Platforms
             if (manually)
             {
                 // TODO maybe need to regulate sound a little when put to action
+                mDirector.GetSoundManager.SetSoundPosition(mPowerDownSoundId, Center.X, Center.Y);
                 mDirector.GetSoundManager.PlaySound(mPowerDownSoundId);
 
                 mIsManuallyDeactivated = true;

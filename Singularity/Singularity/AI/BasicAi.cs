@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -167,5 +163,6 @@ namespace Singularity.AI
         {
             mBehavior.Shooting(sender, shootingAt, gametime);
         }
+
     }
 }

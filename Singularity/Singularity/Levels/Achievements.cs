@@ -3,117 +3,107 @@ using Singularity.Utils;
 
 namespace Singularity.Levels
 {
-    [DataContract]
-    internal sealed class Achievements
+    /// <summary>
+    /// Holds the data related to achievements. To check whether an achievement has been earned, call the method
+    /// associated with the achievement.
+    /// To add progress towards an achievement, access the property related to the achievement.
+    /// </summary>
+    internal static class Achievements
     {
 
         //The statistics of the Achievements.
-        [DataMember]
-        Pair<int, bool> TrashBurned { get; set; }
+        internal static bool FirstBuilding { get; set; }
+        
+        internal static bool TutorialFinished { get; set; }
+        
+        internal static int PlatformsBuilt { get; set; }
+        
+        internal static int TrashBurned { get; set; }
+        
+        internal static bool CampaignComplete { get; set; }
+        
+        internal static int UnitsBuilt { get; set; }
+        
+        internal static int MilitaryUnitsBuilt { get; set; }
 
-        [DataMember]
-        bool FirstBuilding { get; set; }
+        internal static bool AllCompleted { get; set; }
 
-        [DataMember]
-        bool TutorialFinished { get; set; }
-
-        [DataMember]
-        Pair<int, bool> PlatformsBuilt { get; set; }
-
-        [DataMember]
-        bool ReachedLvl5 { get; set; }
-
-        [DataMember]
-        Pair<int, bool> UnitsBuilt { get; set; }
-
-        public Achievements()
+        /// <summary>
+        /// Get the achievement "The system goes online August 4th 1997"
+        /// </summary>
+        /// <returns></returns>
+        internal static bool SystemOnline()
         {
-            FirstBuilding = false;
-            TutorialFinished = false;
-            ReachedLvl5 = false;
-            TrashBurned = new Pair<int, bool>(0, false);
-            PlatformsBuilt = new Pair<int, bool>(0, false);
-            UnitsBuilt = new Pair<int, bool>(0, false);
-        }
-
-        //The methods of the achievements. Call them every time you make progress in it.
-        //They return true only in the moment their corresponding requirements are met, because only then an infobox should be triggered
-        public bool WallE()
-        {
-            if (TrashBurned.GetFirst() + 1 == 10000)
-            {
-                TrashBurned = new Pair<int, bool>(TrashBurned.GetFirst() + 1, true);
-            }
-            else
-            {
-                TrashBurned = new Pair<int, bool>(TrashBurned.GetFirst() + 1, TrashBurned.GetSecond());
-            }
-            return TrashBurned.GetSecond();
-        }
-
-        public bool SystemGoesOnline()
-        {
-            if (FirstBuilding)
-            {
-                return !FirstBuilding;
-            }
-            FirstBuilding = true;
             return FirstBuilding;
         }
 
-        public bool TutorialFinish()
+        /// <summary>
+        /// Gets the achievement "It becomes self aware at 2:14 AM"
+        /// </summary>
+        /// <returns></returns>
+        internal static bool SelfAware()
         {
-            if (TutorialFinished)
-            {
-                return !TutorialFinished;
-            }
-            TutorialFinished = true;
             return TutorialFinished;
         }
 
-        public bool Skynet()
+        /// <summary>
+        /// Gets the achievement "Skynet"
+        /// </summary>
+        /// <returns></returns>
+        internal static bool Skynet()
         {
-            // Initialize container, if it doesn't exist, yet.
-            if (PlatformsBuilt == null)
-            {
-                PlatformsBuilt = new Pair<int, bool>(0, false);
-            }
-            else if (PlatformsBuilt.GetFirst() + 1 == 1000)
-            {
-                PlatformsBuilt = new Pair<int, bool>(PlatformsBuilt.GetFirst() + 1, true);
-            }
-            else
-            {
-                PlatformsBuilt = new Pair<int, bool>(PlatformsBuilt.GetFirst() + 1, PlatformsBuilt.GetSecond());
-            }
-            return PlatformsBuilt.GetSecond();
+            return PlatformsBuilt >= 30;
         }
 
-        public bool Hal9000()
+        /// <summary>
+        /// Gets the achievement "Wall E"
+        /// </summary>
+        /// <returns></returns>
+        internal static bool WallE()
         {
-            if (ReachedLvl5)
-            {
-                return !ReachedLvl5;
-            }
-            ReachedLvl5 = true;
-            return ReachedLvl5;
+            return TrashBurned >= 10000;
         }
 
-        public bool Replicant()
+        /// <summary>
+        /// Gets the achievement "HAL9000"
+        /// </summary>
+        /// <returns></returns>
+        internal static bool Hal9000()
         {
-            if (UnitsBuilt == null)
+            return CampaignComplete;
+        }
+
+        /// <summary>
+        /// Gets the achievement "Replicant"
+        /// </summary>
+        /// <returns></returns>
+        internal static bool Replicant()
+        {
+            return UnitsBuilt >= 50;
+        }
+
+        /// <summary>
+        /// Gets the achievement "Please rate our game perfect 5/7"
+        /// </summary>
+        /// <returns></returns>
+        internal static bool RateOurGame()
+        {
+            return MilitaryUnitsBuilt >= 10000;
+        }
+
+        /// <summary>
+        /// Gets the achievement "Overachiever"
+        /// </summary>
+        /// <returns></returns>
+        internal static bool Overachiever()
+        {
+            if (!AllCompleted)
             {
-                UnitsBuilt = new Pair<int, bool>(0, false);
+                AllCompleted = SystemOnline() && SelfAware() && Skynet() && WallE() && Hal9000() && Replicant() &&
+                               RateOurGame();
             }
-            else if (UnitsBuilt.GetFirst() + 1 == 1000)
-            {
-                UnitsBuilt = new Pair<int, bool>(UnitsBuilt.GetFirst() + 1, true);
-            }
-            else
-            {
-                UnitsBuilt = new Pair<int, bool>(UnitsBuilt.GetFirst() + 1, UnitsBuilt.GetSecond());
-            }
-            return UnitsBuilt.GetSecond();
+
+            return AllCompleted;
         }
     }
 }

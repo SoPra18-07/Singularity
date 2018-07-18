@@ -54,11 +54,12 @@ namespace Singularity.Levels
         protected BasicLevel(GraphicsDeviceManager graphics,
             ref Director director,
             ContentManager content,
-            IScreenManager screenmanager)
+            IScreenManager screenmanager,
+            LevelType level)
 
         {
             mDirector = director;
-            mDirector.GetStoryManager.SetLevelType(LevelType.Skirmish, this);
+            mDirector.GetStoryManager.SetLevelType(level, this);
             mDirector.GetStoryManager.LoadAchievements();
             mGraphics = graphics;
             mScreenManager = screenmanager;

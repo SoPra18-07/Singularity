@@ -1,8 +1,10 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Manager;
+using Singularity.Property;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
+using Singularity.Serialization;
 
 namespace Singularity
 {
@@ -11,19 +13,21 @@ namespace Singularity
     /// </summary>
     internal sealed class Game1 : Game
     {
+        /// <summary>
+        /// An instance of the GlobalVariables class to allow for serialization
+        /// </summary>
+        private GlobalVariablesInstance mInstance;
+
         // the time in seconds it took to complete drawing the last frame
         public static float mDeltaTime;
+        private float mLastFrameTime;
 
         internal readonly GraphicsDeviceManager mGraphics;
         internal readonly GraphicsAdapter mGraphicsAdapter;
 
-
         // Screens
         private LoadGameManagerScreen mLoadGameManager;
         private MainMenuManagerScreen mMainMenuManager;
-
-        private float mLastFrameTime;
-
 
         // Sprites!
         private SpriteBatch mSpriteBatch;
@@ -42,9 +46,11 @@ namespace Singularity
             mGraphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
+            LoadConfig();
+
             mGraphicsAdapter = GraphicsAdapter.DefaultAdapter;
 
-            mDirector = new Director(Content, mGraphics);
+            mDirector = new Director(Content, mGraphics, mInstance);
 
             mScreenManager = new StackScreenManager(Content, mDirector.GetInputManager);
 
@@ -63,9 +69,9 @@ namespace Singularity
             IsMouseVisible = true;
             mGraphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
 
-            mGraphics.PreferredBackBufferWidth = 960;
-            mGraphics.PreferredBackBufferHeight = 740;
-            mGraphics.IsFullScreen = false;
+            mGraphics.PreferredBackBufferWidth = GlobalVariables.ResolutionList[GlobalVariables.ChosenResolution].Item1;
+            mGraphics.PreferredBackBufferHeight = GlobalVariables.ResolutionList[GlobalVariables.ChosenResolution].Item2;
+            mGraphics.IsFullScreen = GlobalVariables.IsFullScreen;
             
             mGraphics.ApplyChanges();
 
@@ -85,7 +91,7 @@ namespace Singularity
             mSpriteBatch = new SpriteBatch(GraphicsDevice);
 
             mLoadGameManager = new LoadGameManagerScreen(mGraphics, ref mDirector, Content, viewportResolution, mScreenManager, this);
-            mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, true, this);
+            mMainMenuManager = new MainMenuManagerScreen(viewportResolution, mScreenManager, ref mDirector, true, this);
 
             //ATTENTION: THE INGAME SCREENS ARE HANDLED IN THE LEVELS NOW!
             mScreenManager.AddScreen(mLoadGameManager);
@@ -142,6 +148,22 @@ namespace Singularity
             base.Draw(gameTime);
 
             mLastFrameTime = gameTime.TotalGameTime.Milliseconds;
+        }
+
+        private void LoadConfig()
+        {
+            var configuration = XSerializer.Load(@"Config.xml", true);
+
+            if (configuration.IsPresent())
+            {
+                mInstance = (GlobalVariablesInstance)configuration.Get();
+            }
+            else
+            {
+                mInstance = new GlobalVariablesInstance();
+            }
+
+            mInstance.LoadToStatic();
         }
     }
 }
