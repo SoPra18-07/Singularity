@@ -117,6 +117,7 @@ namespace Singularity.Screen.ScreenClasses
                 Console.WriteLine("Save Screen Updated");
                 sSaved = false;
             }
+
             switch (mScreenState)
             {
                 case EScreen.GameScreen:
@@ -129,24 +130,34 @@ namespace Singularity.Screen.ScreenClasses
                         sPressed = "None";
                         sPausedAgain = true;
                     }
+
                     if (sPressed == "Save Game")
                     {
                         SwitchScreen(EScreen.SaveGameScreen, mGamePauseScreen, mSaveGameScreen, gametime);
                     }
+
                     if (sPressed == "Statistics")
                     {
                         SwitchScreen(EScreen.StatisticsScreen, mGamePauseScreen, mStatisticsScreen, gametime);
                     }
-                    if (sPressed == "Main Menu") // TODO: Implement a way to get back to the Main Menu from Pause Menu.
+
+                    if (sPressed == "Main Menu")
                     {
-                        throw new NotImplementedException();
+                        mDirector.GetStoryManager.Level.GameScreen.Unload();
+
+                        for (var i = 0; i < mScreenManager.GetScreenCount() - 1; i++)
+                        {
+                            mScreenManager.RemoveScreen();
+                        }
                     }
+
                     break;
                 case EScreen.SaveGameScreen:
                     if (sPressed == "Back")
                     {
                         SwitchScreen(EScreen.GamePauseScreen, mSaveGameScreen, mGamePauseScreen, gametime);
                     }
+
                     if (sPressed == "Save Game")
                     {
                         mScreenManager.RemoveScreen();
@@ -155,6 +166,7 @@ namespace Singularity.Screen.ScreenClasses
                         // SwitchScreen(EScreen.SaveGameScreen, mGamePauseScreen, mSaveGameScreen, gametime);
                         sPressed = "None";
                     }
+
                     if (sPressed == "Save1")
                     {
                         mGameSaveStrings = XSerializer.GetSaveNames();
@@ -164,12 +176,15 @@ namespace Singularity.Screen.ScreenClasses
                             path = Environment.ExpandEnvironmentVariables(path);
                             path = path + @"\" + mGameSaveStrings[0];
                         }
+
                         if (File.Exists(path))
                         {
                             File.Delete(path);
                         }
+
                         SaveGame();
                     }
+
                     if (sPressed == "Save2")
                     {
                         mGameSaveStrings = XSerializer.GetSaveNames();
@@ -179,12 +194,15 @@ namespace Singularity.Screen.ScreenClasses
                             path = Environment.ExpandEnvironmentVariables(path);
                             path = path + @"\" + mGameSaveStrings[1];
                         }
+
                         if (File.Exists(path))
                         {
                             File.Delete(path);
                         }
+
                         SaveGame();
                     }
+
                     if (sPressed == "Save3")
                     {
                         mGameSaveStrings = XSerializer.GetSaveNames();
@@ -194,12 +212,15 @@ namespace Singularity.Screen.ScreenClasses
                             path = Environment.ExpandEnvironmentVariables(path);
                             path = path + @"\" + mGameSaveStrings[2];
                         }
+
                         if (File.Exists(path))
                         {
                             File.Delete(path);
                         }
+
                         SaveGame();
                     }
+
                     if (sPressed == "Save4")
                     {
                         mGameSaveStrings = XSerializer.GetSaveNames();
@@ -209,12 +230,15 @@ namespace Singularity.Screen.ScreenClasses
                             path = Environment.ExpandEnvironmentVariables(path);
                             path = path + @"\" + mGameSaveStrings[3];
                         }
+
                         if (File.Exists(path))
                         {
                             File.Delete(path);
                         }
+
                         SaveGame();
                     }
+
                     if (sPressed == "Save5")
                     {
                         mGameSaveStrings = XSerializer.GetSaveNames();
@@ -224,10 +248,12 @@ namespace Singularity.Screen.ScreenClasses
                             path = Environment.ExpandEnvironmentVariables(path);
                             path = path + @"\" + mGameSaveStrings[4];
                         }
+
                         if (File.Exists(path))
                         {
                             File.Delete(path);
                         }
+
                         SaveGame();
                     }
 
@@ -237,6 +263,7 @@ namespace Singularity.Screen.ScreenClasses
                     {
                         SwitchScreen(EScreen.GamePauseScreen, mStatisticsScreen, mGamePauseScreen, gametime);
                     }
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -247,7 +274,9 @@ namespace Singularity.Screen.ScreenClasses
         {
             mDirector.GetStoryManager.SaveAchievements();
             var saveName = DateTime.Now;
-            XSerializer.Save(mDirector.GetStoryManager.Level, saveName.ToString(CultureInfo.CurrentCulture).Replace(':', '_') + ".xml", false);
+            XSerializer.Save(mDirector.GetStoryManager.Level,
+                saveName.ToString(CultureInfo.CurrentCulture).Replace(':', '_') + ".xml",
+                false);
             Console.WriteLine("Game Saved");
             sSaved = true;
         }
@@ -285,6 +314,7 @@ namespace Singularity.Screen.ScreenClasses
                         targetScreen.TransitionTo(mScreenState, targetEScreen, gameTime);
                         mTransitionState = 2;
                     }
+
                     break;
 
                 case 2:
@@ -442,6 +472,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             sPressed = "Back";
         }
+
         #endregion
     }
 }

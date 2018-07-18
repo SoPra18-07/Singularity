@@ -47,12 +47,16 @@ namespace Singularity.Manager
 
         #region Flocking and Selection
 
+        [DataMember]
         private List<IFlocking> mSelected = new List<IFlocking>();
 
+        [DataMember]
         private bool mIsSelected = true; // for initializing the FlockingGroup
 
+        [DataMember]
         private FlockingGroup mSelectedGroup;
 
+        [DataMember]
         private List<FlockingGroup> mGroups = new List<FlockingGroup>();
 
         #endregion
@@ -95,7 +99,6 @@ namespace Singularity.Manager
         /// <summary>
         /// The total number of military units on the map.
         /// </summary>
-        [DataMember]
         internal int TotalUnitCount => mFriendlyMilitary.Count + mHostileMilitary.Count;
 
         #endregion
@@ -127,7 +130,6 @@ namespace Singularity.Manager
             mMap = map;
             mUnitMap = new UnitMap((int) map.GetMeasurements().X, (int) map.GetMeasurements().Y);
             mSelectedGroup = new FlockingGroup(ref mDirector, ref mMap);
-            mGroups.ForEach(g => g.ReloadContent(ref mDirector));
             foreach (var funit in mFriendlyMilitary)
             {
                 mUnitMap.AddUnit(funit);
