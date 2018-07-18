@@ -220,9 +220,9 @@ namespace Singularity.Screen.ScreenClasses
                 return;
             }
 
-            GlobalVariables.mFowEnabled = !GlobalVariables.mFowEnabled;
+            GlobalVariables.FowEnabled = !GlobalVariables.FowEnabled;
 
-            mFowButton.ChangeText(GlobalVariables.mFowEnabled ? DisableText : EnableText);
+            mFowButton.ChangeText(GlobalVariables.FowEnabled ? DisableText : EnableText);
 
             mClicked = true;
         }
