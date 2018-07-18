@@ -8,7 +8,6 @@ using Singularity.Graph.Paths;
 using Singularity.Input;
 using Singularity.Property;
 using Singularity.Screen;
-using Singularity.Serialization;
 using Singularity.Sound;
 using Singularity.Utils;
 
@@ -17,7 +16,6 @@ namespace Singularity.Manager
     [DataContract]
     public sealed class Director
     {
-        internal GlobalVariablesInstance GetGlobalVariablesInstance { get; set; }
         [DataMember]
         public Clock GetClock { get; private set; }
         [DataMember]
@@ -49,16 +47,13 @@ namespace Singularity.Manager
 
         public EventLog GetEventLog { get; }
 
-        public IScreenManager GetScreenManager { get; private set; }
-
-        public Director(ContentManager content, GraphicsDeviceManager graphics, GlobalVariablesInstance globalVariablesInstance)
+        public Director(ContentManager content, GraphicsDeviceManager graphics)
         {
-            GetGlobalVariablesInstance = globalVariablesInstance;
             GetClock = new Clock();
             GetIdGenerator = new IdGenerator();
             GetSoundManager = new SoundManager();
             GetInputManager = new InputManager();
-            GetStoryManager = new StoryManager(this);
+            GetStoryManager = new StoryManager();
             GetPathManager = new PathManager();
             GetUserInterfaceController = new UserInterfaceController(this);
             GetDistributionDirector = new DistributionDirector(this);
@@ -70,14 +65,11 @@ namespace Singularity.Manager
 
             GetSoundManager.LoadContent(content);
             GetSoundManager.PlaySoundTrack();
-
-            GetStoryManager.LoadAchievements();
+            // Dd}{_:
         }
 
         internal void ReloadContent(Director dir, Vector2 mapmeasurements, ContentManager content)
         {
-            GetGlobalVariablesInstance = new GlobalVariablesInstance();
-            GetGlobalVariablesInstance.UpdateFromStatic();
             GetClock = dir.GetClock;
             GetIdGenerator = dir.GetIdGenerator;
             GetStoryManager = dir.GetStoryManager;
@@ -88,13 +80,6 @@ namespace Singularity.Manager
             GetDistributionDirector.ReloadContent(GetUserInterfaceController);
             GetStoryManager.LoadAchievements();
             GetMilitaryManager.ReloadContent(mapmeasurements, this);
-            GetStoryManager.ReloadContent(this);
-        }
-
-        internal void SaveConfig()
-        {
-            GetGlobalVariablesInstance.UpdateFromStatic();
-            XSerializer.Save(GetGlobalVariablesInstance, @"Config.xml", true);
         }
 
         public void Update(GameTime gametime, bool isActive)
@@ -109,7 +94,7 @@ namespace Singularity.Manager
             GetClock.Update(gametime);
             GetSoundManager.SetMediaPlayerVolume();
 
-            if (!GlobalVariables.mGameIsPaused)
+            if (!GlobalVariables.GameIsPaused)
             {
                 GetClock.Update(gametime);
             }
