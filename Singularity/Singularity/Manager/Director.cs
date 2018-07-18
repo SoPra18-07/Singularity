@@ -6,6 +6,7 @@ using Singularity.AI;
 using Singularity.AI.Properties;
 using Singularity.Graph.Paths;
 using Singularity.Input;
+using Singularity.Property;
 using Singularity.Screen;
 using Singularity.Sound;
 using Singularity.Utils;
@@ -92,6 +93,11 @@ namespace Singularity.Manager
             GetMilitaryManager.Update(gametime);
             GetClock.Update(gametime);
             GetSoundManager.SetMediaPlayerVolume();
+
+            if (!GlobalVariables.GameIsPaused)
+            {
+                GetClock.Update(gametime);
+            }
         }
     }
 }
