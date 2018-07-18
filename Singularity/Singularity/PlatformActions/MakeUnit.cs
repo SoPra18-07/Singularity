@@ -132,7 +132,6 @@ namespace Singularity.PlatformActions
 
         public override void Update(GameTime t)
         {
-            // Debug.WriteLine(mBuildingCost.Values.Sum() + ", " + mMissingResources.Values.Sum() + ", " + mToRequest.Values.Sum());
             if (State != PlatformActionState.Active)
             {
                 return;
