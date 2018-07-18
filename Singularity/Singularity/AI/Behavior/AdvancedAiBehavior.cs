@@ -878,6 +878,12 @@ namespace Singularity.AI.Behavior
 
         private void Retreat(EnemyUnit unit, EEnemyType type, GameTime gametime)
         {
+            if (!mUnitToFlockingGroup.ContainsKey(unit))
+            {
+                mUnitToFlockingGroup[unit] = mDirector.GetMilitaryManager.GetNewFlock();
+                mUnitToFlockingGroup[unit].AssignUnit(unit);
+            }
+
             // make the scout that attacked retreat to a random structure of the ai
             mUnitToFlockingGroup[unit].FindPath(GetRandomPositionOnRectangle(mAi.GetBoundsOfStructure(mRandom.Next(mAi.GetStructureCount()))));
 
