@@ -140,8 +140,7 @@ namespace Singularity.Units
             // var seper = Vector2.Normalize(new Vector2(
                 // mGroup.Get().GetUnits().Sum(u => u.AbsolutePosition.X - AbsolutePosition.X),
                 // mGroup.Get().GetUnits().Sum(u => u.AbsolutePosition.Y - AbsolutePosition.Y))) * -1;
-            var close = mGroup.Get()
-                .GetUnits()
+            var close = mDirector.GetMilitaryManager.GetAdjecentUnits(AbsolutePosition)
                 .FindAll(u => Geometry.Length(u.AbsolutePosition - AbsolutePosition) < 90 && !u.Equals(this))
                 .Select(f => f.AbsolutePosition).ToList();
                 // .Aggregate((a, b) => a + b);
