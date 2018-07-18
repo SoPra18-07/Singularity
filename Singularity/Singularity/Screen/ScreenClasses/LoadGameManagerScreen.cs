@@ -110,13 +110,13 @@ namespace Singularity.Screen.ScreenClasses
                 case "None":
                     return;
                 case "Skirmish":
-                    mLevel = new Skirmish(mGraphics, ref mDirector, mContent, mScreenManager);
+                    mLevel = new Skirmish(mGraphics, ref mDirector, mContent, mScreenManager, LevelType.Skirmish);
                     mGameScreen = mLevel.GameScreen;
                     mUi = mLevel.Ui;
                     mNewGame = true;
                     break;
                 case "TechDemo":
-                    mLevel = new TechDemo(mGraphics, ref mDirector, mContent, mScreenManager);
+                    mLevel = new TechDemo(mGraphics, ref mDirector, mContent, mScreenManager, LevelType.Techdemo);
                     mGameScreen = mLevel.GameScreen;
                     mUi = mLevel.Ui;
                     mNewGame = true;
@@ -135,6 +135,9 @@ namespace Singularity.Screen.ScreenClasses
                     break;
                 case "Save5":
                     mName = XSerializer.GetSaveNames()[4];
+                    break;
+                case "ReturnToMainMenu":
+                    mScreenManager.AddScreen(new MainMenuManagerScreen(sViewportResolution, mScreenManager, true, mGame));
                     break;
                 default:
                     throw new InvalidGenericArgumentException(
@@ -227,6 +230,15 @@ namespace Singularity.Screen.ScreenClasses
             mLoadingScreen = new LoadingScreen(screenResolution);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArg"></param>
+        public static void OnReturnToMainMenuClicked(Object sender, EventArgs eventArg)
+        {
+            sPressed = "ReturnToMainMenu";
+        }
 
         #region MainMenuScreen Button Handlers
 
