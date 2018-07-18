@@ -254,6 +254,7 @@ namespace Singularity.Units
             mDirector = director;
             mCamera = camera;
             mMap = map;
+
             if (Friendly)
             {
                 mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);

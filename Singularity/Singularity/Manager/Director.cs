@@ -49,6 +49,8 @@ namespace Singularity.Manager
 
         public EventLog GetEventLog { get; }
 
+        public IScreenManager GetScreenManager { get; private set; }
+
         public Director(ContentManager content, GraphicsDeviceManager graphics, GlobalVariablesInstance globalVariablesInstance)
         {
             GetGlobalVariablesInstance = globalVariablesInstance;
@@ -56,7 +58,7 @@ namespace Singularity.Manager
             GetIdGenerator = new IdGenerator();
             GetSoundManager = new SoundManager();
             GetInputManager = new InputManager();
-            GetStoryManager = new StoryManager();
+            GetStoryManager = new StoryManager(this);
             GetPathManager = new PathManager();
             GetUserInterfaceController = new UserInterfaceController(this);
             GetDistributionDirector = new DistributionDirector(this);
@@ -86,6 +88,7 @@ namespace Singularity.Manager
             GetDistributionDirector.ReloadContent(GetUserInterfaceController);
             GetStoryManager.LoadAchievements();
             GetMilitaryManager.ReloadContent(mapmeasurements, this);
+            GetStoryManager.ReloadContent(this);
         }
 
         internal void SaveConfig()

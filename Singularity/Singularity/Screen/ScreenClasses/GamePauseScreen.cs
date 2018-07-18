@@ -86,9 +86,9 @@ namespace Singularity.Screen.ScreenClasses
             mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter);
 
             mResumeButton = new Button(ResumeString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding), Color.White);
-            mSaveGameButton = new Button(SaveGameString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 85), Color.White);
-            mStatisticsButton = new Button(StatisticsString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 170), Color.White);
-            mMainMenuButton = new Button(MainMenuString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 255), Color.White);
+            mSaveGameButton = new Button(SaveGameString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 50), Color.White);
+            mStatisticsButton = new Button(StatisticsString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 100), Color.White);
+            mMainMenuButton = new Button(MainMenuString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 150), Color.White);
             mButtonList.Add(mResumeButton);
             mButtonList.Add(mSaveGameButton);
             mButtonList.Add(mStatisticsButton);
@@ -100,6 +100,7 @@ namespace Singularity.Screen.ScreenClasses
             mSaveGameButton.ButtonReleased += GamePauseManagerScreen.OnSaveGameButtonReleased;
             mStatisticsButton.ButtonReleased += GamePauseManagerScreen.OnStatisticsButtonReleased;
             mMainMenuButton.ButtonReleased += GamePauseManagerScreen.OnMainMenuButtonReleased;
+            mMainMenuButton.ButtonReleased += LoadGameManagerScreen.OnReturnToMainMenuClicked;
 
             mResumeButton.ButtonHovering += OnResumeHovering;
             mSaveGameButton.ButtonHovering += OnSaveGameHovering;
@@ -282,17 +283,17 @@ namespace Singularity.Screen.ScreenClasses
 
         private void OnSaveGameHovering(Object sender, EventArgs eventArgs)
         {
-            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 85);
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 50);
         }
 
         private void OnStatisticsHovering(Object sender, EventArgs eventArgs)
         {
-            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 170);
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 100);
         }
 
         private void OnMainMenuHovering(Object sender, EventArgs eventArgs)
         {
-            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 255);
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 150);
         }
 
         #endregion

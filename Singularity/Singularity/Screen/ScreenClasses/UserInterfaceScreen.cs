@@ -29,6 +29,10 @@ namespace Singularity.Screen.ScreenClasses
         // most important Bool - sets the UI as initialized
         private bool mInitialized;
 
+        private Button mPauseButtonBeforeUi;
+
+        private int mPauseButtonCounter;
+
         #region members used by several windows
 
         // list of windows to show on the UI
@@ -371,7 +375,14 @@ namespace Singularity.Screen.ScreenClasses
         /// <inheritdoc />
         public void Update(GameTime gametime)
         {
-            if (!mActiveUserInterface) { return; }
+            if (!mActiveUserInterface)
+            {
+                if (Loaded)
+                {
+                    mPauseButtonBeforeUi?.Update(gametime);
+                }
+                return;
+            }
 
             if (!mInitialized) { Initialize(); }
 
@@ -456,6 +467,15 @@ namespace Singularity.Screen.ScreenClasses
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, mRasterizerState);
 
+            if (!mActiveUserInterface)
+            {
+                mPauseButtonBeforeUi?.Draw(spriteBatch);
+
+                spriteBatch.End();
+
+                return;
+            }
+
             // draw all windows
             foreach (var window in mWindowList)
             {
@@ -495,6 +515,11 @@ namespace Singularity.Screen.ScreenClasses
 
             mMinimap = new MiniMap(ref mDirector, content.Load<Texture2D>("minimap"));
 
+            // the button which is displayed before the UI appears to enable the player to exit the game before getting the UI
+            mPauseButtonBeforeUi = new Button(" ll ", mLibSans14, new Vector2(
+                mDirector.GetGraphicsDeviceManager.PreferredBackBufferWidth - mLibSans14.MeasureString(" ll ").X, 0), true) { Opacity = 1f };
+            mPauseButtonBeforeUi.ButtonReleased += PauseMenuBeforeUi;
+
             //DEACTIVATE EVERYTHING TO ACTIVATE IT LATER
 
             if (GlobalVariables.DebugState)
@@ -505,6 +530,10 @@ namespace Singularity.Screen.ScreenClasses
             {
                 Deactivate();
             }
+
+            Loaded = true;
+
+            Initialize();
         }
 
         /// <summary>
@@ -880,7 +909,6 @@ namespace Singularity.Screen.ScreenClasses
             #region info when hovering over the building menu buttons
 
             mInfoBoxList = new List<InfoBoxWindow>();
-
             var infoBoxBorderColor = Color.White;
             var infoBoxCenterColor = Color.Black;
 
@@ -1805,9 +1833,26 @@ namespace Singularity.Screen.ScreenClasses
         public void SplitGraph(int splittedId)
         {
             if (!mActiveUserInterface) { return; }
-
+            foreach (var id in mStructureMap.GetDictionaryGraphIdToGraph().Keys)
+            {
+                Console.Out.WriteLine("graphID: " + id);
+            }
             if (mCivilUnitsGraphId == splittedId)
             {
+                if (!mStructureMap.GetDictionaryGraphIdToGraph().ContainsKey(splittedId))
+                {
+                    Console.Out.WriteLine("min");
+                    mCivilUnitsGraphId = mStructureMap.GetDictionaryGraphIdToGraph().Keys.Min();
+                }
+                else
+                {
+                    Console.Out.WriteLine("id to graph: " + mStructureMap.GetDictionaryGraphIdToGraph()[splittedId]);
+                    if (mStructureMap.GetDictionaryGraphIdToGraph()[splittedId] == null)
+                    {
+                        Console.Out.WriteLine("min");
+                        mCivilUnitsGraphId = mStructureMap.GetDictionaryGraphIdToGraph().Keys.Min();
+                    }
+                }
                 mCivilUnitsSliderHandler.Refresh();
                 mCivilUnitsSliderHandler.ForceSliderPages();
             }
@@ -1833,7 +1878,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <summary>
         /// Used to Deactivate the UI to activate it later (used by settler)
         /// </summary>
-        private void Deactivate()
+        public void Deactivate()
         {
             mActiveUserInterface = false;
         }
@@ -2496,6 +2541,11 @@ namespace Singularity.Screen.ScreenClasses
         #endregion
 
         #endregion
+
+        private void PauseMenuBeforeUi(object sender, EventArgs eventArgs)
+        {
+            mScreenManager.AddScreen(new GamePauseManagerScreen(new Vector2(mDirector.GetGraphicsDeviceManager.PreferredBackBufferWidth, mDirector.GetGraphicsDeviceManager.PreferredBackBufferHeight), mScreenManager, mDirector));
+        }
 
         #endregion
 

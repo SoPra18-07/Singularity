@@ -56,11 +56,13 @@ namespace Singularity.Screen.ScreenClasses
         /// Used to construct a new instance of the main menu screen
         /// </summary>
         /// <param name="screenResolution">Screen resolution of the game</param>
-        public MainMenuScreen(Vector2 screenResolution) 
+        public MainMenuScreen(Vector2 screenResolution, bool fromSplash) 
             : base(screenResolution)
         {
             mMenuBoxPosition = new Vector2(screenResolution.X / 2 - 204, screenResolution.Y / 4);
             mMenuBoxSize = new Vector2(408, 420);
+
+            mWindowOpacity = fromSplash ? 0 : 1;
 
             mButtonLeftPadding = mMenuBoxPosition.X + 60;
             mButtonTopPadding = mMenuBoxPosition.Y + 90;
