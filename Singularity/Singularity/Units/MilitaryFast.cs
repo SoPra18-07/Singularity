@@ -12,11 +12,10 @@ namespace Singularity.Units
         public MilitaryFast(Vector2 position,
             Camera camera,
             ref Director director,
-            ref Map.Map map,
             bool friendly = true)
-            : base(position, camera, ref director, ref map, friendly)
+            : base(position, camera, ref director, friendly)
         {
-            mSpeed = MilitaryUnitStats.FastSpeed;
+            Speed = MilitaryUnitStats.FastSpeed;
             Health = MilitaryUnitStats.FastHealth;
             Range = MilitaryUnitStats.FastRange;
 

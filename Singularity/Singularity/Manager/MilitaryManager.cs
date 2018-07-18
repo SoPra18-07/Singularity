@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Map;
@@ -44,6 +45,18 @@ namespace Singularity.Manager
 
         #endregion
 
+        #region Flocking and Selection
+
+        private List<IFlocking> mSelected = new List<IFlocking>();
+
+        private bool mIsSelected = true; // for initializing the FlockingGroup
+
+        private FlockingGroup mSelectedGroup;
+
+        private List<FlockingGroup> mGroups = new List<FlockingGroup>();
+
+        #endregion
+
         #region Hostile unit lists
 
         /// <summary>
@@ -82,6 +95,7 @@ namespace Singularity.Manager
         /// <summary>
         /// The total number of military units on the map.
         /// </summary>
+        [DataMember]
         internal int TotalUnitCount => mFriendlyMilitary.Count + mHostileMilitary.Count;
 
         #endregion
@@ -99,6 +113,8 @@ namespace Singularity.Manager
         {
             mUnitMap = new UnitMap((int)map.GetMeasurements().X, (int)map.GetMeasurements().Y);
             mMap = map;
+            mSelectedGroup = new FlockingGroup(ref mDirector, ref mMap);
+            mGroups.Add(mSelectedGroup);
         }
 
         public void ReloadContent(Vector2 mapmeasurements, Director director)
@@ -110,6 +126,8 @@ namespace Singularity.Manager
         {
             mMap = map;
             mUnitMap = new UnitMap((int) map.GetMeasurements().X, (int) map.GetMeasurements().Y);
+            mSelectedGroup = new FlockingGroup(ref mDirector, ref mMap);
+            mGroups.ForEach(g => g.ReloadContent(ref mDirector));
             foreach (var funit in mFriendlyMilitary)
             {
                 mUnitMap.AddUnit(funit);
@@ -242,6 +260,8 @@ namespace Singularity.Manager
             {
                 mHostileMilitary.Remove(hostileMilitary);
             }
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(unit);
+            mUnitMap.RemoveUnit(unit);
 
             mUnitMap.RemoveUnit(unit);
         }
@@ -316,7 +336,6 @@ namespace Singularity.Manager
                 {
                     unit.SetShootingTarget(null);
                 }
-                //Debug.WriteLineIf(closestAdjacent != null, closestAdjacent);
             }
 
             #endregion
@@ -528,7 +547,59 @@ namespace Singularity.Manager
                 mUnitMap.RemoveUnit(platform);
                 mMap.GetCollisionMap().RemoveCollider(platform);
             }*/
+
             #endregion
+
+            #region Flocking adding
+
+            if (mSelected.Count > 0)
+            {
+                mIsSelected = true;
+                mSelectedGroup.Reset();
+                mSelected.ForEach(u => mSelectedGroup.AssignUnit(u));
+                mGroups.Add(mSelectedGroup);
+            } else if (mIsSelected)
+            {
+                mIsSelected = false;
+                mSelectedGroup = new FlockingGroup(ref mDirector, ref mMap);
+            }
+            mSelected = new List<IFlocking>();
+
+            mGroups.RemoveAll(g => g.Die());
+
+            mGroups.ForEach(g => g.Update(gametime));
+
+            #endregion
+        }
+
+        public List<ICollider> GetAdjecentUnits(Vector2 position)
+        {
+            return mUnitMap.GetAdjacentUnits(position);
+        }
+
+        public void AddSelected(IFlocking unit)
+        {
+            mSelected.Add(unit);
+        }
+
+        public FlockingGroup GetNewFlock()
+        {
+            var group = new FlockingGroup(ref mDirector, ref mMap);
+            mGroups.Add(group);
+            return group;
+        }
+
+        public bool Kill(FlockingGroup group)
+        {
+            return mGroups.Remove(group);
+        }
+
+        public void EnsureIncluded(FlockingGroup group)
+        {
+            if (!mGroups.Contains(group))
+            {
+                mGroups.Add(group);
+            }
         }
     }
 }

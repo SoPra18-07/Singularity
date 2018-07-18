@@ -9,9 +9,9 @@ namespace Singularity.Units
     [DataContract]
     internal sealed class Target : EnemyUnit
     {
-        public Target(Vector2 position, Camera camera, ref Director director, ref Map.Map map) : base(position, camera, ref director, ref map)
+        public Target(Vector2 position, Camera camera, ref Director director, ref Map.Map map) : base(position, camera, ref director)
         {
-            mSpeed = 0;
+            Speed = 0;
             Health = 100;
         }
 
