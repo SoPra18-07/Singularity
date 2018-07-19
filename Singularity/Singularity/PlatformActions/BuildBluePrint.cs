@@ -37,7 +37,6 @@ namespace Singularity.PlatformActions
         protected override void CreateUnit()
         {
             mBuilding.Built();
-            Debug.WriteLine("Platform built!");
             Die();
         }
 

@@ -143,26 +143,14 @@ namespace Singularity.Map
 
         public void RemoveCollider(ICollider toRemove)
         {
-            if (toRemove.ColliderGrid == null)
-            {
-                return;
-            }
-
-            mCounter++;
-
+            //Check if the location of an already existing collider needs to be updated.
+            
             var oldBounds = mLookUpTable[toRemove.Id];
 
-            for (var i = 0; i < toRemove.ColliderGrid.GetLength(1); i++)
+            for (var x = oldBounds.X / MapConstants.GridWidth; x <= (oldBounds.X + oldBounds.Width) / MapConstants.GridWidth; x++)
             {
-                for (var j = 0; j < toRemove.ColliderGrid.GetLength(0); j++)
+                for (var y = oldBounds.Y / MapConstants.GridHeight; y <= (oldBounds.Y + oldBounds.Height) / MapConstants.GridHeight; y++)
                 {
-                    if (!toRemove.ColliderGrid[j, i])
-                    {
-                        continue;
-                    }
-
-                    var x = oldBounds.X / MapConstants.GridWidth + i;
-                    var y = oldBounds.Y / MapConstants.GridHeight + j;
                     mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(null));
                     mWalkableGrid.SetWalkableAt(x, y, true);
                 }
@@ -224,6 +212,12 @@ namespace Singularity.Map
             }
             return true;
 
+            // seems like a reasonable number. Grid Cleaning works.
+            if (mCounter > 100 * mLookUpTable.Count)
+            {
+                CleanGrid();
+                mCounter = 0;
+            }
         }
     }
 }

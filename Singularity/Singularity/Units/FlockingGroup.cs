@@ -8,9 +8,12 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Manager;
+using Singularity.Map;
+using Singularity.Map.Properties;
 using Singularity.Property;
 using Singularity.Utils;
 
@@ -50,7 +53,9 @@ namespace Singularity.Units
         public float ActualSpeed { get; private set; }
 
         private int mGoalCounter;
-        
+        public int Count => mUnits.Count;
+        public Optional<Vector2[,]> HeatMap { get; protected set; }
+
 
         public Map.Map Map { get; private set; }
         
@@ -72,13 +77,14 @@ namespace Singularity.Units
             SeperationRaw = Vector2.Zero;
             
             // mMap = mDirector.GetStoryManager.Level.Map;
-            Debug.WriteLineIf(map == null, "Map is null for some reason.");
             Map = map;
 
             FlockingId = mDirector.GetIdGenerator.NextId();
 
             if (mGroup.IsPresent())
                 mSuperiorFlockingId = mGroup.Get().FlockingId;
+
+            HeatMap = Optional<Vector2[,]>.Of(null);
         }
 
         public override void ReloadContent(ref Director director)
@@ -134,10 +140,7 @@ namespace Singularity.Units
                 mTargetPosition = mPath.Pop();
                 mGoalCounter = 0;
             }
-
-
-            Debug.WriteLine("vel:" + Velocity + ", pos: " + AbsolutePosition + ", Coh: " + CohesionRaw + ", Sep: " + SeperationRaw);
-
+            
             // setting variables used from the AFlocking parts
             mUnits.ForEach(u => u.Move());
 
@@ -168,14 +171,90 @@ namespace Singularity.Units
         }
 
 
+        private void CreateHeatmap(Pair<int, int> node, Queue<Pair<int, int>> queue)
+        {
+            int[,] heatMap = new int[mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(0), mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(1)];
+
+            for (var i = 0; i < mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(0); i++)
+            {
+                for (var j = 0; j < mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(1); j++)
+                {
+                    heatMap[i, j] = int.MaxValue;
+                }
+            }
+
+            while (true)
+            {
+
+                List<Pair<int, int>> neighbours = new List<Pair<int, int>>
+                {
+                    new Pair<int, int>(node.GetFirst() + 1, node.GetSecond()),
+                    new Pair<int, int>(node.GetFirst(), node.GetSecond() + 1),
+                    new Pair<int, int>(node.GetFirst() - 1, node.GetSecond()),
+                    new Pair<int, int>(node.GetFirst(), node.GetSecond() - 1)
+                };
+                var val = heatMap[node.GetFirst(), node.GetSecond()];
+                foreach (Pair<int, int> n in neighbours)
+                {
+                    if (n.GetFirst() >= mDirector.GetStoryManager.Level.Map.GetCollisionMap()
+                            .GetCollisionMap()
+                            .GetLength(0) ||
+                        n.GetSecond() >= mDirector.GetStoryManager.Level.Map.GetCollisionMap()
+                            .GetCollisionMap()
+                            .GetLength(1) ||
+                        n.GetFirst() < 0 || n.GetSecond() < 0)
+                    {
+                        continue;
+                    }
+                    if (!(heatMap[n.GetFirst(), n.GetSecond()] >= int.MaxValue - 2) || !mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(n.GetFirst(), n.GetSecond())) continue;
+                    heatMap[n.GetFirst(), n.GetSecond()] = val + 1;
+                    queue.Enqueue(n);
+                }
+                if (queue.Count == 0)
+                    break;
+                var next = queue.Dequeue();
+                node = next;
+            }
+
+            var temp = new Vector2[mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(0), mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(1)];
+
+
+            for (var i = 0; i < mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(0); i++)
+            {
+                for (var j = 0; j < mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(1); j++)
+                {
+                    int x = 0, z = 0;
+                    if (i + 1 < mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(0) &&
+                        i - 1 > 0)
+                        x =  heatMap[i - 1, j] - heatMap[i + 1, j];
+
+                    if (j + 1 < mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(1) &&
+                        j - 1 > 0)
+                        z = heatMap[i, j - 1] - heatMap[i, j + 1];
+                    temp[i, j] = new Vector2(x, z);
+                }
+            }
+            HeatMap = Optional<Vector2[,]>.Of(temp);
+        }
+
+
         internal void FindPath(Vector2 target)
         {
 
             if (target == mUltimateTarget || mUnits.Count == 0) return;
 
+            mUltimateTarget = target;
+
             if (mUnits.Count > 30)
             {
                 // find path with heatmap.
+                var x = (int) target.X / MapConstants.GridWidth;
+                var y = (int) target.Y / MapConstants.GridHeight;
+                CreateHeatmap(new Pair<int, int>(x, y), new Queue<Pair<int, int>>());
+                mDirector.GetMilitaryManager.EnsureIncluded(this);
+                Moved = true;
+                mUnits.ForEach(u => u.Moved = true);
+                return;
             }
 
             SeperationRaw = Vector2.Zero;
@@ -183,7 +262,6 @@ namespace Singularity.Units
             if (mUnits.Count == 1)
             {
                 AbsolutePosition = mUnits[0].AbsolutePosition;
-                Debug.WriteLine("pos2: " + mUnits[0].AbsolutePosition);
             }
             else
             {
@@ -192,14 +270,10 @@ namespace Singularity.Units
                     SeperationRaw += unit.AbsolutePosition;
                 }
                 AbsolutePosition = SeperationRaw / mUnits.Count;
-                Debug.WriteLine("pos2: " + AbsolutePosition + ", count: " + mUnits.Count);
             }
 
             Moved = true;
             mUnits.ForEach(u => u.Moved = true);
-            mUltimateTarget = target;
-            Debug.WriteLine("Starting path finding at: " + AbsolutePosition + " for " + FlockingId);
-            Debug.WriteLine("Target: " + target.X + ", " + target.Y);
 
             var map = Map;
             mPath = new Stack<Vector2>();
@@ -208,8 +282,6 @@ namespace Singularity.Units
                 ref map);
             
             mDebugPath = mPath.ToArray();
-
-            Debug.WriteLine("Path is " + mPath.Count + " long.");
 
             mTargetPosition = mPath.Pop(); // directly getting first goal-part.
             mDirector.GetMilitaryManager.EnsureIncluded(this);
@@ -250,7 +322,6 @@ namespace Singularity.Units
         
         internal void AssignUnit(IFlocking unit)
         {
-            Debug.WriteLine("Unit got added to " + FlockingId);
             mUnits.Add(unit);
             unit.AddGroup(this);
             if (Speed == 0)
@@ -273,8 +344,6 @@ namespace Singularity.Units
         {
             return mUnits;
         }
-
-        public int Count => mUnits.Count;
 
         public override void Draw(SpriteBatch spriteBatch)
         {

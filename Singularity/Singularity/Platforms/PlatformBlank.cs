@@ -504,7 +504,6 @@ namespace Singularity.Platforms
 
         public virtual void Produce()
         {
-            Debug.WriteLine("There's producing Units at a PlatformBlank!!! (" + mType + ")");
             // throw new NotImplementedException();
         }
         /// <summary>
