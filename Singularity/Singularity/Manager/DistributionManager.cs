@@ -1030,16 +1030,7 @@ namespace Singularity.Manager
                     joblist.Add(unitbool.GetFirst());
                 }
             }
-            if (isDef)
-            {
-                //Make sure the new platform gets some units
-                NewlyDistribute(platform, true, alreadyonplatform);
-            }
-            else
-            {
-                //Make sure the new platform gets some units
-                NewlyDistribute(platform, false, alreadyonplatform);
-            }
+            NewlyDistribute(platform, isDef, alreadyonplatform);
         }
 
         public void Register(IPlatformAction action)

@@ -33,7 +33,8 @@ namespace Singularity.PlatformActions
             mBuildingCost = new Dictionary<EResourceType, int>(toBeBuilt.GetResourcesRequired());
             mBuilding = toBeBuilt;
             mRBuilding = connectingRoad;
-            
+            mRBuilding.Blueprint = true;
+
             UpdateResources();
             mIsBuilding = true;
             mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(this);
@@ -44,21 +45,25 @@ namespace Singularity.PlatformActions
         {
             mBuildingCost = new Dictionary<EResourceType, int> { {EResourceType.Metal, 1}, {EResourceType.Stone, 1} };
             mRBuilding = road;
+            mRBuilding.Blueprint = true;
             mBuildRoad = true;
             mIsBuilding = true;
             UpdateResources();
             mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(this);
             State = PlatformActionState.Active;
-            mRBuilding.Blueprint = true;
         }
 
         protected override void CreateUnit()
         {
-            mRBuilding.Blueprint = false;
             if (!mBuildRoad)
             {
+                mDirector.GetStoryManager.Level.GameScreen.RemoveObject(mBuilding);
+                mDirector.GetStoryManager.Level.Map.AddPlatform(mBuilding);
                 mBuilding.Built();
             }
+            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(mRBuilding);
+            mDirector.GetStoryManager.Level.Map.AddRoad(mRBuilding);
+            mRBuilding.Blueprint = false;
             Die();
         }
 

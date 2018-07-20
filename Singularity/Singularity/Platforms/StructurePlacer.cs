@@ -298,6 +298,7 @@ namespace Singularity.Platforms
                     {
                         // this case is the 'finish' state, we set everything up, so the platform can get added to the game
                         mPlatform.SetLayer(LayerConstants.PlatformLayer);
+                        mConnectionRoad.Place(mPlatform, mHoveringPlatform);
                         mHoveringPlatform.AddBlueprint(new BuildBluePrint(mHoveringPlatform, mPlatform, mConnectionRoad, ref mDirector));
                     }
                     else

@@ -566,12 +566,12 @@ namespace Singularity.Map
                 if (structureToAdd.GetPlatform() != null)
                 {
                     mDirector.GetStoryManager.Level.GameScreen.AddObject(structureToAdd.GetPlatform());
-                    structureToAdd.GetPlatform().Register();
                     structureToAdd.GetConnectionRoad().Place(structureToAdd.GetPlatform(), hovering);
-                    mDirector.GetStoryManager.Level.GameScreen.AddObject(structureToAdd.GetConnectionRoad());
+                    // mDirector.GetStoryManager.Level.GameScreen.AddObject(structureToAdd.GetConnectionRoad());
                 }
                 else
                 {
+                    // structureToAdd.GetRoad().Place(structureToAdd.GetPlatform(), hovering);
                     mDirector.GetStoryManager.Level.GameScreen.AddObject(structureToAdd.GetRoad());
                 }
 

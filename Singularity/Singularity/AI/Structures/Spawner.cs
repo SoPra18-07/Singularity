@@ -26,7 +26,7 @@ namespace Singularity.AI.Structures
         {
             mType = EStructureType.Spawner;
             mSpritename = "Cylinders";
-            mIsBlueprint = false;
+            mBlueprint = false;
         }
 
 
