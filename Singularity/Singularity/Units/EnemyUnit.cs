@@ -24,14 +24,11 @@ namespace Singularity.Units
             ColliderGrid = new bool[,] {};
         }
 
+        /*
         public ICollider GetShootingTarget()
         {
             return mShootingTarget;
         }
-
-        public override void Move()
-        {
-            base.Move();
-        }
+        */
     }
 }

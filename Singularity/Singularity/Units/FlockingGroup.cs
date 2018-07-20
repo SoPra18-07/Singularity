@@ -139,16 +139,18 @@ namespace Singularity.Units
 
             if (Geometry.Length(mTargetPosition - AbsolutePosition) < mUnits.Count * Speed)
             {
-                mGoalCounter++;
+                Moved = mUnits.TrueForAll(u => !u.Moved);
             }
+
+            /*
 
             if (mGoalCounter > 3)
             {
-                Moved = false;
-                mUnits.ForEach(u => u.Moved = false);
+                // Moved = false;
+                // mUnits.ForEach(u => u.Moved = false);
                 mGoalCounter = 0;
             }
-
+            // */
 
             /*   todo: implement / fix
 
@@ -264,15 +266,22 @@ namespace Singularity.Units
                 AbsolutePosition = SeperationRaw / mUnits.Count;
             }
 
-            Moved = true;
-            mUnits.ForEach(u => u.Moved = true);
 
             var map = Map;
             mPath = new Stack<Vector2>();
             mPath = mPathfinder.FindPath(AbsolutePosition,
                 target,
                 ref map);
-            
+
+            // test if the Path is valid to begin with
+            if (mPath.Count == 0)
+            {
+                return;
+            }
+
+            Moved = true;
+            mUnits.ForEach(u => u.Moved = true);
+
             mDebugPath = mPath.ToArray();
 
             mTargetPosition = mPath.Pop(); // directly getting first goal-part.
