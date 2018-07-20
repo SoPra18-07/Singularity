@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Microsoft.Xna.Framework;
-using Singularity.Exceptions;
 using Singularity.PlatformActions;
 using Singularity.Platforms;
 using Singularity.Screen;

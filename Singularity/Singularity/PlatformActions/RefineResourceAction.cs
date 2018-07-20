@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Singularity.Manager;
-using Singularity.Map;
 using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.PlatformActions
 {

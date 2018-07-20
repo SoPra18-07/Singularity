@@ -1,9 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using Singularity.AI;
-using Singularity.AI.Properties;
 using Singularity.Graph.Paths;
 using Singularity.Input;
 using Singularity.Property;
@@ -23,7 +20,7 @@ namespace Singularity.Manager
         [DataMember]
         public IdGenerator GetIdGenerator { get; private set; }
 
-        public InputManager GetInputManager { get; private set; }
+        public InputManager GetInputManager { get; }
 
         [DataMember]
         public StoryManager GetStoryManager { get; private set; }
@@ -48,9 +45,7 @@ namespace Singularity.Manager
         public GraphicsDeviceManager GetGraphicsDeviceManager { get; }
 
         public EventLog GetEventLog { get; }
-
-        public IScreenManager GetScreenManager { get; private set; }
-
+        
         public Director(ContentManager content, GraphicsDeviceManager graphics, GlobalVariablesInstance globalVariablesInstance)
         {
             GetGlobalVariablesInstance = globalVariablesInstance;

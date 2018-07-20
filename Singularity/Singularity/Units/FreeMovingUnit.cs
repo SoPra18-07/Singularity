@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.Serialization;
-using EpPathFinding.cs;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Singularity.Input;
 using Singularity.Manager;
@@ -20,7 +16,7 @@ namespace Singularity.Units
     /// <inheritdoc cref="IRevealing"/>
     /// <inheritdoc cref="AFlocking"/>
     [DataContract]
-    public abstract class FreeMovingUnit : AFlocking, ICollider, IRevealing, IMouseClickListener, IMousePositionListener
+    public abstract class FreeMovingUnit : AFlocking, IRevealing, IMouseClickListener, IMousePositionListener
     {
 
         /// <summary>

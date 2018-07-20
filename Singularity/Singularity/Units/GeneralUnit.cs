@@ -184,10 +184,10 @@ namespace Singularity.Units
         /// <summary>
         /// Used to Abort the current Task, when the unit notices it cannot reach its destination.
         /// </summary>
-        private void AbortTask()
-        {
+        // private void AbortTask()
+        // {
             //TODO: This. Also dont forget to put the task back in the task queue, but not sure if this is necessary. Talk with felix about that.
-        }
+        // }
 
 
         /// <summary>

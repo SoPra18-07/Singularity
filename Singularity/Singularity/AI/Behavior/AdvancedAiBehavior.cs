@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.ExceptionServices;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using C5;
 using Microsoft.Xna.Framework;
 using Singularity.AI.Helper;
@@ -99,17 +95,17 @@ namespace Singularity.AI.Behavior
         private readonly Dictionary<EnemyUnit, FlockingGroup> mUnitToFlockingGroup;
 
         [DataMember]
-        private readonly int[] mUnitsMovementCooldown = new int[3] {0, 0, 0};
+        private readonly int[] mUnitsMovementCooldown = { 0, 0, 0 };
 
         [DataMember]
-        private readonly int[] mUnitsMovementSnapshot = new int[3] {0, 0, 0};
+        private readonly int[] mUnitsMovementSnapshot = { 0, 0, 0 };
 
         /// <summary>
         /// The time in milliseconds the AI waits to do anything. (when being attacked this is ignored and the AI starts doing stuff nontheless),
         /// where it waits 5 minutes for easy, 4 minutes for medium and 2 minutes for hard.
         /// </summary>
         [DataMember]
-        private readonly int[] mIdleTime = new int[3]
+        private readonly int[] mIdleTime =
         {
             300000,
             //240000,
@@ -118,7 +114,7 @@ namespace Singularity.AI.Behavior
         };
 
         [DataMember]
-        private readonly int[] mUnitCreationSnapshot = new int[3] {0, 0, 0};
+        private readonly int[] mUnitCreationSnapshot = {0, 0, 0};
 
         // the reason for this not being dependant on the difficulty is because the harder difficulity AI has WAY more spawners
         // than the easier ones, which would make it completely broken (probably already is)
@@ -126,7 +122,7 @@ namespace Singularity.AI.Behavior
         private const int ScoutCreationCooldown = 60000;
 
         [DataMember]
-        private readonly int[] mAttackCreationCooldown = new int[3]
+        private readonly int[] mAttackCreationCooldown =
         {
             180000,
             120000,
