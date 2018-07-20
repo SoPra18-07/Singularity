@@ -62,9 +62,7 @@ namespace Singularity.Units
         [DataMember]
         public bool Selected { get; set; }
 
-
-        private List<IFlocking> mOtherUnits = new List<IFlocking>();
-
+        
         protected AFlocking(ref Director director, Optional<FlockingGroup> group) : base(ref director)
         {
             Id = director.GetIdGenerator.NextId(); // id for the specific unit.
