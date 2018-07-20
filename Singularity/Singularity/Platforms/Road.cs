@@ -94,8 +94,6 @@ namespace Singularity.Platforms
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (Blueprint)
-                Debug.WriteLine("Road still Blueprint. Visible?");
             spriteBatch.DrawLine(Source, Destination, Blueprint ?  new Color(new Vector4(.1803922f, 0.2078431f, .3803922f, .5f)) : new Color(new Vector3(.75f, .75f, .75f)), 5f, LayerConstants.RoadLayer);
         }
 
