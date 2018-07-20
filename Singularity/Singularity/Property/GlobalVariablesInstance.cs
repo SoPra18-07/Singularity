@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Singularity.AI.Properties;
 
 namespace Singularity.Property
 {
@@ -36,6 +37,8 @@ namespace Singularity.Property
 
         [DataMember]
         internal bool AudioMute { get; set; }
+        [DataMember]
+        internal EaiDifficulty Difficulty { get; set; }
 
         public void LoadToStatic()
         {
@@ -48,6 +51,7 @@ namespace Singularity.Property
             GlobalVariables.IsFullScreen = IsFullScreen;
             GlobalVariables.ChosenResolution = ChosenResolution;
             GlobalVariables.AudioMute = AudioMute;
+            GlobalVariables.Difficulty = Difficulty;
         }
 
         public void UpdateFromStatic()
@@ -61,6 +65,7 @@ namespace Singularity.Property
             IsFullScreen = GlobalVariables.IsFullScreen;
             ChosenResolution = GlobalVariables.ChosenResolution;
             AudioMute = GlobalVariables.AudioMute;
+            Difficulty = GlobalVariables.Difficulty;
         }
     }
 }

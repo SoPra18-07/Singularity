@@ -9,6 +9,7 @@ using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platforms;
+using Singularity.Property;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Serialization;
@@ -17,7 +18,7 @@ using Singularity.Units;
 namespace Singularity.Levels
 {
     [DataContract]
-    internal abstract class BasicLevel : ILevel, IKeyListener
+    internal abstract class BasicLevel : ILevel
     {
 
         [DataMember]
@@ -85,7 +86,7 @@ namespace Singularity.Levels
             Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 2800, 2800);
             mFow = new FogOfWar(Camera, mGraphics.GraphicsDevice);
 
-            var map = new Map.Map(mapBackground, 60, 60, mFow, Camera, ref mDirector); // NEOLAYOUT (searchmark for @fkarg)
+            var map = new Map.Map(mapBackground, 60, 60, mFow, Camera, ref mDirector);
             Map = map;
             var milUnitSheet = content.Load<Texture2D>("UnitSpriteSheet");
             var milGlowSheet = content.Load<Texture2D>("UnitGlowSprite");
@@ -108,7 +109,7 @@ namespace Singularity.Levels
             mDirector.GetInputManager.FlagForAddition(this);
 
             // KI STUFF
-            Ai = new BasicAi(EaiDifficulty.Medium, ref mDirector);
+            Ai = new BasicAi(GlobalVariables.Difficulty, ref mDirector);
             GameScreen.AddObject(Ai);
         }
 
@@ -175,7 +176,6 @@ namespace Singularity.Levels
 
             return true;
         }
-
 
         public bool KeyPressed(KeyEvent keyEvent)
         {

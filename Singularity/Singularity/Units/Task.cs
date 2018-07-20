@@ -50,7 +50,7 @@ namespace Singularity.Units
                 return true;
             }
 
-            if (!Action.IsPresent())
+            if (Action == null || !Action.IsPresent())
             {
                 return false;
             }

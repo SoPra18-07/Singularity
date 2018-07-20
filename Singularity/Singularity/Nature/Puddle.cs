@@ -16,7 +16,7 @@ namespace Singularity.Nature
         [DataMember]
         public Rectangle AbsBounds { get; private set; }
         [DataMember]
-        public bool Moved { get; private set; }
+        public bool Moved { get; set; }
         [DataMember]
         public int Id { get; private set; }
         [DataMember]
@@ -38,7 +38,7 @@ namespace Singularity.Nature
 
         public Puddle(Vector2 position, ref Director director, bool bigPuddle = true) : base(ref director)
         {
-            Id = director.GetIdGenerator.NextiD();
+            Id = director.GetIdGenerator.NextId();
             AbsoluteSize = new Vector2(160, 130);
 
             mBigPuddle = bigPuddle;
@@ -48,7 +48,7 @@ namespace Singularity.Nature
             // this is used to draw the puddle correctly within the collision grid
             mPosition = position;
             AbsolutePosition = new Vector2(position.X, position.Y - 50);
-            AbsBounds = new Rectangle((int)position.X, (int)position.Y, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
+            AbsBounds = new Rectangle((int)position.X, (int)position.Y-50, (int)AbsoluteSize.X, (int)AbsoluteSize.Y);
 
             if (bigPuddle)
             {

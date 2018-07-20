@@ -24,6 +24,6 @@ namespace Singularity.Property
         Vector2 Center { get; }
 
 
-        bool Moved { get; }
+        bool Moved { get; set; }
     }
 }

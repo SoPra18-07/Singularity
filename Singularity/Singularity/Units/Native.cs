@@ -14,12 +14,11 @@ namespace Singularity.Units
         /// </summary>
         /// <param name="position">Where the unit should be spawned.</param>
         /// <param name="camera">Game camera being used.</param>
-        /// <param name="director">Reference to the game director.</param>
-        /// <param name="map">Reference to the game map.</param>
-        public Native(Vector2 position, Camera camera, ref Director director, ref Map.Map map)
-            : base(position, camera, ref director, ref map)
+        /// <param name="director">Reference to the Game Director</param>
+        public Native(Vector2 position, Camera camera, ref Director director)
+            : base(position, camera, ref director)
         {
-            mSpeed = 10;
+            Speed = 10;
             Health = 6;
             mColor = Color.OrangeRed;
             mScale = 0.25f;

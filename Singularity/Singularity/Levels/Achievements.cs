@@ -8,24 +8,32 @@ namespace Singularity.Levels
     /// associated with the achievement.
     /// To add progress towards an achievement, access the property related to the achievement.
     /// </summary>
+    [DataContract]
     internal static class Achievements
     {
-
         //The statistics of the Achievements.
+        [DataMember]
         internal static bool FirstBuilding { get; set; }
         
+        [DataMember]
         internal static bool TutorialFinished { get; set; }
         
+        [DataMember]
         internal static int PlatformsBuilt { get; set; }
         
+        [DataMember]
         internal static int TrashBurned { get; set; }
         
+        [DataMember]
         internal static bool CampaignComplete { get; set; }
         
+        [DataMember]
         internal static int UnitsBuilt { get; set; }
         
+        [DataMember]
         internal static int MilitaryUnitsBuilt { get; set; }
 
+        [DataMember]
         internal static bool AllCompleted { get; set; }
 
         /// <summary>
