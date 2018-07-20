@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Singularity.Platforms;
 using Singularity.Property;
-using Singularity.Units;
 
 namespace Singularity.Map
 {

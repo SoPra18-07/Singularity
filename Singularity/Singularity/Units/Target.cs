@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Singularity.Manager;
 using Singularity.Map;
-using Singularity.Property;
 
 namespace Singularity.Units
 {

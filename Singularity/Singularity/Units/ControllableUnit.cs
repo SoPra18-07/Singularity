@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -24,19 +23,7 @@ namespace Singularity.Units
         /// </summary>
         [DataMember]
         internal bool mSelected;
-
-        /// <summary>
-        /// Stores the current x position of the mouse
-        /// </summary>
-        [DataMember]
-        internal float mMouseX;
-
-        /// <summary>
-        /// Stores the current y position of the mouse
-        /// </summary>
-        [DataMember]
-        internal float mMouseY;
-
+        
         #endregion
 
         /// <summary>

@@ -53,6 +53,8 @@ namespace Singularity.Units
                         iMode: HeuristicMode.MANHATTAN);
                 }
 
+                Debug.WriteLine("Now searching path from " + startGridPos + " to " + endGridPos);
+
                 var pathGrid = JumpPointFinder.FindPath(mJpParam);
 
                 var pathVector = new Stack<Vector2>(pathGrid.Count);

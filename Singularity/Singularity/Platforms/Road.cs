@@ -6,7 +6,6 @@ using Singularity.Graph;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Property;
-using System.Diagnostics;
 
 namespace Singularity.Platforms
 {

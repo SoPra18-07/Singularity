@@ -1,14 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.AI.Properties;
 using Singularity.AI.Structures;
 using Singularity.Graph;
 using Singularity.Manager;
-using Singularity.Map.Properties;
 using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Utils;
