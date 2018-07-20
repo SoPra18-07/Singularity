@@ -22,7 +22,6 @@ namespace Singularity.Levels
 
         public override void LoadContent(ContentManager content)
         {
-            var map = Map;
 
             GlobalVariables.FowEnabled = false;
 
