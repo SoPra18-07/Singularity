@@ -1,19 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Mail;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Singularity.AI.Properties;
 using Singularity.Manager;
-using Singularity.Map.Properties;
-using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.AI.Behavior
 {
@@ -25,9 +17,9 @@ namespace Singularity.AI.Behavior
     public sealed class SimpleAiBehavior : IAiBehavior
     {
         [DataMember]
-        private int mMoveIntervalMillis = 0;
+        private int mMoveIntervalMillis;
         [DataMember]
-        private int mSpawnIntervalMillis = 0;
+        private int mSpawnIntervalMillis;
 
         /// <summary>
         /// The AI this behavior operates on

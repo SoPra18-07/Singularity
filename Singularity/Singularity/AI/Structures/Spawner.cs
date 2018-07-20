@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.AI.Properties;
@@ -39,7 +34,7 @@ namespace Singularity.AI.Structures
         // method that produces enemy military units when called up by the Ki
         internal EnemyUnit SpawnEnemy(EEnemyType type, Camera camera, Map.Map map, GameScreen gameScreen)
         {
-            EnemyUnit enemyUnit = null;
+            EnemyUnit enemyUnit;
 
             switch (type)
             {

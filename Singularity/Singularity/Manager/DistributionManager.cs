@@ -96,10 +96,10 @@ namespace Singularity.Manager
         /// Deactivates tasks requested by a certain action.
         /// </summary>
         /// <param name="removeaction">The Action I was talking about</param>
-        private void DeactivateAction(IPlatformAction removeaction)
-        {
-            mPlatformActions.Remove(removeaction);
-        }
+        // private void DeactivateAction(IPlatformAction removeaction)
+        // {
+            // mPlatformActions.Remove(removeaction);
+        // }
 
         #region Looking for Resources
 

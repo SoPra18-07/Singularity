@@ -2,12 +2,8 @@
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using Singularity.AI.Structures;
 using Singularity.Manager;
 using Singularity.Nature;
-using Singularity.Platforms;
-using Singularity.Resources;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Units;

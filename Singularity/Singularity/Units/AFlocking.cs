@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
+﻿using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -62,9 +59,7 @@ namespace Singularity.Units
         [DataMember]
         public bool Selected { get; set; }
 
-
-        private List<IFlocking> mOtherUnits = new List<IFlocking>();
-
+        
         protected AFlocking(ref Director director, Optional<FlockingGroup> group) : base(ref director)
         {
             Id = director.GetIdGenerator.NextId(); // id for the specific unit.

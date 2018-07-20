@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Singularity.Map;
@@ -191,7 +190,6 @@ namespace Singularity.Manager
             //And that means the enemy unit is also added to the friendlymilitarylist lol.
             //Hotfix: I just ask for both casts to be not null.
             var friendlyMilitary = unit as MilitaryUnit;
-            var friendlySettler = unit as Settler;
             var hostileMilitary = unit as EnemyUnit;
 
             if (friendlyMilitary != null && hostileMilitary == null)
@@ -273,10 +271,7 @@ namespace Singularity.Manager
 
         public void Update(GameTime gametime)
         {
-            var unitsToKill = new List<FreeMovingUnit>();
-            var platformsToKill = new List<PlatformBlank>();
-
-            mUnitMap?.Update(gametime);
+            mUnitMap.Update(gametime);
 
             #region Check targets for friendly units
 
@@ -317,21 +312,6 @@ namespace Singularity.Manager
                 if (closestAdjacent != null)
                 {
                     unit.SetShootingTarget(closestAdjacent);
-                    if (closestAdjacent.Health <= 0)
-                    {
-                        // try to turn the closest into a freemoving unit
-                        var killUnit = closestAdjacent as FreeMovingUnit;
-                        if (killUnit != null)
-                        {
-                            // if it works, add it to the unit kill list.
-                            unitsToKill.Add(killUnit);
-                        }
-                        else
-                        {
-                            // otherwise it's a platform and add it to the platform kill list.
-                            platformsToKill.Add(closestAdjacent as PlatformBlank);
-                        }
-                    }
                 }
                 
                 else
@@ -381,21 +361,6 @@ namespace Singularity.Manager
                 if (closestAdjacent != null)
                 {
                     turret.SetShootingTarget(closestAdjacent);
-                    if (closestAdjacent.Health <= 0)
-                    {
-                        // try to turn the closest into a freemoving unit
-                        var killUnit = closestAdjacent as FreeMovingUnit;
-                        if (killUnit != null)
-                        {
-                            // if it works, add it to the unit kill list.
-                            unitsToKill.Add(killUnit);
-                        }
-                        else
-                        {
-                            // otherwise it's a platform and add it to the platform kill list.
-                            platformsToKill.Add(closestAdjacent as PlatformBlank);
-                        }
-                    }
                 }
                 else
                 {
@@ -444,21 +409,6 @@ namespace Singularity.Manager
                 if (closestAdjacent != null)
                 {
                     unit.SetShootingTarget(closestAdjacent);
-                    if (closestAdjacent.Health <= 0)
-                    {
-                        // try to turn the closest into a freemoving unit
-                        var killUnit = closestAdjacent as FreeMovingUnit;
-                        if (killUnit != null)
-                        {
-                            // if it works, add it to the unit kill list.
-                            unitsToKill.Add(killUnit);
-                        }
-                        else
-                        {
-                            // otherwise it's a platform and add it to the platform kill list.
-                            platformsToKill.Add(closestAdjacent as PlatformBlank);
-                        }
-                    }
                 }
                 else
                 {
@@ -507,21 +457,6 @@ namespace Singularity.Manager
                 if (closestAdjacent != null)
                 {
                     turret.SetShootingTarget(closestAdjacent);
-                    if (closestAdjacent.Health <= 0)
-                    {
-                        // try to turn the closest into a freemoving unit
-                        var killUnit = closestAdjacent as FreeMovingUnit;
-                        if (killUnit != null)
-                        {
-                            // if it works, add it to the unit kill list.
-                            unitsToKill.Add(killUnit);
-                        }
-                        else
-                        {
-                            // otherwise it's a platform and add it to the platform kill list.
-                            platformsToKill.Add(closestAdjacent as PlatformBlank);
-                        }
-                    }
                 }
                 else
                 {
