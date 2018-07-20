@@ -275,8 +275,6 @@ namespace Singularity.AI.Behavior
 
         public void Move(GameTime gametime)
         {
-            Debug.WriteLine(mUnitToFlockingGroup.Count);
-
             if (mBaseCount <= 0)
             {
                 return;
