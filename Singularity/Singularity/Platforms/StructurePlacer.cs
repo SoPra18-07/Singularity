@@ -165,6 +165,16 @@ namespace Singularity.Platforms
             mCamera = camera;
             mDirector = director;
             mMap = map;
+
+            // makes a sound once when platform is placed
+            mPlatformCreateSoundId = mDirector.GetSoundManager.CreateSoundInstance("PlatformCreate",
+                mPlatform.Center.X,
+                mPlatform.Center.Y,
+                .24f,
+                .01f,
+                true,
+                false,
+                SoundClass.Effect);
         }
 
         /// <summary>
@@ -279,7 +289,6 @@ namespace Singularity.Platforms
                             break;
                         }
                         mRoadToBuild.Destination = mHoveringPlatform.Center;
-
                     }
 
                     break;
@@ -289,13 +298,11 @@ namespace Singularity.Platforms
                     {
                         // this case is the 'finish' state, we set everything up, so the platform can get added to the game
                         mPlatform.SetLayer(LayerConstants.PlatformLayer);
-                        mHoveringPlatform.AddBlueprint(new BuildBluePrint(mHoveringPlatform, mPlatform, ref mDirector));
-                        mConnectionRoad.Blueprint = false;
+                        mHoveringPlatform.AddBlueprint(new BuildBluePrint(mHoveringPlatform, mPlatform, mConnectionRoad, ref mDirector));
                     }
                     else
                     {
                         mRoadToBuild.Place(mOldHovering, mHoveringPlatform);
-                        mRoadToBuild.Blueprint = false;
 
                     }
                     mIsFinished = true;
@@ -385,6 +392,7 @@ namespace Singularity.Platforms
 
                             mRoadToBuild.DestinationAsNode = mHoveringPlatform;
                             mRoadToBuild.Destination = mHoveringPlatform.Center;
+                            mHoveringPlatform.AddBlueprint(new BuildBluePrint(mHoveringPlatform, mRoadToBuild, ref mDirector));
                             mCurrentState.NextState();
                         }
 

@@ -229,7 +229,7 @@ namespace Singularity.Sound
                 case SoundClass.Ui:
                     mUiInstances[mInstanceMap[id].Item2].Volume =
                         GlobalVariables.UiVolume;
-                    mUiInstances[mInstanceMap[id].Item2].Play();;
+                    mUiInstances[mInstanceMap[id].Item2].Play();
                     break;
 
                 case SoundClass.Music:

@@ -18,14 +18,21 @@ namespace Singularity.PlatformActions
         private readonly PlatformBlank mBuilding;
 
         [DataMember]
+        private bool mBuildRoad;
+
+        [DataMember]
+        private readonly Road mRBuilding;
+
+        [DataMember]
         private bool mBuildable; // defaults to false
 
-        public BuildBluePrint(PlatformBlank platform, PlatformBlank toBeBuilt, ref Director director) : base(
+        public BuildBluePrint(PlatformBlank platform, PlatformBlank toBeBuilt, Road connectingRoad, ref Director director) : base(
             platform,
             ref director)
         {
             mBuildingCost = new Dictionary<EResourceType, int>(toBeBuilt.GetResourcesRequired());
             mBuilding = toBeBuilt;
+            mRBuilding = connectingRoad;
             
             UpdateResources();
             mIsBuilding = true;
@@ -33,9 +40,25 @@ namespace Singularity.PlatformActions
             State = PlatformActionState.Active;
         }
 
+        public BuildBluePrint(PlatformBlank platform, Road road, ref Director director) : base (platform, ref director)
+        {
+            mBuildingCost = new Dictionary<EResourceType, int> { {EResourceType.Metal, 1}, {EResourceType.Stone, 1} };
+            mRBuilding = road;
+            mBuildRoad = true;
+            mIsBuilding = true;
+            UpdateResources();
+            mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(this);
+            State = PlatformActionState.Active;
+            mRBuilding.Blueprint = true;
+        }
+
         protected override void CreateUnit()
         {
-            mBuilding.Built();
+            mRBuilding.Blueprint = false;
+            if (!mBuildRoad)
+            {
+                mBuilding.Built();
+            }
             Die();
         }
 
