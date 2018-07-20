@@ -575,5 +575,3 @@ TSWLatexianTemp*
 # standalone packages
 *.sta
 
-# vim swap files
-.*.sw*
