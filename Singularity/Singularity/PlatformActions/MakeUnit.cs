@@ -107,7 +107,7 @@ namespace Singularity.PlatformActions
         [DataMember]
         protected Dictionary<EResourceType, int> mToRequest;
         [DataMember]
-        protected Vector2 mOffset = new Vector2(200f);
+        protected Vector2 mOffset = new Vector2(100f);
         [DataMember]
         protected bool mIsBuilding = false;
         [DataMember]

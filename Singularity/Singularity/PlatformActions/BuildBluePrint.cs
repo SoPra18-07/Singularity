@@ -26,12 +26,13 @@ namespace Singularity.PlatformActions
         [DataMember]
         private bool mBuildable; // defaults to false
 
-        public BuildBluePrint(PlatformBlank platform, PlatformBlank toBeBuilt, ref Director director) : base(
+        public BuildBluePrint(PlatformBlank platform, PlatformBlank toBeBuilt, Road connectingRoad, ref Director director) : base(
             platform,
             ref director)
         {
             mBuildingCost = new Dictionary<EResourceType, int>(toBeBuilt.GetResourcesRequired());
             mBuilding = toBeBuilt;
+            mRBuilding = connectingRoad;
             
             UpdateResources();
             mIsBuilding = true;
@@ -53,16 +54,10 @@ namespace Singularity.PlatformActions
 
         protected override void CreateUnit()
         {
-            if (mBuildRoad)
-            {
-                mRBuilding.Blueprint = false;
-                Debug.WriteLine("Road built!");
-
-            }
-            else
+            mRBuilding.Blueprint = false;
+            if (!mBuildRoad)
             {
                 mBuilding.Built();
-                Debug.WriteLine("Platform built!");
             }
             Die();
         }

@@ -271,7 +271,7 @@ namespace Singularity.Manager
 
         public void Update(GameTime gametime)
         {
-            mUnitMap.Update(gametime);
+            mUnitMap?.Update(gametime);
 
             #region Check targets for friendly units
 
