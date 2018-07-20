@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using C5;
@@ -274,12 +275,17 @@ namespace Singularity.AI.Behavior
 
         public void Move(GameTime gametime)
         {
+            Debug.WriteLine(mUnitToFlockingGroup.Count);
+
             if (mBaseCount <= 0)
             {
                 return;
             }
 
             UpdateMovingValues();
+
+            //first of update the priority of the unit that has the lowest of them all.
+            UpdateLowestPriorityQueueElements();
 
 
             #region Defending
@@ -288,7 +294,7 @@ namespace Singularity.AI.Behavior
             {
                 // this is the time in millis that the unit stands still after having moved and reached its position. Since defending units don't
                 // need to move that much this is definitely OK. Note this is only for the "idle" movement. If attacked behavior might change
-                mUnitsMovementCooldown[(int)EEnemyType.Defend] = mRandom.Next(1000, 10000);
+                mUnitsMovementCooldown[(int)EEnemyType.Defend] = mRandom.Next(3000, 10000);
             }
 
             if (gametime.TotalGameTime.TotalMilliseconds - mUnitsMovementSnapshot[(int)EEnemyType.Defend] > mUnitsMovementCooldown[(int)EEnemyType.Defend])
@@ -337,9 +343,6 @@ namespace Singularity.AI.Behavior
             {
                 return;
             }
-
-            //first of update the priority of the unit that has the lowest of them all.
-            UpdateLowestPriorityQueueElements();
 
             #region Scouting
 
@@ -853,6 +856,11 @@ namespace Singularity.AI.Behavior
                     group.AssignUnit(defending.GetObject());
                 }
                 group.FindPath(shootingAt.Center);
+
+                foreach (var defending in allDefendings)
+                {
+                    group.Kill(defending.GetObject());
+                }
 
                 return;
             }
