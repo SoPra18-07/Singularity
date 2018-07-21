@@ -111,7 +111,7 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.DrawLine(300, 209, 300, 335, Color.White);
 
 
-            spriteBatch.DrawString(mFont, "EnemyDifficulty: " + mDirector.GetStoryManager.Level.Ai.Difficulty, new Vector2(15, 355), Color.White);
+            spriteBatch.DrawString(mFont, "EnemyDifficulty: " + mDirector.GetStoryManager.Level.Ai?.Difficulty, new Vector2(15, 355), Color.White);
             spriteBatch.DrawString(mFont, "FPS: " + mFps, new Vector2(15, 395), Color.White);
             spriteBatch.DrawString(mFont, "UPS: " + mUps, new Vector2(15, 415), Color.White);
 
