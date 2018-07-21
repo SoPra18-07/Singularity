@@ -110,14 +110,14 @@ namespace Singularity.Units
                 .8f,
                 1f,
                 LayerConstants.MilitaryUnitLayer);
-            
+
         }
 
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            
+
             if (Moved)
             {
                 mNeverMoved = false;
@@ -147,7 +147,11 @@ namespace Singularity.Units
             {
                 // if key b has been pressed and the settler unit is selected and its not moving
                 // --> send out event that deletes settler and adds a command center
-                if (key != Keys.B || !Selected || (!mGroup.Get().NearTarget() && !mNeverMoved)) continue;
+                if (key != Keys.B || !Selected || (!mGroup.Get().NearTarget() && !mNeverMoved))
+                {
+                    continue;
+                }
+
                 OnBuildCommandCenter();
                 return false;
             }

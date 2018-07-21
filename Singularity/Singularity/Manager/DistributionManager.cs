@@ -82,7 +82,7 @@ namespace Singularity.Manager
             mKilled = new List<Pair<int, int>>();
             mGraphId = graphid;
         }
-        
+
         /// <summary>
         /// Deactivates tasks requested by a certain action.
         /// </summary>
@@ -1114,7 +1114,7 @@ namespace Singularity.Manager
             mHandler?.ForceSliderPages();
 
         }
-        
+
         #endregion
 
         public void PausePlatformAction(IPlatformAction action)

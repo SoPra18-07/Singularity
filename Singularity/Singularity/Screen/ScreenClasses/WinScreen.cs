@@ -82,7 +82,7 @@ namespace Singularity.Screen.ScreenClasses
                     scale: 0.5f,
                     effects: SpriteEffects.None,
                     layerDepth: 0);
-                
+
             }
             else if (mCounter >= 250)
             {

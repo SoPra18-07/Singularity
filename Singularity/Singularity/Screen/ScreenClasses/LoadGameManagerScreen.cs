@@ -96,7 +96,7 @@ namespace Singularity.Screen.ScreenClasses
         {
             if (mGameLoaded)
             {
-                
+
                 mGameLoaded = false;
             }
 
@@ -185,7 +185,7 @@ namespace Singularity.Screen.ScreenClasses
                     mName = "";
                 }
             }
-            
+
             else if (mNewGame)
             {
                 //Remove all screens above this screen, of course this only works if this screen is really on the bottom of the stack
@@ -195,11 +195,11 @@ namespace Singularity.Screen.ScreenClasses
                 }
                 mScreenManager.AddScreen(mGameScreen);
                 mScreenManager.AddScreen(mUi);
-                
+
                 mGameLoaded = true;
                 mNewGame = false;
             }
-            
+
             sPressed = "None";
         }
 
@@ -249,7 +249,7 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="eventArg"></param>

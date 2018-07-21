@@ -56,7 +56,8 @@ namespace Singularity.Levels
             ref Director director,
             ContentManager content,
             IScreenManager screenmanager,
-            LevelType level)
+            LevelType level,
+            IArtificalIntelligence ai)
 
         {
             mDirector = director;
@@ -66,6 +67,7 @@ namespace Singularity.Levels
             mScreenManager = screenmanager;
             mContent = content;
             Screen = EScreen.GameScreen;
+            Ai = ai;
             StandardInitialization(content);
         }
 
@@ -108,9 +110,10 @@ namespace Singularity.Levels
 
             mDirector.GetInputManager.FlagForAddition(this);
 
-            // KI STUFF
-            Ai = new BasicAi(GlobalVariables.Difficulty, ref mDirector);
-            GameScreen.AddObject(Ai);
+            if (Ai != null)
+            {
+                GameScreen.AddObject(Ai);
+            }
         }
 
         public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, ref Director director, IScreenManager screenmanager)

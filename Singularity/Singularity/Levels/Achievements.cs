@@ -13,22 +13,22 @@ namespace Singularity.Levels
         //The statistics of the Achievements.
         [DataMember]
         internal static bool FirstBuilding { get; set; }
-        
+
         [DataMember]
         internal static bool TutorialFinished { get; set; }
-        
+
         [DataMember]
         internal static int PlatformsBuilt { get; set; }
-        
+
         [DataMember]
         internal static int TrashBurned { get; set; }
-        
+
         [DataMember]
         internal static bool CampaignComplete { get; set; }
-        
+
         [DataMember]
         internal static int UnitsBuilt { get; set; }
-        
+
         [DataMember]
         internal static int MilitaryUnitsBuilt { get; set; }
 

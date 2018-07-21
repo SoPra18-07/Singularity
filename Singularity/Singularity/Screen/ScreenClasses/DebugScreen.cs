@@ -136,7 +136,7 @@ namespace Singularity.Screen.ScreenClasses
 
             mWinButton = new Button("Win", mFont, new Vector2(130, 480), Color.White, true) {Opacity = 1f};
             mLoseButton = new Button("Lose", mFont, new Vector2(130, 510), Color.White, true) { Opacity = 1f };
-            
+
             mFowButton.ButtonReleased += FowButtonReleased;
             mWinButton.ButtonReleased += OnWinButtonReleased;
             mLoseButton.ButtonReleased += OnLoseButtonReleased;

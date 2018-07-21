@@ -27,6 +27,9 @@ namespace Singularity.AI.Properties
         [DataMember]
         EaiDifficulty Difficulty { get; }
 
+        [DataMember]
+        bool IsTutorial { get; set; }
+
         /// <summary>
         /// This is needed to reload the Ai propertys/fields after deserializing
         /// </summary>

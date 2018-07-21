@@ -11,7 +11,7 @@ using Singularity.Utils;
 
 namespace Singularity.Units
 {
-    
+
     [DataContract]
     public class FlockingGroup : AFlocking
     {
@@ -35,7 +35,7 @@ namespace Singularity.Units
 
         [DataMember]
         private List<IFlocking> mUnits;
-        
+
         [DataMember]
         private int? mSuperiorFlockingId = null;
 
@@ -50,9 +50,9 @@ namespace Singularity.Units
 
 
         public Map.Map Map { get; private set; }
-        
+
         [DataMember]
-        public int Counter { get; private set; } // todo: use counter in FlockingGroup to look for other units 
+        public int Counter { get; private set; } // todo: use counter in FlockingGroup to look for other units
 
         /// <summary>
         /// Stores the path the unit is taking so that it can be drawn for debugging.
@@ -67,14 +67,16 @@ namespace Singularity.Units
             Velocity = Vector2.Zero;
             CohesionRaw = Vector2.Zero;
             SeperationRaw = Vector2.Zero;
-            
+
             // mMap = mDirector.GetStoryManager.Level.Map;
             Map = map;
 
             FlockingId = mDirector.GetIdGenerator.NextId();
 
             if (mGroup.IsPresent())
+            {
                 mSuperiorFlockingId = mGroup.Get().FlockingId;
+            }
 
             HeatMap = Optional<Vector2[,]>.Of(null);
         }
@@ -83,7 +85,10 @@ namespace Singularity.Units
         {
             base.ReloadContent(ref director);
             Map = mDirector.GetStoryManager.Level.Map;
-            foreach (var u in mUnits) u.ReloadContent(ref director);
+            foreach (var u in mUnits)
+            {
+                u.ReloadContent(ref director);
+            }
         }
 
         // public override Vector2 RelativePosition { get; set; }   // does not really make sense but AFloking : ICollider ...
@@ -104,18 +109,21 @@ namespace Singularity.Units
             // todo: now get a velocity to the current target.
             // also: todo: actively let units avoid obstacles. (in progress)
             // (lookup at precomputed map velocities).
-            
+
             // if we don't need to move, why bother recalculating all the values?
-            if (!Moved) return;
-            
+            if (!Moved)
+            {
+                return;
+            }
+
             SeperationRaw = Vector2.Zero;
-            
+
 
             foreach (var unit in mUnits)
             {
                 SeperationRaw += unit.AbsolutePosition;
             }
-            
+
             AbsolutePosition = SeperationRaw / mUnits.Count;
             CohesionRaw = AbsolutePosition;
             // ActualSpeed = mUnits.Any(u => u.Speed > ActualSpeed);
@@ -132,7 +140,7 @@ namespace Singularity.Units
                 mTargetPosition = mPath.Pop();
                 mGoalCounter = 0;
             }
-            
+
             // setting variables used from the AFlocking parts
             mUnits.ForEach(u => u.Move());
 
@@ -200,12 +208,19 @@ namespace Singularity.Units
                     {
                         continue;
                     }
-                    if (!(heatMap[n.GetFirst(), n.GetSecond()] >= int.MaxValue - 2) || !mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(n.GetFirst(), n.GetSecond())) continue;
+                    if (!(heatMap[n.GetFirst(), n.GetSecond()] >= int.MaxValue - 2) || !mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(n.GetFirst(), n.GetSecond()))
+                    {
+                        continue;
+                    }
+
                     heatMap[n.GetFirst(), n.GetSecond()] = val + 1;
                     queue.Enqueue(n);
                 }
                 if (queue.Count == 0)
+                {
                     break;
+                }
+
                 var next = queue.Dequeue();
                 node = next;
             }
@@ -220,11 +235,16 @@ namespace Singularity.Units
                     int x = 0, z = 0;
                     if (i + 1 < mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(0) &&
                         i - 1 > 0)
+                    {
                         x =  heatMap[i - 1, j] - heatMap[i + 1, j];
+                    }
 
                     if (j + 1 < mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(1) &&
                         j - 1 > 0)
+                    {
                         z = heatMap[i, j - 1] - heatMap[i, j + 1];
+                    }
+
                     temp[i, j] = new Vector2(x, z);
                 }
             }
@@ -235,7 +255,10 @@ namespace Singularity.Units
         internal void FindPath(Vector2 target)
         {
 
-            if (target == mUltimateTarget || mUnits.Count == 0) return;
+            if (target == mUltimateTarget || mUnits.Count == 0)
+            {
+                return;
+            }
 
             mUltimateTarget = target;
 
@@ -300,7 +323,7 @@ namespace Singularity.Units
         }
         */
 
-        
+
         public void MakePartOf(FlockingGroup group)
         {
             mGroup = Optional<FlockingGroup>.Of(group);
@@ -320,7 +343,7 @@ namespace Singularity.Units
         {
             throw new NotImplementedException();
         }
-        
+
         internal void AssignUnit(IFlocking unit)
         {
             mUnits.Add(unit);
@@ -331,7 +354,11 @@ namespace Singularity.Units
             }
             else
             {
-                if (unit.Speed >= Speed) return;
+                if (unit.Speed >= Speed)
+                {
+                    return;
+                }
+
                 Speed = unit.Speed;
             }
         }
@@ -340,7 +367,7 @@ namespace Singularity.Units
         {
             return mUnits.Remove(unit);
         }
-        
+
         public List<IFlocking> GetUnits()
         {
             return mUnits;
@@ -352,7 +379,11 @@ namespace Singularity.Units
             // mUnits.ForEach(u => u.Draw(spriteBatch));
 
 
-            if (!GlobalVariables.DebugState || mDebugPath == null) return;
+            if (!GlobalVariables.DebugState || mDebugPath == null)
+            {
+                return;
+            }
+
             for (var i = 0; i < mDebugPath.Length - 1; i++)
             {
                 spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);

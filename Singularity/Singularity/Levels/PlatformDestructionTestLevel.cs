@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Singularity.AI;
 using Singularity.Manager;
 using Singularity.Platforms;
+using Singularity.Property;
 using Singularity.Screen;
 using Singularity.Units;
 
@@ -9,7 +11,7 @@ namespace Singularity.Levels
 {
     sealed class PlatformDestructionTestLevel : BasicLevel
     {
-        public PlatformDestructionTestLevel(GraphicsDeviceManager graphics, ref Director director, ContentManager content, IScreenManager screenmanager, LevelType level) : base(graphics, ref director, content, screenmanager, level)
+        public PlatformDestructionTestLevel(GraphicsDeviceManager graphics, ref Director director, ContentManager content, IScreenManager screenmanager, LevelType level) : base(graphics, ref director, content, screenmanager, level, new BasicAi(GlobalVariables.Difficulty, ref director))
         {
             LoadContent(content);
         }

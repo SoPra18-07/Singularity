@@ -87,7 +87,7 @@ namespace Singularity.PlatformActions
         {
             return new Dictionary<EResourceType, int>();
         }
-        
+
 
         public override void Update(GameTime t)
         {

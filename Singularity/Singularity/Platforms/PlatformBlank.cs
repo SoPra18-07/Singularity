@@ -232,10 +232,10 @@ namespace Singularity.Platforms
         {
 
             mPrevPlatformActions = new List<IPlatformAction>();
-            
+
             Id = director.GetIdGenerator.NextId();
             HasDieded = false;
-            
+
 
             mDirector = director;
 

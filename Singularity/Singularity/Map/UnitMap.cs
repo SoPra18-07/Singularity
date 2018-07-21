@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Singularity.Platforms;
 using Singularity.Property;
@@ -67,8 +68,20 @@ namespace Singularity.Map
         /// <param name="unitPos">Precalculated tile position for optimization.</param>
         internal void AddUnit(ICollider unit, Vector2 unitPos)
         {
-            // then put the unit on the grid
-            mUnitGrid[(int) unitPos.X, (int) unitPos.Y].UnitList.Add(unit);
+
+            try
+            {
+                // then put the unit on the grid
+                mUnitGrid[(int) unitPos.X, (int) unitPos.Y].UnitList.Add(unit);
+
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                // if this by any chance happens we don't want our game to crash, its way better for the
+                // game to not "work as intended" anymore (it very rarely happens with enemy units flocking)
+                Debug.WriteLine(e);
+                return;
+            }
 
             // and put the unit in the lookup table
             mLookupTable.Add(unit.Id, unitPos);
@@ -153,7 +166,9 @@ namespace Singularity.Map
             var centerTile = VectorToTilePos(tilePosition);
 
             if (centerTile.X > 30 || centerTile.Y > 30)
+            {
                 return new List<ICollider>();
+            }
 
             // checks to see if adjacent tiles exist
             var n = centerTile.Y >= 1;
@@ -168,12 +183,24 @@ namespace Singularity.Map
 
             var unitList = new List<ICollider>();
 
-            unitList.AddRange(mUnitGrid[(int)centerTile.X, (int)centerTile.Y].UnitList); // "System.IndexOutOfRangeException" happening sometimes
-            // values: -1.610614E+07, 2.684359E+07 (multiple times)
-            //               30, 29  (once, weird situation though)
-            // when selecting units that have not been selected before (while having others selected)
-            // maybe while there's units within a 'not-allowed'-CollisionMap zone. also happened when selecting three units and moving, the one in the middle (probably in a platform) vanished for some reason.
-            // units vanish when clicking on unpassable objects ...
+            try
+            {
+                unitList.AddRange(mUnitGrid[(int) centerTile.X, (int) centerTile.Y]
+                    .UnitList); // "System.IndexOutOfRangeException" happening sometimes
+                // values: -1.610614E+07, 2.684359E+07 (multiple times)
+                //               30, 29  (once, weird situation though)
+                // when selecting units that have not been selected before (while having others selected)
+                // maybe while there's units within a 'not-allowed'-CollisionMap zone. also happened when selecting three units and moving, the one in the middle (probably in a platform) vanished for some reason.
+                // units vanish when clicking on unpassable objects ...
+            }
+            catch (IndexOutOfRangeException e2)
+            {
+                // same argumentation as above, as already mentioned theres sometimes a outofrange exception,
+                // we're better off ignoring it than crashing our game, I assume an empty list as return value
+                // if there's nothing is adequate
+                Debug.WriteLine(e2);
+                return new List<ICollider>();
+            }
 
             // ↑
             if (n)

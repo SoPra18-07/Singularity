@@ -343,9 +343,9 @@ namespace Singularity.Platforms
                             if (!Map.Map.IsOnTop(mPlatform.AbsBounds) || mHoveringPlatform != null || mNatureObjectThere)
                             {
                                 break;
-   
+
                             }
-                            
+
                             // the platform was on the map -> advance to next state and create the road to connect to another platform
                             mCurrentState.NextState();
                             mConnectionRoad = new Road(mPlatform, null, ref mDirector, true);
