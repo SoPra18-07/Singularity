@@ -20,7 +20,7 @@ namespace Singularity.Screen
         private readonly SpriteFont mSpriteFontTitle;
 
         // list of windowItems added to the window
-        private readonly List<IWindowItem> mItemList = new List<IWindowItem>();
+        private List<IWindowItem> mItemList = new List<IWindowItem>();
 
         // basic window rectangle
         private readonly Rectangle mWindowRectangle;
@@ -37,10 +37,6 @@ namespace Singularity.Screen
 
         // true when the window's windowItems and the padding between them
         private bool mScrollable; // = false as default value
-
-        // current screen size values
-        private int mCurrentScreenWidth;
-        private int mCurrentScreenHeight;
 
         // used by scissorrectangle to create a scrollable window by cutting everything outside specific bounds
         private readonly RasterizerState mRasterizerState;
@@ -320,10 +316,7 @@ namespace Singularity.Screen
 
         public void RemoveAllItems()
         {
-            foreach (var item in mItemList)
-            {
-                mItemList.Remove(item);
-            }
+            mItemList = new List<IWindowItem>();
         }
 
         // position of the window

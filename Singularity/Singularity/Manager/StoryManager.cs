@@ -227,7 +227,7 @@ namespace Singularity.Manager
         /// <summary>
         /// The handle method of the Tutorial. Triggers events, like for examples infoboxes.
         /// </summary>
-        public void HandleTutorial()
+        private void HandleTutorial()
         {
             //I thought about some state-system to help the handle method track at what point we are and what to trigger next.
             //Trigger Infoboxes.
@@ -241,35 +241,89 @@ namespace Singularity.Manager
                     }
                     break;
                 case "Settler":
-                    if (StructureMap.GetGraphCount() == 1)
+                    if (mDirector.GetMilitaryManager.PlayerPlatformCount == 1)
                     {
                         mTutorialState = "UI_FirstPlatform";
                         mTutorialScreen.TutorialState = "UI_FirstPlatform";
                     }
                     break;
                 case "UI_FirstPlatform":
-                    if (StructureMap.GetPlatformList().Count > 4)
+                    if (mDirector.GetMilitaryManager.PlayerPlatformCount == 2)
                     {
                         mTutorialState = "UI_SecondPlatform";
                         mTutorialScreen.TutorialState = "UI_SecondPlatform";
                     }
                     break;
                 case "UI_SecondPlatform":
-                    if (StructureMap.GetPlatformList().Count > 5)
+                    if (mDirector.GetMilitaryManager.PlayerPlatformCount == 3)
                     {
                         mTutorialState = "CivilUnits_Build";
                         mTutorialScreen.TutorialState = "CivilUnits_Build";
                     }
                     break;
                 case "CivilUnits_Build":
+                    // check if the second platform is built by checking if there are open blueprints
+                    if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex())
+                            .GetNumberOfAssigned()[1] > 0)
+                    {
+                        mTutorialState = "UserInterface_ProducePlatform";
+                        mTutorialScreen.TutorialState = "UserInterface_ProducePlatform";
+                    }
                     break;
                 case "UserInterface_ProducePlatform":
-                    break;
-                case "ResourceProduction":
+                    if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex())
+                            .GetNumberOfProdPlatforms() > 0)
+                    {
+                        mTutorialState = "Factory";
+                        mTutorialScreen.TutorialState = "Factory";
+                    }
                     break;
                 case "Factory":
+                    if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex())
+                            .GetNumberOfProdPlatforms() > 1)
+                    {
+                        mTutorialState = "SelectedPlatform_ActionAssignment";
+                        mTutorialScreen.TutorialState = "SelectedPlatform_ActionAssignment";
+                    }
                     break;
-                case "MilitaryUnits":
+                case "SelectedPlatform_ActionAssignment":
+                    if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex())
+                            .GetNumberOfAssigned()[1] < 1)
+                    {
+                        mTutorialState = "CivilUnits_Logistics";
+                        mTutorialScreen.TutorialState = "CivilUnits_Logistics";
+                    }
+                    break;
+                case "CivilUnits_Logistics":
+                    if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex())
+                            .GetNumberOfProdPlatforms() > 1)
+                    {
+                        mTutorialState = "BuildGeneralUnit";
+                        mTutorialScreen.TutorialState = "BuildGeneralUnit";
+                    }
+                    break;
+                case "BuildGeneralUnit":
+                    var assignedUnitsList = mDirector.GetDistributionDirector
+                        .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex()).GetNumberOfAssigned();
+                    if (assignedUnitsList[4] > 0)
+                    {
+                        mTutorialState = "MilitaryUnits";
+                        mTutorialScreen.TutorialState = "MilitaryUnits";
+                    }
+                    break;
+                case "BuildDefenseBuilding":
+                    if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex())
+                            .GetNumberOfDefPlatforms() > 0)
+                    {
+                        mTutorialState = "";
+                        mTutorialScreen.TutorialState = "";
+                    }
                     break;
                 default:
                     mTutorialScreen = new TutorialScreen(mDirector);
