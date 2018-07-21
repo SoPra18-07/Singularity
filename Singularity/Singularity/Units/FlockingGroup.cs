@@ -12,7 +12,6 @@ using Singularity.Utils;
 namespace Singularity.Units
 {
 
-    [DataContract]
     public class FlockingGroup : AFlocking
     {
 
@@ -21,22 +20,17 @@ namespace Singularity.Units
         /// </summary>
         protected static FreeMovingPathfinder mPathfinder = new FreeMovingPathfinder();
 
-        [DataMember]
         public Vector2 mTargetPosition;
 
-        [DataMember]
         protected Vector2 mUltimateTarget;
 
         /// <summary>
         /// Path the unit must take to get to the target position without colliding with obstacles.
         /// </summary>
-        [DataMember]
         protected Stack<Vector2> mPath = new Stack<Vector2>();
 
-        [DataMember]
         private List<IFlocking> mUnits;
 
-        [DataMember]
         private int? mSuperiorFlockingId = null;
 
 
@@ -51,13 +45,11 @@ namespace Singularity.Units
 
         public Map.Map Map { get; private set; }
 
-        [DataMember]
         public int Counter { get; private set; } // todo: use counter in FlockingGroup to look for other units
 
         /// <summary>
         /// Stores the path the unit is taking so that it can be drawn for debugging.
         /// </summary>
-        [DataMember]
         protected Vector2[] mDebugPath;
 
 
@@ -83,6 +75,7 @@ namespace Singularity.Units
 
         public override void ReloadContent(ref Director director)
         {
+            mDirector = director;
             base.ReloadContent(ref director);
             Map = mDirector.GetStoryManager.Level.Map;
             foreach (var u in mUnits)
