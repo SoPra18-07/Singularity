@@ -216,6 +216,7 @@ namespace Singularity.Manager
             if (mLoadTutorialScreen)
             {
                 mScreenManager.AddScreen(mTutorialScreen);
+                mLoadTutorialScreen = false;
             }
 
             switch (mLevelType)
