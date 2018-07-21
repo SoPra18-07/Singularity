@@ -20,7 +20,7 @@ namespace Singularity.Units
 
         [DataMember]
         int Speed { get; set; }
-        
+
         [DataMember]
         int FlockingId { get; set; }
 
@@ -31,7 +31,7 @@ namespace Singularity.Units
         void ReloadContent(ref Director director);
         void AddGroup(FlockingGroup group);
 
-        
+
     }
 
 
@@ -59,7 +59,7 @@ namespace Singularity.Units
         [DataMember]
         public bool Selected { get; set; }
 
-        
+
         protected AFlocking(ref Director director, Optional<FlockingGroup> group) : base(ref director)
         {
             Id = director.GetIdGenerator.NextId(); // id for the specific unit.
@@ -113,7 +113,7 @@ namespace Singularity.Units
                 }
             }
             // */
-            
+
             if (mGroup.Get().Count == 1)
             {
                 Velocity = mGroup.Get().Velocity;
@@ -148,7 +148,7 @@ namespace Singularity.Units
                 .Select(f => f.AbsolutePosition).ToList();
                 // .Aggregate((a, b) => a + b);
             var seper = close.Count > 0 ? (close.Aggregate((a, b) => a + b) - AbsolutePosition * close.Count) * -1 : Vector2.Zero;
-            
+
             if (seper.Length() > 1)
             {
                 seper = Vector2.Normalize(seper);
@@ -162,14 +162,14 @@ namespace Singularity.Units
             {
                 Moved = false;
             }
-        
+
             // Debug.WriteLine("Group: " + mGroup.Get().Velocity + ", " + mGroup.Get().CohesionRaw);
             // Debug.WriteLine("unit: " + AbsolutePosition + ", " + align + ", " + cohes + ", " + seper + ", " + Velocity);
-            
+
             // the new velocity will actually be used only next Update in the beginning.
         }
-        
-        
+
+
 
         public abstract void Draw(SpriteBatch spriteBatch);
 
@@ -191,7 +191,7 @@ namespace Singularity.Units
 
         #region ICollider-stuff.
 
-        
+
 
 
         public Vector2 RelativePosition { get; set; }

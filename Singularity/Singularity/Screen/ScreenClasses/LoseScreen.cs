@@ -193,6 +193,7 @@ namespace Singularity.Screen.ScreenClasses
 
         private void ReturnToMainMenu(object sender, EventArgs eventArgs)
         {
+            mDirector.GetStoryManager.Level.GameScreen.Unload();
             for (var i = 0; i < mScreenManager.GetScreenCount() - 1; i++)
             {
                 mScreenManager.RemoveScreen();

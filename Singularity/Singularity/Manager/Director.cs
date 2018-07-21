@@ -45,7 +45,7 @@ namespace Singularity.Manager
         public GraphicsDeviceManager GetGraphicsDeviceManager { get; }
 
         public EventLog GetEventLog { get; }
-        
+
         public Director(ContentManager content, GraphicsDeviceManager graphics, GlobalVariablesInstance globalVariablesInstance)
         {
             GetGlobalVariablesInstance = globalVariablesInstance;
@@ -91,7 +91,7 @@ namespace Singularity.Manager
             GetGlobalVariablesInstance.UpdateFromStatic();
             XSerializer.Save(GetGlobalVariablesInstance, @"Config.xml", true);
         }
-        
+
         public void Update(GameTime gametime, bool isActive)
         {
             if (isActive)

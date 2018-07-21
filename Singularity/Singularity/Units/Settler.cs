@@ -110,14 +110,14 @@ namespace Singularity.Units
                 .8f,
                 1f,
                 LayerConstants.MilitaryUnitLayer);
-            
+
         }
 
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            
+
             if (Moved)
             {
                 mNeverMoved = false;

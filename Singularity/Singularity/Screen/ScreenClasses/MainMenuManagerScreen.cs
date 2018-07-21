@@ -34,7 +34,7 @@ namespace Singularity.Screen.ScreenClasses
 
         // Background
         private MenuBackgroundScreen mMenuBackgroundScreen;
-        
+
         // Screen transition variables
         private static string sPressed;
         private int mTransitionState;

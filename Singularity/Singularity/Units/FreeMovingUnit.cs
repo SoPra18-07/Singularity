@@ -89,7 +89,7 @@ namespace Singularity.Units
         /// </summary>
         // [DataMember]
         // protected double mZoomSnapshot;
-        
+
             //   the following are already in AFlocking.
         // [DataMember]
         // public Rectangle AbsBounds { get; protected set; }
@@ -112,13 +112,13 @@ namespace Singularity.Units
         /// <summary>
         /// Stores the center of a unit's position.
         /// </summary>
-        /// already 
+        /// already
         // [DataMember]
         // public override Vector2 Center { get; protected set; }
 
-        
 
-        
+
+
 
         /// <summary>
         /// Value of the unit's rotation.
@@ -209,7 +209,7 @@ namespace Singularity.Units
                 };
              */
         }
-        
+
         protected void ReloadContent(ref Director director, Camera camera)
         {
             base.ReloadContent(ref director);
@@ -250,8 +250,8 @@ namespace Singularity.Units
                 x = target.X - (RelativePosition.X + RelativeSize.X / 2);
                 y = target.Y - (RelativePosition.Y + RelativeSize.Y / 2);
             }
-            
-            
+
+
             var hypot = Math.Sqrt(x * x + y * y);
 
             // calculate degree between formed triangle
@@ -286,7 +286,7 @@ namespace Singularity.Units
 
             // The unit might have gotten moved. base.Update() would only call Move(), but it's the job of the FlockingGroup to do that.
             // base.Update(gametime);
-            
+
 
             // ============ now update all the values, since the position changed ===========
 
@@ -337,7 +337,7 @@ namespace Singularity.Units
             HasDieded = true;
             // stats tracking for the death of any free moving unit
             mDirector.GetStoryManager.UpdateUnits(Friendly ? "lost" : "killed");
-            
+
             mDirector.GetInputManager.FlagForRemoval(this);
             mDirector.GetInputManager.RemoveMousePositionListener(this);
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
@@ -354,7 +354,7 @@ namespace Singularity.Units
         }
 
         #endregion
-        
+
         #region Mouse Handlers
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
@@ -450,6 +450,11 @@ namespace Singularity.Units
         /// <param name="size"> size of selection box</param>
         public void BoxSelected(object sender, EventArgs e, Vector2 position, Vector2 size)
         {
+            if (!Friendly)
+            {
+                return;
+            }
+
             // create a rectangle from given parameters
             Rectangle selBox = new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y);
 

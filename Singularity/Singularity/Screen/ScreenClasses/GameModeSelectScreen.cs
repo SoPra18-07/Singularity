@@ -41,6 +41,7 @@ namespace Singularity.Screen.ScreenClasses
         private readonly float mButtonTopPadding;
         private readonly float mButtonLeftPadding;
 
+        private bool mStoryButtonSelected;
 
         public GameModeSelectScreen(Vector2 screenResolution)
             : base(screenResolution)
@@ -85,11 +86,11 @@ namespace Singularity.Screen.ScreenClasses
             mButtonList.Add(techDemoButton);
             mButtonList.Add(backButton);
 
-            storyButton.ButtonReleased += LoadGameManagerScreen.OnStoryButtonReleased;
+            storyButton.ButtonReleased += OnStoryButtonReleased;
             freePlayButton.ButtonReleased += LoadGameManagerScreen.OnSkirmishReleased;
             techDemoButton.ButtonReleased += LoadGameManagerScreen.OnTechDemoButtonReleased;
 
-            backButton.ButtonReleased += MainMenuManagerScreen.OnBackButtonReleased;
+            backButton.ButtonReleased += OnBackButtonReleased;
 
             storyButton.ButtonHovering += OnStoryHover;
             freePlayButton.ButtonHovering += OnSkirmishHover;
@@ -106,10 +107,18 @@ namespace Singularity.Screen.ScreenClasses
                 Transition(gametime);
             }
 
-            foreach (Button button in mButtonList)
+            if (!mStoryButtonSelected)
             {
-                button.Update(gametime);
-                button.Opacity = mMenuOpacity;
+                foreach (var button in mButtonList)
+                {
+                    button.Update(gametime);
+                    button.Opacity = mMenuOpacity;
+                }
+            }
+            else
+            {
+                mButtonList[3].Update(gametime);
+                mButtonList[3].Opacity = mMenuOpacity;
             }
         }
 
@@ -156,22 +165,11 @@ namespace Singularity.Screen.ScreenClasses
 
             base.Draw(spriteBatch);
 
-            foreach (Button button in mButtonList)
-            {
-                button.Draw(spriteBatch);
-            }
-
-            // Draw selector triangle
-            spriteBatch.Draw(mSelectorTriangle,
-                mSelectorPosition,
-                null,
-                Color.White * mMenuOpacity,
-                0f,
-                new Vector2(0, 11),
-                1f,
-                SpriteEffects.None,
-                0f);
-
+            spriteBatch.DrawString(mLibSans36,
+                mMWindowTitleString,
+                new Vector2(mMenuBoxPosition.X + 20, mMenuBoxPosition.Y + 10),
+                new Color(new Vector3(.9137f, .9058f, .8314f)) * mMenuOpacity);
+            
             // Draw menu window
             spriteBatch.StrokedRectangle(mMenuBoxPosition,
                 mMenuBoxSize,
@@ -179,11 +177,52 @@ namespace Singularity.Screen.ScreenClasses
                 Color.White,
                 .5f,
                 .20f);
-            spriteBatch.DrawString(mLibSans36,
-                mMWindowTitleString,
-                new Vector2(mMenuBoxPosition.X + 20, mMenuBoxPosition.Y + 10),
-                new Color(new Vector3(.9137f, .9058f, .8314f)) * mMenuOpacity);
 
+            // campaign text
+            if (!mStoryButtonSelected)
+            {
+                foreach (var button in mButtonList)
+                {
+                    button.Draw(spriteBatch);
+                }
+
+                // Draw selector triangle
+                spriteBatch.Draw(mSelectorTriangle,
+                    mSelectorPosition,
+                    null,
+                    Color.White * mMenuOpacity,
+                    0f,
+                    new Vector2(0, 11),
+                    1f,
+                    SpriteEffects.None,
+                    0f);
+            }
+            else
+            {
+                // Draw the text
+                spriteBatch.DrawString(mLibSans14,
+                    "Campaign is available as a separate",
+                    new Vector2(mButtonLeftPadding, mButtonTopPadding),
+                    new Color(new Vector3(.9137f, .9058f, .8314f)) * mMenuOpacity);
+                spriteBatch.DrawString(mLibSans14,
+                    "DLC for € 19,99",
+                    new Vector2(mButtonLeftPadding, mButtonTopPadding + 50),
+                    new Color(new Vector3(.9137f, .9058f, .8314f)) * mMenuOpacity);
+
+                // Draw the back button
+                mButtonList[3].Draw(spriteBatch);
+
+                // Draw selector triangle
+                spriteBatch.Draw(mSelectorTriangle,
+                    mSelectorPosition,
+                    null,
+                    Color.White * mMenuOpacity,
+                    0f,
+                    new Vector2(0, 11),
+                    1f,
+                    SpriteEffects.None,
+                    0f);
+            }
             spriteBatch.End();
         }
 
@@ -213,6 +252,37 @@ namespace Singularity.Screen.ScreenClasses
             TransitionRunning = true;
         }
 
+        #region Button Release Handlers
+
+        /// <summary>
+        /// Used to create a new story mode game.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        private void OnStoryButtonReleased(Object sender, EventArgs eventArgs)
+        {
+            mStoryButtonSelected = true;
+
+        }
+        
+        /// <summary>
+        /// Used to create a new story mode game.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        private void OnBackButtonReleased(Object sender, EventArgs eventArgs)
+        {
+            if (mStoryButtonSelected)
+            {
+                mStoryButtonSelected = false;
+            }
+            else
+            {
+                MainMenuManagerScreen.OnBackButtonReleased(sender, eventArgs);
+            }
+        }
+
+        #endregion
         #region Button Hover Handlers
 
         private void OnStoryHover(Object sender, EventArgs eventArgs)

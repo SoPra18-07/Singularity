@@ -311,7 +311,7 @@ namespace Singularity.Screen
                         Mouse.GetState().X <= Position.X + Size.X &&
                         Mouse.GetState().Y >= Position.Y &&
                         Mouse.GetState().Y <= Position.Y + Size.Y)
-                    {                        
+                    {
                         mClicked = true;
                     }
                     mClicking = true;
@@ -338,7 +338,7 @@ namespace Singularity.Screen
                     mClicked = false;
                     mClicking = false;
                 }
-                
+
             }
         }
 

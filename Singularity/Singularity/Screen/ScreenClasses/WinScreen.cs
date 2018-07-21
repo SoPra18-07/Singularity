@@ -82,7 +82,7 @@ namespace Singularity.Screen.ScreenClasses
                     scale: 0.5f,
                     effects: SpriteEffects.None,
                     layerDepth: 0);
-                
+
             }
             else if (mCounter >= 250)
             {
@@ -202,6 +202,7 @@ namespace Singularity.Screen.ScreenClasses
 
         private void ReturnToMainMenu(object sender, EventArgs eventArgs)
         {
+            mDirector.GetStoryManager.Level.GameScreen.Unload();
             for (var i = 0; i < mScreenManager.GetScreenCount() - 1; i++)
             {
                 mScreenManager.RemoveScreen();
