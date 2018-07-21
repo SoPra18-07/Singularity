@@ -58,7 +58,7 @@ namespace Singularity.Graph.Paths
             {
                 return GetPathForGeneralUnits(asGeneralUnit, destination, graphIndex);
             }
-            
+
             throw new InvalidGenericArgumentException(
                 "The given argument was not one for which paths are meant to be calculated. The following are" +
                 "supported: GeneralUnit.");
@@ -69,7 +69,7 @@ namespace Singularity.Graph.Paths
         {
             return PathfindingFactory.GetPathfinding().AStar(mGraphs[graphIndex], unit.CurrentNode, destination);
         }
-        
+
 
     }
 }

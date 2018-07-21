@@ -70,7 +70,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="screenResolution">Screen resolution used for scaling.</param>
         /// <param name="screenResolutionChanged">True if the screen resolution has changed.</param>
         /// <param name="game">Game1 class passed on to options to allow changing of options.</param>
-        /// 
+        ///
         public OptionsScreen(Vector2 screenResolution, bool screenResolutionChanged, Game1 game, ref Director director)
             : base(screenResolution)
         {
@@ -82,12 +82,12 @@ namespace Singularity.Screen.ScreenClasses
 
             GlobalVariables.ChosenResolution =
                 GlobalVariables.ResolutionList.IndexOf(new Tuple<int, int>((int) screenResolution.X, (int) screenResolution.Y));
-            
+
             if (GlobalVariables.ChosenResolution == -1)
             {
                 GlobalVariables.ChosenResolution = 0;
             }
-            
+
             mTabPadding = 36;
             mContentPadding = 204;
             mTopContentPadding = mMenuBoxPosition.Y + 84;
@@ -248,7 +248,7 @@ namespace Singularity.Screen.ScreenClasses
             #endregion
 
             #region Button Handler Subscriptions
-            
+
             gameplayButton.ButtonReleased += OnGameplayReleased;
             graphicsButton.ButtonReleased += OnGraphicsReleased;
             audioButton.ButtonReleased += OnAudioReleased;
@@ -453,7 +453,7 @@ namespace Singularity.Screen.ScreenClasses
                         {
                             button.Draw(spriteBatch);
                         }
-                        
+
                         // Draw the resolution text string
                         spriteBatch.DrawString(mLibSans20, mResolutionString, new Vector2(mMenuBoxPosition.X + mContentPadding, mTopContentPadding + 40), mTextColor * mMenuOpacity);
 
@@ -468,12 +468,12 @@ namespace Singularity.Screen.ScreenClasses
                             new Vector2(mMenuBoxPosition.X + mContentPadding + 16+ spacingWidth * 0.5f - resoStringSize.X * 0.5f,
                                 mTopContentPadding + 96 - resoStringSize.Y * 0.5f);
 
-                        spriteBatch.DrawString(mLibSans20, currentResoString, resoStringPosition, mTextColor * mMenuOpacity);  
+                        spriteBatch.DrawString(mLibSans20, currentResoString, resoStringPosition, mTextColor * mMenuOpacity);
 
                         spriteBatch.DrawRectangle(new Rectangle((int) (mMenuBoxPosition.X + mContentPadding), (int)mTopContentPadding + 80, spacingWidth + 32, 32), mTextColor * mMenuOpacity);
-                        
+
                     }
-                    
+
                     break;
                 case EOptionScreenState.Audio:
                     foreach (var button in mAudioCheckboxes)

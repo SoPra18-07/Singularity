@@ -29,7 +29,7 @@ namespace Singularity.Platforms
             mIPlatformActions.Add(new MakeStandardMilitaryUnit(this, ref director));
 
             mCost = GetResourceCosts(EStructureType.Barracks);
-            
+
         }
     }
 }

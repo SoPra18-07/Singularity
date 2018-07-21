@@ -95,12 +95,12 @@ namespace Singularity.Map
         {
             // note, the location cache is probably reason number 1 if bugs occur with resources being there even though they shouldn't be,
             // we need to take care, that the resources are getting properly removed.
-            
+
             if (mLocationCache.ContainsKey(location))
             {
                 return mLocationCache[location];
             }
-            
+
             var foundResources = mResourceMap.Where(resource => new Rectangle((int) resource.AbsolutePosition.X,
                     (int) resource.AbsolutePosition.Y,
                     (int) resource.AbsoluteSize.X,

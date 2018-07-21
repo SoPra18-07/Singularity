@@ -64,7 +64,7 @@ namespace Singularity.Map
                 }
             }
             mWalkableGrid = new StaticGrid(gridXLength, gridYLength, movableMatrix);
-            
+
         }
 
         public void ReloadContent()
@@ -145,7 +145,7 @@ namespace Singularity.Map
         public void RemoveCollider(ICollider toRemove)
         {
             //Check if the location of an already existing collider needs to be updated.
-            
+
             var oldBounds = mLookUpTable[toRemove.Id];
 
             for (var x = oldBounds.X / MapConstants.GridWidth; x <= (oldBounds.X + oldBounds.Width) / MapConstants.GridWidth; x++)

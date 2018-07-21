@@ -189,8 +189,8 @@ namespace Singularity.Units
             // {
                  // Rotate(new Vector2(mMouseX, mMouseY));
             // }
-            
-            
+
+
             // these are values needed to properly get the current sprite out of the spritesheet.
             mRow = mRotation / 18;
             mColumn = (mRotation - mRow * 18) / 3;
@@ -205,7 +205,7 @@ namespace Singularity.Units
 
             // Rotate to the center of the shooting target
             Rotate(mShootingTarget.Center);
-            
+
 
             if (mShootingTimer < 0.5f)
                 {
@@ -230,7 +230,7 @@ namespace Singularity.Units
             mDirector.GetSoundManager.SetSoundPosition(mSoundId, Center.X, Center.Y);
             mDirector.GetSoundManager.PlaySound(mSoundId);
             target.MakeDamage(MilitaryUnitStats.mUnitStrength);
-            
+
             if (target != null)
             {
                 mDirector.GetSoundManager.PlaySound(mSoundId);
