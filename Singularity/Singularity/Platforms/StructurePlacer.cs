@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
@@ -121,7 +122,7 @@ namespace Singularity.Platforms
 
             mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
-            mCurrentState = new State3(1);
+            mCurrentState = new State3();
 
             director.GetUserInterfaceController.BuildingProcessStarted(platformType);
 
@@ -137,7 +138,7 @@ namespace Singularity.Platforms
                     break;
 
                 default:
-                    break;
+                   break;
             }
 
             if (mIsRoadPlacement)
@@ -416,7 +417,7 @@ namespace Singularity.Platforms
                     giveThrough = false;
                     mUnregister = true;
 
-                    return giveThrough;
+                    return false;
                 }
 
                 // we only need to do something with rightclick if were in the 2nd state, since then we revert.

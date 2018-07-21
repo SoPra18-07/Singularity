@@ -116,9 +116,6 @@ namespace Singularity.Platforms
 
                 case EStructureType.Spawner:
                     return new Spawner(position, sCylinderSheet, sBlankSheet, ref director);
-
-                default:
-                    break;
             }
             throw new ArgumentOutOfRangeException(nameof(type), type, "The given type is not supported");
 

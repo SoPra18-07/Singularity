@@ -12,7 +12,7 @@ using Singularity.Units;
 namespace Singularity.Levels
 {
     [DataContract]
-    class TechDemo : BasicLevel
+    internal sealed class TechDemo : BasicLevel
     {
 
         public TechDemo(GraphicsDeviceManager graphics, ref Director director, ContentManager content, IScreenManager screenmanager, LevelType level) : base(graphics, ref director, content, screenmanager, level, null)

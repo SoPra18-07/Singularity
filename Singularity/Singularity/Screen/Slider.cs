@@ -50,8 +50,6 @@ namespace Singularity.Screen
         // previous position of slider
         private float mValuePrevious;
 
-        private Director mDirector;
-
         // event handler for sending out event of percent of bar covered by slider
         public delegate void SliderMovingEventHandler(object source, EventArgs args, float percentMoved);
 
@@ -113,9 +111,8 @@ namespace Singularity.Screen
                 mPageSize = Size.X / Pages;
             }
 
-            mDirector = director;
-            mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
-            mDirector.GetInputManager.AddMousePositionListener(this);
+            director.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
+            director.GetInputManager.AddMousePositionListener(this);
         }
 
         public Slider(Vector2 position,

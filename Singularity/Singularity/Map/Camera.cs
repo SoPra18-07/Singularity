@@ -10,7 +10,9 @@ using Singularity.Screen;
 
 namespace Singularity.Map
 {
-    /// <inheritdoc/>
+    /// <inheritdoc cref="IKeyListener"/>
+    /// <inheritdoc cref="IMouseWheelListener"/>
+    /// <inheritdoc cref="IMousePositionListener"/>
     /// <remarks>
     /// The camera object is used to move and zoom the map and all its components.
     /// </remarks>

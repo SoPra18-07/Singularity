@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using EpPathFinding.cs;
 using Microsoft.Xna.Framework;
 using Singularity.Map.Properties;
