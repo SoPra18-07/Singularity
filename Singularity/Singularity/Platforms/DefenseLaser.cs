@@ -40,7 +40,7 @@ namespace Singularity.Platforms
             friendly: friendly)
         {
             mDrainingEnergy = DrainingEnergy;
-
+            mSpritename = "Cones";
             mCost = GetResourceCosts(EStructureType.Laser);
             mSoundId = mDirector.GetSoundManager.CreateSoundInstance("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
             mShotsperSecond = 0;
