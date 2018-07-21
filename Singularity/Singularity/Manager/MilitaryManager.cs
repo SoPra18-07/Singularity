@@ -122,6 +122,10 @@ namespace Singularity.Manager
         public void ReloadContent(Vector2 mapmeasurements, Director director)
         {
             mDirector = director;
+            foreach (var flock in mGroups)
+            {
+                flock.ReloadContent(ref director);
+            }
         }
 
         public void ReloadSetMap(ref Map.Map map)

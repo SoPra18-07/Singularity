@@ -102,7 +102,7 @@ namespace Singularity.Units
         // public Vector2 RelativePosition { get; set; }
         // [DataMember]
         // public Vector2 RelativeSize { get; set; }
-        // [DataMember]
+        [DataMember]
         public EScreen Screen { get; private set; } = EScreen.GameScreen;
 
         #endregion
@@ -160,7 +160,7 @@ namespace Singularity.Units
         /// </summary>
         [DataMember]
         internal float mMouseY;
-
+        [DataMember]
         private bool mDead;
 
         #endregion

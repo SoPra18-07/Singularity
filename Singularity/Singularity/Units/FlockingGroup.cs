@@ -83,6 +83,7 @@ namespace Singularity.Units
 
         public override void ReloadContent(ref Director director)
         {
+            mDirector = director;
             base.ReloadContent(ref director);
             Map = mDirector.GetStoryManager.Level.Map;
             foreach (var u in mUnits)
