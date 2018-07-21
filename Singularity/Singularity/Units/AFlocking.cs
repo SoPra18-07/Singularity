@@ -73,7 +73,11 @@ namespace Singularity.Units
 
         public virtual void Move()
         {
-            if (!mGroup.IsPresent() || mGroup.Get().GetUnits().Count == 0 || !Moved) return;
+            if (!mGroup.IsPresent() || mGroup.Get().GetUnits().Count == 0 || !Moved)
+            {
+                return;
+            }
+
             AbsolutePosition += Velocity; // todo: fix
             /*
             AbsolutePosition += Velocity;

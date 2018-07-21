@@ -166,7 +166,9 @@ namespace Singularity.Map
             var centerTile = VectorToTilePos(tilePosition);
 
             if (centerTile.X > 30 || centerTile.Y > 30)
+            {
                 return new List<ICollider>();
+            }
 
             // checks to see if adjacent tiles exist
             var n = centerTile.Y >= 1;

@@ -108,10 +108,8 @@ namespace Singularity.AI.Behavior
         [DataMember]
         private readonly int[] mIdleTime =
         {
-            //300000,
-            0,
-            //240000,
-            0,
+            300000,
+            240000,
             120000
         };
 
@@ -126,8 +124,7 @@ namespace Singularity.AI.Behavior
         [DataMember]
         private readonly int[] mAttackCreationCooldown =
         {
-            //180000,
-            0,
+            180000,
             120000,
             60000
         };
@@ -435,16 +432,16 @@ namespace Singularity.AI.Behavior
 
                 var group = mDirector.GetMilitaryManager.GetNewFlock();
 
-                Debug.WriteLine("trying to move attack squad");
-
                 // first check if there is a squad to join, if there isn't default to a new flocking group
                 foreach (var squadMember in squadMembers)
                 {
-                    if (mUnitToFlockingGroup.ContainsKey(squadMember))
+                    if (!mUnitToFlockingGroup.ContainsKey(squadMember))
                     {
-                        group = mUnitToFlockingGroup[squadMember];
-                        break;
+                        continue;
                     }
+
+                    group = mUnitToFlockingGroup[squadMember];
+                    break;
                 }
 
                 // make all of the squad members which aren't assigned join the already present flocking group
@@ -585,9 +582,7 @@ namespace Singularity.AI.Behavior
         }
 
         private void SetAttackTarget(ICollider attackPosition)
-        {
-            Debug.WriteLine("attack target got set");
-
+        { 
             mShouldAttack = true;
             mAttackPosition = attackPosition;
         }
