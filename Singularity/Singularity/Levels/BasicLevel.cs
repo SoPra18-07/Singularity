@@ -155,7 +155,7 @@ namespace Singularity.Levels
             mDirector.GetInputManager.FlagForAddition(this);
 
             //AI Stuff
-            Ai.ReloadContent(ref mDirector);
+            Ai?.ReloadContent(ref mDirector);
             StructureLayoutHolder.Initialize(ref mDirector);
         }
 

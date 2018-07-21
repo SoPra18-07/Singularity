@@ -43,6 +43,9 @@ namespace Singularity.Manager
         [DataMember]
         private string mTutorialState;
 
+        [DataMember]
+        private bool mLoadTutorialScreen;
+
         private TutorialScreen mTutorialScreen; // needs no serialization since it can simply be recreated when load is called
 
         public StoryManager(Director director, LevelType level = LevelType.None)
@@ -210,6 +213,11 @@ namespace Singularity.Manager
         /// <param name="time"></param>
         public void Update(GameTime time)
         {
+            if (mLoadTutorialScreen)
+            {
+                mScreenManager.AddScreen(mTutorialScreen);
+            }
+
             switch (mLevelType)
             {
                 case LevelType.None:
@@ -407,10 +415,12 @@ namespace Singularity.Manager
         {
             mDirector = director;
 
+            Console.Out.WriteLine(mTutorialState);
+
             if (Level is Tutorial)
             {
-                mTutorialScreen = new TutorialScreen(mDirector);
-                mTutorialScreen.TutorialState = mTutorialState;
+                mTutorialScreen = new TutorialScreen(mDirector) {TutorialState = mTutorialState};
+                mLoadTutorialScreen = true;
             }
         }
     }
