@@ -65,7 +65,7 @@ namespace Singularity.Platforms
             }
             BurnTrash();
             //Ask for Trash two times;
-            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).RequestResource(this, EResourceType.Trash, null, false);
+            mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).RequestResource(this, EResourceType.Trash, null);
         }
     }
 }

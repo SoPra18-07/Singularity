@@ -9,7 +9,6 @@ using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platforms;
-using Singularity.Property;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Serialization;
@@ -48,9 +47,7 @@ namespace Singularity.Levels
         [DataMember]
         public IArtificalIntelligence Ai { get; set; }
 
-        protected IScreenManager mScreenManager;
-
-        private ContentManager mContent;
+        private IScreenManager mScreenManager;
 
         protected BasicLevel(GraphicsDeviceManager graphics,
             ref Director director,
@@ -65,7 +62,6 @@ namespace Singularity.Levels
             mDirector.GetStoryManager.LoadAchievements();
             mGraphics = graphics;
             mScreenManager = screenmanager;
-            mContent = content;
             Screen = EScreen.GameScreen;
             Ai = ai;
             StandardInitialization(content);

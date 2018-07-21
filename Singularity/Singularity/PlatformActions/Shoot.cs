@@ -40,7 +40,7 @@ namespace Singularity.PlatformActions
             }
 
             AmmoCount--;
-            ((DefenseBase) mPlatform).Shoot();
+            mPlatform.Shoot();
         }
 
         public bool CanShoot()

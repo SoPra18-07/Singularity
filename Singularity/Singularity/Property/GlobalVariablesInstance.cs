@@ -41,6 +41,7 @@ namespace Singularity.Property
             GlobalVariables.MusicVolume = MusicVolume;
             GlobalVariables.UiVolume = UiVolume;
             GlobalVariables.MasterVolume = MasterVolume;
+            GlobalVariables.DebugState = false;
             GlobalVariables.FowEnabled = FowEnabled;
             GlobalVariables.HealthBarEnabled = HealthBarEnabled;
             GlobalVariables.IsFullScreen = IsFullScreen;

@@ -231,29 +231,31 @@ namespace Singularity.Units
             mDirector.GetSoundManager.PlaySound(mSoundId);
             target.MakeDamage(MilitaryUnitStats.mUnitStrength);
 
-            if (target != null)
+            if (target == null)
             {
-                mDirector.GetSoundManager.PlaySound(mSoundId);
-                target.MakeDamage(MilitaryUnitStats.mUnitStrength);
+                return;
+            }
 
-                //This should prevent the units to hold the reference to the target platform
-                //and further shooting at it despite it already being dead (they shoot in the
-                //air then)
-                var test = target as PlatformBlank;
-                var test2 = target as FreeMovingUnit;
-                if (test != null && test.HasDieded)
-                {
-                    mShootingTarget = null;
-                    mShootingTimer = -1;
-                    mShoot = false;
-                }
+            mDirector.GetSoundManager.PlaySound(mSoundId);
+            target.MakeDamage(MilitaryUnitStats.mUnitStrength);
 
-                if (test2 != null && test2.HasDieded)
-                {
-                    mShootingTarget = null;
-                    mShootingTimer = -1;
-                    mShoot = false;
-                }
+            //This should prevent the units to hold the reference to the target platform
+            //and further shooting at it despite it already being dead (they shoot in the
+            //air then)
+            var test = target as PlatformBlank;
+            var test2 = target as FreeMovingUnit;
+            if (test != null && test.HasDieded)
+            {
+                mShootingTarget = null;
+                mShootingTimer = -1;
+                mShoot = false;
+            }
+
+            if (test2 != null && test2.HasDieded)
+            {
+                mShootingTarget = null;
+                mShootingTimer = -1;
+                mShoot = false;
             }
         }
 
