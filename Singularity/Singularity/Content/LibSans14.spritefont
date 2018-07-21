@@ -55,6 +55,11 @@ with.
         <Start>&#32;</Start>
         <End>&#126;</End>
       </CharacterRegion>
+	  <CharacterRegion>
+		<!-- Currency symbols -->
+		<Start>&#8352;</Start>
+		<End>&#8378;</End>
+	  </CharacterRegion>
     </CharacterRegions>
   </Asset>
 </XnaContent>
