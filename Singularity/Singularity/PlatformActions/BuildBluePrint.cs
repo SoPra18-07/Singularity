@@ -33,7 +33,7 @@ namespace Singularity.PlatformActions
             mBuildingCost = new Dictionary<EResourceType, int>(toBeBuilt.GetResourcesRequired());
             mBuilding = toBeBuilt;
             mRBuilding = connectingRoad;
-            
+
             UpdateResources();
             mIsBuilding = true;
             mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(this);

@@ -94,7 +94,7 @@ namespace Singularity.Platforms
             if (mShotsperSecond != 0 &&
                 !(mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds > 1000) &&
                 (1000 / mShotsperSecond * mShotsDone <= mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds
-                 && mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds <= 1000 / mShotsperSecond * (mShotsDone + 1)) 
+                 && mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds <= 1000 / mShotsperSecond * (mShotsDone + 1))
                 && Friendly)
             {
                 mDefenseAction.Execute();

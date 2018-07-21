@@ -46,16 +46,12 @@ namespace Singularity.Manager
 
         #region Flocking and Selection
 
-        [DataMember]
         private List<IFlocking> mSelected = new List<IFlocking>();
 
-        [DataMember]
         private bool mIsSelected = true; // for initializing the FlockingGroup
 
-        [DataMember]
         private FlockingGroup mSelectedGroup;
 
-        [DataMember]
         private List<FlockingGroup> mGroups = new List<FlockingGroup>();
 
         #endregion
@@ -79,7 +75,7 @@ namespace Singularity.Manager
         private Director mDirector;
 
         #region Counters
-        
+
         /// <summary>
         /// The total number of player military units on the map
         /// </summary>
@@ -94,7 +90,7 @@ namespace Singularity.Manager
         /// The total number of player platforms on the map.
         /// </summary>
         internal int PlayerPlatformCount => mUnitMap.PlayerPlatformCount;
-        
+
         /// <summary>
         /// The total number of military units on the map.
         /// </summary>
@@ -122,6 +118,12 @@ namespace Singularity.Manager
         public void ReloadContent(Vector2 mapmeasurements, Director director)
         {
             mDirector = director;
+            mGroups = new List<FlockingGroup>();
+            mSelected = new List<IFlocking>();
+            foreach (var flock in mGroups)
+            {
+                flock.ReloadContent(ref director);
+            }
         }
 
         public void ReloadSetMap(ref Map.Map map)
@@ -313,7 +315,7 @@ namespace Singularity.Manager
                 {
                     unit.SetShootingTarget(closestAdjacent);
                 }
-                
+
                 else
                 {
                     unit.SetShootingTarget(null);

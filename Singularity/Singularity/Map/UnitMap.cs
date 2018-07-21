@@ -195,8 +195,8 @@ namespace Singularity.Map
             }
             catch (IndexOutOfRangeException e2)
             {
-                // same argumentation as above, as already mentioned theres sometimes a outofrange exception, 
-                // we're better off ignoring it than crashing our game, I assume an empty list as return value 
+                // same argumentation as above, as already mentioned theres sometimes a outofrange exception,
+                // we're better off ignoring it than crashing our game, I assume an empty list as return value
                 // if there's nothing is adequate
                 Debug.WriteLine(e2);
                 return new List<ICollider>();

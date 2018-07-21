@@ -792,7 +792,7 @@ namespace Singularity.Screen.ScreenClasses
 
             #region button definitions
 
-            #region open lists 
+            #region open lists
 
             // Open MainBuildingsList button
             mMainBuildingsListButton = new Button(1, mBaseIcon, Vector2.Zero, false);
@@ -1717,7 +1717,7 @@ else
                 }
                 else if (action is MakeFastMilitaryUnit)
                 {
-                    var makeFastMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
+                    var makeFastMilitaryAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero,
                         new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
                     mSelectedPlatformWindow.AddItem(makeFastMilitaryAction);
@@ -1732,7 +1732,7 @@ else
                 }
                 else if (action is ProduceMineResource)
                 {
-                    var produceMineResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
+                    var produceMineResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero,
                         new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
                     mSelectedPlatformWindow.AddItem(produceMineResourceAction);
@@ -1740,7 +1740,7 @@ else
                 }
                 else if (action is ProduceQuarryResource)
                 {
-                    var produceQuarryResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
+                    var produceQuarryResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero,
                         new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
                     mSelectedPlatformWindow.AddItem(produceQuarryResourceAction);
@@ -1748,7 +1748,7 @@ else
                 }
                 else if (action is ProduceWellResource)
                 {
-                    var produceWellResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero, 
+                    var produceWellResourceAction = new PlatformActionIWindowItem(action, mLibSans10, Vector2.Zero,
                         new Vector2(mSelectedPlatformWindow.Size.X - 50, mLibSans10.MeasureString("A").Y), mDirector);
 
                     mSelectedPlatformWindow.AddItem(produceWellResourceAction);
@@ -1955,7 +1955,7 @@ else
 
                 case EStructureType.Laser:
                     return mLaserTowerPlatformButton;
-                    
+
                 case EStructureType.Mine:
                     return mMinePlatformButton;
 
@@ -2381,7 +2381,7 @@ else
 
         #endregion
 
-        #region mainBuildings 
+        #region mainBuildings
 
         private void OnButtonmBlankPlatformHovering(object sender, EventArgs eventArgs)
         {
@@ -2528,7 +2528,7 @@ else
                 resource.InactiveInSelectedPlatformWindow = !resource.InactiveInSelectedPlatformWindow;
             }
         }
-        
+
         private void CloseActionsInSelectedWindow(object sender, EventArgs eventArgs)
         {
             foreach (var action in mSelectedPlatformActionList)

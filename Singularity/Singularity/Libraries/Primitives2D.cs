@@ -484,7 +484,7 @@ namespace Singularity.Libraries
             // calculate the distance between the two vectors
             var distance = Vector2.Distance(point1, point2);
             float angle;
-            
+
             // see if the angles are multiples of 90 degrees:
 
             // E
@@ -492,7 +492,7 @@ namespace Singularity.Libraries
             {
                 angle = 0;
             }
-            
+
             // W
             else if (point1.Y == point2.Y && point1.X > point2.X)
             {

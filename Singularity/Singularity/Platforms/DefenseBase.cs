@@ -19,7 +19,7 @@ namespace Singularity.Platforms
         /// </summary>
         [DataMember]
         protected bool mShoot;
-        
+
         /// <summary>
         /// For defense platforms, indicates where there target is
         /// </summary>
@@ -57,7 +57,7 @@ namespace Singularity.Platforms
             mSpritename = "Cones";
             Property = JobType.Defense;
 
-            
+
             SetPlatfromParameters();
 
 
@@ -93,7 +93,7 @@ namespace Singularity.Platforms
         {
             mShootingTarget = target;
         }
-        
+
         public override List<IPlatformAction> GetIPlatformActions()
         {
             var list = new List<IPlatformAction> { { mDefenseAction } };

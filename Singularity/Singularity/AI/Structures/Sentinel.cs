@@ -34,7 +34,7 @@ namespace Singularity.AI.Structures
             mType = EStructureType.Sentinel;
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
-            
+
         }
 
         public override void Update(GameTime time)

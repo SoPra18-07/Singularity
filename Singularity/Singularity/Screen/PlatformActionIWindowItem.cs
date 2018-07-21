@@ -36,7 +36,7 @@ namespace Singularity.Screen
 
         // button has been clicked on - to prevent the button from keeping firing
         private bool mClicked;
-        
+
         #endregion
 
         /// <summary>
@@ -186,7 +186,7 @@ namespace Singularity.Screen
             {
                 infoBoxItemsList.AddRange(((AMakeUnit)platformAction).GetBuildingCost().Select(resource => new ResourceIWindowItem(resource.Key, resource.Value, Vector2.Zero, spriteFont)));
             }
-            
+
             // create a infoBox containing all requirements to activate the platformAction
             mInfoBoxRequirements = new InfoBoxWindow(infoBoxItemsList, Vector2.Zero, Color.White, Color.Black, true, director);
 

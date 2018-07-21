@@ -205,7 +205,7 @@ namespace Singularity.Screen
         {
             // check which of the two merged elements had the smaller index in the indexSwitcher
             if (mIdToIndexDict[oldElementId1] < mIdToIndexDict[oldElementId2])
-            // first element is smaller therefore update the index of this element with the mergedElement 
+            // first element is smaller therefore update the index of this element with the mergedElement
             {
                 if (mCurrentIndex == mIdToIndexDict[oldElementId2])
                 {
@@ -231,7 +231,7 @@ namespace Singularity.Screen
                 mIdToIndexDict.Add(newElementId, indexToUpdate);
             }
             else
-            // second element is smaller therefore update the index of this element with the mergedElement 
+            // second element is smaller therefore update the index of this element with the mergedElement
             {
                 if (mCurrentIndex == mIdToIndexDict[oldElementId1])
                 {

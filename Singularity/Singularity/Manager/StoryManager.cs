@@ -128,7 +128,7 @@ namespace Singularity.Manager
         {
             int a;
             var temp = action;
-            
+
             if (temp == "created")
             {
                 Achievements.UnitsBuilt++;

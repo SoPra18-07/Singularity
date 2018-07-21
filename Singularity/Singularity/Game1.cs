@@ -69,10 +69,20 @@ namespace Singularity
             IsMouseVisible = true;
             mGraphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
 
-            mGraphics.PreferredBackBufferWidth = GlobalVariables.ResolutionList[GlobalVariables.ChosenResolution].Item1;
-            mGraphics.PreferredBackBufferHeight = GlobalVariables.ResolutionList[GlobalVariables.ChosenResolution].Item2;
+            if (GlobalVariables.IsFullScreen)
+            {
+                mGraphics.PreferredBackBufferWidth = mGraphicsAdapter.CurrentDisplayMode.Width;
+                mGraphics.PreferredBackBufferHeight = mGraphicsAdapter.CurrentDisplayMode.Height;
+            }
+            else
+            {
+
+                mGraphics.PreferredBackBufferWidth = GlobalVariables.ResolutionList[GlobalVariables.ChosenResolution].Item1;
+                mGraphics.PreferredBackBufferHeight = GlobalVariables.ResolutionList[GlobalVariables.ChosenResolution].Item2;
+            }
+
             mGraphics.IsFullScreen = GlobalVariables.IsFullScreen;
-            
+
             mGraphics.ApplyChanges();
 
             base.Initialize();
@@ -84,7 +94,7 @@ namespace Singularity
         /// </summary>
         protected override void LoadContent()
         {
-            
+
             var viewportResolution = new Vector2(GraphicsDevice.Viewport.Width,
                 GraphicsDevice.Viewport.Height);
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -96,7 +106,7 @@ namespace Singularity
             //ATTENTION: THE INGAME SCREENS ARE HANDLED IN THE LEVELS NOW!
             mScreenManager.AddScreen(mLoadGameManager);
             mScreenManager.AddScreen(mMainMenuManager);
-            
+
             // TODO: load and play Soundtrack as background music
             // director.GetSoundManager.LoadContent(Content);
             //_mSoundManager.PlaySoundTrack();

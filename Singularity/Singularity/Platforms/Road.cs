@@ -88,7 +88,7 @@ namespace Singularity.Platforms
 
             source.AddEdge(this, EEdgeFacing.Outwards);
             dest.AddEdge(this, EEdgeFacing.Inwards);
-            
+
         }
 
 
@@ -100,7 +100,7 @@ namespace Singularity.Platforms
         public void Update(GameTime gametime)
         {
         }
-        
+
 
         public INode GetParent()
         {
