@@ -606,12 +606,6 @@ namespace Singularity.Screen.ScreenClasses
                 cCenter.StoreResource(new Resource(EResourceType.Metal, cCenter.Center, mDirector));
                 cCenter.StoreResource(new Resource(EResourceType.Metal, cCenter.Center, mDirector));
                 cCenter.StoreResource(new Resource(EResourceType.Silicon, cCenter.Center, mDirector));
-
-
-            }
-            else if (mDirector.GetStoryManager.Level is Skirmish)
-            {
-
             }
             else
             {

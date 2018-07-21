@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
 using Singularity.Libraries;
-using Singularity.Manager;
 using Singularity.Property;
 
 namespace Singularity.Screen
@@ -24,12 +23,11 @@ namespace Singularity.Screen
 
         // basic window rectangle
         private readonly Rectangle mWindowRectangle;
-        private readonly Rectangle mBorderRectangle;
         private readonly Rectangle mTitleBarRectangle;
 
         // the rectangles needed for scrollable windows
         private Rectangle mScrollBarRectangle;
-        private Rectangle mScrollBarBorderRectangle;
+        private readonly Rectangle mScrollBarBorderRectangle;
         private readonly Rectangle mScissorRectangle;
 
         // rectangles needed for the next button
@@ -37,9 +35,6 @@ namespace Singularity.Screen
 
         // true when the window's windowItems and the padding between them
         private bool mScrollable; // = false as default value
-
-        // used by scissorrectangle to create a scrollable window by cutting everything outside specific bounds
-        private readonly RasterizerState mRasterizerState;
 
         // top and bottom positin of the window's combined items - used by scrolling
         private Vector2 mItemPosTop;
@@ -89,12 +84,6 @@ namespace Singularity.Screen
                 (int)(mSize.X - 2),
                 (int)(mSize.Y - 2)
                 );
-            mBorderRectangle = new Rectangle(
-                (int)Position.X,
-                (int)Position.Y,
-                (int)mSize.X,
-                (int)mSize.Y
-                );
 
             // ScissorRectangle will cut everything drawn outside of this rectangle when set
             mScissorRectangle = new Rectangle(
@@ -130,9 +119,6 @@ namespace Singularity.Screen
             // set button position
             mButton.Position = new Vector2(mButtonBorderRectangle.X + 5, mButtonBorderRectangle.Y + 5);
 
-            // Initialize scissor window
-            mRasterizerState = new RasterizerState { ScissorTestEnable = true };
-
             inputManager.FlagForAddition(this);
             inputManager.AddMousePositionListener(this);
 
@@ -148,27 +134,12 @@ namespace Singularity.Screen
             mItemList.Add(item);
         }
 
-        /// <summary>
-        /// Removes the given WindowItem from the Window
-        /// </summary>
-        /// <param name="item">IWindowItem</param>
-        /// <returns>true, if element successfully deleted</returns>
-        public bool DeleteItem(IWindowItem item)
-        {
-            // item is not in list -> can't be removed
-            if (!mItemList.Contains(item))
-            {
-                return false;
-            }
-
-            // item in list -> remove successful
-            mItemList.Remove(item);
-            return true;
-        }
-
         public void Draw(SpriteBatch spriteBatch)
         {
-            // TODO: what is there still to be done?
+            if (!Active)
+            {
+                return;
+            }
 
             // draw window
             spriteBatch.StrokedRectangle(new Vector2(mWindowRectangle.X, mWindowRectangle.Y), new Vector2(mWindowRectangle.Width, mWindowRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
@@ -212,6 +183,11 @@ namespace Singularity.Screen
 
         public void Update(GameTime gametime)
         {
+            if (!Active)
+            {
+                return;
+            }
+
             // current position to place the next item
             var localItemPos = mItemPosTop;
 
@@ -249,7 +225,7 @@ namespace Singularity.Screen
             //  - the mouse is above the scrollable part of the window
             //  - the window is scrollable (the number of items is too big for one window)
             if (!(mMouseX > Position.X) || !(mMouseX < Position.X + mSize.X) || !(mMouseY > Position.Y) ||
-                !(mMouseY < Position.Y + mSize.Y) || !mScrollable)
+                !(mMouseY < Position.Y + mSize.Y) || !mScrollable || !Active)
             {
                 return true;
             }
@@ -320,6 +296,8 @@ namespace Singularity.Screen
         }
 
         // position of the window
-        public Vector2 Position { get; set; }
+        private Vector2 Position { get; }
+
+        public bool Active { get; set; }
     }
 }

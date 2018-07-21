@@ -229,9 +229,6 @@ namespace Singularity.Manager
         /// </summary>
         private void HandleTutorial()
         {
-            //I thought about some state-system to help the handle method track at what point we are and what to trigger next.
-            //Trigger Infoboxes.
-            //Trigger Events for tutorial.
             switch (mTutorialState)
             {
                 case "Beginning":
@@ -262,7 +259,6 @@ namespace Singularity.Manager
                     }
                     break;
                 case "CivilUnits_Build":
-                    // check if the second platform is built by checking if there are open blueprints
                     if (mDirector.GetDistributionDirector
                             .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex())
                             .GetNumberOfAssigned()[1] > 0)
@@ -300,8 +296,7 @@ namespace Singularity.Manager
                     break;
                 case "CivilUnits_Logistics":
                     if (mDirector.GetDistributionDirector
-                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex())
-                            .GetNumberOfProdPlatforms() > 1)
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex()).GetNumberOfAssigned()[2] > 0)
                     {
                         mTutorialState = "BuildGeneralUnit";
                         mTutorialScreen.TutorialState = "BuildGeneralUnit";
@@ -333,19 +328,42 @@ namespace Singularity.Manager
                     break;
                 case "Powerhouse":
                     if (mDirector.GetDistributionDirector
-                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex())
-                            .GetNumberOfDefPlatforms() > 0)
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex()).GetNumberOfAssigned()[0] > 0)
+                    {
+                        mTutorialState = "Barracks";
+                        mTutorialScreen.TutorialState = "Barracks";
+                    }
+                    break;
+                case "Barracks":
+                    if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex()).GetNumberOfAssigned()[0] > 1)
+                    {
+                        mTutorialState = "MilitaryUnit";
+                        mTutorialScreen.TutorialState = "MilitaryUnit";
+                    }
+                    break;
+                case "MilitaryUnit":
+                    if (mDirector.GetMilitaryManager.PlayerUnitCount > 0)
+                    {
+                        mTutorialState = "finalPopup";
+                        mTutorialScreen.TutorialState = "finalPopup";
+                    }
+                    break;
+                case "finalPopup":
+                    var assignedUnitsList = mDirector.GetDistributionDirector.GetManager(StructureMap.GetPlatformList().
+                        First.Value.GetGraphIndex()).GetNumberOfAssigned();
+                    if (assignedUnitsList[0] == 0 && assignedUnitsList[1] == 0 && assignedUnitsList[2] == 0 && assignedUnitsList[3] == 0)
                     {
                         mTutorialState = "EndOfTutorial";
-                        mTutorialScreen.TutorialState = "EndOfTutorial";
+                        mTutorialScreen.TutorialState = "EndOfTutorial  ";
                     }
                     break;
                 case "EndOfTutorial":
-                    mTutorialState = "endless_loop";
+                    mTutorialState = "noAction";
                     mScreenManager.RemoveScreen();
                     Win();
                     break;
-                case "endless_loop":
+                case "noAction":
                     break;
                 default:
                     mTutorialScreen = new TutorialScreen(mDirector);
@@ -353,7 +371,6 @@ namespace Singularity.Manager
                     mTutorialState = "Beginning";
                     mScreenManager.AddScreen(mTutorialScreen);
                     break;
-
             }
         }
 
@@ -389,6 +406,12 @@ namespace Singularity.Manager
         public void ReloadContent(Director director)
         {
             mDirector = director;
+
+            if (Level is Tutorial)
+            {
+                mTutorialScreen = new TutorialScreen(mDirector);
+                mTutorialScreen.TutorialState = mTutorialState;
+            }
         }
     }
 }
