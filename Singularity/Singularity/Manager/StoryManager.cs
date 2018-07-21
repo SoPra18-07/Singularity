@@ -241,7 +241,6 @@ namespace Singularity.Manager
                     }
                     break;
                 case "Settler":
-                    Console.Out.WriteLine("settler");
                     if (StructureMap.GetGraphCount() == 1)
                     {
                         mTutorialState = "UI_FirstPlatform";
