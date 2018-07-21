@@ -93,6 +93,8 @@ namespace Singularity.Screen.ScreenClasses
                     mTransitionDuration = 300;
                     break;
                 case EScreen.LoadSelectScreen:
+                    mTransitionTargetValue = 2f;
+                    mTransitionDuration = 300;
                     break;
                 case EScreen.MainMenuScreen:
                     mTransitionTargetValue = 2f;
