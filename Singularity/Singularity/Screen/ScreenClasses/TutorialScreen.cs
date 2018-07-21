@@ -289,7 +289,7 @@ namespace Singularity.Screen.ScreenClasses
                         mTutorialText = new TextField(
                             "Of course both towers are only defense, so let's take a look into your offensive. \n " +
                             "We start by building a barracks. (Remember - you need build units) \n\n" + 
-                            "Then re-assign at least two units to defend after finishing the barracks",
+                            "Then re-assign at least three units to logistics after finishing the barracks",
                             Vector2.Zero, new Vector2(mTextWidthScrolling, 0), mLibSans12, Color.White);
 
                         mTutorialWindow.AddItem(mTutorialText);
@@ -337,7 +337,8 @@ namespace Singularity.Screen.ScreenClasses
                             "- remove a building with right click \n" +
                             "- units are automatically assigned to a job somewhere on their graph, but you can force a redistribution " +
                             "by manually deactivating certain platforms \n" + 
-                            "- you can build roads between two platforms \n\n\n" + 
+                            "- you can build roads between two platforms \n" +
+                            "- the resource window shows you your resource production in the past 10 seconds. But it gets updates only every 10 seconds \n\n\n" + 
                             "How about we relax at the end of our adventure? Unassing all units and let them run around as they wish."
                             ,
                             Vector2.Zero, new Vector2(mTextWidthScrolling, 0), mLibSans12, Color.White);
@@ -396,7 +397,7 @@ namespace Singularity.Screen.ScreenClasses
             mTutorialWindow = new PopupWindow("// Tutorial", mOkayButton, position, new Vector2(400, 300), Color.YellowGreen, Color.Orange, mLibSans14, mDirector.GetInputManager, EScreen.TutorialScreen);
 
             mTutorialText = new TextField("Welcome! \n\n This short tutorial will show you a little bit around the game. \n\n " +
-                                          "Be advised that you should follow the tutorial since your resources are count - unless you know what you're doing. \n\n Have fun!", Vector2.Zero, new Vector2(mTextWidthScrolling, 0), mLibSans12, Color.White);
+                                          " Have fun!", Vector2.Zero, new Vector2(mTextWidthScrolling, 0), mLibSans12, Color.White);
 
             mTutorialWindow.AddItem(mTutorialText);
 

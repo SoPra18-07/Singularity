@@ -336,13 +336,13 @@ namespace Singularity.Manager
                     break;
                 case "Barracks":
                     if (mDirector.GetDistributionDirector
-                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex()).GetNumberOfAssigned()[0] > 1)
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex()).GetNumberOfAssigned()[2] > 2)
                     {
-                        mTutorialState = "MilitaryUnit";
-                        mTutorialScreen.TutorialState = "MilitaryUnit";
+                        mTutorialState = "create_MilitaryUnit";
+                        mTutorialScreen.TutorialState = "create_MilitaryUnit";
                     }
                     break;
-                case "MilitaryUnit":
+                case "create_MilitaryUnit":
                     if (mDirector.GetMilitaryManager.PlayerUnitCount > 0)
                     {
                         mTutorialState = "finalPopup";
