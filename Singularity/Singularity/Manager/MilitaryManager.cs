@@ -46,16 +46,12 @@ namespace Singularity.Manager
 
         #region Flocking and Selection
 
-        [DataMember]
         private List<IFlocking> mSelected = new List<IFlocking>();
 
-        [DataMember]
         private bool mIsSelected = true; // for initializing the FlockingGroup
 
-        [DataMember]
         private FlockingGroup mSelectedGroup;
 
-        [DataMember]
         private List<FlockingGroup> mGroups = new List<FlockingGroup>();
 
         #endregion
@@ -122,6 +118,8 @@ namespace Singularity.Manager
         public void ReloadContent(Vector2 mapmeasurements, Director director)
         {
             mDirector = director;
+            mGroups = new List<FlockingGroup>();
+            mSelected = new List<IFlocking>();
             foreach (var flock in mGroups)
             {
                 flock.ReloadContent(ref director);

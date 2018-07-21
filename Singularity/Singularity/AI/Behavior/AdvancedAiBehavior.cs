@@ -92,8 +92,7 @@ namespace Singularity.AI.Behavior
 
         private const float PriorityAddition = 0.1f;
 
-        [DataMember]
-        private readonly Dictionary<EnemyUnit, FlockingGroup> mUnitToFlockingGroup;
+        private Dictionary<EnemyUnit, FlockingGroup> mUnitToFlockingGroup;
 
         [DataMember]
         private readonly int[] mUnitsMovementCooldown = { 0, 0, 0 };
@@ -720,6 +719,8 @@ namespace Singularity.AI.Behavior
             mAttackingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
             mDefendingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
             mScoutingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
+
+            mUnitToFlockingGroup = new Dictionary<EnemyUnit, FlockingGroup>();
 
             foreach (var unit in mAllUnits)
             {
