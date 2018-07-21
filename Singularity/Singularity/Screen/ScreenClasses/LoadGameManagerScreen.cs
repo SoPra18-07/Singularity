@@ -326,18 +326,6 @@ namespace Singularity.Screen.ScreenClasses
             sPressed = "Skirmish";
         }
 
-        /// <summary>
-        /// Used to create a new story mode game.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
-        public static void OnStoryButtonReleased(Object sender, EventArgs eventArgs)
-        {
-            // TODO: implement start game with story
-            throw new NotImplementedException("No story yet unfortunately");
-
-        }
-
         public static void OnTechDemoButtonReleased(Object sender, EventArgs eventArgs)
         {
             sPressed = "TechDemo";
