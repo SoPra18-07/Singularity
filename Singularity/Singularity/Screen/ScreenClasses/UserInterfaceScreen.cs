@@ -1005,12 +1005,6 @@ namespace Singularity.Screen.ScreenClasses
 
             var dictWithRes = PlatformBlank.GetResourceCosts(EStructureType.Blank);
 
-            var infoBuildBlankStone = new ResourceIWindowItem(
-                EResourceType.Stone,
-                dictWithRes[EResourceType.Stone],
-                mLibSans10.MeasureString("Blank Platform"),
-                mLibSans10);
-
             var infoBuildBlankMetal = new ResourceIWindowItem(
                 EResourceType.Metal,
                 dictWithRes[EResourceType.Metal],
@@ -1018,7 +1012,7 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10);
 
             mInfoBuildBlank = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoBuildBlank, infoBuildBlankStone, infoBuildBlankMetal },
+                itemList: new List<IWindowItem> { infoBuildBlank, infoBuildBlankMetal },
                 size: mLibSans10.MeasureString("Blank Platform"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,

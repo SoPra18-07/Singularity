@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -38,6 +39,14 @@ namespace Singularity.Manager
 
         [DataMember]
         private LevelType mLevelType;
+
+        [DataMember]
+        private string mTutorialState;
+
+        [DataMember]
+        private bool mLoadTutorialScreen;
+
+        private TutorialScreen mTutorialScreen; // needs no serialization since it can simply be recreated when load is called
 
         public StoryManager(Director director, LevelType level = LevelType.None)
         {
@@ -204,6 +213,12 @@ namespace Singularity.Manager
         /// <param name="time"></param>
         public void Update(GameTime time)
         {
+            if (mLoadTutorialScreen)
+            {
+                mScreenManager.AddScreen(mTutorialScreen);
+                mLoadTutorialScreen = false;
+            }
+
             switch (mLevelType)
             {
                 case LevelType.None:
@@ -221,11 +236,151 @@ namespace Singularity.Manager
         /// <summary>
         /// The handle method of the Tutorial. Triggers events, like for examples infoboxes.
         /// </summary>
-        public void HandleTutorial()
+        private void HandleTutorial()
         {
-            //I thought about some state-system to help the handle method track at what point we are and what to trigger next.
-            //Trigger Infoboxes.
-            //Trigger Events for tutorial.
+            switch (mTutorialState)
+            {
+                case "Beginning":
+                    if (mTutorialScreen.TutorialState == "AwaitingUserAction")
+                    {
+                        mTutorialState = "Settler";
+                    }
+                    break;
+                case "Settler":
+                    if (mDirector.GetMilitaryManager.PlayerPlatformCount == 1)
+                    {
+                        mTutorialState = "UI_FirstPlatform";
+                        mTutorialScreen.TutorialState = "UI_FirstPlatform";
+                    }
+                    break;
+                case "UI_FirstPlatform":
+                    if (mDirector.GetMilitaryManager.PlayerPlatformCount == 2)
+                    {
+                        mTutorialState = "UI_SecondPlatform";
+                        mTutorialScreen.TutorialState = "UI_SecondPlatform";
+                    }
+                    break;
+                case "UI_SecondPlatform":
+                    if (mDirector.GetMilitaryManager.PlayerPlatformCount == 3)
+                    {
+                        mTutorialState = "CivilUnits_Build";
+                        mTutorialScreen.TutorialState = "CivilUnits_Build";
+                    }
+                    break;
+                case "CivilUnits_Build":
+                    if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex())
+                            .GetNumberOfAssigned()[1] > 0)
+                    {
+                        mTutorialState = "UserInterface_ProducePlatform";
+                        mTutorialScreen.TutorialState = "UserInterface_ProducePlatform";
+                    }
+                    break;
+                case "UserInterface_ProducePlatform":
+                    if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex())
+                            .GetNumberOfProdPlatforms() > 0)
+                    {
+                        mTutorialState = "Factory";
+                        mTutorialScreen.TutorialState = "Factory";
+                    }
+                    break;
+                case "Factory":
+                    if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex())
+                            .GetNumberOfProdPlatforms() > 1)
+                    {
+                        mTutorialState = "SelectedPlatform_ActionAssignment";
+                        mTutorialScreen.TutorialState = "SelectedPlatform_ActionAssignment";
+                    }
+                    break;
+                case "SelectedPlatform_ActionAssignment":
+                    if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex())
+                            .GetNumberOfAssigned()[1] < 1)
+                    {
+                        mTutorialState = "CivilUnits_Logistics";
+                        mTutorialScreen.TutorialState = "CivilUnits_Logistics";
+                    }
+                    break;
+                case "CivilUnits_Logistics":
+                    if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex()).GetNumberOfAssigned()[2] > 0)
+                    {
+                        mTutorialState = "BuildGeneralUnit";
+                        mTutorialScreen.TutorialState = "BuildGeneralUnit";
+                    }
+                    break;
+                case "BuildGeneralUnit":
+                    if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex()).GetNumberOfAssigned()[4] > 0)
+                    {
+                        mTutorialState = "BuildDefenseBuilding";
+                        mTutorialScreen.TutorialState = "BuildDefenseBuilding";
+                    }
+                    break;
+                case "BuildDefenseBuilding":
+                    if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex()).GetNumberOfAssigned()[3] == 0)
+                    {
+                        mTutorialState = "Force-Deactivation";
+                        mTutorialScreen.TutorialState = "Force-Deactivation";
+                    }
+                    break;
+                case "Force-Deactivation":
+                    if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex()).GetNumberOfAssigned()[4] == 0)
+                    {
+                        mTutorialState = "Powerhouse";
+                        mTutorialScreen.TutorialState = "Powerhouse";
+                    }
+                    break;
+                case "Powerhouse":
+                    if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex()).GetNumberOfAssigned()[0] > 0)
+                    {
+                        mTutorialState = "Barracks";
+                        mTutorialScreen.TutorialState = "Barracks";
+                    }
+                    break;
+                case "Barracks":
+                    if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex()).GetNumberOfAssigned()[2] > 2)
+                    {
+                        mTutorialState = "create_MilitaryUnit";
+                        mTutorialScreen.TutorialState = "create_MilitaryUnit";
+                    }
+                    break;
+                case "create_MilitaryUnit":
+                    if (mDirector.GetMilitaryManager.PlayerUnitCount > 0)
+                    {
+                        mTutorialState = "finalPopup";
+                        mTutorialScreen.TutorialState = "finalPopup";
+                    }
+                    break;
+                case "finalPopup":
+                    var assignedUnitsList = mDirector.GetDistributionDirector.GetManager(StructureMap.GetPlatformList().
+                        First.Value.GetGraphIndex()).GetNumberOfAssigned();
+                    if (assignedUnitsList[0] == 0 && assignedUnitsList[1] == 0 && assignedUnitsList[2] == 0 && assignedUnitsList[3] == 0)
+                    {
+                        mTutorialState = "EndOfTutorial";
+                        mTutorialScreen.TutorialState = "EndOfTutorial  ";
+                    }
+                    break;
+                case "EndOfTutorial":
+                    mTutorialState = "noAction";
+                    mScreenManager.RemoveScreen();
+                    Win();
+                    break;
+                case "noAction":
+                    break;
+                default:
+                    mTutorialScreen = new TutorialScreen(mDirector);
+                    mTutorialScreen.TutorialState = "Beginning";
+                    mTutorialState = "Beginning";
+                    mScreenManager.AddScreen(mTutorialScreen);
+                    break;
+            }
         }
 
         /// <summary>
@@ -260,6 +415,14 @@ namespace Singularity.Manager
         public void ReloadContent(Director director)
         {
             mDirector = director;
+
+            Console.Out.WriteLine(mTutorialState);
+
+            if (Level is Tutorial)
+            {
+                mTutorialScreen = new TutorialScreen(mDirector) {TutorialState = mTutorialState};
+                mLoadTutorialScreen = true;
+            }
         }
     }
 }

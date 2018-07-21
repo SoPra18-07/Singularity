@@ -67,7 +67,7 @@ namespace Singularity.Screen
         /// <inheritdoc />
         public void Update(GameTime gametime)
         {
-            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle && !WindowIsInactive)
             {
                 // update positions
                 mColorPosition = new Vector2(Position.X, Position.Y + Size.Y / 4);
@@ -79,7 +79,7 @@ namespace Singularity.Screen
         /// <inheritdoc />
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle && !WindowIsInactive)
             {
                 // draw the color rectangle at the beginning
                 spriteBatch.StrokedRectangle(
@@ -114,5 +114,7 @@ namespace Singularity.Screen
         public bool InactiveInSelectedPlatformWindow { get; set; }
         /// <inheritdoc />
         public bool OutOfScissorRectangle { get; set; }
+        /// <inheritdoc />
+        public bool WindowIsInactive { get; set; }
     }
 }

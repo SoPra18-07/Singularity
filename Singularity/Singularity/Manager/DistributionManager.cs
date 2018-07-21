@@ -1132,6 +1132,20 @@ namespace Singularity.Manager
             // TODO: throw new NotImplementedException(); // (currently commented out, since it'd break stuff)
         }
 
+        public List<int> GetNumberOfAssigned()
+        {
+            return new List<int> {mDefense.Count, mConstruction.Count, mLogistics.Count, mProduction.Count, mIdle.Count};
+        }
+
+        public int GetNumberOfProdPlatforms()
+        {
+            return mProdPlatforms.Count;
+        }
+
+        public int GetNumberOfDefPlatforms()
+        {
+            return mDefPlatforms.Count;
+        }
 
         #region Killing
         public void Kill(PlatformBlank platform)

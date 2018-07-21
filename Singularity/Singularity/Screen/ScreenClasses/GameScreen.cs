@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
+using Singularity.Levels;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Nature;
@@ -551,12 +552,14 @@ namespace Singularity.Screen.ScreenClasses
             var cCenter = PlatformFactory.Get(EStructureType.Command, ref mDirector, v.X - 55, v.Y - 100, commandBlueprint: false);
             AddObject(cCenter);
 
-
             var genUnit = new GeneralUnit(cCenter, ref mDirector);
             AddObject(genUnit);
 
             var genUnit2 = new GeneralUnit(cCenter, ref mDirector);
             AddObject(genUnit2);
+
+            var genUnit3 = new GeneralUnit(cCenter, ref mDirector);
+            AddObject(genUnit3);
 
             cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector));
             cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector)); cCenter.StoreResource(new Resource(EResourceType.Steel, cCenter.Center, mDirector));

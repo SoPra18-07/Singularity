@@ -489,6 +489,7 @@ namespace Singularity.Screen
         public bool ActiveInWindow { get; set; }
         public bool InactiveInSelectedPlatformWindow { get; set; }
         public bool OutOfScissorRectangle { get; set; }
+        public bool WindowIsInactive { get; set; }
 
         // can change the amount of pages available on slider bar
         public int Pages { get; set; }

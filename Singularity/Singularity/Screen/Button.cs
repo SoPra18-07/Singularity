@@ -197,7 +197,7 @@ namespace Singularity.Screen
         /// <param name="spriteBatch"></param>
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle && !WindowIsInactive)
             {
 
                 if (mWithBorder)
@@ -262,7 +262,7 @@ namespace Singularity.Screen
         /// <param name="gametime"></param>
         public virtual void Update(GameTime gametime)
         {
-            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle && !WindowIsInactive)
             {
                 // if mouse is hovering over button then make draw color gray
                 if (Mouse.GetState().X >= Position.X &&
@@ -359,5 +359,6 @@ namespace Singularity.Screen
         public bool ActiveInWindow { get; set; }
         public bool InactiveInSelectedPlatformWindow { get; set; }
         public bool OutOfScissorRectangle { get; set; }
+        public bool WindowIsInactive { get; set; }
     }
 }

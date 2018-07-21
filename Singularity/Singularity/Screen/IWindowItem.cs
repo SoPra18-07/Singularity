@@ -31,5 +31,10 @@ namespace Singularity.Screen
         /// This prevents buttons/.. from being active while outside the window
         /// </summary>
         bool OutOfScissorRectangle { get; set; }
+
+        /// <summary>
+        /// This value is used by the window - if it's (de)activated, all IWindowItems automatically get (de)activated.
+        /// </summary>
+        bool WindowIsInactive { get; set; }
     }
 }
