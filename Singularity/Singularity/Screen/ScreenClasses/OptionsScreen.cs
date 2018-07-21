@@ -606,22 +606,16 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="eventArgs"></param>
         private void OnFullScreenReleased(Object sender, EventArgs eventArgs)
         {
-            int width;
-            int height;
-
             if (mGame.mGraphics.IsFullScreen)
             {
                 GlobalVariables.IsFullScreen = false;
                 // if it is already full screen, reset to a smaller screen size
-                width = 960;
-                height = 720;
+                GlobalVariables.ChosenResolution = 0;
             }
             else
             {
                 // otherwise, do set up the game for full screen
                 GlobalVariables.IsFullScreen = true;
-                width = mGame.mGraphicsAdapter.CurrentDisplayMode.Width;
-                height = mGame.mGraphicsAdapter.CurrentDisplayMode.Height;
             }
 
             mGame.mGraphics.IsFullScreen = GlobalVariables.IsFullScreen;
@@ -648,7 +642,7 @@ namespace Singularity.Screen.ScreenClasses
             }
             else
             {
-                GlobalVariables.ChosenResolution = 0;
+                
                 width = GlobalVariables.ResolutionList[GlobalVariables.ChosenResolution].Item1;
                 height = GlobalVariables.ResolutionList[GlobalVariables.ChosenResolution].Item2;
             }
