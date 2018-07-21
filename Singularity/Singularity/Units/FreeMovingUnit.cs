@@ -450,6 +450,11 @@ namespace Singularity.Units
         /// <param name="size"> size of selection box</param>
         public void BoxSelected(object sender, EventArgs e, Vector2 position, Vector2 size)
         {
+			if (!Friendly)
+			{
+				return;
+			}
+			
             // create a rectangle from given parameters
             Rectangle selBox = new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y);
 
