@@ -68,7 +68,7 @@ namespace Singularity.Screen.ScreenClasses
             base.LoadContent(content);
 
             var mBackStr = "Back";
-            
+
             // create the back button
             mBackButton = new Button(mBackStr,
                 mLibSans20,

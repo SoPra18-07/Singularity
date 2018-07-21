@@ -32,7 +32,7 @@ namespace Singularity.AI
 
             var index = rnd.Next(sAllStructures[difficulty].Length);
 
-            var structure = sAllStructures[difficulty][index]; 
+            var structure = sAllStructures[difficulty][index];
 
             // make sure to not take the same reference as in this sAllStructures dict. Otherwise the AI can't take the same structure more than once.
             // -> recreate every object and give that to the caller
@@ -160,7 +160,7 @@ namespace Singularity.AI
             #endregion
 
             #region 2. Easy Structure
-            // 1 CC, 1 spawner, 1 sentinal, 3 blank : a samll tree like strucutre 
+            // 1 CC, 1 spawner, 1 sentinal, 3 blank : a samll tree like strucutre
 
             var struct2CommandCenter = (CommandCenter)PlatformFactory.Get(EStructureType.Command, ref director, 0f, 0f, null, false, false);
 
@@ -291,12 +291,12 @@ namespace Singularity.AI
             struct2MPlatforms.Add(struct2MPlat6);
             struct2MPlatforms.Add(struct2MPlat7);
 
-            
+
             var struct2MRoads = new List<Road>();
             struct2MRoads.Add(new Road(struct2MCommandCenter, struct2MPlat1, ref director));
             struct2MRoads.Add(new Road(struct2MCommandCenter, struct2MPlat2, ref director));
             struct2MRoads.Add(new Road(struct2MCommandCenter, struct2MPlat5, ref director));
-            struct2MRoads.Add(new Road(struct2MCommandCenter, struct2MPlat6, ref director));           
+            struct2MRoads.Add(new Road(struct2MCommandCenter, struct2MPlat6, ref director));
             struct2MRoads.Add(new Road(struct2MPlat1, struct2MPlat4, ref director));
             struct2MRoads.Add(new Road(struct2MPlat5, struct2MPlat7, ref director));
             struct2MRoads.Add(new Road(struct2MPlat2, struct2MPlat3, ref director));

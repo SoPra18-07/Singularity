@@ -11,7 +11,7 @@ using Singularity.Utils;
 
 namespace Singularity.Units
 {
-    
+
     [DataContract]
     public class FlockingGroup : AFlocking
     {
@@ -35,7 +35,7 @@ namespace Singularity.Units
 
         [DataMember]
         private List<IFlocking> mUnits;
-        
+
         [DataMember]
         private int? mSuperiorFlockingId = null;
 
@@ -50,9 +50,9 @@ namespace Singularity.Units
 
 
         public Map.Map Map { get; private set; }
-        
+
         [DataMember]
-        public int Counter { get; private set; } // todo: use counter in FlockingGroup to look for other units 
+        public int Counter { get; private set; } // todo: use counter in FlockingGroup to look for other units
 
         /// <summary>
         /// Stores the path the unit is taking so that it can be drawn for debugging.
@@ -67,7 +67,7 @@ namespace Singularity.Units
             Velocity = Vector2.Zero;
             CohesionRaw = Vector2.Zero;
             SeperationRaw = Vector2.Zero;
-            
+
             // mMap = mDirector.GetStoryManager.Level.Map;
             Map = map;
 
@@ -109,7 +109,7 @@ namespace Singularity.Units
             // todo: now get a velocity to the current target.
             // also: todo: actively let units avoid obstacles. (in progress)
             // (lookup at precomputed map velocities).
-            
+
             // if we don't need to move, why bother recalculating all the values?
             if (!Moved)
             {
@@ -117,13 +117,13 @@ namespace Singularity.Units
             }
 
             SeperationRaw = Vector2.Zero;
-            
+
 
             foreach (var unit in mUnits)
             {
                 SeperationRaw += unit.AbsolutePosition;
             }
-            
+
             AbsolutePosition = SeperationRaw / mUnits.Count;
             CohesionRaw = AbsolutePosition;
             // ActualSpeed = mUnits.Any(u => u.Speed > ActualSpeed);
@@ -140,7 +140,7 @@ namespace Singularity.Units
                 mTargetPosition = mPath.Pop();
                 mGoalCounter = 0;
             }
-            
+
             // setting variables used from the AFlocking parts
             mUnits.ForEach(u => u.Move());
 
@@ -323,7 +323,7 @@ namespace Singularity.Units
         }
         */
 
-        
+
         public void MakePartOf(FlockingGroup group)
         {
             mGroup = Optional<FlockingGroup>.Of(group);
@@ -343,7 +343,7 @@ namespace Singularity.Units
         {
             throw new NotImplementedException();
         }
-        
+
         internal void AssignUnit(IFlocking unit)
         {
             mUnits.Add(unit);
@@ -367,7 +367,7 @@ namespace Singularity.Units
         {
             return mUnits.Remove(unit);
         }
-        
+
         public List<IFlocking> GetUnits()
         {
             return mUnits;

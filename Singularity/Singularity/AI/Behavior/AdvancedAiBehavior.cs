@@ -128,7 +128,7 @@ namespace Singularity.AI.Behavior
             120000,
             60000
         };
-        
+
         private const int ScoutingSquadSize = 3;
 
         private const int MaxDefendingSquadSize = 3;
@@ -320,7 +320,7 @@ namespace Singularity.AI.Behavior
                         mUnitToFlockingGroup[squadMember] = mDirector.GetMilitaryManager.GetNewFlock();
                         mUnitToFlockingGroup[squadMember].AssignUnit(squadMember);
                     }
-                    
+
                     mUnitToFlockingGroup[squadMember].FindPath(GetRandomPositionOnRectangle(randomBounds));
                     mIsCurrentlyMoving[squadMember] = true;
                     AddToQueue(EEnemyType.Defend, squadMember);
@@ -535,9 +535,9 @@ namespace Singularity.AI.Behavior
                     }
 
                     var randomSpawner = structureToSpawnAt[mRandom.Next(structureToSpawnAt.Count)];
-                    
+
                     SpawnOneUnit(EEnemyType.Attack, randomSpawner);
-                } 
+                }
 
                 mOldPlayerMilitaryUnitCount = mDirector.GetMilitaryManager.PlayerUnitCount;
                 mUnitCreationSnapshot[(int) EEnemyType.Attack] = (int) gametime.TotalGameTime.TotalMilliseconds;
@@ -582,7 +582,7 @@ namespace Singularity.AI.Behavior
         }
 
         private void SetAttackTarget(ICollider attackPosition)
-        { 
+        {
             mShouldAttack = true;
             mAttackPosition = attackPosition;
         }

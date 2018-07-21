@@ -29,13 +29,13 @@ namespace Singularity.Levels
         {
             var settler = new Settler(new Vector2(2900, 3200), Camera, ref mDirector, GameScreen, Ui);
             GameScreen.AddObject(settler);
-            
+
             var milunitList = new List<MilitaryFast>(6);
             for (var i = 0; i < 6; i++)
             {
                 milunitList.Add(new MilitaryFast(new Vector2(3000 + (i > 2 ? 100 : 0), 3000 + (i % 3) * 50), Camera, ref mDirector));
             }
-            
+
             GameScreen.AddObjects(milunitList);
 
             // add a puddle

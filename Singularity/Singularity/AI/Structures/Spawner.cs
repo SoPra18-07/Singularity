@@ -53,7 +53,7 @@ namespace Singularity.AI.Structures
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
-            
+
             gameScreen.AddObject(enemyUnit);
             return enemyUnit;
         }
