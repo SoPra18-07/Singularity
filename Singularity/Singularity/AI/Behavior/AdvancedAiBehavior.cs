@@ -109,8 +109,7 @@ namespace Singularity.AI.Behavior
         private readonly int[] mIdleTime =
         {
             300000,
-            //240000,
-            0,
+            240000,
             120000
         };
 
@@ -292,7 +291,7 @@ namespace Singularity.AI.Behavior
             {
                 // this is the time in millis that the unit stands still after having moved and reached its position. Since defending units don't
                 // need to move that much this is definitely OK. Note this is only for the "idle" movement. If attacked behavior might change
-                mUnitsMovementCooldown[(int)EEnemyType.Defend] = mRandom.Next(3000, 10000);
+                mUnitsMovementCooldown[(int)EEnemyType.Defend] = mRandom.Next(1500, 10000);
             }
 
             if (gametime.TotalGameTime.TotalMilliseconds - mUnitsMovementSnapshot[(int)EEnemyType.Defend] > mUnitsMovementCooldown[(int)EEnemyType.Defend])
@@ -364,15 +363,11 @@ namespace Singularity.AI.Behavior
                 // var map = mDirector.GetStoryManager.Level.Map;
                 // var squad = new FlockingGroup(ref mDirector, ref map);
 
+                Debug.Write(queue.Count);
+
                 // while (!queue.IsEmpty && squad.Count < ScoutingSquadSize)
                 while (!queue.IsEmpty && squadMembers.Count < ScoutingSquadSize)
                 {
-                    // we don't wanna do anything if the one with highest priority is currently already moving.
-                    // this allows for smaller squad building if not enough units are currently available.
-                    if (mIsCurrentlyMoving[queue.Max().GetObject()])
-                    {
-                        break;
-                    }
                     // squad.AssignUnit(queue.DeleteMax().GetObject());
                     squadMembers.Add(queue.DeleteMax().GetObject());
                 }
@@ -383,23 +378,21 @@ namespace Singularity.AI.Behavior
                 // this might be bad, but felix said that unused flocking groups get deleted anyways.
                 var possibleGroup = mDirector.GetMilitaryManager.GetNewFlock();
 
-                FlockingGroup group = null;
-
                 foreach (var squadMember in squadMembers)
                 {
-                    if(!mUnitToFlockingGroup.ContainsKey(squadMember)) 
+                    if (mUnitToFlockingGroup.ContainsKey(squadMember))
                     {
-                        mUnitToFlockingGroup[squadMember] = possibleGroup;
-                        mUnitToFlockingGroup[squadMember].AssignUnit(squadMember);
+                        mUnitToFlockingGroup[squadMember].Kill(squadMember);
                     }
+
+                    mUnitToFlockingGroup[squadMember] = possibleGroup;
+                    mUnitToFlockingGroup[squadMember].AssignUnit(squadMember);
 
                     mIsCurrentlyMoving[squadMember] = true;
                     AddToQueue(EEnemyType.Scout, squadMember);
-
-                    group = mUnitToFlockingGroup[squadMember];
                 }
 
-                group?.FindPath(position);
+                possibleGroup?.FindPath(position);
 
                 mUnitsMovementSnapshot[(int) EEnemyType.Scout] = (int) gametime.TotalGameTime.TotalMilliseconds;
 
@@ -439,17 +432,25 @@ namespace Singularity.AI.Behavior
 
                 var group = mDirector.GetMilitaryManager.GetNewFlock();
 
+                // first check if there is a squad to join, if there isn't default to a new flocking group
+                foreach (var squadMember in squadMembers)
+                {
+                    if (!mUnitToFlockingGroup.ContainsKey(squadMember))
+                    {
+                        continue;
+                    }
+
+                    group = mUnitToFlockingGroup[squadMember];
+                    break;
+                }
+
+                // make all of the squad members which aren't assigned join the already present flocking group
                 foreach (var squadMember in squadMembers)
                 {
                     if (!mUnitToFlockingGroup.ContainsKey(squadMember))
                     {
                         mUnitToFlockingGroup[squadMember] = group;
                         mUnitToFlockingGroup[squadMember].AssignUnit(squadMember);
-
-                    }
-                    else
-                    {
-                        group = mUnitToFlockingGroup[squadMember];
                     }
 
                     mIsCurrentlyMoving[squadMember] = true;
@@ -459,52 +460,6 @@ namespace Singularity.AI.Behavior
                 group.FindPath(position);
 
                 mUnitsMovementSnapshot[(int)EEnemyType.Attack] = (int)gametime.TotalGameTime.TotalMilliseconds;
-            }
-
-            #endregion
-
-            #region Defending
-
-            if (mUnitsMovementCooldown[(int)EEnemyType.Defend] <= 0)
-            {
-                // this is the time in millis that the unit stands still after having moved and reached its position. Since defending units don't
-                // need to move that much this is definitely OK. Note this is only for the "idle" movement. If attacked behavior might change
-                mUnitsMovementCooldown[(int)EEnemyType.Defend] = mRandom.Next(1000, 10000);
-            }
-
-            if (gametime.TotalGameTime.TotalMilliseconds - mUnitsMovementSnapshot[(int)EEnemyType.Defend] > mUnitsMovementCooldown[(int)EEnemyType.Defend])
-            {
-                // the idea is for defending units to only move around bases of the ai, this might leave some bases undefended, which is fine,
-                // since otherwise the player might be too much handicapped
-
-                var queue = GetPrioritiyQueueByEnemyType(EEnemyType.Defend);
-
-                var squadMembers = new List<EnemyUnit>();
-
-                while (!queue.IsEmpty && squadMembers.Count < MaxDefendingSquadSize)
-                {
-                    // we want to maximally reposition the amount specified in MaxDefendingSquadSize
-
-                    squadMembers.Add(queue.DeleteMax().GetObject());
-                }
-
-                // so we basically want to walk on the edges of the rectangle.
-                var randomBounds = mAi.GetBoundsOfStructure(mRandom.Next(mAi.GetStructureCount()));
-
-                foreach (var squadMember in squadMembers)
-                {
-                    if (!mUnitToFlockingGroup.ContainsKey(squadMember))
-                    {
-                        mUnitToFlockingGroup[squadMember] = mDirector.GetMilitaryManager.GetNewFlock();
-                        mUnitToFlockingGroup[squadMember].AssignUnit(squadMember);
-                    }
-
-                    mUnitToFlockingGroup[squadMember].FindPath(GetRandomPositionOnRectangle(randomBounds));
-                    mIsCurrentlyMoving[squadMember] = true;
-                    AddToQueue(EEnemyType.Defend, squadMember);
-                }
-
-                mUnitsMovementSnapshot[(int)EEnemyType.Defend] = (int)gametime.TotalGameTime.TotalMilliseconds;
             }
 
             #endregion
@@ -627,7 +582,7 @@ namespace Singularity.AI.Behavior
         }
 
         private void SetAttackTarget(ICollider attackPosition)
-        {
+        { 
             mShouldAttack = true;
             mAttackPosition = attackPosition;
         }
@@ -841,8 +796,6 @@ namespace Singularity.AI.Behavior
                 // a defending unit shot, thus move (currently all) defending units to where this happened
                 var allDefendings = GetPrioritiyQueueByEnemyType(EEnemyType.Defend).ToList();
 
-                var group = mDirector.GetMilitaryManager.GetNewFlock();
-
                 // make a temporary flocking group to reduce stress
                 foreach (var defending in allDefendings)
                 {
@@ -851,15 +804,15 @@ namespace Singularity.AI.Behavior
                         continue;
                     }
 
-                    group.AssignUnit(defending.GetObject());
-                }
-                group.FindPath(shootingAt.Center);
+                    if (!mUnitToFlockingGroup.ContainsKey(defending.GetObject()))
+                    {
+                        mUnitToFlockingGroup[defending.GetObject()] = mDirector.GetMilitaryManager.GetNewFlock();
+                        mUnitToFlockingGroup[defending.GetObject()].AssignUnit(defending.GetObject());
+                    }
 
-                foreach (var defending in allDefendings)
-                {
-                    group.Kill(defending.GetObject());
+                    mUnitToFlockingGroup[defending.GetObject()].FindPath(shootingAt.Center);
                 }
-
+                SetAttackTarget(shootingAt);
                 return;
             }
 
