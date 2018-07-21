@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -38,6 +39,11 @@ namespace Singularity.Manager
 
         [DataMember]
         private LevelType mLevelType;
+
+        [DataMember]
+        private string mTutorialState;
+
+        private TutorialScreen mTutorialScreen; // needs no serialization since it can simply be recreated when load is called
 
         public StoryManager(Director director, LevelType level = LevelType.None)
         {
@@ -226,6 +232,47 @@ namespace Singularity.Manager
             //I thought about some state-system to help the handle method track at what point we are and what to trigger next.
             //Trigger Infoboxes.
             //Trigger Events for tutorial.
+            switch (mTutorialState)
+            {
+                case "Beginning":
+                    if (mTutorialScreen.TutorialState == "AwaitingUserAction")
+                    {
+                        mTutorialState = "Settler";
+                    }
+                    break;
+                case "Settler":
+                    Console.Out.WriteLine("settler");
+                    if (StructureMap.GetGraphCount() == 1)
+                    {
+                        mTutorialState = "UI_FirstPlatform";
+                        mTutorialScreen.TutorialState = "UI_FirstPlatform";
+                    }
+                    break;
+                case "UI_FirstPlatform":
+                    if (StructureMap.GetPlatformList().Count == 5)
+                    {
+                        mTutorialState = "UI_SecondPlatform";
+                        mTutorialScreen.TutorialState = "UI_SecondPlatform";
+                    }
+                    break;
+                case "UI_SecondPlatform":
+                    break;
+                case "UserInterface_ProducePlatform":
+                    break;
+                case "ResourceProduction":
+                    break;
+                case "Factory":
+                    break;
+                case "MilitaryUnits":
+                    break;
+                default:
+                    mTutorialScreen = new TutorialScreen(mDirector);
+                    mTutorialScreen.TutorialState = "Beginning";
+                    mTutorialState = "Beginning";
+                    mScreenManager.AddScreen(mTutorialScreen);
+                    break;
+
+            }
         }
 
         /// <summary>

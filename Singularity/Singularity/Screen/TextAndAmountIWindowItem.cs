@@ -60,7 +60,7 @@ namespace Singularity.Screen
         /// <inheritdoc />
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle && !WindowIsInactive)
             {
                 // draw the text to the item's left side
                 spriteBatch.DrawString(mSpriteFont, mText, Position, mColor);
@@ -80,5 +80,7 @@ namespace Singularity.Screen
         public bool InactiveInSelectedPlatformWindow { get; set; }
         /// <inheritdoc />
         public bool OutOfScissorRectangle { get; set; }
+        /// <inheritdoc />
+        public bool WindowIsInactive { get; set; }
     }
 }

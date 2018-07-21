@@ -63,7 +63,7 @@ namespace Singularity.Screen
         /// <inheritdoc />
         public void Update(GameTime gametime)
         {
-            if (!ActiveInWindow || OutOfScissorRectangle) {  return; }
+            if (!ActiveInWindow || OutOfScissorRectangle || WindowIsInactive) {  return; }
             // update position of all components
             mPositionButton.Position = Position;
             mText.Position = new Vector2(mPositionButton.Position.X + mShiftValue, Position.Y + mPositionButton.Size.Y);
@@ -77,7 +77,7 @@ namespace Singularity.Screen
         /// <inheritdoc />
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (!ActiveInWindow || OutOfScissorRectangle) {  return; }
+            if (!ActiveInWindow || OutOfScissorRectangle || WindowIsInactive) {  return; }
             // draw all components
             mPositionButton.Draw(spriteBatch);
             mText.Draw(spriteBatch);
@@ -126,5 +126,7 @@ namespace Singularity.Screen
         public bool InactiveInSelectedPlatformWindow { get; set; }
         /// <inheritdoc />
         public bool OutOfScissorRectangle { get; set; }
+        /// <inheritdoc />
+        public bool WindowIsInactive { get; set; }
     }
 }

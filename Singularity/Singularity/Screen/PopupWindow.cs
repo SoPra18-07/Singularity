@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
 using Singularity.Libraries;
+using Singularity.Manager;
 using Singularity.Property;
 
 namespace Singularity.Screen
@@ -66,7 +67,7 @@ namespace Singularity.Screen
             Color colorFill,
             SpriteFont spriteFontTitle,
             InputManager inputManager,
-            GraphicsDeviceManager graphics)
+            EScreen screen = EScreen.UserInterfaceScreen)
         {
             mWindowName = windowName;
             Position = position;
@@ -75,9 +76,6 @@ namespace Singularity.Screen
             mColorFill = colorFill;
             mButton = button;
             mSpriteFontTitle = spriteFontTitle;
-
-            mCurrentScreenWidth = graphics.PreferredBackBufferWidth;
-            mCurrentScreenHeight = graphics.PreferredBackBufferHeight;
 
             // size of the title
             const int titleSizeY = 720 / 26;
@@ -141,6 +139,8 @@ namespace Singularity.Screen
 
             inputManager.FlagForAddition(this);
             inputManager.AddMousePositionListener(this);
+
+            Screen = screen;
         }
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace Singularity.Screen
             mButton.Update(gametime);
         }
 
-        public EScreen Screen { get; } = EScreen.UserInterfaceScreen;
+        public EScreen Screen { get; }
 
         public bool MouseWheelValueChanged(EMouseAction mouseAction)
         {
@@ -262,7 +262,7 @@ namespace Singularity.Screen
             switch (mouseAction)
             {
                 case EMouseAction.ScrollUp:
-                    if (!(mItemPosTop.Y > mScissorRectangle.Y - 10))
+                    if (!(mItemPosTop.Y > mScissorRectangle.Y))
                         // stop from overflowing
                     {
                         mItemPosTop.Y += +10;
@@ -308,6 +308,14 @@ namespace Singularity.Screen
             var positionY = mScrollBarBorderRectangle.Y + numberOfStepsTaken * stepSize + 3;
 
             return new Rectangle((int)(Position.X + mSize.X - 20 + 2), (int)positionY, 20 - 4, (int)sizeY);
+        }
+
+        /// <summary>
+        /// reset scrolling
+        /// </summary>
+        public void ResetScrollValue()
+        {
+            mItemPosTop = new Vector2(Position.X + 10, Position.Y + 720 / 26f + 30);
         }
 
         // position of the window

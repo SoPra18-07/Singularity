@@ -122,6 +122,12 @@ namespace Singularity.Screen.ScreenClasses
                     mUi = mLevel.Ui;
                     mNewGame = true;
                     break;
+                case "Tutorial":
+                    mLevel = new Tutorial(mGraphics, ref mDirector, mContent, mScreenManager, LevelType.Tutorial);
+                    mGameScreen = mLevel.GameScreen;
+                    mUi = mLevel.Ui;
+                    mNewGame = true;
+                    break;
                 case "Save1":
                     mName = XSerializer.GetSaveNames()[0];
                     break;
@@ -342,6 +348,12 @@ namespace Singularity.Screen.ScreenClasses
         {
             sPressed = "TechDemo";
         }
+
+        public static void OnTutorialButtonReleased(Object sender, EventArgs eventArgs)
+        {
+            sPressed = "Tutorial";
+        }
+
         #endregion
 
     }

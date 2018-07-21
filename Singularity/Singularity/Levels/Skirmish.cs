@@ -21,7 +21,6 @@ namespace Singularity.Levels
             LevelType level)
             : base(graphics, ref director, content, screenmanager, level)
         {
-
             LoadContent(content);
         }
 

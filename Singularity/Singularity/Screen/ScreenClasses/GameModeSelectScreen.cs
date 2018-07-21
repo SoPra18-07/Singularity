@@ -68,6 +68,7 @@ namespace Singularity.Screen.ScreenClasses
             const string storyString = "Campaign Mode";
             const string freePlayString = "Skirmish";
             const string techDemoString = "Tech Demo";
+            const string tutorialString = "Tutorial";
             const string backString = "Back";
 
             // fonts and variables
@@ -79,21 +80,25 @@ namespace Singularity.Screen.ScreenClasses
             var storyButton = new Button(storyString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
             var freePlayButton = new Button(freePlayString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
             var techDemoButton = new Button(techDemoString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 100), new Color(new Vector3(.9137f, .9058f, .8314f)));
-            var backButton = new Button(backString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
+            var tutorialButton = new Button(tutorialString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 150), new Color(new Vector3(.9137f, .9058f, .8314f)));
+            var backButton = new Button(backString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 200), new Color(new Vector3(.9137f, .9058f, .8314f)));
             mButtonList.Add(storyButton);
             mButtonList.Add(freePlayButton);
             mButtonList.Add(techDemoButton);
+            mButtonList.Add(tutorialButton);
             mButtonList.Add(backButton);
 
             storyButton.ButtonReleased += LoadGameManagerScreen.OnStoryButtonReleased;
             freePlayButton.ButtonReleased += LoadGameManagerScreen.OnSkirmishReleased;
             techDemoButton.ButtonReleased += LoadGameManagerScreen.OnTechDemoButtonReleased;
+            tutorialButton.ButtonReleased += LoadGameManagerScreen.OnTutorialButtonReleased;
 
             backButton.ButtonReleased += MainMenuManagerScreen.OnBackButtonReleased;
 
             storyButton.ButtonHovering += OnStoryHover;
             freePlayButton.ButtonHovering += OnSkirmishHover;
             techDemoButton.ButtonHovering += OnTechDemoHover;
+            tutorialButton.ButtonHovering += OnTutorialHover;
             backButton.ButtonHovering += OnBackHover;
 
             Loaded = true;
@@ -230,9 +235,14 @@ namespace Singularity.Screen.ScreenClasses
             mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 100);
         }
 
-        private void OnBackHover(Object sender, EventArgs eventArgs)
+        private void OnTutorialHover(Object sender, EventArgs eventArgs)
         {
             mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 150);
+        }
+
+        private void OnBackHover(Object sender, EventArgs eventArgs)
+        {
+            mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter + 200);
         }
         #endregion
     }
