@@ -46,13 +46,13 @@ namespace Singularity.Screen
 
             ActiveInWindow = true;
         }
-        
+
         public void UpdateText(string newText)
         {
             Size = mSpriteFont.MeasureString(newText);
             mSplittedText = SplitLineToMultiline(newText, Size, mSpriteFont);
         }
-        
+
         public void Update(GameTime gametime)
         {
             // no update needed

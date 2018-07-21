@@ -37,7 +37,7 @@ namespace Singularity.Levels
             {
                 milunitList.Add(new MilitaryFast(new Vector2(3000 + (i > 2 ? 100 : 0), 3000 + (i % 3) * 50), Camera, ref mDirector));
             }
-            
+
             GameScreen.AddObjects(milunitList);
 
             // add a puddle

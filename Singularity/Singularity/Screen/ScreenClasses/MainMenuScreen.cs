@@ -56,7 +56,7 @@ namespace Singularity.Screen.ScreenClasses
         /// Used to construct a new instance of the main menu screen
         /// </summary>
         /// <param name="screenResolution">Screen resolution of the game</param>
-        public MainMenuScreen(Vector2 screenResolution, bool fromSplash) 
+        public MainMenuScreen(Vector2 screenResolution, bool fromSplash)
             : base(screenResolution)
         {
             mMenuBoxPosition = new Vector2(screenResolution.X / 2 - 204, screenResolution.Y / 4);
@@ -86,7 +86,7 @@ namespace Singularity.Screen.ScreenClasses
             mButtonVerticalCenter = mLibSans20.MeasureString("Gg").Y / 2;
             mSelectorPosition = new Vector2(mMenuBoxPosition.X + 22, mButtonTopPadding + mButtonVerticalCenter);
             mSelectorTriangle = content.Load<Texture2D>("SelectorTriangle");
-            
+
 
             mPlayButton = new Button(mPlayString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding), new Color(new Vector3(.9137f, .9058f, .8314f)));
             mLoadButton = new Button(mLoadSelectString, mLibSans20, new Vector2(mButtonLeftPadding, mButtonTopPadding + 50), new Color(new Vector3(.9137f, .9058f, .8314f)));
@@ -188,7 +188,7 @@ namespace Singularity.Screen.ScreenClasses
                     // change menu opacity
                     mMenuOpacity =
                         (float)Animations.Easing(1, 0, mTransitionStartTime, mTransitionDuration, gameTime);
-                    
+
                     // position change
                     var xpos = (float)Animations.Easing(mScreenResolution.X / 2 - 204,
                         mScreenResolution.X / 2 - 283,

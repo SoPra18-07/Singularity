@@ -36,7 +36,7 @@ namespace Singularity.Graph.Paths
             var gScore = new Dictionary<INode, float>();
 
             var fScore = new Dictionary<INode, float>();
-                
+
             Func<INode, INode, int> compareFunc = (a, b) => (int) fScore[a] > (int) fScore[b] ? 1 : (int) fScore[a] < (int) fScore[b] ? -1 : 0;
 
             var openList = new IntervalHeap<INode>(ComparerFactory<INode>.CreateComparer(compareFunc)) { start };
@@ -55,7 +55,7 @@ namespace Singularity.Graph.Paths
             {
 
                 var current = openList.DeleteMin();
-                
+
                 // current can never be null from my short amount of thinking about it (if actual arguments are given)
 
                 Debug.Assert(current != null, "pathFinding failed.");
@@ -63,7 +63,7 @@ namespace Singularity.Graph.Paths
                 {
                     return ReconstructPath(cameFrom, current);
                 }
-                
+
                 closedList.Add(current);
                 foreach (var outgoing in current.GetOutwardsEdges())
                 {

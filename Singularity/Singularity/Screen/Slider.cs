@@ -222,7 +222,7 @@ namespace Singularity.Screen
                     }
                     mClicking = true;
                 }
-                    
+
 
                 // if slider is left button released then unslave from mouse
                 if (Mouse.GetState().LeftButton == ButtonState.Released && mClicking)

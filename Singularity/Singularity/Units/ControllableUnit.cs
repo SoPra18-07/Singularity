@@ -23,7 +23,7 @@ namespace Singularity.Units
         /// </summary>
         [DataMember]
         internal bool mSelected;
-        
+
         #endregion
 
         /// <summary>

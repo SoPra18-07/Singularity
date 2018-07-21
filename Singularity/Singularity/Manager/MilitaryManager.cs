@@ -79,7 +79,7 @@ namespace Singularity.Manager
         private Director mDirector;
 
         #region Counters
-        
+
         /// <summary>
         /// The total number of player military units on the map
         /// </summary>
@@ -94,7 +94,7 @@ namespace Singularity.Manager
         /// The total number of player platforms on the map.
         /// </summary>
         internal int PlayerPlatformCount => mUnitMap.PlayerPlatformCount;
-        
+
         /// <summary>
         /// The total number of military units on the map.
         /// </summary>
@@ -313,7 +313,7 @@ namespace Singularity.Manager
                 {
                     unit.SetShootingTarget(closestAdjacent);
                 }
-                
+
                 else
                 {
                     unit.SetShootingTarget(null);
