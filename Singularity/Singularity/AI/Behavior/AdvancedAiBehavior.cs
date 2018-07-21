@@ -202,8 +202,6 @@ namespace Singularity.AI.Behavior
             mAttackingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
             mDefendingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
             mAllUnits = new List<PrioritizableObject<EnemyUnit>>();
-
-            CreateNewBase(null);
         }
 
         public void CreateNewBase(GameTime gametime)
@@ -362,8 +360,6 @@ namespace Singularity.AI.Behavior
                 var squadMembers = new List<EnemyUnit>();
                 // var map = mDirector.GetStoryManager.Level.Map;
                 // var squad = new FlockingGroup(ref mDirector, ref map);
-
-                Debug.Write(queue.Count);
 
                 // while (!queue.IsEmpty && squad.Count < ScoutingSquadSize)
                 while (!queue.IsEmpty && squadMembers.Count < ScoutingSquadSize)

@@ -16,7 +16,7 @@ namespace Singularity.Levels
             ContentManager content,
             IScreenManager screenmanager, 
             LevelType level)
-            : base(graphics, ref director, content, screenmanager, level)
+            : base(graphics, ref director, content, screenmanager, level, null)
         {
             LoadContent(content);
         }
