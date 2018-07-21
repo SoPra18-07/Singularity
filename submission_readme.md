@@ -36,5 +36,5 @@ More information can be found in the [Software Praktikum Wiki](https://sopra.inf
 - Right clicking deselects platforms
 - While building platforms, the player must first click where the platform is to go then create a road between the platform and another platform already on the network.
 - If the new platform is too far from the closest network, it will turn red while trying to build.
-- In this case, the player must right click the to cancel placement.
+- In this case, the player must right click to cancel placement.
 - Right clicking once more cancels building.
