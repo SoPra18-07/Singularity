@@ -155,7 +155,7 @@ namespace Singularity.Screen.ScreenClasses
                         mTutorialWindow.RemoveAllItems();
 
                         mTutorialText = new TextField(
-                            "Wait until the mine is not in blueprint mode anymore, then assign the remaining unit to 'production'. " +
+                            "Wait until the mine is not in blueprint mode anymore, then assign one unit to 'production'. " +
                             "The unit will go to the mine and start producing recources. \n\n " +
                             "This will take some time, so let's use the time to continue expanding our graph. For example by building a factory. \n" +
                             "You will find the factory under 'refine resources' in the build menu.",
@@ -233,7 +233,27 @@ namespace Singularity.Screen.ScreenClasses
                             "we should probably take a look at the military part of this tutorial. Let us start with the defense - a defense tower: " +
                             "- a kinetic tower, which needs general units to run or \n" +
                             "- a laser tower, which only needs enegry to run. \n\n" +
-                            "Build a laser tower",
+                            "Let's build a laser tower. \n" +
+                            "Remember that you need to assign an unit to 'build' the tower",
+                            Vector2.Zero, new Vector2(mTextWidthScrolling, 0), mLibSans12, Color.White);
+
+                        mTutorialWindow.AddItem(mTutorialText);
+                        mTutorialWindow.ResetScrollValue();
+                        mPopupOpen = true;
+                    }
+                    break;
+                case "Force-Deactivation":
+                    if (!mPopupOpen)
+                    {
+                        TutorialState = "AwaitingUserAction";
+                        mTutorialWindow.RemoveAllItems();
+
+                        mTutorialText = new TextField(
+                            "Have you noticed how all your platforms went green? That means they were force-deactivated, since the graph is lacking energy..\n\n" +
+                            "You can manually deactivate all platforms. Since the laser tower needs a lot of energy we can't provide yet - how about we deactivate it for now? \n\n" +
+                            "Look into the selected platform window after clicking on the tower and choose 'deactivate'. You will notice" +
+                            " that all other platforms are automatically re-activated - since enough is provided again - , but the unit assignments have changed." +
+                            "Take care of that by assigning all units to a task you see fit." ,
                             Vector2.Zero, new Vector2(mTextWidthScrolling, 0), mLibSans12, Color.White);
 
                         mTutorialWindow.AddItem(mTutorialText);

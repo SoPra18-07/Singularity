@@ -308,22 +308,44 @@ namespace Singularity.Manager
                     }
                     break;
                 case "BuildGeneralUnit":
-                    var assignedUnitsList = mDirector.GetDistributionDirector
-                        .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex()).GetNumberOfAssigned();
-                    if (assignedUnitsList[4] > 0)
+                    if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex()).GetNumberOfAssigned()[4] > 0)
                     {
-                        mTutorialState = "MilitaryUnits";
-                        mTutorialScreen.TutorialState = "MilitaryUnits";
+                        mTutorialState = "BuildDefenseBuilding";
+                        mTutorialScreen.TutorialState = "BuildDefenseBuilding";
                     }
                     break;
                 case "BuildDefenseBuilding":
                     if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex()).GetNumberOfAssigned()[3] == 0)
+                    {
+                        mTutorialState = "Force-Deactivation";
+                        mTutorialScreen.TutorialState = "Force-Deactivation";
+                    }
+                    break;
+                case "Force-Deactivation":
+                    if (mDirector.GetDistributionDirector
+                            .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex()).GetNumberOfAssigned()[4] == 0)
+                    {
+                        mTutorialState = "Powerhouse";
+                        mTutorialScreen.TutorialState = "Powerhouse";
+                    }
+                    break;
+                case "Powerhouse":
+                    if (mDirector.GetDistributionDirector
                             .GetManager(StructureMap.GetPlatformList().First.Value.GetGraphIndex())
                             .GetNumberOfDefPlatforms() > 0)
                     {
-                        mTutorialState = "";
-                        mTutorialScreen.TutorialState = "";
+                        mTutorialState = "EndOfTutorial";
+                        mTutorialScreen.TutorialState = "EndOfTutorial";
                     }
+                    break;
+                case "EndOfTutorial":
+                    mTutorialState = "endless_loop";
+                    mScreenManager.RemoveScreen();
+                    Win();
+                    break;
+                case "endless_loop":
                     break;
                 default:
                     mTutorialScreen = new TutorialScreen(mDirector);
