@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 ﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Manager;
@@ -95,20 +93,7 @@ namespace Singularity.Platforms
         {
             mShootingTarget = target;
         }
-
-        /// <summary>
-        /// Used to find the coordinates of the given Vector2 based on the overall map
-        /// instead of just the camera shot, returns Vector2 of absolute position
-        /// </summary>
-        /// <returns></returns>
-        private Vector2 MapCoordinates(Vector2 v)
-        {
-            var camera = mDirector.GetStoryManager.Level.Camera;
-            return new Vector2(Vector2.Transform(new Vector2(v.X, v.Y),
-                Matrix.Invert(camera.GetTransform())).X, Vector2.Transform(new Vector2(v.X, v.Y),
-                Matrix.Invert(camera.GetTransform())).Y);
-        }
-
+        
         public override List<IPlatformAction> GetIPlatformActions()
         {
             var list = new List<IPlatformAction> { { mDefenseAction } };

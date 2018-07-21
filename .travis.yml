@@ -12,7 +12,6 @@ install:
   - sudo ./generate.sh && yes Y|sudo ./monogame-linux.run; # install monogame sdk
   - sudo cp -r /usr/lib/mono/xbuild/MonoGame/v3.0/Assemblies/DesktopGL /usr/lib/mono/xbuild/MonoGame/v3.0/Assemblies/Windows
 script:
-    # for some reason this fails since we started doing cross-platform builds. probably since it's the windows tool.
-#  - (cd Singularity/Singularity/Content/ && mono /opt/monogame-pipeline/MGCB.exe /rebuild /@:"Content.mgcb" /outputDir:"../bin/Release/Content")
+  - (cd Singularity/Singularity/Content/ && mono /opt/monogame-pipeline/MGCB.exe /rebuild /@:"Content.mgcb" /outputDir:"../bin/Release/Content")
   - sudo mdtool build Singularity/Singularity/Singularity.csproj
   # this is actually necessary since otherwise for some reason there's no acesses to Build-required temp-paths.

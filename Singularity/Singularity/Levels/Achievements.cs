@@ -1,5 +1,4 @@
 ﻿using System.Runtime.Serialization;
-using Singularity.Utils;
 
 namespace Singularity.Levels
 {

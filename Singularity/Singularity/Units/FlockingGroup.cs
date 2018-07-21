@@ -1,18 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Manager;
-using Singularity.Map;
 using Singularity.Map.Properties;
 using Singularity.Property;
 using Singularity.Utils;
@@ -82,7 +74,9 @@ namespace Singularity.Units
             FlockingId = mDirector.GetIdGenerator.NextId();
 
             if (mGroup.IsPresent())
+            {
                 mSuperiorFlockingId = mGroup.Get().FlockingId;
+            }
 
             HeatMap = Optional<Vector2[,]>.Of(null);
         }
@@ -91,7 +85,10 @@ namespace Singularity.Units
         {
             base.ReloadContent(ref director);
             Map = mDirector.GetStoryManager.Level.Map;
-            foreach (var u in mUnits) u.ReloadContent(ref director);
+            foreach (var u in mUnits)
+            {
+                u.ReloadContent(ref director);
+            }
         }
 
         // public override Vector2 RelativePosition { get; set; }   // does not really make sense but AFloking : ICollider ...
@@ -114,8 +111,11 @@ namespace Singularity.Units
             // (lookup at precomputed map velocities).
             
             // if we don't need to move, why bother recalculating all the values?
-            if (!Moved) return;
-            
+            if (!Moved)
+            {
+                return;
+            }
+
             SeperationRaw = Vector2.Zero;
             
 
@@ -147,16 +147,18 @@ namespace Singularity.Units
 
             if (Geometry.Length(mTargetPosition - AbsolutePosition) < mUnits.Count * Speed)
             {
-                mGoalCounter++;
+                Moved = mUnits.TrueForAll(u => !u.Moved);
             }
+
+            /*
 
             if (mGoalCounter > 3)
             {
-                Moved = false;
-                mUnits.ForEach(u => u.Moved = false);
+                // Moved = false;
+                // mUnits.ForEach(u => u.Moved = false);
                 mGoalCounter = 0;
             }
-
+            // */
 
             /*   todo: implement / fix
 
@@ -206,12 +208,19 @@ namespace Singularity.Units
                     {
                         continue;
                     }
-                    if (!(heatMap[n.GetFirst(), n.GetSecond()] >= int.MaxValue - 2) || !mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(n.GetFirst(), n.GetSecond())) continue;
+                    if (!(heatMap[n.GetFirst(), n.GetSecond()] >= int.MaxValue - 2) || !mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(n.GetFirst(), n.GetSecond()))
+                    {
+                        continue;
+                    }
+
                     heatMap[n.GetFirst(), n.GetSecond()] = val + 1;
                     queue.Enqueue(n);
                 }
                 if (queue.Count == 0)
+                {
                     break;
+                }
+
                 var next = queue.Dequeue();
                 node = next;
             }
@@ -226,11 +235,16 @@ namespace Singularity.Units
                     int x = 0, z = 0;
                     if (i + 1 < mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(0) &&
                         i - 1 > 0)
+                    {
                         x =  heatMap[i - 1, j] - heatMap[i + 1, j];
+                    }
 
                     if (j + 1 < mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(1) &&
                         j - 1 > 0)
+                    {
                         z = heatMap[i, j - 1] - heatMap[i, j + 1];
+                    }
+
                     temp[i, j] = new Vector2(x, z);
                 }
             }
@@ -241,7 +255,10 @@ namespace Singularity.Units
         internal void FindPath(Vector2 target)
         {
 
-            if (target == mUltimateTarget || mUnits.Count == 0) return;
+            if (target == mUltimateTarget || mUnits.Count == 0)
+            {
+                return;
+            }
 
             mUltimateTarget = target;
 
@@ -272,15 +289,22 @@ namespace Singularity.Units
                 AbsolutePosition = SeperationRaw / mUnits.Count;
             }
 
-            Moved = true;
-            mUnits.ForEach(u => u.Moved = true);
 
             var map = Map;
             mPath = new Stack<Vector2>();
             mPath = mPathfinder.FindPath(AbsolutePosition,
                 target,
                 ref map);
-            
+
+            // test if the Path is valid to begin with
+            if (mPath.Count == 0)
+            {
+                return;
+            }
+
+            Moved = true;
+            mUnits.ForEach(u => u.Moved = true);
+
             mDebugPath = mPath.ToArray();
 
             mTargetPosition = mPath.Pop(); // directly getting first goal-part.
@@ -330,7 +354,11 @@ namespace Singularity.Units
             }
             else
             {
-                if (unit.Speed >= Speed) return;
+                if (unit.Speed >= Speed)
+                {
+                    return;
+                }
+
                 Speed = unit.Speed;
             }
         }
@@ -351,7 +379,11 @@ namespace Singularity.Units
             // mUnits.ForEach(u => u.Draw(spriteBatch));
 
 
-            if (!GlobalVariables.DebugState || mDebugPath == null) return;
+            if (!GlobalVariables.DebugState || mDebugPath == null)
+            {
+                return;
+            }
+
             for (var i = 0; i < mDebugPath.Length - 1; i++)
             {
                 spriteBatch.DrawLine(mDebugPath[i], mDebugPath[i + 1], Color.Orange);

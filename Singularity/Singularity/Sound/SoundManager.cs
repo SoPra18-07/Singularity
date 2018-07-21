@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -230,7 +229,7 @@ namespace Singularity.Sound
                 case SoundClass.Ui:
                     mUiInstances[mInstanceMap[id].Item2].Volume =
                         GlobalVariables.UiVolume;
-                    mUiInstances[mInstanceMap[id].Item2].Play();;
+                    mUiInstances[mInstanceMap[id].Item2].Play();
                     break;
 
                 case SoundClass.Music:

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -556,6 +556,7 @@ namespace Singularity.Input
             return giveThrough;
         }
 
+        [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalse")]
         public void Update(GameTime gametime)
         {
             // update 'current' values

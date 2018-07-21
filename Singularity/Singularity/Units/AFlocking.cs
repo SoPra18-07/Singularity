@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
+﻿using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -62,9 +59,7 @@ namespace Singularity.Units
         [DataMember]
         public bool Selected { get; set; }
 
-
-        private List<IFlocking> mOtherUnits = new List<IFlocking>();
-
+        
         protected AFlocking(ref Director director, Optional<FlockingGroup> group) : base(ref director)
         {
             Id = director.GetIdGenerator.NextId(); // id for the specific unit.
@@ -78,7 +73,11 @@ namespace Singularity.Units
 
         public virtual void Move()
         {
-            if (!mGroup.IsPresent() || mGroup.Get().GetUnits().Count == 0) return;
+            if (!mGroup.IsPresent() || mGroup.Get().GetUnits().Count == 0 || !Moved)
+            {
+                return;
+            }
+
             AbsolutePosition += Velocity; // todo: fix
             /*
             AbsolutePosition += Velocity;
@@ -125,7 +124,7 @@ namespace Singularity.Units
 
             var diff = mGroup.Get().mTargetPosition - AbsolutePosition;
             var dist = (float)Geometry.Length(diff);
-            var actualSpeed = (dist > 100 ? 1 : dist / 100) * Speed;
+            var actualSpeed = (dist > 100 ? 1 : (dist / 100)) * Speed;
 
 
             // calculate the forces:
@@ -145,7 +144,7 @@ namespace Singularity.Units
                 // mGroup.Get().GetUnits().Sum(u => u.AbsolutePosition.X - AbsolutePosition.X),
                 // mGroup.Get().GetUnits().Sum(u => u.AbsolutePosition.Y - AbsolutePosition.Y))) * -1;
             var close = mDirector.GetMilitaryManager.GetAdjecentUnits(AbsolutePosition)
-                .FindAll(u => Geometry.Length(u.AbsolutePosition - AbsolutePosition) < 90 && !u.Equals(this))
+                .FindAll(u => Geometry.Length(u.AbsolutePosition - AbsolutePosition) < 90 + u.AbsoluteSize.X * 2.5 && !u.Equals(this))
                 .Select(f => f.AbsolutePosition).ToList();
                 // .Aggregate((a, b) => a + b);
             var seper = close.Count > 0 ? (close.Aggregate((a, b) => a + b) - AbsolutePosition * close.Count) * -1 : Vector2.Zero;
@@ -158,12 +157,16 @@ namespace Singularity.Units
             var goal = Vector2.Normalize(diff);
 
             Velocity = Vector2.Normalize(goal * 0.2f + Velocity * 2 + align + cohes * 0.75f + seper * 1.5f) * actualSpeed;
+
+            if (dist < 10 * mGroup.Get().Count)
+            {
+                Moved = false;
+            }
         
             // Debug.WriteLine("Group: " + mGroup.Get().Velocity + ", " + mGroup.Get().CohesionRaw);
             // Debug.WriteLine("unit: " + AbsolutePosition + ", " + align + ", " + cohes + ", " + seper + ", " + Velocity);
             
             // the new velocity will actually be used only next Update in the beginning.
-        
         }
         
         

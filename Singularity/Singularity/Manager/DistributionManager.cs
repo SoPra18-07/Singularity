@@ -82,24 +82,15 @@ namespace Singularity.Manager
             mKilled = new List<Pair<int, int>>();
             mGraphId = graphid;
         }
-
-        public void TestAttributes()
-        {
-            Console.Out.WriteLine(mProduction.Count);
-            Console.Out.WriteLine(mIdle.Count);
-            Console.Out.WriteLine(mProdPlatforms[1].GetFirst().mType + " " + mProdPlatforms[1].GetSecond());
-            Console.Out.WriteLine(mProdPlatforms[0].GetFirst().mType + " " + mProdPlatforms[0].GetSecond());
-        }
-
-
+        
         /// <summary>
         /// Deactivates tasks requested by a certain action.
         /// </summary>
-        /// <param name="removeaction">The Action I was talking about</param>
-        private void DeactivateAction(IPlatformAction removeaction)
-        {
-            mPlatformActions.Remove(removeaction);
-        }
+        //// <param name="removeaction">The Action I was talking about</param>
+        // private void DeactivateAction(IPlatformAction removeaction)
+        // {
+            // mPlatformActions.Remove(removeaction);
+        // }
 
         #region Looking for Resources
 
@@ -907,6 +898,7 @@ namespace Singularity.Manager
             }
         }
 
+        /*
         /// <summary>
         /// Manually Assign Units to a certain PlatformAction.
         /// </summary>
@@ -980,7 +972,7 @@ namespace Singularity.Manager
                 mHandler.Refresh();
             }
         }
-
+        */
         #endregion
 
         #region Register or Unregister
@@ -1131,20 +1123,7 @@ namespace Singularity.Manager
             mHandler?.ForceSliderPages();
 
         }
-
-        /// <summary>
-        /// This will be called from the SliderHandler when it changes.
-        /// It just unregisters its reference, so the DistributionManager can't communicate with it anymore.
-        /// </summary>
-        /// <param name="handler"></param>
-        internal void Unregister(SliderHandler handler)
-        {
-            if (mHandler == handler)
-            {
-                mHandler = null;
-            }
-        }
-
+        
         #endregion
 
         public void PausePlatformAction(IPlatformAction action)

@@ -23,7 +23,7 @@ namespace Singularity.Units
         /// <returns>A list of Vector2 waypoints that the object must traverse to get to its destination</returns>
         internal Stack<Vector2> FindPath(Vector2 startPosition, Vector2 endPosition, ref Map.Map map, EndNodeUnWalkableTreatment endNodeUnWalkable = EndNodeUnWalkableTreatment.DISALLOW)
         {
-            if (!Map.Map.IsOnTop(endPosition))
+            if (!Map.Map.IsOnTop(endPosition) || !map.GetCollisionMap().GetWalkabilityGrid().IsWalkableAt(VectorToGridPos(endPosition)))
             {
                 return new Stack<Vector2>();
             }

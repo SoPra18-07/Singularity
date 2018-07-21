@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using System.Security.Policy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -148,7 +147,11 @@ namespace Singularity.Units
             {
                 // if key b has been pressed and the settler unit is selected and its not moving
                 // --> send out event that deletes settler and adds a command center
-                if (key != Keys.B || !Selected || (!mGroup.Get().NearTarget() && !mNeverMoved)) continue;
+                if (key != Keys.B || !Selected || (!mGroup.Get().NearTarget() && !mNeverMoved))
+                {
+                    continue;
+                }
+
                 OnBuildCommandCenter();
                 return false;
             }

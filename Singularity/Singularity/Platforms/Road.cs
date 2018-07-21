@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -6,7 +7,6 @@ using Singularity.Graph;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Property;
-using System.Diagnostics;
 
 namespace Singularity.Platforms
 {
@@ -40,21 +40,15 @@ namespace Singularity.Platforms
         public bool Blueprint
         {
             get { return mBlueprint; }
-            set
-            {
-                mBlueprint = value;
-                if (!value) { // todo: add road to graph - done?
-                           }
-            }
+            set { mBlueprint = value; }
         }
-
-        private Director mDirector;
 
         /// <summary>
         /// Road is simply an edge between two platforms.
         /// </summary>
         /// <param name="source">The source IRevealing object from which this road gets drawn</param>
         /// <param name="destination">The destinaion IRevealing object to which this road gets drawn</param>
+        /// <param name="director">The Director of all Managers</param>
         /// <param name="blueprint">Whether this road is a blueprint or not</param>
         public Road(PlatformBlank source, PlatformBlank destination, ref Director director, bool blueprint = false) : base(ref director)
         {
@@ -77,8 +71,6 @@ namespace Singularity.Platforms
                 Place(source, destination);
             }
             Blueprint = blueprint;
-            mDirector = director;
-
         }
 
         public void Place(PlatformBlank source, PlatformBlank dest)
@@ -96,25 +88,19 @@ namespace Singularity.Platforms
 
             source.AddEdge(this, EEdgeFacing.Outwards);
             dest.AddEdge(this, EEdgeFacing.Inwards);
-
+            
         }
 
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawLine(Source, Destination, mBlueprint ?  new Color(new Vector4(.1803922f, 0.2078431f, .3803922f, .5f)) : new Color(new Vector3(.75f, .75f, .75f)), 5f, LayerConstants.RoadLayer);
+            spriteBatch.DrawLine(Source, Destination, Blueprint ?  new Color(new Vector4(.1803922f, 0.2078431f, .3803922f, .5f)) : new Color(new Vector3(.75f, .75f, .75f)), 5f, LayerConstants.RoadLayer);
         }
 
         public void Update(GameTime gametime)
         {
-
         }
-
-        public void ResetCenterValues()
-        {
-            Source = ((PlatformBlank)SourceAsNode).Center;
-            Destination = ((PlatformBlank) DestinationAsNode).Center;
-        }
+        
 
         public INode GetParent()
         {

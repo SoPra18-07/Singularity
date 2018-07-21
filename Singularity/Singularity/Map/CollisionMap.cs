@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using EpPathFinding.cs;
@@ -151,8 +152,16 @@ namespace Singularity.Map
             {
                 for (var y = oldBounds.Y / MapConstants.GridHeight; y <= (oldBounds.Y + oldBounds.Height) / MapConstants.GridHeight; y++)
                 {
-                    mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(null));
-                    mWalkableGrid.SetWalkableAt(x, y, true);
+                    try
+                    {
+                        mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(null));
+                        mWalkableGrid.SetWalkableAt(x, y, true);
+                    }
+                    catch (IndexOutOfRangeException e)
+                    {
+                        // this can happen due to unit map ignoring its errors..
+                        Debug.WriteLine(e);
+                    }
                 }
             }
 

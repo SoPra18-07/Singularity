@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Singularity.AI.Structures;
 using Singularity.Manager;
-using Singularity.Map;
 using Singularity.Platforms;
 using Singularity.Property;
-using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 using Singularity.Utils;
 

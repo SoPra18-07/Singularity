@@ -2534,15 +2534,7 @@ else
                 resource.InactiveInSelectedPlatformWindow = !resource.InactiveInSelectedPlatformWindow;
             }
         }
-
-        private void CloseUnitAssignmentsInSelectedWindow(object sender, EventArgs eventArgs)
-        {
-            foreach (var unitPart in mSelectedPlatformUnitAssignmentList)
-            {
-                unitPart.InactiveInSelectedPlatformWindow = !unitPart.InactiveInSelectedPlatformWindow;
-            }
-        }
-
+        
         private void CloseActionsInSelectedWindow(object sender, EventArgs eventArgs)
         {
             foreach (var action in mSelectedPlatformActionList)
