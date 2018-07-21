@@ -248,13 +248,20 @@ namespace Singularity.Manager
                     }
                     break;
                 case "UI_FirstPlatform":
-                    if (StructureMap.GetPlatformList().Count == 5)
+                    if (StructureMap.GetPlatformList().Count > 4)
                     {
                         mTutorialState = "UI_SecondPlatform";
                         mTutorialScreen.TutorialState = "UI_SecondPlatform";
                     }
                     break;
                 case "UI_SecondPlatform":
+                    if (StructureMap.GetPlatformList().Count > 5)
+                    {
+                        mTutorialState = "CivilUnits_Build";
+                        mTutorialScreen.TutorialState = "CivilUnits_Build";
+                    }
+                    break;
+                case "CivilUnits_Build":
                     break;
                 case "UserInterface_ProducePlatform":
                     break;

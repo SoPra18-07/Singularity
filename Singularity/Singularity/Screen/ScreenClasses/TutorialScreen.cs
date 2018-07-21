@@ -58,13 +58,13 @@ namespace Singularity.Screen.ScreenClasses
                     if (!mPopupOpen)
                     {
                         TutorialState = "AwaitingUserAction";
-                        mTutorialWindow.DeleteItem(mTutorialText);
+                        mTutorialWindow.RemoveAllItems();
 
                         mTutorialText = new TextField(
                             "This tiny rectangle is your settler. \n " +
                             "The settler can be turned into a CommandCenter by pressing b after selecting it. But before doing so, select the settler (left click) and explore your surroundings \n " +
                             "(left click to move, right click to deselect) \n " +
-                            "We need to find a good place to settle - look out for the three basic resources: Water (blue), Metal (teal) and Oil (brown) and settle near them.",
+                            "We need to find a good place to settle - look out for Metal (teal) and settle near it since you will need it to expand your graph.",
                             Vector2.Zero, new Vector2(mTextWidthScrolling, 0), mLibSans12, Color.White);
                         mTutorialWindow.AddItem(mTutorialText);
                         mTutorialWindow.ResetScrollValue();
@@ -76,7 +76,7 @@ namespace Singularity.Screen.ScreenClasses
                     if (!mPopupOpen)
                     {
                         TutorialState = "AwaitingUserAction";
-                        mTutorialWindow.DeleteItem(mTutorialText);
+                        mTutorialWindow.RemoveAllItems();
 
                         mTutorialText = new TextField(
                             "Now that you've built your CommandCenter it's time to get warm with the Userinterface.\n" + 
@@ -94,13 +94,28 @@ namespace Singularity.Screen.ScreenClasses
                 case "UI_SecondPlatform":
                     if (!mPopupOpen)
                     {
-                        mTutorialWindow.DeleteItem(mTutorialText);
+                        TutorialState = "AwaitingUserAction";
+                        mTutorialWindow.RemoveAllItems();
 
                         mTutorialText = new TextField(
-                            "Great job! \n" +
-                            "Now that you have learned how to expand your graph it's time to produce some resources. Resources are produced by the resource production platforms in the build menu. \n" +
-                            "We need to start by building a production platform on top of the corresponding resource.",
+                            "You may have noticed that the platform appeared immediately, but that's just the case if the required resources are on the adjacent platform. Let's look at the other possibility - build another blank platform and connect it to the just placed platform.",
                             Vector2.Zero, new Vector2(mTextWidthScrolling, 0), mLibSans12, Color.White);
+                        mTutorialWindow.AddItem(mTutorialText);
+                        mTutorialWindow.ResetScrollValue();
+                        mPopupOpen = true;
+                    }
+                    break;
+                case "CivilUnits_Build":
+                    if (!mPopupOpen)
+                    {
+                        TutorialState = "AwaitingUserAction";
+                        mTutorialWindow.RemoveAllItems();
+
+                        mTutorialText = new TextField(
+                            "You may notice that the new platform hasn't got the same transparency as the last - it's still in blueprint mode. " +
+                            "This means we have to assign units to build the platform. If you take a look at the '// CivilUnits' window you can see four sliders.",
+                            Vector2.Zero, new Vector2(mTextWidthScrolling, 0), mLibSans12, Color.White);
+
                         mTutorialWindow.AddItem(mTutorialText);
                         mTutorialWindow.ResetScrollValue();
                         mPopupOpen = true;
@@ -109,13 +124,14 @@ namespace Singularity.Screen.ScreenClasses
                 case "ProducePlatform":
                     if (!mPopupOpen)
                     {
-                        TutorialState = "UserInterface_BuildMenu";
-                        mTutorialWindow.DeleteItem(mTutorialText);
+                        TutorialState = "AwaitingUserAction";
+                        mTutorialWindow.RemoveAllItems();
 
                         mTutorialText = new TextField(
                             "Great job! \n" +
                             "Now that you have learned how to expand your graph it's time to produce some resources. Resources are produced by the resource production platforms in the build menu. \n" +
-                            "We need to start by building a production platform on top of the corresponding resource." ,
+                            "We need to start by building a production platform on top of the corresponding resource. Let's begin with building a mine on top of the metal resource (teal). \n" +
+                            "If the resource is too far away, use a blank platform to bridge the gap." ,
                             Vector2.Zero, new Vector2(mTextWidthScrolling, 0), mLibSans12, Color.White);
                         mTutorialWindow.AddItem(mTutorialText);
                         mTutorialWindow.ResetScrollValue();

@@ -318,6 +318,14 @@ namespace Singularity.Screen
             mItemPosTop = new Vector2(Position.X + 10, Position.Y + 720 / 26f + 30);
         }
 
+        public void RemoveAllItems()
+        {
+            foreach (var item in mItemList)
+            {
+                mItemList.Remove(item);
+            }
+        }
+
         // position of the window
         public Vector2 Position { get; set; }
     }
