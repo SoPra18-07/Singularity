@@ -220,13 +220,6 @@ namespace Singularity.Map
                 }
             }
             return true;
-
-            // seems like a reasonable number. Grid Cleaning works.
-            if (mCounter > 100 * mLookUpTable.Count)
-            {
-                CleanGrid();
-                mCounter = 0;
-            }
         }
     }
 }

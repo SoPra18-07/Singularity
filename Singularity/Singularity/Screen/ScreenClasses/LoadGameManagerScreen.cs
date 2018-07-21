@@ -32,7 +32,6 @@ namespace Singularity.Screen.ScreenClasses
         private bool mNewGame;
 
         // All connecting screens
-        private ITransitionableMenu mLoadingScreen;
         private GameScreen mGameScreen;
 
         private UserInterfaceScreen mUi;
@@ -69,8 +68,6 @@ namespace Singularity.Screen.ScreenClasses
             mDirector = director;
             mContent = content;
 
-            Initialize(screenResolution);
-
             sPressed = "None";
             sResolutionChanged = false;
             mGameLoaded = false;
@@ -102,7 +99,6 @@ namespace Singularity.Screen.ScreenClasses
 
             if (sResolutionChanged)
             {
-                Initialize(sViewportResolution);
                 sResolutionChanged = false;
             }
 
@@ -243,15 +239,6 @@ namespace Singularity.Screen.ScreenClasses
         {
             sResolutionChanged = true;
             sViewportResolution = viewportResolution;
-        }
-
-        /// <summary>
-        /// Initialize the Loading Screen, by creating it with the desired resolution.
-        /// </summary>
-        /// <param name="screenResolution"></param>
-        private void Initialize(Vector2 screenResolution)
-        {
-            mLoadingScreen = new LoadingScreen(screenResolution);
         }
 
         /// <summary>

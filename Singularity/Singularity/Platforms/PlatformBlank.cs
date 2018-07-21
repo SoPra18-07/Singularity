@@ -166,7 +166,7 @@ namespace Singularity.Platforms
         [DataMember]
         public int Id { get; private set; }
 
-        protected Director mDirector;
+        protected new Director mDirector;
 
         ///<summary>
         /// The sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome.

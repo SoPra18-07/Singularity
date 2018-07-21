@@ -59,7 +59,7 @@ namespace Singularity.Units
             if (mBoxExists)
             {
                 // if selection box has been created by user then draw
-                spriteBatch.StrokedRectangle(new Vector2(mXStart, mYStart), mSizeBox, Color.White, Color.White, .8f, .5f, LayerConstants.FogOfWarLayer);
+                spriteBatch.StrokedRectangle(new Vector2(mXStart, mYStart), mSizeBox, mColor, mColor, .8f, .5f, LayerConstants.FogOfWarLayer);
             }
         }
 

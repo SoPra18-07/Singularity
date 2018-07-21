@@ -231,7 +231,10 @@ namespace Singularity.Units
             mDirector.GetSoundManager.PlaySound(mSoundId);
             target.MakeDamage(MilitaryUnitStats.mUnitStrength);
 
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            // Done as a check just in case
             if (target == null)
+                // ReSharper disable once HeuristicUnreachableCode
             {
                 return;
             }

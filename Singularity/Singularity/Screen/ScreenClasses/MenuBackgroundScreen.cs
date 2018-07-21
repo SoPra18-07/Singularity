@@ -131,6 +131,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (CurrentScreen == EScreen.MainMenuScreen && !TransitionRunning && mHoloProjectionWidthScaling != 2)
             {
                 TransitionTo(EScreen.GameModeSelectScreen, EScreen.MainMenuScreen, gameTime);

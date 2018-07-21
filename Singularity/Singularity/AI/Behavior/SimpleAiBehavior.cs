@@ -122,10 +122,6 @@ namespace Singularity.AI.Behavior
             throw new NotImplementedException();
         }
 
-        public void Shooting(MilitaryUnit sender, ICollider shootingAt)
-        {
-            throw new NotImplementedException();
-        }
 
         public void Shooting(MilitaryUnit sender, ICollider shootingAt, GameTime gametime)
         {

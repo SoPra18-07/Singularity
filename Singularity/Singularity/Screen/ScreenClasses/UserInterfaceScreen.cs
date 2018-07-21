@@ -31,8 +31,6 @@ namespace Singularity.Screen.ScreenClasses
 
         private Button mPauseButtonBeforeUi;
 
-        private int mPauseButtonCounter;
-
         #region members used by several windows
 
         // list of windows to show on the UI
@@ -108,17 +106,7 @@ namespace Singularity.Screen.ScreenClasses
 
         // textFields of selectedPlatformWindow titles
         private Button mSelectedPlatformResourcesButton;
-        private Button mSelectedPlatformUnitAssignmentButton;
         private Button mSelectedPlatformActionsButton;
-
-        // textFields of selectedPlatformWindow unit assignment
-        private TextField mSelectedPlatformDefTextField;
-        private TextField mSelectedPlatformBuildTextField;
-        private TextField mSelectedPlatformLogisticsTextField;
-        private TextField mSelectedPlatformProductionTextField;
-
-        // TODO : ? CREATE ENERGY ITEM ?
-
 
         // resourceItems of selectedPlatformWindow
         private ResourceIWindowItem mSelectedPlatformChips;
@@ -134,35 +122,10 @@ namespace Singularity.Screen.ScreenClasses
         private ResourceIWindowItem mSelectedPlatformStone;
         private ResourceIWindowItem mSelectedPlatformWater;
         private ResourceIWindowItem mSelectedPlatformTrash;
-
-        // unitSliders of selectedPlatformWindow
-        private Slider mSelectedPlatformDefSlider;
-        private Slider mSelectedPlatformConstructionSlider;
-        private Slider mSelectedPlatformLogisticsSlider;
-        private Slider mSelectedPlatformProductionSlider;
-
+        
         // lists of items - used to iterate through all items of a specific kind (for example to deactivate all if the corresponding button was toggled)
         private List<ResourceIWindowItem> mSelectedPlatformResourcesList;
-        private List<IWindowItem> mSelectedPlatformUnitAssignmentList;
         private List<PlatformActionIWindowItem> mSelectedPlatformActionList;
-
-        // actions of selectedPlatformWindow
-        private PlatformActionIWindowItem mMakeFastMilitaryAction;
-        private PlatformActionIWindowItem mMakeHeavyMilitaryAction;
-        private PlatformActionIWindowItem mProduceWellResourceAction;
-        private PlatformActionIWindowItem mProduceQuarryResourceAction;
-        private PlatformActionIWindowItem mProduceMineResourceAction;
-        private PlatformActionIWindowItem mBuildBluePrintAction;
-        private PlatformActionIWindowItem mRefineResourceAction;
-
-        // bools if the platformactions have already been added to the selectedplatformwindow
-        private bool mFastMilitaryAdded;
-        private bool mStronggMilitaryAdded;
-        private bool mProduceWellResourceAdded;
-        private bool mProduceQuarryResourceAdded;
-        private bool mProduceMineResourceAdded;
-        private bool mBuildBluePrintActionAdded;
-        private bool mRefineResourceActionAdded;
 
         // save id to reset the scroll-value if the id changes
         private int mSelectedPlatformId;
@@ -180,6 +143,8 @@ namespace Singularity.Screen.ScreenClasses
         // graph ID
         private int mCivilUnitsGraphId;
         private int mCivilUnitsGraphIdToCompare;
+
+        private List<IWindowItem> mSelectedPlatformUnitAssignmentList;
 
         internal Dictionary<int, Graph.Graph> GraphIdToGraphStructureDict { get; set; }
 

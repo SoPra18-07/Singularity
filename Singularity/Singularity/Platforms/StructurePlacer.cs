@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
@@ -417,7 +416,9 @@ namespace Singularity.Platforms
                     giveThrough = false;
                     mUnregister = true;
 
-                    return false;
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                    // Done for consistency
+                    return giveThrough;
                 }
 
                 // we only need to do something with rightclick if were in the 2nd state, since then we revert.

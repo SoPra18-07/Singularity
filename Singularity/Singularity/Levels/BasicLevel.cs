@@ -23,6 +23,8 @@ namespace Singularity.Levels
         [DataMember]
         public EScreen Screen { get; private set; }
 
+        // ReSharper disable once NotAccessedField.Local
+        // Used to prevent garbage collector from trashing it
         private DebugScreen mDebugscreen;
 
         [DataMember]

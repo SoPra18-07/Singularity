@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Input;
-using Singularity.Levels;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Nature;
@@ -37,7 +36,6 @@ namespace Singularity.Screen.ScreenClasses
 
         // director for Managing all the Managers
         private Director mDirector;
-        private GraphicsDevice mGraphicsDevice;
 
         /// <summary>
         /// This list contains all the drawable objects currently in the game.
@@ -74,7 +72,6 @@ namespace Singularity.Screen.ScreenClasses
 
         public GameScreen(GraphicsDevice graphicsDevice, ref Director director, Map.Map map, Camera camera, FogOfWar fow)
         {
-            mGraphicsDevice = graphicsDevice;
 
             mDrawables = new LinkedList<IDraw>();
             mUpdateables = new LinkedList<IUpdate>();
@@ -93,7 +90,6 @@ namespace Singularity.Screen.ScreenClasses
 
         public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, Map.Map map, FogOfWar fow , Camera camera, ref Director director, UserInterfaceScreen ui)
         {
-            mGraphicsDevice = graphics.GraphicsDevice;
             mMap = map;
             mFow = fow;
             mCamera = camera;
@@ -483,16 +479,6 @@ namespace Singularity.Screen.ScreenClasses
                 mUpdateables.Remove((IUpdate)toRemove);
             }
             return true;
-        }
-
-        public Map.Map GetMap()
-        {
-            return mMap;
-        }
-
-        public Camera GetCamera()
-        {
-            return mCamera;
         }
 
         public void Unload()
