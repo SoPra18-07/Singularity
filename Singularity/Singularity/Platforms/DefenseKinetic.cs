@@ -36,6 +36,7 @@ namespace Singularity.Platforms
             EStructureType.Kinetic,
             friendly: friendly)
         {
+            mSpritename = "Cones";
             mCost = GetResourceCosts(EStructureType.Kinetic);
             mSoundId = mDirector.GetSoundManager.CreateSoundInstance("KineticTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
         }
