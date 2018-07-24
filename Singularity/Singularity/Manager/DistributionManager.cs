@@ -42,9 +42,6 @@ namespace Singularity.Manager
         private SliderHandler mHandler;
 
         [DataMember]
-        private List<BuildBluePrint> mBlueprintBuilds;
-
-        [DataMember]
         private List<IPlatformAction> mPlatformActions;
 
         [DataMember]
@@ -71,7 +68,6 @@ namespace Singularity.Manager
             mRefiningOrStoringResources = new Queue<Task>();
 
             //Actionlists
-            mBlueprintBuilds = new List<BuildBluePrint>();
             mPlatformActions = new List<IPlatformAction>();
 
             //Lists for observing unit counts on platforms
@@ -1129,7 +1125,6 @@ namespace Singularity.Manager
         public void PausePlatformAction(IPlatformAction action)
         {
             Kill(action);
-            // TODO: throw new NotImplementedException(); // (currently commented out, since it'd break stuff)
         }
 
         public List<int> GetNumberOfAssigned()
@@ -1173,14 +1168,7 @@ namespace Singularity.Manager
         public void Kill(IPlatformAction action)
         {
             // Strong assumption that a PlatformAction is only listed at most once here.
-            if (action is BuildBluePrint)
-            {
-                mBlueprintBuilds.Remove(mBlueprintBuilds.Find(b => b.Equals(action)));
-            }
-            else
-            {
-                mPlatformActions.Remove(mPlatformActions.Find(p => p.Equals(action)));
-            }
+            mPlatformActions.Remove(mPlatformActions.Find(p => p.Equals(action)));            
 
             var lists = new List<List<GeneralUnit>> { mIdle, mLogistics, mConstruction, mProduction, mDefense, mManual };
             lists.ForEach(l => l.ForEach(u => u.Kill(action.Id)));

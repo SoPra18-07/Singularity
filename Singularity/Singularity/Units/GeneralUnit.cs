@@ -600,8 +600,8 @@ namespace Singularity.Units
                     mDirector.GetDistributionDirector.GetManager(Graphid).NewProductionHall(this, false);
                     break;
                 default:
-                    mDirector.GetDistributionDirector.GetManager(Graphid)
-                        .RequestNewTask(this, Job, Optional<IPlatformAction>.Of(null));
+                    //This lets the GeneralUnit get another task from the Distributionmanager.
+                    mDone = true;
                     break;
             }
         }
