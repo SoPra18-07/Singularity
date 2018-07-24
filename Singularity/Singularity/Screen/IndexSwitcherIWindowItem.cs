@@ -367,5 +367,7 @@ namespace Singularity.Screen
         public bool InactiveInSelectedPlatformWindow { get; set; }
         /// <inheritdoc />
         public bool OutOfScissorRectangle { get; set; }
+        /// <inheritdoc />
+        public bool WindowIsInactive { get; set; }
     }
 }

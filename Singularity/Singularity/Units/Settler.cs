@@ -17,7 +17,6 @@ namespace Singularity.Units
     internal sealed class Settler: FreeMovingUnit, IKeyListener
     {
         #region Declarations
-        private GameScreen mGameScreen;
 
         private UserInterfaceScreen mUi;
 
@@ -47,7 +46,6 @@ namespace Singularity.Units
 
             mNeverMoved = true;
 
-            mGameScreen = gameScreen;
             mUi = ui;
 
             /* too inefficient
@@ -95,7 +93,6 @@ namespace Singularity.Units
         public void ReloadContent(ref Director director, Camera camera, ref Map.Map map, GameScreen gamescreen, UserInterfaceScreen ui)
         {
             ReloadContent(ref director, camera);
-            mGameScreen = gamescreen;
             mUi = ui;
             mDirector.GetInputManager.FlagForAddition(this);
         }

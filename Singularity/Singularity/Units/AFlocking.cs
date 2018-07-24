@@ -51,12 +51,10 @@ namespace Singularity.Units
         [DataMember]
         public bool Moved { get; set; }
 
-        [DataMember]
         protected Optional<FlockingGroup> mGroup;
         [DataMember]
         public int FlockingId { get; set; }
 
-        [DataMember]
         public bool Selected { get; set; }
 
 

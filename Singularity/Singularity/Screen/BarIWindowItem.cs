@@ -34,7 +34,7 @@ namespace Singularity.Screen
         /// <inheritdoc />
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle && !WindowIsInactive)
             {
                 // draw the bar
                 spriteBatch.DrawRectangle(Position, Size, mColor);
@@ -51,5 +51,7 @@ namespace Singularity.Screen
         public bool InactiveInSelectedPlatformWindow { get; set; }
         /// <inheritdoc />
         public bool OutOfScissorRectangle { get; set; }
+        /// <inheritdoc />
+        public bool WindowIsInactive { get; set; }
     }
 }

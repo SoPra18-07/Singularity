@@ -9,7 +9,7 @@ namespace Singularity.PlatformActions
 {
 
     [DataContract]
-    internal sealed class BuildBluePrint : AMakeUnit
+    public sealed class BuildBluePrint : AMakeUnit
     {
         [DataMember]
         public override List<JobType> UnitsRequired { get; set; } = new List<JobType> { JobType.Construction };

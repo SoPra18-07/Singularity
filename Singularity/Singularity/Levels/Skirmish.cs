@@ -23,7 +23,6 @@ namespace Singularity.Levels
             LevelType level)
             : base(graphics, ref director, content, screenmanager, level, new BasicAi(GlobalVariables.Difficulty, ref director))
         {
-
             LoadContent(content);
         }
 

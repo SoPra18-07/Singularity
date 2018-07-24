@@ -190,6 +190,7 @@ namespace Singularity.PlatformActions
             }
             foreach (var resources in mMissingResources)
             {
+                // ReSharper disable once InlineOutVariableDeclaration
                 var inside = 0;
                 if (mToRequest.TryGetValue(resources.Key, out inside))
                 {

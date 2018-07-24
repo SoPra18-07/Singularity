@@ -38,6 +38,8 @@ namespace Singularity.Graph.Paths
 
             var fScore = new Dictionary<INode, float>();
 
+            // ReSharper disable once ConvertToLocalFunction
+            // converting to local function does not work
             Func<INode, INode, int> compareFunc = (a, b) => (int) fScore[a] > (int) fScore[b] ? 1 : (int) fScore[a] < (int) fScore[b] ? -1 : 0;
 
             var openList = new IntervalHeap<INode>(ComparerFactory<INode>.CreateComparer(compareFunc)) { start };

@@ -9,7 +9,6 @@ namespace Singularity.Screen
 {
     public sealed class PlatformInfoBox : InfoBoxWindow
     {
-        private readonly PlatformBlank mPlatform;
 
         internal PlatformInfoBox(List<IWindowItem> itemList, Vector2 size, PlatformBlank platform, Director director) :
             base(itemList: itemList,
@@ -21,7 +20,6 @@ namespace Singularity.Screen
                 mousePosition: false,
                 location: platform.AbsolutePosition)
         {
-            mPlatform = platform;
             Position = platform.AbsolutePosition + new Vector2(0, platform.AbsoluteSize.Y + 10);
             Active = true;
             mCounter = 11;

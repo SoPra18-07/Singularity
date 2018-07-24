@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -58,11 +57,11 @@ namespace Singularity.Platforms
             {
                 throw new Exception("Source and Destination can't both be null");
             }
-            if(source == null && destination != null)
+            if(source == null)
             {
                 Destination = destination.Center;
                 Source = destination.Center;
-            }else if(source != null && destination == null)
+            }else if(destination == null)
             {
                 Source = source.Center;
                 Destination = source.Center;

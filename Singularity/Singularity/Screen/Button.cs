@@ -34,7 +34,6 @@ namespace Singularity.Screen
         // distinguish between mouse over hover or not
         protected Color mColor;
 
-        private Rectangle mBounds;
         private bool mClicked;
         private bool mWithBorder;
         private bool mImRelevant;
@@ -80,7 +79,6 @@ namespace Singularity.Screen
             Position = position;
             Size = new Vector2((int)(mButtonTexture.Width * scale), (int)(mButtonTexture.Height * scale));
             mColor = Color.White;
-            CreateRectangularBounds();
             Opacity = 1;
             ActiveInWindow = true;
             mWithBorder = withBorder;
@@ -107,7 +105,6 @@ namespace Singularity.Screen
             Position = position;
             Size = new Vector2(sourceRectangle.Width * scale, sourceRectangle.Height * scale);//new Vector2((int)(mButtonTexture.Width * scale), (int)(mButtonTexture.Height * scale));
             mColor = Color.White;
-            CreateRectangularBounds();
             Opacity = 1;
             ActiveInWindow = true;
             mWithBorder = withBorder;
@@ -130,7 +127,6 @@ namespace Singularity.Screen
             Size = new Vector2((int)mFont.MeasureString(mButtonText).X, (int)mFont.MeasureString(mButtonText).Y);
             mColor = Color.White;
             mWithBorder = withBorder;
-            CreateRectangularBounds();
             ActiveInWindow = true;
             mEventArgs = eventArgs;
         }
@@ -143,19 +139,9 @@ namespace Singularity.Screen
             Position = position;
             Size = new Vector2((int)mFont.MeasureString(mButtonText).X, (int)mFont.MeasureString(mButtonText).Y);
             mColor = color;
-            CreateRectangularBounds();
             mWithBorder = withBorder;
             ActiveInWindow = true;
             mEventArgs = eventArgs;
-        }
-
-
-        /// <summary>
-        /// Creates the bounding box that the button is contained in
-        /// </summary>
-        private void CreateRectangularBounds()
-        {
-            mBounds = new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y);
         }
 
         /// <summary>
@@ -211,7 +197,7 @@ namespace Singularity.Screen
         /// <param name="spriteBatch"></param>
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle && !WindowIsInactive)
             {
 
                 if (mWithBorder)
@@ -276,7 +262,7 @@ namespace Singularity.Screen
         /// <param name="gametime"></param>
         public virtual void Update(GameTime gametime)
         {
-            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
+            if (ActiveInWindow && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle && !WindowIsInactive)
             {
                 // if mouse is hovering over button then make draw color gray
                 if (Mouse.GetState().X >= Position.X &&
@@ -373,5 +359,6 @@ namespace Singularity.Screen
         public bool ActiveInWindow { get; set; }
         public bool InactiveInSelectedPlatformWindow { get; set; }
         public bool OutOfScissorRectangle { get; set; }
+        public bool WindowIsInactive { get; set; }
     }
 }

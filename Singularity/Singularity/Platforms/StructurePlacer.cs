@@ -121,7 +121,7 @@ namespace Singularity.Platforms
 
             mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
-            mCurrentState = new State3(1);
+            mCurrentState = new State3();
 
             director.GetUserInterfaceController.BuildingProcessStarted(platformType);
 
@@ -137,7 +137,7 @@ namespace Singularity.Platforms
                     break;
 
                 default:
-                    break;
+                   break;
             }
 
             if (mIsRoadPlacement)
@@ -417,6 +417,8 @@ namespace Singularity.Platforms
                     giveThrough = false;
                     mUnregister = true;
 
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                    // Done for consistency
                     return giveThrough;
                 }
 

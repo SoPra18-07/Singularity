@@ -166,7 +166,7 @@ namespace Singularity.Platforms
         [DataMember]
         public int Id { get; private set; }
 
-        protected Director mDirector;
+        protected new Director mDirector;
 
         ///<summary>
         /// The sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome.
@@ -1407,7 +1407,7 @@ namespace Singularity.Platforms
             switch (type)
             {
                 case EStructureType.Blank:
-                    return new Dictionary<EResourceType, int> { {EResourceType.Metal, 1 }, { EResourceType.Stone, 1 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 } };
                 case EStructureType.Energy:
                     return new Dictionary<EResourceType, int> { { EResourceType.Copper, 1 }, { EResourceType.Metal, 2 }, { EResourceType.Silicon, 1 } };
                 case EStructureType.Factory:
