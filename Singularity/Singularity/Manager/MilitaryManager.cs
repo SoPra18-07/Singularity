@@ -410,7 +410,15 @@ namespace Singularity.Manager
                 // if there is something close enough, shoot it. Else, set the target to null.
                 if (closestAdjacent != null)
                 {
-                    unit.SetShootingTarget(closestAdjacent);
+                    var platform = closestAdjacent as PlatformBlank;
+                    if (platform != null && !platform.GetBluePrintStatus())
+                    {
+                        unit.SetShootingTarget(closestAdjacent);
+                    }
+                    else if (platform == null)
+                    {
+                        unit.SetShootingTarget(closestAdjacent);
+                    }
                 }
                 else
                 {

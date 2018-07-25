@@ -42,9 +42,6 @@ namespace Singularity.Manager
         private SliderHandler mHandler;
 
         [DataMember]
-        private List<BuildBluePrint> mBlueprintBuilds;
-
-        [DataMember]
         private List<IPlatformAction> mPlatformActions;
 
         [DataMember]
@@ -71,7 +68,6 @@ namespace Singularity.Manager
             mRefiningOrStoringResources = new Queue<Task>();
 
             //Actionlists
-            mBlueprintBuilds = new List<BuildBluePrint>();
             mPlatformActions = new List<IPlatformAction>();
 
             //Lists for observing unit counts on platforms
@@ -401,11 +397,17 @@ namespace Singularity.Manager
                     //That way the unit will only travel one node per task, but that makes it more reactive.
                     foreach (var edge in unit.CurrentNode.GetInwardsEdges())
                     {
-                        nodes.Add(edge.GetParent());
+                        if (!(edge as Road).Blueprint)
+                        {
+                            nodes.Add(edge.GetParent());
+                        }
                     }
                     foreach (var edge in unit.CurrentNode.GetOutwardsEdges())
                     {
-                        nodes.Add(edge.GetChild());
+                        if (!(edge as Road).Blueprint)
+                        {
+                            nodes.Add(edge.GetChild());
+                        }
                     }
 
                     if (nodes.Count == 0)
@@ -1030,16 +1032,7 @@ namespace Singularity.Manager
                     joblist.Add(unitbool.GetFirst());
                 }
             }
-            if (isDef)
-            {
-                //Make sure the new platform gets some units
-                NewlyDistribute(platform, true, alreadyonplatform);
-            }
-            else
-            {
-                //Make sure the new platform gets some units
-                NewlyDistribute(platform, false, alreadyonplatform);
-            }
+            NewlyDistribute(platform, isDef, alreadyonplatform);
         }
 
         public void Register(IPlatformAction action)
@@ -1129,7 +1122,6 @@ namespace Singularity.Manager
         public void PausePlatformAction(IPlatformAction action)
         {
             Kill(action);
-            // TODO: throw new NotImplementedException(); // (currently commented out, since it'd break stuff)
         }
 
         public List<int> GetNumberOfAssigned()
@@ -1140,11 +1132,6 @@ namespace Singularity.Manager
         public int GetNumberOfProdPlatforms()
         {
             return mProdPlatforms.Count;
-        }
-
-        public int GetNumberOfDefPlatforms()
-        {
-            return mDefPlatforms.Count;
         }
 
         #region Killing
@@ -1173,14 +1160,7 @@ namespace Singularity.Manager
         public void Kill(IPlatformAction action)
         {
             // Strong assumption that a PlatformAction is only listed at most once here.
-            if (action is BuildBluePrint)
-            {
-                mBlueprintBuilds.Remove(mBlueprintBuilds.Find(b => b.Equals(action)));
-            }
-            else
-            {
-                mPlatformActions.Remove(mPlatformActions.Find(p => p.Equals(action)));
-            }
+            mPlatformActions.Remove(mPlatformActions.Find(p => p.Equals(action)));            
 
             var lists = new List<List<GeneralUnit>> { mIdle, mLogistics, mConstruction, mProduction, mDefense, mManual };
             lists.ForEach(l => l.ForEach(u => u.Kill(action.Id)));

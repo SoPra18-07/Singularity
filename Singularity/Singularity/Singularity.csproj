@@ -15,7 +15,6 @@
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>Windows</MonoGamePlatform>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,10 +25,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
+    <AutorunEnabled>true</AutorunEnabled>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
-    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -61,21 +61,6 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
-  <PropertyGroup>
-    <ManifestCertificateThumbprint>3D6FF80C79D3AC96C6DBE6593362DE8F51C45095</ManifestCertificateThumbprint>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestKeyFile>Singularity_TemporaryKey.pfx</ManifestKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
-  </PropertyGroup>
-  <PropertyGroup>
-    <TargetZone>LocalIntranet</TargetZone>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignManifests>false</SignManifests>
-  </PropertyGroup>
   <ItemGroup>
     <Compile Include="AI\BasicAi.cs" />
     <Compile Include="AI\Behavior\AdvancedAiBehavior.cs" />
@@ -92,6 +77,7 @@
     <Compile Include="Levels\AchievementInstance.cs" />
     <Compile Include="Levels\PlatformDestructionTestLevel.cs" />
     <Compile Include="Events\SpatialPositionEventArgs.cs" />
+    <Compile Include="Manager\ActionManager.cs" />
     <Compile Include="Manager\FlockingManager.cs" />
     <Compile Include="Levels\TechDemo.cs" />
     <Compile Include="Manager\DeathManager.cs" />
@@ -299,7 +285,6 @@
     <None Include="app.config" />
     <None Include="app.manifest" />
     <None Include="packages.config" />
-    <None Include="Singularity_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

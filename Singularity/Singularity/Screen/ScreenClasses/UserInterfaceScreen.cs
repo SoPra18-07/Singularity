@@ -360,7 +360,7 @@ namespace Singularity.Screen.ScreenClasses
             mCurrentScreenHeight = mDirector.GetGraphicsDeviceManager.PreferredBackBufferHeight;
 
             // update sliders if there was a change
-            if (mCivilUnitsGraphId != mCivilUnitsGraphIdToCompare)
+            if (mCivilUnitsGraphId != mCivilUnitsGraphIdToCompare && mCivilUnitsGraphId != 0)
             {
                 mCivilUnitsGraphIdToCompare = mCivilUnitsGraphId;
 
@@ -370,7 +370,7 @@ namespace Singularity.Screen.ScreenClasses
                 mCivilUnitsSliderHandler.ForceSliderPages();
             }
 
-            if (mStructureMap.GetDictionaryGraphIdToGraph()[mCivilUnitsGraphId] == null)
+            if (mStructureMap.GetDictionaryGraphIdToGraph().Count > 0 && mStructureMap.GetDictionaryGraphIdToGraph()[mCivilUnitsGraphId] == null)
             {
                 var index = 0;
 
@@ -1469,7 +1469,12 @@ namespace Singularity.Screen.ScreenClasses
 
             //This instance will handle the comunication between Sliders and DistributionManager.
             mCivilUnitsSliderHandler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mConstructionSlider, mLogisticsSlider, mIdleUnitsTextAndAmount);
-            mCivilUnitsSliderHandler.Initialize(mDirector.GetDistributionDirector.GetSomeId());
+            mDirector.GetActionManager.AddObject(mCivilUnitsSliderHandler,
+                delegate(object o)
+                {
+                    mCivilUnitsSliderHandler.Initialize(mDirector.GetDistributionDirector.GetSomeId());
+                    return true;
+                });
         }
 
         /// <inheritdoc />

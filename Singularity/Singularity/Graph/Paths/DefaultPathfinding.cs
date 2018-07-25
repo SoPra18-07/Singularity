@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using C5;
 using Microsoft.Xna.Framework;
+using Singularity.Platforms;
 using Singularity.Property;
 
 namespace Singularity.Graph.Paths
@@ -71,7 +72,7 @@ namespace Singularity.Graph.Paths
                 {
                     var neighbor = outgoing.GetChild();
 
-                    if (neighbor == null)
+                    if (neighbor == null || ((Road) outgoing).Blueprint)
                     {
                         continue;
                     }
@@ -101,7 +102,7 @@ namespace Singularity.Graph.Paths
                 {
                     var neighbor = outgoing.GetParent();
 
-                    if (neighbor == null)
+                    if (neighbor == null || ((PlatformBlank) neighbor).mBlueprint)
                     {
                         continue;
                     }
