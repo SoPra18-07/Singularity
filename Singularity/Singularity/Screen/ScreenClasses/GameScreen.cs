@@ -320,6 +320,7 @@ namespace Singularity.Screen.ScreenClasses
             return true;
         }
 
+        
         /// <summary>
         /// Adds the given object to the game screens list of objects to handle.
         /// </summary>
@@ -328,30 +329,23 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>True if the given object could be added, false otherwise</returns>
         public bool AddObject<T>(T toAdd)
         {
-
-            var road = toAdd as Road;
-            var platform = toAdd as PlatformBlank;
+            
             var settler = toAdd as Settler;
             var freeMovingUnit = toAdd as FreeMovingUnit;
 
-            if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)) && road == null && platform == null)
+            if (!typeof(IDraw).IsAssignableFrom(typeof(T)) && !typeof(IUpdate).IsAssignableFrom(typeof(T)))
             {
                 return false;
             }
-
-            if (road != null)
-            {
-                mMap.AddRoad(road);
-                return true;
-            }
-
+            
+            /*
             if (platform != null)
             {
-                mMap.AddPlatform(platform);
+                // mMap.AddPlatform(platform);
                 mDirector.GetMilitaryManager.AddPlatform(platform);
                 // mUpdateables.AddLast(platform); // otherwise Platforms won't produce as of now.
                 return true;
-            }
+            } // */
 
             // subscribes the game screen the the settler event (to build a command center)
             // TODO unsubscribe / delete settler when event is fired
@@ -436,12 +430,12 @@ namespace Singularity.Screen.ScreenClasses
                 mMap.GetCollisionMap().RemoveCollider((ICollider)toRemove);
             }
 
-            if (road != null)
+            if (road != null && !road.Blueprint)
             {
                 mMap.RemoveRoad(road);
             }
 
-            if (platform != null)
+            if (platform != null && !platform.mBlueprint)
             {
                 mMap.RemovePlatform(platform);
                 // TODO removes platform from military manager (should stop the shooting)
@@ -536,7 +530,8 @@ namespace Singularity.Screen.ScreenClasses
             // adds the command center to the GameScreen, as well as two general units
 
             var cCenter = PlatformFactory.Get(EStructureType.Command, ref mDirector, v.X - 55, v.Y - 100, commandBlueprint: false);
-            AddObject(cCenter);
+            mDirector.GetMilitaryManager.AddPlatform(cCenter);
+            mDirector.GetStoryManager.Level.Map.AddPlatform(cCenter);
 
             var genUnit = new GeneralUnit(cCenter, ref mDirector);
             AddObject(genUnit);

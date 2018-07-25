@@ -54,7 +54,7 @@ namespace Singularity.Platforms
         public override void Update(GameTime gametime)
         {
             base.Update(gametime);
-            if (mIsBlueprint)
+            if (mBlueprint)
             {
                 return;
             }
