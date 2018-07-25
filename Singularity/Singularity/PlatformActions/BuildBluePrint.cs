@@ -29,7 +29,7 @@ namespace Singularity.PlatformActions
             platform,
             ref director)
         {
-            mBuildingCost = new Dictionary<EResourceType, int>(toBeBuilt.GetResourcesRequired());
+            mBuildingCost = new Dictionary<EResourceType, int>(PlatformBlank.GetResourceCosts(toBeBuilt.mType));
             mBuilding = toBeBuilt;
             mRBuilding = connectingRoad;
             mRBuilding.Blueprint = true;
