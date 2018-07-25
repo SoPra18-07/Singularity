@@ -70,6 +70,7 @@ namespace Singularity.Screen.ScreenClasses
 
         }
 
+/*
         public void ReloadContent(ContentManager content, Camera camera, Map.Map map, StackScreenManager screenManager, ref Director director)
         {
             director.GetInputManager.FlagForAddition(this);
@@ -78,6 +79,7 @@ namespace Singularity.Screen.ScreenClasses
             mMap = map;
             mScreenManager = screenManager;
         }
+*/
 
         public void Draw(SpriteBatch spriteBatch)
         {

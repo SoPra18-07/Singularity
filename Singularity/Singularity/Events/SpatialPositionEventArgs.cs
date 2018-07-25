@@ -13,7 +13,7 @@ namespace Singularity.Events
             mSpatial = spatial;
 
         }
-
+        /* ReSharper
         public Vector2 GetAbsolutePosition()
         {
             return mSpatial.AbsolutePosition;
@@ -23,15 +23,18 @@ namespace Singularity.Events
         {
             return mSpatial.RelativePosition;
         }
+        */
 
         public Vector2 GetAbsoluteCenter()
         {
             return mSpatial.AbsolutePosition + mSpatial.AbsoluteSize / 2;
         }
 
+        /*
         public Vector2 GetRelativeCenter()
         {
             return mSpatial.RelativePosition + mSpatial.RelativeSize / 2;
         }
+        */
     }
 }

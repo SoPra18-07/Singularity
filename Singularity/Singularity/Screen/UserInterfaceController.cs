@@ -84,6 +84,7 @@ namespace Singularity.Screen
             mActivePlatform = platform;
         }
 
+        /*
         /// <summary>
         /// Handles deselection of platforms for the UI.
         /// Will be called if a platform is actively deselected (not automatically by selecting another platform)
@@ -91,7 +92,7 @@ namespace Singularity.Screen
         public void DeactivateSelection()
         {
             mActivePlatform.IsSelected = false;
-        }
+        } */
 
         /// <summary>
         /// Activates a platform manually. Is called from the UI.
