@@ -115,7 +115,7 @@ namespace Singularity.Platforms
         /// Indicates if the platform is a "real" platform or a blueprint.
         /// </summary>
         [DataMember]
-        protected bool mIsBlueprint;
+        public bool mBlueprint;
 
         [DataMember]
         protected int mProvidingEnergy;
@@ -316,7 +316,7 @@ namespace Singularity.Platforms
             mSpritename = "PlatformBasic";
             mLibSans12 = libsans12;
 
-            mIsBlueprint = true;
+            mBlueprint = true;
             mRequested = new Dictionary<EResourceType, int>();
 
             Moved = false;
@@ -517,6 +517,7 @@ namespace Singularity.Platforms
             return mIPlatformActions;
         }
 
+        /*
         /// <summary>
         /// Perform the given PlatformAction on the platform.
         /// </summary>
@@ -534,7 +535,7 @@ namespace Singularity.Platforms
             // }
 
             return true;
-        }
+        } // */
 
         /// <summary>
         /// Get the requirements of resources to build this platform.
@@ -604,7 +605,7 @@ namespace Singularity.Platforms
         }
 
 
-
+        /*
         /// <summary>
         /// Get the resources that are requested and the amount of it.
         /// </summary>
@@ -612,8 +613,9 @@ namespace Singularity.Platforms
         public Dictionary<EResourceType, int> GetmRequested()
         {
             return mRequested; // todo: change to sum of Requested Resources from PlatformActions. (there's no other required resources after all)
-        }
+        } // */
 
+        /*
         /// <summary>
         /// Change the Resources requested by this platform
         /// </summary>
@@ -622,12 +624,12 @@ namespace Singularity.Platforms
         public void SetmRequested(EResourceType resource, int number)
         {
             mRequested.Add(resource, number);
-        }
+        } // */
 
         /// <inheritdoc cref="Singularity.Property.IDraw"/>
         public virtual void Draw(SpriteBatch spritebatch)
         {
-            var transparency = mIsBlueprint ? 0.35f : 1f;
+            var transparency = mBlueprint ? 0.35f : 1f;
 
             mHealthBar.Draw(spritebatch);
 
@@ -1221,13 +1223,14 @@ namespace Singularity.Platforms
             return true;
         }
 
+        /*
         public void Kill(IEdge road)
         {
             mInwardsEdges.Remove(road);
             mOutwardsEdges.Remove(road);
             mDirector.GetStoryManager.StructureMap.RemoveRoad((Road) road);
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(road);
-        }
+        } // */
 
         public void Kill(IPlatformAction action)
         {
@@ -1286,7 +1289,8 @@ namespace Singularity.Platforms
 
         public void Built()
         {
-            mIsBlueprint = false;
+            mBlueprint = false;
+            Register();
             // Todo: move registering at the distributionmanager etc here. But not yet (debug)
         }
 

@@ -26,6 +26,7 @@ namespace Singularity.PlatformActions
         [DataMember]
         private bool mBuildable; // defaults to false
 
+
         public BuildBluePrint(PlatformBlank platform, PlatformBlank toBeBuilt, Road connectingRoad, ref Director director) : base(
             platform,
             ref director)
@@ -33,6 +34,8 @@ namespace Singularity.PlatformActions
             mBuildingCost = new Dictionary<EResourceType, int>(toBeBuilt.GetResourcesRequired());
             mBuilding = toBeBuilt;
             mRBuilding = connectingRoad;
+            mRBuilding.Blueprint = true;
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(mRBuilding);
 
             UpdateResources();
             mIsBuilding = true;
@@ -44,22 +47,35 @@ namespace Singularity.PlatformActions
         {
             mBuildingCost = new Dictionary<EResourceType, int> { {EResourceType.Metal, 1}, {EResourceType.Stone, 1} };
             mRBuilding = road;
+            mRBuilding.Blueprint = true;
             mBuildRoad = true;
             mIsBuilding = true;
             UpdateResources();
             mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Register(this);
             State = PlatformActionState.Active;
-            mRBuilding.Blueprint = true;
         }
 
         protected override void CreateUnit()
         {
-            mRBuilding.Blueprint = false;
             if (!mBuildRoad)
             {
-                mBuilding.Built();
+                mDirector.GetActionManager.AddObject(mBuilding,
+                    delegate(object p)
+                    {
+                        mDirector.GetStoryManager.Level.GameScreen.RemoveObject(p);
+                        mDirector.GetStoryManager.Level.Map.AddPlatform(mBuilding);
+                        mBuilding.Built();
+                        return true;
+                    });
             }
-            Die();
+            mDirector.GetActionManager.AddObject(mRBuilding,
+                delegate(object r)
+                {
+                    mDirector.GetStoryManager.Level.GameScreen.RemoveObject(r);
+                    mDirector.GetStoryManager.Level.Map.AddRoad(mRBuilding);
+                    mRBuilding.Blueprint = false;
+                    return Die();
+                });
         }
 
         public override void Execute()

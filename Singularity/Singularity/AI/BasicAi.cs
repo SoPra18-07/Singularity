@@ -69,9 +69,7 @@ namespace Singularity.AI
             {
                 return;
             }
-
-            Debug.WriteLine("got here");
-
+            
             mBehavior.CreateNewBase(gametime);
 
             mBehavior.Spawn(gametime);
