@@ -64,10 +64,11 @@ namespace Singularity.Resources
             base.ReloadContent(ref dir);
         }
 
+        /*
         public Vector2 GetVelocity()
         {
             return mVelocity;
-        }
+        } // */
 
         /// <summary>
         /// UnFollow a unit. If a Unit successfully delivered a Resource to the target-platform.
@@ -77,6 +78,8 @@ namespace Singularity.Resources
             mFollowing = Optional<GeneralUnit>.Of(null);
         }
 
+        
+        /*
         /// <summary>
         /// Required if the Resource is on a platform, the Platform is taking care of the Resources not colliding.
         /// </summary>
@@ -84,7 +87,7 @@ namespace Singularity.Resources
         public void Move(Vector2 direction)
         {
             mVelocity += Geometry.NormalizeVector(direction) * Speed;
-        }
+        } // */
 
         public void Draw(SpriteBatch spriteBatch)
         {

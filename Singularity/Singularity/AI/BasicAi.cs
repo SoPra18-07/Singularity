@@ -48,8 +48,6 @@ namespace Singularity.AI
             mDirector = director;
             IsTutorial = isTutorial;
 
-            Debug.WriteLine(isTutorial);
-
             mBoundsToDraw = new List<Rectangle>();
 
             mStructure = new List<Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle>>();

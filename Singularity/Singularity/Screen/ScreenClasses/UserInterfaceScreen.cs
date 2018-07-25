@@ -1464,16 +1464,21 @@ namespace Singularity.Screen.ScreenClasses
 
             //This instance will handle the comunication between Sliders and DistributionManager.
             mCivilUnitsSliderHandler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mConstructionSlider, mLogisticsSlider, mIdleUnitsTextAndAmount);
-/*            var id = mDirector.GetDistributionDirector.GetSomeId();
+
+            /*
+            var id = mDirector.GetDistributionDirector.GetSomeId();
             mCivilUnitsSliderHandler.Initialize(id);
             Debug.WriteLine("id: " + id);
             mCivilUnitsSliderHandler.SetGraphId(0);*/
+
+            // mCivilUnitsSliderHandler.Initialize(mDirector.GetDistributionDirector.GetSomeId());
             mDirector.GetActionManager.AddObject(mCivilUnitsSliderHandler,
                 delegate (object o)
                 {
                     mCivilUnitsSliderHandler.Initialize(mDirector.GetDistributionDirector.GetSomeId());
                     return true;
                 });
+            // */
         }
 
         /// <inheritdoc />

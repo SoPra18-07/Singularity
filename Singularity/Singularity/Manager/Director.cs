@@ -109,7 +109,6 @@ namespace Singularity.Manager
                 GetClock.Update(gametime);
             }
             GetSoundManager.SetMediaPlayerVolume();
-            GetActionManager.ActualExec();
         }
     }
 }
