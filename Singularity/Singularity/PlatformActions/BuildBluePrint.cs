@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using System.Runtime.Serialization;
 using Singularity.Manager;
 using Singularity.Platforms;
@@ -23,9 +24,6 @@ namespace Singularity.PlatformActions
         [DataMember]
         private readonly Road mRBuilding;
 
-        [DataMember]
-        private bool mBuildable; // defaults to false
-
 
         public BuildBluePrint(PlatformBlank platform, PlatformBlank toBeBuilt, Road connectingRoad, ref Director director) : base(
             platform,
@@ -35,6 +33,7 @@ namespace Singularity.PlatformActions
             mBuilding = toBeBuilt;
             mRBuilding = connectingRoad;
             mRBuilding.Blueprint = true;
+            mRBuilding.SetBluePrint(this);
             mDirector.GetStoryManager.Level.GameScreen.AddObject(mRBuilding);
 
             UpdateResources();
@@ -48,6 +47,7 @@ namespace Singularity.PlatformActions
             mBuildingCost = new Dictionary<EResourceType, int> { {EResourceType.Metal, 1}, {EResourceType.Stone, 1} };
             mRBuilding = road;
             mRBuilding.Blueprint = true;
+            mRBuilding.SetBluePrint(this);
             mBuildRoad = true;
             mIsBuilding = true;
             UpdateResources();
@@ -57,12 +57,25 @@ namespace Singularity.PlatformActions
 
         protected override void CreateUnit()
         {
+            if (mRBuilding.HasDieded || (mBuilding != null && mBuilding.HasDieded))
+            {
+                // test if they're still alive and stuff
+                foreach (var pair in mBuildingCost)
+                {
+                    for (int i = 0; i < pair.Value; i++)
+                    {
+                        mPlatform.StoreResource(new Resource(pair.Key, mPlatform.Center, mDirector));
+                    }
+                }
+                Die();
+                return;
+            }
             if (!mBuildRoad)
             {
                 mDirector.GetActionManager.AddObject(mBuilding,
                     delegate(object p)
                     {
-                        mDirector.GetStoryManager.Level.GameScreen.RemoveObject(p);
+                        mDirector.GetStoryManager.Level.GameScreen.RemoveObject(mBuilding);
                         mDirector.GetStoryManager.Level.Map.AddPlatform(mBuilding);
                         mBuilding.Built();
                         return true;
@@ -71,7 +84,7 @@ namespace Singularity.PlatformActions
             mDirector.GetActionManager.AddObject(mRBuilding,
                 delegate(object r)
                 {
-                    mDirector.GetStoryManager.Level.GameScreen.RemoveObject(r);
+                    mDirector.GetStoryManager.Level.GameScreen.RemoveObject(mRBuilding);
                     mDirector.GetStoryManager.Level.Map.AddRoad(mRBuilding);
                     mRBuilding.Blueprint = false;
                     return Die();

@@ -438,7 +438,6 @@ namespace Singularity.Screen.ScreenClasses
             if (platform != null && !platform.mBlueprint)
             {
                 mMap.RemovePlatform(platform);
-                // TODO removes platform from military manager (should stop the shooting)
                 mDirector.GetMilitaryManager.RemovePlatform(platform);
             }
 

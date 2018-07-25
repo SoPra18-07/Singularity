@@ -687,6 +687,11 @@ namespace Singularity.Map
             {
                 var nodeAsPlat = (PlatformBlank) node;
 
+                if (nodeAsPlat.HasDieded)
+                {
+                    continue;
+                }
+
                 foreach (var unit in nodeAsPlat.GetGeneralUnitsOnPlatform())
                 {
                     genUnits.Add(unit);

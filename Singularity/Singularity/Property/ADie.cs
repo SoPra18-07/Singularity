@@ -14,7 +14,7 @@ namespace Singularity.Property
         }
 
         [DataMember]
-        public int DeathOrder { get; protected set; } = 0;
+        public int DeathOrder { get; protected set; }
 
         public virtual void ReloadContent(ref Director dir)
         {
@@ -24,7 +24,12 @@ namespace Singularity.Property
 
         public bool FlagForDeath()
         {
-            mDirector.GetDeathManager.AddToKill(this);
+            mDirector.GetActionManager.AddObject(this,
+                delegate(object o)
+                {
+                    mDirector.GetDeathManager.AddToKill(this);
+                    return true;
+                });
             return true;
         }
     }
