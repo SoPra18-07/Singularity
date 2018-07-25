@@ -1294,6 +1294,7 @@ namespace Singularity.Platforms
         {
             mBlueprint = false;
             Register();
+            mDirector.GetMilitaryManager.AddPlatform(this);
             // Todo: move registering at the distributionmanager etc here. But not yet (debug)
         }
 

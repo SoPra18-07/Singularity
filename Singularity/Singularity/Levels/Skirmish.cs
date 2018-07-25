@@ -38,6 +38,9 @@ namespace Singularity.Levels
             }
 
             GameScreen.AddObjects(milunitList);
+            var map = Map;
+            var target = new Target(new Vector2(2500, 2500), Camera, ref mDirector, ref map);
+            GameScreen.AddObject(target);
 
             // add a puddle
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2500), ref mDirector));
