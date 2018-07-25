@@ -1422,21 +1422,21 @@ namespace Singularity.Platforms
             switch (type)
             {
                 case EStructureType.Blank:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 2 } };
                 case EStructureType.Energy:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Copper, 1 }, { EResourceType.Metal, 2 }, { EResourceType.Silicon, 1 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Copper, 3 }, { EResourceType.Metal, 2 }, { EResourceType.Silicon, 5 } };
                 case EStructureType.Factory:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 3 }, { EResourceType.Stone, 2 }, { EResourceType.Water, 1 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 5 }, { EResourceType.Stone, 5 }, { EResourceType.Water, 7 } };
                 case EStructureType.Junkyard:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 2 }, { EResourceType.Stone, 2 }, { EResourceType.Water, 1 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 2 }, { EResourceType.Stone, 2 }, { EResourceType.Water, 5 } };
                 case EStructureType.Mine:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 }, { EResourceType.Stone, 1 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 4 }, { EResourceType.Stone, 2 } };
                 case EStructureType.Quarry:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 }, { EResourceType.Stone, 1 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 }, { EResourceType.Stone, 5 } };
                 case EStructureType.Storage:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 }, { EResourceType.Concrete, 3 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 100 }, { EResourceType.Concrete, 100 } };
                 case EStructureType.Well:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 2 }, { EResourceType.Stone, 2 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 3 }, { EResourceType.Stone, 3 } };
                 case EStructureType.Kinetic:
                     return new Dictionary<EResourceType, int> { { EResourceType.Metal, 2 }, { EResourceType.Concrete, 3 } };
                 case EStructureType.Laser:
