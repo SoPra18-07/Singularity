@@ -35,6 +35,7 @@ namespace Singularity.PlatformActions
             mBuilding = toBeBuilt;
             mRBuilding = connectingRoad;
             mRBuilding.Blueprint = true;
+            mDirector.GetStoryManager.Level.GameScreen.AddObject(mRBuilding);
 
             UpdateResources();
             mIsBuilding = true;
@@ -58,14 +59,23 @@ namespace Singularity.PlatformActions
         {
             if (!mBuildRoad)
             {
-                mDirector.GetStoryManager.Level.GameScreen.RemoveObject(mBuilding);
-                mDirector.GetStoryManager.Level.Map.AddPlatform(mBuilding);
-                mBuilding.Built();
+                mDirector.GetActionManager.AddObject(mBuilding,
+                    delegate(object p)
+                    {
+                        mDirector.GetStoryManager.Level.GameScreen.RemoveObject(p);
+                        mDirector.GetStoryManager.Level.Map.AddPlatform(mBuilding);
+                        mBuilding.Built();
+                        return true;
+                    });
             }
-            mDirector.GetStoryManager.Level.GameScreen.RemoveObject(mRBuilding);
-            mDirector.GetStoryManager.Level.Map.AddRoad(mRBuilding);
-            mRBuilding.Blueprint = false;
-            Die();
+            mDirector.GetActionManager.AddObject(mRBuilding,
+                delegate(object r)
+                {
+                    mDirector.GetStoryManager.Level.GameScreen.RemoveObject(r);
+                    mDirector.GetStoryManager.Level.Map.AddRoad(mRBuilding);
+                    mRBuilding.Blueprint = false;
+                    return Die();
+                });
         }
 
         public override void Execute()

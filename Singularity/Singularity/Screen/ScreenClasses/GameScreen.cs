@@ -320,6 +320,7 @@ namespace Singularity.Screen.ScreenClasses
             return true;
         }
 
+        
         /// <summary>
         /// Adds the given object to the game screens list of objects to handle.
         /// </summary>

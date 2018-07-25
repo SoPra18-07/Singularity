@@ -397,11 +397,17 @@ namespace Singularity.Manager
                     //That way the unit will only travel one node per task, but that makes it more reactive.
                     foreach (var edge in unit.CurrentNode.GetInwardsEdges())
                     {
-                        nodes.Add(edge.GetParent());
+                        if (!(edge as Road).Blueprint)
+                        {
+                            nodes.Add(edge.GetParent());
+                        }
                     }
                     foreach (var edge in unit.CurrentNode.GetOutwardsEdges())
                     {
-                        nodes.Add(edge.GetChild());
+                        if (!(edge as Road).Blueprint)
+                        {
+                            nodes.Add(edge.GetChild());
+                        }
                     }
 
                     if (nodes.Count == 0)
