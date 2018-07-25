@@ -112,6 +112,7 @@ namespace Singularity.Map
             return foundResources;
         }
 
+        /*
         /// <summary>
         /// Gets the list of all the resources currently in the game
         /// </summary>
@@ -130,6 +131,7 @@ namespace Singularity.Map
             mResourceMap.Remove(toRemove);
             mLocationCache.Clear();
         }
+        // */
 
         public void Draw(SpriteBatch spriteBatch)
         {

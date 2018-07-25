@@ -115,6 +115,7 @@ namespace Singularity.Screen
             director.GetInputManager.AddMousePositionListener(this);
         }
 
+        // ReSharper disable once UnusedMember.Global
         public Slider(Vector2 position,
             int length,
             int sliderSize,

@@ -541,32 +541,48 @@ namespace Singularity.Screen.ScreenClasses
             var genUnit3 = new GeneralUnit(cCenter, ref mDirector);
             AddObject(genUnit3);
 
+            var dbg = false;
 
             // /*
+            dbg = true;
             var beginRes = new Dictionary<EResourceType, int>
             {
-                {EResourceType.Metal, 1000},
-                {EResourceType.Stone, 1000},
-                {EResourceType.Water, 1000},
-                {EResourceType.Oil, 1000},
-                {EResourceType.Copper, 1000},
-                {EResourceType.Fuel, 1000},
-                {EResourceType.Chip, 1000},
-                {EResourceType.Concrete, 1000},
-                {EResourceType.Plastic, 1000},
-                {EResourceType.Steel, 1000},
-                {EResourceType.Sand, 1000},
-                {EResourceType.Silicon, 1000},
-                {EResourceType.Trash, 20}
+                {EResourceType.Metal, 100},
+                {EResourceType.Stone, 100},
+                {EResourceType.Water, 100},
+                {EResourceType.Oil, 100},
+                {EResourceType.Copper, 100},
+                {EResourceType.Fuel, 100},
+                {EResourceType.Chip, 100},
+                {EResourceType.Concrete, 100},
+                {EResourceType.Plastic, 100},
+                {EResourceType.Steel, 100},
+                {EResourceType.Sand, 100},
+                {EResourceType.Silicon, 100},
+                {EResourceType.Trash, 2}
             }; // */
 
             // var beginRes = new Dictionary<EResourceType, int> {{EResourceType.Metal, 12}, {EResourceType.Stone, 8}};
 
             foreach (var pair in beginRes)
             {
-                for (int i = 0; i < pair.Value; i++)
+                if (!dbg)
                 {
-                    cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
+                    for (int i = 0; i < pair.Value; i++)
+                    {
+                        cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < pair.Value; i++)
+                    {
+                        cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
+                        cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
+                        cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
+                        cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
+                        cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
+                    }
                 }
             }
             

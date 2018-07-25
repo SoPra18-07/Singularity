@@ -205,6 +205,7 @@ namespace Singularity.Screen
         /// <param name="spriteFont">title font</param>
         /// <param name="director">basic director</param>
         /// <param name="screen">the screen to place the window on</param>
+        // ReSharper disable once UnusedMember.Global
         public WindowObject(
             string windowName,
             Vector2 position,
