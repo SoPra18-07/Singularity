@@ -313,7 +313,7 @@ namespace Singularity.Manager
                 // if there is something close enough, shoot it. Else, set the target to null.
                 if (closestAdjacent != null)
                 {
-                    unit.SetShootingTarget(closestAdjacent);        
+                    unit.SetShootingTarget(closestAdjacent);
                 }
 
                 else
