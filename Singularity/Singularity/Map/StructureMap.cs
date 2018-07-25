@@ -82,6 +82,11 @@ namespace Singularity.Map
         [DataMember]
         private int mCommandCenterCount;
 
+        [DataMember]
+        private List<PlatformBlank> mPlatformsToAdd;
+        [DataMember]
+        private List<PlatformBlank> mPlatformsToRem;
+
         /// <summary>
         /// Creates a new structure map which holds all the structures currently in the game.
         /// </summary>
@@ -100,6 +105,9 @@ namespace Singularity.Map
             mStructuresToPlace = new LinkedList<StructurePlacer>();
             mPlatforms = new LinkedList<PlatformBlank>();
             mRoads = new LinkedList<Road>();
+
+            mPlatformsToAdd = new List<PlatformBlank>();
+            mPlatformsToRem = new List<PlatformBlank>();
         }
 
 
@@ -141,6 +149,11 @@ namespace Singularity.Map
         /// </summary>
         /// <param name="platform">The platform to be added</param>
         public void AddPlatform(PlatformBlank platform)
+        {
+            mPlatformsToAdd.Add(platform);
+        }
+
+        private void ActualAddPlatform(PlatformBlank platform)
         {
             var platformAsCc = platform as CommandCenter;
 
@@ -200,6 +213,11 @@ namespace Singularity.Map
         /// </summary>
         /// <param name="platform">The platform to be removed</param>
         public void RemovePlatform(PlatformBlank platform)
+        {
+            mPlatformsToRem.Add(platform);
+        }
+
+        private void ActualRemovePlatform(PlatformBlank platform)
         {
             var platformAsCc = platform as CommandCenter;
 
@@ -593,6 +611,18 @@ namespace Singularity.Map
 
                 UpdateEnergyLevel(graphId);
             }
+
+            foreach (var platform in mPlatformsToAdd)
+            {
+                ActualAddPlatform(platform);
+            }
+            mPlatformsToAdd = new List<PlatformBlank>();
+
+            foreach (var platform in mPlatformsToRem)
+            {
+                ActualRemovePlatform(platform);
+            }
+            mPlatformsToRem = new List<PlatformBlank>();
         }
 
         private void UpdateEnergyLevel(int graphId)

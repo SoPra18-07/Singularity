@@ -111,6 +111,8 @@ namespace Singularity.PlatformActions
         [DataMember]
         protected bool mIsBuilding = false;
         [DataMember]
+        private bool mFirstCall = true;
+        [DataMember]
         public override List<JobType> UnitsRequired { get; set; } = new List<JobType> { JobType.Logistics };
 
         protected AMakeUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
@@ -131,8 +133,9 @@ namespace Singularity.PlatformActions
 
         public override void Update(GameTime t)
         {
-            if (State != PlatformActionState.Active)
+            if (State != PlatformActionState.Active || mFirstCall)
             {
+                mFirstCall = false;
                 return;
             }
 

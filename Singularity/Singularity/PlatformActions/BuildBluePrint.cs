@@ -26,6 +26,7 @@ namespace Singularity.PlatformActions
         [DataMember]
         private bool mBuildable; // defaults to false
 
+
         public BuildBluePrint(PlatformBlank platform, PlatformBlank toBeBuilt, Road connectingRoad, ref Director director) : base(
             platform,
             ref director)

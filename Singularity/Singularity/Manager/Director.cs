@@ -42,6 +42,9 @@ namespace Singularity.Manager
         [DataMember]
         public DeathManager GetDeathManager { get; private set; }
 
+        [DataMember]
+        public CreateManager GetCreateManager { get; private set; }
+
         public GraphicsDeviceManager GetGraphicsDeviceManager { get; }
 
         public EventLog GetEventLog { get; }
@@ -58,7 +61,7 @@ namespace Singularity.Manager
             GetUserInterfaceController = new UserInterfaceController(this);
             GetDistributionDirector = new DistributionDirector(this);
             GetMilitaryManager = new MilitaryManager(this);
-            // GetFlockingManager = new FlockingManager(this);
+            GetCreateManager = new CreateManager(this);
             GetEventLog = new EventLog(GetUserInterfaceController, this, content);
             GetGraphicsDeviceManager = graphics;
             GetDeathManager = new DeathManager();
@@ -82,8 +85,9 @@ namespace Singularity.Manager
             GetDistributionDirector = dir.GetDistributionDirector;
             GetDistributionDirector.ReloadContent(GetUserInterfaceController);
             GetStoryManager.LoadAchievements();
-            GetMilitaryManager.ReloadContent(mapmeasurements, this);
-            GetStoryManager.ReloadContent(this);
+            GetMilitaryManager.ReloadContent(mapmeasurements, dir);
+            GetStoryManager.ReloadContent(dir);
+            GetCreateManager.ReloadContent(dir);
         }
 
         internal void SaveConfig()
