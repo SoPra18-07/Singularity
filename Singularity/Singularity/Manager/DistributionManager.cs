@@ -1134,11 +1134,6 @@ namespace Singularity.Manager
             return mProdPlatforms.Count;
         }
 
-        public int GetNumberOfDefPlatforms()
-        {
-            return mDefPlatforms.Count;
-        }
-
         #region Killing
         public void Kill(PlatformBlank platform)
         {
