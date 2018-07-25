@@ -99,10 +99,10 @@ namespace Singularity.Manager
                 GetInputManager.Update(gametime);
                 GetEventLog.Update(gametime);
             }
-            GetStoryManager.Update(gametime);
-            GetMilitaryManager.Update(gametime);
             if (!GlobalVariables.mGameIsPaused)
             {
+                GetStoryManager.Update(gametime);
+                GetMilitaryManager.Update(gametime);
                 GetClock.Update(gametime);
             }
             GetSoundManager.SetMediaPlayerVolume();

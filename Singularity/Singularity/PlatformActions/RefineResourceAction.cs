@@ -59,6 +59,9 @@ namespace Singularity.PlatformActions
         {
             var nRes = new Resource(mRefiningTo, mPlatform.Center, mDirector);
             mPlatform.StoreResource(nRes);
+
+            // Track the creation of a resource in the statistics.
+            mDirector.GetStoryManager.UpdateResources(mRefiningTo);
             mReady = false;
         }
 
