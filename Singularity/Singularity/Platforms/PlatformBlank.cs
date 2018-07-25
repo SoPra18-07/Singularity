@@ -1216,6 +1216,7 @@ namespace Singularity.Platforms
             }
 
             mDirector.GetMilitaryManager.RemovePlatform(this);
+            mDirector.GetStoryManager.Level.Map.GetCollisionMap().RemoveCollider(this);
             mInfoBox = null;
             mAllGenUnits = null;
             //This is needed so this code is not called multiple times
