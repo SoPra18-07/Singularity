@@ -17,7 +17,7 @@ namespace Singularity.Units
 
         public override void Update(GameTime gameTime)
         {
-            // do nothing
+            //Really shoot for test purposes
         }
     }
 }
