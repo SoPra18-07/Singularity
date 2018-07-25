@@ -91,7 +91,7 @@ namespace Singularity.PlatformActions
             switch (State)
             {
                 case PlatformActionState.Active:
-                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this);
+                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this, mDirector);
                     State = PlatformActionState.Available;
                     break;
                 case PlatformActionState.Available:

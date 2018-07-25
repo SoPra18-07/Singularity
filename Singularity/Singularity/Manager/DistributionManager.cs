@@ -1119,9 +1119,15 @@ namespace Singularity.Manager
 
         #endregion
 
-        public void PausePlatformAction(IPlatformAction action)
+        public void PausePlatformAction(IPlatformAction action, Director director)
         {
-            Kill(action);
+            director.GetActionManager.AddObject(action,
+                delegate(object o)
+                {
+                    Kill(action);
+                    return true;
+                });
+
         }
 
         public List<int> GetNumberOfAssigned()

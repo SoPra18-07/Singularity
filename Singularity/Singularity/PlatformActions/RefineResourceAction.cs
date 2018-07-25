@@ -78,7 +78,7 @@ namespace Singularity.PlatformActions
                     State = PlatformActionState.Active;
                     break;
                 case PlatformActionState.Active:
-                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this);
+                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this, mDirector);
                     State = PlatformActionState.Available;
                     break;
                 case PlatformActionState.Deactivated:
@@ -87,11 +87,6 @@ namespace Singularity.PlatformActions
                 default:
                     throw new AccessViolationException("Someone/Something acccessed the state!!");
             }
-        }
-
-        public void UiToggleAll()
-        {
-            ((Factory)mPlatform).UiToggleAll();
         }
     }
 }
