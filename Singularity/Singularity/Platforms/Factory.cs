@@ -51,10 +51,5 @@ namespace Singularity.Platforms
         {
             mIPlatformActions.ForEach(a => a.Execute());
         }
-
-        public void UiToggleAll()
-        {
-            mIPlatformActions.ForEach(a => a.UiToggleState());
-        }
     }
 }

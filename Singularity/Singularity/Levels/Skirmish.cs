@@ -47,10 +47,5 @@ namespace Singularity.Levels
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2700), ref mDirector, false));
 
         }
-
-        public GameScreen GetGameScreen()
-        {
-            return GameScreen;
-        }
     }
 }

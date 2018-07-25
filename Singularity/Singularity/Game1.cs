@@ -132,6 +132,7 @@ namespace Singularity
             mDirector.Update(gameTime, IsActive);
             mScreenManager.Update(gameTime);
 
+            mDirector.GetActionManager.ActualExec();
             // make sure this is ALWAYS the last call in our update cycle otherwise things might get nasty.
             mDirector.GetDeathManager.KillAddedObjects();
 

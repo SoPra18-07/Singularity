@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
 using Singularity.Libraries;
 using Singularity.Manager;
+using Singularity.PlatformActions;
 using Singularity.Property;
 
 namespace Singularity.Platforms
@@ -30,6 +32,9 @@ namespace Singularity.Platforms
         public Vector2 RelativePosition { get; set; }
         [DataMember]
         public Vector2 RelativeSize { get; set; }
+
+        [DataMember]
+        private BuildBluePrint mBlueprintAction;
 
         /// <summary>
         /// If it is a blueprint, then set this value to true. Once the road changes from a blueprint to a real road,
@@ -70,6 +75,11 @@ namespace Singularity.Platforms
                 Place(source, destination);
             }
             Blueprint = blueprint;
+        }
+
+        public void SetBluePrint(BuildBluePrint bp)
+        {
+            mBlueprintAction = bp;
         }
 
         public void Place(PlatformBlank source, PlatformBlank dest)
@@ -118,9 +128,27 @@ namespace Singularity.Platforms
 
         public override bool Die()
         {
+            mBlueprintAction?.Die();
+            if (Blueprint)
+            {
+                // needs to change if you can build blueprints on blueprints !!!
+                if (((PlatformBlank) DestinationAsNode).mBlueprint)
+                {
+                    ((PlatformBlank) DestinationAsNode).FlagForDeath();
+                }
+
+                if (((PlatformBlank) SourceAsNode).mBlueprint)
+                {
+                    ((PlatformBlank) SourceAsNode).FlagForDeath();
+                }
+            }
+
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
+            HasDieded = true;
             return true;
         }
+
+        public bool HasDieded { get; private set; }
 
         public new void ReloadContent(ref Director director)
         {

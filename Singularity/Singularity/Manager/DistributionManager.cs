@@ -1119,9 +1119,15 @@ namespace Singularity.Manager
 
         #endregion
 
-        public void PausePlatformAction(IPlatformAction action)
+        public void PausePlatformAction(IPlatformAction action, Director director)
         {
-            Kill(action);
+            director.GetActionManager.AddObject(action,
+                delegate(object o)
+                {
+                    Kill(action);
+                    return true;
+                });
+
         }
 
         public List<int> GetNumberOfAssigned()
@@ -1154,7 +1160,7 @@ namespace Singularity.Manager
             //Update the handler afterwards
             mHandler?.ForceSliderPages();
             // the first in the pair is the id, the second is the TTL
-            mKilled.Add(new Pair<int, int>(platform.Id, Math.Max(mBuildingResources.Count, mRefiningOrStoringResources.Count)));
+            mKilled.Add(new Pair<int, int>(platform.Id, mBuildingResources.Count + mRefiningOrStoringResources.Count));
         }
 
         public void Kill(IPlatformAction action)
@@ -1165,7 +1171,7 @@ namespace Singularity.Manager
             var lists = new List<List<GeneralUnit>> { mIdle, mLogistics, mConstruction, mProduction, mDefense, mManual };
             lists.ForEach(l => l.ForEach(u => u.Kill(action.Id)));
             // the first in the pair is the id, the second is the TTL
-            mKilled.Add(new Pair<int, int>(action.Id, Math.Max(mBuildingResources.Count, mRefiningOrStoringResources.Count)));
+            mKilled.Add(new Pair<int, int>(action.Id, mBuildingResources.Count + mRefiningOrStoringResources.Count));
         }
 
         public void Kill(GeneralUnit unit)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -536,16 +537,7 @@ namespace Singularity.Platforms
 
             return true;
         } // */
-
-        /// <summary>
-        /// Get the requirements of resources to build this platform.
-        /// </summary>
-        /// <returns> a dictionary of the resources with a number telling how much of it is required</returns>
-        public Dictionary<EResourceType, int> GetResourcesRequired()
-        {
-            return mCost;
-        }
-
+        
         /// <summary>
         /// Get the Resources on the platform.
         /// </summary>
@@ -1149,6 +1141,14 @@ namespace Singularity.Platforms
 
         public override bool Die()
         {
+            if (HasDieded)
+            {
+                // Debug.WriteLine("Tried to kill platform agein: " + Id);
+                // throw new Exception("Died twice. For some reason."); // blueprints do that. It's alright.
+                // this platform already died before. there's nothing to do anymore.
+                return true;
+            }
+
             // stats tracking for a platform death
             mDirector.GetStoryManager.UpdatePlatforms(Friendly ? "lost" : "destroyed");
 
@@ -1198,7 +1198,7 @@ namespace Singularity.Platforms
 
             mIPlatformActions.ForEach(a => a.Platform = null);
             mIPlatformActions.RemoveAll(a => a.Die());
-            if (Friendly)
+            if (Friendly && !mBlueprint)
             {
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
             }
@@ -1216,10 +1216,10 @@ namespace Singularity.Platforms
             }
 
             mDirector.GetMilitaryManager.RemovePlatform(this);
-            mDirector.GetStoryManager.Level.Map.GetCollisionMap().RemoveCollider(this);
             mInfoBox = null;
-            mAllGenUnits = null;
-            //This is needed so this code is not called multiple times
+            mAllGenUnits = new List<GeneralUnit>();
+            mDirector.GetStoryManager.Level.Map.GetCollisionMap().CleanGrid(); // super inefficient. but works for now.
+            // This is needed so this code is not called multiple times
             HasDieded = true;
             return true;
         }
@@ -1235,6 +1235,8 @@ namespace Singularity.Platforms
 
         public void Kill(IPlatformAction action)
         {
+            // hacky. works
+            mPreviousIsActiveState = !IsActive();
             mToKill.Add(action);
         }
 
@@ -1412,21 +1414,21 @@ namespace Singularity.Platforms
             switch (type)
             {
                 case EStructureType.Blank:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 2 } };
                 case EStructureType.Energy:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Copper, 1 }, { EResourceType.Metal, 2 }, { EResourceType.Silicon, 1 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Copper, 3 }, { EResourceType.Metal, 2 }, { EResourceType.Silicon, 5 } };
                 case EStructureType.Factory:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 3 }, { EResourceType.Stone, 2 }, { EResourceType.Water, 1 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 5 }, { EResourceType.Stone, 5 }, { EResourceType.Water, 7 } };
                 case EStructureType.Junkyard:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 2 }, { EResourceType.Stone, 2 }, { EResourceType.Water, 1 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 2 }, { EResourceType.Stone, 2 }, { EResourceType.Water, 5 } };
                 case EStructureType.Mine:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 }, { EResourceType.Stone, 1 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 4 }, { EResourceType.Stone, 2 } };
                 case EStructureType.Quarry:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 }, { EResourceType.Stone, 1 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 }, { EResourceType.Stone, 5 } };
                 case EStructureType.Storage:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 }, { EResourceType.Concrete, 3 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 100 }, { EResourceType.Concrete, 100 } };
                 case EStructureType.Well:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 2 }, { EResourceType.Stone, 2 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 3 }, { EResourceType.Stone, 3 } };
                 case EStructureType.Kinetic:
                     return new Dictionary<EResourceType, int> { { EResourceType.Metal, 2 }, { EResourceType.Concrete, 3 } };
                 case EStructureType.Laser:
