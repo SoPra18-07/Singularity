@@ -422,8 +422,8 @@ namespace Singularity.Screen.ScreenClasses
 
                 // TODO : REMOVE IF NO LONGER NEEDED
                 //currentProducedResourceAmounts.Values.ToList().ForEach(i => Debug.WriteLine("{0}\t", i));
-                Debug.WriteLine("metal: " + currentProducedResourceAmounts[EResourceType.Metal]);
-                Debug.WriteLine("steel: " + currentProducedResourceAmounts[EResourceType.Steel]);
+                //Debug.WriteLine("metal: " + currentProducedResourceAmounts[EResourceType.Metal]);
+                //Debug.WriteLine("steel: " + currentProducedResourceAmounts[EResourceType.Steel]);
 
                 // set 'produced resource in past X seconds' amount
                 mResourceItemChip.Amount = currentProducedResourceAmounts[EResourceType.Chip] - mResourceWindowResourceAmountLastTick[EResourceType.Chip];
