@@ -111,7 +111,10 @@ namespace Singularity.Units
             mSoundId = mDirector.GetSoundManager.CreateSoundInstance("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
 
             // Track the creation of a military unit in the statistics.
-            director.GetStoryManager.UpdateUnits("military created");
+            if (friendly)
+            {
+                director.GetStoryManager.UpdateUnits("military created");
+            }
         }
 
         public void ReloadContent(ContentManager content, ref Director director, Camera camera, ref Map.Map map)
