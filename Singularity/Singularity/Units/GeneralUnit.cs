@@ -19,8 +19,6 @@ namespace Singularity.Units
         [DataMember]
         public int Id { get; private set; }
         [DataMember]
-        private int mPositionId;
-        [DataMember]
         public Optional<Resource> Carrying { get; set; }
 
 
@@ -30,10 +28,7 @@ namespace Singularity.Units
         private Queue<Vector2> mPathQueue; // the queue of platform center locations
         [DataMember]
         private Queue<INode> mNodeQueue;
-
-        [DataMember]
-        private bool mConstructionResourceFound; // a flag to indicate that the unit has found the construction resource it was looking for
-
+        
         /// <summary>
         /// The sprite used by the general unit. Drawing a sprite turns out to be more efficient than drawing a primitive.
         /// </summary>
@@ -68,9 +63,7 @@ namespace Singularity.Units
         public Vector2 RelativePosition { get; set; }
         [DataMember]
         public Vector2 RelativeSize { get; set; }
-
-        private Director mDirector;
-
+        
         /// <summary>
         /// whether the unit is moving or currently standing still,
         /// this is used so the unit can ask for a new path if it
@@ -84,6 +77,8 @@ namespace Singularity.Units
         /// </summary>
         [DataMember]
         private Optional<INode> mDestination;
+
+        private bool mInitialized;
 
         [DataMember]
         public int TargetGraphid { get; set; }
@@ -120,8 +115,14 @@ namespace Singularity.Units
 
             mIsMoving = false;
             mDirector = director;
-            mDirector.GetDistributionDirector.GetManager(Graphid).Register(this);
-            mDirector.GetStoryManager.UpdateUnits("created");
+            mDirector.GetActionManager.AddObject(this,
+                delegate(object u)
+                {
+                    mDirector.GetDistributionDirector.GetManager(Graphid).Register(this);
+                    mDirector.GetStoryManager.UpdateUnits("created");
+                    mInitialized = true;
+                    return true;
+                });
             mDone = true;
             mFinishTask = false;
         }
@@ -229,6 +230,10 @@ namespace Singularity.Units
         /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
+            if (!mInitialized)
+            {
+                return;
+            }
             //If true, this unit has still a task to finish and shall not act like the job it has now until the task is finished.
             //This should only occur when Logistic or Constructing units have only just picked up a Resource and their job changed after that.
             if (mFinishTask)
