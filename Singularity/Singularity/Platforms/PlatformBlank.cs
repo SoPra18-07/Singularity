@@ -1467,5 +1467,10 @@ namespace Singularity.Platforms
         {
             return true;
         }
+
+        public bool GetBluePrintStatus()
+        {
+            return mIsBlueprint;
+        }
     }
 }
