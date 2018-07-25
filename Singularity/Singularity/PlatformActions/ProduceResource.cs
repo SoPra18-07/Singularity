@@ -46,6 +46,7 @@ namespace Singularity.PlatformActions
             if (res.IsPresent())
             {
                 mPlatform.StoreResource(res.Get());
+                mDirector.GetStoryManager.UpdateResources(res.Get().Type);
             }
         }
     }

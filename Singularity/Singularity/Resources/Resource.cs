@@ -37,8 +37,6 @@ namespace Singularity.Resources
             AbsolutePosition = position;
             AbsoluteSize = new Vector2(10, 10);
 
-            // Track the creation of a resource in the statistics.
-            director.GetStoryManager.UpdateResources(Type);
         }
 
         public void Follow(GeneralUnit unit)

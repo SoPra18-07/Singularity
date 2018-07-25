@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -30,6 +31,8 @@ namespace Singularity.Screen.ScreenClasses
         private bool mInitialized;
 
         private Button mPauseButtonBeforeUi;
+
+        private GamePauseManagerScreen mGamePauseManagerScreen;
 
         #region members used by several windows
 
@@ -322,7 +325,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // TODO : BALANCING - CHANGE THIS VALUE TO DECREASE/INCREASE THE SECONDS BETWEEN EACH RESOURCE WINDOW UPDATE
             // resource/X seconds production calc.
-            mResourceWindowXSeconds = 10;
+            mResourceWindowXSeconds = 5;
 
             // change color for the border or the filling of all userinterface windows here
             mWindowColor = new Color(0.27f, 0.5f, 0.7f, 0.8f);
@@ -334,7 +337,8 @@ namespace Singularity.Screen.ScreenClasses
             mPrevScreenWidth = mCurrentScreenWidth;
             mPrevScreenHeight = mCurrentScreenHeight;
 
-            Bounds = new Rectangle(0, 0, mCurrentScreenWidth, mCurrentScreenHeight);
+            // pause menu screen
+            mGamePauseManagerScreen = new GamePauseManagerScreen(new Vector2(director.GetGraphicsDeviceManager.PreferredBackBufferWidth, director.GetGraphicsDeviceManager.PreferredBackBufferHeight), mScreenManager, mDirector);
         }
 
         /// <inheritdoc />
@@ -412,9 +416,14 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             // update resource window every X seconds to get the "production in the last 10 seconds amount"
-            if (mResourceWindowTicker + mResourceWindowXSeconds < mDirector.GetClock.GetIngameTime().Seconds)
+            if ((mResourceWindowTicker + mResourceWindowXSeconds) % 60 < mDirector.GetClock.GetIngameTime().Seconds)
             {
                 var currentProducedResourceAmounts = mDirector.GetStoryManager.Resources;
+
+                // TODO : REMOVE IF NO LONGER NEEDED
+                //currentProducedResourceAmounts.Values.ToList().ForEach(i => Debug.WriteLine("{0}\t", i));
+                //Debug.WriteLine("metal: " + currentProducedResourceAmounts[EResourceType.Metal]);
+                //Debug.WriteLine("steel: " + currentProducedResourceAmounts[EResourceType.Steel]);
 
                 // set 'produced resource in past X seconds' amount
                 mResourceItemChip.Amount = currentProducedResourceAmounts[EResourceType.Chip] - mResourceWindowResourceAmountLastTick[EResourceType.Chip];
@@ -492,7 +501,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // the button which is displayed before the UI appears to enable the player to exit the game before getting the UI
             mPauseButtonBeforeUi = new Button(" ll ", mLibSans14, new Vector2(
-                mDirector.GetGraphicsDeviceManager.PreferredBackBufferWidth - mLibSans14.MeasureString(" ll ").X, 0), true) { Opacity = 1f };
+                    mDirector.GetGraphicsDeviceManager.PreferredBackBufferWidth - mLibSans14.MeasureString(" ll ").X, 0), true) { Opacity = 1f };
             mPauseButtonBeforeUi.ButtonReleased += PauseMenuBeforeUi;
 
             //DEACTIVATE EVERYTHING TO ACTIVATE IT LATER
@@ -507,6 +516,10 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             Loaded = true;
+
+            // subscribe to input manager
+            Bounds = new Rectangle((int)mPauseButtonBeforeUi.Position.X, (int)mPauseButtonBeforeUi.Position.Y, (int)mPauseButtonBeforeUi.Size.X, (int)mPauseButtonBeforeUi.Size.Y);
+            mDirector.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
         }
 
         /// <summary>
@@ -1453,9 +1466,6 @@ namespace Singularity.Screen.ScreenClasses
 
             // called once to set positions + called everytime the resolution changes
             ResetWindowsToStandardPositon();
-
-            // subscribe to input manager
-            mDirector.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
 
             //This instance will handle the comunication between Sliders and DistributionManager.
             mCivilUnitsSliderHandler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mConstructionSlider, mLogisticsSlider, mIdleUnitsTextAndAmount);
@@ -2532,32 +2542,32 @@ else
         private void PauseMenuBeforeUi(object sender, EventArgs eventArgs)
         {
             GlobalVariables.mGameIsPaused = true;
-            mScreenManager.AddScreen(new GamePauseManagerScreen(new Vector2(mDirector.GetGraphicsDeviceManager.PreferredBackBufferWidth, mDirector.GetGraphicsDeviceManager.PreferredBackBufferHeight), mScreenManager, mDirector));
+            mScreenManager.AddScreen(mGamePauseManagerScreen);
         }
 
         #endregion
 
         #region InputManagement
 
-        public Rectangle Bounds { get; }
+        public Rectangle Bounds { get; private set; }
 
         public EScreen Screen { get; } = EScreen.UserInterfaceScreen;
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
-            return true;
+            return false;
         }
 
         public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {
             //
-            return true;
+            return false;
         }
 
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
             //
-            return true;
+            return false;
         }
 
         #endregion
