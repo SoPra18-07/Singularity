@@ -333,7 +333,10 @@ namespace Singularity.Platforms
                 platform: this, director: mDirector);
 
             // Track the creation of a platform in the statistics.
-            director.GetStoryManager.UpdatePlatforms("created");
+            if (Friendly)
+            {
+                director.GetStoryManager.UpdatePlatforms("created");
+            }
 
             mHealthBar = new HealthBar(this);
 
