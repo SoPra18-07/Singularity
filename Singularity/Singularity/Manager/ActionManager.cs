@@ -22,6 +22,19 @@ namespace Singularity.Manager
 
         public void AddObject(object obj, Func<object, bool> toAdd)
         {
+            if (mToCreatesNew.ContainsKey(obj))
+            {
+                if (mToCreatesNew[obj] == toAdd)
+                {
+                    return;
+                }
+                mToCreatesNew[obj] = delegate(object o)
+                {
+                    mToCreatesNew[obj](o);
+                    toAdd(o);
+                    return true;
+                };
+            }
             mToCreatesNew.Add(obj, toAdd);
         }
 

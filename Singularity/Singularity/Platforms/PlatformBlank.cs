@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -1149,6 +1150,14 @@ namespace Singularity.Platforms
 
         public override bool Die()
         {
+            if (HasDieded)
+            {
+                // Debug.WriteLine("Tried to kill platform agein: " + Id);
+                // throw new Exception("Died twice. For some reason."); // blueprints do that. It's alright.
+                // this platform already died before. there's nothing to do anymore.
+                return true;
+            }
+
             // stats tracking for a platform death
             mDirector.GetStoryManager.UpdatePlatforms(Friendly ? "lost" : "destroyed");
 
@@ -1198,7 +1207,7 @@ namespace Singularity.Platforms
 
             mIPlatformActions.ForEach(a => a.Platform = null);
             mIPlatformActions.RemoveAll(a => a.Die());
-            if (Friendly)
+            if (Friendly && !mBlueprint)
             {
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
             }
@@ -1216,10 +1225,10 @@ namespace Singularity.Platforms
             }
 
             mDirector.GetMilitaryManager.RemovePlatform(this);
-            mDirector.GetStoryManager.Level.Map.GetCollisionMap().RemoveCollider(this);
             mInfoBox = null;
-            mAllGenUnits = null;
-            //This is needed so this code is not called multiple times
+            mAllGenUnits = new List<GeneralUnit>();
+            mDirector.GetStoryManager.Level.Map.GetCollisionMap().CleanGrid(); // super inefficient. but works for now.
+            // This is needed so this code is not called multiple times
             HasDieded = true;
             return true;
         }
@@ -1235,6 +1244,8 @@ namespace Singularity.Platforms
 
         public void Kill(IPlatformAction action)
         {
+            // hacky. works
+            mPreviousIsActiveState = !IsActive();
             mToKill.Add(action);
         }
 

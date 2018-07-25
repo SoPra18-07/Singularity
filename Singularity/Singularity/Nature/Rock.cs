@@ -69,6 +69,7 @@ namespace Singularity.Nature
             mDrawAngle = new float [14, 18];
 
             mDrawRock = new bool[14, 18];
+            mDirector.GetMilitaryManager.AddUnit(this);
         }
 
         public new void ReloadContent(ref Director dir)

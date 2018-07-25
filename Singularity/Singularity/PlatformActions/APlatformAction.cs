@@ -92,10 +92,15 @@ namespace Singularity.PlatformActions
 
         public bool Die()
         {
+            if (mPlatform == null)
+            {
+                return true;
+            }
             if (mPlatform.Friendly)
             {
                 mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Kill(this);
             }
+            State = PlatformActionState.Disabled;
             mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
             mPlatform.Kill(this);
             mPlatform = null;
