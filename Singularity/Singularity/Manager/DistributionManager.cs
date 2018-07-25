@@ -397,11 +397,17 @@ namespace Singularity.Manager
                     //That way the unit will only travel one node per task, but that makes it more reactive.
                     foreach (var edge in unit.CurrentNode.GetInwardsEdges())
                     {
-                        nodes.Add(edge.GetParent());
+                        if (!(edge as Road).Blueprint)
+                        {
+                            nodes.Add(edge.GetParent());
+                        }
                     }
                     foreach (var edge in unit.CurrentNode.GetOutwardsEdges())
                     {
-                        nodes.Add(edge.GetChild());
+                        if (!(edge as Road).Blueprint)
+                        {
+                            nodes.Add(edge.GetChild());
+                        }
                     }
 
                     if (nodes.Count == 0)
@@ -1026,16 +1032,7 @@ namespace Singularity.Manager
                     joblist.Add(unitbool.GetFirst());
                 }
             }
-            if (isDef)
-            {
-                //Make sure the new platform gets some units
-                NewlyDistribute(platform, true, alreadyonplatform);
-            }
-            else
-            {
-                //Make sure the new platform gets some units
-                NewlyDistribute(platform, false, alreadyonplatform);
-            }
+            NewlyDistribute(platform, isDef, alreadyonplatform);
         }
 
         public void Register(IPlatformAction action)
@@ -1135,11 +1132,6 @@ namespace Singularity.Manager
         public int GetNumberOfProdPlatforms()
         {
             return mProdPlatforms.Count;
-        }
-
-        public int GetNumberOfDefPlatforms()
-        {
-            return mDefPlatforms.Count;
         }
 
         #region Killing
