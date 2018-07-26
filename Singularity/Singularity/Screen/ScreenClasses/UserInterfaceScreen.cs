@@ -1286,9 +1286,9 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Junkyard"),
                 mLibSans10);
 
-            var infoJunkyardProduce = new TextField("Turns trash to energy",
+            var infoJunkyardProduce = new TextField("Disposes of trash",
                 Vector2.Zero,
-                mLibSans10.MeasureString("Turns trash to energy"),
+                mLibSans10.MeasureString("Disposes of trash"),
                 mLibSans10,
                 Color.White);
 
