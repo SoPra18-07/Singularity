@@ -87,6 +87,7 @@ namespace Singularity.PlatformActions
                     mDirector.GetStoryManager.Level.GameScreen.RemoveObject(mRBuilding);
                     mDirector.GetStoryManager.Level.Map.AddRoad(mRBuilding);
                     mRBuilding.Blueprint = false;
+                    mDirector.GetUserInterfaceController.UpdateSLiderHandler();
                     return Die();
                 });
         }
