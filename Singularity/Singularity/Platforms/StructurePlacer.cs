@@ -135,9 +135,6 @@ namespace Singularity.Platforms
 
                 case EPlacementType.PlatformMouseFollowAndRoad:
                     break;
-
-                default:
-                   break;
             }
 
             if (mIsRoadPlacement)
@@ -308,11 +305,8 @@ namespace Singularity.Platforms
                     }
                     mIsFinished = true;
                     mUnregister = true;
-                    mDirector.GetUserInterfaceController.BuildingProcessFinished(mPlatformType);
+                    mDirector.GetUserInterfaceController.BuildingProcessFinished();
 
-                    break;
-
-                default:
                     break;
             }
 
@@ -399,9 +393,6 @@ namespace Singularity.Platforms
 
                         break;
 
-                    default:
-                        break;
-
                 }
 
             }
@@ -411,7 +402,7 @@ namespace Singularity.Platforms
                 if (mCurrentState.GetState() == 1)
                 {
 
-                    mDirector.GetUserInterfaceController.BuildingProcessFinished(mPlatformType);
+                    mDirector.GetUserInterfaceController.BuildingProcessFinished();
                     mCanceled = true;
                     mIsFinished = true;
                     giveThrough = false;

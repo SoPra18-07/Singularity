@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -13,8 +12,6 @@ using Singularity.Map.Properties;
 using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Resources;
-using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -146,8 +143,6 @@ namespace Singularity.Screen.ScreenClasses
         // graph ID
         private int mCivilUnitsGraphId;
         private int mCivilUnitsGraphIdToCompare;
-
-        private List<IWindowItem> mSelectedPlatformUnitAssignmentList;
 
         internal Dictionary<int, Graph.Graph> GraphIdToGraphStructureDict { get; set; }
 
@@ -555,7 +550,6 @@ namespace Singularity.Screen.ScreenClasses
 
             // list to add all item to be able to iterate through them
             mSelectedPlatformResourcesList = new List<ResourceIWindowItem>();
-            mSelectedPlatformUnitAssignmentList = new List<IWindowItem>();
             mSelectedPlatformActionList = new List<PlatformActionIWindowItem>();
 
             // activate / deactivate platform item
@@ -659,11 +653,6 @@ namespace Singularity.Screen.ScreenClasses
             mSelectedPlatformDeactivatePlatformButton.ActiveInWindow = false;
 
             foreach (var item in mSelectedPlatformResourcesList)
-            {
-                item.ActiveInWindow = false;
-            }
-
-            foreach (var item in mSelectedPlatformUnitAssignmentList)
             {
                 item.ActiveInWindow = false;
             }
@@ -1421,8 +1410,6 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10,
                 Color.White);
 
-            dictWithRes = PlatformBlank.GetResourceCosts(EStructureType.Kinetic);
-
             mInfoBuildKineticTower = new InfoBoxWindow(
                 itemList: new List<IWindowItem>
                 {
@@ -1599,7 +1586,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // mCivilUnitsSliderHandler.Initialize(mDirector.GetDistributionDirector.GetSomeId());
             mDirector.GetActionManager.AddObject(mCivilUnitsSliderHandler,
-                delegate (object o)
+                delegate
                 {
                     mCivilUnitsSliderHandler.Initialize(mDirector.GetDistributionDirector.GetSomeId());
                     return true;
@@ -1654,7 +1641,6 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="isManuallyDeactivated">true, if the platform was manually disabled</param>
         /// <param name="type">the platform's type</param>
         /// <param name="resourceAmountList">list of single resource item's</param>
-        /// <param name="unitAssignmentList">dictionary with assigned units</param>
         /// <param name="actionsList">list of possible actions of the platform</param>
         /// <param name="isActive">true, if the platform is active</param>
         public void SetSelectedPlatformValues(
@@ -1663,7 +1649,6 @@ namespace Singularity.Screen.ScreenClasses
             bool isManuallyDeactivated,
             EStructureType type,
             IEnumerable<Resource> resourceAmountList,
-            Dictionary<JobType, List<Pair<GeneralUnit, bool>>> unitAssignmentList,
             IEnumerable<IPlatformAction> actionsList)
         {
             if (!mActiveUserInterface) { return; }
@@ -2011,7 +1996,7 @@ else
         /// <summary>
         /// Used to Deactivate the UI to activate it later (used by settler)
         /// </summary>
-        public void Deactivate()
+        private void Deactivate()
         {
             mActiveUserInterface = false;
         }
@@ -2032,7 +2017,7 @@ else
             mCurrentlyBuildButton?.AddBorder();
         }
 
-        public void BuildingProcessFinished(EStructureType structureType)
+        public void BuildingProcessFinished()
         {
             mCurrentlyBuildButton?.RemoveBorder();
             mCurrentlyBuildButton = null;

@@ -54,6 +54,11 @@ namespace Singularity.Platforms
 
         public override void Update(GameTime t)
         {
+            if (mBlueprint)
+            {
+                return;
+
+            }
             base.Update(t);
 
             if (mAmmoRequested > 0 && mResources.Count > 0 && mResources.Any(r => r.Type == EResourceType.Metal))
