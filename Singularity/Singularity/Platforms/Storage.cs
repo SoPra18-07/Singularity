@@ -35,6 +35,7 @@ namespace Singularity.Platforms
             SetPlatfromParameters();
         }
 
+/*
         /// <summary>
         /// Connects this storage to another storage to act like a portal.
         /// </summary>
@@ -43,5 +44,6 @@ namespace Singularity.Platforms
         {
             throw new NotImplementedException();
         }
+*/
     }
 }

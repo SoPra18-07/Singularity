@@ -19,7 +19,7 @@
         UserInterfaceScreen,
         LoadGameManagerScreen,
         TutorialScreen,
-        DebugScreen,
+        // DebugScreen,
         WinScreen,
         LoseScreen
     }

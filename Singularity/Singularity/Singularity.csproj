@@ -78,7 +78,6 @@
     <Compile Include="Levels\PlatformDestructionTestLevel.cs" />
     <Compile Include="Events\SpatialPositionEventArgs.cs" />
     <Compile Include="Manager\ActionManager.cs" />
-    <Compile Include="Manager\FlockingManager.cs" />
     <Compile Include="Levels\TechDemo.cs" />
     <Compile Include="Manager\DeathManager.cs" />
     <Compile Include="Nature\Rock.cs" />
@@ -125,7 +124,6 @@
     <Compile Include="Screen\ScreenClasses\LoadGameManagerScreen.cs" />
     <Compile Include="Screen\ScreenClasses\DebugScreen.cs" />
     <Compile Include="Screen\ActivationIWindowItem.cs" />
-    <Compile Include="Screen\IndexSwitcherIWindowItem.cs" />
     <Compile Include="Screen\PlatformInfoBox.cs" />
     <Compile Include="Screen\ScreenClasses\MenuWindow.cs" />
     <Compile Include="Screen\ScreenClasses\LoseScreen.cs" />
@@ -133,12 +131,10 @@
     <Compile Include="Screen\ScreenClasses\WinScreen.cs" />
     <Compile Include="Screen\SliderHandler.cs" />
     <Compile Include="Units\AFlocking.cs" />
-    <Compile Include="Units\ControllableUnit.cs" />
     <Compile Include="Screen\TextAndAmountIWindowItem.cs" />
     <Compile Include="Units\EnemyHeavy.cs" />
     <Compile Include="Units\EnemyFast.cs" />
     <Compile Include="Units\EnemyUnit.cs" />
-    <Compile Include="Units\EUnitType.cs" />
     <Compile Include="Units\FlockingGroup.cs" />
     <Compile Include="Units\FreeMovingUnit.cs" />
     <Compile Include="Units\MilitaryFast.cs" />
@@ -151,14 +147,12 @@
     <Compile Include="Units\Task.cs" />
     <Compile Include="Exceptions\InvalidGenericArgumentException.cs" />
     <Compile Include="Exceptions\NoSuchElementException.cs" />
-    <Compile Include="Exceptions\UnsupportedTextureSizeException.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Graph\EEdgeFacing.cs" />
     <Compile Include="Graph\Graph.cs" />
     <Compile Include="Graph\IEdge.cs" />
     <Compile Include="Graph\INode.cs" />
     <Compile Include="Graph\Paths\DefaultPathfinding.cs" />
-    <Compile Include="Graph\Paths\DummyPathfinding.cs" />
     <Compile Include="Graph\Paths\IPath.cs" />
     <Compile Include="Graph\Paths\IPathfinding.cs" />
     <Compile Include="Graph\Paths\PathfindingFactory.cs" />

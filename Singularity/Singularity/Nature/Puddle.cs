@@ -74,7 +74,6 @@ namespace Singularity.Nature
                     {false, true, true, true, true, true, true, true, false},
                 };
             }
-            mDirector.GetMilitaryManager.AddUnit(this);
         }
 
 
