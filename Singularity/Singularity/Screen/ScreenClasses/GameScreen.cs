@@ -547,18 +547,18 @@ namespace Singularity.Screen.ScreenClasses
             dbg = true;
             var beginRes = new Dictionary<EResourceType, int>
             {
-                {EResourceType.Metal, 50},
-                {EResourceType.Stone, 50},
-                {EResourceType.Water, 50},
-                {EResourceType.Oil, 50},
-                {EResourceType.Copper, 50},
-                {EResourceType.Fuel, 50},
-                {EResourceType.Chip, 50},
-                {EResourceType.Concrete, 50},
-                {EResourceType.Plastic, 50},
-                {EResourceType.Steel, 50},
-                {EResourceType.Sand, 50},
-                {EResourceType.Silicon, 50},
+                {EResourceType.Metal, 100},
+                {EResourceType.Stone, 100},
+                {EResourceType.Water, 100},
+                {EResourceType.Oil, 100},
+                {EResourceType.Copper, 100},
+                {EResourceType.Fuel, 100},
+                {EResourceType.Chip, 100},
+                {EResourceType.Concrete, 100},
+                {EResourceType.Plastic, 100},
+                {EResourceType.Steel, 100},
+                {EResourceType.Sand, 100},
+                {EResourceType.Silicon, 100},
                 {EResourceType.Trash, 2}
             }; // */
 
