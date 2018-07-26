@@ -31,20 +31,22 @@ namespace Singularity.Levels
             var settler = new Settler(new Vector2(2900, 3200), Camera, ref mDirector, GameScreen, Ui);
             GameScreen.AddObject(settler);
 
+            var enemyUnit = new EnemyHeavy(new Vector2(3000,3300), Camera, ref mDirector);
+            GameScreen.AddObject(enemyUnit);
+
             var milunitList = new List<MilitaryFast>(6);
             for (var i = 0; i < 6; i++)
             {
                 milunitList.Add(new MilitaryFast(new Vector2(3000 + (i > 2 ? 100 : 0), 3000 + (i % 3) * 50), Camera, ref mDirector));
-            }
+            }         
 
             GameScreen.AddObjects(milunitList);
-            var map = Map;
-            var target = new Target(new Vector2(2500, 2500), Camera, ref mDirector, ref map);
-            GameScreen.AddObject(target);
 
-            // add a puddle
+
+            // add a puddle && rock
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2500), ref mDirector));
             GameScreen.AddObject(new Puddle(new Vector2(3300, 2700), ref mDirector, false));
+            GameScreen.AddObject(new Rock(new Vector2(5000, 5000), ref mDirector));
 
         }
     }
