@@ -191,7 +191,7 @@ namespace Singularity.Screen.ScreenClasses
         private ResourceIWindowItem mResourceItemTrash;
 
         // previous clock time
-        private int mResourceWindowTicker;
+        private int mResourceWindowNextTick;
 
         // previous resource amount
         private Dictionary<EResourceType, int> mResourceWindowResourceAmountLastTick;
@@ -320,9 +320,6 @@ namespace Singularity.Screen.ScreenClasses
             // set as the controlled UI by the UIController
             mUserInterfaceController = director.GetUserInterfaceController;
 
-            // resource window ticker - needed to get time since last update
-            mResourceWindowTicker = mDirector.GetClock.GetIngameTime().Seconds;
-
             // TODO : BALANCING - CHANGE THIS VALUE TO DECREASE/INCREASE THE SECONDS BETWEEN EACH RESOURCE WINDOW UPDATE
             // resource/X seconds production calc.
             mResourceWindowXSeconds = 5;
@@ -416,7 +413,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             // update resource window every X seconds to get the "production in the last X seconds amount"
-            if ((mResourceWindowTicker + mResourceWindowXSeconds) < mDirector.GetClock.GetIngameTime().Seconds)
+                if (mResourceWindowNextTick == mDirector.GetClock.GetIngameTime().Seconds)
             {
                 var currentProducedResourceAmounts = mDirector.GetStoryManager.Resources;
 
@@ -435,7 +432,7 @@ namespace Singularity.Screen.ScreenClasses
                 mResourceItemWater.Amount = currentProducedResourceAmounts[EResourceType.Water] - mResourceWindowResourceAmountLastTick[EResourceType.Water];
                 mResourceItemTrash.Amount = currentProducedResourceAmounts[EResourceType.Trash] - mResourceWindowResourceAmountLastTick[EResourceType.Trash];
 
-                mResourceWindowTicker = mDirector.GetClock.GetIngameTime().Seconds;
+                mResourceWindowNextTick = (mDirector.GetClock.GetIngameTime().Seconds + 5) % 60;
 
                 mResourceWindowResourceAmountLastTick = new Dictionary<EResourceType, int>(mDirector.GetStoryManager.Resources);
             }
@@ -1587,6 +1584,9 @@ namespace Singularity.Screen.ScreenClasses
 
             // called once to set positions + called everytime the resolution changes
             ResetWindowsToStandardPositon();
+
+            // resource window ticker - needed to get time since last update
+            mResourceWindowNextTick = (mDirector.GetClock.GetIngameTime().Seconds + 5 - mDirector.GetClock.GetIngameTime().Seconds % 5) % 60;
 
             //This instance will handle the comunication between Sliders and DistributionManager.
             mCivilUnitsSliderHandler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mConstructionSlider, mLogisticsSlider, mIdleUnitsTextAndAmount);
