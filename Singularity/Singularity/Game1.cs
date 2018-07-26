@@ -55,7 +55,6 @@ namespace Singularity
             mScreenManager = new StackScreenManager(Content, mDirector.GetInputManager);
 
             mDirector.GetStoryManager.SetScreenManager(mScreenManager);
-
         }
 
         /// <summary>

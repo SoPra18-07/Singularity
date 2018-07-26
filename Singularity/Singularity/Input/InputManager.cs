@@ -560,10 +560,6 @@ namespace Singularity.Input
         [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalse")]
         public void Update(GameTime gametime)
         {
-            Debug.WriteLine("screensToCheck: " + mScreensToCheck.Count);
-            Debug.WriteLine("posList: " + mMousePositionListener.Count);
-            Debug.WriteLine("clickList: " + mMouseClickListener.Count);
-            Debug.WriteLine("keyList: " + mKeyListener.Count);
             // update 'current' values
             mCurrentMouseState = Mouse.GetState();
             mCurrentKeyboardState = Keyboard.GetState();

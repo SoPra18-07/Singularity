@@ -185,6 +185,7 @@ namespace Singularity.Screen.ScreenClasses
                     mDirector.GetStoryManager.SetScreenManager(mScreenManager);
                     mGameLoaded = true;
                     mName = "";
+                    GlobalVariables.mGameIsPaused = false;
                 }
             }
 
@@ -200,6 +201,7 @@ namespace Singularity.Screen.ScreenClasses
 
                 mGameLoaded = true;
                 mNewGame = false;
+                GlobalVariables.mGameIsPaused = false;
             }
 
             sPressed = "None";
