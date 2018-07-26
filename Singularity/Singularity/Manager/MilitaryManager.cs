@@ -28,6 +28,9 @@ namespace Singularity.Manager
         /// </summary>
         private Map.Map mMap;
 
+        [DataMember]
+        private List<PlatformBlank> mReconstructionList;
+
         #region Friendly unit lists
 
         /// <summary>
@@ -101,6 +104,7 @@ namespace Singularity.Manager
         internal MilitaryManager(Director director)
         {
             mDirector = director;
+            mReconstructionList = new List<PlatformBlank>();
         }
 
         /// <summary>
@@ -136,20 +140,16 @@ namespace Singularity.Manager
                 mUnitMap.AddUnit(funit);
             }
 
-            foreach (var fplatform in mFriendlyDefensePlatforms)
+            //This list includes every platform
+            foreach (var platform in mReconstructionList)
             {
 
-                mUnitMap.AddUnit(fplatform);
+                mUnitMap.AddUnit(platform);
             }
 
             foreach (var hunit in mHostileMilitary)
             {
                 mUnitMap.AddUnit(hunit);
-            }
-
-            foreach (var hplatform in mHostileDefensePlatforms)
-            {
-                mUnitMap.AddUnit(hplatform);
             }
         }
 
@@ -178,7 +178,8 @@ namespace Singularity.Manager
                 }
             }
 
-            // Then add it to the unitMap.
+            // Then add it to the unitMap and the reconstructionlist.
+            mReconstructionList.Add(platform);
             mUnitMap.AddUnit(platform, position);
         }
 
