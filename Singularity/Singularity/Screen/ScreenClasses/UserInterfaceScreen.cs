@@ -434,9 +434,6 @@ namespace Singularity.Screen.ScreenClasses
 
                 mResourceWindowNextTick = (mDirector.GetClock.GetIngameTime().Seconds + 5) % 60;
 
-                Debug.WriteLine("called");
-                Debug.WriteLine(mResourceWindowNextTick);
-
                 mResourceWindowResourceAmountLastTick = new Dictionary<EResourceType, int>(mDirector.GetStoryManager.Resources);
             }
         }
