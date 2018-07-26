@@ -32,7 +32,7 @@ namespace Singularity.Screen.ScreenClasses
 
         private Button mPauseButtonBeforeUi;
 
-        private GamePauseManagerScreen mGamePauseManagerScreen;
+        private readonly GamePauseManagerScreen mGamePauseManagerScreen;
 
         #region members used by several windows
 
@@ -360,7 +360,7 @@ namespace Singularity.Screen.ScreenClasses
             mCurrentScreenHeight = mDirector.GetGraphicsDeviceManager.PreferredBackBufferHeight;
 
             // update sliders if there was a change
-            if (mCivilUnitsGraphId != mCivilUnitsGraphIdToCompare && mCivilUnitsGraphId != 0)
+            if (mCivilUnitsGraphId != mCivilUnitsGraphIdToCompare)
             {
                 mCivilUnitsGraphIdToCompare = mCivilUnitsGraphId;
 
@@ -370,7 +370,7 @@ namespace Singularity.Screen.ScreenClasses
                 mCivilUnitsSliderHandler.ForceSliderPages();
             }
 
-            if (mStructureMap.GetDictionaryGraphIdToGraph().Count > 0 && mStructureMap.GetDictionaryGraphIdToGraph()[mCivilUnitsGraphId] == null)
+            if (mStructureMap.GetDictionaryGraphIdToGraph()[mCivilUnitsGraphId] == null)
             {
                 var index = 0;
 
@@ -415,15 +415,10 @@ namespace Singularity.Screen.ScreenClasses
                 mCanBuildPlatform = true;
             }
 
-            // update resource window every X seconds to get the "production in the last 10 seconds amount"
-            if ((mResourceWindowTicker + mResourceWindowXSeconds) % 60 < mDirector.GetClock.GetIngameTime().Seconds)
+            // update resource window every X seconds to get the "production in the last X seconds amount"
+            if ((mResourceWindowTicker + mResourceWindowXSeconds) < mDirector.GetClock.GetIngameTime().Seconds)
             {
                 var currentProducedResourceAmounts = mDirector.GetStoryManager.Resources;
-
-                // TODO : REMOVE IF NO LONGER NEEDED
-                //currentProducedResourceAmounts.Values.ToList().ForEach(i => Debug.WriteLine("{0}\t", i));
-                //Debug.WriteLine("metal: " + currentProducedResourceAmounts[EResourceType.Metal]);
-                //Debug.WriteLine("steel: " + currentProducedResourceAmounts[EResourceType.Steel]);
 
                 // set 'produced resource in past X seconds' amount
                 mResourceItemChip.Amount = currentProducedResourceAmounts[EResourceType.Chip] - mResourceWindowResourceAmountLastTick[EResourceType.Chip];
@@ -1469,9 +1464,16 @@ namespace Singularity.Screen.ScreenClasses
 
             //This instance will handle the comunication between Sliders and DistributionManager.
             mCivilUnitsSliderHandler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mConstructionSlider, mLogisticsSlider, mIdleUnitsTextAndAmount);
+
+            /*
+            var id = mDirector.GetDistributionDirector.GetSomeId();
+            mCivilUnitsSliderHandler.Initialize(id);
+            Debug.WriteLine("id: " + id);
+            mCivilUnitsSliderHandler.SetGraphId(0);*/
+
             // mCivilUnitsSliderHandler.Initialize(mDirector.GetDistributionDirector.GetSomeId());
             mDirector.GetActionManager.AddObject(mCivilUnitsSliderHandler,
-                delegate(object o)
+                delegate (object o)
                 {
                     mCivilUnitsSliderHandler.Initialize(mDirector.GetDistributionDirector.GetSomeId());
                     return true;
