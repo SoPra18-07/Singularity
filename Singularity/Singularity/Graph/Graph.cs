@@ -42,13 +42,14 @@ namespace Singularity.Graph
             mEdges.Remove(edge);
         }
 
+        /* ReSharper
         public void AddNodes(IEnumerable<INode> nodes)
         {
             foreach(var node in nodes)
             {
                 AddNode(node);
             }
-        }
+        } */
 
         public void AddEdges(IEnumerable<IEdge> edges)
         {
@@ -68,6 +69,7 @@ namespace Singularity.Graph
             mEdges.Remove(edge);
         }
 
+        /* ReSharper
         public void RemoveNodes(IEnumerable<INode> nodes)
         {
             foreach (var node in nodes)
@@ -83,6 +85,7 @@ namespace Singularity.Graph
                 RemoveEdge(edge);
             }
         }
+        // */
 
         public List<INode> GetNodes()
         {

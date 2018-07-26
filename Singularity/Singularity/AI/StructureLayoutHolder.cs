@@ -44,6 +44,8 @@ namespace Singularity.AI
                 structure.GetFirst().AbsolutePosition.X + x,
                 structure.GetFirst().AbsolutePosition.Y + y, null, false, false);
 
+            commandCenter.Built();
+
             tempOldPlatNewPlatMapping[structure.GetFirst()] = commandCenter;
 
             var boundingRectangle = commandCenter.AbsBounds;

@@ -36,6 +36,7 @@ namespace Singularity.PlatformActions
         {
             if (AmmoCount <= 0)
             {
+                FillAmmo();
                 return;
             }
 

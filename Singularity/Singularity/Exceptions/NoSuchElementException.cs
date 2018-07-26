@@ -6,6 +6,7 @@ namespace Singularity.Exceptions
     {
         private const string ErrorMessage = "No value present";
 
+        // ReSharper disable once UnusedMember.Global
         public NoSuchElementException(string message) : base(message) { }
 
         public NoSuchElementException() : base(ErrorMessage) { }

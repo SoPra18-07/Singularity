@@ -43,7 +43,7 @@ namespace Singularity.AI.Structures
 
             if (mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds > 1000)
             {
-                if (mShootingTarget != null)
+                if (mShootingTarget != null && mType == EStructureType.Sentinel)
                 {
                     mDefenseAction.Execute();
                 }

@@ -307,7 +307,6 @@ namespace Singularity.Manager
                             }
                         }
                     }
-
                 }
 
                 // if there is something close enough, shoot it. Else, set the target to null.
@@ -315,7 +314,6 @@ namespace Singularity.Manager
                 {
                     unit.SetShootingTarget(closestAdjacent);
                 }
-
                 else
                 {
                     unit.SetShootingTarget(null);
@@ -473,27 +471,6 @@ namespace Singularity.Manager
                     turret.SetShootingTarget(null);
                 }
             }
-
-            #endregion
-
-            #region Kill them
-
-            /*var newUnitKillList = new List<FreeMovingUnit>();
-            foreach (var unit in unitsToKill)
-            {
-                // tell the unit to die.
-                unit.Die();
-                mDirector.GetStoryManager.Level.GameScreen.RemoveObject(unit);
-                mUnitMap.RemoveUnit(unit);
-                RemoveUnit(unit);
-            }
-
-            foreach (var platform in platformsToKill)
-            {
-                RemovePlatform(platform);
-                mUnitMap.RemoveUnit(platform);
-                mMap.GetCollisionMap().RemoveCollider(platform);
-            }*/
 
             #endregion
 

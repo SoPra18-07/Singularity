@@ -537,16 +537,7 @@ namespace Singularity.Platforms
 
             return true;
         } // */
-
-        /// <summary>
-        /// Get the requirements of resources to build this platform.
-        /// </summary>
-        /// <returns> a dictionary of the resources with a number telling how much of it is required</returns>
-        public Dictionary<EResourceType, int> GetResourcesRequired()
-        {
-            return mCost;
-        }
-
+        
         /// <summary>
         /// Get the Resources on the platform.
         /// </summary>
@@ -1303,6 +1294,7 @@ namespace Singularity.Platforms
         {
             mBlueprint = false;
             Register();
+            mDirector.GetMilitaryManager.AddPlatform(this);
             // Todo: move registering at the distributionmanager etc here. But not yet (debug)
         }
 
