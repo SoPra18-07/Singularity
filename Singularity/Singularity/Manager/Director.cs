@@ -16,34 +16,34 @@ namespace Singularity.Manager
     {
         internal GlobalVariablesInstance GetGlobalVariablesInstance { get; set; }
         [DataMember]
-        public Clock GetClock { get; private set; }
+        public Clock GetClock { get; set; }
         [DataMember]
-        public IdGenerator GetIdGenerator { get; private set; }
+        public IdGenerator GetIdGenerator { get; set; }
 
         public InputManager GetInputManager { get; }
 
         [DataMember]
-        public StoryManager GetStoryManager { get; private set; }
+        public StoryManager GetStoryManager { get; set; }
 
         [DataMember]
-        public PathManager GetPathManager { get; private set; }
+        public PathManager GetPathManager { get; set; }
 
         public SoundManager GetSoundManager { get; }
 
         [DataMember]
-        public MilitaryManager GetMilitaryManager { get; private set; }
+        public MilitaryManager GetMilitaryManager { get; set; }
 
         [DataMember]
-        public DistributionDirector GetDistributionDirector { get; private set; }
+        public DistributionDirector GetDistributionDirector { get; set; }
 
         [DataMember]
         public UserInterfaceController GetUserInterfaceController { get; private set; }
 
         [DataMember]
-        public DeathManager GetDeathManager { get; private set; }
+        public DeathManager GetDeathManager { get; set; }
 
         [DataMember]
-        public ActionManager GetActionManager { get; private set; }
+        public ActionManager GetActionManager { get; set; }
 
         public GraphicsDeviceManager GetGraphicsDeviceManager { get; }
 

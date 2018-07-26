@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -653,6 +654,26 @@ namespace Singularity.Input
         {
             mCameraMoved = true;
             mCurrentTransform = transform;
+        }
+
+
+        public void RemoveEverythingFromInputManager()
+        {
+            mMouseClickListener.Clear();
+            mClickListenerToRemove.Clear();
+            mMouseWheelListener.Clear();
+            mWheelListenerToRemove.Clear();
+            mKeyListener.Clear();
+            mKeyListenerToRemove.Clear();
+
+            mMousePositionListener.Clear();
+
+            mLeftClickType.Clear();
+            mRightClickType.Clear();
+
+            mClickListenerToAdd.Clear();
+            mKeyListenerToAdd.Clear();
+            mWheelListenerToAdd.Clear();
         }
     }
 }

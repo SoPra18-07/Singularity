@@ -578,10 +578,10 @@ namespace Singularity.Screen.ScreenClasses
                     for (int i = 0; i < pair.Value; i++)
                     {
                         cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
+/*                        cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
                         cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
                         cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
-                        cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
-                        cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
+                        cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));*/
                     }
                 }
             }
