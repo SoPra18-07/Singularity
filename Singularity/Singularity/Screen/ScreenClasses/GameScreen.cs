@@ -531,6 +531,7 @@ namespace Singularity.Screen.ScreenClasses
             var cCenter = PlatformFactory.Get(EStructureType.Command, ref mDirector, v.X - 55, v.Y - 100, commandBlueprint: false);
             mDirector.GetMilitaryManager.AddPlatform(cCenter);
             mDirector.GetStoryManager.Level.Map.AddPlatform(cCenter);
+            mSpatialObjects.AddLast(cCenter);
 
             var genUnit = new GeneralUnit(cCenter, ref mDirector);
             AddObject(genUnit);
