@@ -967,6 +967,16 @@ namespace Singularity.Screen.ScreenClasses
 
             #endregion
 
+            var infoBuildPlacement = new TextField("Place On:", Vector2.Zero,
+                mLibSans10.MeasureString("Place On:"),
+                mLibSans10,
+                Color.White);
+
+            var infoBuildCosts = new TextField("Costs :", Vector2.Zero,
+                mLibSans10.MeasureString("Costs :"),
+                mLibSans10,
+                Color.White);
+
             #region mainBuildings
 
             // Build Blank Platform info
@@ -985,7 +995,7 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10);
 
             mInfoBuildBlank = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoBuildBlank, infoBuildBlankMetal },
+                itemList: new List<IWindowItem> { infoBuildBlank, infoBuildCosts, infoBuildBlankMetal },
                 size: mLibSans10.MeasureString("Blank Platform"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1001,7 +1011,7 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10,
                 Color.White);
 
-/*            var infoRoadStone = new ResourceIWindowItem(
+           var infoRoadStone = new ResourceIWindowItem(
                 EResourceType.Stone,
                 1,
                 mLibSans10.MeasureString("Road"),
@@ -1011,10 +1021,10 @@ namespace Singularity.Screen.ScreenClasses
                 EResourceType.Metal,
                 1,
                 mLibSans10.MeasureString("Road"),
-                mLibSans10);*/
+                mLibSans10);
 
             mInfoBuildRoad = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoRoad },
+                itemList: new List<IWindowItem> { infoRoad, infoBuildCosts, infoRoadStone, infoRoadMetal },
                 size: mLibSans10.MeasureString("Road"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1050,8 +1060,20 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Commandcenter"),
                 mLibSans10);
 
+            var infoCommandcenterProduce = new TextField("Produces : General Units/Settlers ",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Produces : General Units/Settlers"),
+                mLibSans10,
+                Color.White);
+
+
+
             mInfoBuildCommandcenter = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoCommandcenter, infoCommandConcrete, infoCommandChip, infoCommandSteel },
+                itemList: new List<IWindowItem>
+                {
+                    infoCommandcenter, infoBuildCosts, infoCommandConcrete, infoCommandChip, infoCommandSteel,
+                    infoCommandcenterProduce
+                },
                 size: mLibSans10.MeasureString("Commandcenter"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1063,6 +1085,7 @@ namespace Singularity.Screen.ScreenClasses
             #endregion
 
             #region resourceProductionBuildings
+
 
             // Build Quarry info
             var infoQuarry = new TextField("Quarry",
@@ -1085,8 +1108,15 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Quarry"),
                 mLibSans10);
 
+
+            var infoBuildQuarryPlacementWhere = new TextField("Anywhere = Sand/Stone", Vector2.Zero,
+                mLibSans10.MeasureString("Anywhere = Sand/Stone"),
+                mLibSans10,
+                Color.White);
+
             mInfoBuildQuarry = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoQuarry, infoBuildQuarryStone, infoBuildQuarryMetal },
+                itemList: new List<IWindowItem> { infoQuarry, infoBuildCosts, infoBuildQuarryStone, infoBuildQuarryMetal, infoBuildPlacement,
+                    infoBuildQuarryPlacementWhere },
                 size: mLibSans10.MeasureString("Quarry"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1116,8 +1146,14 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Mine"),
                 mLibSans10);
 
+
+            var infoBuildMinePlacementWhere = new TextField("Green = Metal", Vector2.Zero,
+                mLibSans10.MeasureString("Green = Metal)"),
+                mLibSans10,
+                Color.White);
+
             mInfoBuildMine = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoMine, infoBuildMineStone, infoBuildMineMetal },
+                itemList: new List<IWindowItem> { infoMine, infoBuildCosts, infoBuildMineStone, infoBuildMineMetal, infoBuildPlacement, infoBuildMinePlacementWhere },
                 size: mLibSans10.MeasureString("Mine"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1147,8 +1183,22 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Well"),
                 mLibSans10);
 
+            var infoBuildWellPlacementWhere1 = new TextField("Blue = Water", Vector2.Zero,
+                mLibSans10.MeasureString("Blue = Water"),
+                mLibSans10,
+                Color.White);
+
+            var infoBuildWellPlacementWhere2 = new TextField("Red = Oil", Vector2.Zero,
+                mLibSans10.MeasureString("Red = Oil"),
+                mLibSans10,
+                Color.White);
+
             mInfoBuildWell = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoWell, infoBuildWellStone, infoBuildWellMetal },
+                itemList: new List<IWindowItem>
+                {
+                    infoWell, infoBuildCosts, infoBuildWellStone, infoBuildWellMetal, infoBuildPlacement, 
+                    infoBuildWellPlacementWhere1, infoBuildWellPlacementWhere2
+                },
                 size: mLibSans10.MeasureString("Well"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1184,8 +1234,19 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Powerhouse"),
                 mLibSans10);
 
+            var infoPowerhouseFunction = new TextField("Produces : Energy",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Produces : Energy"),
+                mLibSans10,
+                Color.White);
+
+
             mInfoBuildPowerhouse = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoPowerhouse, infoBuildPowerhouseCopper, infoBuildPowerhouseMetal, infoBuildPowerhouseSilicon },
+                itemList: new List<IWindowItem>
+                {
+                    infoPowerhouse, infoBuildCosts, infoBuildPowerhouseCopper, infoBuildPowerhouseMetal, infoBuildPowerhouseSilicon,
+                    infoPowerhouseFunction
+                },
                 size: mLibSans10.MeasureString("Powerhouse"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1225,8 +1286,18 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Junkyard"),
                 mLibSans10);
 
+            var infoJunkyardProduce = new TextField("Turns trash to energy",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Turns trash to energy"),
+                mLibSans10,
+                Color.White);
+
             mInfoBuildJunkyard = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoJunkyard, infoBuildJunkyardStone, infoBuildJunkyardMetal, infoBuildJunkyardWater },
+                itemList: new List<IWindowItem>
+                {
+                    infoJunkyard, infoBuildCosts, infoBuildJunkyardStone, infoBuildJunkyardMetal, infoBuildJunkyardWater,
+                    infoJunkyardProduce
+                },
                 size: mLibSans10.MeasureString("Junkyard"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1262,8 +1333,24 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Factory"),
                 mLibSans10);
 
+            var infoFactoryProduce = new TextField("Refines resources into new ones",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Refines resources into new ones"),
+                mLibSans10,
+                Color.White);
+            var infoFactoryProduce2 = new TextField("Combines resources into new ones",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Combines resources into new ones"),
+                mLibSans10,
+                Color.White);
+
+
             mInfoBuildFactory = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoFactory, infoBuildFactoryStone, infoBuildFactoryMetal, infoBuildFactoryWater },
+                itemList: new List<IWindowItem>
+                {
+                    infoFactory, infoBuildCosts, infoBuildFactoryStone, infoBuildFactoryMetal, infoBuildFactoryWater,
+                    infoFactoryProduce, infoFactoryProduce2
+                },
                 size: mLibSans10.MeasureString("Factory"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1294,7 +1381,7 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10);
 
             mInfoBuildStorage = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoStorage, infoBuildStorageConcrete, infoBuildStorageMetal },
+                itemList: new List<IWindowItem> { infoStorage, infoBuildCosts, infoBuildStorageConcrete, infoBuildStorageMetal },
                 size: mLibSans10.MeasureString("Storage"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1328,13 +1415,26 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Kinetic Tower"),
                 mLibSans10);
 
+            var infoKineticTowerAssign = new TextField("Assign Units to : Defense",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Assign Units to : Defense"),
+                mLibSans10,
+                Color.White);
+
+            dictWithRes = PlatformBlank.GetResourceCosts(EStructureType.Kinetic);
+
             mInfoBuildKineticTower = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoKineticTower, infoBuildKineticTowerConcrete, infoBuildKineticTowerMetal },
+                itemList: new List<IWindowItem>
+                {
+                    infoKineticTower, infoBuildCosts, infoBuildKineticTowerConcrete, infoBuildKineticTowerMetal,
+                    infoKineticTowerAssign
+                },
                 size: mLibSans10.MeasureString("Kinetic Tower"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
                 boxed: true,
                 director: mDirector);
+
 
             mInfoBoxList.Add(mInfoBuildKineticTower);
 
@@ -1359,8 +1459,18 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Laser Tower"),
                 mLibSans10);
 
+            var infoLaserTowerAssign = new TextField("Assign Units to : Defense",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Assign Units to : Defense"),
+                mLibSans10,
+                Color.White);
+
             mInfoBuildLaserTower = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoLaserTower, infoBuildLaserTowerConcrete, infoBuildLaserTowerMetal },
+                itemList: new List<IWindowItem>
+                {
+                    infoLaserTower, infoBuildCosts, infoBuildLaserTowerConcrete, infoBuildLaserTowerMetal,
+                    infoLaserTowerAssign
+                },
                 size: mLibSans10.MeasureString("Laser Tower"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1396,8 +1506,24 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Barracks"),
                 mLibSans10);
 
+            var infoBarrackAssign = new TextField("Assign Units to : Logistics",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Assign Units to : Logistics"),
+                mLibSans10,
+                Color.White);
+
+            var infoBarrackProduces = new TextField("Produces : Military Units",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Produces : Military Units"),
+                mLibSans10,
+                Color.White);
+
             mInfoBuildBarracks = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoBarracks, infoBuildBarracksSteel, infoBuildBarracksConcrete, infoBuildBarracksChip },
+                itemList: new List<IWindowItem>
+                {
+                    infoBarracks, infoBuildCosts, infoBuildBarracksSteel, infoBuildBarracksConcrete, infoBuildBarracksChip,
+                    infoBarrackAssign, infoBarrackProduces
+                },
                 size: mLibSans10.MeasureString("Barracks"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
