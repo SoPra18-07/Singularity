@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -559,6 +560,10 @@ namespace Singularity.Input
         [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalse")]
         public void Update(GameTime gametime)
         {
+            Debug.WriteLine("screensToCheck: " + mScreensToCheck.Count);
+            Debug.WriteLine("posList: " + mMousePositionListener.Count);
+            Debug.WriteLine("clickList: " + mMouseClickListener.Count);
+            Debug.WriteLine("keyList: " + mKeyListener.Count);
             // update 'current' values
             mCurrentMouseState = Mouse.GetState();
             mCurrentKeyboardState = Keyboard.GetState();
@@ -653,6 +658,26 @@ namespace Singularity.Input
         {
             mCameraMoved = true;
             mCurrentTransform = transform;
+        }
+
+
+        public void RemoveEverythingFromInputManager()
+        {
+            mMouseClickListener.Clear();
+            mClickListenerToRemove.Clear();
+            mMouseWheelListener.Clear();
+            mWheelListenerToRemove.Clear();
+            mKeyListener.Clear();
+            mKeyListenerToRemove.Clear();
+
+            mMousePositionListener.Clear();
+
+            mLeftClickType.Clear();
+            mRightClickType.Clear();
+
+            mClickListenerToAdd.Clear();
+            mKeyListenerToAdd.Clear();
+            mWheelListenerToAdd.Clear();
         }
     }
 }

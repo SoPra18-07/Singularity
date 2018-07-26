@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -72,7 +73,6 @@ namespace Singularity.Screen.ScreenClasses
 
         public GameScreen(GraphicsDevice graphicsDevice, ref Director director, Map.Map map, Camera camera, FogOfWar fow)
         {
-
             mDrawables = new LinkedList<IDraw>();
             mUpdateables = new LinkedList<IUpdate>();
             mSpatialObjects = new LinkedList<ISpatial>();
@@ -278,7 +278,6 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Update(GameTime gametime)
         {
-
             foreach (var updateable in mUpdateables)
             {
                 updateable.Update(gametime);
@@ -545,18 +544,18 @@ namespace Singularity.Screen.ScreenClasses
             // /*
             var beginRes = new Dictionary<EResourceType, int>
             {
-                {EResourceType.Metal, 1000},
-                {EResourceType.Stone, 1000},
-                {EResourceType.Water, 1000},
-                {EResourceType.Oil, 1000},
-                {EResourceType.Copper, 1000},
-                {EResourceType.Fuel, 1000},
-                {EResourceType.Chip, 1000},
-                {EResourceType.Concrete, 1000},
-                {EResourceType.Plastic, 1000},
-                {EResourceType.Steel, 1000},
-                {EResourceType.Sand, 1000},
-                {EResourceType.Silicon, 1000},
+                {EResourceType.Metal, 100},
+                {EResourceType.Stone, 100},
+                {EResourceType.Water, 100},
+                {EResourceType.Oil, 100},
+                {EResourceType.Copper, 100},
+                {EResourceType.Fuel, 100},
+                {EResourceType.Chip, 100},
+                {EResourceType.Concrete, 100},
+                {EResourceType.Plastic, 100},
+                {EResourceType.Steel, 100},
+                {EResourceType.Sand, 100},
+                {EResourceType.Silicon, 100},
                 {EResourceType.Trash, 20}
             }; // */
 

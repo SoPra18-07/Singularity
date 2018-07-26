@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using Microsoft.Xna.Framework;
@@ -61,7 +62,6 @@ namespace Singularity.Screen.ScreenClasses
             Initialize(screenResolution, director);
 
             mScreenState = EScreen.GamePauseScreen;
-
             sPressed = "None";
             mTransitionState = 0;
         }
@@ -143,6 +143,7 @@ namespace Singularity.Screen.ScreenClasses
                     if (sPressed == "Main Menu")
                     {
                         mDirector.GetStoryManager.Level.GameScreen.Unload();
+                        mDirector.GetInputManager.RemoveEverythingFromInputManager();
 
                         for (var i = 0; i < mScreenManager.GetScreenCount() - 1; i++)
                         {
