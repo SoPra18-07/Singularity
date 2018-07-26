@@ -125,7 +125,6 @@ namespace Singularity.Screen.ScreenClasses
                 {
                     mSelBox.SelectingBox += conUnit.BoxSelected;
                 }
-
                 possibleEnemy?.ReloadContent(content, ref mDirector, camera, ref mMap);
                 possiblepuddle?.ReloadContent(ref mDirector);
                 possiblerock?.ReloadContent(ref mDirector);
@@ -179,11 +178,13 @@ namespace Singularity.Screen.ScreenClasses
                 var possiblerock = spatial as Rock;
                 var possiblepuddle = spatial as Puddle;
                 var freeMovingUnit = spatial as FreeMovingUnit;
+                var platform = spatial as PlatformBlank;
                 if (freeMovingUnit != null && freeMovingUnit.Friendly)
                 {
                     mSelBox.SelectingBox += freeMovingUnit.BoxSelected;
                 }
                 possibleEnemy?.ReloadContent(content, ref mDirector, camera, ref mMap);
+                platform?.ReloadContent(content, ref mDirector);
                 possiblepuddle?.ReloadContent(ref mDirector);
                 possiblerock?.ReloadContent(ref mDirector);
                 //This should also affect enemy units, since they are military units
@@ -531,7 +532,6 @@ namespace Singularity.Screen.ScreenClasses
             var cCenter = PlatformFactory.Get(EStructureType.Command, ref mDirector, v.X - 55, v.Y - 100, commandBlueprint: false);
             mDirector.GetMilitaryManager.AddPlatform(cCenter);
             mDirector.GetStoryManager.Level.Map.AddPlatform(cCenter);
-            mSpatialObjects.AddLast(cCenter);
 
             var genUnit = new GeneralUnit(cCenter, ref mDirector);
             AddObject(genUnit);
