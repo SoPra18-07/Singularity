@@ -1221,6 +1221,18 @@ namespace Singularity.Platforms
             mDirector.GetStoryManager.Level.Map.GetCollisionMap().CleanGrid(); // super inefficient. but works for now.
             // This is needed so this code is not called multiple times
             HasDieded = true;
+
+            // DirtyFix for platform still being in collider map?
+            ColliderGrid = new[,]
+            {
+                { false, false,  false,  false,  false,  false,  false,  false },
+                { false, false,  false,  false,  false,  false,  false,  false },
+                { false, false,  false,  false,  false,  false,  false,  false },
+                { false, false,  false,  false,  false,  false,  false,  false },
+                { false, false,  false,  false,  false,  false,  false,  false },
+                { false, false,  false,  false,  false,  false,  false,  false },
+            };
+
             return true;
         }
 
