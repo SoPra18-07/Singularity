@@ -242,6 +242,7 @@ namespace Singularity.Units
             if (target == null)
                 // ReSharper disable once HeuristicUnreachableCode
             {
+                // ReSharper disable once HeuristicUnreachableCode
                 return;
             }
 

@@ -7,7 +7,6 @@ using Singularity.Manager;
 using Singularity.Nature;
 using Singularity.Property;
 using Singularity.Screen;
-using Singularity.Screen.ScreenClasses;
 using Singularity.Units;
 
 namespace Singularity.Levels

@@ -31,11 +31,6 @@ namespace Singularity.Units
         [DataMember]
         protected double mTimeOfDeath;
 
-        /// <summary>
-        /// The current time used for moving time information between methods not called by update.
-        /// </summary>
-        protected double mCurrentTime;
-
         [DataMember]
         protected readonly HealthBar mHealthBar;
 

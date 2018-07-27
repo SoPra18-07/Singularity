@@ -117,7 +117,7 @@ namespace Singularity.Units
             mIsMoving = false;
             mDirector = director;
             mDirector.GetActionManager.AddObject(this,
-                delegate(object u)
+                delegate
                 {
                     mDirector.GetDistributionDirector.GetManager(Graphid).Register(this);
                     mDirector.GetStoryManager.UpdateUnits("created");
@@ -476,7 +476,10 @@ namespace Singularity.Units
 
         private void RegulateMovement()
         {
-
+            if (mTask.Begin.IsPresent())
+            {
+                //blalbadebug
+            }
             // if this if clause is fulfilled we get a new path to move to.
             // we only do this if we're not moving, have no destination and our
             // current nodequeue is empty (the path)
@@ -491,7 +494,16 @@ namespace Singularity.Units
                 {
                     return;
                 }
+
                 mNodeQueue = path.GetNodePath();
+
+                //This is need because of the weird Astar crashes where the catch will result in mNodequeue to be null.
+                if (mNodeQueue.Count <= 0)
+                {
+                    ((PlatformBlank)CurrentNode).AddGeneralUnit(this);
+                    return;
+                }
+
                 CurrentNode = mNodeQueue.Dequeue();
 
                 if ((PlatformBlank)CurrentNode != null && !((PlatformBlank)CurrentNode).HasDieded)

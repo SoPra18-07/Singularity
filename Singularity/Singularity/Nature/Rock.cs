@@ -265,6 +265,7 @@ namespace Singularity.Nature
             throw new NotImplementedException();
         }
 
+        // ReSharper disable once UnassignedGetOnlyAutoProperty
         public int Health { get; }
 
         public void MakeDamage(int damage)

@@ -1,4 +1,4 @@
-﻿using System.Runtime.Serialization;
+﻿
 
 namespace Singularity.Property
 {

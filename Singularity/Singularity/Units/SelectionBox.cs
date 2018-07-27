@@ -90,6 +90,7 @@ namespace Singularity.Units
 
         public EScreen Screen { get; } = EScreen.GameScreen;
 
+        // ReSharper disable once UnassignedGetOnlyAutoProperty
         public Rectangle Bounds { get; }
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)

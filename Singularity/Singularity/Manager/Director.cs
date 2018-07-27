@@ -14,7 +14,7 @@ namespace Singularity.Manager
     [DataContract]
     public sealed class Director
     {
-        internal GlobalVariablesInstance GetGlobalVariablesInstance { get; set; }
+        private GlobalVariablesInstance GetGlobalVariablesInstance { get; set; }
         [DataMember]
         public Clock GetClock { get; set; }
         [DataMember]
@@ -45,9 +45,9 @@ namespace Singularity.Manager
         [DataMember]
         public ActionManager GetActionManager { get; set; }
 
-        public GraphicsDeviceManager GetGraphicsDeviceManager { get; }
+        public GraphicsDeviceManager GetGraphicsDeviceManager { get; private set; }
 
-        public EventLog GetEventLog { get; }
+        public EventLog GetEventLog { get; private set; }
 
         public Director(ContentManager content, GraphicsDeviceManager graphics, GlobalVariablesInstance globalVariablesInstance)
         {
@@ -72,7 +72,7 @@ namespace Singularity.Manager
             GetStoryManager.LoadAchievements();
         }
 
-        internal void ReloadContent(Director dir, Vector2 mapmeasurements, ContentManager content)
+        internal void ReloadContent(Director dir, Vector2 mapmeasurements, ContentManager content, GraphicsDeviceManager graphics)
         {
             GetGlobalVariablesInstance = new GlobalVariablesInstance();
             GetGlobalVariablesInstance.UpdateFromStatic();
@@ -85,8 +85,10 @@ namespace Singularity.Manager
             GetDistributionDirector = dir.GetDistributionDirector;
             GetDistributionDirector.ReloadContent(GetUserInterfaceController);
             GetStoryManager.LoadAchievements();
-            GetMilitaryManager.ReloadContent(mapmeasurements, dir);
-            GetStoryManager.ReloadContent(dir);
+            GetMilitaryManager.ReloadContent(mapmeasurements, this);
+            GetStoryManager.ReloadContent(this);
+            GetGraphicsDeviceManager = graphics;
+            GetEventLog = new EventLog(GetUserInterfaceController, this, content);
         }
 
         internal void SaveConfig()

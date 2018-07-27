@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Exceptions;
 using Singularity.Input;
 using Singularity.Libraries;
 using Singularity.Manager;
@@ -57,14 +56,14 @@ namespace Singularity.Map
 
         public Vector2 Position { get; set; }
 
-        public Vector2 Size { get; private set; }
+        public Vector2 Size { get;}
 
         public bool ActiveInWindow { get; set; }
         public bool InactiveInSelectedPlatformWindow { get; set; }
         public bool OutOfScissorRectangle { get; set; }
         public bool WindowIsInactive { get; set; }
 
-        public EScreen Screen { get; set; } = EScreen.UserInterfaceScreen;
+        public EScreen Screen { get;} = EScreen.UserInterfaceScreen;
 
         public Rectangle Bounds { get; private set; }
 
@@ -76,13 +75,6 @@ namespace Singularity.Map
 
         public MiniMap(ref Director director, Texture2D minimapTexture)
         {
-            // note, currently the exception is always false, since the values do work together, but in the future, when
-            // the map size gets changed this might occur.
-            if (MapConstants.MapWidth / MapConstants.MiniMapWidth !=
-                MapConstants.MapHeight / MapConstants.MiniMapHeight)
-            {
-                throw new MiniMapProportionsOffException("The map width and/or height is not compatible with the minimap width/height");
-            }
             mDirector = director;
             mDownscaleFactor = MapConstants.MapWidth / MapConstants.MiniMapWidth;
             mTexture = minimapTexture;

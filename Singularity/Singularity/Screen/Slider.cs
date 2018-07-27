@@ -507,8 +507,10 @@ namespace Singularity.Screen
             mCurrentX = mCurrentPage * mPageSize + mMin;
         }
 
+        // ReSharper disable once UnassignedGetOnlyAutoProperty
         public EScreen Screen { get;}
 
+        // ReSharper disable once UnassignedGetOnlyAutoProperty
         public Rectangle Bounds { get; }
         public void MousePositionChanged(float screenX, float screenY, float worldX, float worldY)
         {

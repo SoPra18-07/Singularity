@@ -109,7 +109,7 @@ namespace Singularity.PlatformActions
         [DataMember]
         protected Vector2 mOffset = new Vector2(100f);
         [DataMember]
-        protected bool mIsBuilding = false;
+        protected bool mIsBuilding;
         [DataMember]
         private bool mFirstCall = true;
         [DataMember]
@@ -194,6 +194,7 @@ namespace Singularity.PlatformActions
             foreach (var resources in mMissingResources)
             {
                 // ReSharper disable once InlineOutVariableDeclaration
+                // ReSharper disable once RedundantAssignment
                 var inside = 0;
                 if (mToRequest.TryGetValue(resources.Key, out inside))
                 {

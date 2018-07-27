@@ -50,8 +50,10 @@ namespace Singularity.Utils
         /// <summary>
         /// Returns whether the given Vector2 is contained in the circle specified by radius
         /// </summary>
+        /// <param name="circleCenter"></param>
         /// <param name="radius"></param>
         /// <param name="toCheck"></param>
+        /// <param name="alsoOn"></param>
         /// <returns></returns>
         public static bool Contains(Vector2 circleCenter, float radius, Vector2 toCheck, bool alsoOn = false)
         {

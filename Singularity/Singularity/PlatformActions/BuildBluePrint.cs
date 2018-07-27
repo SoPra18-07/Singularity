@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Net.NetworkInformation;
 using System.Runtime.Serialization;
 using Singularity.Manager;
 using Singularity.Platforms;
@@ -74,7 +73,7 @@ namespace Singularity.PlatformActions
             if (!mBuildRoad)
             {
                 mDirector.GetActionManager.AddObject(mBuilding,
-                    delegate(object p)
+                    delegate
                     {
                         mDirector.GetStoryManager.Level.GameScreen.RemoveObject(mBuilding);
                         mDirector.GetStoryManager.Level.Map.AddPlatform(mBuilding);
@@ -83,7 +82,7 @@ namespace Singularity.PlatformActions
                     });
             }
             mDirector.GetActionManager.AddObject(mRBuilding,
-                delegate(object r)
+                delegate
                 {
                     mDirector.GetStoryManager.Level.GameScreen.RemoveObject(mRBuilding);
                     mDirector.GetStoryManager.Level.Map.AddRoad(mRBuilding);

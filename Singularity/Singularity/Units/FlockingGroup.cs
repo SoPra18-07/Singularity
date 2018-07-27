@@ -30,14 +30,13 @@ namespace Singularity.Units
 
         private List<IFlocking> mUnits;
 
-        private int? mSuperiorFlockingId = null;
+        private int? mSuperiorFlockingId;
 
 
         public Vector2 CohesionRaw { get; private set; }
         public Vector2 SeperationRaw { get; set; }
         public float ActualSpeed { get; private set; }
 
-        private int mGoalCounter;
         public int Count => mUnits.Count;
         public Optional<Vector2[,]> HeatMap { get; protected set; }
 
@@ -130,7 +129,6 @@ namespace Singularity.Units
             if (dist < 50 && mPath.Count > 0)
             {
                 mTargetPosition = mPath.Pop();
-                mGoalCounter = 0;
             }
 
             // setting variables used from the AFlocking parts
