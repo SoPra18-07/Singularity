@@ -72,7 +72,7 @@ namespace Singularity.Graph.Paths
             {
                 path = PathfindingFactory.GetPathfinding().AStar(mGraphs[graphIndex], unit.CurrentNode, destination);
             }
-            catch (KeyNotFoundException e)
+            catch (KeyNotFoundException)
             {
                 path = new SortedPath();
             }

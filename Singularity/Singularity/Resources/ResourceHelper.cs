@@ -71,6 +71,7 @@ namespace Singularity.Resources
         /// Randomly distributes basic resources on the map, specified by the amount.
         /// </summary>
         /// <param name="amount">The amount of resources to distribute onto the map</param>
+        /// <param name="director">The director of the game</param>
         /// <returns>A list of the new created resources</returns>
         public static List<MapResource> GetRandomlyDistributedResources(int amount, ref Director director)
         {

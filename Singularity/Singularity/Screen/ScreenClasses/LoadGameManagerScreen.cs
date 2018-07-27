@@ -38,7 +38,6 @@ namespace Singularity.Screen.ScreenClasses
 
         // Screen transition variables
         private static string sPressed;
-        private int mTransitionState;
 
         // The game itself (to allow for quitting)
         private readonly Game1 mGame;

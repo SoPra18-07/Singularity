@@ -76,13 +76,6 @@ namespace Singularity.Map
 
         public MiniMap(ref Director director, Texture2D minimapTexture)
         {
-            // note, currently the exception is always false, since the values do work together, but in the future, when
-            // the map size gets changed this might occur.
-            if (MapConstants.MapWidth / MapConstants.MiniMapWidth !=
-                MapConstants.MapHeight / MapConstants.MiniMapHeight)
-            {
-                throw new MiniMapProportionsOffException("The map width and/or height is not compatible with the minimap width/height");
-            }
             mDirector = director;
             mDownscaleFactor = MapConstants.MapWidth / MapConstants.MiniMapWidth;
             mTexture = minimapTexture;

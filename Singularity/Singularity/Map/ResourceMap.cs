@@ -37,6 +37,7 @@ namespace Singularity.Map
         /// Creates a new resource map with the given initial resources.
         /// </summary>
         /// <param name="initialResources">A list holding intial resource values. If left empty it will be null</param>
+        /// <param name="director">the director of the game</param>
         internal ResourceMap(IEnumerable<MapResource> initialResources, Director director)
         {
             mLocationCache = new Dictionary<Vector2, List<MapResource>>();
