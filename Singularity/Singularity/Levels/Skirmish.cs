@@ -31,6 +31,8 @@ namespace Singularity.Levels
             var settler = new Settler(new Vector2(2900, 3200), Camera, ref mDirector, GameScreen, Ui);
             GameScreen.AddObject(settler);
 
+            Camera.CenterOn(settler.AbsolutePosition);
+
             var milunitList = new List<MilitaryFast>(6);
             for (var i = 0; i < 6; i++)
             {
