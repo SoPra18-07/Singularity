@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 ﻿using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -84,9 +85,14 @@ namespace Singularity.Platforms
 
             var color = Friendly ? Color.White : Color.Red;
             // draws a laser line a a slight glow around the line, then sets the shoot future off
-            spriteBatch.DrawLine(Center, mShootingTarget.Center, color, 2);
-            spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, color * .2f, 6);
-            mShoot = false;
+            if (Math.Sqrt(Math.Pow(Center.X - mShootingTarget.Center.X, 2) +
+                          Math.Pow(Center.Y - mShootingTarget.Center.Y, 2)) <= Range)
+            {
+
+                spriteBatch.DrawLine(Center, mShootingTarget.Center, color, 2);
+                spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, color * .2f, 6);
+            }
+
         }
 
         public void SetShootingTarget(ICollider target)
