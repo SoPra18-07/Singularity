@@ -129,8 +129,8 @@ namespace Singularity.Platforms
         [DataMember]
         protected List<IPlatformAction> mIPlatformActions;
 
-        protected Texture2D mPlatformSpriteSheet;
-        protected Texture2D mPlatformBaseTexture;
+        private Texture2D mPlatformSpriteSheet;
+        private Texture2D mPlatformBaseTexture;
 
         //This means the platformspritesheetname not the name of the base texture
         [DataMember]
@@ -196,7 +196,7 @@ namespace Singularity.Platforms
         [DataMember]
         protected Color mColor = Color.White;
 
-        protected PlatformInfoBox mInfoBox;
+        private PlatformInfoBox mInfoBox;
 
         [DataMember]
         protected Vector2 mBaseOffset;
@@ -210,7 +210,7 @@ namespace Singularity.Platforms
 
         public static SpriteFont mLibSans12;
 
-        public bool[,] ColliderGrid { get; internal set; }
+        public bool[,] ColliderGrid { get; private set; }
 
         [DataMember]
         private List<IPlatformAction> mToKill = new List<IPlatformAction>();
@@ -442,7 +442,7 @@ namespace Singularity.Platforms
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y + mCenterOffsetY);
         }
 
-        public void Register()
+        private void Register()
         {
             //For now only register yourself at a DistributionManager when you are friendly. Maybe change that later
             if (IsProduction() && Friendly)
@@ -784,7 +784,6 @@ namespace Singularity.Platforms
                 mIsManuallyDeactivated,
                 mType,
                 GetPlatformResources(),
-                GetAssignedUnits(),
                 GetIPlatformActions());
 
             // set the bool for sent-data to true, since the data has just been sent
@@ -1093,7 +1092,7 @@ namespace Singularity.Platforms
         /// <summary>
         /// This will kill only the specialised part of the platform.
         /// </summary>
-        public void DieBlank()
+        private void DieBlank()
         {
             // stats tracking for a platform death
             mDirector.GetStoryManager.UpdatePlatforms(Friendly ? "lost" : "destroyed");
@@ -1271,7 +1270,7 @@ namespace Singularity.Platforms
             return mGraphIndex;
         }
 
-        public string GetResourceString()
+        private string GetResourceString()
         {
             if (mResources.Count == 0)
             {
@@ -1456,7 +1455,6 @@ namespace Singularity.Platforms
             {
                 return true;
             }
-
             if (mouseAction != EMouseAction.LeftClick)
             {
                 MakeDamage(Health);

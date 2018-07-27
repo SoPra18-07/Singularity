@@ -70,6 +70,11 @@ namespace Singularity.Platforms
 
         public override void Update(GameTime t)
         {
+            if (mBlueprint)
+            {
+                return;
+
+            }
             base.Update(t);
 
             //Requesting Metal to shoot

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -13,8 +12,6 @@ using Singularity.Map.Properties;
 using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Resources;
-using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -147,8 +144,6 @@ namespace Singularity.Screen.ScreenClasses
         private int mCivilUnitsGraphId;
         private int mCivilUnitsGraphIdToCompare;
 
-        private List<IWindowItem> mSelectedPlatformUnitAssignmentList;
-
         internal Dictionary<int, Graph.Graph> GraphIdToGraphStructureDict { get; set; }
 
         // sliders for distribution
@@ -191,7 +186,7 @@ namespace Singularity.Screen.ScreenClasses
         private ResourceIWindowItem mResourceItemTrash;
 
         // previous clock time
-        private int mResourceWindowTicker;
+        private int mResourceWindowNextTick;
 
         // previous resource amount
         private Dictionary<EResourceType, int> mResourceWindowResourceAmountLastTick;
@@ -320,9 +315,6 @@ namespace Singularity.Screen.ScreenClasses
             // set as the controlled UI by the UIController
             mUserInterfaceController = director.GetUserInterfaceController;
 
-            // resource window ticker - needed to get time since last update
-            mResourceWindowTicker = mDirector.GetClock.GetIngameTime().Seconds;
-
             // TODO : BALANCING - CHANGE THIS VALUE TO DECREASE/INCREASE THE SECONDS BETWEEN EACH RESOURCE WINDOW UPDATE
             // resource/X seconds production calc.
             mResourceWindowXSeconds = 5;
@@ -416,7 +408,7 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             // update resource window every X seconds to get the "production in the last X seconds amount"
-            if ((mResourceWindowTicker + mResourceWindowXSeconds) < mDirector.GetClock.GetIngameTime().Seconds)
+                if (mResourceWindowNextTick == mDirector.GetClock.GetIngameTime().Seconds)
             {
                 var currentProducedResourceAmounts = mDirector.GetStoryManager.Resources;
 
@@ -435,7 +427,7 @@ namespace Singularity.Screen.ScreenClasses
                 mResourceItemWater.Amount = currentProducedResourceAmounts[EResourceType.Water] - mResourceWindowResourceAmountLastTick[EResourceType.Water];
                 mResourceItemTrash.Amount = currentProducedResourceAmounts[EResourceType.Trash] - mResourceWindowResourceAmountLastTick[EResourceType.Trash];
 
-                mResourceWindowTicker = mDirector.GetClock.GetIngameTime().Seconds;
+                mResourceWindowNextTick = (mDirector.GetClock.GetIngameTime().Seconds + 5) % 60;
 
                 mResourceWindowResourceAmountLastTick = new Dictionary<EResourceType, int>(mDirector.GetStoryManager.Resources);
             }
@@ -555,7 +547,6 @@ namespace Singularity.Screen.ScreenClasses
 
             // list to add all item to be able to iterate through them
             mSelectedPlatformResourcesList = new List<ResourceIWindowItem>();
-            mSelectedPlatformUnitAssignmentList = new List<IWindowItem>();
             mSelectedPlatformActionList = new List<PlatformActionIWindowItem>();
 
             // activate / deactivate platform item
@@ -659,11 +650,6 @@ namespace Singularity.Screen.ScreenClasses
             mSelectedPlatformDeactivatePlatformButton.ActiveInWindow = false;
 
             foreach (var item in mSelectedPlatformResourcesList)
-            {
-                item.ActiveInWindow = false;
-            }
-
-            foreach (var item in mSelectedPlatformUnitAssignmentList)
             {
                 item.ActiveInWindow = false;
             }
@@ -1421,8 +1407,6 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10,
                 Color.White);
 
-            dictWithRes = PlatformBlank.GetResourceCosts(EStructureType.Kinetic);
-
             mInfoBuildKineticTower = new InfoBoxWindow(
                 itemList: new List<IWindowItem>
                 {
@@ -1588,6 +1572,9 @@ namespace Singularity.Screen.ScreenClasses
             // called once to set positions + called everytime the resolution changes
             ResetWindowsToStandardPositon();
 
+            // resource window ticker - needed to get time since last update
+            mResourceWindowNextTick = (mDirector.GetClock.GetIngameTime().Seconds + 5 - mDirector.GetClock.GetIngameTime().Seconds % 5) % 60;
+
             //This instance will handle the comunication between Sliders and DistributionManager.
             mCivilUnitsSliderHandler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mConstructionSlider, mLogisticsSlider, mIdleUnitsTextAndAmount);
 
@@ -1599,7 +1586,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // mCivilUnitsSliderHandler.Initialize(mDirector.GetDistributionDirector.GetSomeId());
             mDirector.GetActionManager.AddObject(mCivilUnitsSliderHandler,
-                delegate (object o)
+                delegate
                 {
                     mCivilUnitsSliderHandler.Initialize(mDirector.GetDistributionDirector.GetSomeId());
                     return true;
@@ -1654,7 +1641,6 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="isManuallyDeactivated">true, if the platform was manually disabled</param>
         /// <param name="type">the platform's type</param>
         /// <param name="resourceAmountList">list of single resource item's</param>
-        /// <param name="unitAssignmentList">dictionary with assigned units</param>
         /// <param name="actionsList">list of possible actions of the platform</param>
         /// <param name="isActive">true, if the platform is active</param>
         public void SetSelectedPlatformValues(
@@ -1663,7 +1649,6 @@ namespace Singularity.Screen.ScreenClasses
             bool isManuallyDeactivated,
             EStructureType type,
             IEnumerable<Resource> resourceAmountList,
-            Dictionary<JobType, List<Pair<GeneralUnit, bool>>> unitAssignmentList,
             IEnumerable<IPlatformAction> actionsList)
         {
             if (!mActiveUserInterface) { return; }
@@ -2011,7 +1996,7 @@ else
         /// <summary>
         /// Used to Deactivate the UI to activate it later (used by settler)
         /// </summary>
-        public void Deactivate()
+        private void Deactivate()
         {
             mActiveUserInterface = false;
         }
@@ -2032,7 +2017,7 @@ else
             mCurrentlyBuildButton?.AddBorder();
         }
 
-        public void BuildingProcessFinished(EStructureType structureType)
+        public void BuildingProcessFinished()
         {
             mCurrentlyBuildButton?.RemoveBorder();
             mCurrentlyBuildButton = null;
