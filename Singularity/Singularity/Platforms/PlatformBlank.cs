@@ -620,6 +620,10 @@ namespace Singularity.Platforms
         /// <inheritdoc cref="Singularity.Property.IDraw"/>
         public virtual void Draw(SpriteBatch spritebatch)
         {
+            if (mType == EStructureType.Command && Friendly)
+            {
+                //blabladebug
+            }
             var transparency = mBlueprint ? 0.35f : 1f;
 
             mHealthBar.Draw(spritebatch);

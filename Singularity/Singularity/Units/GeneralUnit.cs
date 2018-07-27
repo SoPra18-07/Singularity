@@ -78,6 +78,7 @@ namespace Singularity.Units
         [DataMember]
         private Optional<INode> mDestination;
 
+        [DataMember]
         private bool mInitialized;
 
         [DataMember]
