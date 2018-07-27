@@ -56,7 +56,7 @@ namespace Singularity.PlatformActions
             {
                 return;
             }
-            
+
             mCounter = 0;
             CreateResource();
             UpdateResources();

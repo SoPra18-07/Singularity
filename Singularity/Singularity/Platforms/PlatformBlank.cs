@@ -536,7 +536,7 @@ namespace Singularity.Platforms
 
             return true;
         } // */
-        
+
         /// <summary>
         /// Get the Resources on the platform.
         /// </summary>
@@ -1296,7 +1296,7 @@ namespace Singularity.Platforms
         {
             mBlueprint = false;
             Register();
-            mDirector.GetMilitaryManager.AddPlatform(this);
+            // mDirector.GetMilitaryManager.AddPlatform(this);
             // Todo: move registering at the distributionmanager etc here. But not yet (debug)
         }
 

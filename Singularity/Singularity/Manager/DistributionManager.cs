@@ -700,11 +700,11 @@ namespace Singularity.Manager
                     joblist = mProduction;
                 }
 
-				// this happens sometimes for some reason TODO: @Confectio look into it.
-				if (platUnits[job].Count == 0)
-				{
-					continue;
-				}
+                // this happens sometimes for some reason TODO: @Confectio look into it.
+                if (platUnits[job].Count == 0)
+                {
+                    continue;
+                }
 
                 //Remove the first unit in the AssignedUnitList. The unit will unassign itself. Then add the unit to our unitslist.
                 //Also dont forget to decrement the number in the tuple, and to delete the unit from the joblist.
@@ -1172,7 +1172,7 @@ namespace Singularity.Manager
         public void Kill(IPlatformAction action)
         {
             // Strong assumption that a PlatformAction is only listed at most once here.
-            mPlatformActions.Remove(mPlatformActions.Find(p => p.Equals(action)));            
+            mPlatformActions.Remove(mPlatformActions.Find(p => p.Equals(action)));
 
             var lists = new List<List<GeneralUnit>> { mIdle, mLogistics, mConstruction, mProduction, mDefense, mManual };
             lists.ForEach(l => l.ForEach(u => u.Kill(action.Id)));

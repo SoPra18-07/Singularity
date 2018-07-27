@@ -53,8 +53,6 @@ namespace Singularity.Screen.ScreenClasses
 
         private int mUps;
 
-        private bool mClicked;
-
         private int mGenUnitCount;
 
         public DebugScreen(StackScreenManager screenManager, Camera camera, Map.Map map, ref Director director)

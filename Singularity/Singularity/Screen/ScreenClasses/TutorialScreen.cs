@@ -71,10 +71,10 @@ namespace Singularity.Screen.ScreenClasses
                         mTutorialWindow.RemoveAllItems();
 
                         mTutorialText = new TextField(
-                            "Now that you've built your CommandCenter it's time to get warm with the Userinterface.\n" + 
-                            "On the bottom right you can see the minimap. Use it to quickly scroll around the map and keep an overview. \n" + 
-                            "\n" + 
-                            "Above the minimap you can see the build menu, which can be used to extend your graph." + 
+                            "Now that you've built your CommandCenter it's time to get warm with the Userinterface.\n" +
+                            "On the bottom right you can see the minimap. Use it to quickly scroll around the map and keep an overview. \n" +
+                            "\n" +
+                            "Above the minimap you can see the build menu, which can be used to extend your graph." +
                             "Try it out! Build a blank platform by left clicking on the blankPlatform button and then place the " +
                             "platform near your CommandCenter (not on resources) by left clicking on the map. Finish the building " +
                             "process by connecting your blank Platform with your CommandCenter. \n" +
@@ -288,7 +288,7 @@ namespace Singularity.Screen.ScreenClasses
 
                         mTutorialText = new TextField(
                             "Of course both towers are only defense, so let's take a look into your offensive. \n " +
-                            "We start by building a barracks. (Remember - you need build units) \n\n" + 
+                            "We start by building a barracks. (Remember - you need build units) \n\n" +
                             "Then re-assign at least three units to logistics after finishing the barracks",
                             Vector2.Zero, new Vector2(mTextWidthScrolling, 0), mLibSans12, Color.White);
 
@@ -312,7 +312,7 @@ namespace Singularity.Screen.ScreenClasses
                             "you can also use it to quickly jump to the object, which raised the event. Just click on " +
                             "the first line of the eventmessage. \n\n" +
                             "But back to your task: you can create military units in the barracks just like you created the general units in the CC. " +
-                            "You could, for example, build a FastMilitary unit. \n" + 
+                            "You could, for example, build a FastMilitary unit. \n" +
                             "Remember that you need units assigned to logistics if you want resources on a specific platform.",
                             Vector2.Zero, new Vector2(mTextWidthScrolling, 0), mLibSans12, Color.White);
 
@@ -336,9 +336,9 @@ namespace Singularity.Screen.ScreenClasses
                             "- disable all windows by clicking on the corresponding name in the top bar \n" +
                             "- remove a building with right click \n" +
                             "- units are automatically assigned to a job somewhere on their graph, but you can force a redistribution " +
-                            "by manually deactivating certain platforms \n" + 
+                            "by manually deactivating certain platforms \n" +
                             "- you can build roads between two platforms \n" +
-                            "- the resource window shows you your resource production in the past 10 seconds. But it gets updates only every 10 seconds \n\n\n" + 
+                            "- the resource window shows you your resource production in the past 10 seconds. But it gets updates only every 10 seconds \n\n\n" +
                             "How about we relax at the end of our adventure? Unassing all units and let them run around as they wish."
                             ,
                             Vector2.Zero, new Vector2(mTextWidthScrolling, 0), mLibSans12, Color.White);

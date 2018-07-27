@@ -37,7 +37,6 @@ namespace Singularity.Units
         public Vector2 SeperationRaw { get; set; }
         public float ActualSpeed { get; private set; }
 
-        private int mGoalCounter;
         public int Count => mUnits.Count;
         public Optional<Vector2[,]> HeatMap { get; protected set; }
 
@@ -130,7 +129,6 @@ namespace Singularity.Units
             if (dist < 50 && mPath.Count > 0)
             {
                 mTargetPosition = mPath.Pop();
-                mGoalCounter = 0;
             }
 
             // setting variables used from the AFlocking parts
@@ -139,7 +137,7 @@ namespace Singularity.Units
 
             if (Geometry.Length(mTargetPosition - AbsolutePosition) < mUnits.Count * Speed)
             {
-                Moved = mUnits.TrueForAll(u => !u.Moved);
+                Moved = mUnits.Exists(u => u.Moved);
             }
 
             /*

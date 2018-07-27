@@ -160,8 +160,6 @@ namespace Singularity.Units
         /// </summary>
         [DataMember]
         internal float mMouseY;
-        [DataMember]
-        private bool mDead;
 
         #endregion
 
@@ -179,7 +177,7 @@ namespace Singularity.Units
         /// map, and implements pathfinding for objects on the map. It also allows subclasses to have
         /// health and to be damaged.
         /// </remarks>
-        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, bool friendly = true) : base(ref director, null)
+        protected FreeMovingUnit(Vector2 position, Camera camera, ref Director director, bool friendly = true) : base(ref director, Optional<FlockingGroup>.Of(null))
         {
 
             AbsolutePosition = position;

@@ -35,7 +35,7 @@ namespace Singularity.Levels
             for (var i = 0; i < 6; i++)
             {
                 milunitList.Add(new MilitaryFast(new Vector2(3000 + (i > 2 ? 100 : 0), 3000 + (i % 3) * 50), Camera, ref mDirector));
-            }         
+            }
 
             GameScreen.AddObjects(milunitList);
 

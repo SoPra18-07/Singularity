@@ -122,7 +122,7 @@ namespace Singularity.Screen.ScreenClasses
         private ResourceIWindowItem mSelectedPlatformStone;
         private ResourceIWindowItem mSelectedPlatformWater;
         private ResourceIWindowItem mSelectedPlatformTrash;
-        
+
         // lists of items - used to iterate through all items of a specific kind (for example to deactivate all if the corresponding button was toggled)
         private List<ResourceIWindowItem> mSelectedPlatformResourcesList;
         private List<PlatformActionIWindowItem> mSelectedPlatformActionList;
@@ -1182,7 +1182,7 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBuildWell = new InfoBoxWindow(
                 itemList: new List<IWindowItem>
                 {
-                    infoWell, infoBuildCosts, infoBuildWellStone, infoBuildWellMetal, infoBuildPlacement, 
+                    infoWell, infoBuildCosts, infoBuildWellStone, infoBuildWellMetal, infoBuildPlacement,
                     infoBuildWellPlacementWhere1, infoBuildWellPlacementWhere2
                 },
                 size: mLibSans10.MeasureString("Well"),

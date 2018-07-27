@@ -42,8 +42,6 @@ namespace Singularity.Platforms
         /// </summary>
 
         [DataMember]
-        private readonly bool mMouseFollowOnly;
-        [DataMember]
         private readonly bool mIsRoadPlacement;
 
 

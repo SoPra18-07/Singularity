@@ -62,9 +62,9 @@ namespace Singularity.Units
         {
             Id = director.GetIdGenerator.NextId(); // id for the specific unit.
             mGroup = group;
-            FlockingId = -1;
+            // FlockingId = -1;
             Velocity = Vector2.Zero;
-            // FlockingId = mGroup.IsPresent() ? mGroup.Get().FlockingId : mDirector.GetIdGenerator.NextId();
+            FlockingId = mGroup.IsPresent() ? mGroup.Get().FlockingId : -1;
         }
 
         public abstract void SetAbsBounds();
@@ -139,13 +139,13 @@ namespace Singularity.Units
             var cohes = (mGroup.Get().CohesionRaw - AbsolutePosition).Length() > 0.5 ? Vector2.Normalize(mGroup.Get().CohesionRaw - AbsolutePosition) : Vector2.Zero;
             // var seper = Vector2.Normalize(mGroup.Get().SeperationRaw - AbsolutePosition * mGroup.Get().UnitCount()) * -1;
             // var seper = Vector2.Normalize(new Vector2(
-                // mGroup.Get().GetUnits().Sum(u => u.AbsolutePosition.X - AbsolutePosition.X),
-                // mGroup.Get().GetUnits().Sum(u => u.AbsolutePosition.Y - AbsolutePosition.Y))) * -1;
+            // mGroup.Get().GetUnits().Sum(u => u.AbsolutePosition.X - AbsolutePosition.X),
+            // mGroup.Get().GetUnits().Sum(u => u.AbsolutePosition.Y - AbsolutePosition.Y))) * -1;
             var close = mDirector.GetMilitaryManager.GetAdjecentUnits(AbsolutePosition)
-                .FindAll(u => Geometry.Length(u.AbsolutePosition - AbsolutePosition) < 90 + u.AbsoluteSize.X * 2.5 && !u.Equals(this))
-                .Select(f => f.AbsolutePosition).ToList();
+                                 .FindAll(u => Geometry.Length(u.AbsolutePosition - AbsolutePosition) < 30 + u.AbsoluteSize.X * 1.5f && !u.Equals(this))
+                                 .ToList();
                 // .Aggregate((a, b) => a + b);
-            var seper = close.Count > 0 ? (close.Aggregate((a, b) => a + b) - AbsolutePosition * close.Count) * -1 : Vector2.Zero;
+            var seper = close.Count > 0 ? (close.Select(f => f.AbsolutePosition).Aggregate((a, b) => a + b) - AbsolutePosition * close.Count) * -1 : Vector2.Zero;
 
             if (seper.Length() > 1)
             {
@@ -154,9 +154,12 @@ namespace Singularity.Units
 
             var goal = Vector2.Normalize(diff);
 
-            Velocity = Vector2.Normalize(goal * 0.2f + Velocity * 2 + align + cohes * 0.75f + seper * 1.5f) * actualSpeed;
+            Velocity = Vector2.Normalize(goal * 0.5f + Velocity * 2 + align + cohes * 0.75f + seper * 1.8f) * actualSpeed;
 
-            if (dist < 10 * mGroup.Get().Count)
+            var stoppedFlocking = close.Where(f => !f.Moved && f is FreeMovingUnit && (f as FreeMovingUnit).FlockingId == FlockingId).ToList();
+
+
+            if (stoppedFlocking.Count > 0 && stoppedFlocking.Select(f => (f.AbsolutePosition - AbsolutePosition).Length()).Min() < 70 || dist < 50)
             {
                 Moved = false;
             }
@@ -183,6 +186,7 @@ namespace Singularity.Units
                 mGroup.Get().RemoveUnit(this);
             }
             mGroup = Optional<FlockingGroup>.Of(group);
+            FlockingId = group.FlockingId;
         }
 
 

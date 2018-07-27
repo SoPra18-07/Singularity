@@ -174,7 +174,7 @@ namespace Singularity.Screen.ScreenClasses
                 mMWindowTitleString,
                 new Vector2(mMenuBoxPosition.X + 20, mMenuBoxPosition.Y + 10),
                 new Color(new Vector3(.9137f, .9058f, .8314f)) * mMenuOpacity);
-            
+
             // Draw menu window
             spriteBatch.StrokedRectangle(mMenuBoxPosition,
                 mMenuBoxSize,
@@ -269,7 +269,7 @@ namespace Singularity.Screen.ScreenClasses
             mStoryButtonSelected = true;
 
         }
-        
+
         /// <summary>
         /// Used to create a new story mode game.
         /// </summary>
