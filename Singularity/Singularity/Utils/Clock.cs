@@ -34,7 +34,7 @@ namespace Singularity.Utils
             }
             //THIS determines the attackspeed of a laser tower.
             //When changing this also change the values in the towers!
-            if (mShootLaserTicker.TotalMilliseconds > 1000)
+            if (mShootLaserTicker.TotalMilliseconds > 500)
             {
                 mShootLaserTicker = new TimeSpan(0, 0, 0, 0);
             }

@@ -44,7 +44,6 @@ namespace Singularity.AI
                 structure.GetFirst().AbsolutePosition.X + x,
                 structure.GetFirst().AbsolutePosition.Y + y, null, false, false);
 
-            commandCenter.Built();
 
             tempOldPlatNewPlatMapping[structure.GetFirst()] = commandCenter;
 
@@ -52,24 +51,14 @@ namespace Singularity.AI
 
             var platformList = new List<PlatformBlank>();
 
-            var count = 0;
             foreach (var platform in structure.GetSecond())
             {
                 var platformToAdd = PlatformFactory.Get(platform.GetMyType(),
                     ref director,
                     platform.AbsolutePosition.X + x,
-                    platform.AbsolutePosition.Y + y, null, false);
-                platformToAdd.Built();
-
-                if (platformToAdd.mType == EStructureType.Command)
-                {
-                    count++;
-                }
-
-                if (count >= 20)
-                {
-                    //blabladebuf
-                }
+                    platform.AbsolutePosition.Y + y,
+                    null,
+                    false);
 
                 boundingRectangle = UpdateRectangle(boundingRectangle, platformToAdd);
 
@@ -130,6 +119,12 @@ namespace Singularity.AI
                 if (Map.Map.IsOnTop(possibleStructure.GetSecond()) &&
                     !director.GetStoryManager.Level.Map.IsInVision(possibleStructure.GetSecond()))
                 {
+                    //Only built the structure if its used afterwards!
+                    possibleStructure.GetFirst().GetFirst().Built();
+                    foreach (var platform in possibleStructure.GetFirst().GetSecond())
+                    {
+                        platform.Built();
+                    }
                     return possibleStructure;
                 }
             }
