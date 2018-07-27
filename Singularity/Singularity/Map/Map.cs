@@ -332,7 +332,8 @@ namespace Singularity.Map
             return (IsInVision(new Vector2(rect.X, rect.Y)) ||
                     IsInVision(new Vector2(rect.X + rect.Width, rect.Y)) ||
                     IsInVision(new Vector2(rect.X, rect.Y + rect.Height)) ||
-                    IsInVision(new Vector2(rect.X + rect.Width, rect.Y + rect.Height)));
+                    IsInVision(new Vector2(rect.X + rect.Width, rect.Y + rect.Height)) ||
+                    IsInVision(new Vector2(rect.Center.X, rect.Center.Y)));
         }
 
         private bool IsInVision(Vector2 position)
