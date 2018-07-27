@@ -124,10 +124,6 @@ namespace Singularity.Manager
             mDirector = director;
             mGroups = new List<FlockingGroup>();
             mSelected = new List<IFlocking>();
-            foreach (var flock in mGroups)
-            {
-                flock.ReloadContent(ref director);
-            }
         }
 
         public void ReloadSetMap(ref Map.Map map)

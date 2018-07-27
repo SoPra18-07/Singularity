@@ -71,17 +71,6 @@ namespace Singularity.Units
             HeatMap = Optional<Vector2[,]>.Of(null);
         }
 
-        public override void ReloadContent(ref Director director)
-        {
-            mDirector = director;
-            base.ReloadContent(ref director);
-            Map = mDirector.GetStoryManager.Level.Map;
-            foreach (var u in mUnits)
-            {
-                u.ReloadContent(ref director);
-            }
-        }
-
         // public override Vector2 RelativePosition { get; set; }   // does not really make sense but AFloking : ICollider ...
         // public override Vector2 RelativeSize { get; set; }       // does not really make sense but AFloking : ICollider ...
 

@@ -213,6 +213,7 @@ namespace Singularity.Units
                 mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
                 mDirector.GetInputManager.AddMousePositionListener(this);
             }
+            mGroup = Optional<FlockingGroup>.Of(null);
         }
 
         public override void Move()

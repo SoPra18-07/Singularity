@@ -181,6 +181,10 @@ namespace Singularity.Units
 
         public void AddGroup(FlockingGroup group)
         {
+            if (mGroup == null)
+            {
+                mGroup = Optional<FlockingGroup>.Of(null);
+            }
             if (mGroup.IsPresent())
             {
                 mGroup.Get().RemoveUnit(this);
