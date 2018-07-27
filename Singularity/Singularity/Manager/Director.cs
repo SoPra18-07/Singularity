@@ -14,7 +14,7 @@ namespace Singularity.Manager
     [DataContract]
     public sealed class Director
     {
-        internal GlobalVariablesInstance GetGlobalVariablesInstance { get; set; }
+        private GlobalVariablesInstance GetGlobalVariablesInstance { get; set; }
         [DataMember]
         public Clock GetClock { get; set; }
         [DataMember]

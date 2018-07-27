@@ -24,7 +24,7 @@ namespace Singularity.AI
 
         private static Dictionary<EaiDifficulty, Triple<CommandCenter, List<PlatformBlank>, List<Road>>[]> sAllStructures;
 
-        public static Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle> GetRandomStructureAtCenter(float x, float y, EaiDifficulty difficulty, ref Director director)
+        private static Pair<Triple<CommandCenter, List<PlatformBlank>, List<Road>>, Rectangle> GetRandomStructureAtCenter(float x, float y, EaiDifficulty difficulty, ref Director director)
         {
             var rnd = new Random();
 

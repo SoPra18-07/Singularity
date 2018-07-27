@@ -57,14 +57,14 @@ namespace Singularity.Map
 
         public Vector2 Position { get; set; }
 
-        public Vector2 Size { get; private set; }
+        public Vector2 Size { get;}
 
         public bool ActiveInWindow { get; set; }
         public bool InactiveInSelectedPlatformWindow { get; set; }
         public bool OutOfScissorRectangle { get; set; }
         public bool WindowIsInactive { get; set; }
 
-        public EScreen Screen { get; set; } = EScreen.UserInterfaceScreen;
+        public EScreen Screen { get;} = EScreen.UserInterfaceScreen;
 
         public Rectangle Bounds { get; private set; }
 

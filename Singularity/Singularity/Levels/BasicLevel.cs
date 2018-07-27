@@ -38,7 +38,7 @@ namespace Singularity.Levels
         [DataMember]
         public Map.Map Map { get; set; }
 
-        protected GraphicsDeviceManager mGraphics;
+        private GraphicsDeviceManager mGraphics;
 
         [DataMember]
         protected FogOfWar mFow;

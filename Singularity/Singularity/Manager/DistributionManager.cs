@@ -635,7 +635,7 @@ namespace Singularity.Manager
         /// <param name="list">the list to collect from. Has to be mDefPlatforms or mProdPlatforms</param>
         /// <param name="isDefense">Determines if its the left or the right one</param>
         /// <returns>A list containing the collected units</returns>
-        private List<GeneralUnit> GetUnitsFairly(int amount, List<Pair<PlatformBlank, int>> list, bool isDefense)
+        private List<GeneralUnit> GetUnitsFairly(int amount, IList<Pair<PlatformBlank, int>> list, bool isDefense)
         {
             var search = true;
             var startindex = list.Count - 1;
@@ -842,9 +842,9 @@ namespace Singularity.Manager
                 {
                     times = alreadyonplatform - times;
                     var units = new List<GeneralUnit>();
-                    GeneralUnit transferunit;
                     for (var i = times; i > 0; i--)
                     {
+                        GeneralUnit transferunit;
                         transferunit = platform.GetAssignedUnits()[job].First().GetFirst();
                         units.Add(transferunit);
                         mIdle.Add(transferunit);
@@ -882,9 +882,9 @@ namespace Singularity.Manager
                 {
                     times = alreadyonplatform - times;
                     var units = new List<GeneralUnit>();
-                    GeneralUnit transferunit;
                     for (var i = times; i > 0; i--)
                     {
+                        GeneralUnit transferunit;
                         transferunit = platform.GetAssignedUnits()[job].First().GetFirst();
                         units.Add(transferunit);
                         mIdle.Add(transferunit);
@@ -1053,13 +1053,12 @@ namespace Singularity.Manager
             var job = isDef ? JobType.Defense : JobType.Production;
             var joblist = isDef ? mDefense : mProduction;
             var unitstodistribute = new List<GeneralUnit>();
-            Pair<PlatformBlank, int> pair;
 
             //REMOVE PLATFORMS, COLLECT THEIR UNITS
             foreach (var platform in platforms)
             {
                 //No longer observe platform
-                pair = list.Find(x => x.GetFirst().Equals(platform));
+                Pair<PlatformBlank, int> pair = list.Find(x => x.GetFirst().Equals(platform));
                 list.Remove(pair);
 
                 var units = platform.GetAssignedUnits()[job];

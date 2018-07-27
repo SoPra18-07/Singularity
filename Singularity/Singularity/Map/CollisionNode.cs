@@ -5,7 +5,7 @@ using Singularity.Utils;
 namespace Singularity.Map
 {
     [DataContract]
-    public class CollisionNode
+    public sealed class CollisionNode
     {
         [DataMember]
         public int X { get; }
