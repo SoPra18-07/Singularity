@@ -23,6 +23,10 @@ namespace Singularity.Levels
         public override void LoadContent(ContentManager content)
         {
 
+            Camera.CenterOn(new Vector2(MapConstants.MapWidth / 2, MapConstants.MapHeight / 2));
+
+            var map = Map;
+
             GlobalVariables.FowEnabled = false;
 
             var platform = PlatformFactory.Get(EStructureType.Barracks, ref mDirector, 3000, 3000);

@@ -159,15 +159,17 @@ namespace Singularity.Units
                     LayerConstants.MilitaryUnitLayer - 0.01f);
             }
 
-
             if (mShoot)
             {
-                if (mCurrentTime <= mShootingTimer + 200)
+                if (Math.Sqrt(Math.Pow(Center.X - mShootingTarget.Center.X, 2) + Math.Pow(Center.Y - mShootingTarget.Center.Y, 2)) <= MilitaryUnitStats.StandardRange)
                 {
-                    // draws a laser line a a slight glow around the line, then sets the shoot future off
-                    spriteBatch.DrawLine(Center, mShootingTarget.Center, mShootColor, 2, .15f);
-                    spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, mShootColor * .2f, 6, .15f);
-                    mShoot = false;
+                    if (mCurrentTime <= mShootingTimer + 200)
+                    {
+                        // draws a laser line a a slight glow around the line, then sets the shoot future off
+                        spriteBatch.DrawLine(Center, mShootingTarget.Center, mShootColor, 2, .15f);
+                        spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, mShootColor * .2f, 6, .15f);
+                        mShoot = false;
+                    }
                 }
             }
         }

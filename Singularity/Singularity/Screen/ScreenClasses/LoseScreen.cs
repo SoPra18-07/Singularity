@@ -3,8 +3,10 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Graph.Paths;
 using Singularity.Libraries;
 using Singularity.Manager;
+using Singularity.Utils;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -194,6 +196,17 @@ namespace Singularity.Screen.ScreenClasses
         private void ReturnToMainMenu(object sender, EventArgs eventArgs)
         {
             mDirector.GetStoryManager.Level.GameScreen.Unload();
+            mDirector.GetClock = new Clock();
+            mDirector.GetIdGenerator = new IdGenerator();
+            mDirector.GetInputManager.RemoveEverythingFromInputManager();
+            mDirector.GetStoryManager = new StoryManager(mDirector);
+            mDirector.GetStoryManager.SetScreenManager(mScreenManager);
+            mDirector.GetPathManager = new PathManager();
+            mDirector.GetDistributionDirector = new DistributionDirector(mDirector);
+            mDirector.GetMilitaryManager = new MilitaryManager(mDirector);
+            mDirector.GetDeathManager = new DeathManager();
+            mDirector.GetActionManager = new ActionManager();
+
             for (var i = 0; i < mScreenManager.GetScreenCount() - 1; i++)
             {
                 mScreenManager.RemoveScreen();

@@ -1654,7 +1654,6 @@ namespace Singularity.Screen.ScreenClasses
             if (!mActiveUserInterface) { return; }
             // set window type
             mSelectedPlatformWindow.WindowName = type.ToString();
-
             #region active/deactive
 
             // manage activate/deactivate

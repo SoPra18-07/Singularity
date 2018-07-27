@@ -49,10 +49,10 @@ namespace Singularity.Platforms
         // previous values sent to the UIController - used to only send data if the values have been updated
         [DataMember]
         private List<Resource> mPrevResources;
+        //[DataMember]
+        //private Dictionary<JobType, List<Pair<GeneralUnit, bool>>> mPrevUnitAssignments;
         [DataMember]
-        private Dictionary<JobType, List<Pair<GeneralUnit, bool>>> mPrevUnitAssignments;
-        [DataMember]
-        private List<IPlatformAction> mPrevPlatformActions;
+        private Dictionary<IPlatformAction, PlatformActionState> mPrevPlatformActionsStates;
         [DataMember]
         private bool mPreviousIsActiveState;
         [DataMember]
@@ -230,9 +230,6 @@ namespace Singularity.Platforms
 
         public PlatformBlank(Vector2 position, Texture2D platformSpriteSheet, Texture2D baseSprite, SpriteFont libsans12, ref Director director, EStructureType type = EStructureType.Blank, float centerOffsetY = -36, bool friendly = true) : base(ref director)
         {
-
-            mPrevPlatformActions = new List<IPlatformAction>();
-
             Id = director.GetIdGenerator.NextId();
             HasDieded = false;
 
@@ -345,6 +342,11 @@ namespace Singularity.Platforms
                 mAddedToInputManager = true;
             }
 
+            mPrevResources = new List<Resource>();
+            mPrevPlatformActionsStates = new Dictionary<IPlatformAction, PlatformActionState>();
+            mPreviousIsManuallyDeactivatedState = true;
+            mPreviousIsActiveState = true;
+
             // mInfoBox = new PlatformInfoBox(new List<IWindowItem> { new TextField("PlattformInfo", AbsolutePosition, AbsoluteSize, mLibSans12, Color.White) }, AbsoluteSize, new Color(0.86f, 0.86f, 0.86f), new Color(1f, 1, 1), true, this, mDirector);
 
             /*
@@ -391,10 +393,6 @@ namespace Singularity.Platforms
                 action.ReloadContent(ref dir);
             }
 
-            foreach (var action in mPrevPlatformActions)
-            {
-                action.ReloadContent(ref dir);
-            }
             var str = GetResourceString();
             mInfoBox = new PlatformInfoBox(
                 itemList: new List<IWindowItem>
@@ -751,16 +749,37 @@ namespace Singularity.Platforms
                 mDirector.GetEventLog.AddEvent(ELogEventType.PlatformBuilt, mType + " has been built", this);
             }
 
+            // no need to go further if not friendly
+            if (!Friendly)
+            {
+                return;
+            }
+
+            // used to compare the action states to update the window if there are changes in the state
+            var currentActionStateList = new Dictionary<IPlatformAction, PlatformActionState>();
+            foreach (var action in mIPlatformActions)
+            {
+                currentActionStateList.Add(action, action.State);
+            }
+
             // set the mDataSent bool to false if there was a change in platform infos since the data was sent last time
             // or if the platform is not selected, so that if it gets selected it will send the current data to the UIController
-            if (mPrevResources != GetPlatformResources() ||
-                mPrevUnitAssignments != GetAssignedUnits() ||
-                mPrevPlatformActions != GetIPlatformActions() ||
-                mPreviousIsActiveState != IsActive() ||
+            if (mPrevResources.Count != mResources.Count ||
+                mPreviousIsActiveState != mIsActive ||
                 mPreviousIsManuallyDeactivatedState != mIsManuallyDeactivated ||
                 !IsSelected)
             {
                 mDataSent = false;
+            }
+
+            // check if there was a change in the action state - if so, set dataSent to false to send updated data to window
+            foreach (var action in mIPlatformActions)
+            {
+                if (!mPrevPlatformActionsStates.ContainsKey(action) ||
+                    currentActionStateList[action] != mPrevPlatformActionsStates[action])
+                {
+                    mDataSent = false;
+                }
             }
 
             // manage updating of values in the UI
@@ -770,13 +789,10 @@ namespace Singularity.Platforms
             }
 
             // update previous values
-            mPrevResources = GetPlatformResources();
-            mPrevUnitAssignments = GetAssignedUnits();
-            mPrevPlatformActions = GetIPlatformActions();
+            mPrevResources = new List<Resource>(mResources);
             mPreviousIsManuallyDeactivatedState = mIsManuallyDeactivated;
-            mPreviousIsActiveState = IsActive();
-
-
+            mPreviousIsActiveState = mIsActive;
+            mPrevPlatformActionsStates = new Dictionary<IPlatformAction, PlatformActionState>(currentActionStateList);
 
             // send data to UIController
             mDirector.GetUserInterfaceController.SetDataOfSelectedPlatform(Id,
