@@ -129,6 +129,7 @@ namespace Singularity.Manager
         /// <param name="action">The action regarding the units that has happened. Has to be created, lost or killed</param>
         public void UpdateUnits(string action)
         {
+            // ReSharper disable once NotAccessedVariable
             int a;
             var temp = action;
 
@@ -164,6 +165,7 @@ namespace Singularity.Manager
         /// <param name="action">The action regarding the platforms that has happened. Has to be created, lost or destroyed</param>
         public void UpdatePlatforms(string action)
         {
+            // ReSharper disable once NotAccessedVariable
             int a;
             Platforms.TryGetValue(action, out a);
             Platforms[action] += 1;
@@ -190,6 +192,7 @@ namespace Singularity.Manager
         /// <param name="resource">The resourcetype that has been created</param>
         public void UpdateResources(EResourceType resource)
         {
+            // ReSharper disable once NotAccessedVariable
             int a;
             Resources.TryGetValue(resource, out a);
             Resources[resource] += 1;

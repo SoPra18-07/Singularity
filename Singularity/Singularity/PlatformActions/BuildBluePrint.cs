@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Net.NetworkInformation;
 using System.Runtime.Serialization;
 using Singularity.Manager;
 using Singularity.Platforms;
