@@ -18,11 +18,11 @@ namespace Singularity.Manager
 
         //The statistics
         [DataMember]
-        public Dictionary<string, int> Units { get; private set; }
+        public Dictionary<string, int> UnitsCount { get; private set; }
         [DataMember]
-        public Dictionary<EResourceType, int> Resources { get; private set; }
+        public Dictionary<EResourceType, int> ResourcesCount { get; private set; }
         [DataMember]
-        public Dictionary<string, int> Platforms { get; private set; }
+        public Dictionary<string, int> PlatformsCount { get; private set; }
 
         [DataMember]
         public StructureMap StructureMap { get; set; }
@@ -55,14 +55,14 @@ namespace Singularity.Manager
             mLevelType = level;
             LoadAchievements();
 
-            Units = new Dictionary<string, int>
+            UnitsCount = new Dictionary<string, int>
             {
                 {"created", 0},
                 {"lost", 0},
                 {"killed", 0}
             };
 
-            Resources = new Dictionary<EResourceType, int>
+            ResourcesCount = new Dictionary<EResourceType, int>
             {
                 {EResourceType.Chip, 0},
                 {EResourceType.Concrete, 0},
@@ -79,7 +79,7 @@ namespace Singularity.Manager
                 {EResourceType.Water, 0}
             };
 
-            Platforms = new Dictionary<string, int>
+            PlatformsCount = new Dictionary<string, int>
             {
                 {"created", 0},
                 {"lost", 0},
@@ -144,8 +144,8 @@ namespace Singularity.Manager
                 temp = "created";
             }
 
-            Units.TryGetValue(temp, out a);
-            Units[temp] += 1;
+            UnitsCount.TryGetValue(temp, out a);
+            UnitsCount[temp] += 1;
 
             if (Achievements.Replicant())
             {
@@ -165,8 +165,8 @@ namespace Singularity.Manager
         public void UpdatePlatforms(string action)
         {
             int a;
-            Platforms.TryGetValue(action, out a);
-            Platforms[action] += 1;
+            PlatformsCount.TryGetValue(action, out a);
+            PlatformsCount[action] += 1;
 
             if (action == "created")
             {
@@ -191,8 +191,8 @@ namespace Singularity.Manager
         public void UpdateResources(EResourceType resource)
         {
             int a;
-            Resources.TryGetValue(resource, out a);
-            Resources[resource] += 1;
+            ResourcesCount.TryGetValue(resource, out a);
+            ResourcesCount[resource] += 1;
         }
 
         /// <summary>

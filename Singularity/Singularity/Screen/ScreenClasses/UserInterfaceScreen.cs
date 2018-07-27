@@ -410,7 +410,7 @@ namespace Singularity.Screen.ScreenClasses
             // update resource window every X seconds to get the "production in the last X seconds amount"
                 if (mResourceWindowNextTick == mDirector.GetClock.GetIngameTime().Seconds)
             {
-                var currentProducedResourceAmounts = mDirector.GetStoryManager.Resources;
+                var currentProducedResourceAmounts = mDirector.GetStoryManager.ResourcesCount;
 
                 // set 'produced resource in past X seconds' amount
                 mResourceItemChip.Amount = currentProducedResourceAmounts[EResourceType.Chip] - mResourceWindowResourceAmountLastTick[EResourceType.Chip];
@@ -429,7 +429,7 @@ namespace Singularity.Screen.ScreenClasses
 
                 mResourceWindowNextTick = (mDirector.GetClock.GetIngameTime().Seconds + 5) % 60;
 
-                mResourceWindowResourceAmountLastTick = new Dictionary<EResourceType, int>(mDirector.GetStoryManager.Resources);
+                mResourceWindowResourceAmountLastTick = new Dictionary<EResourceType, int>(mDirector.GetStoryManager.ResourcesCount);
             }
         }
 
@@ -741,7 +741,7 @@ namespace Singularity.Screen.ScreenClasses
             // add the window to windowList
             mWindowList.Add(mResourceWindow);
 
-            mResourceWindowResourceAmountLastTick = mDirector.GetStoryManager.Resources;
+            mResourceWindowResourceAmountLastTick = mDirector.GetStoryManager.ResourcesCount;
 
             #endregion
 
