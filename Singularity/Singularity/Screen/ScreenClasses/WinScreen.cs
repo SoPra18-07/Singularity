@@ -209,6 +209,7 @@ namespace Singularity.Screen.ScreenClasses
             mDirector.GetIdGenerator = new IdGenerator();
             mDirector.GetInputManager.RemoveEverythingFromInputManager();
             mDirector.GetStoryManager = new StoryManager(mDirector);
+            mDirector.GetStoryManager.SetScreenManager(mScreenManager);
             mDirector.GetPathManager = new PathManager();
             mDirector.GetDistributionDirector = new DistributionDirector(mDirector);
             mDirector.GetMilitaryManager = new MilitaryManager(mDirector);
