@@ -85,6 +85,8 @@ namespace Singularity.AI.Behavior
     [DataContract]
     public sealed class AdvancedAiBehavior : IAiBehavior
     {
+        private const int FirstBaseDistance = 3000;
+
         private const int PlatformCountNewBaseTrigger = 20;
 
         private const int DefensePlatformCountNewBaseTrigger = 4;
@@ -223,6 +225,15 @@ namespace Singularity.AI.Behavior
             do
             {
                 baseToAdd = StructureLayoutHolder.GetStructureOnMap(mAi.Difficulty, ref mDirector);
+
+                // make sure the base is atleast a certain distance away from the player at start
+                if (Vector2.Distance(
+                    mDirector.GetStoryManager.StructureMap.GetPlatformList().First().AbsolutePosition, 
+                    new Vector2(baseToAdd.GetSecond().Center.X, baseToAdd.GetSecond().Center.Y)) < FirstBaseDistance)
+                {
+                    requestNewPlatform = true;
+                    continue;
+                }
 
                 // make sure the new structure doesn't overlap with an existing enemy structure
                 if (mBaseCount <= 0)
