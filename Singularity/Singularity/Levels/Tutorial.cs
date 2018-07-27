@@ -28,7 +28,7 @@ namespace Singularity.Levels
 
             //SetUnit
             var settler = new Settler(new Vector2(2900, 3200), Camera, ref mDirector, GameScreen, Ui);
-            
+
             Camera.CenterOn(settler.AbsolutePosition);
 
             GameScreen.AddObject(settler);

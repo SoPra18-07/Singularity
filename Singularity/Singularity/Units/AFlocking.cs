@@ -136,6 +136,10 @@ namespace Singularity.Units
             var x = AbsBounds.X / MapConstants.GridWidth;
             var y = AbsBounds.Y / MapConstants.GridHeight;
             var align = mGroup.Get().HeatMap.IsPresent() ? mGroup.Get().HeatMap.Get()[x, y] : Vector2.Normalize(mGroup.Get().Velocity);
+            if (align.Length() > 1)
+            {
+                align = Vector2.Normalize(align);
+            }
             var cohes = (mGroup.Get().CohesionRaw - AbsolutePosition).Length() > 0.5 ? Vector2.Normalize(mGroup.Get().CohesionRaw - AbsolutePosition) : Vector2.Zero;
             // var seper = Vector2.Normalize(mGroup.Get().SeperationRaw - AbsolutePosition * mGroup.Get().UnitCount()) * -1;
             // var seper = Vector2.Normalize(new Vector2(
@@ -154,7 +158,7 @@ namespace Singularity.Units
 
             var goal = Vector2.Normalize(diff);
 
-            Velocity = Vector2.Normalize(goal * 0.5f + Velocity * 2 + align + cohes * 0.75f + seper * 1.8f) * actualSpeed;
+            Velocity = Vector2.Normalize(goal * 0.5f + Velocity * 2 + align + cohes * 0.75f + seper * 2f) * actualSpeed;
 
             var stoppedFlocking = close.Where(f => !f.Moved && f is FreeMovingUnit && (f as FreeMovingUnit).FlockingId == FlockingId).ToList();
 

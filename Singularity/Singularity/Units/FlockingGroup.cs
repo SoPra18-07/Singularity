@@ -247,6 +247,7 @@ namespace Singularity.Units
                 var x = (int) target.X / MapConstants.GridWidth;
                 var y = (int) target.Y / MapConstants.GridHeight;
                 CreateHeatmap(new Pair<int, int>(x, y), new Queue<Pair<int, int>>());
+                mTargetPosition = target;
                 mDirector.GetMilitaryManager.EnsureIncluded(this);
                 Moved = true;
                 mUnits.ForEach(u => u.Moved = true);

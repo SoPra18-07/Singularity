@@ -11,6 +11,7 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework.Content;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Utils;
+using Singularity.Levels;
 
 namespace Singularity.Map
 {
@@ -71,7 +72,8 @@ namespace Singularity.Map
 
             mFow = fow;
 
-            var initialResources = ResourceHelper.GetRandomlyDistributedResources(50, ref director);
+            var initialResources = director.GetStoryManager.Level is TechDemo ? null : ResourceHelper.GetRandomlyDistributedResources(50, ref director);
+
 
             mCollisionMap = new CollisionMap();
             mStructureMap = new StructureMap(fow, ref director);
