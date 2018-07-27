@@ -55,6 +55,7 @@ namespace Singularity.Manager
 
         private FlockingGroup mSelectedGroup;
 
+
         private List<FlockingGroup> mGroups = new List<FlockingGroup>();
 
         #endregion

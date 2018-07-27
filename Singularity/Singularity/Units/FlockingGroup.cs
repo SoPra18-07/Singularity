@@ -71,6 +71,15 @@ namespace Singularity.Units
             HeatMap = Optional<Vector2[,]>.Of(null);
         }
 
+        internal void Circle()
+        {
+            mTargetPosition = new Vector2(MapConstants.MapHeight, MapConstants.MapWidth) * 0.5f;
+            CreateCircleHeatMap();
+            mUnits.ForEach(u => u.Moved = true);
+            Moved = true;
+        }
+
+
         public override void ReloadContent(ref Director director)
         {
             mDirector = director;
@@ -134,11 +143,7 @@ namespace Singularity.Units
             // setting variables used from the AFlocking parts
             mUnits.ForEach(u => u.Move());
 
-
-            if (Geometry.Length(mTargetPosition - AbsolutePosition) < mUnits.Count * Speed)
-            {
-                Moved = mUnits.Exists(u => u.Moved);
-            }
+            Moved = mUnits.Exists(u => u.Moved);
 
             /*
 
@@ -160,6 +165,43 @@ namespace Singularity.Units
             mUnits.ForEach(u => u.TakeCareof(colliders)); // todo: implement differently ... (precomputing time-velocity-based-lookup table)
 
             // */
+        }
+
+
+        private void CreateCircleHeatMap()
+        {
+
+            var temp = new Vector2[mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(0), mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(1)];
+
+            // new Vector2(MapConstants.MapHeight, MapConstants.MapWidth) * 0.5f;
+            Vector2 center = new Vector2(mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(0) / 2, mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(1) / 2);
+
+            for (var i = 0; i < mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(0); i++)
+            {
+                for (var j = 0; j < mDirector.GetStoryManager.Level.Map.GetCollisionMap().GetCollisionMap().GetLength(1); j++)
+                {
+                    var centerDir = center - new Vector2(i, j);
+                    var dist = centerDir.Length();
+                    var correction = Vector2.Zero;
+
+                    if (dist < 500 || dist > 900)
+                    {
+                        correction = Vector2.Normalize(centerDir * (dist - 700));
+                    }
+
+                    // new ~ old
+                    // |      |
+                    // v      v
+                    //
+                    // x   =  y
+                    // y   = -x
+                    //
+                    // exactly -90° Rotation
+
+                    temp[i, j] = Vector2.Normalize(Vector2.Normalize(new Vector2(centerDir.Y, - centerDir.X)) * 0.4f + correction * 0.6f);
+                }
+            }
+            HeatMap = Optional<Vector2[,]>.Of(temp);
         }
 
 

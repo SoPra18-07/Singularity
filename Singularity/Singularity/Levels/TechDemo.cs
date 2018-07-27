@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -33,6 +34,8 @@ namespace Singularity.Levels
 
             var rnd = new Random();
 
+            var units = new List<MilitaryUnit>();
+
             for (var i = 0; i < 1000; i++)
             {
                 var x = rnd.Next(MapConstants.MapWidth);
@@ -43,10 +46,20 @@ namespace Singularity.Levels
                     i--;
                     continue;
                 }
-                GameScreen.AddObject(new MilitaryUnit(new Vector2(x, y), Camera, ref mDirector));
-
+                units.Add(new MilitaryUnit(new Vector2(x, y), Camera, ref mDirector));
             }
 
+            mDirector.GetActionManager.AddObject(units, delegate {
+
+                var flock = mDirector.GetMilitaryManager.GetNewFlock();
+
+                units.ForEach(unit => flock.AssignUnit(unit));
+                flock.Circle();
+                return true;
+            });
+
+
+            GameScreen.AddObjects(units);
             GameScreen.AddObject(platform);
         }
     }
