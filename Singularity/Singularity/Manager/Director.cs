@@ -45,9 +45,9 @@ namespace Singularity.Manager
         [DataMember]
         public ActionManager GetActionManager { get; set; }
 
-        public GraphicsDeviceManager GetGraphicsDeviceManager { get; set; }
+        public GraphicsDeviceManager GetGraphicsDeviceManager { get; private set; }
 
-        public EventLog GetEventLog { get; }
+        public EventLog GetEventLog { get; private set; }
 
         public Director(ContentManager content, GraphicsDeviceManager graphics, GlobalVariablesInstance globalVariablesInstance)
         {
@@ -88,6 +88,7 @@ namespace Singularity.Manager
             GetMilitaryManager.ReloadContent(mapmeasurements, this);
             GetStoryManager.ReloadContent(this);
             GetGraphicsDeviceManager = graphics;
+            GetEventLog = new EventLog(GetUserInterfaceController, this, content);
         }
 
         internal void SaveConfig()
