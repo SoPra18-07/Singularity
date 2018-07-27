@@ -44,7 +44,8 @@ namespace Singularity.PlatformActions
 
         public BuildBluePrint(PlatformBlank platform, Road road, ref Director director) : base (platform, ref director)
         {
-            mBuildingCost = new Dictionary<EResourceType, int> { {EResourceType.Metal, 1}, {EResourceType.Stone, 1} };
+            //mBuildingCost = new Dictionary<EResourceType, int> { {EResourceType.Metal, 1}, {EResourceType.Stone, 1} };
+            mBuildingCost = new Dictionary<EResourceType, int>();
             mRBuilding = road;
             mRBuilding.Blueprint = true;
             mRBuilding.SetBluePrint(this);
