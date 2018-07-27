@@ -133,7 +133,7 @@ namespace Singularity.Sound
             SetMediaPlayerVolume();
         }
 
-        
+
         #endregion
 
         public void PlaySoundTrack()
@@ -218,7 +218,7 @@ namespace Singularity.Sound
         /// </summary>
         /// <param name="id"></param>
         public void PlaySound(int id)
-        {            
+        {
             switch (mInstanceMap[id].Item1)
             {
                 case SoundClass.Effect:
@@ -285,7 +285,7 @@ namespace Singularity.Sound
         {
             var newX = x / 120;
             var newY = y / 120;
-            
+
             if (mInstanceMap.ContainsKey(id))
             {
                 SoundClass soundClass = mInstanceMap[id].Item1;
