@@ -172,7 +172,7 @@ namespace Singularity.Map
 
             foreach (var revealing in mRevealingObjects)
             {
-                spriteBatch.DrawEllipse(new Rectangle((int) revealing.Center.X - revealing.RevelationRadius, (int) revealing.Center.Y - revealing.RevelationRadius / 2, revealing.RevelationRadius * 2, revealing.RevelationRadius), Color.Transparent, LayerConstants.FogOfWarLayer);
+                spriteBatch.DrawCircle(revealing.Center, revealing.RevelationRadius, 100, Color.Transparent, revealing.RevelationRadius);
             }
 
             spriteBatch.End();
