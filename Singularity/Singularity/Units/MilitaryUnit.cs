@@ -88,6 +88,8 @@ namespace Singularity.Units
         [DataMember]
         protected bool mTargetWasNull;
 
+        private double mCurrentTime;
+
 
         public MilitaryUnit(Vector2 position,
             Camera camera,
