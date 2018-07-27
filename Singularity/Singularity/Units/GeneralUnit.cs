@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -118,7 +117,7 @@ namespace Singularity.Units
             mIsMoving = false;
             mDirector = director;
             mDirector.GetActionManager.AddObject(this,
-                delegate(object u)
+                delegate
                 {
                     mDirector.GetDistributionDirector.GetManager(Graphid).Register(this);
                     mDirector.GetStoryManager.UpdateUnits("created");

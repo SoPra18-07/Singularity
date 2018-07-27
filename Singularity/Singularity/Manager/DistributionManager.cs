@@ -397,14 +397,24 @@ namespace Singularity.Manager
                     //That way the unit will only travel one node per task, but that makes it more reactive.
                     foreach (var edge in unit.CurrentNode.GetInwardsEdges())
                     {
-                        if (!(edge as Road).Blueprint)
+                        var possibleedge = edge as Road;
+                        if (possibleedge == null)
+                        {
+                            continue;
+                        }
+                        if (!possibleedge.Blueprint)
                         {
                             nodes.Add(edge.GetParent());
                         }
                     }
                     foreach (var edge in unit.CurrentNode.GetOutwardsEdges())
                     {
-                        if (!(edge as Road).Blueprint)
+                        var possibleedge = edge as Road;
+                        if (possibleedge == null)
+                        {
+                            continue;
+                        }
+                        if (!possibleedge.Blueprint)
                         {
                             nodes.Add(edge.GetChild());
                         }
@@ -1121,7 +1131,7 @@ namespace Singularity.Manager
         public void PausePlatformAction(IPlatformAction action, Director director)
         {
             director.GetActionManager.AddObject(action,
-                delegate(object o)
+                delegate
                 {
                     Kill(action);
                     return true;
