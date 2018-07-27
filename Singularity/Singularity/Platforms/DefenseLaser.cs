@@ -62,7 +62,6 @@ namespace Singularity.Platforms
                 }
 
                 target.MakeDamage(MilitaryUnitStats.mTurretStrength);
-
             }
         }
 

@@ -56,13 +56,16 @@ namespace Singularity.Platforms
 
         public override void Shoot(ICollider target)
         {
-            if (!mDefenseAction.CanShoot())
+            if (target != null)
             {
-                return;
-            }
+                if (IsActive())
+                {
+                    mShoot = true;
+                    mDirector.GetSoundManager.PlaySound(mSoundId);
+                }
 
-            mShoot = true;
-            mDirector.GetSoundManager.PlaySound(mSoundId);
+                target.MakeDamage(MilitaryUnitStats.mTurretStrength);
+            }
         }
 
         public override void Update(GameTime t)
@@ -109,7 +112,7 @@ namespace Singularity.Platforms
             //Shooting according to attackspeed
             if (mShootCounter.TotalMilliseconds > 2000 / mDefenseCounter * mShotsDone)
             {
-                if (mShootingTarget != null && mType == EStructureType.Laser)
+                if (mShootingTarget != null && mType == EStructureType.Kinetic)
                 {
                     mDefenseAction.Execute();
                     mShotsDone++;
