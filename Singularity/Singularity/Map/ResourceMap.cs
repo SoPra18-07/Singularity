@@ -40,6 +40,7 @@ namespace Singularity.Map
         /// <param name="director">the director of the game</param>
         internal ResourceMap(IEnumerable<MapResource> initialResources, Director director)
         {
+            mDirector = director;
             mLocationCache = new Dictionary<Vector2, List<MapResource>>();
             if (initialResources == null)
             {
@@ -48,7 +49,6 @@ namespace Singularity.Map
 
             mResourceMap = new List<MapResource>(initialResources);
 
-            mDirector = director;
         }
 
         public void ReloadContent(ref Director dir)
@@ -136,7 +136,7 @@ namespace Singularity.Map
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            mResourceMap.ForEach(r => r.Draw(spriteBatch));
+            mResourceMap?.ForEach(r => r.Draw(spriteBatch));
         }
     }
 }
