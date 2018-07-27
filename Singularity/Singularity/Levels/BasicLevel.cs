@@ -83,7 +83,7 @@ namespace Singularity.Levels
             StructureLayoutHolder.Initialize(ref mDirector);
 
             //Map related stuff
-            Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector, 2800, 2800);
+            Camera = new Camera(mGraphics.GraphicsDevice, ref mDirector);
             mFow = new FogOfWar(Camera, mGraphics.GraphicsDevice);
 
             var map = new Map.Map(mapBackground, 60, 60, mFow, Camera, ref mDirector);
