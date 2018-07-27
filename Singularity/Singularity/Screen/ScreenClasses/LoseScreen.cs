@@ -34,7 +34,7 @@ namespace Singularity.Screen.ScreenClasses
 
         private readonly IScreenManager mScreenManager;
 
-        public LoseScreen(Director director, IScreenManager screenManager)
+        public LoseScreen(ref Director director, IScreenManager screenManager)
         {
             mDirector = director;
             mScreenManager = screenManager;

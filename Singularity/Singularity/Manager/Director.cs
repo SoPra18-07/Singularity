@@ -45,7 +45,7 @@ namespace Singularity.Manager
         [DataMember]
         public ActionManager GetActionManager { get; set; }
 
-        public GraphicsDeviceManager GetGraphicsDeviceManager { get; }
+        public GraphicsDeviceManager GetGraphicsDeviceManager { get; set; }
 
         public EventLog GetEventLog { get; }
 
@@ -72,7 +72,7 @@ namespace Singularity.Manager
             GetStoryManager.LoadAchievements();
         }
 
-        internal void ReloadContent(Director dir, Vector2 mapmeasurements, ContentManager content)
+        internal void ReloadContent(Director dir, Vector2 mapmeasurements, ContentManager content, GraphicsDeviceManager graphics)
         {
             GetGlobalVariablesInstance = new GlobalVariablesInstance();
             GetGlobalVariablesInstance.UpdateFromStatic();
@@ -85,8 +85,9 @@ namespace Singularity.Manager
             GetDistributionDirector = dir.GetDistributionDirector;
             GetDistributionDirector.ReloadContent(GetUserInterfaceController);
             GetStoryManager.LoadAchievements();
-            GetMilitaryManager.ReloadContent(mapmeasurements, dir);
-            GetStoryManager.ReloadContent(dir);
+            GetMilitaryManager.ReloadContent(mapmeasurements, this);
+            GetStoryManager.ReloadContent(this);
+            GetGraphicsDeviceManager = graphics;
         }
 
         internal void SaveConfig()

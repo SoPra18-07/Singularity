@@ -52,7 +52,7 @@ namespace Singularity.AI
 
             var platformList = new List<PlatformBlank>();
 
-
+            var count = 0;
             foreach (var platform in structure.GetSecond())
             {
                 var platformToAdd = PlatformFactory.Get(platform.GetMyType(),
@@ -60,6 +60,16 @@ namespace Singularity.AI
                     platform.AbsolutePosition.X + x,
                     platform.AbsolutePosition.Y + y, null, false);
                 platformToAdd.Built();
+
+                if (platformToAdd.mType == EStructureType.Command)
+                {
+                    count++;
+                }
+
+                if (count >= 20)
+                {
+                    //blabladebuf
+                }
 
                 boundingRectangle = UpdateRectangle(boundingRectangle, platformToAdd);
 
