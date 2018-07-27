@@ -208,11 +208,13 @@ namespace Singularity.Units
             base.ReloadContent(ref director);
             mCamera = camera;
             mGroup = Optional<FlockingGroup>.Of(null);
+            mDirector = director;
             if (Friendly)
             {
                 mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
                 mDirector.GetInputManager.AddMousePositionListener(this);
             }
+            mGroup = Optional<FlockingGroup>.Of(null);
         }
 
         public override void Move()

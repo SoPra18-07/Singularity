@@ -163,7 +163,7 @@ namespace Singularity.Units
 
             if (mShoot)
             {
-                if (Math.Sqrt(Math.Pow(Center.X - mShootingTarget.Center.X, 2) + Math.Pow(Center.Y - mShootingTarget.Center.Y, 2)) <= MilitaryUnitStats.StandardRange)
+                if (Math.Sqrt(Math.Pow(Center.X - mShootingTarget.Center.X, 2) + Math.Pow(Center.Y - mShootingTarget.Center.Y, 2)) <= MilitaryUnitStats.StandardRange + 5)
                 {
                     if (mCurrentTime <= mShootingTimer + 200)
                     {

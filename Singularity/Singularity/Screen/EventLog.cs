@@ -66,6 +66,10 @@ namespace Singularity.Screen
         public void AddEvent(ELogEventType eventType, string text, ISpatial onThis)
         {
             // create a new EventLogItem of the event to add
+            if (mLibSans10 == null)
+            {
+                return;
+            }
             mAddedEvent = new EventLogIWindowItem(eventType, text, 180, mLibSans10, mDirector, onThis);
 
             // enqueue to the event's queue
