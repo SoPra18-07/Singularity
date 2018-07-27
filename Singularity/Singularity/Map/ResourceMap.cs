@@ -37,6 +37,7 @@ namespace Singularity.Map
         /// Creates a new resource map with the given initial resources.
         /// </summary>
         /// <param name="initialResources">A list holding intial resource values. If left empty it will be null</param>
+        /// <param name="director">the director of the game</param>
         internal ResourceMap(IEnumerable<MapResource> initialResources, Director director)
         {
             mLocationCache = new Dictionary<Vector2, List<MapResource>>();
@@ -91,7 +92,7 @@ namespace Singularity.Map
         /// </summary>
         /// <param name="location">The location at which resources are to be</param>
         /// <returns></returns>
-        internal List<MapResource> GetResources(Vector2 location)
+        private List<MapResource> GetResources(Vector2 location)
         {
             // note, the location cache is probably reason number 1 if bugs occur with resources being there even though they shouldn't be,
             // we need to take care, that the resources are getting properly removed.

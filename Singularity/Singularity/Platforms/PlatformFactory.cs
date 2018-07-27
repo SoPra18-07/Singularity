@@ -30,6 +30,7 @@ namespace Singularity.Platforms
         /// <param name="cylinderSheet">The cylinder sprite sheet for the facilities</param>
         /// <param name="domeSheet">The dome sprite sheet for the facilities</param>
         /// <param name="blankSheet">The blank sprite sheet for the facilities</param>
+        /// <param name="libSans12">The Spritefont to be used (in our case libsans12)</param>
         public static void Init(Texture2D coneSheet, Texture2D cylinderSheet, Texture2D domeSheet, Texture2D blankSheet, SpriteFont libSans12)
         {
             sConeSheet = coneSheet;

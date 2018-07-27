@@ -67,7 +67,17 @@ namespace Singularity.Graph.Paths
 
         private IPath GetPathForGeneralUnits(GeneralUnit unit, INode destination, int graphIndex)
         {
-            return PathfindingFactory.GetPathfinding().AStar(mGraphs[graphIndex], unit.CurrentNode, destination);
+            IPath path;
+            try
+            {
+                path = PathfindingFactory.GetPathfinding().AStar(mGraphs[graphIndex], unit.CurrentNode, destination);
+            }
+            catch (KeyNotFoundException)
+            {
+                path = new SortedPath();
+            }
+
+            return path;
         }
 
 

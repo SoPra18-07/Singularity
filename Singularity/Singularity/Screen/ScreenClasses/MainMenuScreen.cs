@@ -56,6 +56,7 @@ namespace Singularity.Screen.ScreenClasses
         /// Used to construct a new instance of the main menu screen
         /// </summary>
         /// <param name="screenResolution">Screen resolution of the game</param>
+        /// /// <param name="fromSplash"></param>
         public MainMenuScreen(Vector2 screenResolution, bool fromSplash)
             : base(screenResolution)
         {

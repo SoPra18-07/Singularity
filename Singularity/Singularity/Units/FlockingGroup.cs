@@ -30,7 +30,7 @@ namespace Singularity.Units
 
         private List<IFlocking> mUnits;
 
-        private int? mSuperiorFlockingId = null;
+        private int? mSuperiorFlockingId;
 
 
         public Vector2 CohesionRaw { get; private set; }

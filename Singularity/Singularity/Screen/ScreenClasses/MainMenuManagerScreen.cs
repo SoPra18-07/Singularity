@@ -51,6 +51,7 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         /// <param name="screenResolution">Screen resolution of the game.</param>
         /// <param name="screenManager">Stack screen manager of the game.</param>
+        /// <param name="director">The director of the game.</param>
         /// <param name="showSplash">Defines if the splash screen should be shown
         /// (used when going back to main menu from within the game where showing the
         /// splash screen would not be necessary).</param>
@@ -279,6 +280,7 @@ namespace Singularity.Screen.ScreenClasses
         /// </summary>
         /// <param name="screenResolution"></param>
         /// <param name="screenResolutionChanged"></param>
+        /// <param name="showSplash"></param>
         /// <param name="game"></param>
         private void Initialize(Vector2 screenResolution, bool screenResolutionChanged, bool showSplash, Game1 game)
         {

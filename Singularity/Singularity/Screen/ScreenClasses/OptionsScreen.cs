@@ -70,7 +70,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="screenResolution">Screen resolution used for scaling.</param>
         /// <param name="screenResolutionChanged">True if the screen resolution has changed.</param>
         /// <param name="game">Game1 class passed on to options to allow changing of options.</param>
-        ///
+        /// <param name="director">The director of the game</param>
         public OptionsScreen(Vector2 screenResolution, bool screenResolutionChanged, Game1 game, ref Director director)
             : base(screenResolution)
         {

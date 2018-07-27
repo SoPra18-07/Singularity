@@ -129,6 +129,7 @@ namespace Singularity.Manager
         /// <param name="action">The action regarding the units that has happened. Has to be created, lost or killed</param>
         public void UpdateUnits(string action)
         {
+            // ReSharper disable once NotAccessedVariable
             int a;
             var temp = action;
 
@@ -164,6 +165,7 @@ namespace Singularity.Manager
         /// <param name="action">The action regarding the platforms that has happened. Has to be created, lost or destroyed</param>
         public void UpdatePlatforms(string action)
         {
+            // ReSharper disable once NotAccessedVariable
             int a;
             PlatformsCount.TryGetValue(action, out a);
             PlatformsCount[action] += 1;
@@ -190,6 +192,7 @@ namespace Singularity.Manager
         /// <param name="resource">The resourcetype that has been created</param>
         public void UpdateResources(EResourceType resource)
         {
+            // ReSharper disable once NotAccessedVariable
             int a;
             ResourcesCount.TryGetValue(resource, out a);
             ResourcesCount[resource] += 1;
@@ -391,7 +394,7 @@ namespace Singularity.Manager
             if (mLevelType != LevelType.Techdemo && mLevelType != LevelType.NoWinLose)
             {
                 mScreenManager.RemoveScreen();
-                mScreenManager.AddScreen(new WinScreen(mDirector, mScreenManager));
+                mScreenManager.AddScreen(new WinScreen(ref mDirector, mScreenManager));
             }
         }
 
@@ -403,7 +406,7 @@ namespace Singularity.Manager
             if (mLevelType != LevelType.Techdemo && mLevelType != LevelType.NoWinLose)
             {
                 mScreenManager.RemoveScreen();
-                mScreenManager.AddScreen(new LoseScreen(mDirector, mScreenManager));
+                mScreenManager.AddScreen(new LoseScreen(ref mDirector, mScreenManager));
             }
         }
 

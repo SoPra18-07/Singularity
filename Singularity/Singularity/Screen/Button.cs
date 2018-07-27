@@ -36,7 +36,6 @@ namespace Singularity.Screen
 
         private bool mClicked;
         private bool mWithBorder;
-        private bool mImRelevant;
         private bool mClicking;
 
         /// <summary>
@@ -87,14 +86,17 @@ namespace Singularity.Screen
         }
 
 
+
         /// <summary>
         /// Creates a button using a Texture2D + a cropping AKA source vector
         /// </summary>
-        /// <param name="scale"> scale of the texture</param>
+        /// <param name="scale"></param>
         /// <param name="buttonTexture"></param>
-        /// <param name="sourceRectangle">crop the buttonTexture</param>
+        /// <param name="sourceRectangle"></param>
         /// <param name="position"></param>
         /// <param name="withBorder"></param>
+        /// <param name="eventArgs"></param>
+        /// <param name="spriteEffects"></param>
         public Button(float scale, Texture2D buttonTexture, Rectangle sourceRectangle, Vector2 position, bool withBorder, EventArgs eventArgs = default(EventArgs), SpriteEffects spriteEffects = SpriteEffects.None)
         {
             mIsText = false;
@@ -115,9 +117,11 @@ namespace Singularity.Screen
         /// <summary>
         /// Creates a Button made of text
         /// </summary>
-        /// <param name="buttonText">text that button will appear as</param>
+        /// <param name="buttonText"></param>
         /// <param name="font"></param>
         /// <param name="position"></param>
+        /// <param name="withBorder"></param>
+        /// <param name="eventArgs"></param>
         public Button(string buttonText, SpriteFont font, Vector2 position, bool withBorder = false, EventArgs eventArgs = default(EventArgs))
         {
             mIsText = true;

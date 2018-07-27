@@ -91,8 +91,8 @@ namespace Singularity.Platforms
 
                 spriteBatch.DrawLine(Center, mShootingTarget.Center, color, 2);
                 spriteBatch.DrawLine(new Vector2(Center.X - 2, Center.Y), mShootingTarget.Center, color * .2f, 6);
+                mShoot = false;
             }
-
         }
 
         public void SetShootingTarget(ICollider target)

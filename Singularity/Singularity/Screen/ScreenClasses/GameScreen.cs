@@ -5,7 +5,6 @@ using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Nature;
@@ -512,10 +511,7 @@ namespace Singularity.Screen.ScreenClasses
             var genUnit3 = new GeneralUnit(cCenter, ref mDirector);
             AddObject(genUnit3);
 
-            var dbg = false;
-
             // /*
-            dbg = true;
             var beginRes = new Dictionary<EResourceType, int>
             {
                 {EResourceType.Metal, 100},
@@ -537,23 +533,13 @@ namespace Singularity.Screen.ScreenClasses
 
             foreach (var pair in beginRes)
             {
-                if (!dbg)
+                for (int i = 0; i < pair.Value; i++)
                 {
-                    for (int i = 0; i < pair.Value; i++)
-                    {
-                        cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < pair.Value; i++)
-                    {
-                        cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
-/*                        cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
-                        cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
-                        cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
-                        cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));*/
-                    }
+                    cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
+/*                    cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
+                    cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
+                    cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
+                    cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));*/
                 }
             }
 

@@ -25,7 +25,7 @@ namespace Singularity.Property
         public bool FlagForDeath()
         {
             mDirector.GetActionManager.AddObject(this,
-                delegate(object o)
+                delegate
                 {
                     mDirector.GetDeathManager.AddToKill(this);
                     return true;

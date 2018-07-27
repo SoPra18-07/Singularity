@@ -27,6 +27,7 @@ namespace Singularity.Sound
         // Dictionary containing all the sound FX assigned to their individual name.
         private readonly Dictionary<string, SoundEffect> mEffects;
         // Dictionary containing all the UI sounds assigned to their individual name.
+        // ReSharper disable once CollectionNeverUpdated.Local
         private readonly Dictionary<string, SoundEffect> mUiSounds;
         // The name of the current level for accessing the right themes from the dictionary.
         private string mLevel;

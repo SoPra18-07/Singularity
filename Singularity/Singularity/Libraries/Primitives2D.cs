@@ -30,7 +30,7 @@ namespace Singularity.Libraries
 
         #region Private Methods
 
-        private static void CreateThePixel(SpriteBatch spriteBatch)
+        private static void CreateThePixel(GraphicsResource spriteBatch)
         {
             sPixel = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
             sPixel.SetData(new[] { Color.White });
@@ -46,7 +46,7 @@ namespace Singularity.Libraries
         /// <param name="color">The color to use</param>
         /// <param name="thickness">The thickness of the lines</param>
         /// <param name="layer">The layer the ponits should be drawn at</param>
-        private static void DrawPoints(SpriteBatch spriteBatch, Vector2 position, List<Vector2> points, Color color, float thickness, float layer = 0f)
+        private static void DrawPoints(SpriteBatch spriteBatch, Vector2 position, IReadOnlyList<Vector2> points, Color color, float thickness, float layer = 0f)
         {
             if (points.Count < 2)
             {
@@ -259,7 +259,7 @@ namespace Singularity.Libraries
         /// <param name="size">The size of the rectangle</param>
         /// <param name="angle">The angle in radians to draw the rectangle at</param>
         /// <param name="color">The color to draw the rectangle in</param>
-        public static void FillRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float angle)
+        private static void FillRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float angle)
         {
             if (sPixel == null)
             {
@@ -318,7 +318,7 @@ namespace Singularity.Libraries
         /// <param name="color"></param>
         /// <param name="angle"></param>
         /// <param name="opacity"></param>
-        public static void FillRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float angle, float opacity)
+        private static void FillRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float angle, float opacity)
         {
             if (sPixel == null)
             {
@@ -406,7 +406,7 @@ namespace Singularity.Libraries
         /// <param name="color"></param>
         /// <param name="thickness"></param>
         /// <param name="opacity"></param>
-        public static void DrawRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float thickness, float opacity)
+        private static void DrawRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float thickness, float opacity)
         {
             DrawRectangle(spriteBatch, new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y), color * opacity, thickness);
         }
@@ -562,7 +562,7 @@ namespace Singularity.Libraries
         }
 
 
-        public static void PutPixel(this SpriteBatch spriteBatch, Vector2 position, Color color)
+        private static void PutPixel(this SpriteBatch spriteBatch, Vector2 position, Color color)
         {
             if (sPixel == null)
             {
@@ -700,7 +700,7 @@ namespace Singularity.Libraries
         /// <param name="radians">The number of radians to draw, clockwise from the starting angle</param>
         /// <param name="color">The color of the arc</param>
         /// <param name="thickness">The thickness of the arc</param>
-        public static void DrawArc(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, float startingAngle, float radians, Color color, float thickness)
+        private static void DrawArc(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, float startingAngle, float radians, Color color, float thickness)
         {
             List<Vector2> arc = CreateArc(radius, sides, startingAngle, radians);
             //List<Vector2> arc = CreateArc2(radius, sides, startingAngle, degrees);
@@ -793,6 +793,7 @@ namespace Singularity.Libraries
         /// <param name="radius">size of the radius</param>
         /// <param name="colorBorder">color of the border of circle (1 pixel)</param>
         /// <param name="colorCenter"> color of the center of circle</param>
+        /// <param name="layer">the layer of the circle to be drawn in</param>
         public static void StrokedCircle(this SpriteBatch spriteBatch, Vector2 center, int radius, Color colorBorder, Color colorCenter, float layer)
         {
             // 3 pixel wide border of the circle

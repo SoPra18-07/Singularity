@@ -282,13 +282,17 @@ namespace Singularity.Manager
             {
                 // iterate through each friendly unit, if there's a target nearby, shoot the closest one.
                 // get all the adjacent units
-                var adjacentUnits = mUnitMap.GetAdjacentUnits(unit.AbsolutePosition);
+                var adjacentUnits = mUnitMap?.GetAdjacentUnits(unit.AbsolutePosition);
 
                 // remember the closest adjacent unit.
                 ICollider closestAdjacent = null;
                 var closestAdjacentDistance =
                     1500f; // a separate variable is used so that it can be initalized with a very big value.
 
+                if (adjacentUnits == null)
+                {
+                    continue;
+                }
                 // iterate through all adjacent units to find the closest adjacent unit.
                 foreach (var adjacentUnit in adjacentUnits)
                 {
@@ -329,13 +333,17 @@ namespace Singularity.Manager
             {
                 // iterate through each friendly turret, if there's a target nearby, shoot it.
                 // get all the adjacent units
-                var adjacentUnits = mUnitMap.GetAdjacentUnits(turret.AbsolutePosition);
+                var adjacentUnits = mUnitMap?.GetAdjacentUnits(turret.AbsolutePosition);
 
                 // remember the closest adjacent unit.
                 ICollider closestAdjacent = null;
                 var closestAdjacentDistance =
                     1500f; // a separate variable is used so that it can be initalized with a very big value.
 
+                if (adjacentUnits == null)
+                {
+                    continue;
+                }
                 // iterate through all adjacent units to find the closest adjacent unit.
                 foreach (var adjacentUnit in adjacentUnits)
                 {
@@ -378,13 +386,17 @@ namespace Singularity.Manager
             {
                 // iterate through each hostile unit, if there's a target nearby, shoot it.
                 // get all the adjacent units
-                var adjacentUnits = mUnitMap.GetAdjacentUnits(unit.AbsolutePosition);
+                var adjacentUnits = mUnitMap?.GetAdjacentUnits(unit.AbsolutePosition);
 
                 // remember the closest adjacent unit.
                 ICollider closestAdjacent = null;
                 var closestAdjacentDistance =
                     1500f; // a separate variable is used so that it can be initalized with a very big value.
 
+                if (adjacentUnits == null)
+                {
+                    continue;
+                }
                 // iterate through all adjacent units to find the closest adjacent unit.
                 foreach (var adjacentUnit in adjacentUnits)
                 {
@@ -433,13 +445,17 @@ namespace Singularity.Manager
             {
                 // iterate through each friendly turret, if there's a target nearby, shoot it.
                 // get all the adjacent units
-                var adjacentUnits = mUnitMap.GetAdjacentUnits(turret.AbsolutePosition);
+                var adjacentUnits = mUnitMap?.GetAdjacentUnits(turret.AbsolutePosition);
 
                 // remember the closest adjacent unit.
                 ICollider closestAdjacent = null;
                 var closestAdjacentDistance =
                     1500f; // a separate variable is used so that it can be initalized with a very big value.
 
+                if (adjacentUnits == null)
+                {
+                    continue;
+                }
                 // iterate through all adjacent units to find the closest adjacent unit.
                 foreach (var adjacentUnit in adjacentUnits)
                 {
