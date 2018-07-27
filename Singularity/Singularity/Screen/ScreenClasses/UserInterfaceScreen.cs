@@ -12,8 +12,6 @@ using Singularity.Map.Properties;
 using Singularity.Platforms;
 using Singularity.Property;
 using Singularity.Resources;
-using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -30,6 +28,8 @@ namespace Singularity.Screen.ScreenClasses
         private bool mInitialized;
 
         private Button mPauseButtonBeforeUi;
+
+        private readonly GamePauseManagerScreen mGamePauseManagerScreen;
 
         #region members used by several windows
 
@@ -144,8 +144,6 @@ namespace Singularity.Screen.ScreenClasses
         private int mCivilUnitsGraphId;
         private int mCivilUnitsGraphIdToCompare;
 
-        private List<IWindowItem> mSelectedPlatformUnitAssignmentList;
-
         internal Dictionary<int, Graph.Graph> GraphIdToGraphStructureDict { get; set; }
 
         // sliders for distribution
@@ -188,7 +186,7 @@ namespace Singularity.Screen.ScreenClasses
         private ResourceIWindowItem mResourceItemTrash;
 
         // previous clock time
-        private int mResourceWindowTicker;
+        private int mResourceWindowNextTick;
 
         // previous resource amount
         private Dictionary<EResourceType, int> mResourceWindowResourceAmountLastTick;
@@ -317,12 +315,9 @@ namespace Singularity.Screen.ScreenClasses
             // set as the controlled UI by the UIController
             mUserInterfaceController = director.GetUserInterfaceController;
 
-            // resource window ticker - needed to get time since last update
-            mResourceWindowTicker = mDirector.GetClock.GetIngameTime().Seconds;
-
             // TODO : BALANCING - CHANGE THIS VALUE TO DECREASE/INCREASE THE SECONDS BETWEEN EACH RESOURCE WINDOW UPDATE
             // resource/X seconds production calc.
-            mResourceWindowXSeconds = 10;
+            mResourceWindowXSeconds = 5;
 
             // change color for the border or the filling of all userinterface windows here
             mWindowColor = new Color(0.27f, 0.5f, 0.7f, 0.8f);
@@ -334,7 +329,8 @@ namespace Singularity.Screen.ScreenClasses
             mPrevScreenWidth = mCurrentScreenWidth;
             mPrevScreenHeight = mCurrentScreenHeight;
 
-            Bounds = new Rectangle(0, 0, mCurrentScreenWidth, mCurrentScreenHeight);
+            // pause menu screen
+            mGamePauseManagerScreen = new GamePauseManagerScreen(new Vector2(director.GetGraphicsDeviceManager.PreferredBackBufferWidth, director.GetGraphicsDeviceManager.PreferredBackBufferHeight), mScreenManager, mDirector);
         }
 
         /// <inheritdoc />
@@ -411,8 +407,8 @@ namespace Singularity.Screen.ScreenClasses
                 mCanBuildPlatform = true;
             }
 
-            // update resource window every X seconds to get the "production in the last 10 seconds amount"
-            if (mResourceWindowTicker + mResourceWindowXSeconds < mDirector.GetClock.GetIngameTime().Seconds)
+            // update resource window every X seconds to get the "production in the last X seconds amount"
+                if (mResourceWindowNextTick == mDirector.GetClock.GetIngameTime().Seconds)
             {
                 var currentProducedResourceAmounts = mDirector.GetStoryManager.Resources;
 
@@ -431,7 +427,7 @@ namespace Singularity.Screen.ScreenClasses
                 mResourceItemWater.Amount = currentProducedResourceAmounts[EResourceType.Water] - mResourceWindowResourceAmountLastTick[EResourceType.Water];
                 mResourceItemTrash.Amount = currentProducedResourceAmounts[EResourceType.Trash] - mResourceWindowResourceAmountLastTick[EResourceType.Trash];
 
-                mResourceWindowTicker = mDirector.GetClock.GetIngameTime().Seconds;
+                mResourceWindowNextTick = (mDirector.GetClock.GetIngameTime().Seconds + 5) % 60;
 
                 mResourceWindowResourceAmountLastTick = new Dictionary<EResourceType, int>(mDirector.GetStoryManager.Resources);
             }
@@ -492,7 +488,7 @@ namespace Singularity.Screen.ScreenClasses
 
             // the button which is displayed before the UI appears to enable the player to exit the game before getting the UI
             mPauseButtonBeforeUi = new Button(" ll ", mLibSans14, new Vector2(
-                mDirector.GetGraphicsDeviceManager.PreferredBackBufferWidth - mLibSans14.MeasureString(" ll ").X, 0), true) { Opacity = 1f };
+                    mDirector.GetGraphicsDeviceManager.PreferredBackBufferWidth - mLibSans14.MeasureString(" ll ").X, 0), true) { Opacity = 1f };
             mPauseButtonBeforeUi.ButtonReleased += PauseMenuBeforeUi;
 
             //DEACTIVATE EVERYTHING TO ACTIVATE IT LATER
@@ -507,6 +503,10 @@ namespace Singularity.Screen.ScreenClasses
             }
 
             Loaded = true;
+
+            // subscribe to input manager
+            Bounds = new Rectangle((int)mPauseButtonBeforeUi.Position.X, (int)mPauseButtonBeforeUi.Position.Y, (int)mPauseButtonBeforeUi.Size.X, (int)mPauseButtonBeforeUi.Size.Y);
+            mDirector.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
         }
 
         /// <summary>
@@ -547,7 +547,6 @@ namespace Singularity.Screen.ScreenClasses
 
             // list to add all item to be able to iterate through them
             mSelectedPlatformResourcesList = new List<ResourceIWindowItem>();
-            mSelectedPlatformUnitAssignmentList = new List<IWindowItem>();
             mSelectedPlatformActionList = new List<PlatformActionIWindowItem>();
 
             // activate / deactivate platform item
@@ -651,11 +650,6 @@ namespace Singularity.Screen.ScreenClasses
             mSelectedPlatformDeactivatePlatformButton.ActiveInWindow = false;
 
             foreach (var item in mSelectedPlatformResourcesList)
-            {
-                item.ActiveInWindow = false;
-            }
-
-            foreach (var item in mSelectedPlatformUnitAssignmentList)
             {
                 item.ActiveInWindow = false;
             }
@@ -959,6 +953,16 @@ namespace Singularity.Screen.ScreenClasses
 
             #endregion
 
+            var infoBuildPlacement = new TextField("Place On:", Vector2.Zero,
+                mLibSans10.MeasureString("Place On:"),
+                mLibSans10,
+                Color.White);
+
+            var infoBuildCosts = new TextField("Costs :", Vector2.Zero,
+                mLibSans10.MeasureString("Costs :"),
+                mLibSans10,
+                Color.White);
+
             #region mainBuildings
 
             // Build Blank Platform info
@@ -977,7 +981,7 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10);
 
             mInfoBuildBlank = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoBuildBlank, infoBuildBlankMetal },
+                itemList: new List<IWindowItem> { infoBuildBlank, infoBuildCosts, infoBuildBlankMetal },
                 size: mLibSans10.MeasureString("Blank Platform"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -993,7 +997,7 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10,
                 Color.White);
 
-/*            var infoRoadStone = new ResourceIWindowItem(
+           var infoRoadStone = new ResourceIWindowItem(
                 EResourceType.Stone,
                 1,
                 mLibSans10.MeasureString("Road"),
@@ -1003,10 +1007,10 @@ namespace Singularity.Screen.ScreenClasses
                 EResourceType.Metal,
                 1,
                 mLibSans10.MeasureString("Road"),
-                mLibSans10);*/
+                mLibSans10);
 
             mInfoBuildRoad = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoRoad },
+                itemList: new List<IWindowItem> { infoRoad, infoBuildCosts, infoRoadStone, infoRoadMetal },
                 size: mLibSans10.MeasureString("Road"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1042,8 +1046,20 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Commandcenter"),
                 mLibSans10);
 
+            var infoCommandcenterProduce = new TextField("Produces : General Units/Settlers ",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Produces : General Units/Settlers"),
+                mLibSans10,
+                Color.White);
+
+
+
             mInfoBuildCommandcenter = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoCommandcenter, infoCommandConcrete, infoCommandChip, infoCommandSteel },
+                itemList: new List<IWindowItem>
+                {
+                    infoCommandcenter, infoBuildCosts, infoCommandConcrete, infoCommandChip, infoCommandSteel,
+                    infoCommandcenterProduce
+                },
                 size: mLibSans10.MeasureString("Commandcenter"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1055,6 +1071,7 @@ namespace Singularity.Screen.ScreenClasses
             #endregion
 
             #region resourceProductionBuildings
+
 
             // Build Quarry info
             var infoQuarry = new TextField("Quarry",
@@ -1077,8 +1094,15 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Quarry"),
                 mLibSans10);
 
+
+            var infoBuildQuarryPlacementWhere = new TextField("Anywhere = Sand/Stone", Vector2.Zero,
+                mLibSans10.MeasureString("Anywhere = Sand/Stone"),
+                mLibSans10,
+                Color.White);
+
             mInfoBuildQuarry = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoQuarry, infoBuildQuarryStone, infoBuildQuarryMetal },
+                itemList: new List<IWindowItem> { infoQuarry, infoBuildCosts, infoBuildQuarryStone, infoBuildQuarryMetal, infoBuildPlacement,
+                    infoBuildQuarryPlacementWhere },
                 size: mLibSans10.MeasureString("Quarry"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1108,8 +1132,14 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Mine"),
                 mLibSans10);
 
+
+            var infoBuildMinePlacementWhere = new TextField("Green = Metal", Vector2.Zero,
+                mLibSans10.MeasureString("Green = Metal)"),
+                mLibSans10,
+                Color.White);
+
             mInfoBuildMine = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoMine, infoBuildMineStone, infoBuildMineMetal },
+                itemList: new List<IWindowItem> { infoMine, infoBuildCosts, infoBuildMineStone, infoBuildMineMetal, infoBuildPlacement, infoBuildMinePlacementWhere },
                 size: mLibSans10.MeasureString("Mine"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1139,8 +1169,22 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Well"),
                 mLibSans10);
 
+            var infoBuildWellPlacementWhere1 = new TextField("Blue = Water", Vector2.Zero,
+                mLibSans10.MeasureString("Blue = Water"),
+                mLibSans10,
+                Color.White);
+
+            var infoBuildWellPlacementWhere2 = new TextField("Red = Oil", Vector2.Zero,
+                mLibSans10.MeasureString("Red = Oil"),
+                mLibSans10,
+                Color.White);
+
             mInfoBuildWell = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoWell, infoBuildWellStone, infoBuildWellMetal },
+                itemList: new List<IWindowItem>
+                {
+                    infoWell, infoBuildCosts, infoBuildWellStone, infoBuildWellMetal, infoBuildPlacement, 
+                    infoBuildWellPlacementWhere1, infoBuildWellPlacementWhere2
+                },
                 size: mLibSans10.MeasureString("Well"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1176,8 +1220,19 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Powerhouse"),
                 mLibSans10);
 
+            var infoPowerhouseFunction = new TextField("Produces : Energy",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Produces : Energy"),
+                mLibSans10,
+                Color.White);
+
+
             mInfoBuildPowerhouse = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoPowerhouse, infoBuildPowerhouseCopper, infoBuildPowerhouseMetal, infoBuildPowerhouseSilicon },
+                itemList: new List<IWindowItem>
+                {
+                    infoPowerhouse, infoBuildCosts, infoBuildPowerhouseCopper, infoBuildPowerhouseMetal, infoBuildPowerhouseSilicon,
+                    infoPowerhouseFunction
+                },
                 size: mLibSans10.MeasureString("Powerhouse"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1217,8 +1272,18 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Junkyard"),
                 mLibSans10);
 
+            var infoJunkyardProduce = new TextField("Disposes of trash",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Disposes of trash"),
+                mLibSans10,
+                Color.White);
+
             mInfoBuildJunkyard = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoJunkyard, infoBuildJunkyardStone, infoBuildJunkyardMetal, infoBuildJunkyardWater },
+                itemList: new List<IWindowItem>
+                {
+                    infoJunkyard, infoBuildCosts, infoBuildJunkyardStone, infoBuildJunkyardMetal, infoBuildJunkyardWater,
+                    infoJunkyardProduce
+                },
                 size: mLibSans10.MeasureString("Junkyard"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1254,8 +1319,24 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Factory"),
                 mLibSans10);
 
+            var infoFactoryProduce = new TextField("Refines resources into new ones",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Refines resources into new ones"),
+                mLibSans10,
+                Color.White);
+            var infoFactoryProduce2 = new TextField("Combines resources into new ones",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Combines resources into new ones"),
+                mLibSans10,
+                Color.White);
+
+
             mInfoBuildFactory = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoFactory, infoBuildFactoryStone, infoBuildFactoryMetal, infoBuildFactoryWater },
+                itemList: new List<IWindowItem>
+                {
+                    infoFactory, infoBuildCosts, infoBuildFactoryStone, infoBuildFactoryMetal, infoBuildFactoryWater,
+                    infoFactoryProduce, infoFactoryProduce2
+                },
                 size: mLibSans10.MeasureString("Factory"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1286,7 +1367,7 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10);
 
             mInfoBuildStorage = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoStorage, infoBuildStorageConcrete, infoBuildStorageMetal },
+                itemList: new List<IWindowItem> { infoStorage, infoBuildCosts, infoBuildStorageConcrete, infoBuildStorageMetal },
                 size: mLibSans10.MeasureString("Storage"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1320,13 +1401,24 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Kinetic Tower"),
                 mLibSans10);
 
+            var infoKineticTowerAssign = new TextField("Assign Units to : Defense",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Assign Units to : Defense"),
+                mLibSans10,
+                Color.White);
+
             mInfoBuildKineticTower = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoKineticTower, infoBuildKineticTowerConcrete, infoBuildKineticTowerMetal },
+                itemList: new List<IWindowItem>
+                {
+                    infoKineticTower, infoBuildCosts, infoBuildKineticTowerConcrete, infoBuildKineticTowerMetal,
+                    infoKineticTowerAssign
+                },
                 size: mLibSans10.MeasureString("Kinetic Tower"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
                 boxed: true,
                 director: mDirector);
+
 
             mInfoBoxList.Add(mInfoBuildKineticTower);
 
@@ -1351,8 +1443,18 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Laser Tower"),
                 mLibSans10);
 
+            var infoLaserTowerAssign = new TextField("Assign Units to : Defense",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Assign Units to : Defense"),
+                mLibSans10,
+                Color.White);
+
             mInfoBuildLaserTower = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoLaserTower, infoBuildLaserTowerConcrete, infoBuildLaserTowerMetal },
+                itemList: new List<IWindowItem>
+                {
+                    infoLaserTower, infoBuildCosts, infoBuildLaserTowerConcrete, infoBuildLaserTowerMetal,
+                    infoLaserTowerAssign
+                },
                 size: mLibSans10.MeasureString("Laser Tower"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1388,8 +1490,24 @@ namespace Singularity.Screen.ScreenClasses
                 mLibSans10.MeasureString("Barracks"),
                 mLibSans10);
 
+            var infoBarrackAssign = new TextField("Assign Units to : Logistics",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Assign Units to : Logistics"),
+                mLibSans10,
+                Color.White);
+
+            var infoBarrackProduces = new TextField("Produces : Military Units",
+                Vector2.Zero,
+                mLibSans10.MeasureString("Produces : Military Units"),
+                mLibSans10,
+                Color.White);
+
             mInfoBuildBarracks = new InfoBoxWindow(
-                itemList: new List<IWindowItem> { infoBarracks, infoBuildBarracksSteel, infoBuildBarracksConcrete, infoBuildBarracksChip },
+                itemList: new List<IWindowItem>
+                {
+                    infoBarracks, infoBuildCosts, infoBuildBarracksSteel, infoBuildBarracksConcrete, infoBuildBarracksChip,
+                    infoBarrackAssign, infoBarrackProduces
+                },
                 size: mLibSans10.MeasureString("Barracks"),
                 borderColor: infoBoxBorderColor,
                 centerColor: infoBoxCenterColor,
@@ -1454,12 +1572,26 @@ namespace Singularity.Screen.ScreenClasses
             // called once to set positions + called everytime the resolution changes
             ResetWindowsToStandardPositon();
 
-            // subscribe to input manager
-            mDirector.GetInputManager.FlagForAddition(this, EClickType.InBoundsOnly, EClickType.InBoundsOnly);
+            // resource window ticker - needed to get time since last update
+            mResourceWindowNextTick = (mDirector.GetClock.GetIngameTime().Seconds + 5 - mDirector.GetClock.GetIngameTime().Seconds % 5) % 60;
 
             //This instance will handle the comunication between Sliders and DistributionManager.
             mCivilUnitsSliderHandler = new SliderHandler(ref mDirector, mDefSlider, mProductionSlider, mConstructionSlider, mLogisticsSlider, mIdleUnitsTextAndAmount);
-            mCivilUnitsSliderHandler.Initialize(mDirector.GetDistributionDirector.GetSomeId());
+
+            /*
+            var id = mDirector.GetDistributionDirector.GetSomeId();
+            mCivilUnitsSliderHandler.Initialize(id);
+            Debug.WriteLine("id: " + id);
+            mCivilUnitsSliderHandler.SetGraphId(0);*/
+
+            // mCivilUnitsSliderHandler.Initialize(mDirector.GetDistributionDirector.GetSomeId());
+            mDirector.GetActionManager.AddObject(mCivilUnitsSliderHandler,
+                delegate
+                {
+                    mCivilUnitsSliderHandler.Initialize(mDirector.GetDistributionDirector.GetSomeId());
+                    return true;
+                });
+            // */
         }
 
         /// <inheritdoc />
@@ -1509,7 +1641,6 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="isManuallyDeactivated">true, if the platform was manually disabled</param>
         /// <param name="type">the platform's type</param>
         /// <param name="resourceAmountList">list of single resource item's</param>
-        /// <param name="unitAssignmentList">dictionary with assigned units</param>
         /// <param name="actionsList">list of possible actions of the platform</param>
         /// <param name="isActive">true, if the platform is active</param>
         public void SetSelectedPlatformValues(
@@ -1518,7 +1649,6 @@ namespace Singularity.Screen.ScreenClasses
             bool isManuallyDeactivated,
             EStructureType type,
             IEnumerable<Resource> resourceAmountList,
-            Dictionary<JobType, List<Pair<GeneralUnit, bool>>> unitAssignmentList,
             IEnumerable<IPlatformAction> actionsList)
         {
             if (!mActiveUserInterface) { return; }
@@ -1866,7 +1996,7 @@ else
         /// <summary>
         /// Used to Deactivate the UI to activate it later (used by settler)
         /// </summary>
-        public void Deactivate()
+        private void Deactivate()
         {
             mActiveUserInterface = false;
         }
@@ -1887,7 +2017,7 @@ else
             mCurrentlyBuildButton?.AddBorder();
         }
 
-        public void BuildingProcessFinished(EStructureType structureType)
+        public void BuildingProcessFinished()
         {
             mCurrentlyBuildButton?.RemoveBorder();
             mCurrentlyBuildButton = null;
@@ -2524,32 +2654,33 @@ else
 
         private void PauseMenuBeforeUi(object sender, EventArgs eventArgs)
         {
-            mScreenManager.AddScreen(new GamePauseManagerScreen(new Vector2(mDirector.GetGraphicsDeviceManager.PreferredBackBufferWidth, mDirector.GetGraphicsDeviceManager.PreferredBackBufferHeight), mScreenManager, mDirector));
+            GlobalVariables.mGameIsPaused = true;
+            mScreenManager.AddScreen(mGamePauseManagerScreen);
         }
 
         #endregion
 
         #region InputManagement
 
-        public Rectangle Bounds { get; }
+        public Rectangle Bounds { get; private set; }
 
         public EScreen Screen { get; } = EScreen.UserInterfaceScreen;
 
         public bool MouseButtonClicked(EMouseAction mouseAction, bool withinBounds)
         {
-            return true;
+            return false;
         }
 
         public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {
             //
-            return true;
+            return false;
         }
 
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
             //
-            return true;
+            return false;
         }
 
         #endregion

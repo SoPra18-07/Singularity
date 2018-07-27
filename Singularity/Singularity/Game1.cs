@@ -55,7 +55,6 @@ namespace Singularity
             mScreenManager = new StackScreenManager(Content, mDirector.GetInputManager);
 
             mDirector.GetStoryManager.SetScreenManager(mScreenManager);
-
         }
 
         /// <summary>
@@ -132,6 +131,7 @@ namespace Singularity
             mDirector.Update(gameTime, IsActive);
             mScreenManager.Update(gameTime);
 
+            mDirector.GetActionManager.ActualExec();
             // make sure this is ALWAYS the last call in our update cycle otherwise things might get nasty.
             mDirector.GetDeathManager.KillAddedObjects();
 

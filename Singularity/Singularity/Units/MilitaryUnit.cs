@@ -111,7 +111,10 @@ namespace Singularity.Units
             mSoundId = mDirector.GetSoundManager.CreateSoundInstance("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
 
             // Track the creation of a military unit in the statistics.
-            director.GetStoryManager.UpdateUnits("military created");
+            if (friendly)
+            {
+                director.GetStoryManager.UpdateUnits("military created");
+            }
         }
 
         public void ReloadContent(ContentManager content, ref Director director, Camera camera, ref Map.Map map)
@@ -198,7 +201,8 @@ namespace Singularity.Units
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
             AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * mScale), (int) (AbsoluteSize.Y * mScale));
 
-            if (Moved || !mShoot)
+
+            if (Moved && Friendly || !mShoot)
             {
                 return;
             }
@@ -276,15 +280,8 @@ namespace Singularity.Units
                 {
                     // mTargetPosition = AbsolutePosition;
                     Moved = false;
-                    //TODO: THis is a hotfix. Threw an error for the path being null...
-                    mShoot = true;
                 }
-
-                else
-                {
-                    mShoot = true;
-                }
-
+                mShoot = true;
                 mTargetWasNull = false;
             }
 

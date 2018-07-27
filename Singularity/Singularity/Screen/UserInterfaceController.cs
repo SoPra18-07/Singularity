@@ -5,8 +5,6 @@ using Singularity.PlatformActions;
 using Singularity.Platforms;
 using Singularity.Resources;
 using Singularity.Screen.ScreenClasses;
-using Singularity.Units;
-using Singularity.Utils;
 
 namespace Singularity.Screen
 {
@@ -51,7 +49,6 @@ namespace Singularity.Screen
         /// <param name="isManuallyDeactivated">true, if the platform was manually deactivated</param>
         /// <param name="type">the platform's type</param>
         /// <param name="resourceAmountList">resources on platform</param>
-        /// <param name="unitAssignmentDict">units assigned to platform</param>
         /// <param name="actionsList">possible actions of platform</param>
         /// <param name="isActive">true, if the platform is active</param>
         internal void SetDataOfSelectedPlatform(
@@ -60,11 +57,10 @@ namespace Singularity.Screen
             bool isManuallyDeactivated,
             EStructureType type,
             List<Resource> resourceAmountList,
-            Dictionary<JobType, List<Pair<GeneralUnit, bool>>> unitAssignmentDict,
             List<IPlatformAction> actionsList)
         {
             // set/update data in UI
-            ControlledUserInterface.SetSelectedPlatformValues(id, isActive, isManuallyDeactivated, type, resourceAmountList, unitAssignmentDict, actionsList);
+            ControlledUserInterface.SetSelectedPlatformValues(id, isActive, isManuallyDeactivated, type, resourceAmountList, actionsList);
         }
 
         /// <summary>
@@ -84,6 +80,7 @@ namespace Singularity.Screen
             mActivePlatform = platform;
         }
 
+        /*
         /// <summary>
         /// Handles deselection of platforms for the UI.
         /// Will be called if a platform is actively deselected (not automatically by selecting another platform)
@@ -91,7 +88,7 @@ namespace Singularity.Screen
         public void DeactivateSelection()
         {
             mActivePlatform.IsSelected = false;
-        }
+        } */
 
         /// <summary>
         /// Activates a platform manually. Is called from the UI.
@@ -162,9 +159,9 @@ namespace Singularity.Screen
             ControlledUserInterface.BuildingProcessStarted(structureType);
         }
 
-        public void BuildingProcessFinished(EStructureType structureType)
+        public void BuildingProcessFinished()
         {
-            ControlledUserInterface.BuildingProcessFinished(structureType);
+            ControlledUserInterface.BuildingProcessFinished();
         }
     }
 }

@@ -46,6 +46,7 @@ namespace Singularity.PlatformActions
             if (res.IsPresent())
             {
                 mPlatform.StoreResource(res.Get());
+                mDirector.GetStoryManager.UpdateResources(res.Get().Type);
             }
         }
     }
@@ -91,7 +92,7 @@ namespace Singularity.PlatformActions
             switch (State)
             {
                 case PlatformActionState.Active:
-                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this);
+                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this, mDirector);
                     State = PlatformActionState.Available;
                     break;
                 case PlatformActionState.Available:

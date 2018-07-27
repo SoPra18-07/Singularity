@@ -30,7 +30,7 @@ namespace Singularity.AI.Structures
             friendly: friendly)
         {
             mDrainingEnergy = DrainingEnergy;
-            mIsBlueprint = false;
+            mBlueprint = false;
             mType = EStructureType.Sentinel;
             //Add Costs of the platform here if you got them.
             mCost = new Dictionary<EResourceType, int>();
@@ -43,7 +43,7 @@ namespace Singularity.AI.Structures
 
             if (mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds > 1000)
             {
-                if (mShootingTarget != null)
+                if (mShootingTarget != null && mType == EStructureType.Sentinel)
                 {
                     mDefenseAction.Execute();
                 }

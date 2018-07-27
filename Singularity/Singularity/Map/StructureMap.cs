@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
@@ -81,7 +82,7 @@ namespace Singularity.Map
 
         [DataMember]
         private int mCommandCenterCount;
-
+        
         /// <summary>
         /// Creates a new structure map which holds all the structures currently in the game.
         /// </summary>
@@ -200,6 +201,15 @@ namespace Singularity.Map
         /// </summary>
         /// <param name="platform">The platform to be removed</param>
         public void RemovePlatform(PlatformBlank platform)
+        {
+            mDirector.GetActionManager.AddObject(platform, delegate (object p)
+                {
+                    ActualRemovePlatform((PlatformBlank) p);
+                    return true;
+                });
+        }
+
+        private void ActualRemovePlatform(PlatformBlank platform)
         {
             var platformAsCc = platform as CommandCenter;
 
@@ -566,12 +576,12 @@ namespace Singularity.Map
                 if (structureToAdd.GetPlatform() != null)
                 {
                     mDirector.GetStoryManager.Level.GameScreen.AddObject(structureToAdd.GetPlatform());
-                    structureToAdd.GetPlatform().Register();
                     structureToAdd.GetConnectionRoad().Place(structureToAdd.GetPlatform(), hovering);
-                    mDirector.GetStoryManager.Level.GameScreen.AddObject(structureToAdd.GetConnectionRoad());
+                    // mDirector.GetStoryManager.Level.GameScreen.AddObject(structureToAdd.GetConnectionRoad());
                 }
                 else
                 {
+                    // structureToAdd.GetRoad().Place(structureToAdd.GetPlatform(), hovering);
                     mDirector.GetStoryManager.Level.GameScreen.AddObject(structureToAdd.GetRoad());
                 }
 
@@ -676,6 +686,11 @@ namespace Singularity.Map
             foreach (var node in graph.GetNodes())
             {
                 var nodeAsPlat = (PlatformBlank) node;
+
+                if (nodeAsPlat.HasDieded)
+                {
+                    continue;
+                }
 
                 foreach (var unit in nodeAsPlat.GetGeneralUnitsOnPlatform())
                 {

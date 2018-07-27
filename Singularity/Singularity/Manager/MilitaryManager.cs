@@ -28,6 +28,9 @@ namespace Singularity.Manager
         /// </summary>
         private Map.Map mMap;
 
+        [DataMember]
+        private List<PlatformBlank> mReconstructionList;
+
         #region Friendly unit lists
 
         /// <summary>
@@ -101,6 +104,7 @@ namespace Singularity.Manager
         internal MilitaryManager(Director director)
         {
             mDirector = director;
+            mReconstructionList = new List<PlatformBlank>();
         }
 
         /// <summary>
@@ -136,20 +140,16 @@ namespace Singularity.Manager
                 mUnitMap.AddUnit(funit);
             }
 
-            foreach (var fplatform in mFriendlyDefensePlatforms)
+            //This list includes every platform
+            foreach (var platform in mReconstructionList)
             {
 
-                mUnitMap.AddUnit(fplatform);
+                mUnitMap.AddUnit(platform);
             }
 
             foreach (var hunit in mHostileMilitary)
             {
                 mUnitMap.AddUnit(hunit);
-            }
-
-            foreach (var hplatform in mHostileDefensePlatforms)
-            {
-                mUnitMap.AddUnit(hplatform);
             }
         }
 
@@ -178,7 +178,8 @@ namespace Singularity.Manager
                 }
             }
 
-            // Then add it to the unitMap.
+            // Then add it to the unitMap and the reconstructionlist.
+            mReconstructionList.Add(platform);
             mUnitMap.AddUnit(platform, position);
         }
 
@@ -307,7 +308,6 @@ namespace Singularity.Manager
                             }
                         }
                     }
-
                 }
 
                 // if there is something close enough, shoot it. Else, set the target to null.
@@ -315,7 +315,6 @@ namespace Singularity.Manager
                 {
                     unit.SetShootingTarget(closestAdjacent);
                 }
-
                 else
                 {
                     unit.SetShootingTarget(null);
@@ -410,7 +409,15 @@ namespace Singularity.Manager
                 // if there is something close enough, shoot it. Else, set the target to null.
                 if (closestAdjacent != null)
                 {
-                    unit.SetShootingTarget(closestAdjacent);
+                    var platform = closestAdjacent as PlatformBlank;
+                    if (platform != null && !platform.GetBluePrintStatus())
+                    {
+                        unit.SetShootingTarget(closestAdjacent);
+                    }
+                    else if (platform == null)
+                    {
+                        unit.SetShootingTarget(closestAdjacent);
+                    }
                 }
                 else
                 {
@@ -465,27 +472,6 @@ namespace Singularity.Manager
                     turret.SetShootingTarget(null);
                 }
             }
-
-            #endregion
-
-            #region Kill them
-
-            /*var newUnitKillList = new List<FreeMovingUnit>();
-            foreach (var unit in unitsToKill)
-            {
-                // tell the unit to die.
-                unit.Die();
-                mDirector.GetStoryManager.Level.GameScreen.RemoveObject(unit);
-                mUnitMap.RemoveUnit(unit);
-                RemoveUnit(unit);
-            }
-
-            foreach (var platform in platformsToKill)
-            {
-                RemovePlatform(platform);
-                mUnitMap.RemoveUnit(platform);
-                mMap.GetCollisionMap().RemoveCollider(platform);
-            }*/
 
             #endregion
 

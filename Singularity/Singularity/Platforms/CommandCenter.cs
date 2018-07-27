@@ -48,7 +48,7 @@ namespace Singularity.Platforms
             mSpritename = "Cylinders";
             SetPlatfromParameters();
             mControlledUnits = new List<GeneralUnit>();
-            mIsBlueprint = blueprintState;
+            mBlueprint = blueprintState;
             mPlatformWidth = 200;
             mPlatformHeight = 233;
 

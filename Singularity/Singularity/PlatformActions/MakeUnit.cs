@@ -16,7 +16,7 @@ namespace Singularity.PlatformActions
         public MakeFastMilitaryUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
             // mBuildingCost = new Dictionary<EResourceType, int> { { EResourceType.Metal, 3 }, { EResourceType.Chip, 2 }, {EResourceType.Fuel, 1} };
-            mBuildingCost = new Dictionary<EResourceType, int> { {EResourceType.Metal, 2} };
+            mBuildingCost = new Dictionary<EResourceType, int> { {EResourceType.Metal, 2}, {EResourceType.Copper, 2}, {EResourceType.Fuel, 2} };
         }
 
         protected override void CreateUnit()
@@ -35,7 +35,7 @@ namespace Singularity.PlatformActions
     {
         public MakeHeavyMilitaryUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
-            mBuildingCost = new Dictionary<EResourceType, int> {{EResourceType.Steel, 3}, {EResourceType.Chip, 2}, {EResourceType.Fuel, 2}};
+            mBuildingCost = new Dictionary<EResourceType, int> {{EResourceType.Steel, 3}, {EResourceType.Chip, 2}, {EResourceType.Fuel, 3}};
         }
 
         protected override void CreateUnit()
@@ -52,7 +52,7 @@ namespace Singularity.PlatformActions
         public MakeGeneralUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
             // Todo: update prices.
-            mBuildingCost = new Dictionary<EResourceType, int> { {EResourceType.Steel, 3} };
+            mBuildingCost = new Dictionary<EResourceType, int> { {EResourceType.Chip, 3}, {EResourceType.Fuel, 3} };
         }
 
         protected override void CreateUnit()
@@ -70,7 +70,7 @@ namespace Singularity.PlatformActions
         public MakeSettlerUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
         {
             // Todo: update prices
-            mBuildingCost = new Dictionary<EResourceType, int> { {EResourceType.Chip, 3} };
+            mBuildingCost = new Dictionary<EResourceType, int> { {EResourceType.Metal, 15}, {EResourceType.Stone, 10}, {EResourceType.Fuel, 10}, {EResourceType.Chip, 10}, {EResourceType.Steel, 5} };
         }
 
         protected override void CreateUnit()
@@ -111,6 +111,8 @@ namespace Singularity.PlatformActions
         [DataMember]
         protected bool mIsBuilding = false;
         [DataMember]
+        private bool mFirstCall = true;
+        [DataMember]
         public override List<JobType> UnitsRequired { get; set; } = new List<JobType> { JobType.Logistics };
 
         protected AMakeUnit(PlatformBlank platform, ref Director director) : base(platform, ref director)
@@ -131,8 +133,9 @@ namespace Singularity.PlatformActions
 
         public override void Update(GameTime t)
         {
-            if (State != PlatformActionState.Active)
+            if (State != PlatformActionState.Active || mFirstCall)
             {
+                mFirstCall = false;
                 return;
             }
 
@@ -223,7 +226,7 @@ namespace Singularity.PlatformActions
                     State = PlatformActionState.Active;
                     break;
                 case PlatformActionState.Active:
-                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this);
+                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this, mDirector);
                     State = PlatformActionState.Available;
                     break;
                 case PlatformActionState.Deactivated:

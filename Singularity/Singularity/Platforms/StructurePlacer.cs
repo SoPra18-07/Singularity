@@ -135,9 +135,6 @@ namespace Singularity.Platforms
 
                 case EPlacementType.PlatformMouseFollowAndRoad:
                     break;
-
-                default:
-                   break;
             }
 
             if (mIsRoadPlacement)
@@ -298,6 +295,7 @@ namespace Singularity.Platforms
                     {
                         // this case is the 'finish' state, we set everything up, so the platform can get added to the game
                         mPlatform.SetLayer(LayerConstants.PlatformLayer);
+                        mConnectionRoad.Place(mPlatform, mHoveringPlatform);
                         mHoveringPlatform.AddBlueprint(new BuildBluePrint(mHoveringPlatform, mPlatform, mConnectionRoad, ref mDirector));
                     }
                     else
@@ -307,11 +305,8 @@ namespace Singularity.Platforms
                     }
                     mIsFinished = true;
                     mUnregister = true;
-                    mDirector.GetUserInterfaceController.BuildingProcessFinished(mPlatformType);
+                    mDirector.GetUserInterfaceController.BuildingProcessFinished();
 
-                    break;
-
-                default:
                     break;
             }
 
@@ -398,9 +393,6 @@ namespace Singularity.Platforms
 
                         break;
 
-                    default:
-                        break;
-
                 }
 
             }
@@ -410,7 +402,7 @@ namespace Singularity.Platforms
                 if (mCurrentState.GetState() == 1)
                 {
 
-                    mDirector.GetUserInterfaceController.BuildingProcessFinished(mPlatformType);
+                    mDirector.GetUserInterfaceController.BuildingProcessFinished();
                     mCanceled = true;
                     mIsFinished = true;
                     giveThrough = false;

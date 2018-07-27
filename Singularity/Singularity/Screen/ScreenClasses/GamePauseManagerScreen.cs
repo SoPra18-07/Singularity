@@ -4,9 +4,11 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Singularity.Graph.Paths;
 using Singularity.Manager;
 using Singularity.Property;
 using Singularity.Serialization;
+using Singularity.Utils;
 
 namespace Singularity.Screen.ScreenClasses
 {
@@ -18,7 +20,7 @@ namespace Singularity.Screen.ScreenClasses
     /// </summary>
     internal sealed class GamePauseManagerScreen : IScreen
     {
-        public EScreen Screen { get; private set; } = EScreen.GamePauseManagerScreen;
+        public EScreen Screen { get; } = EScreen.GamePauseManagerScreen;
 
         public bool Loaded { get; set; }
 
@@ -40,7 +42,7 @@ namespace Singularity.Screen.ScreenClasses
         private static bool sPausedAgain;
 
         private string[] mGameSaveStrings;
-        private static bool sSaved = false;
+        private static bool sSaved;
 
         private readonly Director mDirector;
 
@@ -61,7 +63,6 @@ namespace Singularity.Screen.ScreenClasses
             Initialize(screenResolution, director);
 
             mScreenState = EScreen.GamePauseScreen;
-
             sPressed = "None";
             mTransitionState = 0;
         }
@@ -110,8 +111,7 @@ namespace Singularity.Screen.ScreenClasses
 
             if (sSaved)
             {
-                mSaveGameScreen = new SaveGameScreen(mScreenResolution);
-                mSaveGameScreen.mMenuOpacity = 1f;
+                mSaveGameScreen = new SaveGameScreen(mScreenResolution) {mMenuOpacity = 1f};
                 sPressed = "Save Game";
                 Console.WriteLine("Save Screen Updated");
                 sSaved = false;
@@ -143,6 +143,16 @@ namespace Singularity.Screen.ScreenClasses
                     if (sPressed == "Main Menu")
                     {
                         mDirector.GetStoryManager.Level.GameScreen.Unload();
+                        mDirector.GetClock = new Clock();
+                        mDirector.GetIdGenerator = new IdGenerator();
+                        mDirector.GetInputManager.RemoveEverythingFromInputManager();
+                        mDirector.GetStoryManager = new StoryManager(mDirector);
+                        mDirector.GetStoryManager.SetScreenManager(mScreenManager);
+                        mDirector.GetPathManager = new PathManager();
+                        mDirector.GetDistributionDirector = new DistributionDirector(mDirector);
+                        mDirector.GetMilitaryManager = new MilitaryManager(mDirector);
+                        mDirector.GetDeathManager = new DeathManager();
+                        mDirector.GetActionManager = new ActionManager();
 
                         for (var i = 0; i < mScreenManager.GetScreenCount() - 1; i++)
                         {

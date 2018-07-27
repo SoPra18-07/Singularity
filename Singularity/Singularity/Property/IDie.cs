@@ -1,4 +1,6 @@
-﻿namespace Singularity.Property
+﻿using System.Runtime.Serialization;
+
+namespace Singularity.Property
 {
     public interface IDie
     {

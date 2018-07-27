@@ -51,6 +51,7 @@ namespace Singularity.PlatformActions
             set { mAssignedUnits = value; }
         }
 
+        /*
         /// <summary>
         /// Assigns the unit to this PlatformAction and to this platform.
         /// </summary>
@@ -60,6 +61,7 @@ namespace Singularity.PlatformActions
         {
             mAssignedUnits.Add(unit, job);
         }
+        */
 
         public abstract void Execute();
 
@@ -72,6 +74,7 @@ namespace Singularity.PlatformActions
 
         public abstract void UiToggleState();
 
+        /*
         public List<GeneralUnit> UnAssignUnits(int amount, JobType job)
         {
             var list = new List<GeneralUnit>();
@@ -89,13 +92,19 @@ namespace Singularity.PlatformActions
 
             return list;
         }
+        */
 
         public bool Die()
         {
+            if (mPlatform == null)
+            {
+                return true;
+            }
             if (mPlatform.Friendly)
             {
                 mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).Kill(this);
             }
+            State = PlatformActionState.Disabled;
             mAssignedUnits = new Dictionary<GeneralUnit, JobType>();
             mPlatform.Kill(this);
             mPlatform = null;

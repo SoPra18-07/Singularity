@@ -72,7 +72,7 @@ namespace Singularity.Property
         }
 
         // Flag used to control the mission time.
-        public static bool mGameIsPaused = false;
+        public static bool mGameIsPaused = true;
 
         public static EaiDifficulty Difficulty { get; set; } = EaiDifficulty.Easy;
     }
