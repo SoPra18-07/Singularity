@@ -62,6 +62,7 @@ namespace Singularity.Map
         public bool ActiveInWindow { get; set; }
         public bool InactiveInSelectedPlatformWindow { get; set; }
         public bool OutOfScissorRectangle { get; set; }
+        public bool WindowIsInactive { get; set; }
 
         public EScreen Screen { get; set; } = EScreen.UserInterfaceScreen;
 
@@ -179,7 +180,7 @@ namespace Singularity.Map
 
         public bool MouseButtonPressed(EMouseAction mouseAction, bool withinBounds)
         {
-            if (mouseAction != EMouseAction.LeftClick)
+            if (mouseAction != EMouseAction.LeftClick || WindowIsInactive)
             {
                 return true;
             }

@@ -16,36 +16,39 @@ namespace Singularity.Manager
     {
         internal GlobalVariablesInstance GetGlobalVariablesInstance { get; set; }
         [DataMember]
-        public Clock GetClock { get; private set; }
+        public Clock GetClock { get; set; }
         [DataMember]
-        public IdGenerator GetIdGenerator { get; private set; }
+        public IdGenerator GetIdGenerator { get; set; }
 
         public InputManager GetInputManager { get; }
 
         [DataMember]
-        public StoryManager GetStoryManager { get; private set; }
+        public StoryManager GetStoryManager { get; set; }
 
         [DataMember]
-        public PathManager GetPathManager { get; private set; }
+        public PathManager GetPathManager { get; set; }
 
         public SoundManager GetSoundManager { get; }
 
         [DataMember]
-        public MilitaryManager GetMilitaryManager { get; private set; }
+        public MilitaryManager GetMilitaryManager { get; set; }
 
         [DataMember]
-        public DistributionDirector GetDistributionDirector { get; private set; }
+        public DistributionDirector GetDistributionDirector { get; set; }
 
         [DataMember]
         public UserInterfaceController GetUserInterfaceController { get; private set; }
 
         [DataMember]
-        public DeathManager GetDeathManager { get; private set; }
+        public DeathManager GetDeathManager { get; set; }
+
+        [DataMember]
+        public ActionManager GetActionManager { get; set; }
 
         public GraphicsDeviceManager GetGraphicsDeviceManager { get; }
 
         public EventLog GetEventLog { get; }
-        
+
         public Director(ContentManager content, GraphicsDeviceManager graphics, GlobalVariablesInstance globalVariablesInstance)
         {
             GetGlobalVariablesInstance = globalVariablesInstance;
@@ -58,7 +61,7 @@ namespace Singularity.Manager
             GetUserInterfaceController = new UserInterfaceController(this);
             GetDistributionDirector = new DistributionDirector(this);
             GetMilitaryManager = new MilitaryManager(this);
-            // GetFlockingManager = new FlockingManager(this);
+            GetActionManager = new ActionManager();
             GetEventLog = new EventLog(GetUserInterfaceController, this, content);
             GetGraphicsDeviceManager = graphics;
             GetDeathManager = new DeathManager();
@@ -82,8 +85,8 @@ namespace Singularity.Manager
             GetDistributionDirector = dir.GetDistributionDirector;
             GetDistributionDirector.ReloadContent(GetUserInterfaceController);
             GetStoryManager.LoadAchievements();
-            GetMilitaryManager.ReloadContent(mapmeasurements, this);
-            GetStoryManager.ReloadContent(this);
+            GetMilitaryManager.ReloadContent(mapmeasurements, dir);
+            GetStoryManager.ReloadContent(dir);
         }
 
         internal void SaveConfig()
@@ -91,7 +94,7 @@ namespace Singularity.Manager
             GetGlobalVariablesInstance.UpdateFromStatic();
             XSerializer.Save(GetGlobalVariablesInstance, @"Config.xml", true);
         }
-        
+
         public void Update(GameTime gametime, bool isActive)
         {
             if (isActive)
@@ -99,10 +102,10 @@ namespace Singularity.Manager
                 GetInputManager.Update(gametime);
                 GetEventLog.Update(gametime);
             }
-            GetStoryManager.Update(gametime);
-            GetMilitaryManager.Update(gametime);
             if (!GlobalVariables.mGameIsPaused)
             {
+                GetStoryManager.Update(gametime);
+                GetMilitaryManager.Update(gametime);
                 GetClock.Update(gametime);
             }
             GetSoundManager.SetMediaPlayerVolume();

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Singularity.Manager;
+using Singularity.Nature;
 using Singularity.Screen;
 using Singularity.Units;
 
@@ -14,9 +15,9 @@ namespace Singularity.Levels
         public Tutorial(GraphicsDeviceManager graphics,
             ref Director director,
             ContentManager content,
-            IScreenManager screenmanager, 
+            IScreenManager screenmanager,
             LevelType level)
-            : base(graphics, ref director, content, screenmanager, level)
+            : base(graphics, ref director, content, screenmanager, level, null)
         {
             LoadContent(content);
         }
@@ -26,11 +27,12 @@ namespace Singularity.Levels
             //INGAME OBJECTS INITIALIZATION ===================================================
 
             //SetUnit
-            var setUnit = new Settler(new Vector2(1000, 1250), Camera, ref mDirector, GameScreen, Ui);
+            var settler = new Settler(new Vector2(2900, 3200), Camera, ref mDirector, GameScreen, Ui);
 
-            GameScreen.AddObject(setUnit);
+            GameScreen.AddObject(settler);
 
-            //TESTMETHODS HERE =====================================
+            GameScreen.AddObject(new Puddle(new Vector2(3300, 2500), ref mDirector));
+            GameScreen.AddObject(new Puddle(new Vector2(4500, 2700), ref mDirector, false));
         }
     }
 }

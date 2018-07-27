@@ -27,6 +27,8 @@ namespace Singularity.Screen
         // list of windowItems added to the window
         private readonly List<IWindowItem> mItemList = new List<IWindowItem>();
 
+        private bool mLastActiveState;
+
         // basic window rectangle
         private Rectangle mWindowRectangle;
         private Rectangle mBorderRectangle;
@@ -203,6 +205,7 @@ namespace Singularity.Screen
         /// <param name="spriteFont">title font</param>
         /// <param name="director">basic director</param>
         /// <param name="screen">the screen to place the window on</param>
+        // ReSharper disable once UnusedMember.Global
         public WindowObject(
             string windowName,
             Vector2 position,
@@ -380,7 +383,26 @@ namespace Singularity.Screen
             if (!Active)
                 // window is deactivated
             {
+                if (mLastActiveState)
+                {
+                    foreach (var item in mItemList)
+                    {
+                        item.WindowIsInactive = true;
+                    }
+                    mLastActiveState = false;
+                }
                 return;
+            }
+            else
+            {
+                if (!mLastActiveState)
+                {
+                    foreach (var item in mItemList)
+                    {
+                        item.WindowIsInactive = false;
+                    }
+                    mLastActiveState = true;
+                }
             }
 
             // position where the next item will be drawn
@@ -592,7 +614,7 @@ namespace Singularity.Screen
         /// <summary>
         /// the screen on which this object is placed
         /// </summary>
-        public EScreen Screen { get; } = EScreen.UserInterfaceScreen;
+        public EScreen Screen { get; }
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -638,6 +660,8 @@ namespace Singularity.Screen
                         }
                         break;
                 }
+
+                return !Active;
             }
 
             // everything following handles if the input is given through or not
@@ -645,12 +669,12 @@ namespace Singularity.Screen
             if (!mMinimized && (mMouseX > Position.X && mMouseX < Position.X + Size.X) && mMouseY > Position.Y && mMouseY < Position.Y + Size.Y)
             // not minimized + mouse on window
             {
-                return false;
+                return !Active;
             }
 
             // resharper wanted it this 'overseeable' way o.O
             // minimized + mouse on minimized window -> return false ... else true
-            return !mMinimized || (!(mMouseX > Position.X) || !(mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width)) || !(mMouseY > Position.Y) || !(mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height);
+            return !Active || !mMinimized || (!(mMouseX > Position.X) || !(mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width)) || !(mMouseY > Position.Y) || !(mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height);
         }
         /// <inheritdoc />
         /// <summary>
@@ -741,12 +765,12 @@ namespace Singularity.Screen
             if (!mMinimized && (mMouseX > Position.X && mMouseX < Position.X + Size.X) && mMouseY > Position.Y && mMouseY < Position.Y + Size.Y)
             // not minimized + mouse on window
             {
-                return false;
+                return !Active;
             }
 
             // resharper wanted it this 'overseeable' way o.O
             // minimized + mouse on minimized window -> return false ... else true
-            return !(mMinimized && mMouseX > Position.X && mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width &&
+            return !Active || !(mMinimized && mMouseX > Position.X && mMouseX < mMinimizedBorderRectangle.X + mMinimizedBorderRectangle.Width &&
                                    mMouseY > Position.Y && mMouseY < mMinimizedBorderRectangle.Y + mMinimizedBorderRectangle.Height);
 
             #endregion
@@ -811,7 +835,7 @@ namespace Singularity.Screen
 
             #endregion
 
-            return false;
+            return !Active;
         }
         /// <inheritdoc />
         /// <summary>

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using C5;
 using Microsoft.Xna.Framework;
+using Singularity.Platforms;
 using Singularity.Property;
 
 namespace Singularity.Graph.Paths
@@ -36,7 +37,9 @@ namespace Singularity.Graph.Paths
             var gScore = new Dictionary<INode, float>();
 
             var fScore = new Dictionary<INode, float>();
-                
+
+            // ReSharper disable once ConvertToLocalFunction
+            // converting to local function does not work
             Func<INode, INode, int> compareFunc = (a, b) => (int) fScore[a] > (int) fScore[b] ? 1 : (int) fScore[a] < (int) fScore[b] ? -1 : 0;
 
             var openList = new IntervalHeap<INode>(ComparerFactory<INode>.CreateComparer(compareFunc)) { start };
@@ -55,7 +58,7 @@ namespace Singularity.Graph.Paths
             {
 
                 var current = openList.DeleteMin();
-                
+
                 // current can never be null from my short amount of thinking about it (if actual arguments are given)
 
                 Debug.Assert(current != null, "pathFinding failed.");
@@ -63,13 +66,13 @@ namespace Singularity.Graph.Paths
                 {
                     return ReconstructPath(cameFrom, current);
                 }
-                
+
                 closedList.Add(current);
                 foreach (var outgoing in current.GetOutwardsEdges())
                 {
                     var neighbor = outgoing.GetChild();
 
-                    if (neighbor == null)
+                    if (neighbor == null || ((Road) outgoing).Blueprint)
                     {
                         continue;
                     }
@@ -99,7 +102,7 @@ namespace Singularity.Graph.Paths
                 {
                     var neighbor = outgoing.GetParent();
 
-                    if (neighbor == null)
+                    if (neighbor == null || ((PlatformBlank) neighbor).mBlueprint)
                     {
                         continue;
                     }

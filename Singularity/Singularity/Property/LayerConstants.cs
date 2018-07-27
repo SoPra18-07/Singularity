@@ -29,10 +29,12 @@
         /// </summary>
         public const float RoadLayer = 0.3f;
 
+/*
         /// <summary>
         /// A float depicting the layer for the connection between Resources and Units.
         /// </summary>
         public const float ConnectingLayer = 0.52f;
+*/
 
         /// <summary>
         /// A float depicting the layer for Resources
@@ -54,10 +56,12 @@
         /// </summary>
         public const float PlatformLayer = 0.6f;
 
+/*
         /// <summary>
         /// A float depciting the layer of the map that is layered above the objects to smooth the fog of war appearance
         /// </summary>
         public const float FogOfWarMapLayer = 0.9f;
+*/
 
         /// <summary>
         /// A float depicting the layer for the fog of war

@@ -32,7 +32,6 @@ namespace Singularity.Screen.ScreenClasses
         private bool mNewGame;
 
         // All connecting screens
-        private ITransitionableMenu mLoadingScreen;
         private GameScreen mGameScreen;
 
         private UserInterfaceScreen mUi;
@@ -69,8 +68,6 @@ namespace Singularity.Screen.ScreenClasses
             mDirector = director;
             mContent = content;
 
-            Initialize(screenResolution);
-
             sPressed = "None";
             sResolutionChanged = false;
             mGameLoaded = false;
@@ -96,13 +93,12 @@ namespace Singularity.Screen.ScreenClasses
         {
             if (mGameLoaded)
             {
-                
+
                 mGameLoaded = false;
             }
 
             if (sResolutionChanged)
             {
-                Initialize(sViewportResolution);
                 sResolutionChanged = false;
             }
 
@@ -118,6 +114,12 @@ namespace Singularity.Screen.ScreenClasses
                     break;
                 case "TechDemo":
                     mLevel = new TechDemo(mGraphics, ref mDirector, mContent, mScreenManager, LevelType.Techdemo);
+                    mGameScreen = mLevel.GameScreen;
+                    mUi = mLevel.Ui;
+                    mNewGame = true;
+                    break;
+                case "Tutorial":
+                    mLevel = new Tutorial(mGraphics, ref mDirector, mContent, mScreenManager, LevelType.Tutorial);
                     mGameScreen = mLevel.GameScreen;
                     mUi = mLevel.Ui;
                     mNewGame = true;
@@ -183,9 +185,10 @@ namespace Singularity.Screen.ScreenClasses
                     mDirector.GetStoryManager.SetScreenManager(mScreenManager);
                     mGameLoaded = true;
                     mName = "";
+                    GlobalVariables.mGameIsPaused = false;
                 }
             }
-            
+
             else if (mNewGame)
             {
                 //Remove all screens above this screen, of course this only works if this screen is really on the bottom of the stack
@@ -195,11 +198,12 @@ namespace Singularity.Screen.ScreenClasses
                 }
                 mScreenManager.AddScreen(mGameScreen);
                 mScreenManager.AddScreen(mUi);
-                
+
                 mGameLoaded = true;
                 mNewGame = false;
+                GlobalVariables.mGameIsPaused = false;
             }
-            
+
             sPressed = "None";
         }
 
@@ -240,16 +244,7 @@ namespace Singularity.Screen.ScreenClasses
         }
 
         /// <summary>
-        /// Initialize the Loading Screen, by creating it with the desired resolution.
-        /// </summary>
-        /// <param name="screenResolution"></param>
-        private void Initialize(Vector2 screenResolution)
-        {
-            mLoadingScreen = new LoadingScreen(screenResolution);
-        }
-
-        /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="eventArg"></param>
@@ -326,22 +321,16 @@ namespace Singularity.Screen.ScreenClasses
             sPressed = "Skirmish";
         }
 
-        /// <summary>
-        /// Used to create a new story mode game.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
-        public static void OnStoryButtonReleased(Object sender, EventArgs eventArgs)
-        {
-            // TODO: implement start game with story
-            throw new NotImplementedException("No story yet unfortunately");
-
-        }
-
         public static void OnTechDemoButtonReleased(Object sender, EventArgs eventArgs)
         {
             sPressed = "TechDemo";
         }
+
+        public static void OnTutorialButtonReleased(Object sender, EventArgs eventArgs)
+        {
+            sPressed = "Tutorial";
+        }
+
         #endregion
 
     }

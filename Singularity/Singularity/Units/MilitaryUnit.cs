@@ -111,7 +111,10 @@ namespace Singularity.Units
             mSoundId = mDirector.GetSoundManager.CreateSoundInstance("LaserSound", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
 
             // Track the creation of a military unit in the statistics.
-            director.GetStoryManager.UpdateUnits("military created");
+            if (friendly)
+            {
+                director.GetStoryManager.UpdateUnits("military created");
+            }
         }
 
         public void ReloadContent(ContentManager content, ref Director director, Camera camera, ref Map.Map map)
@@ -189,8 +192,8 @@ namespace Singularity.Units
             // {
                  // Rotate(new Vector2(mMouseX, mMouseY));
             // }
-            
-            
+
+
             // these are values needed to properly get the current sprite out of the spritesheet.
             mRow = mRotation / 18;
             mColumn = (mRotation - mRow * 18) / 3;
@@ -198,14 +201,15 @@ namespace Singularity.Units
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y / 2);
             AbsBounds = new Rectangle((int)AbsolutePosition.X + 16, (int) AbsolutePosition.Y + 11, (int)(AbsoluteSize.X * mScale), (int) (AbsoluteSize.Y * mScale));
 
-            if (Moved || !mShoot)
+
+            if (Moved && Friendly || !mShoot)
             {
                 return;
             }
 
             // Rotate to the center of the shooting target
             Rotate(mShootingTarget.Center);
-            
+
 
             if (mShootingTimer < 0.5f)
                 {
@@ -230,30 +234,35 @@ namespace Singularity.Units
             mDirector.GetSoundManager.SetSoundPosition(mSoundId, Center.X, Center.Y);
             mDirector.GetSoundManager.PlaySound(mSoundId);
             target.MakeDamage(MilitaryUnitStats.mUnitStrength);
-            
-            if (target != null)
+
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            // Done as a check just in case
+            if (target == null)
+                // ReSharper disable once HeuristicUnreachableCode
             {
-                mDirector.GetSoundManager.PlaySound(mSoundId);
-                target.MakeDamage(MilitaryUnitStats.mUnitStrength);
+                return;
+            }
 
-                //This should prevent the units to hold the reference to the target platform
-                //and further shooting at it despite it already being dead (they shoot in the
-                //air then)
-                var test = target as PlatformBlank;
-                var test2 = target as FreeMovingUnit;
-                if (test != null && test.HasDieded)
-                {
-                    mShootingTarget = null;
-                    mShootingTimer = -1;
-                    mShoot = false;
-                }
+            mDirector.GetSoundManager.PlaySound(mSoundId);
+            target.MakeDamage(MilitaryUnitStats.mUnitStrength);
 
-                if (test2 != null && test2.HasDieded)
-                {
-                    mShootingTarget = null;
-                    mShootingTimer = -1;
-                    mShoot = false;
-                }
+            //This should prevent the units to hold the reference to the target platform
+            //and further shooting at it despite it already being dead (they shoot in the
+            //air then)
+            var test = target as PlatformBlank;
+            var test2 = target as FreeMovingUnit;
+            if (test != null && test.HasDieded)
+            {
+                mShootingTarget = null;
+                mShootingTimer = -1;
+                mShoot = false;
+            }
+
+            if (test2 != null && test2.HasDieded)
+            {
+                mShootingTarget = null;
+                mShootingTimer = -1;
+                mShoot = false;
             }
         }
 
@@ -271,15 +280,8 @@ namespace Singularity.Units
                 {
                     // mTargetPosition = AbsolutePosition;
                     Moved = false;
-                    //TODO: THis is a hotfix. Threw an error for the path being null...
-                    mShoot = true;
                 }
-
-                else
-                {
-                    mShoot = true;
-                }
-
+                mShoot = true;
                 mTargetWasNull = false;
             }
 

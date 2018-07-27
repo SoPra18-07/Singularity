@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -38,10 +39,14 @@ namespace Singularity.AI
         [DataMember]
         private int mCommandCenterKillCount;
 
-        public BasicAi(EaiDifficulty difficulty, ref Director director)
+        [DataMember]
+        public bool IsTutorial { set; get; }
+
+        public BasicAi(EaiDifficulty difficulty, ref Director director, bool isTutorial = false)
         {
             Difficulty = difficulty;
             mDirector = director;
+            IsTutorial = isTutorial;
 
             mBoundsToDraw = new List<Rectangle>();
 
@@ -58,7 +63,11 @@ namespace Singularity.AI
 
         public void Update(GameTime gametime)
         {
-
+            if (IsTutorial)
+            {
+                return;
+            }
+            
             mBehavior.CreateNewBase(gametime);
 
             mBehavior.Spawn(gametime);

@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Singularity.Libraries;
 using Singularity.Manager;
 using Singularity.Property;
+// ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace Singularity.Nature
 {

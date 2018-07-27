@@ -19,16 +19,15 @@ namespace Singularity.Screen
         private readonly SpriteFont mSpriteFontTitle;
 
         // list of windowItems added to the window
-        private readonly List<IWindowItem> mItemList = new List<IWindowItem>();
+        private List<IWindowItem> mItemList = new List<IWindowItem>();
 
         // basic window rectangle
         private readonly Rectangle mWindowRectangle;
-        private readonly Rectangle mBorderRectangle;
         private readonly Rectangle mTitleBarRectangle;
 
         // the rectangles needed for scrollable windows
         private Rectangle mScrollBarRectangle;
-        private Rectangle mScrollBarBorderRectangle;
+        private readonly Rectangle mScrollBarBorderRectangle;
         private readonly Rectangle mScissorRectangle;
 
         // rectangles needed for the next button
@@ -36,13 +35,6 @@ namespace Singularity.Screen
 
         // true when the window's windowItems and the padding between them
         private bool mScrollable; // = false as default value
-
-        // current screen size values
-        private int mCurrentScreenWidth;
-        private int mCurrentScreenHeight;
-
-        // used by scissorrectangle to create a scrollable window by cutting everything outside specific bounds
-        private readonly RasterizerState mRasterizerState;
 
         // top and bottom positin of the window's combined items - used by scrolling
         private Vector2 mItemPosTop;
@@ -66,7 +58,7 @@ namespace Singularity.Screen
             Color colorFill,
             SpriteFont spriteFontTitle,
             InputManager inputManager,
-            GraphicsDeviceManager graphics)
+            EScreen screen = EScreen.UserInterfaceScreen)
         {
             mWindowName = windowName;
             Position = position;
@@ -75,9 +67,6 @@ namespace Singularity.Screen
             mColorFill = colorFill;
             mButton = button;
             mSpriteFontTitle = spriteFontTitle;
-
-            mCurrentScreenWidth = graphics.PreferredBackBufferWidth;
-            mCurrentScreenHeight = graphics.PreferredBackBufferHeight;
 
             // size of the title
             const int titleSizeY = 720 / 26;
@@ -94,12 +83,6 @@ namespace Singularity.Screen
                 (int)(Position.Y + 2),
                 (int)(mSize.X - 2),
                 (int)(mSize.Y - 2)
-                );
-            mBorderRectangle = new Rectangle(
-                (int)Position.X,
-                (int)Position.Y,
-                (int)mSize.X,
-                (int)mSize.Y
                 );
 
             // ScissorRectangle will cut everything drawn outside of this rectangle when set
@@ -136,11 +119,10 @@ namespace Singularity.Screen
             // set button position
             mButton.Position = new Vector2(mButtonBorderRectangle.X + 5, mButtonBorderRectangle.Y + 5);
 
-            // Initialize scissor window
-            mRasterizerState = new RasterizerState { ScissorTestEnable = true };
-
             inputManager.FlagForAddition(this);
             inputManager.AddMousePositionListener(this);
+
+            Screen = screen;
         }
 
         /// <summary>
@@ -152,27 +134,12 @@ namespace Singularity.Screen
             mItemList.Add(item);
         }
 
-        /// <summary>
-        /// Removes the given WindowItem from the Window
-        /// </summary>
-        /// <param name="item">IWindowItem</param>
-        /// <returns>true, if element successfully deleted</returns>
-        public bool DeleteItem(IWindowItem item)
-        {
-            // item is not in list -> can't be removed
-            if (!mItemList.Contains(item))
-            {
-                return false;
-            }
-
-            // item in list -> remove successful
-            mItemList.Remove(item);
-            return true;
-        }
-
         public void Draw(SpriteBatch spriteBatch)
         {
-            // TODO: what is there still to be done?
+            if (!Active)
+            {
+                return;
+            }
 
             // draw window
             spriteBatch.StrokedRectangle(new Vector2(mWindowRectangle.X, mWindowRectangle.Y), new Vector2(mWindowRectangle.Width, mWindowRectangle.Height), mColorBorder, mColorFill, 1f, 0.8f );
@@ -216,6 +183,11 @@ namespace Singularity.Screen
 
         public void Update(GameTime gametime)
         {
+            if (!Active)
+            {
+                return;
+            }
+
             // current position to place the next item
             var localItemPos = mItemPosTop;
 
@@ -245,7 +217,7 @@ namespace Singularity.Screen
             mButton.Update(gametime);
         }
 
-        public EScreen Screen { get; } = EScreen.UserInterfaceScreen;
+        public EScreen Screen { get; }
 
         public bool MouseWheelValueChanged(EMouseAction mouseAction)
         {
@@ -253,7 +225,7 @@ namespace Singularity.Screen
             //  - the mouse is above the scrollable part of the window
             //  - the window is scrollable (the number of items is too big for one window)
             if (!(mMouseX > Position.X) || !(mMouseX < Position.X + mSize.X) || !(mMouseY > Position.Y) ||
-                !(mMouseY < Position.Y + mSize.Y) || !mScrollable)
+                !(mMouseY < Position.Y + mSize.Y) || !mScrollable || !Active)
             {
                 return true;
             }
@@ -262,7 +234,7 @@ namespace Singularity.Screen
             switch (mouseAction)
             {
                 case EMouseAction.ScrollUp:
-                    if (!(mItemPosTop.Y > mScissorRectangle.Y - 10))
+                    if (!(mItemPosTop.Y > mScissorRectangle.Y))
                         // stop from overflowing
                     {
                         mItemPosTop.Y += +10;
@@ -310,7 +282,22 @@ namespace Singularity.Screen
             return new Rectangle((int)(Position.X + mSize.X - 20 + 2), (int)positionY, 20 - 4, (int)sizeY);
         }
 
+        /// <summary>
+        /// reset scrolling
+        /// </summary>
+        public void ResetScrollValue()
+        {
+            mItemPosTop = new Vector2(Position.X + 10, Position.Y + 720 / 26f + 30);
+        }
+
+        public void RemoveAllItems()
+        {
+            mItemList = new List<IWindowItem>();
+        }
+
         // position of the window
-        public Vector2 Position { get; set; }
+        private Vector2 Position { get; }
+
+        public bool Active { get; set; }
     }
 }

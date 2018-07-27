@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using C5;
@@ -92,8 +91,7 @@ namespace Singularity.AI.Behavior
 
         private const float PriorityAddition = 0.1f;
 
-        [DataMember]
-        private readonly Dictionary<EnemyUnit, FlockingGroup> mUnitToFlockingGroup;
+        private Dictionary<EnemyUnit, FlockingGroup> mUnitToFlockingGroup;
 
         [DataMember]
         private readonly int[] mUnitsMovementCooldown = { 0, 0, 0 };
@@ -128,7 +126,7 @@ namespace Singularity.AI.Behavior
             120000,
             60000
         };
-        
+
         private const int ScoutingSquadSize = 3;
 
         private const int MaxDefendingSquadSize = 3;
@@ -202,8 +200,6 @@ namespace Singularity.AI.Behavior
             mAttackingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
             mDefendingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
             mAllUnits = new List<PrioritizableObject<EnemyUnit>>();
-
-            CreateNewBase(null);
         }
 
         public void CreateNewBase(GameTime gametime)
@@ -320,7 +316,7 @@ namespace Singularity.AI.Behavior
                         mUnitToFlockingGroup[squadMember] = mDirector.GetMilitaryManager.GetNewFlock();
                         mUnitToFlockingGroup[squadMember].AssignUnit(squadMember);
                     }
-                    
+
                     mUnitToFlockingGroup[squadMember].FindPath(GetRandomPositionOnRectangle(randomBounds));
                     mIsCurrentlyMoving[squadMember] = true;
                     AddToQueue(EEnemyType.Defend, squadMember);
@@ -362,8 +358,6 @@ namespace Singularity.AI.Behavior
                 var squadMembers = new List<EnemyUnit>();
                 // var map = mDirector.GetStoryManager.Level.Map;
                 // var squad = new FlockingGroup(ref mDirector, ref map);
-
-                Debug.Write(queue.Count);
 
                 // while (!queue.IsEmpty && squad.Count < ScoutingSquadSize)
                 while (!queue.IsEmpty && squadMembers.Count < ScoutingSquadSize)
@@ -535,9 +529,9 @@ namespace Singularity.AI.Behavior
                     }
 
                     var randomSpawner = structureToSpawnAt[mRandom.Next(structureToSpawnAt.Count)];
-                    
+
                     SpawnOneUnit(EEnemyType.Attack, randomSpawner);
-                } 
+                }
 
                 mOldPlayerMilitaryUnitCount = mDirector.GetMilitaryManager.PlayerUnitCount;
                 mUnitCreationSnapshot[(int) EEnemyType.Attack] = (int) gametime.TotalGameTime.TotalMilliseconds;
@@ -582,7 +576,7 @@ namespace Singularity.AI.Behavior
         }
 
         private void SetAttackTarget(ICollider attackPosition)
-        { 
+        {
             mShouldAttack = true;
             mAttackPosition = attackPosition;
         }
@@ -724,6 +718,8 @@ namespace Singularity.AI.Behavior
             mAttackingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
             mDefendingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
             mScoutingUnits = new IntervalHeap<PrioritizableObject<EnemyUnit>>(new PrioritizableObjectAscendingComparer<EnemyUnit>());
+
+            mUnitToFlockingGroup = new Dictionary<EnemyUnit, FlockingGroup>();
 
             foreach (var unit in mAllUnits)
             {

@@ -89,8 +89,12 @@ namespace Singularity.Screen.ScreenClasses
                     mTransitionDuration = 300;
                     break;
                 case EScreen.GameModeSelectScreen:
+                    mTransitionTargetValue = 2f;
+                    mTransitionDuration = 300;
                     break;
                 case EScreen.LoadSelectScreen:
+                    mTransitionTargetValue = 2f;
+                    mTransitionDuration = 300;
                     break;
                 case EScreen.MainMenuScreen:
                     mTransitionTargetValue = 2f;
@@ -127,6 +131,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (CurrentScreen == EScreen.MainMenuScreen && !TransitionRunning && mHoloProjectionWidthScaling != 2)
             {
                 TransitionTo(EScreen.GameModeSelectScreen, EScreen.MainMenuScreen, gameTime);

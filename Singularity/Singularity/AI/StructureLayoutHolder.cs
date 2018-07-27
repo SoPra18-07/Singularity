@@ -32,7 +32,7 @@ namespace Singularity.AI
 
             var index = rnd.Next(sAllStructures[difficulty].Length);
 
-            var structure = sAllStructures[difficulty][index]; 
+            var structure = sAllStructures[difficulty][index];
 
             // make sure to not take the same reference as in this sAllStructures dict. Otherwise the AI can't take the same structure more than once.
             // -> recreate every object and give that to the caller
@@ -43,6 +43,8 @@ namespace Singularity.AI
                 ref director,
                 structure.GetFirst().AbsolutePosition.X + x,
                 structure.GetFirst().AbsolutePosition.Y + y, null, false, false);
+
+            commandCenter.Built();
 
             tempOldPlatNewPlatMapping[structure.GetFirst()] = commandCenter;
 
@@ -129,11 +131,17 @@ namespace Singularity.AI
         /// <param name="director"></param>
         public static void Initialize(ref Director director)
         {
-            sAllStructures = new Dictionary<EaiDifficulty, Triple<CommandCenter, List<PlatformBlank>, List<Road>>[]>();
+            sAllStructures =
+                new Dictionary<EaiDifficulty, Triple<CommandCenter, List<PlatformBlank>, List<Road>>[]>
+                {
+                    [EaiDifficulty.Easy] =
+                        new Triple<CommandCenter, List<PlatformBlank>, List<Road>>[EasyStructureCount],
+                    [EaiDifficulty.Medium] =
+                        new Triple<CommandCenter, List<PlatformBlank>, List<Road>>[MediumStructureCount],
+                    [EaiDifficulty.Hard] =
+                        new Triple<CommandCenter, List<PlatformBlank>, List<Road>>[HardStructureCount]
+                };
 
-            sAllStructures[EaiDifficulty.Easy] = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>[EasyStructureCount];
-            sAllStructures[EaiDifficulty.Medium] = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>[MediumStructureCount];
-            sAllStructures[EaiDifficulty.Hard] = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>[HardStructureCount];
 
             #region 1. Easy Structure
             // 1 CC, 1 spawner, 1 sentinal : traingle formation
@@ -148,10 +156,12 @@ namespace Singularity.AI
             struct1Platforms.Add(struct1Plat2);
 
 
-            var struct1Roads = new List<Road>();
-            struct1Roads.Add(new Road(struct1CommandCenter, struct1Plat2, ref director));
-            struct1Roads.Add(new Road(struct1CommandCenter, struct1Plat1, ref director));
-            struct1Roads.Add(new Road(struct1Plat1, struct1Plat2, ref director));
+            var struct1Roads = new List<Road>
+            {
+                new Road(struct1CommandCenter, struct1Plat2, ref director),
+                new Road(struct1CommandCenter, struct1Plat1, ref director),
+                new Road(struct1Plat1, struct1Plat2, ref director)
+            };
 
             var struct1 = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>(struct1CommandCenter, struct1Platforms, struct1Roads);
 
@@ -160,7 +170,7 @@ namespace Singularity.AI
             #endregion
 
             #region 2. Easy Structure
-            // 1 CC, 1 spawner, 1 sentinal, 3 blank : a samll tree like strucutre 
+            // 1 CC, 1 spawner, 1 sentinal, 3 blank : a samll tree like strucutre
 
             var struct2CommandCenter = (CommandCenter)PlatformFactory.Get(EStructureType.Command, ref director, 0f, 0f, null, false, false);
 
@@ -179,13 +189,15 @@ namespace Singularity.AI
             struct2Platforms.Add(struct2Plat5);
 
 
-            var struct2Roads = new List<Road>();
-            struct2Roads.Add(new Road(struct2CommandCenter, struct2Plat5, ref director));
-            struct2Roads.Add(new Road(struct2CommandCenter, struct2Plat1, ref director));
-            struct2Roads.Add(new Road(struct2CommandCenter, struct2Plat2, ref director));
-            struct2Roads.Add(new Road(struct2CommandCenter, struct2Plat3, ref director));
-            struct2Roads.Add(new Road(struct2CommandCenter, struct2Plat5, ref director));
-            struct2Roads.Add(new Road(struct2Plat4, struct2Plat3, ref director));
+            var struct2Roads = new List<Road>
+            {
+                new Road(struct2CommandCenter, struct2Plat5, ref director),
+                new Road(struct2CommandCenter, struct2Plat1, ref director),
+                new Road(struct2CommandCenter, struct2Plat2, ref director),
+                new Road(struct2CommandCenter, struct2Plat3, ref director),
+                new Road(struct2CommandCenter, struct2Plat5, ref director),
+                new Road(struct2Plat4, struct2Plat3, ref director)
+            };
 
             var struct2 = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>(struct2CommandCenter, struct2Platforms, struct2Roads);
 
@@ -213,14 +225,16 @@ namespace Singularity.AI
             struct3EPlatforms.Add(struct3EPlat5);
 
 
-            var struct3ERoads = new List<Road>();
-            struct3ERoads.Add(new Road(struct3ECommandCenter, struct3EPlat1, ref director));
-            struct3ERoads.Add(new Road(struct3ECommandCenter, struct3EPlat2, ref director));
-            struct3ERoads.Add(new Road(struct3ECommandCenter, struct3EPlat5, ref director));
-            struct3ERoads.Add(new Road(struct3EPlat1, struct3EPlat4, ref director));
-            struct3ERoads.Add(new Road(struct3EPlat2, struct3EPlat3, ref director));
-            struct3ERoads.Add(new Road(struct3EPlat4, struct3EPlat2, ref director));
-            struct3ERoads.Add(new Road(struct3EPlat1, struct3EPlat2, ref director));
+            var struct3ERoads = new List<Road>
+            {
+                new Road(struct3ECommandCenter, struct3EPlat1, ref director),
+                new Road(struct3ECommandCenter, struct3EPlat2, ref director),
+                new Road(struct3ECommandCenter, struct3EPlat5, ref director),
+                new Road(struct3EPlat1, struct3EPlat4, ref director),
+                new Road(struct3EPlat2, struct3EPlat3, ref director),
+                new Road(struct3EPlat4, struct3EPlat2, ref director),
+                new Road(struct3EPlat1, struct3EPlat2, ref director)
+            };
 
             var struct3E = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>(struct3ECommandCenter, struct3EPlatforms, struct3ERoads);
 
@@ -250,17 +264,19 @@ namespace Singularity.AI
             struct1MPlatforms.Add(struct1MPlat6);
             struct1MPlatforms.Add(struct1MPlat7);
 
-            var struct1MRoads = new List<Road>();
-            struct1MRoads.Add(new Road(struct1MCommandCenter, struct1MPlat1, ref director));
-            struct1MRoads.Add(new Road(struct1MCommandCenter, struct1MPlat2, ref director));
-            struct1MRoads.Add(new Road(struct1MCommandCenter, struct1MPlat3, ref director));
-            struct1MRoads.Add(new Road(struct1MCommandCenter, struct1MPlat6, ref director));
-            struct1MRoads.Add(new Road(struct1MCommandCenter, struct1MPlat7, ref director));
+            var struct1MRoads = new List<Road>
+            {
+                new Road(struct1MCommandCenter, struct1MPlat1, ref director),
+                new Road(struct1MCommandCenter, struct1MPlat2, ref director),
+                new Road(struct1MCommandCenter, struct1MPlat3, ref director),
+                new Road(struct1MCommandCenter, struct1MPlat6, ref director),
+                new Road(struct1MCommandCenter, struct1MPlat7, ref director),
+                new Road(struct1MPlat1, struct1MPlat2, ref director),
+                new Road(struct1MPlat1, struct1MPlat3, ref director),
+                new Road(struct1MPlat1, struct1MPlat4, ref director),
+                new Road(struct1MPlat1, struct1MPlat5, ref director)
+            };
 
-            struct1MRoads.Add(new Road(struct1MPlat1, struct1MPlat2, ref director));
-            struct1MRoads.Add(new Road(struct1MPlat1, struct1MPlat3, ref director));
-            struct1MRoads.Add(new Road(struct1MPlat1, struct1MPlat4, ref director));
-            struct1MRoads.Add(new Road(struct1MPlat1, struct1MPlat5, ref director));
 
             var struct1M = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>(struct1MCommandCenter, struct1MPlatforms, struct1MRoads);
 
@@ -291,18 +307,20 @@ namespace Singularity.AI
             struct2MPlatforms.Add(struct2MPlat6);
             struct2MPlatforms.Add(struct2MPlat7);
 
-            
-            var struct2MRoads = new List<Road>();
-            struct2MRoads.Add(new Road(struct2MCommandCenter, struct2MPlat1, ref director));
-            struct2MRoads.Add(new Road(struct2MCommandCenter, struct2MPlat2, ref director));
-            struct2MRoads.Add(new Road(struct2MCommandCenter, struct2MPlat5, ref director));
-            struct2MRoads.Add(new Road(struct2MCommandCenter, struct2MPlat6, ref director));           
-            struct2MRoads.Add(new Road(struct2MPlat1, struct2MPlat4, ref director));
-            struct2MRoads.Add(new Road(struct2MPlat5, struct2MPlat7, ref director));
-            struct2MRoads.Add(new Road(struct2MPlat2, struct2MPlat3, ref director));
-            struct2MRoads.Add(new Road(struct2MPlat4, struct2MPlat6, ref director));
-            struct2MRoads.Add(new Road(struct2MPlat6, struct2MPlat2, ref director));
-            struct2MRoads.Add(new Road(struct2MPlat7, struct2MPlat2, ref director));
+
+            var struct2MRoads = new List<Road>
+            {
+                new Road(struct2MCommandCenter, struct2MPlat1, ref director),
+                new Road(struct2MCommandCenter, struct2MPlat2, ref director),
+                new Road(struct2MCommandCenter, struct2MPlat5, ref director),
+                new Road(struct2MCommandCenter, struct2MPlat6, ref director),
+                new Road(struct2MPlat1, struct2MPlat4, ref director),
+                new Road(struct2MPlat5, struct2MPlat7, ref director),
+                new Road(struct2MPlat2, struct2MPlat3, ref director),
+                new Road(struct2MPlat4, struct2MPlat6, ref director),
+                new Road(struct2MPlat6, struct2MPlat2, ref director),
+                new Road(struct2MPlat7, struct2MPlat2, ref director)
+            };
 
             var struct2M = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>(struct2MCommandCenter, struct2MPlatforms, struct2MRoads);
 
@@ -339,17 +357,19 @@ namespace Singularity.AI
             struct1HPlatforms.Add(struct1HPlat6);
             struct1HPlatforms.Add(struct1HPlat7);
 
-            var struct1HRoads = new List<Road>();
-            struct1HRoads.Add(new Road(struct1HCommandCenter, struct1HPlat1, ref director));
-            struct1HRoads.Add(new Road(struct1HCommandCenter, struct1HPlat2, ref director));
-            struct1HRoads.Add(new Road(struct1HCommandCenter, struct1HPlat3, ref director));
-            struct1HRoads.Add(new Road(struct1HCommandCenter, struct1HPlat6, ref director));
-            struct1HRoads.Add(new Road(struct1HCommandCenter, struct1HPlat7, ref director));
+            var struct1HRoads = new List<Road>
+            {
+                new Road(struct1HCommandCenter, struct1HPlat1, ref director),
+                new Road(struct1HCommandCenter, struct1HPlat2, ref director),
+                new Road(struct1HCommandCenter, struct1HPlat3, ref director),
+                new Road(struct1HCommandCenter, struct1HPlat6, ref director),
+                new Road(struct1HCommandCenter, struct1HPlat7, ref director),
+                new Road(struct1HPlat1, struct1HPlat2, ref director),
+                new Road(struct1HPlat1, struct1HPlat3, ref director),
+                new Road(struct1HPlat1, struct1HPlat4, ref director),
+                new Road(struct1HPlat1, struct1HPlat5, ref director)
+            };
 
-            struct1HRoads.Add(new Road(struct1HPlat1, struct1HPlat2, ref director));
-            struct1HRoads.Add(new Road(struct1HPlat1, struct1HPlat3, ref director));
-            struct1HRoads.Add(new Road(struct1HPlat1, struct1HPlat4, ref director));
-            struct1HRoads.Add(new Road(struct1HPlat1, struct1HPlat5, ref director));
 
             var struct1H = new Triple<CommandCenter, List<PlatformBlank>, List<Road>>(struct1HCommandCenter, struct1HPlatforms, struct1HRoads);
 
@@ -387,22 +407,24 @@ namespace Singularity.AI
             struct2HPlatforms.Add(struct2HPlat10);
 
 
-            var struct2HRoads = new List<Road>();
-            struct2HRoads.Add(new Road(struct2HCommandCenter, struct2HPlat1, ref director));
-            struct2HRoads.Add(new Road(struct2HCommandCenter, struct2HPlat2, ref director));
-            struct2HRoads.Add(new Road(struct2HCommandCenter, struct2HPlat3, ref director));
-            struct2HRoads.Add(new Road(struct2HCommandCenter, struct2HPlat4, ref director));
-            struct2HRoads.Add(new Road(struct2HCommandCenter, struct2HPlat5, ref director));
-            struct2HRoads.Add(new Road(struct2HPlat1, struct2HPlat6, ref director));
-            struct2HRoads.Add(new Road(struct2HPlat4, struct2HPlat6, ref director));
-            struct2HRoads.Add(new Road(struct2HPlat4, struct2HPlat7, ref director));
-            struct2HRoads.Add(new Road(struct2HPlat5, struct2HPlat7, ref director));
-            struct2HRoads.Add(new Road(struct2HPlat5, struct2HPlat8, ref director));
-            struct2HRoads.Add(new Road(struct2HPlat2, struct2HPlat8, ref director));
-            struct2HRoads.Add(new Road(struct2HPlat2, struct2HPlat9, ref director));
-            struct2HRoads.Add(new Road(struct2HPlat3, struct2HPlat9, ref director));
-            struct2HRoads.Add(new Road(struct2HPlat3, struct2HPlat10, ref director));
-            struct2HRoads.Add(new Road(struct2HPlat1, struct2HPlat10, ref director));
+            var struct2HRoads = new List<Road>
+            {
+                new Road(struct2HCommandCenter, struct2HPlat1, ref director),
+                new Road(struct2HCommandCenter, struct2HPlat2, ref director),
+                new Road(struct2HCommandCenter, struct2HPlat3, ref director),
+                new Road(struct2HCommandCenter, struct2HPlat4, ref director),
+                new Road(struct2HCommandCenter, struct2HPlat5, ref director),
+                new Road(struct2HPlat1, struct2HPlat6, ref director),
+                new Road(struct2HPlat4, struct2HPlat6, ref director),
+                new Road(struct2HPlat4, struct2HPlat7, ref director),
+                new Road(struct2HPlat5, struct2HPlat7, ref director),
+                new Road(struct2HPlat5, struct2HPlat8, ref director),
+                new Road(struct2HPlat2, struct2HPlat8, ref director),
+                new Road(struct2HPlat2, struct2HPlat9, ref director),
+                new Road(struct2HPlat3, struct2HPlat9, ref director),
+                new Road(struct2HPlat3, struct2HPlat10, ref director),
+                new Road(struct2HPlat1, struct2HPlat10, ref director)
+            };
 
 
 

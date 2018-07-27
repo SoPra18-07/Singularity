@@ -36,11 +36,12 @@ namespace Singularity.PlatformActions
         {
             if (AmmoCount <= 0)
             {
+                FillAmmo();
                 return;
             }
 
             AmmoCount--;
-            ((DefenseBase) mPlatform).Shoot();
+            mPlatform.Shoot();
         }
 
         public bool CanShoot()
@@ -87,7 +88,7 @@ namespace Singularity.PlatformActions
         {
             return new Dictionary<EResourceType, int>();
         }
-        
+
 
         public override void Update(GameTime t)
         {

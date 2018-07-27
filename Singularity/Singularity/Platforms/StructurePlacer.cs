@@ -121,7 +121,7 @@ namespace Singularity.Platforms
 
             mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
             mDirector.GetInputManager.AddMousePositionListener(this);
-            mCurrentState = new State3(1);
+            mCurrentState = new State3();
 
             director.GetUserInterfaceController.BuildingProcessStarted(platformType);
 
@@ -134,9 +134,6 @@ namespace Singularity.Platforms
                     break;
 
                 case EPlacementType.PlatformMouseFollowAndRoad:
-                    break;
-
-                default:
                     break;
             }
 
@@ -298,6 +295,7 @@ namespace Singularity.Platforms
                     {
                         // this case is the 'finish' state, we set everything up, so the platform can get added to the game
                         mPlatform.SetLayer(LayerConstants.PlatformLayer);
+                        mConnectionRoad.Place(mPlatform, mHoveringPlatform);
                         mHoveringPlatform.AddBlueprint(new BuildBluePrint(mHoveringPlatform, mPlatform, mConnectionRoad, ref mDirector));
                     }
                     else
@@ -307,11 +305,8 @@ namespace Singularity.Platforms
                     }
                     mIsFinished = true;
                     mUnregister = true;
-                    mDirector.GetUserInterfaceController.BuildingProcessFinished(mPlatformType);
+                    mDirector.GetUserInterfaceController.BuildingProcessFinished();
 
-                    break;
-
-                default:
                     break;
             }
 
@@ -342,9 +337,9 @@ namespace Singularity.Platforms
                             if (!Map.Map.IsOnTop(mPlatform.AbsBounds) || mHoveringPlatform != null || mNatureObjectThere)
                             {
                                 break;
-   
+
                             }
-                            
+
                             // the platform was on the map -> advance to next state and create the road to connect to another platform
                             mCurrentState.NextState();
                             mConnectionRoad = new Road(mPlatform, null, ref mDirector, true);
@@ -398,9 +393,6 @@ namespace Singularity.Platforms
 
                         break;
 
-                    default:
-                        break;
-
                 }
 
             }
@@ -410,12 +402,14 @@ namespace Singularity.Platforms
                 if (mCurrentState.GetState() == 1)
                 {
 
-                    mDirector.GetUserInterfaceController.BuildingProcessFinished(mPlatformType);
+                    mDirector.GetUserInterfaceController.BuildingProcessFinished();
                     mCanceled = true;
                     mIsFinished = true;
                     giveThrough = false;
                     mUnregister = true;
 
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                    // Done for consistency
                     return giveThrough;
                 }
 

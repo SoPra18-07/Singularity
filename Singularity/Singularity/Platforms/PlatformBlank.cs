@@ -115,7 +115,7 @@ namespace Singularity.Platforms
         /// Indicates if the platform is a "real" platform or a blueprint.
         /// </summary>
         [DataMember]
-        protected bool mIsBlueprint;
+        public bool mBlueprint;
 
         [DataMember]
         protected int mProvidingEnergy;
@@ -129,8 +129,8 @@ namespace Singularity.Platforms
         [DataMember]
         protected List<IPlatformAction> mIPlatformActions;
 
-        protected Texture2D mPlatformSpriteSheet;
-        protected Texture2D mPlatformBaseTexture;
+        private Texture2D mPlatformSpriteSheet;
+        private Texture2D mPlatformBaseTexture;
 
         //This means the platformspritesheetname not the name of the base texture
         [DataMember]
@@ -166,7 +166,7 @@ namespace Singularity.Platforms
         [DataMember]
         public int Id { get; private set; }
 
-        protected Director mDirector;
+        protected new Director mDirector;
 
         ///<summary>
         /// The sprite sheet that should be used. 0 for basic, 1 for cone, 2 for cylinder, 3 for dome.
@@ -196,7 +196,7 @@ namespace Singularity.Platforms
         [DataMember]
         protected Color mColor = Color.White;
 
-        protected PlatformInfoBox mInfoBox;
+        private PlatformInfoBox mInfoBox;
 
         [DataMember]
         protected Vector2 mBaseOffset;
@@ -210,7 +210,7 @@ namespace Singularity.Platforms
 
         public static SpriteFont mLibSans12;
 
-        public bool[,] ColliderGrid { get; internal set; }
+        public bool[,] ColliderGrid { get; private set; }
 
         [DataMember]
         private List<IPlatformAction> mToKill = new List<IPlatformAction>();
@@ -232,10 +232,10 @@ namespace Singularity.Platforms
         {
 
             mPrevPlatformActions = new List<IPlatformAction>();
-            
+
             Id = director.GetIdGenerator.NextId();
             HasDieded = false;
-            
+
 
             mDirector = director;
 
@@ -316,7 +316,7 @@ namespace Singularity.Platforms
             mSpritename = "PlatformBasic";
             mLibSans12 = libsans12;
 
-            mIsBlueprint = true;
+            mBlueprint = true;
             mRequested = new Dictionary<EResourceType, int>();
 
             Moved = false;
@@ -333,7 +333,10 @@ namespace Singularity.Platforms
                 platform: this, director: mDirector);
 
             // Track the creation of a platform in the statistics.
-            director.GetStoryManager.UpdatePlatforms("created");
+            if (Friendly)
+            {
+                director.GetStoryManager.UpdatePlatforms("created");
+            }
 
             mHealthBar = new HealthBar(this);
 
@@ -439,7 +442,7 @@ namespace Singularity.Platforms
             Center = new Vector2(AbsolutePosition.X + AbsoluteSize.X / 2, AbsolutePosition.Y + AbsoluteSize.Y + mCenterOffsetY);
         }
 
-        public void Register()
+        private void Register()
         {
             //For now only register yourself at a DistributionManager when you are friendly. Maybe change that later
             if (IsProduction() && Friendly)
@@ -514,6 +517,7 @@ namespace Singularity.Platforms
             return mIPlatformActions;
         }
 
+        /*
         /// <summary>
         /// Perform the given PlatformAction on the platform.
         /// </summary>
@@ -531,17 +535,8 @@ namespace Singularity.Platforms
             // }
 
             return true;
-        }
-
-        /// <summary>
-        /// Get the requirements of resources to build this platform.
-        /// </summary>
-        /// <returns> a dictionary of the resources with a number telling how much of it is required</returns>
-        public Dictionary<EResourceType, int> GetResourcesRequired()
-        {
-            return mCost;
-        }
-
+        } // */
+        
         /// <summary>
         /// Get the Resources on the platform.
         /// </summary>
@@ -601,7 +596,7 @@ namespace Singularity.Platforms
         }
 
 
-
+        /*
         /// <summary>
         /// Get the resources that are requested and the amount of it.
         /// </summary>
@@ -609,8 +604,9 @@ namespace Singularity.Platforms
         public Dictionary<EResourceType, int> GetmRequested()
         {
             return mRequested; // todo: change to sum of Requested Resources from PlatformActions. (there's no other required resources after all)
-        }
+        } // */
 
+        /*
         /// <summary>
         /// Change the Resources requested by this platform
         /// </summary>
@@ -619,12 +615,16 @@ namespace Singularity.Platforms
         public void SetmRequested(EResourceType resource, int number)
         {
             mRequested.Add(resource, number);
-        }
+        } // */
 
         /// <inheritdoc cref="Singularity.Property.IDraw"/>
         public virtual void Draw(SpriteBatch spritebatch)
         {
-            var transparency = mIsBlueprint ? 0.35f : 1f;
+            if (mType == EStructureType.Command && Friendly)
+            {
+                //blabladebug
+            }
+            var transparency = mBlueprint ? 0.35f : 1f;
 
             mHealthBar.Draw(spritebatch);
 
@@ -784,7 +784,6 @@ namespace Singularity.Platforms
                 mIsManuallyDeactivated,
                 mType,
                 GetPlatformResources(),
-                GetAssignedUnits(),
                 GetIPlatformActions());
 
             // set the bool for sent-data to true, since the data has just been sent
@@ -1093,7 +1092,7 @@ namespace Singularity.Platforms
         /// <summary>
         /// This will kill only the specialised part of the platform.
         /// </summary>
-        public void DieBlank()
+        private void DieBlank()
         {
             // stats tracking for a platform death
             mDirector.GetStoryManager.UpdatePlatforms(Friendly ? "lost" : "destroyed");
@@ -1144,6 +1143,14 @@ namespace Singularity.Platforms
 
         public override bool Die()
         {
+            if (HasDieded)
+            {
+                // Debug.WriteLine("Tried to kill platform agein: " + Id);
+                // throw new Exception("Died twice. For some reason."); // blueprints do that. It's alright.
+                // this platform already died before. there's nothing to do anymore.
+                return true;
+            }
+
             // stats tracking for a platform death
             mDirector.GetStoryManager.UpdatePlatforms(Friendly ? "lost" : "destroyed");
 
@@ -1193,7 +1200,7 @@ namespace Singularity.Platforms
 
             mIPlatformActions.ForEach(a => a.Platform = null);
             mIPlatformActions.RemoveAll(a => a.Die());
-            if (Friendly)
+            if (Friendly && !mBlueprint)
             {
                 mDirector.GetDistributionDirector.GetManager(GetGraphIndex()).Kill(this);
             }
@@ -1212,22 +1219,26 @@ namespace Singularity.Platforms
 
             mDirector.GetMilitaryManager.RemovePlatform(this);
             mInfoBox = null;
-            mAllGenUnits = null;
-            //This is needed so this code is not called multiple times
+            mAllGenUnits = new List<GeneralUnit>();
+            mDirector.GetStoryManager.Level.Map.GetCollisionMap().CleanGrid(); // super inefficient. but works for now.
+            // This is needed so this code is not called multiple times
             HasDieded = true;
             return true;
         }
 
+        /*
         public void Kill(IEdge road)
         {
             mInwardsEdges.Remove(road);
             mOutwardsEdges.Remove(road);
             mDirector.GetStoryManager.StructureMap.RemoveRoad((Road) road);
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(road);
-        }
+        } // */
 
         public void Kill(IPlatformAction action)
         {
+            // hacky. works
+            mPreviousIsActiveState = !IsActive();
             mToKill.Add(action);
         }
 
@@ -1259,7 +1270,7 @@ namespace Singularity.Platforms
             return mGraphIndex;
         }
 
-        public string GetResourceString()
+        private string GetResourceString()
         {
             if (mResources.Count == 0)
             {
@@ -1283,7 +1294,9 @@ namespace Singularity.Platforms
 
         public void Built()
         {
-            mIsBlueprint = false;
+            mBlueprint = false;
+            Register();
+            mDirector.GetMilitaryManager.AddPlatform(this);
             // Todo: move registering at the distributionmanager etc here. But not yet (debug)
         }
 
@@ -1403,21 +1416,21 @@ namespace Singularity.Platforms
             switch (type)
             {
                 case EStructureType.Blank:
-                    return new Dictionary<EResourceType, int> { {EResourceType.Metal, 1 }, { EResourceType.Stone, 1 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 2 } };
                 case EStructureType.Energy:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Copper, 1 }, { EResourceType.Metal, 2 }, { EResourceType.Silicon, 1 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Copper, 3 }, { EResourceType.Metal, 2 }, { EResourceType.Silicon, 5 } };
                 case EStructureType.Factory:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 3 }, { EResourceType.Stone, 2 }, { EResourceType.Water, 1 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 5 }, { EResourceType.Stone, 5 }, { EResourceType.Water, 7 } };
                 case EStructureType.Junkyard:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 2 }, { EResourceType.Stone, 2 }, { EResourceType.Water, 1 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 2 }, { EResourceType.Stone, 2 }, { EResourceType.Water, 5 } };
                 case EStructureType.Mine:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 }, { EResourceType.Stone, 1 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 4 }, { EResourceType.Stone, 2 } };
                 case EStructureType.Quarry:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 }, { EResourceType.Stone, 1 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 }, { EResourceType.Stone, 5 } };
                 case EStructureType.Storage:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 1 }, { EResourceType.Concrete, 3 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 100 }, { EResourceType.Concrete, 100 } };
                 case EStructureType.Well:
-                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 2 }, { EResourceType.Stone, 2 } };
+                    return new Dictionary<EResourceType, int> { { EResourceType.Metal, 3 }, { EResourceType.Stone, 3 } };
                 case EStructureType.Kinetic:
                     return new Dictionary<EResourceType, int> { { EResourceType.Metal, 2 }, { EResourceType.Concrete, 3 } };
                 case EStructureType.Laser:
@@ -1442,7 +1455,6 @@ namespace Singularity.Platforms
             {
                 return true;
             }
-
             if (mouseAction != EMouseAction.LeftClick)
             {
                 MakeDamage(Health);
@@ -1466,6 +1478,11 @@ namespace Singularity.Platforms
         public bool MouseButtonReleased(EMouseAction mouseAction, bool withinBounds)
         {
             return true;
+        }
+
+        public bool GetBluePrintStatus()
+        {
+            return mBlueprint;
         }
     }
 }

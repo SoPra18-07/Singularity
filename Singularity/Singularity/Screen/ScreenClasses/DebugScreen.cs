@@ -70,6 +70,7 @@ namespace Singularity.Screen.ScreenClasses
 
         }
 
+/*
         public void ReloadContent(ContentManager content, Camera camera, Map.Map map, StackScreenManager screenManager, ref Director director)
         {
             director.GetInputManager.FlagForAddition(this);
@@ -78,6 +79,7 @@ namespace Singularity.Screen.ScreenClasses
             mMap = map;
             mScreenManager = screenManager;
         }
+*/
 
         public void Draw(SpriteBatch spriteBatch)
         {
@@ -111,7 +113,7 @@ namespace Singularity.Screen.ScreenClasses
             spriteBatch.DrawLine(300, 209, 300, 335, Color.White);
 
 
-            spriteBatch.DrawString(mFont, "EnemyDifficulty: " + mDirector.GetStoryManager.Level.Ai.Difficulty, new Vector2(15, 355), Color.White);
+            spriteBatch.DrawString(mFont, "EnemyDifficulty: " + mDirector.GetStoryManager.Level.Ai?.Difficulty, new Vector2(15, 355), Color.White);
             spriteBatch.DrawString(mFont, "FPS: " + mFps, new Vector2(15, 395), Color.White);
             spriteBatch.DrawString(mFont, "UPS: " + mUps, new Vector2(15, 415), Color.White);
 
@@ -136,7 +138,7 @@ namespace Singularity.Screen.ScreenClasses
 
             mWinButton = new Button("Win", mFont, new Vector2(130, 480), Color.White, true) {Opacity = 1f};
             mLoseButton = new Button("Lose", mFont, new Vector2(130, 510), Color.White, true) { Opacity = 1f };
-            
+
             mFowButton.ButtonReleased += FowButtonReleased;
             mWinButton.ButtonReleased += OnWinButtonReleased;
             mLoseButton.ButtonReleased += OnLoseButtonReleased;

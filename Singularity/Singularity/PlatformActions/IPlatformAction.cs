@@ -54,6 +54,7 @@ namespace Singularity.PlatformActions
         /// </summary>
         void UiToggleState();
 
+        /*
         /// <summary>
         /// Assigns the unit to this PlatformAction and to this platform.
         /// </summary>
@@ -68,6 +69,7 @@ namespace Singularity.PlatformActions
         /// <param name="job"></param>
         /// <returns>A list containing the unassigned units.</returns>
         List<GeneralUnit> UnAssignUnits(int amount, JobType job);
+        */
 
         /// <summary>
         /// Gets the JobType required for this PlatformAction. Can be several.

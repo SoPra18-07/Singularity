@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Singularity.Manager;
 using Singularity.Map;
-using Singularity.Property;
 
 namespace Singularity.Units
 {
@@ -21,7 +20,7 @@ namespace Singularity.Units
         {
             mColor = Color.Maroon;
             mShootColor = Color.Red;
-            ColliderGrid = new bool[,] {};
+            // ColliderGrid = new bool[,] {};
         }
 
         /*

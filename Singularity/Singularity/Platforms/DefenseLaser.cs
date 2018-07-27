@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,7 +18,10 @@ namespace Singularity.Platforms
         private const int DrainingEnergy = 40;
 
         [DataMember]
-        private int mShotsperSecond;
+        private TimeSpan mShootCounter;
+
+        [DataMember]
+        private int mDefenseCounter;
 
         [DataMember]
         private int mShotsDone;
@@ -40,11 +44,10 @@ namespace Singularity.Platforms
             friendly: friendly)
         {
             mDrainingEnergy = DrainingEnergy;
-
+            mSpritename = "Cones";
             mCost = GetResourceCosts(EStructureType.Laser);
             mSoundId = mDirector.GetSoundManager.CreateSoundInstance("LaserTowerShot", Center.X, Center.Y, 1f, 1f, true, false, SoundClass.Effect);
-            mShotsperSecond = 0;
-            mShotsDone = 0;
+            mShootCounter = new TimeSpan(0, 0, 0, 0);
         }
 
 
@@ -59,7 +62,6 @@ namespace Singularity.Platforms
                 }
 
                 target.MakeDamage(MilitaryUnitStats.mTurretStrength);
-
             }
         }
 
@@ -73,32 +75,34 @@ namespace Singularity.Platforms
         public override void Update(GameTime time)
         {
             base.Update(time);
-            //Increase attackspeed for every unit present. Only recalculate attackspeed once every second.
-            if (mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds >= 1000)
+            //Calculating attackspeed and resetting attacks.
+            if (mShootCounter.TotalMilliseconds > 2000)
             {
-                mShotsperSecond = 0;
+                mShootCounter = new TimeSpan(0, 0, 0, 0);
+                mDefenseCounter = 0;
                 mShotsDone = 0;
                 foreach (var unitbool in mAssignedUnits[JobType.Defense])
                 {
                     if (unitbool.GetSecond())
                     {
-                        mShotsperSecond++;
+                        mDefenseCounter++;
                     }
                 }
             }
-
-            //Ask for friendly here because the sentinel handles the shooting on its own!
-            //To the calculations: 1000 (so one second) is the maximum value of the shootinglaserticker.
-            //We now just calculate whether that ticker is in a timespan where we are allowed to shoot again.
-            //This formula very likely can be exploited by the player. But he doesnt have to know ;).
-            if (mShotsperSecond != 0 &&
-                !(mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds > 1000) &&
-                (1000 / mShotsperSecond * mShotsDone <= mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds
-                 && mDirector.GetClock.GetShootingLaserTime().TotalMilliseconds <= 1000 / mShotsperSecond * (mShotsDone + 1)) 
-                && Friendly)
+            mShootCounter = mShootCounter.Add(time.ElapsedGameTime);
+            //No defending units = no Shots
+            if (mDefenseCounter == 0)
             {
-                mDefenseAction.Execute();
-                mShotsDone++;
+                return;
+            }
+            //Shooting according to attackspeed
+            if (mShootCounter.TotalMilliseconds > 2000/mDefenseCounter * mShotsDone)
+            {
+                if (mShootingTarget != null && mType == EStructureType.Laser)
+                {
+                    mDefenseAction.Execute();
+                    mShotsDone++;
+                }
             }
         }
 

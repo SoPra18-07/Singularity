@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Media;
 using Singularity.Property;
+// ReSharper disable UnusedMember.Global
 
 namespace Singularity.Sound
 {

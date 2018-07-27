@@ -16,6 +16,8 @@ namespace Singularity.PlatformActions
         [DataMember]
         private bool mReady;
         [DataMember]
+        private bool mSecondReady;
+        [DataMember]
         private int mCounter;
         [DataMember]
         public override List<JobType> UnitsRequired { get; set; } = new List<JobType> { JobType.Production };
@@ -33,9 +35,13 @@ namespace Singularity.PlatformActions
         }
         protected override void CreateUnit()
         {
-            mReady = true;
             State = PlatformActionState.Active;
-            UpdateResources();
+            if (mReady && !mSecondReady)
+            {
+                mSecondReady = true;
+                UpdateResources();
+            }
+            mReady = true;
         }
 
         public override void Execute()
@@ -50,16 +56,28 @@ namespace Singularity.PlatformActions
             {
                 return;
             }
-
+            
             mCounter = 0;
             CreateResource();
+            UpdateResources();
         }
 
         private void CreateResource()
         {
             var nRes = new Resource(mRefiningTo, mPlatform.Center, mDirector);
             mPlatform.StoreResource(nRes);
-            mReady = false;
+
+            // Track the creation of a resource in the statistics.
+            mDirector.GetStoryManager.UpdateResources(mRefiningTo);
+
+            if (mSecondReady)
+            {
+                mSecondReady = false;
+            }
+            else
+            {
+                mReady = false;
+            }
         }
 
         public EResourceType GetRefiningTo()
@@ -78,7 +96,7 @@ namespace Singularity.PlatformActions
                     State = PlatformActionState.Active;
                     break;
                 case PlatformActionState.Active:
-                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this);
+                    mDirector.GetDistributionDirector.GetManager(mPlatform.GetGraphIndex()).PausePlatformAction(this, mDirector);
                     State = PlatformActionState.Available;
                     break;
                 case PlatformActionState.Deactivated:
@@ -87,11 +105,6 @@ namespace Singularity.PlatformActions
                 default:
                     throw new AccessViolationException("Someone/Something acccessed the state!!");
             }
-        }
-
-        public void UiToggleAll()
-        {
-            ((Factory)mPlatform).UiToggleAll();
         }
     }
 }

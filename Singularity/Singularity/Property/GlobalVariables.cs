@@ -10,7 +10,7 @@ namespace Singularity.Property
         private static float sMusicVolume = 1f;
         private static float sUiVolume = 1f;
         private static float sMasterVolume = 1f;
-        
+
         public static bool FowEnabled { get; set; } = true;
 
         public static bool HealthBarEnabled { get; set; } = true;
@@ -72,7 +72,7 @@ namespace Singularity.Property
         }
 
         // Flag used to control the mission time.
-        public static bool mGameIsPaused = false;
+        public static bool mGameIsPaused = true;
 
         public static EaiDifficulty Difficulty { get; set; } = EaiDifficulty.Easy;
     }

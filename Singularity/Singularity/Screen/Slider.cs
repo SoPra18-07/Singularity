@@ -50,8 +50,6 @@ namespace Singularity.Screen
         // previous position of slider
         private float mValuePrevious;
 
-        private Director mDirector;
-
         // event handler for sending out event of percent of bar covered by slider
         public delegate void SliderMovingEventHandler(object source, EventArgs args, float percentMoved);
 
@@ -113,11 +111,11 @@ namespace Singularity.Screen
                 mPageSize = Size.X / Pages;
             }
 
-            mDirector = director;
-            mDirector.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
-            mDirector.GetInputManager.AddMousePositionListener(this);
+            director.GetInputManager.FlagForAddition(this, EClickType.Both, EClickType.Both);
+            director.GetInputManager.AddMousePositionListener(this);
         }
 
+        // ReSharper disable once UnusedMember.Global
         public Slider(Vector2 position,
             int length,
             int sliderSize,
@@ -222,7 +220,7 @@ namespace Singularity.Screen
                     }
                     mClicking = true;
                 }
-                    
+
 
                 // if slider is left button released then unslave from mouse
                 if (Mouse.GetState().LeftButton == ButtonState.Released && mClicking)
@@ -492,6 +490,7 @@ namespace Singularity.Screen
         public bool ActiveInWindow { get; set; }
         public bool InactiveInSelectedPlatformWindow { get; set; }
         public bool OutOfScissorRectangle { get; set; }
+        public bool WindowIsInactive { get; set; }
 
         // can change the amount of pages available on slider bar
         public int Pages { get; set; }

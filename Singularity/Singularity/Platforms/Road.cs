@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Singularity.Graph;
 using Singularity.Libraries;
 using Singularity.Manager;
+using Singularity.PlatformActions;
 using Singularity.Property;
 
 namespace Singularity.Platforms
@@ -31,6 +31,9 @@ namespace Singularity.Platforms
         public Vector2 RelativePosition { get; set; }
         [DataMember]
         public Vector2 RelativeSize { get; set; }
+
+        [DataMember]
+        private BuildBluePrint mBlueprintAction;
 
         /// <summary>
         /// If it is a blueprint, then set this value to true. Once the road changes from a blueprint to a real road,
@@ -58,11 +61,11 @@ namespace Singularity.Platforms
             {
                 throw new Exception("Source and Destination can't both be null");
             }
-            if(source == null && destination != null)
+            if(source == null)
             {
                 Destination = destination.Center;
                 Source = destination.Center;
-            }else if(source != null && destination == null)
+            }else if(destination == null)
             {
                 Source = source.Center;
                 Destination = source.Center;
@@ -71,6 +74,11 @@ namespace Singularity.Platforms
                 Place(source, destination);
             }
             Blueprint = blueprint;
+        }
+
+        public void SetBluePrint(BuildBluePrint bp)
+        {
+            mBlueprintAction = bp;
         }
 
         public void Place(PlatformBlank source, PlatformBlank dest)
@@ -88,7 +96,7 @@ namespace Singularity.Platforms
 
             source.AddEdge(this, EEdgeFacing.Outwards);
             dest.AddEdge(this, EEdgeFacing.Inwards);
-            
+
         }
 
 
@@ -100,7 +108,7 @@ namespace Singularity.Platforms
         public void Update(GameTime gametime)
         {
         }
-        
+
 
         public INode GetParent()
         {
@@ -119,9 +127,27 @@ namespace Singularity.Platforms
 
         public override bool Die()
         {
+            mBlueprintAction?.Die();
+            if (Blueprint)
+            {
+                // needs to change if you can build blueprints on blueprints !!!
+                if (((PlatformBlank) DestinationAsNode).mBlueprint)
+                {
+                    ((PlatformBlank) DestinationAsNode).FlagForDeath();
+                }
+
+                if (((PlatformBlank) SourceAsNode).mBlueprint)
+                {
+                    ((PlatformBlank) SourceAsNode).FlagForDeath();
+                }
+            }
+
             mDirector.GetStoryManager.Level.GameScreen.RemoveObject(this);
+            HasDieded = true;
             return true;
         }
+
+        public bool HasDieded { get; private set; }
 
         public new void ReloadContent(ref Director director)
         {

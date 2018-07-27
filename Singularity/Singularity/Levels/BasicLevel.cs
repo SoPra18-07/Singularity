@@ -9,7 +9,6 @@ using Singularity.Input;
 using Singularity.Manager;
 using Singularity.Map;
 using Singularity.Platforms;
-using Singularity.Property;
 using Singularity.Screen;
 using Singularity.Screen.ScreenClasses;
 using Singularity.Serialization;
@@ -24,6 +23,8 @@ namespace Singularity.Levels
         [DataMember]
         public EScreen Screen { get; private set; }
 
+        // ReSharper disable once NotAccessedField.Local
+        // Used to prevent garbage collector from trashing it
         private DebugScreen mDebugscreen;
 
         [DataMember]
@@ -48,15 +49,14 @@ namespace Singularity.Levels
         [DataMember]
         public IArtificalIntelligence Ai { get; set; }
 
-        protected IScreenManager mScreenManager;
-
-        private ContentManager mContent;
+        private IScreenManager mScreenManager;
 
         protected BasicLevel(GraphicsDeviceManager graphics,
             ref Director director,
             ContentManager content,
             IScreenManager screenmanager,
-            LevelType level)
+            LevelType level,
+            IArtificalIntelligence ai)
 
         {
             mDirector = director;
@@ -64,8 +64,8 @@ namespace Singularity.Levels
             mDirector.GetStoryManager.LoadAchievements();
             mGraphics = graphics;
             mScreenManager = screenmanager;
-            mContent = content;
             Screen = EScreen.GameScreen;
+            Ai = ai;
             StandardInitialization(content);
         }
 
@@ -108,9 +108,10 @@ namespace Singularity.Levels
 
             mDirector.GetInputManager.FlagForAddition(this);
 
-            // KI STUFF
-            Ai = new BasicAi(GlobalVariables.Difficulty, ref mDirector);
-            GameScreen.AddObject(Ai);
+            if (Ai != null)
+            {
+                GameScreen.AddObject(Ai);
+            }
         }
 
         public void ReloadContent(ContentManager content, GraphicsDeviceManager graphics, ref Director director, IScreenManager screenmanager)
@@ -152,7 +153,7 @@ namespace Singularity.Levels
             mDirector.GetInputManager.FlagForAddition(this);
 
             //AI Stuff
-            Ai.ReloadContent(ref mDirector);
+            Ai?.ReloadContent(ref mDirector);
             StructureLayoutHolder.Initialize(ref mDirector);
         }
 

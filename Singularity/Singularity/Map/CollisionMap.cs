@@ -64,7 +64,7 @@ namespace Singularity.Map
                 }
             }
             mWalkableGrid = new StaticGrid(gridXLength, gridYLength, movableMatrix);
-            
+
         }
 
         public void ReloadContent()
@@ -145,17 +145,29 @@ namespace Singularity.Map
         public void RemoveCollider(ICollider toRemove)
         {
             //Check if the location of an already existing collider needs to be updated.
-            
-            var oldBounds = mLookUpTable[toRemove.Id];
-
-            for (var x = oldBounds.X / MapConstants.GridWidth; x <= (oldBounds.X + oldBounds.Width) / MapConstants.GridWidth; x++)
+            if (toRemove.ColliderGrid == null || !mLookUpTable.ContainsKey(toRemove.Id))
             {
-                for (var y = oldBounds.Y / MapConstants.GridHeight; y <= (oldBounds.Y + oldBounds.Height) / MapConstants.GridHeight; y++)
+                return;
+            }
+
+            mCounter++;
+
+            var oldBounds = mLookUpTable[toRemove.Id];
+            
+            int i = 0, j = 0;
+            for (var x = oldBounds.X / MapConstants.GridWidth; x + i <= (oldBounds.X + oldBounds.Width) / MapConstants.GridWidth; i++)
+            {
+                for (var y = oldBounds.Y / MapConstants.GridHeight; y + j <= (oldBounds.Y + oldBounds.Height) / MapConstants.GridHeight; j++)
                 {
                     try
                     {
-                        mCollisionMap[x, y] = new CollisionNode(x, y, Optional<ICollider>.Of(null));
-                        mWalkableGrid.SetWalkableAt(x, y, true);
+                        if (!toRemove.ColliderGrid[j, i])
+                        {
+                            continue;
+                        }
+
+                        mCollisionMap[x + i, y + j] = new CollisionNode(x + i, y + j, Optional<ICollider>.Of(null));
+                        mWalkableGrid.SetWalkableAt(x + i, y + j, true);
                     }
                     catch (IndexOutOfRangeException e)
                     {
@@ -173,10 +185,8 @@ namespace Singularity.Map
             }
         }
 
-
-        private void CleanGrid()
+        public void CleanGrid()
         {
-
             for (var i = 0; i < mCollisionMap.GetLength(0); i++)
             {
                 for (var j = 0; j < mCollisionMap.GetLength(1); j++)
@@ -194,7 +204,7 @@ namespace Singularity.Map
 
         }
 
-
+        /*
         public bool CanPlaceCollider(ICollider tester)
         {
 
@@ -220,13 +230,7 @@ namespace Singularity.Map
                 }
             }
             return true;
-
-            // seems like a reasonable number. Grid Cleaning works.
-            if (mCounter > 100 * mLookUpTable.Count)
-            {
-                CleanGrid();
-                mCounter = 0;
-            }
         }
+        // */
     }
 }

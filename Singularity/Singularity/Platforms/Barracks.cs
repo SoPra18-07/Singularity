@@ -27,9 +27,9 @@ namespace Singularity.Platforms
             mIPlatformActions.Add(new MakeFastMilitaryUnit(this, ref director));
             mIPlatformActions.Add(new MakeHeavyMilitaryUnit(this, ref director));
             mIPlatformActions.Add(new MakeStandardMilitaryUnit(this, ref director));
-
+            mSpritename = "Cylinders";
             mCost = GetResourceCosts(EStructureType.Barracks);
-            
+
         }
     }
 }

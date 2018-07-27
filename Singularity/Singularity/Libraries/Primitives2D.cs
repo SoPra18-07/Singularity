@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+// ReSharper disable UnusedMember.Global
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
@@ -236,17 +237,6 @@ namespace Singularity.Libraries
 
             spriteBatch.Draw(sPixel, rect, null, color, angle, Vector2.Zero, SpriteEffects.None, layer);
         }
-
-        public static void FillRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float opacity, float layer, bool stroke = true)
-        {
-            if (sPixel == null)
-            {
-                CreateThePixel(spriteBatch);
-            }
-
-            spriteBatch.Draw(sPixel, new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y), null, color*opacity, 0f, Vector2.Zero, SpriteEffects.None, layer);
-        }
-
 
         /// <summary>
         /// Draws a filled rectangle
@@ -484,7 +474,7 @@ namespace Singularity.Libraries
             // calculate the distance between the two vectors
             var distance = Vector2.Distance(point1, point2);
             float angle;
-            
+
             // see if the angles are multiples of 90 degrees:
 
             // E
@@ -492,7 +482,7 @@ namespace Singularity.Libraries
             {
                 angle = 0;
             }
-            
+
             // W
             else if (point1.Y == point2.Y && point1.X > point2.X)
             {

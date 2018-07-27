@@ -57,7 +57,7 @@ namespace Singularity.Screen
             Size = !ActiveHorizontalCollection ? new Vector2(0, -10) : mSizeBackup;
 
             // activate items in itemList if window + list are active
-            if (ActiveInWindow && ActiveHorizontalCollection && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle)
+            if (ActiveInWindow && ActiveHorizontalCollection && !InactiveInSelectedPlatformWindow && !OutOfScissorRectangle && !WindowIsInactive)
             {
                 // shift from the left border to place all items
                 float shift = 0;
@@ -84,7 +84,7 @@ namespace Singularity.Screen
         /// <inheritdoc />
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (!ActiveInWindow || !ActiveHorizontalCollection || InactiveInSelectedPlatformWindow || OutOfScissorRectangle) { return; }
+            if (!ActiveInWindow || !ActiveHorizontalCollection || InactiveInSelectedPlatformWindow || OutOfScissorRectangle || WindowIsInactive) { return; }
 
             foreach (var item in mItemList)
             {
@@ -115,6 +115,8 @@ namespace Singularity.Screen
         public bool InactiveInSelectedPlatformWindow { get; set; }
         /// <inheritdoc />
         public bool OutOfScissorRectangle { get; set; }
+        /// <inheritdoc />
+        public bool WindowIsInactive { get; set; }
 
         /// <summary>
         /// true if this horizontalCollection should active, else false - used to shrink size if deactivated

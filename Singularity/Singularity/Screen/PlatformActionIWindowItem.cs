@@ -36,7 +36,7 @@ namespace Singularity.Screen
 
         // button has been clicked on - to prevent the button from keeping firing
         private bool mClicked;
-        
+
         #endregion
 
         /// <summary>
@@ -186,7 +186,7 @@ namespace Singularity.Screen
             {
                 infoBoxItemsList.AddRange(((AMakeUnit)platformAction).GetBuildingCost().Select(resource => new ResourceIWindowItem(resource.Key, resource.Value, Vector2.Zero, spriteFont)));
             }
-            
+
             // create a infoBox containing all requirements to activate the platformAction
             mInfoBoxRequirements = new InfoBoxWindow(infoBoxItemsList, Vector2.Zero, Color.White, Color.Black, true, director);
 
@@ -196,7 +196,7 @@ namespace Singularity.Screen
         /// <inheritdoc />
         public void Update(GameTime gametime)
         {
-            if (!ActiveInWindow || InactiveInSelectedPlatformWindow || OutOfScissorRectangle) { return; }
+            if (!ActiveInWindow || InactiveInSelectedPlatformWindow || OutOfScissorRectangle || WindowIsInactive) { return; }
             // update all positions
             mNameTextField.Position = Position;
             mCollection.Position = new Vector2(Position.X, Position.Y + mNameTextField.Size.Y + 5);
@@ -211,7 +211,7 @@ namespace Singularity.Screen
         /// <inheritdoc />
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (!ActiveInWindow || InactiveInSelectedPlatformWindow || OutOfScissorRectangle) { return; }
+            if (!ActiveInWindow || InactiveInSelectedPlatformWindow || OutOfScissorRectangle || WindowIsInactive) { return; }
             //draw all components
             mCollection.Draw(spriteBatch);
             mNameTextField.Draw(spriteBatch);
@@ -272,5 +272,7 @@ namespace Singularity.Screen
         public bool InactiveInSelectedPlatformWindow { get; set; }
         /// <inheritdoc />
         public bool OutOfScissorRectangle { get; set; }
+        /// <inheritdoc />
+        public bool WindowIsInactive { get; set; }
     }
 }
