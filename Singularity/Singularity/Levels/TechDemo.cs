@@ -22,6 +22,9 @@ namespace Singularity.Levels
 
         public override void LoadContent(ContentManager content)
         {
+
+            Camera.CenterOn(new Vector2(MapConstants.MapWidth / 2, MapConstants.MapHeight / 2));
+
             var map = Map;
 
             GlobalVariables.FowEnabled = false;
