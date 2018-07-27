@@ -240,6 +240,7 @@ namespace Singularity.Manager
             }
 
             mUnitMap.RemoveUnit(platform);
+            mReconstructionList.Remove(platform);
         }
 
         /// <summary>
