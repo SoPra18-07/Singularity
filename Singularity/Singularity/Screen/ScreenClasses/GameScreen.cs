@@ -480,42 +480,9 @@ namespace Singularity.Screen.ScreenClasses
 
         public void Unload()
         {
-            var keyListenersList = new List<IKeyListener>();
-            var mousePosListenersList = new List<IMousePositionListener>();
-            var mouseClickListenersList = new List<IMouseClickListener>();
-            var mouseScrollListenersList = new List<IMouseWheelListener>();
-
-            foreach (var updateable in mUpdateables)
-            {
-                var key = updateable as IKeyListener;
-                var mousePos = updateable as IMousePositionListener;
-                var mouseClick = updateable as IMouseClickListener;
-                var mouseScroll = updateable as IMouseWheelListener;
-
-                if (key != null)
-                {
-                    mDirector.GetInputManager.FlagForRemoval(key);
-                }
-
-                if (mousePos != null)
-                {
-                    mDirector.GetInputManager.RemoveMousePositionListener(mousePos);
-                }
-
-                if (mouseClick != null)
-                {
-                    mDirector.GetInputManager.FlagForRemoval(mouseClick);
-                }
-
-                if (mouseScroll != null)
-                {
-                    mDirector.GetInputManager.FlagForRemoval(mouseScroll);
-                }
-            }
-            mDirector.GetInputManager.RemoveMousePositionListener(mSelBox);
-            mDirector.GetInputManager.FlagForRemoval(mSelBox);
-            mDirector.GetInputManager.FlagForRemoval(mCamera as IKeyListener);
-            mDirector.GetInputManager.FlagForRemoval(mCamera as IMouseWheelListener);
+            mDrawables.Clear();
+            mSpatialObjects.Clear();
+            mUpdateables.Clear();
         }
         /// <summary>
         /// This get executed when a settler is transformed into a command center
