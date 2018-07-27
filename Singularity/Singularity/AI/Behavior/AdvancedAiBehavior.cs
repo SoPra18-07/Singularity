@@ -228,7 +228,7 @@ namespace Singularity.AI.Behavior
 
                 // make sure the base is atleast a certain distance away from the player at start
                 if (Vector2.Distance(
-                    mDirector.GetStoryManager.StructureMap.GetPlatformList().First().AbsolutePosition, 
+                    mDirector.GetStoryManager.StructureMap.GetPlatformList().First().AbsolutePosition,
                     new Vector2(baseToAdd.GetSecond().Center.X, baseToAdd.GetSecond().Center.Y)) < FirstBaseDistance)
                 {
                     requestNewPlatform = true;
