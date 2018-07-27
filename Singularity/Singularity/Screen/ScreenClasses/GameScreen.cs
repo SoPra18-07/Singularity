@@ -511,7 +511,7 @@ namespace Singularity.Screen.ScreenClasses
             var genUnit3 = new GeneralUnit(cCenter, ref mDirector);
             AddObject(genUnit3);
 
-            // /*
+            /* This is only for Debug
             var beginRes = new Dictionary<EResourceType, int>
             {
                 {EResourceType.Metal, 100},
@@ -529,7 +529,7 @@ namespace Singularity.Screen.ScreenClasses
                 {EResourceType.Trash, 2}
             }; // */
 
-            // var beginRes = new Dictionary<EResourceType, int> {{EResourceType.Metal, 12}, {EResourceType.Stone, 8}};
+            var beginRes = new Dictionary<EResourceType, int> {{EResourceType.Metal, 12}, {EResourceType.Stone, 8}};
 
             foreach (var pair in beginRes)
             {
@@ -539,7 +539,7 @@ namespace Singularity.Screen.ScreenClasses
 /*                    cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
                     cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
                     cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));
-                    cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));*/
+                    cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector)); */
                 }
             }
 
