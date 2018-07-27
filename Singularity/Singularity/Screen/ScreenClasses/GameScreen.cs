@@ -323,7 +323,7 @@ namespace Singularity.Screen.ScreenClasses
             return true;
         }
 
-        
+
         /// <summary>
         /// Adds the given object to the game screens list of objects to handle.
         /// </summary>
@@ -332,7 +332,7 @@ namespace Singularity.Screen.ScreenClasses
         /// <returns>True if the given object could be added, false otherwise</returns>
         public bool AddObject<T>(T toAdd)
         {
-            
+
             var settler = toAdd as Settler;
             var freeMovingUnit = toAdd as FreeMovingUnit;
 
@@ -340,7 +340,7 @@ namespace Singularity.Screen.ScreenClasses
             {
                 return false;
             }
-            
+
             /*
             if (platform != null)
             {
@@ -542,7 +542,7 @@ namespace Singularity.Screen.ScreenClasses
                     cCenter.StoreResource(new Resource(pair.Key, cCenter.Center, mDirector));*/
                 }
             }
-            
+
 
             // removes the settler from the GameScreen
             RemoveObject(s);

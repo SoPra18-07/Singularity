@@ -147,13 +147,13 @@ namespace Singularity.Screen.ScreenClasses
 
             mStatisticsWindow = new WindowObject("// Statistics", new Vector2((mScreenSize.X - mScreenSize.X / 2) / 2, mScreenSize.Y - (mScreenSize.Y / 2.8f) - 20), new Vector2(mScreenSize.X / 2, mScreenSize.Y / 2.8f), Color.White, new Color(0.467f, 0.534f, 0.6f, 0.8f), 10, 20, false, mLibSans20, mDirector, EScreen.LoseScreen) { Active = false };
 
-            mStatisticsWindow.AddItem(new TextAndAmountIWindowItem("Units created: ", mDirector.GetStoryManager.Units["created"], Vector2.Zero, new Vector2(mStatisticsWindow.Size.X, mLibSans14.MeasureString("A").Y), mLibSans14, Color.White));
-            mStatisticsWindow.AddItem(new TextAndAmountIWindowItem("Units lost: ", mDirector.GetStoryManager.Units["lost"], Vector2.Zero, new Vector2(mStatisticsWindow.Size.X, mLibSans14.MeasureString("A").Y), mLibSans14, Color.White));
-            mStatisticsWindow.AddItem(new TextAndAmountIWindowItem("Units killed: ", mDirector.GetStoryManager.Units["killed"], Vector2.Zero, new Vector2(mStatisticsWindow.Size.X, mLibSans14.MeasureString("A").Y), mLibSans14, Color.White));
-            mStatisticsWindow.AddItem(new TextAndAmountIWindowItem("Resources created: ", mDirector.GetStoryManager.Resources.Sum(x => x.Value), Vector2.Zero, new Vector2(mStatisticsWindow.Size.X, mLibSans14.MeasureString("A").Y), mLibSans14, Color.White));
-            mStatisticsWindow.AddItem(new TextAndAmountIWindowItem("Platforms created: ", mDirector.GetStoryManager.Platforms["created"], Vector2.Zero, new Vector2(mStatisticsWindow.Size.X, mLibSans14.MeasureString("A").Y), mLibSans14, Color.White));
-            mStatisticsWindow.AddItem(new TextAndAmountIWindowItem("Platforms lost: ", mDirector.GetStoryManager.Platforms["lost"], Vector2.Zero, new Vector2(mStatisticsWindow.Size.X, mLibSans14.MeasureString("A").Y), mLibSans14, Color.White));
-            mStatisticsWindow.AddItem(new TextAndAmountIWindowItem("Platforms destroyed: ", mDirector.GetStoryManager.Platforms["destroyed"], Vector2.Zero, new Vector2(mStatisticsWindow.Size.X, mLibSans14.MeasureString("A").Y), mLibSans14, Color.White));
+            mStatisticsWindow.AddItem(new TextAndAmountIWindowItem("Units created: ", mDirector.GetStoryManager.UnitsCount["created"], Vector2.Zero, new Vector2(mStatisticsWindow.Size.X, mLibSans14.MeasureString("A").Y), mLibSans14, Color.White));
+            mStatisticsWindow.AddItem(new TextAndAmountIWindowItem("Units lost: ", mDirector.GetStoryManager.UnitsCount["lost"], Vector2.Zero, new Vector2(mStatisticsWindow.Size.X, mLibSans14.MeasureString("A").Y), mLibSans14, Color.White));
+            mStatisticsWindow.AddItem(new TextAndAmountIWindowItem("Units killed: ", mDirector.GetStoryManager.UnitsCount["killed"], Vector2.Zero, new Vector2(mStatisticsWindow.Size.X, mLibSans14.MeasureString("A").Y), mLibSans14, Color.White));
+            mStatisticsWindow.AddItem(new TextAndAmountIWindowItem("Resources created: ", mDirector.GetStoryManager.ResourcesCount.Sum(x => x.Value), Vector2.Zero, new Vector2(mStatisticsWindow.Size.X, mLibSans14.MeasureString("A").Y), mLibSans14, Color.White));
+            mStatisticsWindow.AddItem(new TextAndAmountIWindowItem("Platforms created: ", mDirector.GetStoryManager.PlatformsCount["created"], Vector2.Zero, new Vector2(mStatisticsWindow.Size.X, mLibSans14.MeasureString("A").Y), mLibSans14, Color.White));
+            mStatisticsWindow.AddItem(new TextAndAmountIWindowItem("Platforms lost: ", mDirector.GetStoryManager.PlatformsCount["lost"], Vector2.Zero, new Vector2(mStatisticsWindow.Size.X, mLibSans14.MeasureString("A").Y), mLibSans14, Color.White));
+            mStatisticsWindow.AddItem(new TextAndAmountIWindowItem("Platforms destroyed: ", mDirector.GetStoryManager.PlatformsCount["destroyed"], Vector2.Zero, new Vector2(mStatisticsWindow.Size.X, mLibSans14.MeasureString("A").Y), mLibSans14, Color.White));
 
             var measuredButtonStringSize = mLibSans20.MeasureString("Main Menu");
 

@@ -78,7 +78,7 @@ namespace Singularity.Resources
             mFollowing = Optional<GeneralUnit>.Of(null);
         }
 
-        
+
         /*
         /// <summary>
         /// Required if the Resource is on a platform, the Platform is taking care of the Resources not colliding.

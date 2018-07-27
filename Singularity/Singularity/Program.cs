@@ -2,7 +2,6 @@
 
 namespace Singularity
 {
-#if WINDOWS || LINUX
     /// <summary>
     /// The main class.
     /// </summary>
@@ -20,5 +19,4 @@ namespace Singularity
             }
         }
     }
-#endif
 }

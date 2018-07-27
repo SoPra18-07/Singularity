@@ -137,7 +137,7 @@ namespace Singularity.Units
 
             if (Geometry.Length(mTargetPosition - AbsolutePosition) < mUnits.Count * Speed)
             {
-                Moved = mUnits.TrueForAll(u => !u.Moved);
+                Moved = mUnits.Exists(u => u.Moved);
             }
 
             /*

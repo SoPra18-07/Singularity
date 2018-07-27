@@ -534,7 +534,7 @@ namespace Singularity.Platforms
 
             return true;
         } // */
-        
+
         /// <summary>
         /// Get the Resources on the platform.
         /// </summary>

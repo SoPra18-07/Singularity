@@ -122,7 +122,7 @@ namespace Singularity.Screen.ScreenClasses
         private ResourceIWindowItem mSelectedPlatformStone;
         private ResourceIWindowItem mSelectedPlatformWater;
         private ResourceIWindowItem mSelectedPlatformTrash;
-        
+
         // lists of items - used to iterate through all items of a specific kind (for example to deactivate all if the corresponding button was toggled)
         private List<ResourceIWindowItem> mSelectedPlatformResourcesList;
         private List<PlatformActionIWindowItem> mSelectedPlatformActionList;
@@ -410,7 +410,7 @@ namespace Singularity.Screen.ScreenClasses
             // update resource window every X seconds to get the "production in the last X seconds amount"
                 if (mResourceWindowNextTick == mDirector.GetClock.GetIngameTime().Seconds)
             {
-                var currentProducedResourceAmounts = mDirector.GetStoryManager.Resources;
+                var currentProducedResourceAmounts = mDirector.GetStoryManager.ResourcesCount;
 
                 // set 'produced resource in past X seconds' amount
                 mResourceItemChip.Amount = currentProducedResourceAmounts[EResourceType.Chip] - mResourceWindowResourceAmountLastTick[EResourceType.Chip];
@@ -429,7 +429,7 @@ namespace Singularity.Screen.ScreenClasses
 
                 mResourceWindowNextTick = (mDirector.GetClock.GetIngameTime().Seconds + 5) % 60;
 
-                mResourceWindowResourceAmountLastTick = new Dictionary<EResourceType, int>(mDirector.GetStoryManager.Resources);
+                mResourceWindowResourceAmountLastTick = new Dictionary<EResourceType, int>(mDirector.GetStoryManager.ResourcesCount);
             }
         }
 
@@ -741,7 +741,7 @@ namespace Singularity.Screen.ScreenClasses
             // add the window to windowList
             mWindowList.Add(mResourceWindow);
 
-            mResourceWindowResourceAmountLastTick = mDirector.GetStoryManager.Resources;
+            mResourceWindowResourceAmountLastTick = mDirector.GetStoryManager.ResourcesCount;
 
             #endregion
 
@@ -1182,7 +1182,7 @@ namespace Singularity.Screen.ScreenClasses
             mInfoBuildWell = new InfoBoxWindow(
                 itemList: new List<IWindowItem>
                 {
-                    infoWell, infoBuildCosts, infoBuildWellStone, infoBuildWellMetal, infoBuildPlacement, 
+                    infoWell, infoBuildCosts, infoBuildWellStone, infoBuildWellMetal, infoBuildPlacement,
                     infoBuildWellPlacementWhere1, infoBuildWellPlacementWhere2
                 },
                 size: mLibSans10.MeasureString("Well"),

@@ -642,7 +642,7 @@ namespace Singularity.Screen.ScreenClasses
             }
             else
             {
-                
+
                 width = GlobalVariables.ResolutionList[GlobalVariables.ChosenResolution].Item1;
                 height = GlobalVariables.ResolutionList[GlobalVariables.ChosenResolution].Item2;
             }

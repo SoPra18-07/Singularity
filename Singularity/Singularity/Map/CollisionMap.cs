@@ -153,7 +153,7 @@ namespace Singularity.Map
             mCounter++;
 
             var oldBounds = mLookUpTable[toRemove.Id];
-            
+
             int i = 0, j = 0;
             for (var x = oldBounds.X / MapConstants.GridWidth; x + i <= (oldBounds.X + oldBounds.Width) / MapConstants.GridWidth; i++)
             {

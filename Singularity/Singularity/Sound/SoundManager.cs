@@ -47,18 +47,18 @@ namespace Singularity.Sound
         /// <summary>
         /// Looping song used as the in-game soundtrack
         /// </summary>
-        private static Song sSSoundtrack;
+        private static Song sSoundtrack;
 
         public void LoadContent(ContentManager contentManager)
         {
             // Load all sound files from the directory.
-            foreach (var s in Directory.GetFiles(@"Content\Sound", "*.xnb"))
+            foreach (var s in Directory.GetFiles("Content" + Path.DirectorySeparatorChar + "Sound", "*.xnb"))
             {
                 // Cut off file ending and determine game phase.
                 var fullName = s.Substring(8);
                 var endPos = fullName.LastIndexOf(".", StringComparison.Ordinal);
                 var phasePos = fullName.LastIndexOf("_", StringComparison.Ordinal);
-                var levelPos = fullName.LastIndexOf(@"\", StringComparison.Ordinal);
+                var levelPos = fullName.LastIndexOf("" + Path.DirectorySeparatorChar, StringComparison.Ordinal);
                 fullName = fullName.Substring(0, endPos);
                 var levelName = fullName.Substring(levelPos + 1, phasePos - levelPos - 1);
                 var phase = fullName.Substring(phasePos + 1);
@@ -84,28 +84,28 @@ namespace Singularity.Sound
                 }
             }
 
-            foreach (var s in Directory.GetFiles(@"Content\Sound\SFX", "*.xnb"))
+            foreach (var s in Directory.GetFiles("Content" + Path.DirectorySeparatorChar + "Sound" + Path.DirectorySeparatorChar + "SFX", "*.xnb"))
             {
                 var fullName = s.Substring(8);
                 var endPos = fullName.LastIndexOf(".", StringComparison.Ordinal);
                 fullName = fullName.Substring(0, endPos);
                 var effect = contentManager.Load<SoundEffect>(fullName);
-                var effectName = fullName.Substring(fullName.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+                var effectName = fullName.Substring(fullName.LastIndexOf("" + Path.DirectorySeparatorChar, StringComparison.Ordinal) + 1);
                 mEffects[effectName] = effect;
             }
 
-            foreach (var s in Directory.GetFiles(@"Content\Sound\UI", "*.xnb"))
+            foreach (var s in Directory.GetFiles("Content" + Path.DirectorySeparatorChar + "Sound" + Path.DirectorySeparatorChar + "UI", "*.xnb"))
             {
                 var fullName = s.Substring(8);
                 var endPos = fullName.LastIndexOf(".", StringComparison.Ordinal);
                 fullName = fullName.Substring(0, endPos);
                 var effect = contentManager.Load<SoundEffect>(fullName);
-                var effectName = fullName.Substring(fullName.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+                var effectName = fullName.Substring(fullName.LastIndexOf("" + Path.DirectorySeparatorChar, StringComparison.Ordinal) + 1);
                 mEffects[effectName] = effect;
             }
 
             //sSoundtrack = contentManager.Load<Song>("BGmusic");
-            sSSoundtrack = mAllSongs["Tutorial"][(int)SoundPhase.Build];
+            sSoundtrack = mAllSongs["Tutorial"][(int)SoundPhase.Build];
         }
 
 
@@ -139,11 +139,11 @@ namespace Singularity.Sound
 
         public void PlaySoundTrack()
         {
-            if (sSSoundtrack == null)
+            if (sSoundtrack == null)
             {
                 return;
             }
-            MediaPlayer.Play(sSSoundtrack);
+            MediaPlayer.Play(sSoundtrack);
         }
 
         /// <summary>

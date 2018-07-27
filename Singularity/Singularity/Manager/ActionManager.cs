@@ -12,13 +12,11 @@ namespace Singularity.Manager
         [DataMember]
         private Dictionary<object, Func<object, bool>> mToCreatesNew;
 
-
         public ActionManager()
         {
             mToCreates = new Dictionary<object, Func<object, bool>>();
             mToCreatesNew = new Dictionary<object, Func<object, bool>>();
         }
-        
 
         public void AddObject(object obj, Func<object, bool> toAdd)
         {

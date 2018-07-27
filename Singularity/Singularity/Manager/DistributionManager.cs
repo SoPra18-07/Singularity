@@ -1175,7 +1175,7 @@ namespace Singularity.Manager
         public void Kill(IPlatformAction action)
         {
             // Strong assumption that a PlatformAction is only listed at most once here.
-            mPlatformActions.Remove(mPlatformActions.Find(p => p.Equals(action)));            
+            mPlatformActions.Remove(mPlatformActions.Find(p => p.Equals(action)));
 
             var lists = new List<List<GeneralUnit>> { mIdle, mLogistics, mConstruction, mProduction, mDefense, mManual };
             lists.ForEach(l => l.ForEach(u => u.Kill(action.Id)));

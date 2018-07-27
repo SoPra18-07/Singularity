@@ -81,7 +81,7 @@ namespace Singularity.Map
 
         [DataMember]
         private int mCommandCenterCount;
-        
+
         /// <summary>
         /// Creates a new structure map which holds all the structures currently in the game.
         /// </summary>
