@@ -16,4 +16,4 @@ Happy hacking! :)
 (Warning: This only applies to external members not part of the SoPra18-07-Team)
 
 
-Todo: maybe take a few things from (here)[https://github.com/electron/electron/blob/master/docs/development/pull-requests.md#commit-message-guidelines]
+Todo: maybe take a few things from [here](https://github.com/electron/electron/blob/master/docs/development/pull-requests.md#commit-message-guidelines)
