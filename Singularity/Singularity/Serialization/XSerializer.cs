@@ -76,6 +76,21 @@ namespace Singularity.Serialization
         public static void Save(object toSave, string name, bool isAchievement)
         {
             string path;
+#if LINUX
+            if (isAchievement)
+            {
+                path = "~/.singularity/achievements";
+            }
+            else
+            {
+                path = "~/.singularity/savegames";
+            }
+            path = Environment.ExpandEnvironmentVariables(path);
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+#else
             if (isAchievement)
             {
                 path = @"%USERPROFILE%\Saved Games\Singularity\Achievements";
@@ -90,7 +105,8 @@ namespace Singularity.Serialization
             {
                 Directory.CreateDirectory(path);
             }
-            path = path + @"\" + name;
+#endif
+            path = path + Path.DirectorySeparatorChar + name;
             Serialize(toSave, path);
         }
 
@@ -104,6 +120,16 @@ namespace Singularity.Serialization
         public static Optional<object> Load(string name, bool isAchievement)
         {
             string path;
+#if LINUX
+            if (isAchievement)
+            {
+                path = "~/.singularity/achievements";
+            }
+            else
+            {
+                path = "~/.singularity/savegames";
+            }
+#else
             if (isAchievement)
             {
                 path = @"%USERPROFILE%\Saved Games\Singularity\Achievements";
@@ -112,6 +138,7 @@ namespace Singularity.Serialization
             {
                 path = @"%USERPROFILE%\Saved Games\Singularity\Saves";
             }
+#endif
 
             path = Environment.ExpandEnvironmentVariables(path);
             if (!Directory.Exists(path))
@@ -119,7 +146,7 @@ namespace Singularity.Serialization
                 return Optional<object>.Of(null);
             }
 
-            path += @"\" + name;
+            path += Path.DirectorySeparatorChar + name;
             if (!File.Exists(path))
             {
                 return Optional<object>.Of(null);
@@ -140,7 +167,11 @@ namespace Singularity.Serialization
         /// <returns>An array containing the names of all Gamesaves.</returns>
         public static string[] GetSaveNames()
         {
+#if LINUX
+            var path = "~/.singularity/savegames";
+#else
             var path = @"%USERPROFILE%\Saved Games\Singularity\Saves";
+#endif
             path = Environment.ExpandEnvironmentVariables(path);
             if (!Directory.Exists(path))
             {
@@ -155,7 +186,7 @@ namespace Singularity.Serialization
                 //Convert the paths of the files to their names
                 foreach (var filepath in names)
                 {
-                    var name = filepath.Substring(filepath.LastIndexOf('\\') + 1);
+                    var name = filepath.Substring(filepath.LastIndexOf(Path.DirectorySeparatorChar) + 1);
                     names[index] = name;
                     index++;
                 }
@@ -186,9 +217,13 @@ namespace Singularity.Serialization
             dummy.Increment();
 
             //Serialize
+#if LINUX
+            var path = "~/.singularity/savegames";
+#else
             var path = @"%USERPROFILE%\Saved Games";
+#endif
             path = Environment.ExpandEnvironmentVariables(path);
-            path = path + @"\Gamesave.xml";
+            path = path + Path.DirectorySeparatorChar + "Gamesave.xml";
             Serialize(dummy, path);
 
             //Deserialize
