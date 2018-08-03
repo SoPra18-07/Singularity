@@ -3,8 +3,8 @@
 % Resemble a4wide style
 \usepackage{geometry}
 \geometry{
-	a4paper,
-	margin=1in
+    a4paper,
+    margin=1in
 }
 
 \usepackage[german]{babel} % Document in English language
@@ -41,12 +41,12 @@
 \usepackage{tikz}
 \usepackage{mathrsfs}
 
-\fancypagestyle{lscape}{% 
-\fancyhf{} % clear all header and footer fields 
+\fancypagestyle{lscape}{%
+\fancyhf{} % clear all header and footer fields
 \fancyfoot[L]{%
 \begin{textblock}{1}(19,14.5){\rotatebox{90}{\thepage}}\end{textblock}} % make the page number appear at the "true" buttom for landescape pages
 
-\renewcommand{\headrulewidth}{0pt} 
+\renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}}
 
 \setlength{\TPHorizModule}{1cm}
@@ -64,10 +64,10 @@
 
 % Link color setup
 \hypersetup{
-	colorlinks,
-	citecolor=purple,
-	linkcolor=black,
-	urlcolor=blue
+    colorlinks,
+    citecolor=purple,
+    linkcolor=black,
+    urlcolor=blue
 }
 
 % Custom commands
@@ -113,47 +113,47 @@
 
 % Creation of title page
 \begin{titlepage}
-	\begin{center}	
-		\changefont{pbk}{32}{35}{Singularity}\\\vspace{3em}
-		\includegraphics[width=0.4\textwidth]{res/SingularityLogo2.png}\\\vspace{5em}
-		\changefont{cmr}{32}{35}{Komponentendiagramm}
-	\end{center}
-	\vspace{7em}
+    \begin{center}
+        \changefont{pbk}{32}{35}{Singularity}\\\vspace{3em}
+        \includegraphics[width=0.4\textwidth]{res/SingularityLogo2.png}\\\vspace{5em}
+        \changefont{cmr}{32}{35}{Komponentendiagramm}
+    \end{center}
+    \vspace{7em}
 
-	% The lower left side of the title page
-	\begin{minipage}[t]{.5\textwidth}
-		\begin{center}
-			\textbf{Teammitglieder:}\\
-			\vspace{.5em}
-			Norbert Balazs, Anselm Ellwanger,\\
-			Leonard Fichtner, Felix Karg, Nina\\
-			Pant, Yvan Satyawan, Julian Tischner\\
-			\vspace{2em}
-			\textbf{Datum:}\\
-			\vspace{.5em}
-			$23.06.2018$
-		\end{center}
-	\end{minipage}
-	% The lower right side of the title page
-	\begin{minipage}[t]{.5\textwidth}
-		\begin{center}
-			\textbf{Tutor:}\\
-			\vspace{.5em}
-			Samuel Roth\\
-			\quad\\
-			\quad\\
-			\vspace{2em}
-			\textbf{Gruppennummer:}\\
-			\vspace{.5em}
-			$07$
-		\end{center}
-	\end{minipage}
+    % The lower left side of the title page
+    \begin{minipage}[t]{.5\textwidth}
+        \begin{center}
+            \textbf{Teammitglieder:}\\
+            \vspace{.5em}
+            Norbert Balazs, Anselm Ellwanger,\\
+            Leonard Fichtner, Felix Karg, Nina\\
+            Pant, Yvan Satyawan, Julian Tischner\\
+            \vspace{2em}
+            \textbf{Datum:}\\
+            \vspace{.5em}
+            $23.06.2018$
+        \end{center}
+    \end{minipage}
+    % The lower right side of the title page
+    \begin{minipage}[t]{.5\textwidth}
+        \begin{center}
+            \textbf{Tutor:}\\
+            \vspace{.5em}
+            Samuel Roth\\
+            \quad\\
+            \quad\\
+            \vspace{2em}
+            \textbf{Gruppennummer:}\\
+            \vspace{.5em}
+            $07$
+        \end{center}
+    \end{minipage}
 \end{titlepage}
 
 \newpage
 \begin{figure}[h!]
-	\centering
-	\includegraphics[trim={0 5cm 0 0}, clip, width=\linewidth]{res/component.pdf}
-	\caption{Komponentendiagramm für Singularity}
+    \centering
+    \includegraphics[trim={0 5cm 0 0}, clip, width=\linewidth]{res/component.pdf}
+    \caption{Komponentendiagramm für Singularity}
 \end{figure}
 \end{document}
