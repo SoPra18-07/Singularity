@@ -107,7 +107,7 @@ namespace Singularity.Map
         /// <param name="x">The initial x position of the camera</param>
         /// <param name="y">the initial y position of the camera</param>
         /// <param name="neo">If the neo Layout should be used for navigating instead of qwertz</param>
-        public Camera(GraphicsDevice graphics, ref Director director, int x = 0, int y = 0, bool neo = false)
+		public Camera(GraphicsDevice graphics, ref Director director, int x = 0, int y = 0, bool neo = true)
         {
 
             if (x < 0)
@@ -372,11 +372,11 @@ namespace Singularity.Map
             switch (mouseAction)
             {
                 case EMouseAction.ScrollUp:
-                    scrollChange = 0.1f;
+                    scrollChange = 0.3f;
                     break;
 
                 case EMouseAction.ScrollDown:
-                    scrollChange = -0.1f;
+                    scrollChange = -0.3f;
                     break;
             }
             ZoomToTarget(new Vector2(mMouseX, mMouseY), scrollChange * Zoom);
