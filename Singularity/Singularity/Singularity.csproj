@@ -4,9 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>6b5a8222-18a7-4f9c-9fb7-8a3c1c590512</ProjectGuid>
+    <ProjectGuid>{6B5A8222-18A7-4F9C-9FB7-8A3C1C590512}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Singularity</RootNamespace>
@@ -14,6 +12,7 @@
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>DesktopGL</MonoGamePlatform>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <ReleaseVersion>0.4</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -23,7 +22,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>false</Prefer32Bit>
-	<WarningLevel>4</WarningLevel>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\$(MonoGamePlatform)\$(Platform)\$(Configuration)\</OutputPath>
@@ -33,7 +33,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>false</Prefer32Bit>
-	<WarningLevel>4</WarningLevel>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
@@ -234,74 +234,71 @@
     <Compile Include="Resources\Resource.cs" />
     <Compile Include="Screen\WindowObject.cs" />
     <Compile Include="Screen\HorizontalCollection.cs" />
-
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="C5, Version=2.5.0.0, Culture=neutral, PublicKeyToken=282361b99ded7e8e, processorArchitecture=MSIL">
-      <HintPath>..\packages\C5.2.5.3\lib\net45\C5.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="EpPathFinding.cs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\EpPathFinding.cs.1.4.2\lib\EpPathFinding.cs.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="MonoGame.Framework">
-       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\MonoGame.Framework.dll</HintPath>
+      <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
+    <Reference Include="C5, Version=2.5.0.0, Culture=neutral, PublicKeyToken=282361b99ded7e8e">
+      <HintPath>..\packages\C5.2.5.3\lib\net45\C5.dll</HintPath>
+    </Reference>
+    <Reference Include="EpPathFinding.cs, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\EpPathFinding.cs.1.4.2\lib\EpPathFinding.cs.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
-	<None Include="$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\x86\SDL2.dll">
+    <None Include="app.manifest" />
+    <None Include="%24%28MonoGameInstallDirectory%29\MonoGame\v3.0\Assemblies\DesktopGL\x86\SDL2.dll">
       <Link>x86\SDL2.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-	<None Include="$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\x64\SDL2.dll">
+    <None Include="%24%28MonoGameInstallDirectory%29\MonoGame\v3.0\Assemblies\DesktopGL\x64\SDL2.dll">
       <Link>x64\SDL2.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-	<None Include="$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\x86\soft_oal.dll">
+    <None Include="%24%28MonoGameInstallDirectory%29\MonoGame\v3.0\Assemblies\DesktopGL\x86\soft_oal.dll">
       <Link>x86\soft_oal.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-	<None Include="$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\x64\soft_oal.dll">
+    <None Include="%24%28MonoGameInstallDirectory%29\MonoGame\v3.0\Assemblies\DesktopGL\x64\soft_oal.dll">
       <Link>x64\soft_oal.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-		<None Include="$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\x86\libSDL2-2.0.so.0">
+    <None Include="%24%28MonoGameInstallDirectory%29\MonoGame\v3.0\Assemblies\DesktopGL\x86\libSDL2-2.0.so.0">
       <Link>x86\libSDL2-2.0.so.0</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-	<None Include="$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\x64\libSDL2-2.0.so.0">
+    <None Include="%24%28MonoGameInstallDirectory%29\MonoGame\v3.0\Assemblies\DesktopGL\x64\libSDL2-2.0.so.0">
       <Link>x64\libSDL2-2.0.so.0</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-	<None Include="$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\x86\libopenal.so.1">
+    <None Include="%24%28MonoGameInstallDirectory%29\MonoGame\v3.0\Assemblies\DesktopGL\x86\libopenal.so.1">
       <Link>x86\libopenal.so.1</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-	<None Include="$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\x64\libopenal.so.1">
+    <None Include="%24%28MonoGameInstallDirectory%29\MonoGame\v3.0\Assemblies\DesktopGL\x64\libopenal.so.1">
       <Link>x64\libopenal.so.1</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-	<None Include="$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\libSDL2-2.0.0.dylib">
+    <None Include="%24%28MonoGameInstallDirectory%29\MonoGame\v3.0\Assemblies\DesktopGL\libSDL2-2.0.0.dylib">
       <Link>libSDL2-2.0.0.dylib</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-	<None Include="$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\libopenal.1.dylib">
+    <None Include="%24%28MonoGameInstallDirectory%29\MonoGame\v3.0\Assemblies\DesktopGL\libopenal.1.dylib">
       <Link>libopenal.1.dylib</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-	<None Include="$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\MonoGame.Framework.dll.config">
+    <None Include="%24%28MonoGameInstallDirectory%29\MonoGame\v3.0\Assemblies\DesktopGL\MonoGame.Framework.dll.config">
       <Link>MonoGame.Framework.dll.config</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
