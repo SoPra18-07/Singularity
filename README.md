@@ -15,7 +15,7 @@ Current state [here](https://github.com/SoPra18-07/Singularity/network).
 - Julian Tischner ([Ativelox](https://github.com/ativelox))
 
 ## Screenshot
-![Screenshot](media/Screensho.png  "In-game screenshot")
+![Screenshot](media/Screenshot.png  "In-game screenshot")
 
 # Game concept:
  Singularity is a 2.5D real time strategy game inspired by [Achikaps](https://play.google.com/store/apps/details?id=yio.tro.achikaps&hl=en "Achikaps Play Store Link").
