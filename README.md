@@ -14,6 +14,11 @@ Current state [here](https://github.com/SoPra18-07/Singularity/network).
 - Yvan Satyawan ([yvan674](https://github.com/yvan674))
 - Julian Tischner ([Ativelox](https://github.com/ativelox))
 
+## Screenshot
+![Screenshot][screenshot]
+![Screenshot][screenshot2]
+
+
 # Game concept:
  Singularity is a 2.5D real time strategy game inspired by [Achikaps](https://play.google.com/store/apps/details?id=yio.tro.achikaps&hl=en "Achikaps Play Store Link").
  You are an AI that has just landed on a foreign planet with no idea what to expect.
@@ -35,3 +40,7 @@ More information can be found in the [Software Praktikum Wiki](https://sopra.inf
 Progress:
 
 [![Throughput Graph](https://graphs.waffle.io/SoPra18-07/Singularity/throughput.svg)](https://waffle.io/SoPra18-07/Singularity/metrics/throughput)
+
+
+[screenshot]: https://github.com/SoPra18-07/Singularity/tree/master/media/Screenshot from 2018-12-20 20-26-10.png  "In-game screenshot"
+[screenshot2]: https://github.com/SoPra18-07/Singularity/tree/master/media/Screenshot from 2018-12-20 20-26-10.png  "In-game screenshot"
